@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tv.newtv.cboxtv.uc.BackgroundTipView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom">
+
+    <RelativeLayout
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_491px"
+        android:background="@drawable/delete_darker">
+
+        <TextView
+            android:id="@+id/delete_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/height_150px"
+            android:text="@string/delete_tip"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_32px"/>
+
+        <ImageButton
+            android:focusable="true"
+            android:id="@+id/delete_single_btn"
+            android:layout_width="@dimen/width_170px"
+            android:layout_height="@dimen/height_50px"
+            android:layout_alignStart="@+id/delete_tip"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/width_720px"
+            android:layout_below="@+id/delete_tip"
+            android:layout_marginTop="@dimen/height_50px"
+            android:background="@drawable/delete_single_selector"
+            tools:ignore="RtlCompat" />
+
+        <ImageButton
+            android:focusable="true"
+            android:id="@+id/delete_all_btn"
+            android:layout_width="@dimen/width_170px"
+            android:layout_height="@dimen/height_50px"
+            android:layout_alignEnd="@+id/delete_tip"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/width_720px"
+            android:layout_below="@+id/delete_tip"
+            android:layout_marginTop="@dimen/height_50px"
+            android:background="@drawable/clear_all_selector"
+            tools:ignore="RtlCompat" />
+
+    </RelativeLayout>
+</tv.newtv.cboxtv.uc.BackgroundTipView>

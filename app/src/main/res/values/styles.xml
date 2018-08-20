@@ -1,0 +1,164 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/home_page_bg</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppContentTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/detail_bg</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/splash_bg</item>
+    </style>
+
+    <style name="ModuleTitleStyle">
+        <item name="android:textColor">@color/colorRecommedPosText</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">@dimen/height_32px</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ModuleSubTitleStyle">
+        <item name="android:textColor">@color/colorRecommedPosText</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">@dimen/height_28px</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 推荐位海报标题style -->
+    <style name="ModulePosterBottomTitleStyle">
+        <item name="android:textColor">@color/colorPosterBottomTitleText</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">@dimen/height_26px</item>
+    </style>
+
+    <style name="ModulePosterBottomTitleStyle_005">
+        <item name="android:textColor">@color/colorPosterBottomTitleText</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_26px</item>
+    </style>
+
+    <!-- 导航栏item的文本框的style -->
+    <style name="StyleNavTitle">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_36px</item>
+        <item name="android:textColor">#cccbcb</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="search_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    <!-- 搜索输入框文本的style -->
+    <style name="StyleSearchKeyBoardTitle">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_28px</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 搜索按键文本的style -->
+    <style name="StyleSearchKeyBoardKey">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_35px</item>
+        <item name="android:textColor">#ededed</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 搜索Title列表的Title的文本框的style -->
+    <style name="StyleSearchTitle">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_35px</item>
+        <item name="android:textColor">#ededed</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 搜索Title列表的itemName的文本框的style -->
+    <style name="StyleSearchTitleListItemName">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_28px</item>
+        <item name="android:textColor">#ededed</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 搜索结果列表的Item的海报title的文本框的style -->
+    <style name="StyleSearchResultListItemPosterTitle">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_24px</item>
+        <item name="android:textColor">#c1c1c1</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 搜索结果列表的title的文本框的style -->
+    <style name="StyleSearchResultListTitle">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_30px</item>
+        <item name="android:textColor">#ededed</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 搜索结果列表的label的文本框的style -->
+    <style name="StyleSearchResultLabelText">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_32px</item>
+        <item name="android:textColor">#ededed</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 搜索结果列表的Item的title的文本框的style -->
+    <style name="StyleSearchResultListItemTitle">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_28px</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 搜索结果列表的Item的海报title的文本框的style -->
+    <style name="StyleSearchResultPosterTitle">
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_24px</item>
+        <item name="android:textColor">#c1c1c1</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="take_photo_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/pop_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/pop_exit_anim</item>
+    </style>
+
+    <style name="ExitStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--<item name="android:windowFrame">@android:color/transparent</item>&lt;!&ndash;边框&ndash;&gt;-->
+        <!--<item name="android:windowIsFloating">true</item>&lt;!&ndash;是否浮现在activity之上&ndash;&gt;-->
+        <item name="android:windowIsTranslucent">true</item><!--半透明-->
+        <!--<item name="android:windowNoTitle">true</item>&lt;!&ndash;无标题&ndash;&gt;-->
+        <item name="android:windowBackground">@drawable/exit_transparent_background</item><!--背景透明-->
+        <!--<item name="android:backgroundDimAmount">0.4</item>&lt;!&ndash;透明度 0.0f到1.0f之间。1.0完全不透明，0.0f完全透明&ndash;&gt;-->
+    </style>
+
+
+    <style name="MyDialogActivityTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@android:color/transparent</item><!--边框-->
+        <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->
+        <item name="android:windowIsTranslucent">true</item><!--半透明-->
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <item name="android:windowBackground">@android:color/transparent</item><!--背景透明-->
+        <item name="android:backgroundDimAmount">0.7</item><!--透明度 0.0f到1.0f之间。1.0完全不透明，0.0f完全透明-->
+        <item name="android:textColor">#ffffff</item>
+
+    </style>
+</resources>

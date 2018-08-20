@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_80px">
+    <TextView
+        android:id="@+id/Listpage_pop_tv"
+        android:layout_width="@dimen/width_100px"
+        android:layout_height="@dimen/height_80px"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_36px"/>
+    <tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView
+        android:id="@+id/Listpage_pop_recycle"
+        android:layout_width="match_parent"
+        android:layout_toRightOf="@+id/Listpage_pop_tv"
+        android:layout_height="@dimen/height_80px">
+
+    </tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView>
+
+</RelativeLayout>
+
+
+

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+    
+    <TextView
+        android:id="@+id/id_title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_45px"
+        android:layout_marginLeft="@dimen/width_110px"
+        android:layout_marginTop="@dimen/height_198px"
+        android:textColor="@color/detail_tvcolor"
+        android:maxEms="18"
+        android:textSize="@dimen/height_39px"
+        android:singleLine="true"
+        android:ellipsize="end"
+        />
+
+    <FrameLayout
+        android:id="@+id/video_player_focus"
+        android:layout_width="@dimen/width_1238px"
+        android:layout_height="@dimen/height_696px"
+        android:layout_marginLeft="@dimen/width_110px"
+        android:layout_marginStart="@dimen/width_110px"
+        android:layout_marginTop="@dimen/height_267px"
+        android:background="@drawable/selector_pos_background"
+        >
+        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+            android:id="@+id/video_player"
+            android:focusable="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:id="@+id/image"
+            android:scaleType="fitXY"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/tv_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text=""
+            android:textSize="@dimen/height_39px"
+            android:textColor="@color/detail_tvcolor"
+            />
+    </FrameLayout>
+
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/video_player_focus"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_width="@dimen/width_1304px"-->
+        <!--android:layout_height="@dimen/height_762px"-->
+        <!--android:layout_marginLeft="@dimen/width_77px"-->
+        <!--android:layout_marginStart="@dimen/width_77px"-->
+        <!--android:layout_marginTop="@dimen/height_234px"-->
+        <!--android:background="@drawable/pos_zui"-->
+        <!--android:focusable="true">-->
+
+        <!---->
+    <!--</FrameLayout>-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/video_player"-->
+        <!--android:layout_width="@dimen/width_1238px"-->
+        <!--android:layout_height="@dimen/height_696px"-->
+        <!--android:layout_marginLeft="@dimen/width_110px"-->
+        <!--android:layout_marginStart="@dimen/width_110px"-->
+        <!--android:layout_marginTop="@dimen/height_267px"-->
+        <!--android:background="@android:color/black"-->
+        <!--android:focusable="true">-->
+
+    <!--</FrameLayout>-->
+    <RelativeLayout
+        android:id="@+id/loading_view"
+        android:layout_width="@dimen/width_1238px"
+        android:layout_height="@dimen/height_696px"
+        android:layout_marginLeft="@dimen/width_110px"
+        android:layout_marginStart="@dimen/width_110px"
+        android:layout_marginTop="@dimen/height_267px"
+        android:focusable="false"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/info_message"
+            android:textSize="@dimen/height_22px"
+            android:layout_margin="@dimen/height_10px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="@dimen/height_22px"
+            android:text="@string/app_name" android:textColor="@android:color/white"/>
+    </RelativeLayout>
+
+
+</FrameLayout>

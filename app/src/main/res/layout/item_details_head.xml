@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg">
+
+    <FrameLayout
+        android:id="@+id/id_colmn_detail_view"
+        android:layout_width="@dimen/width_750px"
+        android:layout_height="@dimen/height_450px"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_30px"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/iv_detail_image_play"
+            android:layout_width="@dimen/width_684px"
+            android:layout_height="@dimen/height_368px"
+            android:layout_gravity="center"
+            android:scaleType="fitXY"
+            android:src="@drawable/focus_240_360"
+            android:tag="detail_image" />
+
+        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+            android:id="@+id/iv_detail_video"
+            android:layout_width="@dimen/width_684px"
+            android:layout_height="@dimen/height_368px"
+            android:layout_gravity="center"
+            android:background="#000000"
+            android:visibility="gone" />
+        <ImageView
+            android:id="@+id/iv_detail_image_focus"
+            android:layout_width="@dimen/width_740px"
+            android:layout_height="@dimen/height_436px"
+            android:layout_gravity="center"
+            android:background="@drawable/pos_zui"
+            android:tag="tag_img_focus"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_detail_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/id_colmn_detail_view"
+        android:layout_marginLeft="@dimen/width_49px"
+        android:layout_toRightOf="@+id/id_colmn_detail_view"
+        android:textColor="@color/detail_tvcolor"
+        android:textSize="@dimen/height_38px"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/detail_tv_type"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_33px"
+        android:layout_alignLeft="@+id/tv_detail_title"
+        android:layout_below="@+id/tv_detail_title"
+        android:gravity="center_vertical"
+        android:textColor="@color/detail_tvcolor"
+        android:textSize="@dimen/height_24px" />
+
+    <TextView
+        android:id="@+id/detail_tv_star"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_33px"
+        android:layout_alignLeft="@+id/detail_tv_type"
+        android:layout_below="@+id/detail_tv_type"
+        android:gravity="center_vertical"
+        android:textColor="@color/detail_tvcolor"
+        android:textSize="@dimen/height_24px" />
+
+    <TextView
+        android:id="@+id/detail_tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_112px"
+        android:layout_alignLeft="@+id/detail_tv_star"
+        android:layout_below="@+id/detail_tv_star"
+        android:layout_marginRight="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_5px"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:textColor="@color/detail_tvcolor"
+        android:textSize="@dimen/height_26px" />
+
+    <RelativeLayout
+        android:id="@+id/btn_detail_big_screen"
+        android:layout_width="@dimen/width_209px"
+        android:layout_height="@dimen/height_129px"
+        android:layout_alignBottom="@+id/id_colmn_detail_view"
+        android:layout_alignLeft="@+id/detail_tv_content"
+        android:layout_marginBottom="@dimen/height_33px"
+        android:layout_marginLeft="-20px"
+        android:background="@drawable/fouse_btn"
+        android:focusable="true"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/detail_rel_image_big_screen"
+            android:layout_width="@dimen/width_152px"
+            android:layout_height="@dimen/height_76px"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_details_big_screen_btn" />
+    </RelativeLayout>
+
+    <RelativeLayout
+
+        android:id="@+id/btn_detail_collect"
+        android:layout_width="@dimen/width_209px"
+        android:layout_height="@dimen/height_129px"
+        android:layout_alignTop="@+id/btn_detail_big_screen"
+        android:layout_marginBottom="@dimen/height_33px"
+        android:layout_marginLeft="-10px"
+        android:layout_toRightOf="@+id/btn_detail_big_screen"
+        android:background="@drawable/fouse_btn"
+        android:focusable="true"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/detail_rel_image_collect"
+            android:layout_width="@dimen/width_152px"
+            android:layout_height="@dimen/height_76px"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/btn_detail_praise"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_129px"
+        android:layout_alignTop="@+id/btn_detail_collect"
+        android:layout_marginBottom="@dimen/height_33px"
+        android:layout_marginLeft="-10px"
+        android:layout_toRightOf="@+id/btn_detail_collect"
+        android:background="@drawable/fouse_btn"
+        android:focusable="true"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/detail_rel_image_praise"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_76px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3px"
+            android:layout_marginRight="3px"
+            android:src="@drawable/icon_details_unpraise_btn" />
+    </RelativeLayout>
+</RelativeLayout>

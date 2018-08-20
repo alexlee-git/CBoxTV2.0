@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tv.newtv.cboxtv.cms.details.view.myRecycleView.NewSmoothVorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/id_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="@dimen/width_264px"
+            android:layout_height="@dimen/height_37px"
+            android:layout_marginLeft="@dimen/width_34px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:src="@drawable/logo"
+            android:layout_marginStart="@dimen/width_34px"
+            android:contentDescription="@string/logo"/>
+        <FrameLayout
+            android:id="@+id/id_detail_view"
+            android:layout_width="@dimen/width_306px"
+            android:layout_height="@dimen/width_426px"
+            android:layout_marginLeft="@dimen/width_87px"
+            android:layout_marginTop="@dimen/height_87px"
+            android:clickable="true"
+            android:focusable="false">
+
+            <ImageView
+                android:id="@+id/iv_detail_image_play"
+                android:layout_width="@dimen/width_240px"
+                android:layout_height="@dimen/height_360px"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:src="@drawable/focus_240_360"
+                android:tag="detail_image" />
+
+            <ImageView
+                android:id="@+id/iv_detail_image_focus"
+                android:layout_width="@dimen/width_306px"
+                android:layout_height="@dimen/width_426px"
+                android:layout_gravity="center"
+                android:background="@drawable/pos_zui"
+                android:tag="tag_img_focus"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_15px"
+            android:layout_marginRight="@dimen/width_120px"
+            android:layout_marginTop="@dimen/height_120px"
+            android:layout_toRightOf="@+id/id_detail_view"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_38px"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/detail_tv_type"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_33px"
+            android:layout_alignLeft="@+id/tv_detail_title"
+            android:layout_below="@+id/tv_detail_title"
+            android:layout_marginRight="@dimen/height_120px"
+            android:layout_marginTop="@dimen/height_16px"
+            android:gravity="center_vertical"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_24px" />
+
+        <TextView
+            android:id="@+id/detail_tv_star"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_33px"
+            android:layout_alignLeft="@+id/detail_tv_type"
+            android:layout_below="@+id/detail_tv_type"
+            android:layout_marginRight="@dimen/height_120px"
+            android:layout_marginTop="@dimen/height_8px"
+            android:gravity="center_vertical"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_24px"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/detail_tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_112px"
+            android:layout_alignLeft="@+id/detail_tv_star"
+            android:layout_below="@+id/detail_tv_star"
+            android:layout_marginRight="@dimen/width_120px"
+            android:layout_marginTop="@dimen/height_8px"
+            android:ellipsize="end"
+            android:lineSpacingExtra="@dimen/height_8px"
+            android:maxLines="2"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_26px" />
+
+        <RelativeLayout
+            android:id="@+id/btn_detail_send_flower"
+            android:layout_width="@dimen/width_206px"
+            android:layout_height="@dimen/height_130px"
+            android:layout_marginLeft="@dimen/height_388px"
+            android:layout_marginTop="@dimen/height_374px"
+            android:background="@drawable/fouse_btn"
+            android:focusable="true"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/detail_rel_image_send_flower"
+                android:layout_width="@dimen/width_152px"
+                android:layout_height="@dimen/height_76px"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_details_sendflower" />
+        </RelativeLayout>
+
+        <tv.newtv.cboxtv.player.videoview.DivergeView
+            android:id="@+id/view_flower"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_300px"
+            android:layout_alignBottom="@+id/btn_detail_send_flower"
+            android:layout_alignLeft="@+id/btn_detail_send_flower"
+            android:layout_alignRight="@+id/btn_detail_send_flower"
+            android:focusable="false" />
+
+        <RelativeLayout
+            android:id="@+id/btn_detail_attention"
+            android:layout_width="@dimen/width_206px"
+            android:layout_height="@dimen/height_130px"
+            android:layout_marginBottom="@dimen/height_33px"
+            android:layout_marginLeft="-12px"
+            android:layout_marginTop="@dimen/height_374px"
+            android:layout_toRightOf="@+id/btn_detail_send_flower"
+            android:background="@drawable/fouse_btn"
+            android:focusable="true"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/detail_rel_image_attention"
+                android:layout_width="@dimen/width_152px"
+                android:layout_height="@dimen/height_76px"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_details_unattention_btn" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_detail_search_programe"
+            android:layout_width="@dimen/width_280px"
+            android:layout_height="@dimen/height_135px"
+            android:layout_marginLeft="-12px"
+            android:layout_marginTop="@dimen/height_374px"
+            android:layout_toRightOf="@+id/btn_detail_attention"
+            android:background="@drawable/fouse_btn"
+            android:focusable="true"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/detail_rel_image_search_programe"
+                android:layout_width="@dimen/width_210px"
+                android:layout_height="@dimen/height_76px"
+                android:layout_centerInParent="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_details_searchprograme" />
+        </RelativeLayout>
+
+        <tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView
+            android:id="@+id/id_usercenter_fragment_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/id_detail_view"
+            android:clickable="false"
+            android:focusable="false" />
+
+        <!--<FrameLayout-->
+
+        <!--android:id="@+id/person_detail_ad_fl"-->
+        <!--android:layout_width="@dimen/width_1746px"-->
+        <!--android:layout_height="@dimen/height_386px"-->
+        <!--android:layout_below="@id/id_usercenter_fragment_root"-->
+        <!--android:layout_marginLeft="@dimen/width_87px"-->
+        <!--android:layout_marginTop="@dimen/height_15px"-->
+        <!--android:background="@drawable/selector_pos_background"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"-->
+        <!--&gt;-->
+
+        <!--<tv.newtv.cboxtv.views.RecycleImageView-->
+        <!--android:id="@+id/person_detail_ad_img"-->
+        <!--android:layout_width="@dimen/width_1680px"-->
+        <!--android:layout_height="@dimen/height_320px"-->
+        <!--android:tag="cell_001_1_poster" />-->
+
+        <!--</FrameLayout>-->
+
+
+        <FrameLayout
+            android:id="@+id/person_detail_ad_fl"
+            android:layout_width="@dimen/width_1746px"
+            android:layout_height="@dimen/height_386px"
+            android:layout_below="@id/id_usercenter_fragment_root"
+            android:layout_marginLeft="@dimen/width_87px"
+            android:layout_marginRight="@dimen/width_87px"
+            android:layout_marginTop="@dimen/height_15px"
+            android:background="@drawable/selector_pos_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <tv.newtv.cboxtv.views.RecycleImageView
+                android:id="@+id/person_detail_ad_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:tag="cell_001_1_poster" />
+
+        </FrameLayout>
+    </RelativeLayout>
+</tv.newtv.cboxtv.cms.details.view.myRecycleView.NewSmoothVorizontalScrollView>

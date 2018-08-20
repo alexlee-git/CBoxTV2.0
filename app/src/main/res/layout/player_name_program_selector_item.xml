@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width_316px"
+    android:layout_height="@dimen/height_148px"
+    android:layout_marginTop="@dimen/height_0px"
+    android:layout_marginBottom="@dimen/height_0px"
+    android:focusable="true"
+    android:background="@drawable/player_program_selector_unfocused_bg">
+
+    <ImageView
+        android:id="@+id/name_program_selector_item_playing_imageview"
+        android:layout_width="@dimen/width_95px"
+        android:layout_height="@dimen/height_36px"
+        android:layout_marginLeft="@dimen/width_2px"
+        android:layout_marginTop="@dimen/height_2px"
+        android:src="@drawable/program_selector_playing"
+        android:visibility="invisible"/>
+    <!--<TextView
+        android:id="@+id/name_program_selector_item_date"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_36px"
+        android:layout_marginLeft="@dimen/width_20px"
+        android:layout_marginTop="@dimen/height_38px"
+        android:layout_marginRight="@dimen/width_20px"
+        android:gravity="center_vertical|left"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_32px"/>-->
+
+    <TextView
+        android:id="@+id/name_program_selector_item_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_110px"
+        android:layout_marginLeft="@dimen/width_20px"
+        android:layout_marginTop="@dimen/height_38px"
+        android:layout_marginRight="@dimen/width_20px"
+        android:gravity="center_vertical|left"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_32px"/>
+</FrameLayout>
+
+

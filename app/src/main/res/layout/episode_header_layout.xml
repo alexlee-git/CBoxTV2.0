@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/play_list_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible">
+    <ImageView
+        android:id="@+id/id_title_icon"
+        android:layout_width="@dimen/width_17px"
+        android:layout_height="@dimen/height_17px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_56px"
+        android:background="@drawable/tuoyuan"
+        android:tag="module_008_title_icon"/>
+
+    <TextView
+        android:id="@+id/id_title"
+        style="@style/ModuleTitleStyle"
+        android:layout_width="@dimen/width_374px"
+        android:layout_height="@dimen/height_34px"
+        android:layout_marginLeft="@dimen/width_6px"
+        android:layout_marginStart="@dimen/width_6px"
+        android:layout_marginTop="@dimen/height_47px"
+        android:layout_toEndOf="@id/id_title_icon"
+        android:layout_toRightOf="@id/id_title_icon"
+        android:includeFontPadding="false"
+        android:tag="module_008_title"
+        android:text="播放列表"/>
+</RelativeLayout>

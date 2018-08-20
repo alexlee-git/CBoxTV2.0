@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_rel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/listpage_dailog_rel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_560px"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/listpage_screen"
+        android:orientation="vertical"
+        android:paddingBottom="31px"
+        android:paddingLeft="102px"
+        android:paddingRight="96px"
+        android:gravity="center_horizontal"
+        android:paddingTop="64px">
+
+
+        <ImageView
+            android:id="@+id/listpage_dailog_error"
+            android:layout_width="@dimen/width_160px"
+            android:layout_height="@dimen/height_160px"
+            android:src="@drawable/loading"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+
+

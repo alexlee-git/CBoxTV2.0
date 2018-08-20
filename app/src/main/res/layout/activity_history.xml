@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingEnd="@dimen/width_86px"
+        android:paddingLeft="@dimen/width_105px"
+        android:paddingRight="@dimen/width_86px"
+        android:paddingStart="@dimen/width_105px">
+
+        <TextView
+            android:id="@+id/tv_page_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_15px"
+            android:layout_marginTop="@dimen/height_70px"
+            android:text="观看记录"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_32px"
+
+            />
+
+        <TextView
+            android:id="@+id/tv_right_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/width_15px"
+            android:layout_marginTop="@dimen/height_75px"
+            android:text="按菜单键删除我的记录"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_24px" />
+
+        <tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView
+            android:id="@+id/id_usercenter_fragment_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/height_140px"
+            android:clickable="false"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:focusable="false" />
+
+        <TextView
+            android:id="@+id/id_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/height_400px"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center_horizontal"
+            android:text="@string/module_area_no_data"
+            android:textColor="@color/colorRecommedPosText"
+            android:textSize="@dimen/height_50px"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

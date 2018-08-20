@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_406px"
+        android:layout_marginTop="@dimen/height_674px"
+        android:background="@drawable/player_seekbar_area_bg"/>
+
+    <TextView
+        android:id="@+id/seekbar_program_name"
+        android:layout_width="@dimen/width_500px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginTop="@dimen/height_993px"
+        android:layout_marginLeft="@dimen/width_127px"
+        android:gravity="center_vertical|left"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_26px"/>
+
+    <ImageView
+        android:id="@+id/image_hint"
+        android:layout_width="@dimen/width_234px"
+        android:layout_height="@dimen/height_34px"
+        android:layout_marginTop="@dimen/height_912px"
+        android:layout_marginLeft="@dimen/width_130px"
+        android:gravity="center_vertical|left"
+        android:src="@drawable/come_menu"
+        />
+
+    <TextView
+        android:id="@+id/seekbar_current_time"
+        android:layout_width="@dimen/width_150px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginTop="@dimen/height_950px"
+        android:gravity="center"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_26px"
+        android:text="00:00:00"
+        android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/seebar_left_time"
+        android:layout_width="@dimen/width_120px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginTop="@dimen/height_993px"
+        android:layout_marginLeft="@dimen/width_1550px"
+        android:gravity="center_vertical|left"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/height_26px"
+        android:text="00:00:00"/>
+    <SeekBar
+        android:id="@+id/player_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_95px"
+        android:layout_marginRight="@dimen/width_88px"
+        android:layout_marginTop="@dimen/height_970px"
+        android:maxHeight="16px"
+        android:minHeight="16px"
+        android:progressDrawable="@drawable/player_seekbar_progress_drawable_blue"
+        />
+
+    <ImageView
+        android:id="@+id/img_time_line"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_26px"
+        android:layout_marginLeft="@dimen/width_1670px"
+        android:layout_marginTop="@dimen/height_1006px"
+        android:gravity="center_vertical|right"
+        android:src="@drawable/time_line"
+        />
+
+    <TextView
+        android:id="@+id/seebar_right_time"
+        android:layout_width="@dimen/width_120px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginLeft="@dimen/width_1680px"
+        android:layout_marginTop="@dimen/height_993px"
+        android:gravity="center_vertical|right"
+        android:textColor="#eeeeee"
+        android:textSize="@dimen/height_26px"
+        android:text="00:00:00"/>
+
+    <ImageView
+        android:id="@+id/img_seek_status"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_35px"
+        android:layout_marginLeft="@dimen/width_1490px"
+        android:layout_marginTop="@dimen/height_1000px"
+        android:gravity="center_vertical|right"
+        android:src="@drawable/seek_pause"
+        />
+
+    <FrameLayout
+        android:id="@+id/seekbar_down_arrow_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <ImageView
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_25px"
+            android:layout_marginTop="@dimen/height_1040px"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/player_seekbar_down_arrow"/>
+
+    </FrameLayout>
+</FrameLayout>
+
+

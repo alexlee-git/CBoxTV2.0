@@ -1,0 +1,267 @@
+package tv.newtv.cboxtv;
+
+import android.os.Environment;
+import android.text.TextUtils;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.cms.util.SPrefUtils;
+import tv.newtv.cboxtv.utils.DeviceUtil;
+
+/**
+ * Created by lixin on 2018/1/11.
+ */
+
+public class Constant {
+    public static final boolean isLocalData = false;
+
+    public static final String AdCache = Environment.getExternalStorageDirectory()
+            .getAbsolutePath() +
+            "/ad_cache";
+
+    public static final String TAG = "CBoxTV";
+
+    public static final String BASE_URL_LISTPAGE = "listPage";
+    public static final String CMS_URL = "icms_api/api/";
+    public static final String BOOT_GUIDE_HOST = "http://newtv.boot.ottcn.com:8080/";
+    //广告位类型
+    public static final String AD_TOPIC = "topic";//专题广告
+    public static final String AD_DESK = "desk";//桌面广告
+    //详情页通栏广告
+    public static final String AD_DETAILPAGE_BANNER = "cbox_detailpage_banner";
+    //广告内容类型
+    public static final String AD_IMAGE_TYPE = "image";//图片广告
+    public static final String AD_VIDEO_TYPE = "video";//视频广告
+    public static final String AD_TEXT_TYPE = "text";//文字广告
+    //正式环境
+    public static final String APPKEY = BuildConfig.APP_KEY;
+    //public static final String BASE_PERMISSTION_CHECK = "http://stage-bzo.cloud.ottcn.com/";
+    // 测试环境播放鉴权
+    public static final String CHANNEL_CODE = BuildConfig.CHANNEL_ID;
+    public static final String APPSECRET = "5047cbcc9e193d66147084f68ecd3952";//开发暂时用
+    //public static final String VERSION_UP = "http://stage-bzo.cloud.ottcn.com/"; //版本升级
+    public static final String APP_KEY = BuildConfig.APP_KEY;
+    public static final String CHANNEL_ID = BuildConfig.CHANNEL_ID;
+    public static final int BUFFER_SIZE_4 = 4;
+    public static final int BUFFER_SIZE_8 = 8;
+    public static final int BUFFER_SIZE_16 = 16;
+    public static final int BUFFER_SIZE_32 = 32;
+    public static final int BUFFER_SIZE_64 = 64;
+    public static final int BUFFER_SIZE_128 = 128;
+    public static final int BUFFER_SIZE_256 = 256;
+    public static final int BUFFER_SIZE_512 = 512;
+    public static final int BUFFER_SIZE_1K = 1024;
+    public static final int BUFFER_SIZE_2K = 2048;
+    public static final String CONTENTTYPE_PG = "PG";   //单节目
+    public static final String CONTENTTYPE_PAGE = "Page";   //页面
+    public static final String CONTENTTYPE_PS = "PS";   //节目集
+    public static final String CONTENTTYPE_CP = "CP";   //子节目
+    public static final String CONTENTTYPE_CS = "CS";   //节目集合集
+    public static final String CONTENTTYPE_CG = "CG";   //节目合集
+    public static final String CONTENTTYPE_SA = "SA";   //专题
+    public static final String CONTENTTYPE_LV = "LV";   //直播
+    public static final String CONTENTTYPE_VL = "VL";   //轮播
+    public static final String CONTENTTYPE_LK = "VL";   //连接
+    // 央视影音新加入
+    public static final String CONTENTTYPE_CR = "CR";   //人物
+    public static final String CONTENTTYPE_FG = "FG";   //人物
+    public static final String CONTENTTYPE_CH = "CH";   //Channel
+    public static final String CONTENTTYPE_CL = "CL";   //Column
+    public static final String CONTENTTYPE_TV = "TV";   //Column
+    public static final String CONTENTYPE_LISTPAGE = "listPage"; //栏目的导航页
+    public static final String VIDEOTYPE_FILM = "电影";
+    public static final String VIDEOTYPE_TV = "电视剧";
+    public static final String VIDEOTYPE_VARIETY = "综艺";
+    public static final String VIPFLAG_0 = "0";  //免费
+    public static final String VIPFLAG_1 = "1";  //vip免费
+    public static final String VIPFLAG_2 = "2";  //单点付费
+    public static final String OPEN_LIVE = "OPEN_LIVE"; //打开直播
+    public static final String OPEN_PLAYLIST = "OPEN_PLAYLIST";  //打开连播
+    public static final String OPEN_PAGE = "OPEN_PAGE";  //打开页面
+    public static final String OPEN_LISTPAGE = "OPEN_LISTPAGE";   //打开列表页
+    public static final String OPEN_APK = "OPEN_APK";  //打开APK
+    public static final String DOWNLOAD_APK = "DOWNLOAD_APK";   //下载APK
+    public static final String OPEN_DETAILS = "OPEN_DETAILS";   //打开详情页
+    public static final String OPEN_LINK = "OPEN_LINK";  //打开链接
+    public static final String OPEN_SEARCH = "OPEN_SEARCH";   //执行搜索
+    public static final String OPEN_VIDEO = "OPEN_VIDEO";  //打开视频
+    public static final String OPEN_USERCENTER = "OPEN_USERCENTER";  //打开个人中心
+    public static final String OPEN_SPECIAL = "OPEN_SPECIAL"; // 打开专题
+    public static final String OPEN_APP_LIST = "OPEN_APP_LIST";
+    public static final String PAGE_UUID = "page_uuid";
+    public static final String ACTION_URI = "action_uri";
+    public static final String ACTION_FROM = "action_from";
+    public static final String CONTENT_TYPE = "content_type";
+    public static final String ACTION_TYPE = "action_type";
+    public static final String CONTENT_UUID = "content_uuid";
+    public static final String DEFAULT_UUID = "default_uuid";
+    public static final String FOCUSPARAM = "focusParam";
+    public static final String NAV_ID = "nav_id";//导航id
+    public static final String FIRST_CHANNEL_ID = "FIRST_CHANNEL_ID";   //用于视频获取广告 一级频道
+    public static final String SECOND_CHANNEL_ID = "SECOND_CHANNEL_ID"; //用于视频获取广告 二级频道
+    public static final String OPEN_CHANNEL = "OPEN_CHANNEL";
+    public static final String NAV_SEARCH = "搜索";
+    public static final String NAV_UC = "我的";
+    public static final String EXTERNAL_OPEN_PANEL = "panel";
+    public static final String EXTERNAL_OPEN_NEWS = "news";
+    public static final String EXTERNAL_OPEN_URI = "uri"; //for ad
+    public static final String EXTERNAL_OPEN_PAGE = "page";
+    public static final String EXTERNAL_OPEN_LISTPAGE = "list_page";
+    public static final String EXTERNAL_PLAYER = "player";
+    //跳转参数定义
+    public static final String EXTERNAL_PARAM_CONTENT_UUID = "id";//ContentUUID
+    public static final String EXTERNAL_PARAM_ACTION_URI = "uri";//
+    public static final String EXTERNAL_PARAM_FOCUS_UUID = "fid";//默认焦点UUID
+    public static final String EXTERNAL_PARAM_SERIES_SUB_UUID = "sid";//节目集ID
+    // 定义log
+    public static final int LOG_NODE_HOME_PAGE = 0;           // 首页日志
+    public static final int LOG_COLUMN_INTO = 1;          // 进入栏目列表
+    public static final int LOG_NODE_NAVIGATION_SELECT = 66;    // 导航日志
+    public static final int LOG_NODE_SEARCH = 2;              // 搜索页日志
+    public static final int LOG_NODE_DETAIL = 13;               // 详情页日志
+    public static final int LOG_NODE_DETAIL_SUGGESt = 16;               // 详情推荐
+    public static final int LOG_NODE_SPECIAL = 17;               // 专题
+    public static final int LOG_NODE_HISTORY = 15;               // 历史记录
+    public static final int LOG_NODE_RECOMMEND = 18;               // 推荐位
+    public static final int LOG_NODE_COLLECT = 5;               // 收藏
+    public static final int LOG_NODE_USER_CENTER = 8;               //用户中心
+    public static final int LOG_NODE_ONE__DETAIL = 3;               // 某个影片的详情页
+    public static final int LOG_NODE_PAGE = 500;                 // 页面日志
+    public static final int LOG_NODE_RECOMMEND_POS = 501;        // 页面数据的推荐位日志
+    public static final int LOG_NODE_SPECIAL_PAGE = 17;         // 专题页日志
+    public static final int LOG_NODE_SCREEN = 700;               // 筛选页日志
+    public static final int LOG_NODE_APP_VERSION = 87;          //版本信息
+    public static final int LOG_NODE_SWITCH = 88;          //日志开关
+    public static final int LOG_NODE_DEVICE_INFO = 86;          // 终端设备信息
+    public static final int LOG_NODE_AUTH_INFO = 10;          // 认证
+    public static final String BACK_FIRST_NAV = "back_first_nav"; // 返回一级导航
+    public static final String BG_EVENT = "bg_event";
+    public static final String UPDATE_UC_DATA = "update_uc_data";
+    public static final String UPDATE_VIDEO_PLAY_INFO = "update_video_play_info";
+    //更新是否成功
+    public static final String UP_VERSION_IS_SUCCESS = "up_version_is_success";
+    public static final String ADCACHE = Environment.getExternalStorageDirectory()
+            .getAbsolutePath() +
+            "/ad_cache";
+    public static final String INIT_SDK = "init_sdk";//sdk初始化
+    public static final String INIT_ADSDK = "init_sdk";//adsdk初始化
+    public static final String INIT_LOGSDK = "init_logsdk";//logsdk初始化
+    public static final String CHECK_ERROR = "播控鉴权失败：";
+    private static final Map<String, String> mServerAddressMap = new HashMap<>();
+    public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH) : "http://search.cloud.ottcn" +
+            ".com:8080/";
+    public static final String SERVER_TIME_URL = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .SERVER_TIME)) ? getBaseUrl(HeadersInterceptor.SERVER_TIME) : "https://bzo.cloud" +
+            ".ottcn.com/";
+    public static final String VERSION_UP = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .VERSION_UP)) ? getBaseUrl(HeadersInterceptor.VERSION_UP) : "https://bzo.cloud.ottcn" +
+            ".com/"; //版本升级
+    public static final String IS_ORIENTED = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .IS_ORIENTED)) ? getBaseUrl(HeadersInterceptor.IS_ORIENTED) : "https://bzo.cloud" +
+            ".ottcn.com/"; //检查是否是定向升级
+    /**
+     * log服务器地址
+     */
+    //public static final String LOG_ADDR = "log.cloud.ottcn.com:14630";
+    public static final String LOG_ADDR = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.LOG))
+            ? getBaseUrl(HeadersInterceptor.LOG) : "log.cloud.ottcn.com:14630";
+    public static final String BASE_URL_CDN = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .CDN)) ? getBaseUrl(HeadersInterceptor.CDN) : "https://cdndispatchnewtv.ottcn.com";
+    public static final String DYNAMIC_KEY = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .DYNAMIC_KEY)) ? getBaseUrl(HeadersInterceptor.DYNAMIC_KEY) : "https://k.cloud.ottcn" +
+            ".com"; //动态防盗链
+    private static final String CMS_ONLINE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            "http://111.32.132.156/" : "http://epg.cloud.ottcn.com/";
+    public static final String BASE_URL_CMS = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .CMS)) ? getBaseUrl(HeadersInterceptor.CMS) : CMS_ONLINE;
+    private static final String PERMISSTION_CHECK_URL = DeviceUtil.CBOXTEST.equals(BuildConfig
+            .FLAVOR) ? "http://stage-bzo.cloud.ottcn.com/" : "https://account.cloud.ottcn.com/";
+    public static final String BASE_PERMISSTION_CHECK = !TextUtils.isEmpty(getBaseUrl
+            (HeadersInterceptor.PERMISSTION_CHECK)) ? getBaseUrl(HeadersInterceptor
+            .PERMISSTION_CHECK) : PERMISSTION_CHECK_URL; //播放鉴权
+    //public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+    // .AD)) ? getBaseUrl(HeadersInterceptor.AD) : "https://api.adott.ottcn.com/"; //广告正式地址
+    private static final String AD_URL = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            "http://api.adott.ottcn.org/" : "https://api.adott.ottcn.com/";
+    public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
+    ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
+    // 激活认证接口地址
+    public static String BASE_URL_ACTIVATE = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+            .ACTIVATE)) ? getBaseUrl(HeadersInterceptor.ACTIVATE) : "https://terminal.cloud.ottcn" +
+            ".com/"; //激活接口
+    public static boolean isInitStatus = true;
+    public static String UUID_KEY = "uuid";
+    public static String UUID;
+    // 定义一个全局的静态变量   用于在小屏和大屏两种模式下， 确定当前是否符合直播的条件
+    // 开启直播时，将该值置为true   到达直播结束时间，关闭直播时，将该值置为false
+    // 什么时候会开启直播？
+    // 1. 小屏时 刚加载完播放列表之后，需要判断当前时间是否满足直播
+    // 2. 小屏或大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
+    // 3. 小屏或大屏强制点播下一个文件时 将isLiving置为false
+    public static boolean isLiving = false;
+    // 直播测试地址
+    // public static String liveUrl = "http://s003.test.vod06.icntvcdn.com/live/sscntv63.m3u8";
+    // 点播测试地址
+    public static String mPlayUrl = "http://n3.cloud.icntvcdn" +
+            ".com/hls/1.8M/2018/04/27/b22fc66d931540d89d3b455d4cba2539_H2641500000aac128" +
+            "/b22fc66d931540d89d3b455d4cba2539_H2641500000aac128.m3u8";
+    static List<String> activateUrls = new ArrayList<>();
+
+    public static String getBaseUrl(String key) {
+        String result = mServerAddressMap.get(key);
+        if (TextUtils.isEmpty(result)) {
+            parseServerAddress();
+        }
+        result = mServerAddressMap.get(key);
+        return result;
+    }
+
+    private static void parseServerAddress() {
+        parseServerAddress((String) SPrefUtils.getValue(LauncherApplication.AppContext,
+                SPrefUtils.KEY_SERVER_ADDRESS, ""));
+    }
+
+    public static void parseServerAddress(String serverInfo) {
+        if (TextUtils.isEmpty(serverInfo)) {
+            return;
+        }
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        try {
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new InputSource(new ByteArrayInputStream(serverInfo
+                    .getBytes())));
+            NodeList list = document.getElementsByTagName("address");
+            for (int i = 0; i < list.getLength(); ++i) {
+                NamedNodeMap namedNodeMap = list.item(i).getAttributes();
+                Node urlNode = namedNodeMap.getNamedItem("url");
+                Node nameNode = namedNodeMap.getNamedItem("name");
+                mServerAddressMap.put(nameNode.getNodeValue(), urlNode.getNodeValue());
+            }
+        } catch (ParserConfigurationException e) {
+            LogUtils.e("parse server address ParserConfigurationException" + e);
+        } catch (SAXException e) {
+            LogUtils.e("parse server address SAXException" + e);
+        } catch (IOException e) {
+            LogUtils.e("parse server address IOException" + e);
+        }
+    }
+}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="tv.newtv.cboxtv.uc.AboutMineActivity">
+
+    <ImageView
+        android:layout_width="@dimen/width_683px"
+        android:layout_height="@dimen/height_138px"
+        android:layout_marginTop="@dimen/height_227px"
+        android:src="@drawable/about_logo" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_100px"
+        android:background="@color/color_transparent"
+        android:text="全面强大的中国电视应用!聚合央视旗下海量独家资源!"
+        android:textColor="@color/color_font"
+        android:textSize="18sp"
+        android:visibility="invisible"/>
+
+    <RelativeLayout
+        android:focusable="true"
+        android:id="@+id/rl_version_info"
+        android:layout_width="@dimen/width_1300px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_marginTop="@dimen/height_60px"
+        android:background="@drawable/re_bg_shape">
+
+        <TextView
+            android:id="@+id/tv_version_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/width_48px"
+            android:textColor="@color/color_font"
+            android:textSize="15sp"
+            android:text="客服信息"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/tv_isup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/width_24px"
+                android:text="电话：4000463366  QQ:800085092"
+                android:textColor="@color/color_font"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/iv_go"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/width_48px"
+                android:src="@drawable/goritht"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:focusable="true"
+        android:id="@+id/rl_software"
+        android:layout_width="@dimen/width_1300px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_marginTop="@dimen/height_36px"
+        android:background="@drawable/re_bg_shape">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/width_48px"
+            android:text="软件信息"
+            android:textColor="@color/color_font"
+            android:textSize="15sp" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/width_48px"
+            android:src="@drawable/goritht" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:focusable="true"
+        android:id="@+id/rl_user_deal"
+        android:layout_width="@dimen/width_1300px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_marginTop="@dimen/height_36px"
+        android:background="@drawable/re_bg_shape">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/width_48px"
+            android:text="用户协议"
+            android:textColor="@color/color_font"
+            android:textSize="15sp" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/width_48px"
+            android:src="@drawable/goritht" />
+
+
+    </RelativeLayout>
+
+
+
+</LinearLayout>

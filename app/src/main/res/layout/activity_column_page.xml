@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tv.newtv.cboxtv.views.detailpage.SmoothScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:topSpace="@dimen/height_83px"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <tv.newtv.cboxtv.views.detailpage.HeadPlayerView
+        android:id="@+id/header_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <tv.newtv.cboxtv.views.detailpage.EpisodePageView
+        android:id="@+id/play_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_video"
+        android:visibility="invisible">
+
+    </tv.newtv.cboxtv.views.detailpage.EpisodePageView>
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/suggest_title"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/play_list"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:visibility="invisible">-->
+
+        <!--<ImageView-->
+            <!--android:layout_width="@dimen/width_17px"-->
+            <!--android:layout_height="@dimen/height_17px"-->
+            <!--android:layout_marginLeft="@dimen/width_120px"-->
+            <!--android:layout_marginStart="@dimen/width_120px"-->
+            <!--android:layout_marginTop="@dimen/height_56px"-->
+            <!--android:background="@drawable/tuoyuan"-->
+            <!--android:tag="module_008_title_icon" />-->
+
+        <!--<TextView-->
+            <!--style="@style/ModuleTitleStyle"-->
+            <!--android:layout_width="@dimen/width_374px"-->
+            <!--android:layout_height="@dimen/height_34px"-->
+            <!--android:layout_marginLeft="@dimen/width_6px"-->
+            <!--android:layout_marginStart="@dimen/width_6px"-->
+            <!--android:layout_marginTop="@dimen/height_47px"-->
+            <!--android:includeFontPadding="false"-->
+            <!--android:tag="module_008_title"-->
+            <!--android:text="相关节目" />-->
+    <!--</LinearLayout>-->
+
+    <!--<tv.newtv.cboxtv.views.detailpage.SuggestView-->
+        <!--android:id="@+id/suggest"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/suggest_title"-->
+        <!--android:tag="suggest"-->
+        <!--android:visibility="invisible">-->
+
+    <!--</tv.newtv.cboxtv.views.detailpage.SuggestView>-->
+
+    <tv.newtv.cboxtv.views.detailpage.SuggestView
+        android:id="@+id/star"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/play_list"
+        android:tag="star"
+        android:visibility="invisible">
+
+    </tv.newtv.cboxtv.views.detailpage.SuggestView>
+
+    <tv.newtv.cboxtv.views.detailpage.SuggestView
+        android:id="@+id/same_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/star"
+        android:tag="sametype"
+        android:visibility="invisible">
+
+    </tv.newtv.cboxtv.views.detailpage.SuggestView>
+
+    <tv.newtv.cboxtv.views.detailpage.EpisodeAdView
+        android:id="@+id/column_detail_ad_fl"
+        android:layout_width="@dimen/width_1746px"
+        android:layout_height="@dimen/height_386px"
+        android:layout_below="@id/same_type"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginRight="@dimen/width_87px"
+        android:layout_marginStart="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:visibility="invisible">
+
+    </tv.newtv.cboxtv.views.detailpage.EpisodeAdView>
+
+</tv.newtv.cboxtv.views.detailpage.SmoothScrollView>

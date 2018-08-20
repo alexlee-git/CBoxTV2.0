@@ -1,0 +1,110 @@
+package tv.newtv.cboxtv.cms.ad;
+
+import android.text.TextUtils;
+
+import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.cms.mainPage.model.NavInfoResult;
+
+public class ADConfig {
+
+    private String columnId; //一级栏目
+    private String secondColumnId; //二级栏目
+    private String categoryIds;
+    private String seriesID;
+    private ColumnListener listener;
+
+    private ADConfig(){}
+
+    public static ADConfig getInstance(){
+        return Holder.instance;
+    }
+
+    public String getSeriesID() {
+        return seriesID;
+    }
+
+    public void setSeriesID(String seriesID) {
+        this.seriesID = seriesID;
+    }
+
+    public String getCategoryIds() {
+        return categoryIds;
+    }
+
+    public void setCategoryIds(String categoryIds) {
+        this.categoryIds = categoryIds;
+        parseCategoryIds(categoryIds);
+    }
+
+    public String getColumnId() {
+        return columnId;
+    }
+
+    public void setColumnId(String columnId) {
+        this.columnId = columnId;
+    }
+
+    public String getSecondColumnId() {
+        return secondColumnId;
+    }
+
+    public void setSecondColumnId(String secondColumnId) {
+        this.secondColumnId = secondColumnId;
+    }
+
+    private void parseCategoryIds(String categoryIds){
+        if(TextUtils.isEmpty(categoryIds)){
+            return ;
+        }
+
+        StringBuilder column = new StringBuilder();
+        StringBuilder secondColumn = new StringBuilder();
+        String[] categoryArr = categoryIds.split(",");
+        for(String categoryId : categoryArr){
+            String[] split = categoryId.split("/");
+            if(split.length >= 1){
+                column.append(split[0]);
+                column.append(",");
+            }
+            if(split.length >= 2){
+                secondColumn.append(split[1]);
+                secondColumn.append(",");
+            }
+        }
+        column.delete(column.length()-1,column.length());
+        if(secondColumn.length() > 0){
+            secondColumn.delete(secondColumn.length()-1,secondColumn.length());
+        }
+        setColumnId(column.toString());
+        setSecondColumnId(secondColumn.toString());
+    }
+
+    public void setListener(ColumnListener listener) {
+        this.listener = listener;
+    }
+
+    public void removeListener(ColumnListener listener){
+        if(this.listener == listener){
+            this.listener = null;
+        }
+    }
+
+    public interface ColumnListener{
+        void receive();
+    }
+
+    private static class Holder{
+        private final static ADConfig instance = new ADConfig();
+    }
+
+    @Override
+    public String toString() {
+        return "ADConfig{" +
+                ", columnId='" + columnId + '\'' +
+                ", secondColumnId='" + secondColumnId + '\'' +
+                ", categoryIds='" + categoryIds + '\'' +
+                ", seriesID='" + seriesID + '\'' +
+                ", listener=" + listener +
+                '}';
+    }
+}

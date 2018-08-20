@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/id_dialog_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_20px"
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textColor="@color/colorWhite"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/height_30px" />
+
+    <Button
+        android:id="@+id/id_dialog_btn"
+        android:layout_width="@dimen/width_140px"
+        android:layout_height="@dimen/height_60px"
+        android:layout_marginTop="@dimen/height_30px"
+        android:layout_below="@+id/id_dialog_msg"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/dialog_btn_ok_bg" />
+
+</RelativeLayout>

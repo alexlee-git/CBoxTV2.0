@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/listpage_screen">
+
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="@dimen/height_50px"
+       android:layout_marginTop="@dimen/height_290px"
+       android:layout_marginLeft="@dimen/width_393px"
+       android:textSize="@dimen/height_40px"
+       android:text="简介："
+       android:textColor="#ededed"
+       android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/detail_dialog_connect"
+        android:layout_width="@dimen/width_1046px"
+        android:layout_height="@dimen/height_367px"
+        android:layout_marginTop="@dimen/height_386px"
+        android:layout_marginLeft="@dimen/width_473px"
+        android:layout_marginRight="@dimen/width_473px"
+        android:textSize="@dimen/height_32px"
+        android:textColor="#ededed"/>
+
+</FrameLayout>
+
+

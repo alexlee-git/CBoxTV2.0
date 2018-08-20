@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_marginLeft="@dimen/width_68px"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/id_frameLayout_result_label_column"
+            android:layout_width="@dimen/width_80px"
+            android:layout_height="@dimen/height_43px"
+            android:layout_marginLeft="@dimen/width_46px"
+            android:layout_marginRight="@dimen/width_46px"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/height_30px"
+            android:focusable="true"
+            android:nextFocusRight="@+id/id_frameLayout_result_label_person"
+            android:nextFocusUp="@id/id_frameLayout_result_label_column">
+
+            <TextView
+                android:id="@+id/id_result_label_column_title"
+                style="@style/StyleSearchResultLabelText"
+                android:layout_width="@dimen/width_80px"
+                android:layout_height="@dimen/height_36px"
+                android:layout_marginLeft="@dimen/width_4px"
+                android:text="@string/search_column_title" />
+
+            <ImageView
+                android:id="@+id/id_result_label_column_focus_bottom"
+                android:layout_width="@dimen/width_76px"
+                android:layout_height="@dimen/height_2px"
+                android:layout_marginTop="@dimen/height_41px"
+                android:background="@drawable/search_result_label_focus_bottom"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/id_frameLayout_result_label_person"
+            android:layout_width="@dimen/width_80px"
+            android:layout_height="@dimen/height_43px"
+            android:layout_marginLeft="@dimen/width_46px"
+            android:layout_marginRight="@dimen/width_46px"
+            android:layout_marginTop="@dimen/height_30px"
+            android:focusable="true"
+            android:visibility="gone"
+            android:nextFocusLeft="@id/id_frameLayout_result_label_column"
+            android:nextFocusRight="@id/id_frameLayout_result_label_drama"
+            android:nextFocusUp="@id/id_frameLayout_result_label_person">
+
+            <TextView
+                android:id="@+id/id_result_label_person_title"
+                style="@style/StyleSearchResultLabelText"
+                android:layout_width="@dimen/width_80px"
+                android:layout_height="@dimen/height_36px"
+                android:layout_marginLeft="@dimen/width_4px"
+                android:text="@string/search_person_title" />
+
+            <ImageView
+                android:id="@+id/id_result_label_person_focus_bottom"
+                android:layout_width="@dimen/width_76px"
+                android:layout_height="@dimen/height_2px"
+                android:layout_marginTop="@dimen/height_41px"
+                android:background="@drawable/search_result_label_focus_bottom"
+                android:visibility="invisible" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/id_frameLayout_result_label_drama"
+            android:layout_width="@dimen/width_80px"
+            android:layout_height="@dimen/height_43px"
+            android:layout_marginLeft="@dimen/width_46px"
+            android:layout_marginRight="@dimen/width_46px"
+            android:layout_marginTop="@dimen/height_30px"
+            android:focusable="true"
+            android:visibility="gone"
+            android:nextFocusRight="@+id/id_frameLayout_result_label_drama"
+            android:nextFocusUp="@id/id_frameLayout_result_label_drama">
+
+            <TextView
+                android:id="@+id/id_result_label_drama_title"
+                style="@style/StyleSearchResultLabelText"
+                android:layout_width="@dimen/width_80px"
+                android:layout_height="@dimen/height_36px"
+                android:layout_marginLeft="@dimen/width_4px"
+                android:text="@string/search_drama_title" />
+
+            <ImageView
+                android:id="@+id/id_result_label_drama_focus_bottom"
+                android:layout_width="@dimen/width_76px"
+                android:layout_height="@dimen/height_2px"
+                android:layout_marginTop="@dimen/height_41px"
+                android:background="@drawable/search_result_label_focus_bottom"
+                android:visibility="invisible" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <tv.newtv.cboxtv.cms.search.custom.SearchViewPager
+        android:id="@+id/id_search_result_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/width_90px"
+        android:layout_marginTop="@dimen/height_111px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:scrollbars="none"/>
+
+    <TextView
+        android:id="@+id/id_search_result_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/width_409px"
+        android:layout_marginTop="@dimen/height_465px"
+        android:text="@string/search_result_empty"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_35px"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/id_result_left_arrow"
+        android:layout_width="@dimen/width_25px"
+        android:layout_height="@dimen/height_41px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/width_29px"
+        android:src="@drawable/search_result_left_arrow"
+        android:visibility="invisible" />
+</RelativeLayout>

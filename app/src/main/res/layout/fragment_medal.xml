@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="@dimen/width_1792px"
+        android:layout_height="@dimen/width_910px"
+        android:layout_marginLeft="@dimen/width_65px"
+        android:layout_marginTop="@dimen/height_120px"
+        android:background="@drawable/medal_center_bg"
+        >
+
+        <TextView
+            android:id="@+id/text_ranking"
+            android:layout_width="@dimen/width_110px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/height_20px"
+            android:layout_marginTop="@dimen/width_28px"
+            android:gravity="center"
+            android:text="排名"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_40px"
+            />
+
+        <TextView
+            android:layout_width="@dimen/width_110px"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/text_ranking"
+            android:layout_marginLeft="@dimen/height_391px"
+            android:gravity="center"
+            android:text="国家"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_40px"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_15px"
+            android:layout_marginLeft="@dimen/height_722px"
+            android:src="@drawable/gold_medal"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_15px"
+            android:layout_marginLeft="@dimen/height_988px"
+            android:src="@drawable/silver_medal"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_15px"
+            android:layout_marginLeft="@dimen/height_1254px"
+            android:src="@drawable/bronze_medal"
+            />
+
+
+        <TextView
+            android:layout_width="@dimen/width_110px"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/text_ranking"
+            android:layout_marginLeft="@dimen/width_1533px"
+            android:gravity="center"
+            android:text="总数"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_40px"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/height_20px"
+            android:paddingLeft="@dimen/height_20px"
+            android:paddingRight="@dimen/height_20px"
+            android:layout_below="@id/text_ranking"
+            />
+    </RelativeLayout>
+
+
+
+
+</RelativeLayout>

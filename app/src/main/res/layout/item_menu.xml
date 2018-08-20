@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width_385px"
+    android:layout_height="@dimen/height_99px"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+
+    <TextView
+        android:id="@+id/tv_video_name"
+        android:layout_width="@dimen/width_430px"
+        android:layout_height="@dimen/height_99px"
+        android:paddingLeft="@dimen/width_40px"
+        android:paddingRight="@dimen/width_80px"
+        android:gravity="left|center_vertical"
+        android:background="@color/color_transparent"
+        android:textColor="@color/color_font"
+        android:textSize="16sp"
+        android:visibility="visible"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:maxLines="2"
+        android:ellipsize="end"
+        />
+
+    <ImageView
+        android:id="@+id/playing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/menu_playing"
+        android:layout_alignRight="@id/tv_video_name"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        />
+
+
+</RelativeLayout>

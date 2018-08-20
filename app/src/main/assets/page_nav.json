@@ -1,0 +1,52 @@
+{
+  "blockTitle": "1级导航列表",
+  "data": [
+    {
+      "contentUUID": "c814343b-211f-11e8-965b-c7d8a7a18cc4",
+      "sortNum": "5",
+      "img": "",
+      "actionType": "OPEN_LISTPAGE",
+      "actionUri": "c814343b-211f-11e8-965b-c7d8a7a18cc4",
+      "title": "影音"
+    },
+    {
+      "contentUUID": "bad64fb4-211f-11e8-965b-c7d8a7a18cc4",
+      "sortNum": "4",
+      "img": "",
+      "actionType": "OPEN_LISTPAGE",
+      "actionUri": "bad64fb4-211f-11e8-965b-c7d8a7a18cc4",
+      "title": "卫视+"
+    },
+    {
+      "contentUUID": "c42f284a-274d-11e8-b2c4-c7d8a7a18cc4",
+      "sortNum": "3",
+      "img": "",
+      "actionType": "OPEN_LISTPAGE",
+      "actionUri": "c42f284a-274d-11e8-b2c4-c7d8a7a18cc4",
+      "title": "CCTV+"
+    },
+    {
+      "contentUUID": "10e64cab-2118-11e8-b0a9-c7d8a7a18cc4",
+      "sortNum": "2",
+      "img": "",
+      "actionType": "OPEN_USERCENTER",
+      "actionUri": "10e64cab-2118-11e8-b0a9-c7d8a7a18cc4",
+      "title": "我的"
+    },
+    {
+      "contentUUID": "10e64ccd-2118-11e8-b0a9-c7d8a7a18cc4",
+      "sortNum": "1",
+      "img": "http://111.32.138.56/img/cnlive/180306174529208_389.png",
+      "img_select": "http://111.32.138.56/img/cnlive/180306174529208_389.png",
+      "img_focus": "http://111.32.138.56/img/cnlive/180306174529208_389.png",
+      "actionType": "OPEN_SEARCH",
+      "actionUri": "10e64ccd-2118-11e8-b0a9-c7d8a7a18cc4",
+      "title": "搜索"
+    }
+  ],
+  "navLocation": null,
+  "errorMessage": "成功",
+  "errorCode": "0",
+  "focusId": "世界杯",
+  "defaultFocus": "c42f284a-274d-11e8-b2c4-c7d8a7a18cc4"
+}

@@ -1,0 +1,54 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+// maven库
+def cn = "http://maven.aliyun.com/nexus/content/groups/public/"
+def abroad = "http://central.maven.org/maven2/"
+// 先从url中下载jar若没有找到，则在artifactUrls中寻找
+
+buildscript {
+    ext.kotlin_version = '1.1.51'
+
+    repositories {
+        jcenter()
+        maven {
+//            url 'https://maven.google.com/'
+//            name 'Google'
+            google()
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+            artifactUrls "http://central.maven.org/maven2/"
+        }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+
+//    gradle.projectsEvaluated {
+//        tasks.withType(JavaCompile) {
+//            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+//        }
+//    }
+    repositories {
+        jcenter()
+
+
+
+        maven {
+//            url 'https://maven.google.com/'
+//            name 'Google'
+            google()
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+            artifactUrls "http://central.maven.org/maven2/"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

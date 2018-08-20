@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:background="#00ffffff">
+
+        <ImageView
+            android:id="@+id/take_place1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/hint_arrowhead_big_left"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/take_place2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/hint_arrowhead_small_left"
+            android:visibility="gone" />
+
+        <tv.newtv.cboxtv.player.menu.MenuGroup
+            android:id="@+id/menu_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/menu_bg"
+            android:paddingLeft="5dp"
+            android:visibility="gone">
+
+        </tv.newtv.cboxtv.player.menu.MenuGroup>
+
+        <ImageView
+            android:id="@+id/hint_arrowhead_small_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/hint_arrowhead_small_right"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/hint_arrowhead_big_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/hint_arrowhead_big_right"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/hint_text"
+            android:layout_width="@dimen/width_25px"
+            android:layout_height="@dimen/height_337px"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginBottom="@dimen/height_20px"
+            android:background="@drawable/hint_text"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/hint_arrowhead_big_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/hint_arrowhead_big_left"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/hint_arrowhead_small_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/hint_arrowhead_small_left"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</FrameLayout>
+
+

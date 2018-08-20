@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tv="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="test26"-->
+        <!--android:textColor="#fff" />-->
+    <tv.newtv.cboxtv.cms.PosterViewGroup
+        android:id="@+id/poster_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        tv:poster_width="528px"
+        tv:poster_height="240px"
+        android:padding="33px"
+        tv:title_width="0px"
+        tv:title_height="0px"
+        tv:title_visible="GONE"
+        tv:title_gravity="center"
+        tv:poster_title_spaceing="0px"
+        tv:angle_padding="12px"
+        tv:angle_left_top_width="51px"
+        tv:angle_left_top_height="29px"
+        tv:angle_right_top_width="51px"
+        tv:angle_right_top_height="29px"
+        tv:angle_title_width="150px"
+        tv:angle_title_height="38px"
+        tv:angle_sub_title_width="80px"
+        tv:angle_sub_title_height="33px"
+        tv:angle_right_bottom_width="51px"
+        tv:angle_right_bottom_height="29px"
+        android:tag="cell_026_1"/>
+
+    <tv.newtv.cboxtv.cms.PosterViewGroup
+        android:id="@+id/poster_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:layout_toRightOf="@id/poster_1"
+        android:layout_marginLeft="-18px"
+        tv:poster_width="528px"
+        tv:poster_height="240px"
+        android:padding="33px"
+        tv:title_width="0px"
+        tv:title_height="0px"
+        tv:title_visible="GONE"
+        tv:title_gravity="center"
+        tv:poster_title_spaceing="0px"
+        tv:angle_padding="12px"
+        tv:angle_left_top_width="51px"
+        tv:angle_left_top_height="29px"
+        tv:angle_right_top_width="51px"
+        tv:angle_right_top_height="29px"
+        tv:angle_title_width="150px"
+        tv:angle_title_height="38px"
+        tv:angle_sub_title_width="80px"
+        tv:angle_sub_title_height="33px"
+        tv:angle_right_bottom_width="51px"
+        tv:angle_right_bottom_height="29px"
+        android:tag="cell_026_2"/>
+
+    <tv.newtv.cboxtv.cms.PosterViewGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:layout_toRightOf="@id/poster_2"
+        android:layout_marginLeft="-18px"
+        tv:poster_width="528px"
+        tv:poster_height="240px"
+        android:padding="33px"
+        tv:title_width="0px"
+        tv:title_height="0px"
+        tv:title_visible="GONE"
+        tv:title_gravity="center"
+        tv:poster_title_spaceing="0px"
+        tv:angle_padding="12px"
+        tv:angle_left_top_width="51px"
+        tv:angle_left_top_height="29px"
+        tv:angle_right_top_width="51px"
+        tv:angle_right_top_height="29px"
+        tv:angle_title_width="150px"
+        tv:angle_title_height="38px"
+        tv:angle_sub_title_width="80px"
+        tv:angle_sub_title_height="33px"
+        tv:angle_right_bottom_width="51px"
+        tv:angle_right_bottom_height="29px"
+        android:tag="cell_026_3"/>
+
+</RelativeLayout>
+
+

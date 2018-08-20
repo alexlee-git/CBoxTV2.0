@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/root_view"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <!--播放容器-->
+    <tv.newtv.cboxtv.views.VideoFrameLayout
+        android:id="@+id/player_view_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <SurfaceView android:layout_width="0px" android:layout_height="0px"/>
+    </tv.newtv.cboxtv.views.VideoFrameLayout>
+
+    <tv.newtv.cboxtv.player.view.NewTVLauncherPlayerLoading
+        android:id="@+id/player_loading"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"/>
+    <ImageView
+        android:id="@+id/player_pause_image"
+        android:layout_width="@dimen/width_200px"
+        android:layout_height="@dimen/height_200px"
+        android:layout_gravity="center"
+        android:src="@drawable/launcher_player_pause_image"
+        android:visibility="invisible"/>
+
+    <tv.newtv.cboxtv.player.view.NewTVLauncherPlayerSeekbar
+        android:id="@+id/player_seekbar_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        />
+    <!--<tv.newtv.launcher.player.view.NewTVLauncherPlayerExit
+        android:id="@+id/player_exit_area"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_800px"
+        android:layout_marginTop="@dimen/height_200px"
+        android:visibility="invisible"/>-->
+    <!--<tv.newtv.cboxtv.player.view.PlayerNumberProgramSelector-->
+        <!--android:id="@+id/player_number_program_selector"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="invisible"/>-->
+
+    <!--<tv.newtv.cboxtv.player.view.PlayerNameProgramSelector-->
+        <!--android:id="@+id/player_name_program_selector"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="invisible"/>-->
+
+    <!--<tv.newtv.cboxtv.player.view.NewTVLauncherPlayerSetting-->
+        <!--android:id="@+id/player_setting"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="invisible"/>-->
+</FrameLayout>
+
+

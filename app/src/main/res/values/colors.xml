@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorArcher">#FF4081</color>
+    <color name="colorRecommedPosText">#ededed</color>
+    <color name="colorPosterBottomTitleText">#d1d1d1</color>
+    <color name="color">#00000000</color>
+    <color name="detail_tvcolor">#ededed</color>
+    <color name="colorSysInitBg">#05113b</color>
+    <color name="colorNavItemSelectedButNotFocused">#ea6617</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlue">#34a2ff</color>
+    <color name="colorTextTime">#c1c1c1</color>
+
+    <color name="color_font">#ededed</color>
+   <color name="color_transparent">#00FFFFFF</color>
+    <color name="color_3B446A">#3B446A</color>
+    <color name="color_272A3F">#272A3F</color>
+    <color name="color_0F3285">#0F3285</color>
+    <color name="color_62c0eb">#62c0eb</color>
+    <color name="color_3A466C">#3A466C</color>
+    <color name="color_menu_group">#55000000</color>
+    <color name="color_0b104b">#0b1b4b</color>
+    <color name="color_authing">#b3ffffff</color>
+</resources>

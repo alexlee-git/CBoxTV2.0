@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/height_20px"
+    android:background="#70000000"
+    android:minHeight="@dimen/height_100px">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_60px">
+
+        <TextView
+            android:id="@+id/match_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_256px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="A组"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_666px"
+            android:layout_marginStart="@dimen/width_666px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="赛"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_848px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="胜"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1030px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="平"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1212px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="负"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1430px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="进/失"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1648px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="积分"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/data_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_59px"
+        android:background="@drawable/score_high_back"
+        android:focusable="true"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/data_1_level"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_100px"
+            android:layout_marginStart="@dimen/width_100px"
+            android:layout_marginTop="@dimen/height_21px"
+            android:layout_weight="1"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_34px" />
+
+        <ImageView
+            android:id="@+id/data_1_icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_162px"
+            android:layout_marginStart="@dimen/width_162px"
+            android:layout_marginTop="@dimen/height_8px"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/data_1_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_256px"
+            android:layout_marginStart="@dimen/width_256px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="巴西"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/data_1_total"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_689px"
+            android:layout_marginStart="@dimen/width_689px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_1_victory"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_871px"
+            android:layout_marginStart="@dimen/width_871px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_1_ping"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1053px"
+            android:layout_marginStart="@dimen/width_1053px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_1_lost"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1235px"
+            android:layout_marginStart="@dimen/width_1235px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_1_js"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1417px"
+            android:layout_marginStart="@dimen/width_1417px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_1_score"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1671px"
+            android:layout_marginStart="@dimen/width_1671px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/data_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_153px"
+        android:background="@drawable/score_high_back"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/data_2_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_100px"
+            android:layout_marginStart="@dimen/width_100px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:text="1"
+            android:textColor="@android:color/white"
+
+            android:textSize="@dimen/height_34px" />
+
+        <ImageView
+            android:id="@+id/data_2_icon"
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_58px"
+            android:layout_marginLeft="@dimen/width_162px"
+            android:layout_marginStart="@dimen/width_162px"
+            android:layout_marginTop="@dimen/height_6px" />
+
+        <TextView
+            android:id="@+id/data_2_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_256px"
+            android:layout_marginStart="@dimen/width_256px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:text="巴西"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_2_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_689px"
+            android:layout_marginStart="@dimen/width_689px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_2_victory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_871px"
+            android:layout_marginStart="@dimen/width_871px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_2_ping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1053px"
+            android:layout_marginStart="@dimen/width_1053px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_2_lost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1235px"
+            android:layout_marginStart="@dimen/width_1235px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_2_js"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1417px"
+            android:layout_marginStart="@dimen/width_1417px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_2_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1671px"
+            android:layout_marginStart="@dimen/width_1671px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/data_3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_247px"
+        android:background="@drawable/score_sec_back"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/data_3_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_100px"
+            android:layout_marginStart="@dimen/width_100px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:text="1"
+            android:textColor="@android:color/white"
+
+            android:textSize="@dimen/height_34px" />
+
+        <ImageView
+            android:id="@+id/data_3_icon"
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_58px"
+            android:layout_marginLeft="@dimen/width_162px"
+            android:layout_marginStart="@dimen/width_162px"
+            android:layout_marginTop="@dimen/height_6px" />
+
+        <TextView
+            android:id="@+id/data_3_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_256px"
+            android:layout_marginStart="@dimen/width_256px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:text="巴西"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_3_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_689px"
+            android:layout_marginStart="@dimen/width_689px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_3_victory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_871px"
+            android:layout_marginStart="@dimen/width_871px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_3_ping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1053px"
+            android:layout_marginStart="@dimen/width_1053px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_3_lost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1235px"
+            android:layout_marginStart="@dimen/width_1235px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_3_js"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1417px"
+            android:layout_marginStart="@dimen/width_1417px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_3_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1671px"
+            android:layout_marginStart="@dimen/width_1671px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/data_4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginBottom="@dimen/height_20px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_341px"
+        android:background="@drawable/score_sec_back"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/data_4_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_100px"
+            android:layout_marginStart="@dimen/width_100px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:text="1"
+            android:textColor="@android:color/white"
+
+
+            android:textSize="@dimen/height_34px" />
+
+        <ImageView
+            android:id="@+id/data_4_icon"
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_58px"
+            android:layout_marginLeft="@dimen/width_162px"
+            android:layout_marginStart="@dimen/width_162px"
+            android:layout_marginTop="@dimen/height_6px" />
+
+        <TextView
+            android:id="@+id/data_4_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_256px"
+            android:layout_marginStart="@dimen/width_256px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:text="巴西"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_4_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_689px"
+            android:layout_marginStart="@dimen/width_689px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_4_victory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_871px"
+            android:layout_marginStart="@dimen/width_871px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_4_ping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1053px"
+            android:layout_marginStart="@dimen/width_1053px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_4_lost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1235px"
+            android:layout_marginStart="@dimen/width_1235px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_4_js"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1417px"
+            android:layout_marginStart="@dimen/width_1417px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/data_4_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1671px"
+            android:layout_marginStart="@dimen/width_1671px"
+            android:layout_marginTop="@dimen/height_18px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+</FrameLayout>

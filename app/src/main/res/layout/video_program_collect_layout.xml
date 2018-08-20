@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_500px"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingEnd="@dimen/width_87px"
+                android:paddingRight="@dimen/width_87px"
+>
+
+    <ImageView
+        android:layout_width="@dimen/width_264px"
+        android:layout_height="@dimen/height_37px"
+        android:layout_marginLeft="@dimen/width_34px"
+        android:layout_marginStart="@dimen/width_34px"
+        android:layout_marginTop="@dimen/height_27px"
+        android:contentDescription="@string/logo"
+        android:src="@drawable/logo"/>
+
+    <!--<ImageView-->
+    <!--android:id="@+id/video_focus"-->
+    <!--android:layout_width="@dimen/width_750px"-->
+    <!--android:layout_height="@dimen/height_434px"-->
+    <!--android:layout_marginTop="@dimen/height_55px"-->
+    <!--android:background="@drawable/pos_zui"-->
+    <!--android:visibility="visible">-->
+
+    <!--</ImageView>-->
+
+    <FrameLayout
+        android:id="@+id/video_container"
+        android:layout_width="@dimen/width_736px"
+        android:layout_height="@dimen/height_420px"
+        android:layout_marginLeft="@dimen/width_93px"
+        android:layout_marginStart="@dimen/width_93px"
+        android:layout_marginTop="@dimen/height_62px"
+        android:background="@drawable/selector_pos_background">
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginRight="@dimen/width_90px"
+        android:layout_marginStart="@dimen/width_22px"
+        android:layout_marginTop="@dimen/height_88px"
+        android:layout_toEndOf="@+id/video_container"
+        android:layout_toRightOf="@+id/video_container">
+
+        <TextView
+            android:id="@id/id_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_38px"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/id_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/id_detail_title"
+            android:layout_marginTop="@dimen/height_8px"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="@dimen/height_8px"
+            android:maxEms="100"
+            android:maxLines="3"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_26px"/>
+
+
+    </RelativeLayout>
+
+    <tv.newtv.cboxtv.views.FocusToggleView
+        android:id="@+id/full_screen"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
+        android:layout_alignBottom="@+id/video_container"
+        android:layout_marginBottom="@dimen/height_26px"
+        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginStart="@dimen/width_22px"
+        android:layout_toEndOf="@+id/video_container"
+        android:layout_toRightOf="@+id/video_container"
+        android:focusable="true"
+        app:drawable_height="@dimen/height_76px"
+        app:drawable_width="@dimen/width_152px"
+        app:focus_drawable="@drawable/pos_zui"
+        app:normal_drawable="@drawable/icon_details_big_screen_btn"/>
+
+    <tv.newtv.cboxtv.views.FocusToggleView
+        android:id="@+id/collect"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
+        android:layout_alignBottom="@+id/video_container"
+        android:layout_marginBottom="@dimen/height_26px"
+        android:layout_marginLeft="@dimen/width_54px"
+        android:layout_marginStart="@dimen/width_54px"
+        android:layout_toEndOf="@+id/full_screen"
+        android:layout_toRightOf="@+id/full_screen"
+        android:focusable="true"
+        app:drawable_height="@dimen/height_76px"
+        app:drawable_width="@dimen/width_152px"
+        app:focus_drawable="@drawable/pos_zui"
+        app:normal_drawable="@drawable/icon_details_uncollect_btn"
+        app:selected_drawable="@drawable/icon_details_collect_btn"/>
+
+</RelativeLayout>

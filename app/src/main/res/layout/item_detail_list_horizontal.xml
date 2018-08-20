@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <ImageView
+        android:id="@+id/id_module_8_title_icon"
+        android:layout_width="17px"
+        android:layout_height="17px"
+        android:layout_marginLeft="120px"
+        android:layout_marginTop="56px"
+        android:background="@drawable/tuoyuan"
+        android:focusable="false"
+        android:tag="module_008_title_icon"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/id_module_8_title"
+        style="@style/ModuleTitleStyle"
+        android:layout_width="374px"
+        android:layout_height="34px"
+        android:layout_marginLeft="6px"
+        android:layout_marginTop="47px"
+        android:layout_toRightOf="@id/id_module_8_title_icon"
+        android:focusable="false"
+        android:includeFontPadding="false"
+        android:tag="module_008_title"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/iv_left"
+        android:layout_width="@dimen/width_20px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/rv_list"
+        android:layout_marginLeft="@dimen/width_40px"
+        android:layout_marginTop="@dimen/height_148px"
+        android:src="@drawable/icon_detail_tips_left"
+        android:focusable="false" />
+
+    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_337px"
+        android:layout_below="@id/id_module_8_title"
+        android:layout_marginLeft="@dimen/width_91px"
+        android:paddingLeft="@dimen/width_15px"
+        android:layout_marginRight="@dimen/width_91px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="false" />
+
+    <ImageView
+        android:id="@+id/iv_right"
+        android:layout_width="@dimen/width_20px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/rv_list"
+        android:layout_marginRight="@dimen/width_40px"
+        android:layout_marginTop="@dimen/height_148px"
+        android:src="@drawable/icon_detail_tips_right"
+        android:focusable="false" />
+
+</RelativeLayout>

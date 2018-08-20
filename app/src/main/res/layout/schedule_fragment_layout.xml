@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <TextView
+        android:id="@+id/indicator_up"
+        android:layout_width="@dimen/width_42px"
+        android:layout_height="@dimen/height_22px"
+        android:layout_marginLeft="@dimen/width_84px"
+        android:layout_marginStart="@dimen/width_84px"
+        android:layout_marginTop="@dimen/height_56px"
+        android:background="@drawable/idcator_up"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/indicator_down"
+        android:layout_width="@dimen/width_42px"
+        android:layout_height="@dimen/height_22px"
+        android:layout_marginLeft="@dimen/width_84px"
+        android:layout_marginStart="@dimen/width_84px"
+        android:layout_marginTop="@dimen/height_1015px"
+        android:background="@drawable/idcator_down"
+        android:visibility="visible" />
+
+    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:id="@+id/recyle_view"
+        android:layout_width="@dimen/width_210px"
+        android:layout_height="@dimen/height_830px"
+        android:layout_marginTop="@dimen/height_120px"
+        android:nextFocusRight="@+id/view_stub">
+
+    </tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>
+
+    <FrameLayout
+        android:layout_width="@dimen/width_928px"
+        android:layout_height="@dimen/height_220px"
+        android:layout_marginLeft="@dimen/width_233px"
+        android:layout_marginStart="@dimen/width_233px"
+        android:layout_marginTop="@dimen/height_27px">
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="@dimen/width_928px"
+        android:layout_height="@dimen/height_220px"
+        android:layout_marginLeft="@dimen/width_233px"
+        android:layout_marginStart="@dimen/width_233px"
+        android:layout_marginTop="@dimen/height_833px">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/view_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/video_container"
+        android:background="@drawable/selector_pos_background"
+        android:layout_width="@dimen/width_980px"
+        android:layout_height="@dimen/height_575px"
+        android:layout_marginLeft="@dimen/width_210px"
+        android:layout_marginStart="@dimen/width_210px"
+        android:layout_marginTop="@dimen/height_273px">
+
+        <TextView
+            android:id="@+id/hint_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="正在加载中"
+            android:textColor="@color/colorWhite" />
+
+
+    </FrameLayout>
+</FrameLayout>

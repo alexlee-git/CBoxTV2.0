@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/content_framelayout"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:focusable="false"
+             android:focusableInTouchMode="false">
+
+    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:id="@+id/id_content_fragment_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="false">
+
+    </tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>
+
+    <TextView
+        android:id="@+id/id_empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center"
+        android:text="@string/module_area_no_data"
+        android:textColor="@color/colorRecommedPosText"
+        android:textSize="@dimen/height_40px"
+        android:visibility="gone"/>
+
+
+    <TextView
+        android:id="@+id/id_loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:textColor="@color/colorRecommedPosText"
+        android:textSize="@dimen/height_40px"
+        android:visibility="gone"/>
+</FrameLayout>
+
+
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="tv.newtv.cboxtv.uc.UserDealActivity">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_88px"
+        android:text="New TV用户协议"
+        android:textColor="@color/color_font"
+        android:textSize="@dimen/height_36px" />
+
+    <ScrollView
+        android:paddingRight="@dimen/width_20px"
+        android:paddingLeft="@dimen/width_20px"
+        android:scrollbarSize="@dimen/width_5px"
+        android:fadeScrollbars="false"
+        android:scrollbarThumbVertical="@color/color_font"
+        android:focusable="false"
+        android:id="@+id/scroller"
+        android:layout_marginLeft="@dimen/width_100px"
+        android:layout_marginRight="@dimen/width_100px"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_692px"
+        android:layout_marginTop="@dimen/height_204px"
+      >
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:focusable="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/color_font"
+                android:textSize="@dimen/height_30px" />
+
+    </ScrollView>
+
+    
+    <TextView
+        android:id="@+id/tv_back"
+        android:focusable="true"
+        android:background="@drawable/deal_focus"
+        android:layout_width="@dimen/width_330px"
+        android:layout_height="@dimen/height_90px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_930px"
+        android:gravity="center"
+        android:text="返回"
+        android:textColor="@color/color_font" />
+
+
+</RelativeLayout>

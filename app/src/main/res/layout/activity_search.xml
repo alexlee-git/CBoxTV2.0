@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RelativeLayout"
+    android:layout_width="2576px"
+    android:layout_height="match_parent"
+    tools:context="tv.newtv.cboxtv.cms.search.view.SearchActivity"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+
+    <tv.newtv.cboxtv.cms.search.custom.SearchViewKeyboard
+        android:id="@+id/search_view_keyboard"
+        android:layout_width="@dimen/width_654px"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:visibility="visible"
+        >
+    </tv.newtv.cboxtv.cms.search.custom.SearchViewKeyboard>
+
+    <View
+        android:id="@+id/search_line1"
+        android:layout_width="@dimen/width_1px"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/search_view_keyboard"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/search_line"
+        android:visibility="invisible"
+        />
+
+    <tv.newtv.cboxtv.cms.search.custom.NewTVSearchResult
+        android:id="@+id/search_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/search_line1"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:visibility="gone"
+        />
+
+    <tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommend
+        android:id="@+id/search_hot_recommend"
+        android:layout_width="@dimen/width_1920px"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/search_line1"
+        android:clipToPadding="false"
+        android:clipChildren="false"
+        android:visibility="visible"
+        android:background="@drawable/detail_bg"
+        />
+
+</RelativeLayout>

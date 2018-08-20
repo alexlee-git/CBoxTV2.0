@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/pay_channel_1"
+        android:layout_width="@dimen/width_200px"
+        android:layout_height="@dimen/height_60px"
+        android:layout_marginLeft="@dimen/width_216px"
+        android:layout_marginTop="@dimen/height_245px"
+        android:background="@drawable/fouse_k"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="微信支付"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_30px" />
+
+    <TextView
+        android:id="@+id/pay_channel"
+        android:layout_width="@dimen/width_10px"
+        android:layout_height="@dimen/height_40px"
+        android:layout_marginLeft="@dimen/width_20px"
+        android:layout_marginRight="@dimen/width_20px"
+        android:layout_marginTop="@dimen/height_250px"
+        android:layout_toRightOf="@id/pay_channel_1"
+        android:text="|"
+        android:textColor="@color/detail_tvcolor"
+        android:textSize="@dimen/height_30px" />
+
+    <TextView
+        android:id="@+id/pay_channel_2"
+        android:layout_width="@dimen/width_200px"
+        android:layout_height="@dimen/height_60px"
+        android:layout_marginTop="@dimen/height_245px"
+        android:layout_toRightOf="@id/pay_channel"
+        android:background="@drawable/fouse_k"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="支付宝支付"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_30px" />
+
+    <View
+        android:id="@+id/pay_channel_h"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_10px"
+        android:layout_below="@+id/pay_channel_1"
+        android:layout_marginLeft="@dimen/width_216px"
+        android:layout_marginRight="@dimen/width_216px"
+        android:layout_marginTop="@dimen/height_22px"
+        android:background="@drawable/detailhpay"></View>
+
+    <ImageView
+        android:id="@+id/pay_qrcode"
+        android:layout_width="@dimen/width_358px"
+        android:layout_height="@dimen/height_351px"
+        android:layout_below="@id/pay_channel_h"
+        android:layout_marginLeft="@dimen/width_216px"
+        android:layout_marginTop="@dimen/height_48px"
+        android:src="@android:color/holo_blue_light" />
+
+    <TextView
+        android:id="@+id/pay_qrcode_des"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pay_qrcode"
+        android:layout_marginLeft="@dimen/width_216px"
+        android:layout_marginTop="@dimen/height_20px"
+        android:letterSpacing="0.5"
+        android:text="请用微信扫码支付"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_30px" />
+
+    <TextView
+        android:id="@+id/buy_goods"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_96px"
+        android:layout_below="@+id/pay_channel_h"
+        android:layout_marginTop="@dimen/height_48px"
+        android:layout_toRightOf="@id/pay_qrcode"
+        android:text="购买商品："
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_38px" />
+
+    <TextView
+        android:id="@+id/buy_goods_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buy_goods"
+        android:layout_marginLeft="@dimen/width_96px"
+        android:layout_marginTop="@dimen/height_25px"
+        android:layout_toRightOf="@id/pay_qrcode"
+        android:text="视频名称《神奇侠女》"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_38px" />
+
+    <TextView
+        android:id="@+id/buy_goods_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buy_goods_name"
+        android:layout_marginLeft="@dimen/width_96px"
+        android:layout_marginTop="@dimen/height_68px"
+        android:layout_toRightOf="@id/pay_qrcode"
+        android:text="单点价格： 6元"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_38px" />
+
+    <TextView
+        android:id="@+id/buy_goods_des"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buy_goods_price"
+        android:layout_marginLeft="@dimen/width_96px"
+        android:layout_marginTop="@dimen/height_58px"
+        android:layout_toRightOf="@id/pay_qrcode"
+        android:text="观看有效期：两天内不限次数  2018-02-26  21:00"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_38px" />
+
+    <TextView
+        android:id="@+id/copyright_statement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pay_qrcode"
+        android:layout_marginLeft="@dimen/width_216px"
+        android:layout_marginTop="@dimen/height_181px"
+        android:text="感谢您购买，版权使用和解释权归公司所有"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_24px" />
+
+</RelativeLayout>
+
+

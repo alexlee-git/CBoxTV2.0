@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+    <tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup
+        android:id="@+id/w_curent_image"
+        android:layout_width="@dimen/width_722px"
+        android:layout_height="@dimen/height_225px"
+        android:layout_marginLeft="@dimen/width_1180px"
+        android:layout_marginStart="@dimen/width_1180px"
+        android:background="@drawable/selector_pos_background_four"
+        android:layout_marginTop="@dimen/height_81px"
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:tag="frame_0" />
+
+    <tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup
+        android:id="@+id/w_curent_image2"
+        android:layout_width="@dimen/width_722px"
+        android:layout_height="@dimen/height_225px"
+        android:layout_marginLeft="@dimen/width_1180px"
+        android:layout_marginStart="@dimen/width_1180px"
+        android:layout_marginTop="@dimen/height_304px"
+        android:background="@drawable/selector_pos_background_four"
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:tag="frame_1" />
+
+    <tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup
+        android:id="@+id/w_curent_image3"
+        android:layout_width="@dimen/width_722px"
+        android:layout_height="@dimen/height_225px"
+        android:layout_marginLeft="@dimen/width_1180px"
+        android:layout_marginStart="@dimen/width_1180px"
+        android:layout_marginTop="@dimen/height_527px"
+        android:background="@drawable/selector_pos_background_four"
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:tag="frame_2" />
+
+    <tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup
+        android:id="@+id/w_current_play"
+        android:layout_width="@dimen/width_722px"
+        android:layout_height="@dimen/height_225px"
+        android:layout_marginLeft="@dimen/width_1180px"
+        android:layout_marginStart="@dimen/width_1180px"
+        android:layout_marginTop="@dimen/height_750px"
+        android:background="@drawable/selector_pos_background_four"
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:tag="frame_3" />
+
+
+
+</FrameLayout>

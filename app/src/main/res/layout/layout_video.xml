@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/normalplayer_bg">
+
+    <ImageView
+        android:id="@+id/player_default_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:visibility="gone"/>
+    <!--播放容器-->
+    <tv.newtv.cboxtv.views.VideoFrameLayout
+        android:id="@+id/player_view_framelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <SurfaceView
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+    </tv.newtv.cboxtv.views.VideoFrameLayout>
+
+    <ProgressBar
+        android:id="@+id/player_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_4px"
+        android:layout_alignParentBottom="true"
+        android:indeterminateDrawable="@color/color_0F3285"
+        android:progressDrawable="@drawable/shape_details_progress"/>
+
+    <View
+        android:id="@+id/w_vs"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_centerInParent="true"
+        android:background="@color/color" />
+
+
+    <tv.newtv.cboxtv.player.view.NewTVLauncherPlayerLoading
+        android:id="@+id/player_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/hint_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="播放已结束"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_30px"
+        android:visibility="gone" />
+
+</RelativeLayout>
+
+

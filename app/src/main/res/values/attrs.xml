@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:andorid="http://schemas.android.com/tools">
+    <declare-styleable name="PosterViewGroup">
+        <!--整体宽高-->
+        <attr name="android:layout_width"/>
+        <attr name="android:layout_height"/>
+
+        <!--海报图宽高-->
+        <attr name="poster_width" format="dimension" />
+        <attr name="poster_height" format="dimension" />
+        
+        <!--外发光尺寸（ROM Launcher定义为33px）-->
+        <!--<attr name="padding" format="dimension"/>-->
+
+        <!--Title的宽高-->
+        <attr name="title_width" format="dimension"/>
+        <attr name="title_height" format="dimension"/>
+
+        <!--Title的可见性-->
+        <attr name="title_visible" format="enum">
+            <enum name="VISIBLE" value="0"/>
+            <enum name="INVISIBLE" value="4"/>
+            <enum name="GONE" value="8"/>
+        </attr>
+
+        <!--Title的文字居中方式-->
+        <attr name="title_gravity" format="enum">
+            <enum name="end" value="8388613"/>
+            <enum name="bottom" value="80"/>
+            <enum name="center" value="17"/>
+            <enum name="center_horizontal" value="1"/>
+            <enum name="center_vertical" value="16"/>
+            <enum name="clip_horizontal" value="8"/>
+            <enum name="clip_vertical" value="128"/>
+            <enum name="fill" value="119"/>
+            <enum name="fill_horizontal" value="7"/>
+            <enum name="fill_vertical" value="112"/>
+            <enum name="left" value="3"/>
+            <enum name="right" value="5"/>
+            <enum name="start" value="8388611"/>
+            <enum name="top" value="48"/>
+        </attr>
+
+        <!--海报图和Title的间距-->
+        <attr name="poster_title_spaceing" format="dimension"/>
+
+        <!--角标和海报图的间距-->
+        <attr name="angle_padding" format="dimension"/>
+
+        <!--左上角标宽高-->
+        <attr name="angle_left_top_width" format="dimension"/>
+        <attr name="angle_left_top_height" format="dimension"/>
+
+        <!--右上角标的宽高-->
+        <attr name="angle_right_top_width" format="dimension"/>
+        <attr name="angle_right_top_height" format="dimension"/>
+
+        <!--主标题的宽高-->
+        <attr name="angle_title_width" format="dimension"/>
+        <attr name="angle_title_height" format="dimension"/>
+
+        <!--副标题的宽高-->
+        <attr name="angle_sub_title_width" format="dimension"/>
+        <attr name="angle_sub_title_height" format="dimension"/>
+
+        <!--右下角标的宽高-->
+        <attr name="angle_right_bottom_width" format="dimension"/>
+        <attr name="angle_right_bottom_height" format="dimension"/>
+
+    </declare-styleable>
+
+
+    <declare-styleable name="FocusToggleView">
+        <attr name="normal_drawable" format="reference"/>
+        <attr name="selected_drawable" format="reference"/>
+        <attr name="drawable_width" format="integer"/>
+        <attr name="drawable_height" format="integer"/>
+        <attr name="focus_drawable" format="reference"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="SmoothScrollView">
+        <attr name="topSpace" format="dimension"/>
+    </declare-styleable>
+
+    <!--<declare-styleable name="FocusRelativeLayoutView">-->
+        <!--<attr name="normal_drawable" format="reference"/>-->
+        <!--<attr name="focus_drawable" format="reference"/>-->
+        <!--<attr name="selected_drawable" format="reference"/>-->
+        <!--<attr name="drawable_width" format="integer"/>-->
+        <!--<attr name="drawable_height" format="integer"/>-->
+    <!--</declare-styleable>-->
+
+</resources>

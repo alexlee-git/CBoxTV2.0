@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/id_root"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="@dimen/width_264px"
+        android:layout_height="@dimen/height_37px"
+        android:layout_marginLeft="@dimen/width_34px"
+        android:layout_marginTop="@dimen/height_27px"
+        android:src="@drawable/logo"
+        android:layout_marginStart="@dimen/width_34px"
+        android:contentDescription="@string/logo"/>
+    <!-- 导航区 -->
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_103px"
+        android:layout_alignBottom="@+id/list_view"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        android:visibility="visible">
+        <ImageView
+            android:id="@+id/first_focus"
+            android:layout_marginRight="@dimen/width_20px"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="@dimen/width_294px"
+            android:layout_height="@dimen/height_96px"
+            android:scaleType="fitXY"
+            android:src="@drawable/first_nav_focus"
+            android:layout_marginEnd="@dimen/width_20px"/>
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:layout_width="@dimen/width_14px"
+            android:layout_height="@dimen/height_7px"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/height_87px"
+            android:src="@drawable/nav_first_tip"/>
+    </RelativeLayout>
+
+    <tv.newtv.cboxtv.views.MenuRecycleView
+        android:id="@+id/list_view"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_60px"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/width_337px"
+        android:layout_marginStart="@dimen/width_337px"
+        android:layout_marginTop="@dimen/height_96px"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+    </tv.newtv.cboxtv.views.MenuRecycleView>
+    <FrameLayout
+        android:id="@+id/main_page_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/list_view"
+    />
+
+    <TextView
+        android:id="@+id/timer"
+        android:text=""
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextTime"
+        android:alpha="0.3"
+        android:textStyle="normal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/height_1021px"
+        android:layout_marginLeft="@dimen/width_1821px"
+        android:textSize="@dimen/height_24px"
+        android:layout_marginStart="@dimen/width_1821px"/>
+
+</RelativeLayout>
+
+
+

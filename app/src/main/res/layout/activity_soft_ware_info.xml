@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@color/color_0b104b"
+    tools:context="tv.newtv.cboxtv.uc.SoftWareInfoActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_255px"
+        android:text="软件信息"
+        android:textColor="@color/color_font"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="908px"
+        android:layout_height="90px"
+        android:layout_marginTop="@dimen/height_83px"
+        android:background="@drawable/re_bg_shape"
+        android:gravity="center_vertical"
+        android:paddingLeft="96px">
+
+        <TextView
+            android:layout_width="180px"
+            android:layout_height="wrap_content"
+            android:text="软件信息:"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48px"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="908px"
+        android:layout_height="90px"
+        android:layout_marginTop="@dimen/height_22px"
+        android:background="@drawable/re_bg_shape"
+        android:gravity="center_vertical"
+        android:paddingLeft="96px">
+
+
+        <TextView
+            android:layout_width="180px"
+            android:layout_height="wrap_content"
+            android:text="IP地址:"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48px"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="908px"
+        android:layout_height="90px"
+        android:layout_marginTop="@dimen/height_22px"
+        android:background="@drawable/re_bg_shape"
+        android:gravity="center_vertical"
+        android:paddingLeft="96px">
+
+        <TextView
+            android:layout_width="180px"
+            android:layout_height="wrap_content"
+            android:text="MAC地址:"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_mac"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48px"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="908px"
+        android:layout_height="90px"
+        android:layout_marginTop="@dimen/height_22px"
+        android:background="@drawable/re_bg_shape"
+        android:gravity="center_vertical"
+        android:visibility="invisible"
+        android:paddingLeft="96px">
+
+        <TextView
+            android:layout_width="180px"
+            android:layout_height="wrap_content"
+            android:text="广电串号:"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_serial_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48px"
+            android:textColor="@color/color_font"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tag_textview" type="id"/>
+    <item name="tag_imageview" type="id"/>
+    <item name="tag_title" type="id"/>
+    <item name="tag_sub_title" type="id"/>
+    <item name="view_first_measure" type="id"/>
+
+    <item name="tag_glide_id" type="id"/>
+    <item name="id_viewpager" type="id"/>
+    <item name="tag_is_playing" type="id"/>
+    <item name="id_view_tag" type="id"/>
+
+    <item name="id_detail_title" type="id"/>
+    <item name="id_detail_stat" type="id"/>
+    <item name="id_detail_type" type="id"/>
+    <item name="id_detail_content" type="id"/>
+
+    <item name="id_video_player" type="id"/>
+</resources>

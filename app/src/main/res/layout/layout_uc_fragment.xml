@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_55px" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+            android:id="@+id/id_usercenter_fragment_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:focusable="false" />
+
+        <TextView
+            android:id="@+id/id_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/height_400px"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center_horizontal"
+            android:text="@string/module_area_no_data"
+            android:textColor="@color/colorRecommedPosText"
+            android:textSize="@dimen/height_50px"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+
+</LinearLayout>
+
+

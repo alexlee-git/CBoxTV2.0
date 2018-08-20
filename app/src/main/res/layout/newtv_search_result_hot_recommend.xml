@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg"
+    >
+
+    <TextView
+        android:id="@+id/id_search_hot_recommend_title"
+        style="@style/StyleSearchResultListTitle"
+        android:layout_width="@dimen/width_135px"
+        android:layout_height="@dimen/height_30px"
+        android:includeFontPadding="false"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_70px"
+        android:text="@string/search_hot"
+        android:visibility="visible" />
+
+
+    <tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView
+        android:id="@+id/id_search_recyclerView_hot_recommend"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/id_search_hot_recommend_title"
+        android:layout_marginBottom="@dimen/height_28px"
+        android:layout_marginLeft="@dimen/width_96px"
+        android:layout_marginTop="@dimen/height_40px"
+        android:paddingTop="@dimen/height_20px"
+        android:paddingLeft="@dimen/width_10px"
+        android:paddingRight="@dimen/width_100px"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
+
+    <TextView
+        android:id="@+id/id_search_hot_recommend_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/width_531px"
+        android:layout_marginTop="@dimen/height_570px"
+        android:text="@string/search_hot_recommend_empty"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_35px"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/id_result_left_arrow"
+        android:layout_width="@dimen/width_25px"
+        android:layout_height="@dimen/height_41px"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/width_29px"
+        android:src="@drawable/search_result_left_arrow"
+        android:visibility="invisible" />
+</RelativeLayout>

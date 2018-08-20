@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/height_20px"
+    android:background="#70000000"
+    android:minHeight="@dimen/height_100px">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_60px">
+
+        <TextView
+            android:id="@+id/match_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_196px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="A组"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_636px"
+            android:layout_marginStart="@dimen/width_636px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="赛"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_818px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="胜"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_997px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="平"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1178px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="负"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1350px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="进/失"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1589px"
+            android:layout_marginTop="@dimen/height_5px"
+            android:gravity="center"
+            android:text="积分"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/data_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_59px"
+        android:background="@drawable/score_high_back"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/data_1_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginStart="@dimen/width_20px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <ImageView
+            android:id="@+id/data_1_icon"
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_58px"
+            android:layout_marginLeft="@dimen/width_82px"
+            android:layout_marginStart="@dimen/width_82px"
+            android:layout_marginTop="@dimen/height_8px" />
+
+        <TextView
+            android:id="@+id/data_1_name"
+            android:layout_width="@dimen/width_350px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_176px"
+            android:layout_marginStart="@dimen/width_176px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text=" "
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/data_1_total"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_560px"
+            android:layout_marginStart="@dimen/width_560px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_1_victory"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_738px"
+            android:layout_marginStart="@dimen/width_738px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_1_ping"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_920px"
+            android:layout_marginStart="@dimen/width_920px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_1_lost"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1100px"
+            android:layout_marginStart="@dimen/width_1100px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="2099"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_1_js"
+            android:layout_width="@dimen/width_200px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1125px"
+            android:layout_marginStart="@dimen/width_1275px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="200/200"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_1_score"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1525px"
+            android:layout_marginStart="@dimen/width_1525px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20000"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/data_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_153px"
+        android:background="@drawable/score_high_back"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/data_2_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginStart="@dimen/width_20px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px"
+            />
+        <ImageView
+            android:id="@+id/data_2_icon"
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_58px"
+            android:layout_marginLeft="@dimen/width_82px"
+            android:layout_marginStart="@dimen/width_82px"
+            android:layout_marginTop="@dimen/height_6px" />
+
+        <TextView
+            android:id="@+id/data_2_name"
+            android:layout_width="@dimen/width_350px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_176px"
+            android:layout_marginStart="@dimen/width_176px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="0"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/data_2_total"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_560px"
+            android:layout_marginStart="@dimen/width_560px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_2_victory"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_738px"
+            android:layout_marginStart="@dimen/width_738px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_2_ping"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_920px"
+            android:layout_marginStart="@dimen/width_920px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_2_lost"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1100px"
+            android:layout_marginStart="@dimen/width_1100px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="2099"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_2_js"
+            android:layout_width="@dimen/width_200px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1125px"
+            android:layout_marginStart="@dimen/width_1275px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="200/200"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+        <TextView
+            android:id="@+id/data_2_score"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1525px"
+            android:layout_marginStart="@dimen/width_1525px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="2000"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/data_3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_247px"
+        android:background="@drawable/score_sec_back"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/data_3_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginStart="@dimen/width_20px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px"
+            />
+
+        <ImageView
+            android:id="@+id/data_3_icon"
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_58px"
+            android:layout_marginLeft="@dimen/width_82px"
+            android:layout_marginStart="@dimen/width_82px"
+            android:layout_marginTop="@dimen/height_6px" />
+
+        <TextView
+            android:id="@+id/data_3_name"
+            android:layout_width="@dimen/width_350px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_176px"
+            android:layout_marginStart="@dimen/width_176px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="巴西"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/data_3_total"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_560px"
+            android:layout_marginStart="@dimen/width_560px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_3_victory"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_738px"
+            android:layout_marginStart="@dimen/width_738px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_3_ping"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_920px"
+            android:layout_marginStart="@dimen/width_920px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_3_lost"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1100px"
+            android:layout_marginStart="@dimen/width_1100px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="2099"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_3_js"
+            android:layout_width="@dimen/width_200px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1125px"
+            android:layout_marginStart="@dimen/width_1275px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="200/200"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_3_score"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1525px"
+            android:layout_marginStart="@dimen/width_1525px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20000"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/data_4"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_75px"
+        android:layout_marginBottom="@dimen/height_20px"
+        android:layout_marginEnd="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginRight="@dimen/width_4px"
+        android:layout_marginStart="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_341px"
+        android:background="@drawable/score_sec_back"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/data_4_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginStart="@dimen/width_20px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px"
+
+            />
+
+        <ImageView
+            android:id="@+id/data_4_icon"
+            android:layout_width="@dimen/width_58px"
+            android:layout_height="@dimen/height_58px"
+            android:layout_marginLeft="@dimen/width_82px"
+            android:layout_marginStart="@dimen/width_82px"
+            android:layout_marginTop="@dimen/height_6px" />
+
+        <TextView
+            android:id="@+id/data_4_name"
+            android:layout_width="@dimen/width_350px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_176px"
+            android:layout_marginStart="@dimen/width_176px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="巴西"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/data_4_total"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_560px"
+            android:layout_marginStart="@dimen/width_560px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_4_victory"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_738px"
+            android:layout_marginStart="@dimen/width_738px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_4_ping"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_920px"
+            android:layout_marginStart="@dimen/width_920px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+        <TextView
+            android:id="@+id/data_4_lost"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1100px"
+            android:layout_marginStart="@dimen/width_1100px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="2099"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+        <TextView
+            android:id="@+id/data_4_js"
+            android:layout_width="@dimen/width_200px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1125px"
+            android:layout_marginStart="@dimen/width_1275px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="200/200"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/data_4_score"
+            android:layout_width="@dimen/width_150px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_1525px"
+            android:layout_marginStart="@dimen/width_1525px"
+            android:layout_marginTop="@dimen/height_10px"
+            android:gravity="center"
+            android:text="20000"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_40px" />
+
+    </FrameLayout>
+</FrameLayout>

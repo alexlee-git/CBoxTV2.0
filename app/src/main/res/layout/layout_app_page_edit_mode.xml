@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000">
+
+    <ImageView
+        android:id="@+id/id_app_edit_mode_app_icon"
+        android:layout_width="@dimen/width_250px"
+        android:layout_height="@dimen/height_240px" />
+
+    <!--<TextView-->
+    <!--android:id="@+id/id_app_edit_mode_clear_data"-->
+    <!--android:layout_width="@dimen/width_120px"-->
+    <!--android:layout_height="@dimen/height_60px"-->
+    <!--android:background="@drawable/selector_app_edit_mode_textview"-->
+    <!--android:clickable="true"-->
+    <!--android:focusable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:nextFocusDown="@+id/id_app_edit_mode_clear_data"-->
+    <!--android:nextFocusLeft="@+id/id_app_edit_mode_clear_data"-->
+    <!--android:nextFocusRight="@+id/id_app_edit_mode_uninstall"-->
+    <!--android:nextFocusUp="@+id/id_app_edit_mode_sort"-->
+    <!--android:text="清除数据"-->
+    <!--android:textColor="@color/colorWhite"-->
+    <!--android:textSize="@dimen/height_26px" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/id_app_edit_mode_uninstall"-->
+    <!--android:layout_width="@dimen/width_120px"-->
+    <!--android:layout_height="@dimen/height_60px"-->
+    <!--android:layout_marginLeft="@dimen/width_48px"-->
+    <!--android:background="@drawable/selector_app_edit_mode_textview"-->
+    <!--android:clickable="true"-->
+    <!--android:focusable="true"-->
+    <!--android:gravity="center"-->
+    <!--android:nextFocusDown="@+id/id_app_edit_mode_uninstall"-->
+    <!--android:nextFocusLeft="@+id/id_app_edit_mode_clear_data"-->
+    <!--android:nextFocusRight="@+id/id_app_edit_mode_uninstall"-->
+    <!--android:nextFocusUp="@+id/id_app_edit_mode_sort"-->
+    <!--android:text="卸载"-->
+    <!--android:textColor="@color/colorWhite"-->
+    <!--android:textSize="@dimen/height_26px" />-->
+
+    <!-- 卸载 -->
+    <TextView
+        android:id="@+id/id_app_edit_mode_uninstall"
+        android:layout_width="@dimen/width_120px"
+        android:layout_height="@dimen/height_60px"
+        android:background="@drawable/selector_app_edit_mode_textview"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:nextFocusDown="@+id/id_app_edit_mode_uninstall"
+        android:nextFocusLeft="@+id/id_app_edit_mode_uninstall"
+        android:nextFocusRight="@+id/id_app_edit_mode_uninstall"
+        android:nextFocusUp="@+id/id_app_edit_mode_uninstall"
+        android:text="卸载"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/height_26px" />
+
+</RelativeLayout>
+
+

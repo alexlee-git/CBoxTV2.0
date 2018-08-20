@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/id_frameLayout_single_list"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:clickable="true"
+             android:focusable="true">
+
+    <ImageView
+        android:id="@+id/id_single_imageView_poster"
+        android:layout_width="@dimen/width_240px"
+        android:layout_height="@dimen/height_162px"
+        android:layout_marginLeft="@dimen/width_24px"
+        android:layout_marginRight="@dimen/width_24px"
+        android:layout_marginTop="@dimen/height_47px"
+        android:focusable="false"/>
+
+    <ImageView
+        android:id="@+id/id_single_imageView_focus"
+        android:layout_width="@dimen/width_248px"
+        android:layout_height="@dimen/height_170px"
+        android:layout_marginLeft="@dimen/width_20px"
+        android:layout_marginRight="@dimen/width_20px"
+        android:layout_marginTop="@dimen/height_43px"
+        android:background="@drawable/search_single_poster_focus"
+        android:focusable="false"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/id_single_title"
+        style="@style/StyleSearchResultListItemTitle"
+        android:layout_width="@dimen/width_225px"
+        android:layout_height="@dimen/height_33px"
+        android:layout_marginBottom="@dimen/height_42px"
+        android:layout_marginLeft="@dimen/width_39px"
+        android:layout_marginTop="@dimen/height_233px"
+        android:ellipsize="marquee"
+        android:focusable="false"
+        android:gravity="left"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        />
+
+    <TextView
+        android:id="@+id/id_single_poster_title"
+        style="@style/StyleSearchResultPosterTitle"
+        android:layout_width="@dimen/width_228px"
+        android:layout_height="@dimen/height_28px"
+        android:layout_marginLeft="@dimen/width_36px"
+        android:layout_marginTop="@dimen/height_171px"
+        android:focusable="false"
+        android:gravity="left"
+        android:includeFontPadding="false"/>
+
+    <ImageView
+        android:layout_width="@dimen/width_240px"
+        android:layout_height="@dimen/height_90px"
+        android:layout_marginLeft="@dimen/width_24px"
+        android:layout_marginTop="@dimen/height_119px"
+        android:background="@drawable/search_result_horizontal_poster_txt_bg"/>
+</FrameLayout>

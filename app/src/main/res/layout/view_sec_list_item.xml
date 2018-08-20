@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+    <tv.newtv.cboxtv.views.RecycleImageView
+        android:id="@+id/title_icon_list"
+        android:focusable="false"
+        android:layout_width="@dimen/width_190px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginEnd="@dimen/width_17px"
+        android:layout_marginStart="@dimen/width_17px"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside"
+        android:focusableInTouchMode="false"
+        android:padding="@dimen/height_5px"/>
+
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="@dimen/width_190px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginEnd="@dimen/width_17px"
+        android:layout_marginStart="@dimen/width_17px"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="center"
+        android:padding="@dimen/height_5px"
+        android:text="@string/app_name"
+        android:textColor="@color/menu_text_color"
+        android:textSize="@dimen/height_32px"/>
+</RelativeLayout>

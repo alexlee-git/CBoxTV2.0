@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_module_8_title"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginRight="@dimen/height_87px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+
+            android:layout_width="@dimen/height_0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+            <!-- 1 -->
+            <FrameLayout
+                android:id="@+id/id_module_8_view1"
+                android:layout_width="@dimen/width_306px"
+                android:layout_height="@dimen/height_483px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/height_15px"
+                android:clickable="true"
+                android:focusable="true"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:tag="cell_008_1"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_360px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_33px"
+                    android:tag="tag_poster_image" />
+
+                <ImageView
+                    android:layout_width="@dimen/width_306px"
+                    android:layout_height="@dimen/height_426px"
+                    android:background="@drawable/pos_zui"
+                    android:tag="tag_img_focus"
+                    android:visibility="invisible" />
+
+                <TextView
+                    style="@style/ModulePosterBottomTitleStyle"
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_32px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_417px"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:tag="tag_poster_title" />
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="@dimen/height_0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <!-- 2 -->
+            <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/id_module_8_view2"
+                android:layout_width="@dimen/width_306px"
+                android:layout_height="@dimen/height_483px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="-18px"
+                android:layout_marginTop="@dimen/height_15px"
+                android:clickable="true"
+                android:focusable="true"
+                android:tag="cell_008_2">
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_360px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_33px"
+                    android:tag="tag_poster_image" />
+
+                <ImageView
+                    android:visibility="invisible"
+                    android:layout_width="@dimen/width_306px"
+                    android:layout_height="@dimen/height_426px"
+                    android:background="@drawable/pos_zui"
+                    android:tag="tag_img_focus" />
+
+                <TextView
+                    style="@style/ModulePosterBottomTitleStyle"
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_32px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_417px"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:tag="tag_poster_title" />
+            </FrameLayout>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="@dimen/height_0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <!-- 3 -->
+            <FrameLayout
+                android:id="@+id/id_module_8_view3"
+                 android:visibility="gone"
+                android:layout_width="@dimen/width_306px"
+                android:layout_height="@dimen/height_483px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="-18px"
+                android:layout_marginTop="@dimen/height_15px"
+                android:clickable="true"
+                android:focusable="true"
+                android:tag="cell_008_3">
+
+                <ImageView
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_360px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_33px"
+                    android:tag="tag_poster_image" />
+
+                <ImageView
+                    android:visibility="invisible"
+                    android:layout_width="@dimen/width_306px"
+                    android:layout_height="@dimen/height_426px"
+                    android:background="@drawable/pos_zui"
+                    android:tag="tag_img_focus" />
+
+                <TextView
+                    style="@style/ModulePosterBottomTitleStyle"
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_32px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_417px"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:tag="tag_poster_title" />
+            </FrameLayout>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="@dimen/height_0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+
+            <!-- 4 -->
+            <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/id_module_8_view4"
+                android:layout_width="@dimen/width_306px"
+                android:layout_height="@dimen/height_483px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="-18px"
+                android:layout_marginTop="@dimen/height_15px"
+                android:clickable="true"
+                android:focusable="true"
+                android:tag="cell_008_4">
+
+                <ImageView
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_360px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_33px"
+                    android:tag="tag_poster_image" />
+
+                <ImageView
+                    android:visibility="invisible"
+                    android:layout_width="@dimen/width_306px"
+                    android:layout_height="@dimen/height_426px"
+                    android:background="@drawable/pos_zui"
+                    android:tag="tag_img_focus" />
+
+                <TextView
+                    style="@style/ModulePosterBottomTitleStyle"
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_32px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_417px"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:tag="tag_poster_title" />
+            </FrameLayout>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="@dimen/height_0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+
+            <!-- 5 -->
+            <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/id_module_8_view5"
+                android:layout_width="@dimen/width_306px"
+                android:layout_height="@dimen/height_483px"
+                android:layout_marginLeft="-18px"
+                android:layout_marginTop="@dimen/height_15px"
+                android:clickable="true"
+                android:focusable="true"
+                android:tag="cell_008_5">
+
+                <ImageView
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_360px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_33px"
+                    android:tag="tag_poster_image" />
+
+                <ImageView
+                    android:visibility="invisible"
+                    android:layout_width="@dimen/width_306px"
+                    android:layout_height="@dimen/height_426px"
+                    android:background="@drawable/pos_zui"
+                    android:tag="tag_img_focus" />
+
+                <TextView
+                    style="@style/ModulePosterBottomTitleStyle"
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_32px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_417px"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:tag="tag_poster_title"
+                    />
+            </FrameLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="@dimen/height_0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <!-- 6 -->
+            <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/id_module_8_view6"
+                android:layout_width="@dimen/width_306px"
+                android:layout_height="@dimen/height_483px"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="-18px"
+                android:layout_marginTop="@dimen/height_15px"
+                android:clickable="true"
+                android:focusable="true"
+                android:tag="cell_008_6">
+
+                <ImageView
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_360px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_33px"
+                    android:tag="tag_poster_image" />
+
+                <ImageView
+                    android:visibility="invisible"
+                    android:layout_width="@dimen/width_306px"
+                    android:layout_height="@dimen/height_426px"
+                    android:background="@drawable/pos_zui"
+                    android:tag="tag_img_focus" />
+
+                <TextView
+                    style="@style/ModulePosterBottomTitleStyle"
+                    android:layout_width="@dimen/width_240px"
+                    android:layout_height="@dimen/height_32px"
+                    android:layout_marginLeft="@dimen/width_33px"
+                    android:layout_marginTop="@dimen/height_417px"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:tag="tag_poster_title"
+                    />
+            </FrameLayout>
+        </RelativeLayout>
+
+    </LinearLayout>

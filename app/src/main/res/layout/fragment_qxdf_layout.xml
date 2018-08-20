@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="true"
+    android:clipToPadding="true">
+
+
+    <!--<tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView-->
+    <!--android:id="@+id/shooter_recycle"-->
+    <!--android:layout_width="@dimen/width_642px"-->
+    <!--android:layout_height="@dimen/height_294px"-->
+    <!--android:layout_marginTop="@dimen/height_674px"-->
+    <!--android:layout_marginBottom="@dimen/height_68px"-->
+    <!--android:layout_marginLeft="@dimen/width_1193px"-->
+    <!--android:layout_marginStart="@dimen/width_1193px">-->
+
+    <!--</tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>-->
+
+    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:id="@+id/shooter_recycle"
+        android:layout_width="@dimen/width_670px"
+        android:layout_height="@dimen/height_360px"
+        android:paddingLeft="@dimen/width_20px"
+        android:layout_marginBottom="@dimen/height_68px"
+        android:layout_marginLeft="@dimen/width_1170px"
+        android:layout_marginStart="@dimen/width_1170px"
+        android:layout_marginTop="@dimen/height_632px"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+    </tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>
+
+    <TextView
+        android:id="@+id/shooter_down"
+        android:layout_width="@dimen/width_21px"
+        android:layout_height="@dimen/height_39px"
+        android:layout_marginLeft="@dimen/width_1857px"
+        android:layout_marginStart="@dimen/width_1857px"
+        android:layout_marginTop="@dimen/height_802px"
+        android:background="@drawable/right_direction"
+        android:focusable="false"
+        android:visibility="visible" />
+
+    <FrameLayout
+        android:layout_width="@dimen/width_1108px"
+        android:layout_height="@dimen/height_642px"
+        android:layout_marginLeft="@dimen/width_54px"
+        android:layout_marginStart="@dimen/width_54px"
+        android:layout_marginTop="@dimen/height_335px"
+        android:background="@drawable/selector_pos_background">
+
+        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+            android:id="@+id/video_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></tv.newtv.cboxtv.player.videoview.VideoPlayerView>
+    </FrameLayout>
+    <!--<ImageView-->
+    <!--android:id="@+id/video_player_focus"-->
+    <!--android:layout_width="@dimen/width_1136px"-->
+    <!--android:layout_height="@dimen/height_668px"-->
+    <!--android:layout_marginLeft="@dimen/width_54px"-->
+    <!--android:layout_marginStart="@dimen/width_54px"-->
+    <!--android:layout_marginTop="@dimen/height_335px"-->
+    <!--android:visibility="gone"-->
+    <!--android:background="@drawable/pos_zui">-->
+
+    <!--</ImageView>-->
+
+    <!--<tv.newtv.cboxtv.player.videoview.VideoPlayerView-->
+    <!--android:id="@+id/video_player"-->
+    <!--android:layout_width="@dimen/width_1070px"-->
+    <!--android:layout_height="@dimen/height_602px"-->
+    <!--android:layout_marginLeft="@dimen/width_87px"-->
+    <!--android:layout_marginStart="@dimen/width_87px"-->
+    <!--android:layout_marginTop="@dimen/height_368px"-->
+    <!--android:background="@android:color/black"-->
+    <!--android:focusable="true">-->
+
+    <!--</tv.newtv.cboxtv.player.videoview.VideoPlayerView>-->
+
+
+</FrameLayout>

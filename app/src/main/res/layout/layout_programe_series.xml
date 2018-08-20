@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="false">
+
+    <RelativeLayout
+        android:id="@+id/rl_focus"
+        android:layout_width="@dimen/width_103px"
+        android:layout_height="@dimen/height_103px"
+        android:layout_marginTop="@dimen/height_24px"
+        android:clickable="true"
+        android:focusable="true">
+
+        <TextView
+            android:id="@+id/tv_series"
+            android:layout_width="@dimen/width_80px"
+            android:layout_height="@dimen/height_80px"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/shape_radius_3b446a"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/detail_tvcolor" />
+    </RelativeLayout>
+
+</RelativeLayout>

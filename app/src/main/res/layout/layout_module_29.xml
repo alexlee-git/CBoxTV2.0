@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <tv.newtv.cboxtv.views.RecycleImageView
+        android:id="@+id/id_module_29_title_icon"
+        android:layout_width="@dimen/width_17px"
+        android:layout_height="@dimen/height_17px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_68px"
+        android:background="@drawable/tuoyuan"
+        android:tag="module_029_title_icon"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/id_module_29_title"
+        style="@style/ModuleTitleStyle"
+        android:layout_width="@dimen/width_376px"
+        android:layout_height="@dimen/height_34px"
+        android:layout_marginLeft="@dimen/width_8px"
+        android:layout_marginTop="@dimen/height_59px"
+        android:layout_toRightOf="@id/id_module_29_title_icon"
+        android:includeFontPadding="false"
+        android:tag="module_029_title"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view1"
+        android:layout_width="@dimen/width_594px"
+        android:layout_height="@dimen/height_546px"
+        android:layout_below="@id/id_module_29_title"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_1">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_528px"
+            android:layout_height="@dimen/height_480px"
+            android:tag="cell_029_1_poster" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view2"
+        android:layout_width="@dimen/width_302px"
+        android:layout_height="@dimen/height_228px"
+        android:layout_below="@id/id_module_29_view1"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginTop="-18px"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_6">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_162px"
+            android:tag="cell_029_6_poster" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view3"
+        android:layout_width="@dimen/width_302px"
+        android:layout_height="@dimen/height_228px"
+        android:layout_below="@id/id_module_29_view1"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="-18px"
+        android:layout_toRightOf="@id/id_module_29_view2"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_7">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_162px"
+            android:tag="cell_029_7_poster" />
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view4"
+        android:layout_width="@dimen/width_594px"
+        android:layout_height="@dimen/height_282px"
+        android:layout_below="@id/id_module_29_title"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:layout_toRightOf="@id/id_module_29_view1"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_2">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_528px"
+            android:layout_height="@dimen/height_216px"
+            android:tag="cell_029_2_poster" />
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view5"
+        android:layout_width="@dimen/width_594px"
+        android:layout_height="@dimen/height_282px"
+        android:layout_below="@id/id_module_29_view4"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="-18px"
+        android:layout_toRightOf="@id/id_module_29_view1"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_4">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_528px"
+            android:layout_height="@dimen/height_216px"
+            android:tag="cell_029_4_poster" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view6"
+        android:layout_width="@dimen/width_302px"
+        android:layout_height="@dimen/height_228px"
+        android:layout_below="@id/id_module_29_view1"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="-18px"
+        android:layout_toRightOf="@id/id_module_29_view3"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_8">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:id="@+id/tv.newtv.views.RecycleImageView2"
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_162px"
+            android:tag="cell_029_8_poster" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view7"
+        android:layout_width="@dimen/width_302px"
+        android:layout_height="@dimen/height_228px"
+        android:layout_below="@id/id_module_29_view1"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="-18px"
+        android:layout_toRightOf="@id/id_module_29_view6"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_9">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_162px"
+            android:tag="cell_029_9_poster" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view8"
+        android:layout_width="@dimen/width_594px"
+        android:layout_height="@dimen/height_282px"
+        android:layout_below="@id/id_module_29_title"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:layout_toRightOf="@id/id_module_29_view4"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_3">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_528px"
+            android:layout_height="@dimen/height_216px"
+            android:tag="cell_029_3_poster" />
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view9"
+        android:layout_width="@dimen/width_594px"
+        android:layout_height="@dimen/height_282px"
+        android:layout_below="@id/id_module_29_view4"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="-18px"
+        android:layout_toRightOf="@id/id_module_29_view5"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_5">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_528px"
+            android:layout_height="@dimen/height_216px"
+            android:tag="cell_029_5_poster" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view10"
+        android:layout_width="@dimen/width_302px"
+        android:layout_height="@dimen/height_228px"
+        android:layout_below="@id/id_module_29_view1"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="-18px"
+        android:layout_toRightOf="@id/id_module_29_view7"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_10">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_162px"
+            android:tag="cell_029_10_poster" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/id_module_29_view11"
+        android:layout_width="@dimen/width_302px"
+        android:layout_height="@dimen/height_228px"
+        android:layout_below="@id/id_module_29_view1"
+        android:layout_marginLeft="-18px"
+        android:layout_marginTop="-18px"
+        android:layout_toRightOf="@id/id_module_29_view10"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_029_11">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.RecycleImageView
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_162px"
+            android:tag="cell_029_11_poster" />
+
+    </FrameLayout>
+
+</RelativeLayout>
+
+
+
+
+
+

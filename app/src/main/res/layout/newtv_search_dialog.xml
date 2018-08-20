@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center_horizontal"
+    android:background="#00000000">
+    <TextView 
+        android:id="@+id/alter_title"
+        android:layout_width="@dimen/width_500px"
+        android:layout_height="@dimen/height_50px"
+        android:text="提示"
+        android:textColor="#fff"
+        android:layout_marginTop="@dimen/height_20px"
+        android:textSize="@dimen/height_30px"
+       android:gravity="center"/>
+    <TextView 
+        android:id="@+id/alter_content"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_100px"
+        android:text="提示"
+        android:textColor="#fff"
+        android:textSize="@dimen/height_30px"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"/>
+    <Button 
+        android:id="@+id/alter_btn"
+        android:layout_width="@dimen/width_240px"
+        android:layout_height="@dimen/height_80px"
+        android:text="确定"
+        android:textColor="#fff"
+        android:layout_marginBottom="@dimen/height_10px"
+        android:textSize="@dimen/height_30px"
+        android:gravity="center"
+        android:background="@drawable/shap_item_result_focus"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

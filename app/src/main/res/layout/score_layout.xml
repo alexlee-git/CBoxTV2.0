@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:id="@+id/recycle_view"
+        android:layout_marginTop="@dimen/height_132px"
+        android:layout_marginLeft="@dimen/width_80px"
+        android:layout_marginRight="@dimen/width_80px"
+        android:layout_marginBottom="@dimen/height_35px"
+        android:focusable="true"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>
+</FrameLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <FrameLayout
+        android:id="@+id/search_layout"
+        android:layout_width="@dimen/width_899px"
+        android:layout_height="@dimen/height_147px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_100px"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/search_view"
+            android:layout_width="@dimen/width_845px"
+            android:layout_height="@dimen/height_93px"
+            android:background="@drawable/search_button"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/focus_view"
+            android:layout_width="@dimen/width_845px"
+            android:layout_height="@dimen/height_92px"
+            android:background="@drawable/pos_zui"
+            android:scaleType="fitCenter"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_layout"
+        android:layout_marginTop="@dimen/height_88px">
+
+        <ImageView
+            android:id="@+id/image_corner2"
+            android:layout_width="@dimen/width_20px"
+            android:layout_height="@dimen/height_20px"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/width_120px"
+            android:layout_marginTop="@dimen/height_20px"
+            android:background="@drawable/corner1"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/detail_tv_recom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_40px"
+            android:layout_marginLeft="@dimen/width_10px"
+            android:layout_toRightOf="@+id/image_corner2"
+            android:gravity="center_vertical"
+            android:text="热搜推荐"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_32px" />
+    </RelativeLayout>
+
+    <tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView
+        android:id="@+id/hot_search_list"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_500px"
+        android:layout_below="@id/layout_title"
+        android:layout_marginLeft="@dimen/width_90px"
+        android:layout_marginRight="@dimen/width_90px"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
+
+</RelativeLayout>
+
+

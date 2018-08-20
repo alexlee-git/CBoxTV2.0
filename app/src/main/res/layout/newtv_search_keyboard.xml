@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/keyboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/search_keyboard_bg"
+        android:focusable="false"/>
+
+    <LinearLayout
+        android:layout_width="@dimen/width_414px"
+        android:layout_height="@dimen/height_80px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_66px"
+        android:background="@drawable/search_title_bg"
+        android:focusable="false"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/width_30px"
+            android:layout_height="@dimen/height_30px"
+            android:layout_marginLeft="@dimen/width_29px"
+            android:background="@drawable/search_icon"/>
+
+        <TextView
+            android:id="@+id/txt_input"
+            style="@style/StyleSearchKeyBoardTitle"
+            android:layout_width="@dimen/width_324px"
+            android:layout_height="@dimen/height_80px"
+            android:layout_marginLeft="@dimen/width_31px"
+            android:gravity="center|left"
+            android:hint="@string/search_keybroad_input"
+            android:maxLength="10"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_1"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_336px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+        <ImageView
+            android:layout_width="@dimen/width_68px"
+            android:layout_height="@dimen/height_19px"
+            android:layout_marginLeft="@dimen/width_33px"
+            android:layout_marginTop="@dimen/height_85px"
+            android:background="@drawable/search_keyboard_space"/>
+
+        <Button
+            android:id="@+id/btn_1"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_51px"
+            android:layout_height="@dimen/height_40px"
+            android:layout_marginLeft="@dimen/width_41px"
+            android:layout_marginTop="@dimen/height_30px"
+            android:background="@color/color"
+            android:text="0|1"/>
+
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_2"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_262px"
+        android:layout_marginTop="@dimen/height_336px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_2"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="2"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_3"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_404px"
+        android:layout_marginTop="@dimen/height_336px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_3"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="3"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_5"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_262px"
+        android:layout_marginTop="@dimen/height_478px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_5"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="5"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_6"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_404px"
+        android:layout_marginTop="@dimen/height_478px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_6"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="6"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_7"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_620px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_7"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="7"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_8"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_262px"
+        android:layout_marginTop="@dimen/height_620px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_8"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="8"
+            />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_9"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_404px"
+        android:layout_marginTop="@dimen/height_620px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_9"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="9"
+            />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_11"
+        android:layout_width="@dimen/width_201px"
+        android:layout_height="@dimen/height_80px"
+        android:layout_marginLeft="@dimen/width_333px"
+        android:layout_marginTop="@dimen/height_244px"
+        android:background="@drawable/selector_keyboard_del"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/width_39px"
+            android:layout_height="@dimen/height_27px"
+            android:layout_marginLeft="@dimen/width_33px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:background="@drawable/search_del"/>
+
+        <Button
+            android:id="@+id/btn_11"
+            style="@style/StyleSearchTitle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_80px"
+            android:layout_marginLeft="@dimen/width_99px"
+            android:layout_marginTop="0px"
+            android:background="@color/color"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center|left"
+            android:includeFontPadding="false"
+            android:text="退格"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_4"
+        android:layout_width="@dimen/width_130px"
+        android:layout_height="@dimen/height_130px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_478px"
+        android:background="@drawable/selector_keyboard_number"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/btn_4"
+            style="@style/StyleSearchTitle"
+            android:layout_width="@dimen/width_130px"
+            android:layout_height="@dimen/height_130px"
+            android:background="@color/color"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="4"
+            />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout_btn_10"
+        android:layout_width="@dimen/width_201px"
+        android:layout_height="@dimen/height_80px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_244px"
+        android:background="@drawable/selector_keyboard_del"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/width_27px"
+            android:layout_height="@dimen/height_27px"
+            android:layout_marginLeft="@dimen/width_43px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:background="@drawable/search_dustbin"
+            android:focusable="false"/>
+
+        <Button
+            android:id="@+id/btn_10"
+            style="@style/StyleSearchTitle"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_80px"
+            android:layout_marginLeft="@dimen/width_99px"
+            android:layout_marginTop="0px"
+            android:background="@color/color"
+            android:clickable="true"
+            android:focusable="false"
+            android:gravity="center|left"
+            android:text="清空"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_64px"
+        android:layout_marginBottom="@dimen/height_50px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_966px"
+        android:gravity="center|left"
+        android:text="@string/search_keybroad_show"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_27px"
+        />
+
+
+
+</RelativeLayout>
