@@ -942,7 +942,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         try {
             NetClient.INSTANCE.getListPageApi()
                     .getSearchCategoryData("PS;CG", firstCatagory, Constant.APP_KEY, Constant
-                            .CHANNEL_ID, "0", "30")
+                            .CHANNEL_ID, "0", "1000")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -987,7 +987,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         try {
             NetClient.INSTANCE.getListPageApi()
                     .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG", year,
-                            area, classType, "0", "30")
+                            area, classType, "0", "1000")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
