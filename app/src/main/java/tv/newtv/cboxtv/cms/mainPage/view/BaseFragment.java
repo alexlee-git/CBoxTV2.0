@@ -252,4 +252,6 @@ public abstract class BaseFragment extends RxFragment {
         BgChangManager.getInstance().addEvent(getContext(),bgEvent);
 //        }
     }
+
+    public void destroyItem(){}
 }
