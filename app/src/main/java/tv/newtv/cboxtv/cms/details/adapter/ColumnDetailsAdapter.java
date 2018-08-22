@@ -487,6 +487,10 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                         return true;
                     }
                 }
+            } else if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT){
+                if(v.getId() == viewList.get(0).getId()){
+                    return true;
+                }
             }
             return false;
         }
