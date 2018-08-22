@@ -94,8 +94,10 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private TextView newView;
     private int mMenuSize = 0;
     private long mLastKeyDownTime = 0;
-    //    private String mMarkUrl = "http://search.cloud.ottcn.com:8080/newtv-solr-search/pps/getRetrievalKeywords.json";
-    // private String mMarkDataUrl = "http://111.32.138.56/icms_api/api/listPage/newtv/0/3ac2503b-21aa-11e8-ae54-c7d8a7a18cc4.json";
+    //    private String mMarkUrl = "http://search.cloud.ottcn
+    // .com:8080/newtv-solr-search/pps/getRetrievalKeywords.json";
+    // private String mMarkDataUrl = "http://111.32.138.56/icms_api/api/listPage/newtv/0/3ac2503b
+    // -21aa-11e8-ae54-c7d8a7a18cc4.json";
     private String mMarkDataUrl_pageUUid;
     private MarkInfo mMarkInfo;//筛选条件
     private List<MarkInfo.Mark> mMarks;//筛选条件
@@ -131,6 +133,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private int markPos = 0;
     private ScreenInfo mBlockTypeScreen;
     private View lastFoucsScreenDataView;
+    private long mLastKeyTime = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,13 +147,15 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         nav_id = getIntent().getStringExtra(Constant.DEFAULT_UUID);//导航id
         Log.e("list---pageuuid", mPageUUID + "-----------");
         if (mPageUUID == null) {
-            Toast.makeText(ListPageActivity.this, getResources().getString(R.string.list_no_pageuuid), Toast.LENGTH_LONG).show();
+            Toast.makeText(ListPageActivity.this, getResources().getString(R.string
+                    .list_no_pageuuid), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
         init();
         mIListPagePresenter = new ListPagePresenter(this, LauncherApplication.AppContext);
-        //mIListPagePresenter.requestListPageNav( .LISTPAGE_MARK + "/listPage/" + Constant.APP_KEY + "/" +
+        //mIListPagePresenter.requestListPageNav( .LISTPAGE_MARK + "/listPage/" + Constant
+        // .APP_KEY + "/" +
         //        Constant.CHANNEL_ID + "/" + mPageUUID + ".json");
         mIListPagePresenter.requestListPageNav(mPageUUID);
         showPopwindow();
@@ -162,18 +167,30 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 
         for (int i = 0; i < mMenuSize; i++) {
             if (!TextUtils.isEmpty(nav_id)) {
-                if (mNavInfos != null && mNavInfos.get(i) != null
-                        && nav_id.equals(mNavInfos.get(i).getContentID())) {
-                    MenuPostion = i;
-                    requestMarkData(mNavInfos.get(i).getContentID());
+
+                if (mNavInfos != null && mNavInfos.get(i) != null) {
+                    NavListPageInfoResult.NavInfo navInfo = mNavInfos.get(i);
+                    String uuid = null;
+                    if (Constant.OPEN_CHANNEL.equals(navInfo.getActionType())) {
+                        uuid = navInfo.getActionURI();
+                    } else {
+                        uuid = navInfo.getContentID();
+                    }
+                    if (nav_id.equals(uuid)) {
+                        MenuPostion = i;
+                        requestMarkData(uuid);
+                        break;
+                    }
                 }
             }
 
             Log.e("MM", "menuPositon=" + MenuPostion + "///////////");
         }
-        mMenuAdapter = new UniversalAdapter<NavListPageInfoResult.NavInfo>(ListPageActivity.this, R.layout.listpage_item_left, mNavInfos, null) {
+        mMenuAdapter = new UniversalAdapter<NavListPageInfoResult.NavInfo>(ListPageActivity.this,
+                R.layout.listpage_item_left, mNavInfos, null) {
             @Override
-            public void convert(UniversalViewHolder holder, NavListPageInfoResult.NavInfo info, int position) {
+            public void convert(UniversalViewHolder holder, NavListPageInfoResult.NavInfo info,
+                                int position) {
                 TextView textView = (TextView) holder.getViewByKey(R.id.listpage_item_left_tv);
                 if (textView != null) {
                     textView.setText(info.getTitle());
@@ -301,10 +318,13 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
                         case KeyEvent.KEYCODE_DPAD_UP:
                             int selectedItemPosition = mListMenuView.getSelectedItemPosition();
                             Log.e("gao", "selectedItemPosition:" + selectedItemPosition);
-                            if (Constant.OPEN_CHANNEL.equals(mNavInfos.get(selectedItemPosition).getActionType())) {
-                                mMarkDataUrl_pageUUid = mNavInfos.get(selectedItemPosition).getActionURI();
+                            if (Constant.OPEN_CHANNEL.equals(mNavInfos.get(selectedItemPosition)
+                                    .getActionType())) {
+                                mMarkDataUrl_pageUUid = mNavInfos.get(selectedItemPosition)
+                                        .getActionURI();
                             } else {
-                                mMarkDataUrl_pageUUid = mNavInfos.get(selectedItemPosition).getContentID();
+                                mMarkDataUrl_pageUUid = mNavInfos.get(selectedItemPosition)
+                                        .getContentID();
                             }
                             Log.e("gao", "mMarkDataUrl_pageUUid:" + mMarkDataUrl_pageUUid);
                             mHandler.postDelayed(new Runnable() {
@@ -411,7 +431,6 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         return super.onKeyDown(keyCode, event);
     }
 
-
     private void init() {
         mResultData = new ArrayList<>();
         mProgramsBeanList = new ArrayList<>();
@@ -509,8 +528,10 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         startSum = 0;
         mResultData.clear();
         mAdapter.notifyDataSetChanged();
-        getScreenData(mBlockTitle, mListTypes.get(0), mListTypes.get(1), mListTypes.get(2), startSum + "", size + "");
-        uploadScreenLog(getScreenType(mListTypes.get(0)), getScreenType(mListTypes.get(1)), getScreenType(mListTypes.get(2)));
+        getScreenData(mBlockTitle, mListTypes.get(0), mListTypes.get(1), mListTypes.get(2),
+                startSum + "", size + "");
+        uploadScreenLog(getScreenType(mListTypes.get(0)), getScreenType(mListTypes.get(1)),
+                getScreenType(mListTypes.get(2)));
     }
 
     private String getType(String type) {
@@ -535,7 +556,6 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         }
         return str;
     }
-
 
     //左侧列表数据加载
     @Override
@@ -564,7 +584,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             requestMark();
         } catch (Exception e) {
             LogUtils.e(e.toString());
-            Toast.makeText(ListPageActivity.this, getResources().getString(R.string.list_no_pageuuid), Toast.LENGTH_LONG).show();
+            Toast.makeText(ListPageActivity.this, getResources().getString(R.string
+                    .list_no_pageuuid), Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -573,131 +594,6 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     @Override
     public void onFailed(String desc) {
 
-    }
-
-    @SuppressLint("HandlerLeak")
-    class ListHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-//            listpage_rel_loading.setVisibility(View.GONE);
-            switch (msg.what) {
-                case 1:
-                    mProgramsBeanList.clear();
-                    if (mListPageInfo != null) {
-                        dataBeans = mListPageInfo.getData();
-                        if (dataBeans != null && dataBeans.size() > 0) {
-                            for (int i = 0; i < dataBeans.size(); i++) {
-                                String blockType = dataBeans.get(i).getBlockType();
-                                List<ListPageInfo.DataBean.SearchConditionsBean> mSearchConditions = dataBeans.get(i).getSearchConditions();
-                                if (blockType.equals("recommendOnOrder")) {
-                                    setMarkPageData(i);
-                                    continue;
-                                } else if (blockType.equals("searchTags")) {
-                                    Log.e("---searchTags", i + "---searchTags");
-                                    for (int k = 0; k < mSearchConditions.size(); k++) {
-                                        Log.e("---searchTags", mSearchConditions.size() + "--" + k);
-                                        getSearchTagsData(mSearchConditions.get(k).getType(),
-                                                mSearchConditions.get(k).getYear(),
-                                                mSearchConditions.get(k).getArea(),
-                                                mSearchConditions.get(k).getClassType());
-                                    }
-
-                                } else if (blockType.equals("searchCategory")) {
-                                    Log.e("---searchCategory", i + "---searchCategory");
-                                    for (int k = 0; k < mSearchConditions.size(); k++) {
-                                        Log.e("---searchCategory", mSearchConditions.size() + "--" + k);
-                                        getCatagoryData(mSearchConditions.get(k).getCategory());
-                                    }
-
-                                } else {
-                                    setMarkPageData(i);
-                                    continue;
-                                }
-                            }
-                        } else {
-                            listpage_rel_loading.setVisibility(View.GONE);
-                            mRelativeLayout_error.setVisibility(View.VISIBLE);
-                            mRelativeLayout_success.setVisibility(View.GONE);
-                        }
-                    } else {
-                        listpage_rel_loading.setVisibility(View.GONE);
-                        mRelativeLayout_error.setVisibility(View.VISIBLE);
-                        mRelativeLayout_success.setVisibility(View.GONE);
-                    }
-
-                    break;
-                case 2:
-                    if (mMarkInfo != null) {
-                        Log.i("mark-----", mMarkInfo.getData().get(0).getKey() + "");
-                        mMarks = mMarkInfo.getData();
-                        if (mMarks != null && mMarks.size() > 0) {
-                            isMark = true;
-                        } else {
-                            isMark = false;
-                            removeMessages(3);
-                        }
-                    } else {
-                        isMark = false;
-                    }
-                    break;
-                case 3:
-                    if (isMark) {
-                        setMark();
-                    } else {
-                        sendEmptyMessageDelayed(3, 200);
-                    }
-                    break;
-                case 4:
-                    listpage_rel_loading.setVisibility(View.GONE);
-                    if (mScreenInfo != null) {
-                        String mTotal = mScreenInfo.getTotal();
-                        if (mTotal != null) {
-                            try {
-                                TotalSum = Integer.parseInt(mTotal);
-                                tv_screen_total.setText(TotalSum + "部");
-                            } catch (Exception e) {
-                                tv_screen_total.setVisibility(View.GONE);
-                                TotalSum = 0;
-                            }
-                        }
-                    }
-                    setData(page);
-                    break;
-                case 5:
-                    listpage_rel_loading.setVisibility(View.GONE);
-                    if (mBlockTypeScreen != null) {
-                        if (mBlockTypeScreen.getResultList() != null && mBlockTypeScreen.getResultList().size() > 0) {
-
-                            mRelativeLayout_error.setVisibility(View.GONE);
-                            mRelativeLayout_success.setVisibility(View.VISIBLE);
-
-                            List<ListPageInfo.DataBean.ProgramsBean> programs = new ArrayList<>();
-                            for (int i = 0; i < mBlockTypeScreen.getResultList().size(); i++) {
-                                ListPageInfo.DataBean.ProgramsBean programsBean = new ListPageInfo.DataBean.ProgramsBean();
-
-                                programsBean.setContentType(mBlockTypeScreen.getResultList().get(i).getContentType());
-                                programsBean.setContentUUID(mBlockTypeScreen.getResultList().get(i).getUUID());
-                                programsBean.setImg(mBlockTypeScreen.getResultList().get(i).getPicurl());
-                                programsBean.setTitle(mBlockTypeScreen.getResultList().get(i).getName());
-                                programs.add(programsBean);
-                            }
-                            int total = mProgramsBeanList.size();
-                            mProgramsBeanList.addAll(programs);
-                            markDataAdapter.notifyItemRangeChanged(total - 1, mBlockTypeScreen.getResultList().size());
-                        } else {
-
-                            mRelativeLayout_error.setVisibility(View.VISIBLE);
-                            mRelativeLayout_success.setVisibility(View.GONE);
-                            Log.e("---ResultList", mBlockTypeScreen.getResultList() + "--");
-                        }
-                    } else {
-                        mRelativeLayout_error.setVisibility(View.VISIBLE);
-                        mRelativeLayout_success.setVisibility(View.GONE);
-                    }
-                    break;
-            }
-        }
     }
 
     private void setMarkPageData(int i) {
@@ -716,265 +612,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         markDataAdapter.notifyDataSetChanged();
     }
 
-    private long mLastKeyTime = 0;
-
-    class RecycleItemAdapter extends RecyclerView.Adapter<RecycleItemAdapter.MyHolder> {
-
-
-        private Context mContext;
-        private LayoutInflater mLayoutInflater;
-
-        public RecycleItemAdapter(Context mContext) {
-            this.mContext = mContext;
-            mLayoutInflater = LayoutInflater.from(mContext);
-        }
-
-        @Override
-        public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = mLayoutInflater.inflate(R.layout.listpage_item, null);
-            return new MyHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final MyHolder holder, final int position) {
-
-            if (mResultData == null || mResultData.size() <= 0) {
-                return;
-            }
-            final ScreenInfo.ResultListBean mResultListBean = mResultData.get(position);
-            holder.tvname.setText(mResultListBean.getName());
-            String url = mResultListBean.getPicurl();
-            if (url == null) {
-                Picasso.with(mContext).load(R.drawable.focus_240_360).into(holder.img);
-            } else {
-                Picasso.with(mContext)    //context
-                        .load(url)     //图片加载地址
-                        .placeholder(R.drawable.focus_240_360)
-                        .error(R.drawable.focus_240_360)   //图片记载失败时显示的页面
-                        .noFade()       //设置淡入淡出效果
-//                        .resize(240, 360)
-//                        .centerInside()
-                        .fit()      //智能展示图片，对于图片的大小和imageview的尺寸进行了测量，计算出最佳的大小和最佳的质量显示出来
-                        .transform(new CircleTransform(mContext))
-                        .into(holder.img);
-            }
-
-            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        zoomByFactor(v, 1.1f, 200);
-                        holder.img_fouse.setVisibility(View.VISIBLE);
-                        holder.tvname.setSelected(true);
-                        if (position >= (mResultData.size() - 6) && TotalSum > mResultData.size()) {
-                            if (isScreenLoad) {
-                                page++;
-                                getScreenData(mBlockTitle, "", "", "", (page - 1) * size + "", size + "");
-                                isScreenLoad = false;
-                            }
-                        }
-                    } else {
-                        holder.tvname.setSelected(false);
-                        scaleToOriginalDimension(v, 1.1f, 200);
-                        holder.img_fouse.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ScreenInfo.ResultListBean mResultListBean = mResultData.get(position);
-                    setListIntent("OPEN_DETAILS", mResultListBean.getContentType(),
-                            mResultListBean.getUUID(), "");
-//                    processOpenCellScreen(mResultData.get(position));
-                }
-            });
-
-            holder.itemView.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                    Log.i("onKey-------", i + "KEYCODE");
-                    if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-
-                        if (i == KeyEvent.KEYCODE_DPAD_LEFT) {
-                            if (position % 5 == 0) {
-                                rel_screen.setFocusable(true);
-                                rel_screen.requestFocus();
-                                return true;
-                            }
-                            return false;
-                        } else if (i == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                            return false;
-                        } else if (i == KeyEvent.KEYCODE_BACK) {
-                            ListPageActivity.this.finish();
-                            return true;
-                        } else {
-                            long current = System.currentTimeMillis();
-                            if (current - mLastKeyTime < 400) {
-                                return true;
-                            } else {
-                                mLastKeyTime = current;
-                            }
-                        }
-                    }
-                    return false;
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return mResultData != null ? mResultData.size() : 0;
-        }
-
-        public class MyHolder extends RecyclerView.ViewHolder {
-
-            private ImageView img;
-            private ImageView img_fouse;
-            private TextView tvcontent;
-            private TextView tvname;
-
-            public MyHolder(View itemView) {
-                super(itemView);
-                img = (ImageView) itemView.findViewById(R.id.listpage_item_img);
-                img_fouse = (ImageView) itemView.findViewById(R.id.listpage_item_img_foused);
-                tvname = (TextView) itemView.findViewById(R.id.listpage_item_tv_name);
-                tvcontent = (TextView) itemView.findViewById(R.id.listpage_item_tv_content);
-                DisplayUtils.adjustView(getBaseContext(), img, img_fouse, R.dimen.width_17dp, R.dimen.height_16dp);
-            }
-        }
-    }
-
-    class RecycleMarkDataAdapter extends RecyclerView.Adapter<RecycleMarkDataAdapter.MyHolder> {
-        private Context mContext;
-        private LayoutInflater mLayoutInflater;
-
-        public RecycleMarkDataAdapter(Context mContext) {
-            this.mContext = mContext;
-            mLayoutInflater = LayoutInflater.from(mContext);
-        }
-
-        @Override
-        public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = mLayoutInflater.inflate(R.layout.listpage_item, null);
-            return new MyHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(final MyHolder holder, final int position) {
-
-            if (dataBeans == null || dataBeans.size() <= 0) {
-                return;
-            }
-            final ListPageInfo.DataBean.ProgramsBean mProgramsBean = mProgramsBeanList.get(position);
-            holder.tvname.setText(mProgramsBean.getTitle());
-            String url = mProgramsBean.getImg();
-            if (url == null) {
-                Picasso.with(mContext).load(R.drawable.deful_user).into(holder.img);
-            } else {
-                Picasso.with(mContext)    //context
-                        .load(url)     //图片加载地址
-                        .placeholder(R.drawable.focus_240_360)
-                        .error(R.drawable.deful_user)   //图片记载失败时显示的页面
-                        .noFade()       //设置淡入淡出效果
-//                        .resize(240, 360)
-//                        .centerInside()
-                        .fit()      //智能展示图片，对于图片的大小和imageview的尺寸进行了测量，计算出最佳的大小和最佳的质量显示出来
-                        .transform(new CircleTransform(mContext))
-                        .into(holder.img);
-            }
-
-            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        Log.i("-----------", MarkPosition + "------------" + position);
-                        MarkPosition = position;
-                        holder.tvname.setSelected(true);
-                        zoomByFactor(v, 1.1f, 200);
-                        holder.img_fouse.setVisibility(View.VISIBLE);
-                        lastFoucsScreenDataView = v;
-                    } else {
-                        holder.tvname.setSelected(false);
-                        scaleToOriginalDimension(v, 1.1f, 200);
-                        holder.img_fouse.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    ListPageInfo.DataBean.ProgramsBean programsBean = mProgramsBeanList.get(position);
-                    Log.e("----", programsBean.getContentType() + "--");
-                    setListIntent("OPEN_DETAILS", programsBean.getContentType(),
-                            programsBean.getContentUUID(), "");
-//                    processOpenCell(mProgramsBeanList.get(position));
-                }
-            });
-
-            holder.itemView.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View view, int i, KeyEvent keyEvent) {
-
-                    if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-
-                        if (i == KeyEvent.KEYCODE_BACK) {
-                            ListPageActivity.this.finish();
-                            return true;
-                        } else if (i == KeyEvent.KEYCODE_DPAD_LEFT) {
-                            if (position % 5 == 0) {
-                                mListMenuView.setFocusable(true);
-                                mListMenuView.requestFocus();
-                                tv_screen_type.setVisibility(View.INVISIBLE);
-                                img_screen.setImageResource(R.drawable.screen);
-                                tv_screen.setTextColor(Color.parseColor("#ededed"));
-                                return true;
-                            }
-                            return false;
-                        } else if (i == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                            return false;
-                        } else {
-
-                            long current = System.currentTimeMillis();
-                            if (current - mLastKeyDownTime < 400) {
-                                return true;
-                            } else {
-                                mLastKeyDownTime = current;
-                            }
-                        }
-                    }
-
-                    return false;
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return mProgramsBeanList != null ? mProgramsBeanList.size() : 0;
-        }
-
-        public class MyHolder extends RecyclerView.ViewHolder {
-
-            private ImageView img;
-            private ImageView img_fouse;
-            private TextView tvcontent;
-            private TextView tvname;
-
-            public MyHolder(View itemView) {
-                super(itemView);
-                img = (ImageView) itemView.findViewById(R.id.listpage_item_img);
-                img_fouse = (ImageView) itemView.findViewById(R.id.listpage_item_img_foused);
-                tvname = (TextView) itemView.findViewById(R.id.listpage_item_tv_name);
-                tvcontent = (TextView) itemView.findViewById(R.id.listpage_item_tv_content);
-                DisplayUtils.adjustView(getApplicationContext(), img, img_fouse, R.dimen.width_17dp, R.dimen.height_16dp);
-            }
-        }
-    }
-
-    private void setListIntent(String mActionType, String mContentType, String mContentUUID, String mActionUri) {
+    private void setListIntent(String mActionType, String mContentType, String mContentUUID,
+                               String mActionUri) {
 //        StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_16);
 //        logBuff.append(0 + ",")
 //                .append("" + "+")
@@ -991,7 +630,6 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 
         JumpUtil.activityJump(this, mActionType, mContentType, mContentUUID, mActionUri);
     }
-
 
     private void zoomByFactor(View view, float factor, int duration) {
         if (!view.isFocusable()) {
@@ -1026,10 +664,10 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         }
     }
 
-    public void getScreenData(String type, String year, String area, String classType, String startnum, String size) {
+    public void getScreenData(String type, String year, String area, String classType, String
+            startnum, String size) {
         requsetScreenData(type, year, area, classType, startnum, size);
     }
-
 
     private void showPopwindow() {
         View popView = View.inflate(this, R.layout.listpage_layout_dialog, null);
@@ -1093,7 +731,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             tv_type.setText(names.get(i));
             mMarkRecycle = (HorizontalRecyclerView) view.findViewById(R.id.Listpage_pop_recycle);
             if (markManager != null) {
-                markManager.setMark(ListPageActivity.this, mMarkRecycle, types.get(i), names.get(i));
+                markManager.setMark(ListPageActivity.this, mMarkRecycle, types.get(i), names.get
+                        (i));
             }
             mLinearLayout.addView(view);
         }
@@ -1102,7 +741,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 //        mLinearLayout.requestFocus();
     }
 
-    private void requsetScreenData(String type, String year, String area, String classType, String startnum, String size) {
+    private void requsetScreenData(String type, String year, String area, String classType,
+                                   String startnum, String size) {
         mScreenInfo = null;
         listpage_rel_loading.setVisibility(View.VISIBLE);
         mRelativeLayout_success.setVisibility(View.GONE);
@@ -1110,7 +750,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG", getScreenType(year), getScreenType(area), getScreenType(classType), startnum, size)
+                    .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG",
+                            getScreenType(year), getScreenType(area), getScreenType(classType),
+                            startnum, size)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -1161,7 +803,6 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         return mType;
     }
 
-
     //筛选条件的查询
     private void requestMark() {
 
@@ -1208,7 +849,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private void requestMarkData(String contentUUid) {
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getMarkDataResult(Constant.BASE_URL_CMS + Constant.CMS_URL + Constant.APP_KEY + "/" + Constant.CHANNEL_ID + "/page/" + contentUUid + ".json")
+                    .getMarkDataResult(Constant.BASE_URL_CMS + Constant.CMS_URL + Constant
+                            .APP_KEY + "/" + Constant.CHANNEL_ID + "/page/" + contentUUid + ".json")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -1299,7 +941,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         mRelativeLayout_error.setVisibility(View.GONE);
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getSearchCategoryData("PS;CG", firstCatagory, Constant.APP_KEY, Constant.CHANNEL_ID, "0", "30")
+                    .getSearchCategoryData("PS;CG", firstCatagory, Constant.APP_KEY, Constant
+                            .CHANNEL_ID, "0", "1000")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -1343,7 +986,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         mScreenInfo = null;
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG", year, area, classType, "0", "30")
+                    .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG", year,
+                            area, classType, "0", "1000")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -1376,6 +1020,401 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
                     });
         } catch (Exception e) {
             LogUtils.e(e.toString());
+        }
+    }
+
+    @SuppressLint("HandlerLeak")
+    class ListHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+//            listpage_rel_loading.setVisibility(View.GONE);
+            switch (msg.what) {
+                case 1:
+                    mProgramsBeanList.clear();
+                    if (mListPageInfo != null) {
+                        dataBeans = mListPageInfo.getData();
+                        if (dataBeans != null && dataBeans.size() > 0) {
+                            for (int i = 0; i < dataBeans.size(); i++) {
+                                String blockType = dataBeans.get(i).getBlockType();
+                                List<ListPageInfo.DataBean.SearchConditionsBean>
+                                        mSearchConditions = dataBeans.get(i).getSearchConditions();
+                                if (blockType.equals("recommendOnOrder")) {
+                                    setMarkPageData(i);
+                                    continue;
+                                } else if (blockType.equals("searchTags")) {
+                                    Log.e("---searchTags", i + "---searchTags");
+                                    for (int k = 0; k < mSearchConditions.size(); k++) {
+                                        Log.e("---searchTags", mSearchConditions.size() + "--" + k);
+                                        getSearchTagsData(mSearchConditions.get(k).getType(),
+                                                mSearchConditions.get(k).getYear(),
+                                                mSearchConditions.get(k).getArea(),
+                                                mSearchConditions.get(k).getClassType());
+                                    }
+
+                                } else if (blockType.equals("searchCategory")) {
+                                    Log.e("---searchCategory", i + "---searchCategory");
+                                    for (int k = 0; k < mSearchConditions.size(); k++) {
+                                        Log.e("---searchCategory", mSearchConditions.size() +
+                                                "--" + k);
+                                        getCatagoryData(mSearchConditions.get(k).getCategory());
+                                    }
+
+                                } else {
+                                    setMarkPageData(i);
+                                    continue;
+                                }
+                            }
+                        } else {
+                            listpage_rel_loading.setVisibility(View.GONE);
+                            mRelativeLayout_error.setVisibility(View.VISIBLE);
+                            mRelativeLayout_success.setVisibility(View.GONE);
+                        }
+                    } else {
+                        listpage_rel_loading.setVisibility(View.GONE);
+                        mRelativeLayout_error.setVisibility(View.VISIBLE);
+                        mRelativeLayout_success.setVisibility(View.GONE);
+                    }
+
+                    break;
+                case 2:
+                    if (mMarkInfo != null) {
+                        Log.i("mark-----", mMarkInfo.getData().get(0).getKey() + "");
+                        mMarks = mMarkInfo.getData();
+                        if (mMarks != null && mMarks.size() > 0) {
+                            isMark = true;
+                        } else {
+                            isMark = false;
+                            removeMessages(3);
+                        }
+                    } else {
+                        isMark = false;
+                    }
+                    break;
+                case 3:
+                    if (isMark) {
+                        setMark();
+                    } else {
+                        sendEmptyMessageDelayed(3, 200);
+                    }
+                    break;
+                case 4:
+                    listpage_rel_loading.setVisibility(View.GONE);
+                    if (mScreenInfo != null) {
+                        String mTotal = mScreenInfo.getTotal();
+                        if (mTotal != null) {
+                            try {
+                                TotalSum = Integer.parseInt(mTotal);
+                                tv_screen_total.setText(TotalSum + "部");
+                            } catch (Exception e) {
+                                tv_screen_total.setVisibility(View.GONE);
+                                TotalSum = 0;
+                            }
+                        }
+                    }
+                    setData(page);
+                    break;
+                case 5:
+                    listpage_rel_loading.setVisibility(View.GONE);
+                    if (mBlockTypeScreen != null) {
+                        if (mBlockTypeScreen.getResultList() != null && mBlockTypeScreen
+                                .getResultList().size() > 0) {
+
+                            mRelativeLayout_error.setVisibility(View.GONE);
+                            mRelativeLayout_success.setVisibility(View.VISIBLE);
+
+                            List<ListPageInfo.DataBean.ProgramsBean> programs = new ArrayList<>();
+                            for (int i = 0; i < mBlockTypeScreen.getResultList().size(); i++) {
+                                ListPageInfo.DataBean.ProgramsBean programsBean = new
+                                        ListPageInfo.DataBean.ProgramsBean();
+
+                                programsBean.setContentType(mBlockTypeScreen.getResultList().get
+                                        (i).getContentType());
+                                programsBean.setContentUUID(mBlockTypeScreen.getResultList().get
+                                        (i).getUUID());
+                                programsBean.setImg(mBlockTypeScreen.getResultList().get(i)
+                                        .getPicurl());
+                                programsBean.setTitle(mBlockTypeScreen.getResultList().get(i)
+                                        .getName());
+                                programs.add(programsBean);
+                            }
+                            int total = mProgramsBeanList.size();
+                            mProgramsBeanList.addAll(programs);
+                            markDataAdapter.notifyItemRangeChanged(total - 1, mBlockTypeScreen
+                                    .getResultList().size());
+                        } else {
+
+                            mRelativeLayout_error.setVisibility(View.VISIBLE);
+                            mRelativeLayout_success.setVisibility(View.GONE);
+                            Log.e("---ResultList", mBlockTypeScreen.getResultList() + "--");
+                        }
+                    } else {
+                        mRelativeLayout_error.setVisibility(View.VISIBLE);
+                        mRelativeLayout_success.setVisibility(View.GONE);
+                    }
+                    break;
+            }
+        }
+    }
+
+    class RecycleItemAdapter extends RecyclerView.Adapter<RecycleItemAdapter.MyHolder> {
+
+
+        private Context mContext;
+        private LayoutInflater mLayoutInflater;
+
+        public RecycleItemAdapter(Context mContext) {
+            this.mContext = mContext;
+            mLayoutInflater = LayoutInflater.from(mContext);
+        }
+
+        @Override
+        public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = mLayoutInflater.inflate(R.layout.listpage_item, null);
+            return new MyHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final MyHolder holder, final int position) {
+
+            if (mResultData == null || mResultData.size() <= 0) {
+                return;
+            }
+            final ScreenInfo.ResultListBean mResultListBean = mResultData.get(position);
+            holder.tvname.setText(mResultListBean.getName());
+            String url = mResultListBean.getPicurl();
+            if (url == null) {
+                Picasso.with(mContext).load(R.drawable.focus_240_360).into(holder.img);
+            } else {
+                Picasso.with(mContext)    //context
+                        .load(url)     //图片加载地址
+                        .placeholder(R.drawable.focus_240_360)
+                        .error(R.drawable.focus_240_360)   //图片记载失败时显示的页面
+                        .noFade()       //设置淡入淡出效果
+//                        .resize(240, 360)
+//                        .centerInside()
+                        .fit()      //智能展示图片，对于图片的大小和imageview的尺寸进行了测量，计算出最佳的大小和最佳的质量显示出来
+                        .transform(new CircleTransform(mContext))
+                        .into(holder.img);
+            }
+
+            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        zoomByFactor(v, 1.1f, 200);
+                        holder.img_fouse.setVisibility(View.VISIBLE);
+                        holder.tvname.setSelected(true);
+                        if (position >= (mResultData.size() - 6) && TotalSum > mResultData.size()) {
+                            if (isScreenLoad) {
+                                page++;
+                                getScreenData(mBlockTitle, "", "", "", (page - 1) * size + "",
+                                        size + "");
+                                isScreenLoad = false;
+                            }
+                        }
+                    } else {
+                        holder.tvname.setSelected(false);
+                        scaleToOriginalDimension(v, 1.1f, 200);
+                        holder.img_fouse.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ScreenInfo.ResultListBean mResultListBean = mResultData.get(position);
+                    setListIntent("OPEN_DETAILS", mResultListBean.getContentType(),
+                            mResultListBean.getUUID(), "");
+//                    processOpenCellScreen(mResultData.get(position));
+                }
+            });
+
+            holder.itemView.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                    Log.i("onKey-------", i + "KEYCODE");
+                    if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+
+                        if (i == KeyEvent.KEYCODE_DPAD_LEFT) {
+                            if (position % 5 == 0) {
+                                rel_screen.setFocusable(true);
+                                rel_screen.requestFocus();
+                                return true;
+                            }
+                            return false;
+                        } else if (i == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                            return false;
+                        } else if (i == KeyEvent.KEYCODE_BACK) {
+                            ListPageActivity.this.finish();
+                            return true;
+                        } else {
+                            long current = System.currentTimeMillis();
+                            if (current - mLastKeyTime < 400) {
+                                return true;
+                            } else {
+                                mLastKeyTime = current;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mResultData != null ? mResultData.size() : 0;
+        }
+
+        public class MyHolder extends RecyclerView.ViewHolder {
+
+            private ImageView img;
+            private ImageView img_fouse;
+            private TextView tvcontent;
+            private TextView tvname;
+
+            public MyHolder(View itemView) {
+                super(itemView);
+                img = (ImageView) itemView.findViewById(R.id.listpage_item_img);
+                img_fouse = (ImageView) itemView.findViewById(R.id.listpage_item_img_foused);
+                tvname = (TextView) itemView.findViewById(R.id.listpage_item_tv_name);
+                tvcontent = (TextView) itemView.findViewById(R.id.listpage_item_tv_content);
+                DisplayUtils.adjustView(getBaseContext(), img, img_fouse, R.dimen.width_17dp, R
+                        .dimen.height_16dp);
+            }
+        }
+    }
+
+    class RecycleMarkDataAdapter extends RecyclerView.Adapter<RecycleMarkDataAdapter.MyHolder> {
+        private Context mContext;
+        private LayoutInflater mLayoutInflater;
+
+        public RecycleMarkDataAdapter(Context mContext) {
+            this.mContext = mContext;
+            mLayoutInflater = LayoutInflater.from(mContext);
+        }
+
+        @Override
+        public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = mLayoutInflater.inflate(R.layout.listpage_item, null);
+            return new MyHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final MyHolder holder, final int position) {
+
+            if (dataBeans == null || dataBeans.size() <= 0) {
+                return;
+            }
+            final ListPageInfo.DataBean.ProgramsBean mProgramsBean = mProgramsBeanList.get
+                    (position);
+            holder.tvname.setText(mProgramsBean.getTitle());
+            String url = mProgramsBean.getImg();
+            if (url == null) {
+                Picasso.with(mContext).load(R.drawable.deful_user).into(holder.img);
+            } else {
+                Picasso.with(mContext)    //context
+                        .load(url)     //图片加载地址
+                        .placeholder(R.drawable.focus_240_360)
+                        .error(R.drawable.deful_user)   //图片记载失败时显示的页面
+                        .noFade()       //设置淡入淡出效果
+//                        .resize(240, 360)
+//                        .centerInside()
+                        .fit()      //智能展示图片，对于图片的大小和imageview的尺寸进行了测量，计算出最佳的大小和最佳的质量显示出来
+                        .transform(new CircleTransform(mContext))
+                        .into(holder.img);
+            }
+
+            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        Log.i("-----------", MarkPosition + "------------" + position);
+                        MarkPosition = position;
+                        holder.tvname.setSelected(true);
+                        zoomByFactor(v, 1.1f, 200);
+                        holder.img_fouse.setVisibility(View.VISIBLE);
+                        lastFoucsScreenDataView = v;
+                    } else {
+                        holder.tvname.setSelected(false);
+                        scaleToOriginalDimension(v, 1.1f, 200);
+                        holder.img_fouse.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    ListPageInfo.DataBean.ProgramsBean programsBean = mProgramsBeanList.get
+                            (position);
+                    Log.e("----", programsBean.getContentType() + "--");
+                    setListIntent("OPEN_DETAILS", programsBean.getContentType(),
+                            programsBean.getContentUUID(), "");
+//                    processOpenCell(mProgramsBeanList.get(position));
+                }
+            });
+
+            holder.itemView.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+                    if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+
+                        if (i == KeyEvent.KEYCODE_BACK) {
+                            ListPageActivity.this.finish();
+                            return true;
+                        } else if (i == KeyEvent.KEYCODE_DPAD_LEFT) {
+                            if (position % 5 == 0) {
+                                mListMenuView.setFocusable(true);
+                                mListMenuView.requestFocus();
+                                tv_screen_type.setVisibility(View.INVISIBLE);
+                                img_screen.setImageResource(R.drawable.screen);
+                                tv_screen.setTextColor(Color.parseColor("#ededed"));
+                                return true;
+                            }
+                            return false;
+                        } else if (i == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                            return false;
+                        } else {
+
+                            long current = System.currentTimeMillis();
+                            if (current - mLastKeyDownTime < 400) {
+                                return true;
+                            } else {
+                                mLastKeyDownTime = current;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mProgramsBeanList != null ? mProgramsBeanList.size() : 0;
+        }
+
+        public class MyHolder extends RecyclerView.ViewHolder {
+
+            private ImageView img;
+            private ImageView img_fouse;
+            private TextView tvcontent;
+            private TextView tvname;
+
+            public MyHolder(View itemView) {
+                super(itemView);
+                img = (ImageView) itemView.findViewById(R.id.listpage_item_img);
+                img_fouse = (ImageView) itemView.findViewById(R.id.listpage_item_img_foused);
+                tvname = (TextView) itemView.findViewById(R.id.listpage_item_tv_name);
+                tvcontent = (TextView) itemView.findViewById(R.id.listpage_item_tv_content);
+                DisplayUtils.adjustView(getApplicationContext(), img, img_fouse, R.dimen
+                        .width_17dp, R.dimen.height_16dp);
+            }
         }
     }
 }

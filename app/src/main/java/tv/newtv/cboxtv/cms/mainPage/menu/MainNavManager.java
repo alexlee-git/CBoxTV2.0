@@ -180,7 +180,7 @@ public class MainNavManager implements IMainPageView,
                 public void onBindView(final RecyclerView.ViewHolder holder, NavInfoResult
                         .NavInfo value, int position) {
                     if (TextUtils.isEmpty(value.getIcon1())) {
-                        ((NavPageMenuViewHolder) holder).setText("" + position);
+                        ((NavPageMenuViewHolder) holder).setText(value.getTitle());
                     } else {
                         ((NavPageMenuViewHolder) holder).setImage(value.getIcon1());
                     }
