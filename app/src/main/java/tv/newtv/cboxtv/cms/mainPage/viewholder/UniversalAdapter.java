@@ -367,13 +367,11 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             int height = imageView.getLayoutParams().height;
 
             int placeHolderResId = ImageUtils.getProperPlaceHolderResId(imageView.getContext(),
-                    width,
-                    height);
+                    width, height);
             if (!imgUrl.equals(imageView.getTag()) && canLoadImage) {
                 if (placeHolderResId != 0) {
                     imageView.Tag(PicassoTag).placeHolder(placeHolderResId).hasCorner(isCorner)
-                            .withCallback(new
-                                                  Callback() {
+                            .withCallback(new Callback() {
                                                       @Override
                                                       public void onSuccess() {
                                                           imageView.setTag(imgUrl);
@@ -387,8 +385,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                             .load(imgUrl);
                 } else {
 
-
                     imageView
+                            .placeHolder(R.drawable.focus_special)
                             .Tag(PicassoTag)
                             .hasCorner(isCorner)
                             .withCallback(new Callback() {
