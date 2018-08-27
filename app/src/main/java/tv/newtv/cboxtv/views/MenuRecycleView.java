@@ -375,8 +375,11 @@ public class MenuRecycleView extends RecyclerView {
             mHandler = handler;
         }
 
-
         public void setMenuItems(final List<T> values, final int defaultIndex) {
+            setMenuItems(values, defaultIndex, values.size());
+        }
+
+        public void setMenuItems(final List<T> values, final int defaultIndex, int displaySize) {
             if (menuItems == null) {
                 menuItems = new ArrayList<>();
             }
@@ -391,7 +394,7 @@ public class MenuRecycleView extends RecyclerView {
             notifyDataSetChanged();
 
             refreshPosition(selectPos, false);
-            linearLayoutManager.setDataSize(menuItems.size());
+            linearLayoutManager.setDataSize(displaySize);
         }
 
         public void refreshDefaultPosition(boolean autoFocus) {

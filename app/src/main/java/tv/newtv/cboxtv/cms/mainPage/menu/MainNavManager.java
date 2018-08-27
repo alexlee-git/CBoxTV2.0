@@ -55,6 +55,8 @@ public class MainNavManager implements IMainPageView,
         INotifyNavItemSelectedListener,
         INotifyNoPageDataListener {
 
+    private final int DISPLAY_SIZE = 5;
+
     private static MainNavManager mInstance;
     MenuRecycleView.MenuAdapter menuAdapter = null;
     private String mCurNavDataFrom;
@@ -242,7 +244,8 @@ public class MainNavManager implements IMainPageView,
             }
             Log.e("--defaultPageIdx-------", Navbarfoused + "----" + defaultPageIdx);
 
-            menuAdapter.setMenuItems(mNavInfos, defaultPageIdx);
+            menuAdapter.setMenuItems(mNavInfos, defaultPageIdx,
+                    mNavInfos.size() >= DISPLAY_SIZE? DISPLAY_SIZE: mNavInfos.size());
         }
 //        mFirMenu.setOneMenuData(mNavInfos);
 
