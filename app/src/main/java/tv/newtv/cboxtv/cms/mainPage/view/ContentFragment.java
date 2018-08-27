@@ -72,6 +72,8 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
     private boolean BodyScrolling = false;
     private boolean ImScrolling = false;
 
+    private UniversalAdapter adapter;
+
     public static ContentFragment newInstance(Bundle paramBundle) {
         ContentFragment fragment = new ContentFragment();
         fragment.setArguments(paramBundle);
@@ -395,7 +397,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
     private void updateRecycleView() {
         if (contentView == null || mRecyclerView == null || mDatas == null) return;
-        UniversalAdapter adapter = (UniversalAdapter) mRecyclerView.getAdapter();
+        adapter = (UniversalAdapter) mRecyclerView.getAdapter();
         if (adapter == null) {
             ScrollSpeedLinearLayoutManger layoutManager = new ScrollSpeedLinearLayoutManger
                     (LauncherApplication.AppContext);
@@ -424,5 +426,12 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
     public AiyaRecyclerView getRecyclerView() {
         return mRecyclerView;
+    }
+
+    @Override
+    public void destroyItem() {
+        if(adapter != null){
+            adapter.destroyItem();
+        }
     }
 }

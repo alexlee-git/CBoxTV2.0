@@ -82,6 +82,7 @@ public class LooperStaggeredAdapter extends FragmentPagerAdapter {
         int target = position % mDatas.size();
         int PosA = getNextInt(current, DIR_LEFT);
         int PosB = getNextInt(current, DIR_RIGHT);
+        mDatas.get(target).destroyItem();
 
         Log.e(TAG, "check current=" + current + " PosA=" + PosA + " PosB=" + PosB + " " +
                 "target=" + target);

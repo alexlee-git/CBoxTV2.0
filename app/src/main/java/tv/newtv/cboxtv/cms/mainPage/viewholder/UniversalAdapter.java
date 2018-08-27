@@ -69,6 +69,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private boolean canLoadImage = true;
     private int bottomMargin = 0;
     private boolean showFirstTitle = false;
+    private List<UniversalViewHolder> holderList = new java.util.ArrayList();
 
 
     public UniversalAdapter(Context context, List<ModuleItem> datas) {
@@ -102,8 +103,10 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     public UniversalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // 根据viewType获取相应的布局文件
         int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType(viewType);
-        return new UniversalViewHolder(LayoutInflater.from(parent.getContext()).inflate
+        UniversalViewHolder holder = new UniversalViewHolder(LayoutInflater.from(parent.getContext()).inflate
                 (layoutResId, parent,false));
+        holderList.add(holder);
+        return holder;
     }
 
     public void showFirstLineTitle(boolean value) {
@@ -830,5 +833,11 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             }
         }
         return livePlayView;
+    }
+
+    public void destroyItem(){
+        for(UniversalViewHolder holder : holderList){
+            holder.releaseImageView();
+        }
     }
 }

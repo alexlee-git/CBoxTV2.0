@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.cms.util.LogUtils;
@@ -50,6 +51,20 @@ public class UniversalViewHolder extends RecyclerView.ViewHolder {
     public UniversalViewHolder setImageByUrl(String tag, String url) {
 
         return this;
+    }
+
+    public void releaseImageView(){
+        if(mViews == null){
+            return;
+        }
+
+        Set<String> keySet = mViews.keySet();
+        for(String key : keySet){
+            View view = mViews.get(key);
+            if(view instanceof ImageView){
+                ((ImageView)view).setImageDrawable(null);
+            }
+        }
     }
 
     public UniversalViewHolder setImageResource(String tag, int resId) {
