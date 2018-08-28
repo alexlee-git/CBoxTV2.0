@@ -263,7 +263,7 @@ public class MainListPageManager implements ListPageView,
                     mViewPager.setCurrentItem(position);
                     currentFocus = value.getContentID();
                     /**/
-                    int select = position % mFragments.size();
+                    int select = position % mNavListPageInfoResult.getData().size();
                     NavListPageInfoResult.NavInfo navInfo = ((List<NavListPageInfoResult
                             .NavInfo>) mNavListPageInfoResult.getData()).get(select);
                     String uuid = getContentUUID(navInfo);
