@@ -113,11 +113,11 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
                 BodyScrolling +
                 " " +
                 "ImScrolling=" + ImScrolling + " isVisible=" + isVisible);
-        if (!BodyScrolling && !ImScrolling && isVisible) {
-            Picasso.with(getContext()).resumeTag(contentId);
-        } else {
-            Picasso.with(getContext()).pauseTag(contentId);
-        }
+//        if (!BodyScrolling && !ImScrolling && isVisible) {
+//            Picasso.with(getContext()).resumeTag(contentId);
+//        } else {
+//            Picasso.with(getContext()).pauseTag(contentId);
+//        }
     }
 
     @Override
@@ -318,7 +318,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
         if (mDatas != null && mDatas.size() > 0 && mRecyclerView != null && mRecyclerView.getAdapter
                 () != null && mRecyclerView.getAdapter().getItemCount() > 0) {
-            return;
+             return;
         }
 
         if (loadingView != null)
@@ -328,6 +328,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
             onFailed("暂无数据内容。");
         } else {
             mPresenter.requestContentData(contentId);
+
         }
     }
 
@@ -345,16 +346,16 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (contentView != null) {
-            BitmapUtil.recycleImageBitmap((ViewGroup) contentView);
-            ((ViewGroup) contentView).removeAllViews();
-        }
-        contentView = null;
-        mRecyclerView = null;
-        if (mDatas != null) {
-            mDatas.clear();
-            mDatas = null;
-        }
+//        if (contentView != null) {
+//            BitmapUtil.recycleImageBitmap((ViewGroup) contentView);
+//            ((ViewGroup) contentView).removeAllViews();
+//        }
+//        contentView = null;
+//        mRecyclerView = null;
+//        if (mDatas != null) {
+//            mDatas.clear();
+//            mDatas = null;
+//        }
     }
 
     //创建共享参数，存储一些需要的信息
@@ -421,7 +422,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
                     loadingView.setVisibility(View.GONE);
 
             }
-        }, 300);
+        }, 10);
     }
 
     public AiyaRecyclerView getRecyclerView() {

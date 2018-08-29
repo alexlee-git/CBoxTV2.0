@@ -39,7 +39,7 @@ public class UniversalViewHolder extends RecyclerView.ViewHolder {
                     return targetView;
                 } else {
                     targetView = mItemView.findViewWithTag(tag);
-                    mViews.put(tag, targetView);
+                    //mViews.put(tag, targetView);
                 }
             }
         } else {

@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,13 +39,14 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
 import tv.newtv.cboxtv.cms.util.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
+import tv.newtv.cboxtv.cms.util.GlideRoundTransform;
+import tv.newtv.cboxtv.cms.util.GlideUtil;
 import tv.newtv.cboxtv.cms.util.ImageUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import tv.newtv.cboxtv.cms.util.SystemUtils;
 import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.views.AutoSizeTextView;
 import tv.newtv.cboxtv.views.LivePlayView;
@@ -66,7 +66,6 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
     private String PicassoTag = "";
-    private boolean canLoadImage = true;
     private int bottomMargin = 0;
     private boolean showFirstTitle = false;
     private List<UniversalViewHolder> holderList = new java.util.ArrayList();
@@ -84,10 +83,6 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         if (TextUtils.isEmpty(layoutCode)) return null;
         String layoutId = layoutCode.substring(layoutCode.indexOf("_") + 1); // 形如"002"
         return "cell_" + layoutId + "_1";
-    }
-
-    public void setCanLoadImage(boolean canload) {
-        canLoadImage = canload;
     }
 
     public void setPicassoTag(String tag) {
@@ -369,42 +364,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             int placeHolderResId = ImageUtils.getProperPlaceHolderResId(imageView.getContext(),
                     width,
                     height);
-            if (!imgUrl.equals(imageView.getTag()) && canLoadImage) {
-                if (placeHolderResId != 0) {
-                    imageView.Tag(PicassoTag).placeHolder(placeHolderResId).hasCorner(isCorner)
-                            .withCallback(new
-                                                  Callback() {
-                                                      @Override
-                                                      public void onSuccess() {
-                                                          imageView.setTag(imgUrl);
-                                                      }
-
-                                                      @Override
-                                                      public void onError() {
-
-                                                      }
-                                                  })
-                            .load(imgUrl);
-                } else {
-
-
-                    imageView
-                            .Tag(PicassoTag)
-                            .hasCorner(isCorner)
-                            .withCallback(new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    imageView.setTag(imgUrl);
-                                }
-
-                                @Override
-                                public void onError() {
-
-                                }
-                            })
-                            .load(imgUrl);
-                }
-            }
+            GlideUtil.loadImage(imageView.getContext(), imageView,
+                    imgUrl, placeHolderResId, placeHolderResId, isCorner);
         } else {
             Log.e(Constant.TAG, "未找到的控件地址 : ");
         }
