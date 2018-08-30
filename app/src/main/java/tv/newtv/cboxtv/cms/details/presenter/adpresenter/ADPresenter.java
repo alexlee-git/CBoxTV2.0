@@ -110,20 +110,23 @@ public class ADPresenter implements IAdConstract.IADPresenter, ADConfig.ColumnLi
                             return;
                         }
                         if (mAD == null) {
-                            adConstractView.showAd("", adType);
+                            ADHelper.AD.ADItem adItem = new ADHelper.AD.ADItem(adType);
+                            adConstractView.showAd(adItem);
                             return;
                         }
                         Log.e("AdHelper", "显示:" + mAD.toString());
                         mAD.setCallback(new ADHelper.ADCallback() {
                             @Override
                             public void showAd(String type, String url) {
-                                if(adConstractView == null) return;
-                                adConstractView.showAd(url, type);
+//                                if(adConstractView == null) return;
+//                                adConstractView.showAd(url, type);
                             }
 
                             @Override
                             public void showAdItem(ADHelper.AD.ADItem adItem) {
-
+                                if(adConstractView != null){
+                                    adConstractView.showAd(adItem);
+                                }
                             }
 
                             @Override

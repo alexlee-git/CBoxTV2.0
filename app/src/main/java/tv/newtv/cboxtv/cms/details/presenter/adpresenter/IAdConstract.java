@@ -1,9 +1,6 @@
 package tv.newtv.cboxtv.cms.details.presenter.adpresenter;
 
-import android.view.View;
-import android.widget.ImageView;
-
-import tv.newtv.cboxtv.cms.ad.model.AdInfo;
+import tv.newtv.cboxtv.utils.ADHelper;
 
 /**
  * Created by Administrator on 2018/4/28.
@@ -22,6 +19,7 @@ public interface IAdConstract {
     interface IADConstractView{
 
 //        void showAd(String imgUrl);
-        void showAd(String imgUrl,String adType);
+//        void showAd(String imgUrl,String adType);
+        void showAd(ADHelper.AD.ADItem item);
     }
 }

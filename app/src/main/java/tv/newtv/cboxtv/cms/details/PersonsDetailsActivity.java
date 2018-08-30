@@ -67,6 +67,7 @@ import tv.newtv.cboxtv.uc.db.DBCallback;
 import tv.newtv.cboxtv.uc.db.DBConfig;
 import tv.newtv.cboxtv.uc.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
+import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
 import tv.newtv.cboxtv.views.RecycleImageView;
@@ -728,13 +729,13 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     }
 
     @Override
-    public void showAd(String imgUrl, String adType) {
-        if (!TextUtils.isEmpty(imgUrl)) {
+    public void showAd(ADHelper.AD.ADItem result) {
+        if (!TextUtils.isEmpty(result.AdUrl)) {
             if (program_detail_ad_fl != null) {
                 program_detail_ad_fl.setVisibility(View.VISIBLE);
             }
             if (program_detail_ad_img != null) {
-                program_detail_ad_img.hasCorner(true).load(imgUrl);
+                program_detail_ad_img.hasCorner(true).load(result.AdUrl);
             }
         }
     }

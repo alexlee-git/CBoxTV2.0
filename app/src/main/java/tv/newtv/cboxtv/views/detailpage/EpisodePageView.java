@@ -184,7 +184,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private void initalize(Context context) {
         ShowInfoTextView("正在加载...");
 
-        TitleView = LayoutInflater.from(context).inflate(R.layout.episode_header_layout, this,
+        TitleView = LayoutInflater.from(context).inflate(R.layout.episode_header_ad_layout, this,
                 false);
         TitleView.setId(R.id.id_detail_title);
         LayoutParams title_layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams

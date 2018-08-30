@@ -13,6 +13,7 @@ import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.ScaleUtils;
 import tv.newtv.cboxtv.views.RecycleImageView;
 
@@ -109,8 +110,8 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, IAdCons
     }
 
     @Override
-    public void showAd(String imgUrl, String adType) {
-        if (!TextUtils.isEmpty(imgUrl)) {
+    public void showAd(ADHelper.AD.ADItem result) {
+        if (!TextUtils.isEmpty(result.AdUrl)) {
             setVisibility(VISIBLE);
             getParent().requestLayout();
             setImageResource(R.drawable.focus_1680_320);
@@ -135,7 +136,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, IAdCons
                             });
                         }
                     })
-                    .load(imgUrl);
+                    .load(result.AdUrl);
         } else {
             remove();
         }

@@ -369,17 +369,21 @@ public class ADHelper {
         }
 
         public static class ADItem {
-            String AdUrl;                   //广告地址
-            String AdType;                  //广告类型
-            boolean isLocal;                //是否是本地
-            int PlayTime;                   //播放时长
-            boolean isFailed = false;       //是否下载失败
-            String FileName;                //文件名
-            String mid;
-            String aid;
-            String id;
+            public String AdUrl;                   //广告地址
+            public String AdType;                  //广告类型
+            public boolean isLocal;                //是否是本地
+            public int PlayTime;                   //播放时长
+            public boolean isFailed = false;       //是否下载失败
+            public String FileName;                //文件名
+            public String mid;
+            public String aid;
+            public String id;
             public String eventType;               //广告互动类型
             public String eventContent;            //广告互动内容
+
+            public ADItem(String type){
+                AdType = type;
+            }
 
             public ADItem(String url, String name, String type, boolean local, int time, String
                     m, String a, String id, String eventType, String eventContent) {

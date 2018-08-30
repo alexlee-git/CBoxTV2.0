@@ -47,6 +47,13 @@ public class Constant {
     public static final String AD_DESK = "desk";//桌面广告
     //详情页通栏广告
     public static final String AD_DETAILPAGE_BANNER = "cbox_detailpage_banner";
+    //详情页背景广告
+    public static final String AD_DETAILPAGE_BACKGROUND = "cbox_detailpage_background";
+    //详情页内容列表广告
+    public static final String AD_DETAILPAGE_CONTENTLIST= "cbox_detaipage_contentlist";
+    //详情页小窗口广告
+    public static final String AD_DETAILPAGE_RIGHTPOS = "cbox_detailpage_rightpos";
+
     //广告内容类型
     public static final String AD_IMAGE_TYPE = "image";//图片广告
     public static final String AD_VIDEO_TYPE = "video";//视频广告
@@ -122,7 +129,7 @@ public class Constant {
     public static final String NAV_UC = "我的";
     public static final String EXTERNAL_OPEN_PANEL = "panel";
     public static final String EXTERNAL_OPEN_NEWS = "news";
-    public static final String EXTERNAL_OPEN_URI = "uri"; //for ad
+    public static final String EXTERNAL_OPEN_URI = "uri"; //for smallWindowAD
     public static final String EXTERNAL_OPEN_PAGE = "page";
     public static final String EXTERNAL_OPEN_LISTPAGE = "list_page";
     public static final String EXTERNAL_PLAYER = "player";
