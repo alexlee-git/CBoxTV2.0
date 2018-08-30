@@ -10,5 +10,5 @@ import tv.newtv.cboxtv.views.CurrentPlayImageView;
  * 创建日期:          2018/5/5
  */
 public interface EpisodeChange {
-    void onChange(CurrentPlayImageView imageView,int index);
+    void onChange(CurrentPlayImageView imageView,int index,boolean fromClick);
 }

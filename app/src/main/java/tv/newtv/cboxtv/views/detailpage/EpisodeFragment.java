@@ -107,7 +107,7 @@ public class EpisodeFragment extends Fragment {
                 @Override
                 public void run() {
                     if (viewHolders != null && viewHolders.size() > currentIndex) {
-                        viewHolders.get(currentIndex).performClick();
+                        viewHolders.get(currentIndex).performClick(false);
                     }
                 }
             }, 100);
@@ -219,7 +219,7 @@ public class EpisodeFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    performClick();
+                    performClick(true);
                 }
             });
 
@@ -250,9 +250,9 @@ public class EpisodeFragment extends Fragment {
             itemView = null;
         }
 
-        public void performClick() {
+        public void performClick(boolean fromClick) {
             if (mChange != null) {
-                mChange.onChange(PosterView, mPosition * 8 + mIndex);
+                mChange.onChange(PosterView, mPosition * 8 + mIndex,fromClick);
             }
         }
 

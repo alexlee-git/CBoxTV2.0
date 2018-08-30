@@ -171,7 +171,7 @@ public class ColumnPageActivity extends BaseActivity {
                                     public Bitmap getBitmap(Object obj) {
                                         return ((BitmapDrawable) ResourcesCompat.getDrawable
                                                 (getResources(), R.drawable
-                                                .icon_praise, null)).getBitmap();
+                                                        .icon_praise, null)).getBitmap();
                                     }
                                 });
                                 mPaiseView.startDiverges(0);
@@ -197,8 +197,8 @@ public class ColumnPageActivity extends BaseActivity {
             }
 
             @Override
-            public void onChange(int index) {
-                headPlayerView.Play(index, 0, true);
+            public void onChange(int index, boolean fromClick) {
+                headPlayerView.Play(index, 0, fromClick);
             }
         });
 
@@ -241,7 +241,8 @@ public class ColumnPageActivity extends BaseActivity {
             }
         }
 
-        if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent.ACTION_UP) {
+        if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
+                .ACTION_UP) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_ESCAPE:
                     finish();

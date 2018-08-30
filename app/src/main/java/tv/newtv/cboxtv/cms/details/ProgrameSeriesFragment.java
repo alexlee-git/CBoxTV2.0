@@ -54,7 +54,6 @@ import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.PageHelper;
 import tv.newtv.cboxtv.cms.util.RxBus;
-import tv.newtv.cboxtv.cms.util.Utils;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -159,6 +158,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
             mMenuAdapter.setCurrenPage(mPageDaoImpl.getCurrentPage(mIndex) - 1);
         }
     };
+    private NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
 
     public static ProgrameSeriesFragment newInstance(String uuid) {
         ProgrameSeriesFragment fragment = new ProgrameSeriesFragment();
@@ -325,17 +325,17 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     private void prepareMediaPlayer() {
-        if(mVideoView != null && mVideoView.isReleased()){
+        if (mVideoView != null && mVideoView.isReleased()) {
             mVideoView.release();
             mVideoView.destory();
-            if(mVideoView.getParent() != null){
-                ((ViewGroup)mVideoView.getParent()).removeView(mVideoView);
+            if (mVideoView.getParent() != null) {
+                ((ViewGroup) mVideoView.getParent()).removeView(mVideoView);
             }
             mVideoView = null;
         }
 
         if (mVideoView == null) {
-            if(defaultConfig == null) {
+            if (defaultConfig == null) {
                 mVideoView = new VideoPlayerView(getContext());
                 mVideoView.setId(R.id.id_video_player);
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
@@ -349,8 +349,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                 if (dataInfo != null) {
                     mVideoView.setSeriesInfo(dataInfo);
                 }
-            }else{
-                mVideoView = new VideoPlayerView(defaultConfig,getContext());
+            } else {
+                mVideoView = new VideoPlayerView(defaultConfig, getContext());
             }
         }
     }
@@ -384,7 +384,6 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
         prepareMediaPlayer();
     }
-
 
     public boolean interruptKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -458,12 +457,15 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                                 Gson gson = new Gson();
                                 dataInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
                                 if (dataInfo != null) {
-                                    //              第一行是 地区、年代、一级分类  第二行是 主持人、导演、主演，所有人员名称就是 连续一行显示，用竖线前后空格区分。
+                                    //              第一行是 地区、年代、一级分类  第二行是 主持人、导演、主演，所有人员名称就是
+                                    // 连续一行显示，用竖线前后空格区分。
 
-                                    if (!TextUtils.isEmpty(dataInfo.getDirector()) && !TextUtils.isEmpty(dataInfo.getActors())
+                                    if (!TextUtils.isEmpty(dataInfo.getDirector()) && !TextUtils
+                                            .isEmpty(dataInfo.getActors())
                                             && !dataInfo.getDirector().equals("无")
                                             && !dataInfo.getActors().equals("无")) {
-                                        detailStarTv.setText("导演:" + dataInfo.getDirector() + " | " + "主演:" + dataInfo.getActors());
+                                        detailStarTv.setText("导演:" + dataInfo.getDirector() + " |" +
+                                                " " + "主演:" + dataInfo.getActors());
                                     } else {
                                         detailStarTv.setVisibility(View.GONE);
                                     }
@@ -574,16 +576,26 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         });
     }
 
-
     @Override
     public void onItemClick(View view, int position, Object object) {
+        int targetIndex = mPageDaoImpl.getCurrentPosition(position);
 
-        mIndex = mPageDaoImpl.getCurrentPosition(position);
+        if (mIndex == targetIndex) {
+            mVideoView.requestFocus();
+            mVideoView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mVideoView.EnterFullScreen(getActivity(), false);
+                }
+            }, 500);
+            return;
+        }
+        mIndex = targetIndex;
         mPlayPosition = 0;
 
         prepareMediaPlayer();
 
-        if(mVideoView == null) return;
+        if (mVideoView == null) return;
 
         mVideoView.playSingleOrSeries(mIndex, mPlayPosition);
         mSeriesAdapter.setPlayerPosition(mIndex, true);
@@ -594,9 +606,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         mVideoView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mVideoView.EnterFullScreen(getActivity(),false);
+                mVideoView.EnterFullScreen(getActivity(), false);
             }
-        },400);
+        }, 500);
     }
 
     @Override
@@ -668,7 +680,6 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
     }
 
-
     @Override
     public void onDestroyView() {
         unSubscribe();
@@ -693,7 +704,6 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         }
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
@@ -710,12 +720,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         }
     }
 
-    private NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
-
     @Override
     public void onStop() {
         super.onStop();
-
 
 
         addHistory();
@@ -741,16 +748,17 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
     private void addHistory() {
         if (mVideoView.getCurrentPosition() > 0) {
-            DBUtil.addHistory(dataInfo, historyposition, mVideoView.getCurrentPosition(), new DBCallback<String>() {
-                @Override
-                public void onResult(int code, String result) {
-                    if (code == 0) {
-                        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + dataInfo
-                                .getContentUUID());//添加历史记录
-                        RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                    }
-                }
-            });
+            DBUtil.addHistory(dataInfo, historyposition, mVideoView.getCurrentPosition(), new
+                    DBCallback<String>() {
+                        @Override
+                        public void onResult(int code, String result) {
+                            if (code == 0) {
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + dataInfo
+                                        .getContentUUID());//添加历史记录
+                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                            }
+                        }
+                    });
 
         }
     }
@@ -765,8 +773,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
             if (program_detail_ad_img != null) {
                 program_detail_ad_img.hasCorner(true).load(imgUrl);
             }
-        }else{
-            if(program_detail_ad_fl != null && program_detail_ad_fl.getParent() != null){
+        } else {
+            if (program_detail_ad_fl != null && program_detail_ad_fl.getParent() != null) {
                 ((ViewGroup) program_detail_ad_fl.getParent()).removeView(program_detail_ad_fl);
                 program_detail_ad_fl = null;
             }

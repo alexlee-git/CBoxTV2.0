@@ -277,8 +277,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
             }
 
             @Override
-            public void onChange(int index) {
-                headPlayerView.Play(index, 0, true);
+            public void onChange(int index,boolean fromClick) {
+                headPlayerView.Play(index, 0, fromClick);
             }
         });
 
