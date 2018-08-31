@@ -1,15 +1,28 @@
 package tv.newtv.cboxtv;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import tv.newtv.ActivityStacks;
+import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
+import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
+import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
+import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
+import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DeviceUtil;
 import tv.newtv.cboxtv.utils.KeyEventUtils;
 
@@ -20,10 +33,11 @@ import tv.newtv.cboxtv.utils.KeyEventUtils;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/7
  */
-public abstract class BaseActivity extends RxFragmentActivity {
+public abstract class BaseActivity extends RxFragmentActivity implements IAdConstract.IADConstractView {
 
     protected boolean FrontStage = false;//是否已经进入前台
     private boolean fromOuter = false;//是否是外部跳转进入的
+    private ADPresenter adPresenter;
 
     public boolean isFrontStage() {
         return FrontStage;
@@ -77,12 +91,16 @@ public abstract class BaseActivity extends RxFragmentActivity {
         }
         super.onResume();
         FrontStage = true;
+        setBackgroundAD();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ActivityStacks.get().onDestroy(this);
+        if(adPresenter != null){
+            adPresenter.destroy();
+        }
     }
 
     @Override
@@ -158,4 +176,43 @@ public abstract class BaseActivity extends RxFragmentActivity {
         return isFullScreen();
     }
 
+    protected void setBackgroundAD(){
+        if(isDetailActivity()){
+            adPresenter = new ADPresenter(this);
+            adPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_BACKGROUND,"");
+        }
+    }
+
+    private boolean isDetailActivity() {
+        Class<? extends BaseActivity> clazz = getClass();
+        if(clazz == ProgrameSeriesAndVarietyDetailActivity.class
+                ||clazz == ColumnPageActivity.class
+                || clazz == SingleDetailPageActivity.class
+                || clazz == ProgramCollectionActivity.class){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void showAd(ADHelper.AD.ADItem result) {
+        if(!TextUtils.isEmpty(result.AdUrl)){
+            Picasso.with(this).load(result.AdUrl).into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    getWindow().setBackgroundDrawable(new BitmapDrawable(bitmap));
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            });
+        }
+    }
 }
