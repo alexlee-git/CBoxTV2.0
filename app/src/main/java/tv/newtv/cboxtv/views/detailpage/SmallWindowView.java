@@ -5,15 +5,20 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
 
 import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.utils.ADHelper;
 
-public class SmallWindowView extends BaseAdView implements IAdConstract.IADConstractView{
+public class SmallWindowView extends BaseAdView implements IAdConstract.IADConstractView,IEpisode, View.OnClickListener {
     private static final String TAG = "SmallWindowView";
+    private ADHelper.AD.ADItem result;
 
     public SmallWindowView(Context context) {
         this(context,null);
@@ -38,12 +43,42 @@ public class SmallWindowView extends BaseAdView implements IAdConstract.IADConst
         Log.i(TAG, "showAd: "+result);
         if(!TextUtils.isEmpty(result.AdUrl)){
             hasCorner(true).load(result.AdUrl);
-        }else {
-            setImageResource(R.drawable.about_logo);
-//            setFocusable(true);
-//            setFocusableInTouchMode(true);
-//            setOnFocusChangeListener(this);
+            if(!TextUtils.isEmpty(result.eventContent)){
+                this.result = result;
+                setFocusable(true);
+                setFocusableInTouchMode(true);
+                setOnFocusChangeListener(this);
+                setOnClickListener(this);
+            }
         }
     }
 
+
+    @Override
+    public String getContentUUID() {
+        return null;
+    }
+
+    @Override
+    public boolean interuptKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent
+                    .KEYCODE_DPAD_RIGHT) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void destroy() {
+        mADPresenter.destroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        AdEventContent adEventContent = GsonUtil.fromjson(result.eventContent, AdEventContent.class);
+        JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
+                adEventContent.contentUUID, adEventContent.actionURI);
+    }
 }

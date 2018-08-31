@@ -64,6 +64,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private LinearLayoutManager mLinearLayoutManager;
     private View TitleView;
     private Disposable mDisposable;
+    private SmallWindowView smallWindowView;
 
     private ProgramSeriesInfo mSeriesInfo;
 
@@ -186,6 +187,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
         TitleView = LayoutInflater.from(context).inflate(R.layout.episode_header_ad_layout, this,
                 false);
+        smallWindowView = TitleView.findViewById(R.id.small_window_view);
         TitleView.setId(R.id.id_detail_title);
         LayoutParams title_layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
                 .WRAP_CONTENT);
@@ -534,7 +536,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     return true;
                 }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                if (!ListPager.hasFocus() && !aiyaRecyclerView.hasFocus()) {
+                if (!ListPager.hasFocus() && !aiyaRecyclerView.hasFocus() && !smallWindowView.hasFocus()) {
                     if (aiyaRecyclerView.getDefaultFocusView() != null)
                         aiyaRecyclerView.getDefaultFocusView().requestFocus();
                     return true;
@@ -554,6 +556,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 } else if (ListPager.hasFocus()) {
                     focusView = ListPager.findFocus();
                     parentView = ListPager;
+                } else if(smallWindowView.hasFocus()){
+                    return smallWindowView.interuptKeyEvent(event);
                 }
 
                 View target = FocusFinder.getInstance().findNextFocus(parentView, focusView, View
@@ -578,6 +582,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 } else if (ListPager.hasFocus()) {
                     focusView = ListPager.findFocus();
                     parentView = ListPager;
+                } else if(smallWindowView.hasFocus()){
+                    return smallWindowView.interuptKeyEvent(event);
                 }
 
                 View target = FocusFinder.getInstance().findNextFocus(parentView, focusView, View
