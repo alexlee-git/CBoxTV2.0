@@ -262,7 +262,7 @@ public class EpisodeFragment extends Fragment {
                 if (PosterView != null) {
                     PosterView.setScaleType(ImageView.ScaleType.FIT_XY);
                     if (!TextUtils.isEmpty(programsInfo.gethImage())) {
-                        Picasso.with(getContext())
+                        Picasso.get()
                                 .load(programsInfo.gethImage())
                                 .transform(new PosterCircleTransform(getActivity(), 4))
                                 .placeholder(R.drawable.focus_384_216)
@@ -270,7 +270,7 @@ public class EpisodeFragment extends Fragment {
                                 .resize(384, 216)
                                 .into(PosterView);
                     } else {
-                        Picasso.with(getContext())
+                        Picasso.get()
                                 .load(R.drawable.focus_384_216)
                                 .resize(384, 216)
                                 .transform(new PosterCircleTransform(getActivity(), 4))

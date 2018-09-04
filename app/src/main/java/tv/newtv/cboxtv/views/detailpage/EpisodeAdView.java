@@ -126,7 +126,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, IAdCons
                         }
 
                         @Override
-                        public void onError() {
+                        public void onError(Exception e) {
                             post(new Runnable() {
                                 @Override
                                 public void run() {

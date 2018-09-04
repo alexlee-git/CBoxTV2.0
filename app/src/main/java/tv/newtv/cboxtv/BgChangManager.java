@@ -179,7 +179,7 @@ public class BgChangManager {
      */
     private void requestImage(final BGDrawable bgDrawable, final Context context, final String uuid,
                               final String url) {
-        Picasso.with(context).load(url).into(new Target() {
+        Picasso.get().load(url).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 bgDrawable.drawable = new BitmapDrawable(context.getResources(), bitmap);
@@ -189,8 +189,8 @@ public class BgChangManager {
             }
 
             @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                mCallback.getTargetView().setBackground(null);
             }
 
             @Override

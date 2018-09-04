@@ -153,7 +153,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                         titleIcon.setVisibility(View.VISIBLE);
                         if (!TextUtils.isEmpty(iconUrl) && !iconUrl.equals(titleIcon.getTag())) {
                             titleIcon.setTag(iconUrl);
-                            Picasso.with(mContext).load(iconUrl).into(titleIcon);
+                            Picasso.get().load(iconUrl).into(titleIcon);
                         }
                     }
                 }
@@ -667,7 +667,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             if ("IMG".equals(superType)) {
                 String superUrl = info.getCornerImg();
                 if (superUrl != null) {
-                    Picasso.with(mContext).load(superUrl).tag(PicassoTag).into(target);
+                    Picasso.get().load(superUrl).tag(PicassoTag).into(target);
                 }
             }
         }

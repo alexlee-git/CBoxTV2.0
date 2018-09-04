@@ -67,20 +67,11 @@ public class PicassoBuilder {
         int cacheSize = maxMemory / 15;
         mLruCache = new LruCache(cacheSize);// 设置缓存大小
         //配置线程池
-        ExecutorService executorService = Executors.newFixedThreadPool(8);
-        //配置本地缓存
-        File file = FileUtil.getCacheDirectory(context,"cache_image");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cache(new Cache(file, cacheSize))
-                .build();
+        //ExecutorService executorService = Executors.newFixedThreadPool(8);
 
         Picasso picasso = new Picasso.Builder(context.getApplicationContext())
                 .memoryCache(mLruCache)
-                .downloader(new OkHttp3Downloader(client))
-                .executor(executorService)
+                //.executor(executorService)
                 .listener(new Picasso.Listener() {
                     @Override
                     public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {

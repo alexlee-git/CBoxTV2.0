@@ -461,7 +461,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         public void setData(ProgramSeriesInfo.ProgramsInfo data) {
             if (data == null) return;
             infoData = data;
-            Picasso.with(itemView.getContext())
+            Picasso.get()
                     .load(data.gethImage())
                     .resize(390, 214)
                     .into(Poster);
@@ -514,7 +514,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
 
                     if (!TextUtils.isEmpty(itemInfo.getvImage())) {
                         poster.setScaleType(ImageView.ScaleType.FIT_XY);
-                        RequestCreator picasso = Picasso.with(target.getContext())
+                        RequestCreator picasso = Picasso.get()
                                 .load(itemInfo.getvImage())
                                 .transform(new PosterCircleTransform(target.getContext(), 4))
                                 .priority(Picasso.Priority.HIGH)
@@ -526,7 +526,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
                         picasso.into(poster);
                     } else {
                         poster.setScaleType(ImageView.ScaleType.FIT_XY);
-                        RequestCreator picasso = Picasso.with(target.getContext())
+                        RequestCreator picasso = Picasso.get()
                                 .load(R.drawable.focus_240_360)
                                 .priority(Picasso.Priority.HIGH)
                                 .transform(new PosterCircleTransform(target.getContext(), 4))

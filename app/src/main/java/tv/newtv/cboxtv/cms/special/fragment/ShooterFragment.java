@@ -298,7 +298,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                 int targetWidth =holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.height_518px);
                 int targetHeiht = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.height_200px);
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
-                Picasso.with(holder.itemView.getContext())
+                Picasso.get()
                         .load(moduleItem.getImg())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .resize(targetWidth,targetHeiht)

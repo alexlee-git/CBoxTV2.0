@@ -277,7 +277,7 @@ public class SearchFragment extends BaseFragment {
             holder.tv_name.setText(programInfo.getTitle());
             String url = programInfo.getImg();
             if (!TextUtils.isEmpty(url)) {
-                Picasso.with(getActivity()).load(url)
+                Picasso.get().load(url)
                         .transform(new PosterCircleTransform(getContext(), 4))
                         .placeholder(R.drawable.focus_240_360).into(holder.img);
             }

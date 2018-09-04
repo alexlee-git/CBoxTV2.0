@@ -290,7 +290,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
         if (!TextUtils.isEmpty(url)) {
             posterIv.setScaleType(ImageView.ScaleType.FIT_XY);
             posterIv.setVisibility(View.VISIBLE);
-            RequestCreator picasso = Picasso.with(LauncherApplication.AppContext)
+            RequestCreator picasso = Picasso.get()
                     .load(url)
                     .priority(Picasso.Priority.HIGH)
                     .stableKey(url)
@@ -301,7 +301,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
         } else {
             posterIv.setScaleType(ImageView.ScaleType.FIT_XY);
             posterIv.setVisibility(View.VISIBLE);
-            RequestCreator picasso = Picasso.with(LauncherApplication.AppContext)
+            RequestCreator picasso = Picasso.get()
                     .load(R.drawable.focus_528_296)
                     .priority(Picasso.Priority.HIGH)
                     .config(Bitmap.Config.RGB_565);

@@ -190,7 +190,7 @@ public class NavListPageAdapter extends RecyclerView.Adapter<UniversalViewHolder
             lp.width = textWidth;
             navBackground.setLayoutParams(lp);
 //            Picasso.with(mContext).load(info.getIcon()).into(navBackground);
-            Picasso.with(mContext).load(R.drawable.cctv_selected).into(navBackground);
+            Picasso.get().load(R.drawable.cctv_selected).into(navBackground);
             navBackground.setAlpha(0.3f);
         }
     }

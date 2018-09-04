@@ -374,7 +374,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
         }
 
 //        Picasso.with(getApplicationContext()).load(img).into(detailPlayIv);
-        Picasso.with(getApplicationContext()).load(img).transform(new PosterCircleTransform
+        Picasso.get().load(img).transform(new PosterCircleTransform
                 (getApplicationContext(), 8)).fit().memoryPolicy(MemoryPolicy.NO_STORE)
                 .placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into
                 (detailPlayIv);
@@ -385,7 +385,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
             if (!TextUtils.isEmpty(img)) {
                 detailPlayIv.setScaleType(ImageView.ScaleType.FIT_XY);
                 detailPlayIv.setVisibility(View.VISIBLE);
-                RequestCreator picasso = Picasso.with(LauncherApplication.AppContext)
+                RequestCreator picasso = Picasso.get()
                         .load(img)
                         .transform(new PosterCircleTransform(this, 4))
                         .priority(Picasso.Priority.HIGH)
@@ -397,7 +397,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
             } else {
                 detailPlayIv.setScaleType(ImageView.ScaleType.FIT_XY);
                 detailPlayIv.setVisibility(View.VISIBLE);
-                RequestCreator picasso = Picasso.with(LauncherApplication.AppContext)
+                RequestCreator picasso = Picasso.get()
                         .load(R.drawable.focus_240_360)
                         .priority(Picasso.Priority.HIGH)
                         .config(Bitmap.Config.RGB_565);

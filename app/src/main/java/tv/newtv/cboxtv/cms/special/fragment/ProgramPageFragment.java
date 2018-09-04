@@ -251,7 +251,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
                 holder.title.setText(moduleItem.getTitle());
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
 
-                Picasso.with(holder.itemView.getContext())
+                Picasso.get()
                         .load(moduleItem.getImg())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .into(holder.poster);

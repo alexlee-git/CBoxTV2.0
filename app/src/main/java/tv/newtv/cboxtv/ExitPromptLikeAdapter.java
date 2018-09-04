@@ -56,7 +56,7 @@ public class ExitPromptLikeAdapter extends BaseRecyclerAdapter<SearchResultInfos
 
                 viewHolder.mTitleTv.setText(entity.getName());
 
-                Picasso.with(mContext).load(entity.getHpicurl()).into(viewHolder.mImageIv);
+                Picasso.get().load(entity.getHpicurl()).into(viewHolder.mImageIv);
             }
 
 

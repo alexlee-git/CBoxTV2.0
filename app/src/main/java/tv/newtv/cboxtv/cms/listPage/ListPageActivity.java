@@ -1184,9 +1184,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             holder.tvname.setText(mResultListBean.getName());
             String url = mResultListBean.getPicurl();
             if (url == null) {
-                Picasso.with(mContext).load(R.drawable.focus_240_360).into(holder.img);
+                Picasso.get().load(R.drawable.focus_240_360).into(holder.img);
             } else {
-                Picasso.with(mContext)    //context
+                Picasso.get()
                         .load(url)     //图片加载地址
                         .placeholder(R.drawable.focus_240_360)
                         .error(R.drawable.focus_240_360)   //图片记载失败时显示的页面
@@ -1313,9 +1313,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             holder.tvname.setText(mProgramsBean.getTitle());
             String url = mProgramsBean.getImg();
             if (url == null) {
-                Picasso.with(mContext).load(R.drawable.deful_user).into(holder.img);
+                Picasso.get().load(R.drawable.deful_user).into(holder.img);
             } else {
-                Picasso.with(mContext)    //context
+                Picasso.get()
                         .load(url)     //图片加载地址
                         .placeholder(R.drawable.focus_240_360)
                         .error(R.drawable.deful_user)   //图片记载失败时显示的页面

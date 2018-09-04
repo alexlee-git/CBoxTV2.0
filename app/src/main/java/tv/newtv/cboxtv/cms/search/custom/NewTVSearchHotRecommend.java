@@ -167,7 +167,7 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
                     LogUtils.e(TAG, "----热搜结果数据为空");
                     return;
                 } else {
-                    Picasso.with(mContext).load(mDatas.get(position).getHpicurl()).transform(new PosterCircleTransform(mContext, 4)).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
+                    Picasso.get().load(mDatas.get(position).getHpicurl()).transform(new PosterCircleTransform(mContext, 4)).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
 //                    Picasso.with(mContext).load(mDatas.get(position).getHpicurl()).transform(new PosterCircleTransform(mContext, 8)).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
                     holder.mTxtTitle.setText(mDatas.get(position).getName());
                     holder.mFrameLayoutHotRecommend.setOnFocusChangeListener(new OnFocusChangeListener() {
