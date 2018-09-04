@@ -260,8 +260,8 @@
             android:tag="cell_031_1_poster">
             <tv.newtv.cboxtv.views.RecycleImageView
                 android:scaleType="fitXY"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_width="@dimen/width_816px"
+                android:layout_height="@dimen/height_480px"/>
         </tv.newtv.cboxtv.views.LivePlayView>
 
     </FrameLayout>
