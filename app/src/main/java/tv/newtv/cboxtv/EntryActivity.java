@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -133,6 +134,13 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
         }
 
         setContentView(R.layout.activity_splash);
+
+        if (BuildConfig.DEBUG) {
+            DisplayMetrics dm = getResources().getDisplayMetrics();
+            int screenWidth = dm.widthPixels;
+            int screenHeight = dm.heightPixels;
+            Log.i("Splash", "screenWidth=" + screenWidth + ":screenHeight" + screenHeight);
+        }
 
         /*
         认证流程：
