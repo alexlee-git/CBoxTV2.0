@@ -2,7 +2,6 @@ package tv.newtv.cboxtv.views;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -20,6 +19,7 @@ import android.widget.TextView;
 
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
@@ -41,7 +41,7 @@ import tv.newtv.cboxtv.utils.PlayInfoUtil;
  * 创建人:           weihaichao
  * 创建日期:          2018/4/29
  */
-public class LivePlayView extends RelativeLayout {
+public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -68,6 +68,8 @@ public class LivePlayView extends RelativeLayout {
     private boolean isPrepared = false;
     private boolean isFullScreen = false;
 
+    private String mUUID;
+
     private int mIndex = 0;
     private int mPosition = 0;
 
@@ -84,6 +86,39 @@ public class LivePlayView extends RelativeLayout {
      * 3.正在播放 STATE_LIVING
      */
     private int liveState = STATE_NOT_STARTED;
+    private Runnable playRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mPlayInfo != null) {
+                prepareVideoPlayer();
+                if (mProgramSeriesInfo != null) {
+                    if (mVideoPlayerView != null) {
+                        mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+                        mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
+                    }
+                } else {
+                    PlayInfoUtil.getPlayInfo(mPlayInfo.ContentUUID, new PlayInfoUtil
+                            .ProgramSeriesInfoCallback() {
+                        @Override
+                        public void onResult(final ProgramSeriesInfo info) {
+                            if (info == null) return;
+                            mProgramSeriesInfo = info;
+                            MainLooper.get().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mVideoPlayerView != null) {
+                                        mVideoPlayerView.setSeriesInfo(info);
+                                        mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
+            }
+        }
+    };
     private Runnable playLiveRunnable = new Runnable() {
         @Override
         public void run() {
@@ -123,39 +158,6 @@ public class LivePlayView extends RelativeLayout {
             timer();
         }
     };
-    private Runnable playRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mPlayInfo != null) {
-                prepareVideoPlayer();
-                if (mProgramSeriesInfo != null) {
-                    if (mVideoPlayerView != null) {
-                        mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-                        mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
-                    }
-                } else {
-                    PlayInfoUtil.getPlayInfo(mPlayInfo.ContentUUID, new PlayInfoUtil
-                            .ProgramSeriesInfoCallback() {
-                        @Override
-                        public void onResult(final ProgramSeriesInfo info) {
-                            if (info == null) return;
-                            mProgramSeriesInfo = info;
-                            MainLooper.get().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mVideoPlayerView != null) {
-                                        mVideoPlayerView.setSeriesInfo(info);
-                                        mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
-                                    }
-                                }
-                            });
-                        }
-                    });
-                }
-
-            }
-        }
-    };
 
     public LivePlayView(@NonNull Context context) {
         this(context, null);
@@ -170,6 +172,9 @@ public class LivePlayView extends RelativeLayout {
         init(attrs);
     }
 
+    public void setUUID(String uuid) {
+        mUUID = uuid;
+    }
 
 
     private void prepareVideoPlayer() {
@@ -190,13 +195,13 @@ public class LivePlayView extends RelativeLayout {
         try {
             int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
             int position = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
-            if(index >= 0 && mProgramSeriesInfo != null && mProgramSeriesInfo.getData() != null &&
-                    index < mProgramSeriesInfo.getData().size()){
+            if (index >= 0 && mProgramSeriesInfo != null && mProgramSeriesInfo.getData() != null &&
+                    index < mProgramSeriesInfo.getData().size()) {
                 mIndex = index;
             } else {
                 mIndex = 0;
             }
-            if(position >= 0){
+            if (position >= 0) {
                 mPosition = position;
             }
             removeCallbacks(playLiveRunnable);
@@ -285,6 +290,11 @@ public class LivePlayView extends RelativeLayout {
     @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
+        setVisibleChange(visibility);
+    }
+
+
+    private void setVisibleChange(int visibility) {
         if (visibility == View.GONE) {
             releaseVideoPlayer();
         } else if (visibility == View.VISIBLE) {
@@ -350,6 +360,8 @@ public class LivePlayView extends RelativeLayout {
             centerTextView.setLayoutParams(layoutParams);
             addView(centerTextView, layoutParams);
         }
+
+        Navigation.get().attach(this);
     }
 
     @Override
@@ -415,16 +427,19 @@ public class LivePlayView extends RelativeLayout {
     }
 
     private void playVideo() {
+        if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playRunnable);
         postDelayed(playRunnable, 2000);
     }
 
     private void playLiveVideo() {
+        if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
         postDelayed(playLiveRunnable, 2000);
     }
 
     private void startPlayPermissionsCheck(ProgramInfo programInfo) {
+        if (!Navigation.get().isCurrentPage(mUUID)) return;
         if (liveState != STATE_NOT_STARTED && liveState != STATE_PERMISSION_FAIL) {
             return;
         }
@@ -449,9 +464,8 @@ public class LivePlayView extends RelativeLayout {
     private boolean isLive() {
         return !TextUtils.isEmpty(mProgramInfo.getPlayUrl()) && CmsLiveUtil.isInPlay(
                 mProgramInfo.getLiveLoopType(), mProgramInfo.getLiveParam(), mProgramInfo
-                .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
+                        .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
     }
-
 
     private void timer() {
         LiveTimingUtil.endTime(mProgramInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
@@ -462,12 +476,20 @@ public class LivePlayView extends RelativeLayout {
                     centerTextView.setText("暂无播放");
                     releaseVideoPlayer();
                 }
-                if(getVisibility() == View.VISIBLE){
+                if (getVisibility() == View.VISIBLE) {
                     NewTVLauncherPlayerViewManager.getInstance().release();
                 }
-
             }
         });
+    }
+
+    @Override
+    public void onChange(String uuid) {
+        if (!TextUtils.isEmpty(mUUID) && mUUID.equals(uuid)) {
+            setVisibleChange(VISIBLE);
+        } else {
+            setVisibleChange(GONE);
+        }
     }
 
     private static class PlayInfo {
