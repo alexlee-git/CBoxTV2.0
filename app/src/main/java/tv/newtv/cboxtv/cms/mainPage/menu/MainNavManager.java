@@ -374,11 +374,10 @@ public class MainNavManager implements IMainPageView,
         }
 
         if (mCurrentShowFragment != null) {
-            transaction.detach(mCurrentShowFragment).attach(willShowFragment)
-                    .commitAllowingStateLoss();
-        } else {
-            transaction.show(willShowFragment).commitAllowingStateLoss();
+            transaction.remove(mCurrentShowFragment);
         }
+        transaction.show(willShowFragment).commitAllowingStateLoss();
+
 
         willShowFragment.setUseHint(true);
 

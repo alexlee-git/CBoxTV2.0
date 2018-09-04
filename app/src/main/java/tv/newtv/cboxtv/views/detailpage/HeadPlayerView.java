@@ -438,9 +438,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     .LOG_NODE_COLLECT, "0," +
                                                                     mInfo.getContentUUID());
                                                             Toast.makeText(getContext()
-                                                                            .getApplicationContext(), "收藏成功",
-                                                                    Toast
-                                                                            .LENGTH_SHORT)
+                                                                            .getApplicationContext(),
+                                                                    "收藏成功",
+                                                                    Toast.LENGTH_SHORT)
                                                                     .show();
                                                         }
 

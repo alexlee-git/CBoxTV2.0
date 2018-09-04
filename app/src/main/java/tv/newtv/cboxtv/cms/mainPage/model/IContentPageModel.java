@@ -9,4 +9,5 @@ package tv.newtv.cboxtv.cms.mainPage.model;
  */
 public interface IContentPageModel {
     void requestContentData(String uuid);
+    void  destroy();
 }

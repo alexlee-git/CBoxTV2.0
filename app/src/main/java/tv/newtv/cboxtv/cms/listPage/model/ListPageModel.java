@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.cms.util.LogUtils;
 public class ListPageModel extends BaseRequestModel implements IListPageModel {
     private static final String LISTPAGE_URL = "%s%s/%s/%s/%s.json";
     private IListPagePresenter mPresenter;
+    private Disposable mDisposable;
 
     public ListPageModel(IListPagePresenter mPresenter, Context context) {
         super(context);
@@ -84,6 +85,18 @@ public class ListPageModel extends BaseRequestModel implements IListPageModel {
         } catch (Exception e) {
             LogUtils.e(e);
             LogUtils.e("请求详情页数据出现异常");
+        }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        mPresenter = null;
+        if(mDisposable != null){
+            if(!mDisposable.isDisposed()){
+                mDisposable.dispose();
+            }
+            mDisposable = null;
         }
     }
 
@@ -145,7 +158,7 @@ public class ListPageModel extends BaseRequestModel implements IListPageModel {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        mDisposable = d;
                     }
 
                     @Override

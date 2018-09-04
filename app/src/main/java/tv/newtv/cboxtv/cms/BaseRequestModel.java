@@ -31,6 +31,11 @@ public class BaseRequestModel {
         mGson = new Gson();
     }
 
+    public void destroy(){
+        mGson = null;
+        mContext = null;
+    }
+
     protected Gson getGson(){
         return mGson;
     }

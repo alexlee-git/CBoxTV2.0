@@ -16,11 +16,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
-import tv.newtv.cboxtv.BgChangManager;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
@@ -28,14 +25,12 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.MainPageManager;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
-import tv.newtv.cboxtv.cms.mainPage.menu.BGEvent;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.mainPage.presenter.ContentpagePresenter;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
-import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.views.ScrollSpeedLinearLayoutManger;
 
 /**
@@ -81,11 +76,31 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
         return fragment;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mRecyclerView != null) {
+            mRecyclerView.setAdapter(null);
+            mRecyclerView = null;
+        }
+        if (mPresenter != null) {
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+        adapter = null;
+        loadingView = null;
+        contentView = null;
+        mSharedPreferences = null;
+        mDatas = null;
+
+    }
+
     public boolean isNoTopView() {
         if (mRecyclerView != null) {
             LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
             if (manager != null) {
-                if (manager.findFirstVisibleItemPosition() == 0 && mRecyclerView.getScrollState() == RecyclerView
+                if (manager.findFirstVisibleItemPosition() == 0 && mRecyclerView.getScrollState()
+                        == RecyclerView
                         .SCROLL_STATE_IDLE) {
                     View view = FocusFinder.getInstance().findNextFocus((ViewGroup) mRecyclerView
                                     .getChildAt(0),
@@ -319,7 +334,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
         if (mDatas != null && mDatas.size() > 0 && mRecyclerView != null && mRecyclerView.getAdapter
                 () != null && mRecyclerView.getAdapter().getItemCount() > 0) {
-             return;
+            return;
         }
 
         if (loadingView != null)
@@ -328,8 +343,8 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
         if (TextUtils.isEmpty(contentId)) {
             onFailed("暂无数据内容。");
         } else {
-            mPresenter.requestContentData(contentId);
-
+            if (mPresenter != null)
+                mPresenter.requestContentData(contentId);
         }
     }
 
@@ -386,7 +401,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
             mDatas.addAll(moduleInfoResult.getDatas());
         }
         // 设置背景图片
-        changeBG(moduleInfoResult,contentId);
+        changeBG(moduleInfoResult, contentId);
 
         updateRecycleView();
     }
@@ -433,7 +448,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
     @Override
     public void destroyItem() {
-        if(adapter != null){
+        if (adapter != null) {
             adapter.destroyItem();
         }
     }

@@ -42,4 +42,13 @@ public class ListPagePresenter implements IListPagePresenter {
             mListPageModel.requestPageListNav(url);
         }
     }
+
+    @Override
+    public void destroy() {
+        mListPageView = null;
+        if(mListPageModel != null){
+            mListPageModel.destroy();
+            mListPageModel = null;
+        }
+    }
 }

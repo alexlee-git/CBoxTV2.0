@@ -37,6 +37,23 @@ public class NavFragment extends BaseFragment {
 
     private String mExternalAction, mExternalParams;
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mRootLayout = null;
+        if(mMenuNav != null){
+            mMenuNav.setAdapter(null);
+            mMenuNav = null;
+        }
+        if(viewPager != null){
+            viewPager.destroy();
+            viewPager = null;
+        }
+        rootView = null;
+        mainListPageManager.unInit();
+        mainListPageManager = null;
+    }
+
     public static NavFragment newInstance(Bundle paramBundle) {
         NavFragment fragment = new NavFragment();
         fragment.setArguments(paramBundle);
@@ -134,10 +151,7 @@ public class NavFragment extends BaseFragment {
         mSharedPreferences = getContext().getSharedPreferences("config", 0);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+
 
     @Override
     public boolean onBackPressed() {
