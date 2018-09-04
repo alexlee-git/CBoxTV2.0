@@ -35,6 +35,7 @@ import tv.newtv.cboxtv.cms.util.LogUtils;
 public class ContentPageModelImpl extends BaseRequestModel implements IContentPageModel {
 
     private IContentPagePresenter mPresenter;
+    private Disposable mDisposable;
 
     public ContentPageModelImpl(Context context, IContentPagePresenter pagePresenter) {
         super(context);
@@ -114,7 +115,7 @@ public class ContentPageModelImpl extends BaseRequestModel implements IContentPa
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        mDisposable = d;
                     }
 
                     @Override
@@ -149,5 +150,17 @@ public class ContentPageModelImpl extends BaseRequestModel implements IContentPa
                         Log.d(ContentPageModelImpl.class.getSimpleName(), "onComplete ...");
                     }
                 });
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        mPresenter = null;
+        if(mDisposable != null){
+            if(!mDisposable.isDisposed()){
+                mDisposable.dispose();
+            }
+            mDisposable = null;
+        }
     }
 }

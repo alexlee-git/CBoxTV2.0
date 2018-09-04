@@ -271,8 +271,15 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Navigation.get().attach(this);
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        Navigation.get().detach(this);
     }
 
     public boolean isVideoType() {
@@ -360,8 +367,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             centerTextView.setLayoutParams(layoutParams);
             addView(centerTextView, layoutParams);
         }
-
-        Navigation.get().attach(this);
     }
 
     @Override
@@ -485,7 +490,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void onChange(String uuid) {
-        if (!TextUtils.isEmpty(mUUID) && mUUID.equals(uuid)) {
+        if (Navigation.get().isCurrentPage(mUUID)) {
             setVisibleChange(VISIBLE);
         } else {
             setVisibleChange(GONE);

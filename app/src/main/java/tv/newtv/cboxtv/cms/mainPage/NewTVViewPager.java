@@ -22,6 +22,10 @@ public class NewTVViewPager extends ViewPager {
         this(context, null);
     }
 
+    public void destroy(){
+        mScroller = null;
+    }
+
 
     public NewTVViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);

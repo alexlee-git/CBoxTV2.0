@@ -46,7 +46,6 @@ public class MainListPageManager implements ListPageView,
         INotifyNavItemSelectedListener,
         INotifyNoPageDataListener {
 
-    private static MainListPageManager mInstance;
     private String mCurNavDataFrom;
     private FragmentManager fragmentManager;
     private IListPagePresenter mPresenter;
@@ -69,18 +68,27 @@ public class MainListPageManager implements ListPageView,
     private int Navbarfoused = -1;
     private String contentId;
 
-    public MainListPageManager() {
+    public void unInit() {
+        mViewPager = null;
+        mNavBar = null;
+        currentFragment = null;
+        mViewPagerAdapter = null;
+        mCurNavDataFrom = null;
+        navFragment = null;
+        mSharedPreferences = null;
+        mNavBar = null;
+        mCircleMenuRv = null;
+        mContext = null;
+        mPresenter = null;
+
+        if (mNavInfos != null) {
+            mNavInfos.clear();
+            mNavInfos = null;
+        }
     }
 
-    public static MainListPageManager getInstance() {
-        if (mInstance == null) {
-            synchronized (MainListPageManager.class) {
-                if (mInstance == null) {
-                    mInstance = new MainListPageManager();
-                }
-            }
-        }
-        return mInstance;
+    public MainListPageManager() {
+
     }
 
     // 外部跳转action、params
@@ -500,18 +508,6 @@ public class MainListPageManager implements ListPageView,
     public boolean isDataFromServer() {
         Log.e(Constant.TAG, "当前导航数据来自 : " + mCurNavDataFrom);
         return TextUtils.equals(mCurNavDataFrom, "server");
-    }
-
-    public void unInit() {
-        mViewPager = null;
-        mNavBar = null;
-        mViewPagerAdapter = null;
-        mCurNavDataFrom = null;
-
-        if (mNavInfos != null) {
-            mNavInfos.clear();
-            mNavInfos = null;
-        }
     }
 
     static class ListPageMenuViewHolder extends RecyclerView.ViewHolder {
