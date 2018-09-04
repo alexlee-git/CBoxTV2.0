@@ -39,7 +39,6 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
 import tv.newtv.cboxtv.cms.util.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.GlideRoundTransform;
 import tv.newtv.cboxtv.cms.util.GlideUtil;
 import tv.newtv.cboxtv.cms.util.ImageUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
@@ -66,6 +65,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
     private String PicassoTag = "";
+    private String PlayerUUID = "";
     private int bottomMargin = 0;
     private boolean showFirstTitle = false;
     private List<UniversalViewHolder> holderList = new java.util.ArrayList();
@@ -85,6 +85,10 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         return "cell_" + layoutId + "_1";
     }
 
+    public void setPlayerUUID(String uuid){
+        PlayerUUID = uuid;
+    }
+
     public void setPicassoTag(String tag) {
         PicassoTag = tag;
     }
@@ -98,8 +102,9 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     public UniversalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // 根据viewType获取相应的布局文件
         int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType(viewType);
-        UniversalViewHolder holder = new UniversalViewHolder(LayoutInflater.from(parent.getContext()).inflate
-                (layoutResId, parent,false));
+        UniversalViewHolder holder = new UniversalViewHolder(LayoutInflater.from(parent
+                .getContext()).inflate
+                (layoutResId, parent, false));
         holderList.add(holder);
         return holder;
     }
@@ -194,6 +199,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                     recycleImageView = (RecycleImageView) posterView;
                 } else if (posterView instanceof LivePlayView) {
                     ((LivePlayView) posterView).setProgramInfo(info);
+                    ((LivePlayView) posterView).setUUID(PlayerUUID);
                     recycleImageView = ((LivePlayView) posterView).getPosterImageView();
                 }
 
@@ -784,7 +790,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             return null;
         }
 
-        ViewGroup viewGroup = (ViewGroup)view;
+        ViewGroup viewGroup = (ViewGroup) view;
         LivePlayView livePlayView = null;
         int viewCount = viewGroup.getChildCount();
         for (int i = 0; i < viewCount; i++) {
@@ -796,8 +802,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         return livePlayView;
     }
 
-    public void destroyItem(){
-        for(UniversalViewHolder holder : holderList){
+    public void destroyItem() {
+        for (UniversalViewHolder holder : holderList) {
             holder.releaseImageView();
         }
     }

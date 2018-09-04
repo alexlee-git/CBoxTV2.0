@@ -38,10 +38,15 @@
         android:focusable="true"
         android:tag="cell_017_1">
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.LivePlayView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_480px"
-            android:tag="cell_017_1_poster"/>
+            android:tag="cell_017_1_poster">
+            <tv.newtv.cboxtv.views.RecycleImageView
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </tv.newtv.cboxtv.views.LivePlayView>
 
     </FrameLayout>
 

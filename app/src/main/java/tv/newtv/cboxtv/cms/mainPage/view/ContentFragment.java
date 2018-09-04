@@ -23,6 +23,7 @@ import java.util.List;
 import tv.newtv.cboxtv.BgChangManager;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.MainPageManager;
@@ -182,7 +183,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
     @Override
     protected void onVisible() {
         super.onVisible();
-
+        Navigation.get().setCurrentUUID(contentId);
         LogUtils.e(ContentFragment.class.getSimpleName(), "onVisible : " + param);
 
 //        if (mPresenter != null) {
@@ -408,6 +409,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
             adapter = new UniversalAdapter(LauncherApplication.AppContext, mDatas);
             adapter.setPicassoTag(contentId);
+            adapter.setPlayerUUID(contentId);
             Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
             Log.d("contentFragment", "setAdapter param=" + param + " data=" + mDatas);
             mRecyclerView.setAdapter(adapter);
