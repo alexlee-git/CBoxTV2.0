@@ -32,11 +32,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.views.CurrentPlayImageView;
 
 
@@ -47,7 +51,10 @@ import tv.newtv.cboxtv.views.CurrentPlayImageView;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/3
  */
-public class EpisodePageView extends RelativeLayout implements IEpisode, EpisodeChange {
+public class EpisodePageView extends RelativeLayout implements IEpisode, EpisodeChange, IAdConstract.IADConstractView {
+    private static final int DEFAULT_SIZE = 8;
+    private static final int HAS_AD_SIZE = 7;
+
     private static final String INFO_TEXT_TAG = "info_text";
     private ResizeViewPager ListPager;
     private FragmentManager mFragmentManager;
@@ -68,18 +75,27 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     private ProgramSeriesInfo mSeriesInfo;
 
+    private ADPresenter adPresenter;
+    private ADHelper.AD.ADItem adItem = null;
+    private int pageSize = DEFAULT_SIZE;
+
     public EpisodePageView(Context context) {
-        super(context);
+        this(context,null);
     }
 
     public EpisodePageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initalize(context);
+        this(context, attrs,0);
     }
 
     public EpisodePageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initalize(context);
+        getAD();
+    }
+
+    private void getAD() {
+        adPresenter = new ADPresenter(this);
+        adPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_CONTENTLIST,"");
     }
 
     @Override
@@ -117,10 +133,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             @Override
             public void run() {
                 int page = 0;
-                if (index > 7) {
-                    page = index / 8;
+                if (index >= pageSize) {
+                    page = index / pageSize;
                 }
-                int selectIndex = index > 7 ? index % 8 : index;
+                int selectIndex = index >= pageSize ? index % pageSize : index;
                 if (ListPager != null)
                     ListPager.setCurrentItem(page, selectIndex);
             }
@@ -406,27 +422,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     if (mSeriesInfo.getData().size() > 0) {
                         rightDir.setVisibility(View.VISIBLE);
                     }
-
-                    List<ProgramSeriesInfo.ProgramsInfo> results = mSeriesInfo.getData();
-                    int size = mSeriesInfo.getData().size();
-                    fragments = new ArrayList<>();
-                    List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
-                    for (int index = 0; index < size; index += 8) {
-                        int endIndex = index + 8;
-                        if (endIndex > size) {
-                            endIndex = size;
-                        }
-                        EpisodeFragment episodeFragment = new EpisodeFragment();
-                        episodeFragment.setData(results.subList(index, endIndex));
-                        episodeFragment.setViewPager(ListPager, fragments.size(), this);
-                        fragments.add(episodeFragment);
-                        pageItems.add(new EpisodePageAdapter.PageItem(String
-                                .format(Locale.getDefault(), "%d-%d", index + 1, endIndex)));
-                    }
-                    EpisodeAdapter episodeAdapter = new EpisodeAdapter(mFragmentManager, fragments);
-                    ListPager.setAdapter(episodeAdapter);
-                    pageItemAdapter.setPageData(pageItems, aiyaRecyclerView).notifyDataSetChanged();
-                    //ListPager.resetHeight(0);
+                    initFragment();
                 } else {
                     onLoadError("暂时没有数据");
                 }
@@ -435,6 +431,31 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             LogUtils.e(e.toString());
             onLoadError(e.getMessage());
         }
+    }
+
+    private void initFragment(){
+        List<ProgramSeriesInfo.ProgramsInfo> results = mSeriesInfo.getData();
+        int size = mSeriesInfo.getData().size();
+        fragments = new ArrayList<>();
+        List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
+        for (int index = 0; index < size; index += pageSize) {
+            int endIndex = index + pageSize;
+            if (endIndex > size) {
+                endIndex = size;
+            }
+            EpisodeFragment episodeFragment = new EpisodeFragment();
+            episodeFragment.setAdItem(adItem);
+            episodeFragment.setData(results.subList(index, endIndex));
+            episodeFragment.setViewPager(ListPager, fragments.size(), this);
+            fragments.add(episodeFragment);
+            pageItems.add(new EpisodePageAdapter.PageItem(String
+                    .format(Locale.getDefault(), "%d-%d", index + 1, endIndex)));
+        }
+        EpisodeAdapter episodeAdapter = new EpisodeAdapter(mFragmentManager, fragments);
+        ListPager.setAdapter(episodeAdapter);
+        pageItemAdapter.setPageData(pageItems, aiyaRecyclerView).notifyDataSetChanged();
+        requestLayout();
+        //ListPager.resetHeight(0);
     }
 
     @Override
@@ -614,6 +635,19 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         imageView.setIsPlaying(true);
         if (mOnEpisodeChange != null) {
             mOnEpisodeChange.onChange(index);
+        }
+    }
+
+    @Override
+    public void showAd(ADHelper.AD.ADItem item) {
+        adItem = item;
+//        item.AdUrl = "123";
+        if(!TextUtils.isEmpty(item.AdUrl)){
+            pageSize = HAS_AD_SIZE;
+            if(mSeriesInfo != null && mSeriesInfo.getData() != null
+                    && mSeriesInfo.getData().size() > 0){
+                initFragment();
+            }
         }
     }
 

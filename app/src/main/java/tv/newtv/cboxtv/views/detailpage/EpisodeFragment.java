@@ -19,8 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
+import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.ScaleUtils;
 import tv.newtv.cboxtv.views.CurrentPlayImageView;
 
@@ -32,6 +36,8 @@ import tv.newtv.cboxtv.views.CurrentPlayImageView;
  * 创建日期:          2018/5/3
  */
 public class EpisodeFragment extends Fragment {
+    private static final int DEFAULT_SIZE = 8;
+    private static final int HAS_AD_SIZE = 7;
 
     private static final String TAG = EpisodeFragment.class.getSimpleName();
     private List<ProgramSeriesInfo.ProgramsInfo> mData;
@@ -43,10 +49,9 @@ public class EpisodeFragment extends Fragment {
     private EpisodeChange mChange;
     private int currentIndex = -1;
     private List<ViewHolder> viewHolders = new ArrayList<>();
-
-    public EpisodeFragment() {
-        super();
-    }
+    private boolean hasAD = false;
+    private ADHelper.AD.ADItem adItem;
+    private int pageSize = DEFAULT_SIZE;
 
     public void destroy() {
         mData = null;
@@ -130,41 +135,75 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
-    private void updateUI() {
-        if (mData != null && contentView != null) {
+    private void updateUI(){
+        if(mData != null && contentView != null){
             Resources resources = getContext().getResources();
-            int Level = 0;
-            for (int index = 0; index < 8; index++) {
+            for(int index = 0;index < DEFAULT_SIZE;index++){
                 String model = "id_module_8_view" + (index + 1);
-                int id = resources.getIdentifier(model, "id",
-                        getContext().getPackageName());
+                int id = resources.getIdentifier(model,"id",getContext().getPackageName());
                 View view = contentView.findViewById(id);
-                if (index == 0) {
+                if(index == 0){
                     firstView = view;
-                } else if (index == 7) {
+                }else if(index == DEFAULT_SIZE - 1){
                     lastView = view;
                 }
-                ProgramSeriesInfo.ProgramsInfo item = getData(index);
-                if (item != null) {
-                    if (view != null) {
-                        if (view.getTop() != Level) {
-                            Level += view.getTop();
+
+                if(hasAD){
+                    if(index == 0){
+                        if(view != null){
+                            updateHolder(view,adItem);
+                            view.setVisibility(View.VISIBLE);
                         }
-                        ViewHolder holder = null;
-                        if (view.getTag(R.id.id_view_tag) == null) {
-                            holder = new ViewHolder(view, index);
-                            view.setTag(R.id.id_view_tag, holder);
-                        } else {
-                            holder = (ViewHolder) view.getTag(R.id.id_view_tag);
-                        }
-                        holder.update(item);
-                        viewHolders.add(holder);
-                        view.setVisibility(View.VISIBLE);
+                    }else {
+                        updateItem(view,index-1);
                     }
-                } else {
-                    view.setVisibility(View.GONE);
+                }else {
+                    updateItem(view,index);
                 }
             }
+        }
+    }
+
+    private<T> void updateHolder(View view,T t){
+        BaseHolder holder = null;
+        if(view.getTag(R.id.id_view_tag) ==  null){
+            holder = new ADHolder(view);
+            view.setTag(R.id.id_view_tag, holder);
+        }else {
+            holder = (ADHolder) view.getTag(R.id.id_view_tag);
+        }
+        holder.update(t);
+    }
+
+    private void updateItem(View view, int index){
+        ProgramSeriesInfo.ProgramsInfo item = getData(index);
+        if (item != null) {
+            if (view != null) {
+                ViewHolder holder = null;
+                if (view.getTag(R.id.id_view_tag) == null) {
+                    holder = new ViewHolder(view, index);
+                    view.setTag(R.id.id_view_tag, holder);
+                } else {
+                    holder = (ViewHolder) view.getTag(R.id.id_view_tag);
+                }
+                holder.update(item);
+                viewHolders.add(holder);
+                view.setVisibility(View.VISIBLE);
+            }
+        } else {
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    public void setHasAD(boolean hasAD) {
+        this.hasAD = hasAD;
+    }
+
+    public void setAdItem(ADHelper.AD.ADItem adItem) {
+        if(adItem != null && !TextUtils.isEmpty(adItem.AdUrl)){
+            this.pageSize = HAS_AD_SIZE;
+            setHasAD(true);
+            this.adItem = adItem;
         }
     }
 
@@ -189,58 +228,26 @@ public class EpisodeFragment extends Fragment {
         updateUI();
     }
 
-    private class ViewHolder {
-        CurrentPlayImageView PosterView;
-        ImageView FocusView;
-        TextView TitleView;
+    private class ViewHolder extends BaseHolder<ProgramSeriesInfo>{
         int mIndex;
-        private View itemView;
 
         ViewHolder(View view, int postion) {
-            itemView = view;
+            super(view);
             mIndex = postion;
-            view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-
-                    View viewMove  = view.findViewWithTag("tag_poster_title");
-                    if (viewMove!=null){
-                        viewMove.setSelected(b);
-                    }
-
-                    FocusView.setVisibility(b ? View.VISIBLE : View.GONE);
-                    if (b) {
-                        ScaleUtils.getInstance().onItemGetFocus(itemView);
-                    } else {
-                        ScaleUtils.getInstance().onItemLoseFocus(itemView);
-                    }
-                }
-            });
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     performClick();
                 }
             });
+        }
 
-            PosterView = view.findViewWithTag("tag_poster_image");
-            ViewGroup.LayoutParams posterLayoutPara = PosterView.getLayoutParams();
-
-            PosterView.setLayoutParams(posterLayoutPara);
-            PosterView.requestLayout();
-
-
-            FocusView = view.findViewWithTag("tag_img_focus");
-
-            ViewGroup.LayoutParams layoutParams = FocusView.getLayoutParams();
-            layoutParams.height = PosterView.getLayoutParams().height + 2 * getResources()
-                    .getDimensionPixelOffset(R.dimen.width_17dp);
-            layoutParams.width = PosterView.getLayoutParams().width + 2 * getResources()
-                    .getDimensionPixelOffset(R.dimen.width_17dp);
-            FocusView.setLayoutParams(layoutParams);
-            FocusView.requestLayout();
-
-            TitleView = view.findViewWithTag("tag_poster_title");
+        @Override
+        protected void onFocusChange(View view, boolean b) {
+            View viewMove  = view.findViewWithTag("tag_poster_title");
+            if (viewMove!=null){
+                viewMove.setSelected(b);
+            }
         }
 
         public void destroy() {
@@ -252,7 +259,7 @@ public class EpisodeFragment extends Fragment {
 
         public void performClick() {
             if (mChange != null) {
-                mChange.onChange(PosterView, mPosition * 8 + mIndex);
+                mChange.onChange(PosterView, mPosition * pageSize + mIndex);
             }
         }
 
@@ -286,4 +293,81 @@ public class EpisodeFragment extends Fragment {
             }
         }
     }
+
+
+    private class ADHolder extends BaseHolder<ADHelper.AD.ADItem>{
+
+        public ADHolder(View view) {
+            super(view);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(mData != null && !TextUtils.isEmpty(mData.eventContent)){
+                        AdEventContent adEventContent = GsonUtil.fromjson(mData.eventContent, AdEventContent.class);
+                        JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
+                                adEventContent.contentUUID, adEventContent.actionURI);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void update(ADHelper.AD.ADItem adItem){
+            if(!TextUtils.isEmpty(adItem.AdUrl)){
+                Picasso.with(getContext())
+                        .load(adItem.AdUrl)
+                        .resize(384, 216)
+                        .transform(new PosterCircleTransform(getActivity(), 4))
+                        .into(PosterView);
+            }
+        }
+    }
+
+    private class BaseHolder<T>{
+        protected CurrentPlayImageView PosterView;
+        protected ImageView FocusView;
+        protected View itemView;
+        protected TextView TitleView;
+        protected T mData;
+
+        public BaseHolder(View view){
+            this.itemView = view;
+            view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    BaseHolder.this.onFocusChange(view,b);
+                    FocusView.setVisibility(b ? View.VISIBLE : View.GONE);
+                    if (b) {
+                        ScaleUtils.getInstance().onItemGetFocus(itemView);
+                    } else {
+                        ScaleUtils.getInstance().onItemLoseFocus(itemView);
+                    }
+                }
+            });
+            PosterView = view.findViewWithTag("tag_poster_image");
+            ViewGroup.LayoutParams posterLayoutPara = PosterView.getLayoutParams();
+
+            PosterView.setLayoutParams(posterLayoutPara);
+            PosterView.requestLayout();
+
+
+            FocusView = view.findViewWithTag("tag_img_focus");
+
+            ViewGroup.LayoutParams layoutParams = FocusView.getLayoutParams();
+            layoutParams.height = PosterView.getLayoutParams().height + 2 * getResources()
+                    .getDimensionPixelOffset(R.dimen.width_17dp);
+            layoutParams.width = PosterView.getLayoutParams().width + 2 * getResources()
+                    .getDimensionPixelOffset(R.dimen.width_17dp);
+            FocusView.setLayoutParams(layoutParams);
+            FocusView.requestLayout();
+            TitleView = view.findViewWithTag("tag_poster_title");
+        }
+
+        protected void onFocusChange(View view, boolean b){}
+
+        public void update(T item){
+            this.mData = item;
+        }
+    }
+
 }
