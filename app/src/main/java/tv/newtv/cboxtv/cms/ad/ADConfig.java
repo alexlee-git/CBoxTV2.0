@@ -2,8 +2,8 @@ package tv.newtv.cboxtv.cms.ad;
 
 import android.text.TextUtils;
 
-import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.cms.mainPage.model.NavInfoResult;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ADConfig {
 
@@ -11,7 +11,7 @@ public class ADConfig {
     private String secondColumnId; //二级栏目
     private String categoryIds;
     private String seriesID;
-    private ColumnListener listener;
+    private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
 
@@ -77,16 +77,19 @@ public class ADConfig {
         }
         setColumnId(column.toString());
         setSecondColumnId(secondColumn.toString());
+
+        for(ColumnListener listener : listenerList){
+            listener.receive();
+        }
+        listenerList.clear();
     }
 
     public void setListener(ColumnListener listener) {
-        this.listener = listener;
+        listenerList.add(listener);
     }
 
     public void removeListener(ColumnListener listener){
-        if(this.listener == listener){
-            this.listener = null;
-        }
+        listenerList.remove(listener);
     }
 
     public interface ColumnListener{
@@ -100,11 +103,11 @@ public class ADConfig {
     @Override
     public String toString() {
         return "ADConfig{" +
-                ", columnId='" + columnId + '\'' +
+                "columnId='" + columnId + '\'' +
                 ", secondColumnId='" + secondColumnId + '\'' +
                 ", categoryIds='" + categoryIds + '\'' +
                 ", seriesID='" + seriesID + '\'' +
-                ", listener=" + listener +
+                ", listenerList=" + listenerList +
                 '}';
     }
 }
