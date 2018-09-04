@@ -5,7 +5,7 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+
 
 public class GlideUtil {
 
@@ -14,24 +14,21 @@ public class GlideUtil {
 
         imageView.setTag(null);
 
-        RequestOptions options = new RequestOptions();
+
 
         if (isCorner) {
-            options.transform(new GlideRoundTransform(context));
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .transform(new GlideRoundTransform(context))
+                    .placeholder(placeHolderResId)
+                    .error(errorResId)
+                    .into(imageView);
+        } else {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .placeholder(placeHolderResId)
+                    .error(errorResId)
+                    .into(imageView);
         }
-
-        if (placeHolderResId != 0) {
-            options.placeholder(placeHolderResId);
-        }
-
-        if (errorResId != 0) {
-            options.error(errorResId);
-        }
-
-        Glide.with(imageView.getContext())
-                .load(url)
-                .apply(options)
-                .into(imageView);
-
     }
 }

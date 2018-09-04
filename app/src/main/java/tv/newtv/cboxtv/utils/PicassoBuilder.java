@@ -7,16 +7,9 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
 
 /**
  * 项目名称:         CBoxTV

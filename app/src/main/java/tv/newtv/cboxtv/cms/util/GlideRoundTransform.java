@@ -2,7 +2,6 @@ package tv.newtv.cboxtv.cms.util;
 
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -11,9 +10,7 @@ import android.graphics.RectF;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils;
 
-import java.security.MessageDigest;
 
 import tv.newtv.cboxtv.cms.details.model.DensityUtil;
 
@@ -26,14 +23,14 @@ public class GlideRoundTransform extends BitmapTransformation {
     }
 
     public GlideRoundTransform(Context context, int dp) {
-        //super(context);
+        super(context);
         this.radius = DensityUtil.dp2px(context.getApplicationContext(), dp); // 圆角半径
     }
 
     @Override
     protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-        Bitmap bitmap = TransformationUtils.centerCrop(pool, toTransform, outWidth, outHeight);
-        return roundCrop(pool, bitmap);
+        //Bitmap bitmap = TransformationUtils.centerCrop(pool, toTransform, outWidth, outHeight);
+        return roundCrop(pool, toTransform);
     }
 
     private static Bitmap roundCrop(BitmapPool pool, Bitmap source) {
@@ -55,11 +52,6 @@ public class GlideRoundTransform extends BitmapTransformation {
 
     public String getId() {
         return getClass().getName() + Math.round(radius);
-    }
-
-    @Override
-    public void updateDiskCacheKey(MessageDigest messageDigest) {
-
     }
 
 }
