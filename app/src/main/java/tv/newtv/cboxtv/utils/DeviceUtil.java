@@ -23,6 +23,7 @@ public class DeviceUtil {
     public static final String XUN_MA = "xunma";
     public static final String XSJ = "xsj";
     public static final String CBOXTEST = "cboxtest";
+    public static final String FEILIERDE = "feilierde";
 
     public static boolean isSelfDevice() {
         if (BuildConfig.DEBUG) {
@@ -43,6 +44,8 @@ public class DeviceUtil {
         } else if (BuildConfig.FLAVOR.equals(XSJ)) {
             return true;
         } else if (BuildConfig.FLAVOR.equals(CBOXTEST)) {
+            return true;
+        } else if (BuildConfig.FLAVOR.equals(FEILIERDE)) {
             return true;
         }
         return false;
