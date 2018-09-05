@@ -246,7 +246,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
             }
 
             @Override
-            public void AllPalyComplete(boolean isError, String info, VideoPlayerView
+            public void AllPlayComplete(boolean isError, String info, VideoPlayerView
                     videoPlayerView) {
                 if (!isError) {
                     mVideoView.onComplete();

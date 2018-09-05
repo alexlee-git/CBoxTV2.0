@@ -454,7 +454,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     }
 
     @Override
-    public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
 
     }
 

@@ -96,5 +96,6 @@
     <string name="collect_success">收藏成功,请到我的收藏中查看</string>
     <string name="subscribe_success">订阅成功,请到我的订阅中查看</string>
     <string name="attention_success">关注成功,请到我的关注中查看</string>
+    <string name="new_version_tip">亲爱的用户: 能享受新版本的服务了,更新如下:</string>
 
 </resources>

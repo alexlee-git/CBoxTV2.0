@@ -238,7 +238,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
             }
 
             @Override
-            public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+            public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
                 mVideoView.release();
             }
 

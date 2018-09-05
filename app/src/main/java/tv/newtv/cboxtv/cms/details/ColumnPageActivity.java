@@ -146,7 +146,7 @@ public class ColumnPageActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void AllPalyComplete(boolean isError, String info, VideoPlayerView
+                    public void AllPlayComplete(boolean isError, String info, VideoPlayerView
                             videoPlayerView) {
                         if (!isError) {
                             videoPlayerView.onComplete();
