@@ -202,10 +202,9 @@ dependencies {
     //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     //    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 
-    implementation ('com.github.bumptech.glide:glide:3.8.0') {
+    implementation ('jp.wasabeef:glide-transformations:3.3.0') {
         exclude group: "com.android.support"
     }
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
 }
 
 
