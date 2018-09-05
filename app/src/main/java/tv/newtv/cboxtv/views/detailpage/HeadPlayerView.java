@@ -439,7 +439,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     mInfo.getContentUUID());
                                                             Toast.makeText(getContext()
                                                                             .getApplicationContext(),
-                                                                    "收藏成功",
+                                                                    R.string.collect_success,
                                                                     Toast.LENGTH_SHORT)
                                                                     .show();
                                                         }
@@ -510,7 +510,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                 .SetUseing(true);
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
-                                                                                "添加订阅成功", Toast
+                                                                                R.string.subscribe_success,
+                                                                                Toast
                                                                                         .LENGTH_SHORT).show();
                                                                         RxBus.get().post(Constant
                                                                                         .UPDATE_UC_DATA,

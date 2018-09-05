@@ -458,7 +458,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
                                     isCollect = true;
                                     LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0,"+entity.getContentUUID());
                                     mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
-                                    Toast.makeText(getApplicationContext(), "添加收藏成功", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), R.string.collect_success, Toast.LENGTH_SHORT).show();
                                     RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                                 }
                             });
