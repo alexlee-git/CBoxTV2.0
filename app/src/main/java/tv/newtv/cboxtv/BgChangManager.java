@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -37,6 +39,17 @@ public class BgChangManager {
 
     private Map<String,BGEvent> secondLevelMap = new HashMap<>();
     private List<BGEvent> firstLevel = new ArrayList<>();
+
+    private Context applicationContext;
+    private int retry = 0;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            if(++retry < 10){
+                setCurrent(applicationContext,mCurrentId);
+            }
+        }
+    };
 
     public static BgChangManager getInstance() {
         if (instance == null) {
@@ -150,6 +163,13 @@ public class BgChangManager {
      */
     public void setCurrent(Context context, String uuid) {
         mCurrentId = uuid;
+        handler.removeCallbacksAndMessages(null);
+        if(secondLevelMap.get(uuid) == null){
+            applicationContext = context.getApplicationContext();
+            handler.sendEmptyMessageDelayed(0,1000);
+            return;
+        }
+        retry = 0;
         dispatchEvent(context, secondLevelMap.get(uuid));
     }
 

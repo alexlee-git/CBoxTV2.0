@@ -250,6 +250,14 @@ public class MainListPageManager implements ListPageView,
                 public void onItemSelected(int position, NavListPageInfoResult.NavInfo
                         value) {
                     if (mNavInfos.size() == 0) return;
+
+                    int select = position % mNavListPageInfoResult.getData().size();
+                    NavListPageInfoResult.NavInfo navInfo = ((List<NavListPageInfoResult
+                            .NavInfo>) mNavListPageInfoResult.getData()).get(select);
+                    String uuid = getContentUUID(navInfo);
+                    BgChangManager.getInstance().setCurrent(mContext,uuid);
+                    PlayerConfig.getInstance().setSecondChannelId(uuid);
+
                     if (mViewPager.getCurrentItem() % mNavInfos.size() == position % mNavInfos.size()) {
                         return;
                     }
@@ -257,15 +265,9 @@ public class MainListPageManager implements ListPageView,
                     mViewPager.setCurrentItem(position);
                     currentFocus = value.getContentID();
                     /**/
-                    int select = position % mNavListPageInfoResult.getData().size();
-                    NavListPageInfoResult.NavInfo navInfo = ((List<NavListPageInfoResult
-                            .NavInfo>) mNavListPageInfoResult.getData()).get(select);
-                    String uuid = getContentUUID(navInfo);
                     if (!TextUtils.isEmpty(uuid)) {
                         mSharedPreferences.edit().putString("page-defaultFocus", uuid).apply();
                     }
-                    PlayerConfig.getInstance().setSecondChannelId(uuid);
-                    BgChangManager.getInstance().setCurrent(mContext,uuid);
                 }
 
                 @Override

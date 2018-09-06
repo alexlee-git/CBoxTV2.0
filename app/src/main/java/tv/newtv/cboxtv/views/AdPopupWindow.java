@@ -19,12 +19,10 @@ import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.ScreenUtils;
 
 public class AdPopupWindow extends PopupWindow implements IAdConstract.IADConstractView {
-    private Context context;
     private ADPresenter adPresenter;
     private ImageView imageView;
 
     public void show(Context context,View parent){
-        this.context = context.getApplicationContext();
         View popView = LayoutInflater.from(context).inflate(R.layout.layout_ad_pop,null);
         imageView = popView.findViewById(R.id.image);
         setContentView(popView);
@@ -44,7 +42,7 @@ public class AdPopupWindow extends PopupWindow implements IAdConstract.IADConstr
     @Override
     public void showAd(ADHelper.AD.ADItem item) {
         if(!TextUtils.isEmpty(item.AdUrl)){
-            Picasso.with(context).load(item.AdUrl).into(imageView);
+            Picasso.get().load(item.AdUrl).into(imageView);
         }else {
             dismiss();
 //            imageView.setImageResource(R.drawable.about_logo);
