@@ -50,14 +50,14 @@ public class GlideUtil {
         if (isCorner) {
             RequestOptions options1 = RequestOptions.bitmapTransform(new RoundedCornersTransformation(4, 0));
             options1.placeholder(placeHolderResId).error(errorResId);
-            Glide.with(imageView.getContext())
+            Glide.with(context)
                     .load(url)
                     .apply(options1)
                     .listener(requestListener)
                     .into(imageView);
         } else {
             RequestOptions options2 = new RequestOptions().placeholder(placeHolderResId).error(errorResId);
-            Glide.with(imageView.getContext())
+            Glide.with(context)
                     .load(url)
                     .apply(options2)
                     .listener(requestListener)

@@ -159,7 +159,16 @@ public class BgChangManager {
      * @param uuid
      * @param url
      */
-    private void loadImage(final Context context, final String uuid, final String url) {
+    private void loadImage(Context context, String uuid, String url) {
+        if (BuildConfig.DEBUG) {
+            if (url.contains("http://172.25.102.19/")) {
+                url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
+            }
+            if (url.contains("http://172.25.101.210/")) {
+                url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
+            }
+        }
+
         if (!bgHashmap.containsKey(uuid) || bgHashmap.get(uuid).drawable == null) {
             bgHashmap.put(uuid, new BGDrawable(url));
             requestImage(bgHashmap.get(uuid), context, uuid, url);
