@@ -50,8 +50,10 @@ public class NavFragment extends BaseFragment {
             viewPager = null;
         }
         rootView = null;
-        mainListPageManager.unInit();
-        mainListPageManager = null;
+        if (mainListPageManager != null) {
+            mainListPageManager.unInit();
+            mainListPageManager = null;
+        }
     }
 
     public static NavFragment newInstance(Bundle paramBundle) {

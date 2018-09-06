@@ -180,11 +180,15 @@ public class JumpUtil {
                 } else if (Constant.CONTENTTYPE_PG.equals(contentType)) {  //单节目
                     jumpIntent = new Intent(context, SingleDetailPageActivity.class);
                 } else if (Constant.CONTENTTYPE_CP.equals(contentType)) {  // 子节目
+                    //test
+                    jumpIntent = new Intent(context, SingleDetailPageActivity.class);
+                    /*
                     if (TextUtils.isEmpty(seriesSubUUID)) {
                         openCPVideo(context, contentUUID);
                     } else {
                         openCPVideo(context, contentUUID, seriesSubUUID);
                     }
+                     */
                 } else if (Constant.CONTENTTYPE_CG.equals(contentType)) {
 //                    jumpIntent = new Intent(context, ProgramListDetailActiviy.class);
                     jumpIntent = new Intent(context, ProgramCollectionActivity.class);
