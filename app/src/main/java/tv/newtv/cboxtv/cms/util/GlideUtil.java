@@ -2,20 +2,18 @@ package tv.newtv.cboxtv.cms.util;
 
 
 import android.content.Context;
-import android.graphics.Rect;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-
-import java.util.Locale;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import tv.newtv.cboxtv.BuildConfig;
@@ -23,6 +21,7 @@ import tv.newtv.cboxtv.BuildConfig;
 
 public class GlideUtil {
 
+    @SuppressWarnings("ConstantConditions")
     public static void loadImage(Context context, ImageView imageView, String url,
                                  int placeHolderResId, int errorResId, boolean isCorner) {
 
@@ -58,23 +57,20 @@ public class GlideUtil {
             }
         };
 
+        RequestOptions options = new RequestOptions()
+                .format(DecodeFormat.PREFER_RGB_565)
+                .dontAnimate()
+                .placeholder(placeHolderResId)
+                .error(errorResId);
+
         if (isCorner) {
-            RequestOptions options1 = RequestOptions.bitmapTransform(new
-                    RoundedCornersTransformation(4, 0))
-                    .placeholder(placeHolderResId).error(errorResId);
-            Glide.with(imageView.getContext())
-                    .load(url)
-                    .apply(options1)
-                    .listener(requestListener)
-                    .into(imageView);
-        } else {
-            RequestOptions options2 = new RequestOptions().placeholder(placeHolderResId).error
-                    (errorResId);
-            Glide.with(imageView.getContext())
-                    .load(url)
-                    .apply(options2)
-                    .listener(requestListener)
-                    .into(imageView);
+            options = options.transform(new RoundedCornersTransformation(4, 0));
         }
+
+        Glide.with(imageView.getContext())
+                .load(url)
+                .apply(options)
+                .listener(requestListener)
+                .into(imageView);
     }
 }
