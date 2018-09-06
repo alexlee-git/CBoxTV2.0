@@ -159,7 +159,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
 
         public void setData(ProgramInfo programInfo, Context mcontext) {
             int radius=mcontext.getResources().getDimensionPixelOffset(R.dimen.width_4px);
-            Picasso.with(LauncherApplication.AppContext)
+            Picasso.get()
                     .load(programInfo.getImg())
                     .transform(new PosterCircleTransform(mcontext, radius))
                     .into(poster);

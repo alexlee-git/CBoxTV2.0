@@ -28,7 +28,6 @@ import tv.newtv.cboxtv.BgChangManager;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.model.INotifyNavItemSelectedListener;
 import tv.newtv.cboxtv.cms.mainPage.model.INotifyNoPageDataListener;
@@ -43,7 +42,6 @@ import tv.newtv.cboxtv.cms.search.SearchFragment;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.utils.ScreenUtils;
 import tv.newtv.cboxtv.views.MenuRecycleView;
@@ -55,9 +53,8 @@ public class MainNavManager implements IMainPageView,
         INotifyNavItemSelectedListener,
         INotifyNoPageDataListener {
 
-    private final int DISPLAY_SIZE = 5;
-
     private static MainNavManager mInstance;
+    private final int DISPLAY_SIZE = 5;
     MenuRecycleView.MenuAdapter menuAdapter = null;
     private String mCurNavDataFrom;
     private IMainPagePresenter mPresenter;
@@ -216,7 +213,6 @@ public class MainNavManager implements IMainPageView,
             });
             mFirMenu.setAdapter(menuAdapter);
 
-
             int count = mNavInfos.size();
             boolean contain = false;
             for (int index = 0; index < count; index++) {
@@ -244,8 +240,8 @@ public class MainNavManager implements IMainPageView,
             }
             Log.e("--defaultPageIdx-------", Navbarfoused + "----" + defaultPageIdx);
 
-            menuAdapter.setMenuItems(mNavInfos, defaultPageIdx,
-                    mNavInfos.size() >= DISPLAY_SIZE? DISPLAY_SIZE: mNavInfos.size());
+            menuAdapter.setMenuItems(mNavInfos, defaultPageIdx, mNavInfos.size());
+//                    mNavInfos.size() >= DISPLAY_SIZE? DISPLAY_SIZE: mNavInfos.size());
         }
 //        mFirMenu.setOneMenuData(mNavInfos);
 
@@ -348,7 +344,7 @@ public class MainNavManager implements IMainPageView,
 
         BGEvent bgEvent = new BGEvent(navInfo.getContentID(), navInfo.getIsAd() == 1,
                 navInfo.getBackground());
-        BgChangManager.getInstance().dispatchFirstLevelEvent(mContext,bgEvent);
+        BgChangManager.getInstance().dispatchFirstLevelEvent(mContext, bgEvent);
 
         willShowFragment = (BaseFragment) mFragmentManager.findFragmentByTag(navInfo.getContentID
                 ());
@@ -378,11 +374,10 @@ public class MainNavManager implements IMainPageView,
         }
 
         if (mCurrentShowFragment != null) {
-            transaction.detach(mCurrentShowFragment).attach(willShowFragment)
-                    .commitAllowingStateLoss();
-        } else {
-            transaction.show(willShowFragment).commitAllowingStateLoss();
+            transaction.remove(mCurrentShowFragment);
         }
+        transaction.show(willShowFragment).commitAllowingStateLoss();
+
 
         willShowFragment.setUseHint(true);
 
@@ -469,10 +464,13 @@ public class MainNavManager implements IMainPageView,
         return mCurrentShowFragment;
     }
 
-    static class NavPageMenuViewHolder extends RecyclerView.ViewHolder {
+    static class NavPageMenuViewHolder extends MenuRecycleView.MenuViewHolder {
 
+        private static final int MODE_TEXT = 1;
+        private static final int MODE_IMAGE = 2;
         TextView title;
         RecycleImageView img;
+        private int currentMode;
 
         NavPageMenuViewHolder(View itemView) {
             super(itemView);
@@ -480,19 +478,39 @@ public class MainNavManager implements IMainPageView,
             img = itemView.findViewById(R.id.title_icon_nav);
         }
 
+        @Override
+        protected void setItemVisible(boolean show) {
+            if (!show) {
+                title.setVisibility(View.GONE);
+                img.setVisibility(View.GONE);
+            } else {
+                switch (currentMode) {
+                    case MODE_TEXT:
+                        title.setVisibility(View.VISIBLE);
+                        img.setVisibility(View.GONE);
+                        break;
+                    case MODE_IMAGE:
+                        title.setVisibility(View.GONE);
+                        img.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
         public void setText(String value) {
-            title.setVisibility(View.VISIBLE);
+            currentMode = MODE_TEXT;
+            title.setVisibility(isHidden ? View.GONE : View.VISIBLE);
             img.setVisibility(View.GONE);
             title.setText(value);
         }
 
         public void setImage(String url) {
+            currentMode = MODE_IMAGE;
             title.setVisibility(View.GONE);
-            img.setVisibility(View.VISIBLE);
+            img.setVisibility(isHidden ? View.GONE : View.VISIBLE);
             img.useResize(false).NoStore(false).hasCorner(false).load(url);
-//            Picasso.with(LauncherApplication.AppContext)
-//                    .load(url)
-//                    .into(img);
         }
     }
 

@@ -36,6 +36,29 @@ public abstract class BaseFragment extends RxFragment {
     private boolean useHint = false;
     private View contentView;
 
+    private Runnable lazyRunnable = new Runnable() {
+        @Override
+        public void run() {
+            lazyLoad();
+        }
+    };
+    private RecyclerView animRecyclerView;
+    private boolean isFinshAnim = true;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        animRecyclerView = null;
+        if (contentView != null) {
+            contentView.removeCallbacks(lazyRunnable);
+            lazyRunnable = null;
+            contentView = null;
+        }
+
+        mNotifyNoPageDataListener = null;
+    }
+
     public void setNotifyNoPageDataListener(INotifyNoPageDataListener l) {
         mNotifyNoPageDataListener = l;
     }
@@ -48,37 +71,29 @@ public abstract class BaseFragment extends RxFragment {
 
     }
 
-    public boolean isNoTopView(){
+    public boolean isNoTopView() {
         return false;
     }
 
     public abstract View getFirstFocusView();
-
-    private Runnable lazyRunnable = new Runnable() {
-        @Override
-        public void run() {
-            lazyLoad();
-        }
-    };
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         contentView = view;
         super.onViewCreated(view, savedInstanceState);
 //        if(isVisible) {
-            invokeLazyLoad();
+        invokeLazyLoad();
 //        }
     }
 
     private void invokeLazyLoad() {
-        if(contentView != null) {
-            contentView.postDelayed(lazyRunnable,POST_DELAY);
+        if (contentView != null) {
+            contentView.postDelayed(lazyRunnable, POST_DELAY);
         }
     }
 
-    private void clearLazyLoad(){
-        if(contentView != null){
+    private void clearLazyLoad() {
+        if (contentView != null) {
             contentView.removeCallbacks(lazyRunnable);
         }
     }
@@ -92,7 +107,7 @@ public abstract class BaseFragment extends RxFragment {
     @Override
     public Context getContext() {
         Context context = super.getContext();
-        if(context == null){
+        if (context == null) {
             return LauncherApplication.AppContext;
         }
         return context;
@@ -104,19 +119,6 @@ public abstract class BaseFragment extends RxFragment {
         if (!useHint) {
             isVisible = true;
             onVisible();
-        }
-    }
-
-    public boolean onBackPressed(){
-        return true;
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (!useHint) {
-            isVisible = false;
-            onInvisible();
         }
     }
 
@@ -139,6 +141,19 @@ public abstract class BaseFragment extends RxFragment {
 //        System.gc();
 //    }
 
+    public boolean onBackPressed() {
+        return true;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (!useHint) {
+            isVisible = false;
+            onInvisible();
+        }
+    }
+
     private void unbindDrawables(View view) {
         if (view.getBackground() != null) {
             view.getBackground().setCallback(null);
@@ -150,7 +165,7 @@ public abstract class BaseFragment extends RxFragment {
         }
     }
 
-    public void onEnterComplete(){
+    public void onEnterComplete() {
 
     }
 
@@ -187,23 +202,22 @@ public abstract class BaseFragment extends RxFragment {
         clearLazyLoad();
     }
 
-    private RecyclerView animRecyclerView;
-
     public void dispatchKeyEvent(KeyEvent event) {
 
 
-        switch (event.getKeyCode()){
+        switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
                 //recyclerView已经滚动到底部 并且当前选中的是最底下的view  执行动画
-                if(animRecyclerView != null && animRecyclerView.hasFocus()){
+                if (animRecyclerView != null && animRecyclerView.hasFocus()) {
                     boolean canScrollVertically = animRecyclerView.canScrollVertically(1);
-                    if(!canScrollVertically){
+                    if (!canScrollVertically) {
                         View focusedChild = animRecyclerView.getFocusedChild();
-                        if(focusedChild != null){
+                        if (focusedChild != null) {
                             int position = animRecyclerView.getChildAdapterPosition(focusedChild);
-                            Log.i(TAG, "position = "+position +",count="+animRecyclerView.getAdapter().getItemCount());
-                            if(++position == animRecyclerView.getAdapter().getItemCount()){
+                            Log.i(TAG, "position = " + position + ",count=" + animRecyclerView
+                                    .getAdapter().getItemCount());
+                            if (++position == animRecyclerView.getAdapter().getItemCount()) {
                                 startAnim();
                             }
                         }
@@ -212,15 +226,15 @@ public abstract class BaseFragment extends RxFragment {
                 break;
         }
     }
-    private boolean isFinshAnim = true;
 
-    private void startAnim(){
-        if(isFinshAnim){
-           isFinshAnim = false;
-        }else{
+    private void startAnim() {
+        if (isFinshAnim) {
+            isFinshAnim = false;
+        } else {
             return;
         }
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(animRecyclerView,"translationY",0,-50,0);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(animRecyclerView, "translationY",
+                0, -50, 0);
         objectAnimator.setDuration(400);
         objectAnimator.start();
         objectAnimator.addListener(new AnimatorListenerAdapter() {
@@ -238,20 +252,21 @@ public abstract class BaseFragment extends RxFragment {
         });
     }
 
-    public void setAnimRecyclerView(RecyclerView recyclerView){
+    public void setAnimRecyclerView(RecyclerView recyclerView) {
         this.animRecyclerView = recyclerView;
     }
 
     //根据需要更换背景图片
-    protected void changeBG(ModuleInfoResult moduleInfoResult,String contentId) {
+    protected void changeBG(ModuleInfoResult moduleInfoResult, String contentId) {
 //        if (isFromNav && (moduleInfoResult.getIsNav() == ModuleInfoResult.NAV_PAGE
 //                || moduleInfoResult.getIsNav() == ModuleInfoResult.SPECIAL_PAGE)) {
         BGEvent bgEvent = new BGEvent(contentId, moduleInfoResult.getIsAd() ==
                 ModuleInfoResult.IS_AD_PAGE,
                 moduleInfoResult.getPageBackground());
-        BgChangManager.getInstance().addEvent(getContext(),bgEvent);
+        BgChangManager.getInstance().addEvent(getContext(), bgEvent);
 //        }
     }
 
-    public void destroyItem(){}
+    public void destroyItem() {
+    }
 }

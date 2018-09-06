@@ -8,14 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="@dimen/width_264px"
-            android:layout_height="@dimen/height_37px"
-            android:layout_marginLeft="@dimen/width_34px"
-            android:layout_marginTop="@dimen/height_27px"
-            android:src="@drawable/logo"
-            android:layout_marginStart="@dimen/width_34px"
-            android:contentDescription="@string/logo"/>
+        <include
+            layout="@layout/left_top_logo"/>
+
         <FrameLayout
             android:id="@+id/id_detail_view"
             android:layout_width="@dimen/width_306px"

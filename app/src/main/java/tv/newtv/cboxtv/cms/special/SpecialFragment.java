@@ -40,6 +40,7 @@ import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
 import tv.newtv.cboxtv.cms.util.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
+import tv.newtv.cboxtv.cms.util.LogUtils;
 
 import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
@@ -49,6 +50,8 @@ import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
  */
 
 public class SpecialFragment extends Fragment implements SpecialContract.View, Target {
+    private static final String TAG = SpecialFragment.class.getSimpleName();
+
     private SpecialContract.Presenter mPresenter;
 
     private RelativeLayout mRootView;
@@ -187,7 +190,7 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
                     if (TextUtils.isEmpty(url)){
                         showPosterByCMS(moduleInfoResult);
                     }else{
-                        Picasso.with(getActivity()).load(url).into(SpecialFragment.this);
+                        Picasso.get().load(url).into(SpecialFragment.this);
                     }
                 }
             });
@@ -258,7 +261,7 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     private void showPosterByCMS(ModuleInfoResult moduleInfoResult) {
 
         if (!TextUtils.isEmpty(moduleInfoResult.getPageBackground())) {
-            Picasso.with(getActivity()).load(moduleInfoResult.getPageBackground()).into(this);
+            Picasso.get().load(moduleInfoResult.getPageBackground()).into(this);
         }
     }
 
@@ -283,7 +286,8 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     }
 
     @Override
-    public void onBitmapFailed(Drawable errorDrawable) {
+    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+        LogUtils.e(TAG, e.toString());
         if (isAdded()) {
             mRootView.setBackgroundResource(R.drawable.home_page_bg);
         }

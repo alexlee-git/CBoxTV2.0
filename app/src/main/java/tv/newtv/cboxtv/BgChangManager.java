@@ -159,7 +159,16 @@ public class BgChangManager {
      * @param uuid
      * @param url
      */
-    private void loadImage(final Context context, final String uuid, final String url) {
+    private void loadImage(Context context, String uuid, String url) {
+        if (BuildConfig.DEBUG) {
+            if (url.contains("http://172.25.102.19/")) {
+                url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
+            }
+            if (url.contains("http://172.25.101.210/")) {
+                url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
+            }
+        }
+
         if (!bgHashmap.containsKey(uuid) || bgHashmap.get(uuid).drawable == null) {
             bgHashmap.put(uuid, new BGDrawable(url));
             requestImage(bgHashmap.get(uuid), context, uuid, url);
@@ -179,7 +188,7 @@ public class BgChangManager {
      */
     private void requestImage(final BGDrawable bgDrawable, final Context context, final String uuid,
                               final String url) {
-        Picasso.with(context).load(url).into(new Target() {
+        Picasso.get().load(url).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 bgDrawable.drawable = new BitmapDrawable(context.getResources(), bitmap);
@@ -189,8 +198,8 @@ public class BgChangManager {
             }
 
             @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                mCallback.getTargetView().setBackground(null);
             }
 
             @Override

@@ -7,16 +7,9 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
 
 /**
  * 项目名称:         CBoxTV
@@ -67,20 +60,11 @@ public class PicassoBuilder {
         int cacheSize = maxMemory / 15;
         mLruCache = new LruCache(cacheSize);// 设置缓存大小
         //配置线程池
-        ExecutorService executorService = Executors.newFixedThreadPool(8);
-        //配置本地缓存
-        File file = FileUtil.getCacheDirectory(context,"cache_image");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cache(new Cache(file, cacheSize))
-                .build();
+        //ExecutorService executorService = Executors.newFixedThreadPool(8);
 
         Picasso picasso = new Picasso.Builder(context.getApplicationContext())
                 .memoryCache(mLruCache)
-                .downloader(new OkHttp3Downloader(client))
-                .executor(executorService)
+                //.executor(executorService)
                 .listener(new Picasso.Listener() {
                     @Override
                     public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {

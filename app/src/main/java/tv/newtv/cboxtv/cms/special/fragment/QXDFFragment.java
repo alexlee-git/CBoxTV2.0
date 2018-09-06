@@ -272,7 +272,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
                 holder.poster.setIsPlaying(moduleItem.getContentUUID().equals(currentUUID), false);
 //                holder.poster.setLoadImageUrl(moduleItem.getImg());
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
-                Picasso.with(holder.itemView.getContext())
+                Picasso.get()
                         .load(moduleItem.getImg())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .into(holder.poster);

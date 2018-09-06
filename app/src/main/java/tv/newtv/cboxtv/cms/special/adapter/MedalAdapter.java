@@ -47,7 +47,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
         }
         holder.tvCountry.setText(programInfo.getTitle());
         try {
-			Picasso.with(mContext).load(programInfo.getImg()).into(holder.ivCountry);
+			Picasso.get().load(programInfo.getImg()).into(holder.ivCountry);
 		}catch (Exception e){}
 
         setBackground(holder.itemView,position);

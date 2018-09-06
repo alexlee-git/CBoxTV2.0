@@ -203,7 +203,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                 super.showAd(type, url);
                 if (!TextUtils.isEmpty(url)){
                     exit_image.setVisibility(View.VISIBLE);
-                    Picasso.with(WarningExitActivity.this).load(url).into(exit_image);
+                    Picasso.get().load(url).into(exit_image);
                 }
             }
         });
@@ -237,7 +237,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                             String url = material.filePath;
                             LogUtils.i("mm", "url:" + url);
                             exit_image.setVisibility(View.VISIBLE);
-                            Picasso.with(WarningExitActivity.this).load(url).into(exit_image, new Callback() {
+                            Picasso.get().load(url).into(exit_image, new Callback() {
                                 @Override
                                 public void onSuccess() {
                                     if (material!=null&&item!=null) {
@@ -247,7 +247,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                                 }
 
                                 @Override
-                                public void onError() {
+                                public void onError(Exception e) {
 
                                 }
                             });

@@ -420,7 +420,7 @@ public class ColumnFragment extends BaseFragment {
                 } else {
                     mDataStatus = true;
                     mEmptyView.setVisibility(View.GONE);
-                    Picasso.with(mContext).load(mDatas.get(position).getPicurl()).transform(new PosterCircleTransform(mContext, 4)).fit().memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
+                    Picasso.get().load(mDatas.get(position).getPicurl()).transform(new PosterCircleTransform(mContext, 4)).fit().memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
                     holder.mTxtTitle.setText(mDatas.get(position).getName());
                     holder.mPosterTitle.setText(mDatas.get(position).getSubTitle());
                     holder.mFrameLayoutResultList.setOnFocusChangeListener(new View.OnFocusChangeListener() {

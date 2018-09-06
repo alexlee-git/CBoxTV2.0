@@ -20,9 +20,18 @@ public class ContentpagePresenter implements IContentPagePresenter {
 
     private ModuleInfoResult moduleInfoResult;
 
-    public ContentpagePresenter(Context context,IContentPageView view){
-        pageModel = new ContentPageModelImpl(context,this);
+    public ContentpagePresenter(Context context, IContentPageView view) {
+        pageModel = new ContentPageModelImpl(context, this);
         pageView = view;
+    }
+
+    public void destroy() {
+        pageView = null;
+        if (pageModel != null) {
+            pageModel.destroy();
+            pageModel = null;
+        }
+        moduleInfoResult = null;
     }
 
     @Override

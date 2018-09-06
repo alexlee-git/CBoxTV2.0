@@ -158,7 +158,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
         if (!isLive()) {
             ((TextView)contentView.findViewById(R.id.tv_hint)).setText("暂无播放");
             mImageView.setVisibility(View.VISIBLE);
-            Picasso.with(LauncherApplication.AppContext)
+            Picasso.get()
                     .load(mProgramInfo.getImg())
                     .into(mImageView);
             return;
@@ -228,7 +228,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
 //                }
                 if(!TextUtils.isEmpty(mProgramInfo.getImg())){
                     mImageView.setVisibility(View.VISIBLE);
-                    Picasso.with(LauncherApplication.AppContext)
+                    Picasso.get()
                             .load(mProgramInfo.getImg())
                             .into(mImageView);
                 }

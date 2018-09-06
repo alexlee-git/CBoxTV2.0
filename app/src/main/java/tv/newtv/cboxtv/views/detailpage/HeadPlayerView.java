@@ -438,9 +438,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     .LOG_NODE_COLLECT, "0," +
                                                                     mInfo.getContentUUID());
                                                             Toast.makeText(getContext()
-                                                                            .getApplicationContext(), "收藏成功",
-                                                                    Toast
-                                                                            .LENGTH_SHORT)
+                                                                            .getApplicationContext(),
+                                                                    "收藏成功",
+                                                                    Toast.LENGTH_SHORT)
                                                                     .show();
                                                         }
 
@@ -574,6 +574,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 playerView.setHintTextVisible(View.GONE);
             }
         } else if (currentPlayIndex == index) {
+            if (requestFocus) {
+                requestPlayerFocus();
+            }
             return;
         }
         setCurrentPlayIndex("Play", index);
@@ -587,15 +590,22 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             playerView.playSingleOrSeries(index, postion);
 
             if (requestFocus) {
-                playerView.requestFocus();
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPlayerCallback.onPlayerClick(playerView);
-                    }
-                }, 500);
+                requestPlayerFocus();
             }
         }
+    }
+
+    private void requestPlayerFocus() {
+        if (playerView == null) {
+            return;
+        }
+        playerView.requestFocus();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mPlayerCallback.onPlayerClick(playerView);
+            }
+        }, 500);
     }
 
     private void parseResult(String result) {
@@ -784,7 +794,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void destroy() {
-        if(mDisposable != null){
+        if (mDisposable != null) {
             mDisposable.dispose();
             mDisposable = null;
         }

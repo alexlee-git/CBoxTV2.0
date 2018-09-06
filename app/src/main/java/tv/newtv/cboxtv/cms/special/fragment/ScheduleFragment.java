@@ -251,7 +251,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
                         currentView = currentPlayImageView;
                         currentPlayImageView.setIsPlaying(true, true);
                     }
-                    Picasso.with(LauncherApplication.AppContext)
+                    Picasso.get()
                             .load(programInfo.getImg())
                             .into(currentPlayImageView);
                 }
