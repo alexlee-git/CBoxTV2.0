@@ -222,6 +222,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             LogUtils.e(e);
         } finally {
             mVideoPlayerView = null;
+            LiveTimingUtil.clearListener();
         }
     }
 

@@ -2,15 +2,20 @@ package tv.newtv.cboxtv.cms.util;
 
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+
+import java.util.Locale;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import tv.newtv.cboxtv.BuildConfig;
@@ -32,32 +37,40 @@ public class GlideUtil {
             }
         }
 
-        RequestListener requestListener = new RequestListener() {
+        RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
 
             @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
-                LogUtils.e("loadImage", e.toString() + ":model=" + model + ":target=" + target
-                        + ":isFirstResource=" + isFirstResource);
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable>
+                    target, DataSource dataSource, boolean isFirstResource) {
                 return false;
             }
 
             @Override
-            public boolean onResourceReady(Object resource, Object model, Target target, DataSource dataSource, boolean isFirstResource) {
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target,
+                                        boolean isFirstResource) {
+                LogUtils.e("loadImage", String.format
+                        ("failed e=%s:model=%s:target=%s:isFirstResource=%s", e != null ? e
+                                        .toString()
+                                        : "null", model != null ? model.toString() : "null",
+                                target != null ? target.toString() : " null ",
+                                isFirstResource ? "true" : "false"));
                 return false;
             }
         };
 
         if (isCorner) {
-            RequestOptions options1 = RequestOptions.bitmapTransform(new RoundedCornersTransformation(4, 0));
-            options1.placeholder(placeHolderResId).error(errorResId);
-            Glide.with(context)
+            RequestOptions options1 = RequestOptions.bitmapTransform(new
+                    RoundedCornersTransformation(4, 0))
+                    .placeholder(placeHolderResId).error(errorResId);
+            Glide.with(imageView.getContext())
                     .load(url)
                     .apply(options1)
                     .listener(requestListener)
                     .into(imageView);
         } else {
-            RequestOptions options2 = new RequestOptions().placeholder(placeHolderResId).error(errorResId);
-            Glide.with(context)
+            RequestOptions options2 = new RequestOptions().placeholder(placeHolderResId).error
+                    (errorResId);
+            Glide.with(imageView.getContext())
                     .load(url)
                     .apply(options2)
                     .listener(requestListener)

@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.MutipleClickListener;
@@ -68,7 +69,22 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private String PlayerUUID = "";
     private int bottomMargin = 0;
     private boolean showFirstTitle = false;
-    private List<UniversalViewHolder> holderList = new java.util.ArrayList();
+    private List<UniversalViewHolder> holderList = new ArrayList<>();
+
+    public void destroy(){
+        if(mDatas != null){
+            mDatas.clear();
+            mDatas = null;
+        }
+        mContext = null;
+        if(holderList !=null){
+            for(UniversalViewHolder holder : holderList){
+                holder.destroy();
+            }
+            holderList.clear();
+            holderList = null;
+        }
+    }
 
 
     public UniversalAdapter(Context context, List<ModuleItem> datas) {

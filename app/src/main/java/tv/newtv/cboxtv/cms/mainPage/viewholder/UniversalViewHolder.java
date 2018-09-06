@@ -20,13 +20,17 @@ import tv.newtv.cboxtv.cms.util.LogUtils;
 
 public class UniversalViewHolder extends RecyclerView.ViewHolder {
 
-    protected Map<String, View> mViews;
+    private Map<String, View> mViews;
 
-    protected View mItemView;
+    public void destroy(){
+        if(mViews != null){
+            mViews.clear();
+            mViews = null;
+        }
+    }
 
     public UniversalViewHolder(View itemView) {
         super(itemView);
-        mItemView = itemView;
         mViews = new HashMap<>(Constant.BUFFER_SIZE_8);
     }
 
@@ -38,8 +42,8 @@ public class UniversalViewHolder extends RecyclerView.ViewHolder {
                 if (targetView != null) {
                     return targetView;
                 } else {
-                    targetView = mItemView.findViewWithTag(tag);
-                    //mViews.put(tag, targetView);
+                    targetView = itemView.findViewWithTag(tag);
+                    mViews.put(tag, targetView);
                 }
             }
         } else {

@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.Constant;
@@ -87,7 +89,11 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
             mPresenter.destroy();
             mPresenter = null;
         }
-        adapter = null;
+        if(adapter != null) {
+            adapter.destroyItem();
+            adapter.destroy();
+            adapter = null;
+        }
         loadingView = null;
         contentView = null;
         mSharedPreferences = null;
@@ -334,7 +340,6 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
         if (mDatas != null && mDatas.size() > 0 && mRecyclerView != null && mRecyclerView.getAdapter
                 () != null && mRecyclerView.getAdapter().getItemCount() > 0) {
-
         } else {
             if (loadingView != null)
                 loadingView.setVisibility(View.VISIBLE);
