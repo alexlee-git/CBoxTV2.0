@@ -46,7 +46,10 @@ public class DeviceUtil {
         } else if (BuildConfig.FLAVOR.equals(CBOXTEST)) {
             return true;
         } else if (BuildConfig.FLAVOR.equals(FEILIERDE)) {
-            return true;
+            String fled = "pled-newtv-3229";
+            String fModel = Build.MODEL;
+            Log.i("device", fModel);
+            return !TextUtils.isEmpty(fModel) && fled.equalsIgnoreCase(fModel);
         }
         return false;
     }
