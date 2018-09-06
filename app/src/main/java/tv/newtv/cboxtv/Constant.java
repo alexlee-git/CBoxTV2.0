@@ -54,6 +54,8 @@ public class Constant {
     //详情页小窗口广告
     public static final String AD_DETAILPAGE_RIGHTPOS = "cbox_detailpage_rightpos";
 
+    public static final String AD_DETAILPAGE_SUSPEND= "cbox_detailpage_suspend";
+
     //广告内容类型
     public static final String AD_IMAGE_TYPE = "image";//图片广告
     public static final String AD_VIDEO_TYPE = "video";//视频广告

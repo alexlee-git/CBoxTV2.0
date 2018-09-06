@@ -25,6 +25,7 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DeviceUtil;
 import tv.newtv.cboxtv.utils.KeyEventUtils;
+import tv.newtv.cboxtv.views.AdPopupWindow;
 
 /**
  * 项目名称:         CBoxTV
@@ -38,6 +39,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     protected boolean FrontStage = false;//是否已经进入前台
     private boolean fromOuter = false;//是否是外部跳转进入的
     private ADPresenter adPresenter;
+    private AdPopupWindow adPopupWindow;
 
     public boolean isFrontStage() {
         return FrontStage;
@@ -95,11 +97,27 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     }
 
     @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        setSuspendAD();
+    }
+
+    private void setSuspendAD() {
+        if(isDetailActivity()){
+            adPopupWindow = new AdPopupWindow();
+            adPopupWindow.show(this,findViewById(android.R.id.content));
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         ActivityStacks.get().onDestroy(this);
         if(adPresenter != null){
             adPresenter.destroy();
+        }
+        if(adPopupWindow != null && adPopupWindow.isShowing()){
+            adPopupWindow.dismiss();
         }
     }
 
