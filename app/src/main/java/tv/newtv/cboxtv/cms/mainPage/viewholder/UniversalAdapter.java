@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,13 +39,13 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
 import tv.newtv.cboxtv.cms.util.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
+import tv.newtv.cboxtv.cms.util.GlideUtil;
 import tv.newtv.cboxtv.cms.util.ImageUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import tv.newtv.cboxtv.cms.util.SystemUtils;
 import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.views.AutoSizeTextView;
 import tv.newtv.cboxtv.views.LivePlayView;
@@ -66,7 +65,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
     private String PicassoTag = "";
-    private boolean canLoadImage = true;
+    private String PlayerUUID = "";
     private int bottomMargin = 0;
     private boolean showFirstTitle = false;
     private List<UniversalViewHolder> holderList = new java.util.ArrayList();
@@ -86,8 +85,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         return "cell_" + layoutId + "_1";
     }
 
-    public void setCanLoadImage(boolean canload) {
-        canLoadImage = canload;
+    public void setPlayerUUID(String uuid) {
+        PlayerUUID = uuid;
     }
 
     public void setPicassoTag(String tag) {
@@ -103,8 +102,9 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     public UniversalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // 根据viewType获取相应的布局文件
         int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType(viewType);
-        UniversalViewHolder holder = new UniversalViewHolder(LayoutInflater.from(parent.getContext()).inflate
-                (layoutResId, parent,false));
+        UniversalViewHolder holder = new UniversalViewHolder(LayoutInflater.from(parent
+                .getContext()).inflate
+                (layoutResId, parent, false));
         holderList.add(holder);
         return holder;
     }
@@ -158,7 +158,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                         titleIcon.setVisibility(View.VISIBLE);
                         if (!TextUtils.isEmpty(iconUrl) && !iconUrl.equals(titleIcon.getTag())) {
                             titleIcon.setTag(iconUrl);
-                            Picasso.with(mContext).load(iconUrl).into(titleIcon);
+                            Picasso.get().load(iconUrl).into(titleIcon);
                         }
                     }
                 }
@@ -168,6 +168,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
             Log.i(TAG, "layoutCode=" + layoutCode);
             for (int i = 0; i < posSize; ++i) {
+                if (moduleItem.getDatas().size() - 1 < i) break;
                 final ProgramInfo info = moduleItem.getDatas().get(i);
 
                 // 拿1号组件的1号推荐位为例, 其子海报控件的id为 : cell_001_1_poster
@@ -199,6 +200,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                     recycleImageView = (RecycleImageView) posterView;
                 } else if (posterView instanceof LivePlayView) {
                     ((LivePlayView) posterView).setProgramInfo(info);
+                    ((LivePlayView) posterView).setUUID(PlayerUUID);
                     recycleImageView = ((LivePlayView) posterView).getPosterImageView();
                 }
 
@@ -367,44 +369,9 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             int height = imageView.getLayoutParams().height;
 
             int placeHolderResId = ImageUtils.getProperPlaceHolderResId(imageView.getContext(),
-                    width,
-                    height);
-            if (!imgUrl.equals(imageView.getTag()) && canLoadImage) {
-                if (placeHolderResId != 0) {
-                    imageView.Tag(PicassoTag).placeHolder(placeHolderResId).hasCorner(isCorner)
-                            .withCallback(new
-                                                  Callback() {
-                                                      @Override
-                                                      public void onSuccess() {
-                                                          imageView.setTag(imgUrl);
-                                                      }
-
-                                                      @Override
-                                                      public void onError() {
-
-                                                      }
-                                                  })
-                            .load(imgUrl);
-                } else {
-
-
-                    imageView
-                            .Tag(PicassoTag)
-                            .hasCorner(isCorner)
-                            .withCallback(new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    imageView.setTag(imgUrl);
-                                }
-
-                                @Override
-                                public void onError() {
-
-                                }
-                            })
-                            .load(imgUrl);
-                }
-            }
+                    width, height);
+            GlideUtil.loadImage(imageView.getContext(), imageView,
+                    imgUrl, placeHolderResId, placeHolderResId, isCorner);
         } else {
             Log.e(Constant.TAG, "未找到的控件地址 : ");
         }
@@ -706,7 +673,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             if ("IMG".equals(superType)) {
                 String superUrl = info.getCornerImg();
                 if (superUrl != null) {
-                    Picasso.with(mContext).load(superUrl).tag(PicassoTag).into(target);
+                    Picasso.get().load(superUrl).tag(PicassoTag).into(target);
                 }
             }
         }
@@ -823,7 +790,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             return null;
         }
 
-        ViewGroup viewGroup = (ViewGroup)view;
+        ViewGroup viewGroup = (ViewGroup) view;
         LivePlayView livePlayView = null;
         int viewCount = viewGroup.getChildCount();
         for (int i = 0; i < viewCount; i++) {
@@ -835,8 +802,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         return livePlayView;
     }
 
-    public void destroyItem(){
-        for(UniversalViewHolder holder : holderList){
+    public void destroyItem() {
+        for (UniversalViewHolder holder : holderList) {
             holder.releaseImageView();
         }
     }

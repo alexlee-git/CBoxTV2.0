@@ -198,9 +198,9 @@ public class RecycleImageView extends AppCompatImageView {
             }
 
             if (url.startsWith("file:")) {
-                requestCreator = Picasso.with(LauncherApplication.AppContext).load(Uri.parse(url));
+                requestCreator = Picasso.get().load(Uri.parse(url));
             } else if (url.startsWith("http")) {
-                requestCreator = Picasso.with(LauncherApplication.AppContext).load(url);
+                requestCreator = Picasso.get().load(url);
                 requestCreator.stableKey(url);
             }
         } else if (imageUrl instanceof Integer) {

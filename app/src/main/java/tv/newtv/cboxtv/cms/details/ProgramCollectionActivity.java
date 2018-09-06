@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.views.detailpage.onEpisodeItemClick;
  * 创建事件:         13:44
  * 创建人:           weihaichao
  * 创建日期:          2018/7/27
+ * 节目合集
  */
 public class ProgramCollectionActivity extends BaseActivity {
 

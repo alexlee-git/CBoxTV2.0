@@ -53,7 +53,7 @@ public class MainPageManager implements IMainPageView,
     private Context mContext;
     private RelativeLayout mRootLayout;
     private RecyclerView mNavBar;
-    private List<BaseFragment> mFragments;
+    //private List<BaseFragment> mFragments;
     private List<NavInfoResult.NavInfo> mNavInfos;
     private boolean isNoPageData;
     private NavBarAdapter mAdapter;
@@ -165,29 +165,29 @@ public class MainPageManager implements IMainPageView,
             LogUtils.e("--defaultFocus--Exception-----" + e.toString());
         }
         // 创建页面载体---fragment
-        if (mFragments == null) {
-            mFragments = new ArrayList<>(Constant.BUFFER_SIZE_8);
-        }
-        mFragments.clear();
+//        if (mFragments == null) {
+//            mFragments = new ArrayList<>(Constant.BUFFER_SIZE_8);
+//        }
+//        mFragments.clear();
 
-        for (NavInfoResult.NavInfo navInfo : (List<NavInfoResult.NavInfo>) navInfoResult.getData()) {
-            if (TextUtils.equals(defaultFocus, navInfo.getContentID())) {
-                defaultPageIdx = ((List<NavInfoResult.NavInfo>) navInfoResult.getData()).indexOf(navInfo);
-                Log.e(Constant.TAG, "锁定目标为 : " + defaultPageIdx);
-            }
-
-            Bundle bundle = new Bundle();
-            bundle.putString("nav_text", navInfo.getTitle());
-            bundle.putString("content_id", navInfo.getContentID());
-
-            BaseFragment fragment = ContentFragment.newInstance(bundle);
-            fragment.setNotifyNoPageDataListener(this);
-            mFragments.add(fragment);
-        }
+//        for (NavInfoResult.NavInfo navInfo : (List<NavInfoResult.NavInfo>) navInfoResult.getData()) {
+//            if (TextUtils.equals(defaultFocus, navInfo.getContentID())) {
+//                defaultPageIdx = ((List<NavInfoResult.NavInfo>) navInfoResult.getData()).indexOf(navInfo);
+//                Log.e(Constant.TAG, "锁定目标为 : " + defaultPageIdx);
+//            }
+//
+//            Bundle bundle = new Bundle();
+//            bundle.putString("nav_text", navInfo.getTitle());
+//            bundle.putString("content_id", navInfo.getContentID());
+//
+//            BaseFragment fragment = ContentFragment.newInstance(bundle);
+//            fragment.setNotifyNoPageDataListener(this);
+//            mFragments.add(fragment);
+//        }
 
         // 创建页面区域的适配器
         if (mViewPagerAdapter == null) {
-            mViewPagerAdapter = new StaggeredAdapter(((FragmentActivity) mContext).getSupportFragmentManager(), mFragments);
+            mViewPagerAdapter = new StaggeredAdapter(((FragmentActivity) mContext).getSupportFragmentManager(), mNavInfos);
             mViewPager.setAdapter(mViewPagerAdapter);
             mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
@@ -246,7 +246,7 @@ public class MainPageManager implements IMainPageView,
         mViewPager = (NewTVViewPager) widgets.get("viewpager");
         mViewPager.setScrollable(true);
         mViewPager.setCustomScroller(new NewTVScroller(mContext, new LinearInterpolator(), 600));
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(1);
 
         //创建共享参数，存储一些需要的信息
         initSharedPreferences();
@@ -353,10 +353,10 @@ public class MainPageManager implements IMainPageView,
         mViewPagerAdapter = null;
         mAdapter = null;
         mCurNavDataFrom = null;
-        if (mFragments != null) {
-            mFragments.clear();
-            mFragments = null;
-        }
+//        if (mFragments != null) {
+//            mFragments.clear();
+//            mFragments = null;
+//        }
 
         if (mNavInfos != null) {
             mNavInfos.clear();

@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
@@ -75,7 +74,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         okButton.setOnFocusChangeListener(this);
         cancelButton.setOnFocusChangeListener(this);
 
-        getAD();//获取广告
+//        getAD();//获取广告
         initView();
     }
 
@@ -204,57 +203,57 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                 super.showAd(type, url);
                 if (!TextUtils.isEmpty(url)){
                     exit_image.setVisibility(View.VISIBLE);
-                    Picasso.with(WarningExitActivity.this).load(url).into(exit_image);
+                    Picasso.get().load(url).into(exit_image);
                 }
             }
         });
-//        final StringBuffer sb = new StringBuffer();
-//        Observable.create(new ObservableOnSubscribe<Integer>() {
-//            @Override
-//            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
-//                e.onNext(AdSDK.getInstance().getAD("quit", null, null, null, null, null, sb));
-//            }
-//        }).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Consumer<Integer>() {
-//                    @Override
-//                    public void accept(Integer result) throws Exception {
-//                        if (result == 0) {
-//                            LogUtils.i("mm", "getAD:" + sb.toString());
-//                            AdBean bean = GsonUtil.fromjson(sb.toString(), AdBean.class);
-//
-//                            if (bean==null||bean.adspaces==null||bean.adspaces.quit==null||bean.adspaces.quit.size()<1){
-//                                return;
-//                            }
-//
-//                            final AdBean.AdspacesItem item = bean.adspaces.quit.get(0);
-//
-//
-//                            if (bean.adspaces.quit.get(0)==null||bean.adspaces.quit.get(0).materials==null){
-//                                return;
-//                            }
-//                             final AdBean.Material material =bean.adspaces.quit.get(0).materials.get(0);
-//
-//                            String url = material.filePath;
-//                            LogUtils.i("mm", "url:" + url);
-//                            exit_image.setVisibility(View.VISIBLE);
-//                            Picasso.with(WarningExitActivity.this).load(url).into(exit_image, new Callback() {
-//                                @Override
-//                                public void onSuccess() {
-//                                    if (material!=null&&item!=null) {
-//                                        AdSDK.getInstance().report((item.mid + ""), item.aid + "", material.id + "", "",
-//                                                null, material.playTime + "", null);
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onError() {
-//
-//                                }
-//                            });
-//
-//                        }
-//                    }
-//                });
+        final StringBuffer sb = new StringBuffer();
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                e.onNext(AdSDK.getInstance().getAD("quit", null, null, null, null, null, sb));
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer result) throws Exception {
+                        if (result == 0) {
+                            LogUtils.i("mm", "getAD:" + sb.toString());
+                            AdBean bean = GsonUtil.fromjson(sb.toString(), AdBean.class);
+
+                            if (bean==null||bean.adspaces==null||bean.adspaces.quit==null||bean.adspaces.quit.size()<1){
+                                return;
+                            }
+
+                            final AdBean.AdspacesItem item = bean.adspaces.quit.get(0);
+
+
+                            if (bean.adspaces.quit.get(0)==null||bean.adspaces.quit.get(0).materials==null){
+                                return;
+                            }
+                             final AdBean.Material material =bean.adspaces.quit.get(0).materials.get(0);
+
+                            String url = material.filePath;
+                            LogUtils.i("mm", "url:" + url);
+                            exit_image.setVisibility(View.VISIBLE);
+                            Picasso.get().load(url).into(exit_image, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    if (material!=null&&item!=null) {
+                                        AdSDK.getInstance().report((item.mid + ""), item.aid + "", material.id + "", "",
+                                                null, material.playTime + "", null);
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+
+                                }
+                            });
+
+                        }
+                    }
+                });
     }
 }

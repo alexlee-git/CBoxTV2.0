@@ -626,7 +626,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public void onChange(CurrentPlayImageView imageView, int index) {
+    public void onChange(CurrentPlayImageView imageView, int index,boolean fromClick) {
         if (mCurrentPlayImage != null) {
             mCurrentPlayImage.setIsPlaying(false);
         }
@@ -634,7 +634,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mCurrentPlayImage = imageView;
         imageView.setIsPlaying(true);
         if (mOnEpisodeChange != null) {
-            mOnEpisodeChange.onChange(index);
+            mOnEpisodeChange.onChange(index,fromClick);
         }
     }
 
@@ -655,7 +655,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     public interface OnEpisodeChange {
         void onGetProgramSeriesInfo(ProgramSeriesInfo seriesInfo);
 
-        void onChange(int index);
+        void onChange(int index,boolean fromClick);
     }
 
 

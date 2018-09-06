@@ -104,7 +104,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 if (!TextUtils.isEmpty(entity._imageurl) && entity._imageurl.startsWith("http")) {
                     viewHolder.mImageIv.setScaleType(ImageView.ScaleType.FIT_XY);
                     viewHolder.mImageIv.setVisibility(View.VISIBLE);
-                    RequestCreator picasso = Picasso.with(LauncherApplication.AppContext)
+                    RequestCreator picasso = Picasso.get()
                             .load(entity._imageurl)
                             .priority(Picasso.Priority.HIGH)
                             .stableKey(entity._imageurl)
@@ -117,7 +117,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 } else {
                     viewHolder.mImageIv.setScaleType(ImageView.ScaleType.FIT_XY);
                     viewHolder.mImageIv.setVisibility(View.VISIBLE);
-                    RequestCreator picasso = Picasso.with(LauncherApplication.AppContext)
+                    RequestCreator picasso = Picasso.get()
                             .load(R.drawable.deful_user)
                             .priority(Picasso.Priority.HIGH)
                             .config(Bitmap.Config.RGB_565);
@@ -128,7 +128,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 }
 
             } else {
-                Picasso.with(context).load(defaultIcon).into(viewHolder.mImageIv);
+                Picasso.get().load(defaultIcon).into(viewHolder.mImageIv);
                 viewHolder.mTitleTv.setText("");
             }
 

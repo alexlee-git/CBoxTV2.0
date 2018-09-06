@@ -215,14 +215,14 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     @Override
     public void showAd(ADHelper.AD.ADItem result) {
         if(!TextUtils.isEmpty(result.AdUrl)){
-            Picasso.with(this).load(result.AdUrl).into(new Target() {
+            Picasso.get().load(result.AdUrl).into(new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     getWindow().setBackgroundDrawable(new BitmapDrawable(bitmap));
                 }
 
                 @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
                 }
 

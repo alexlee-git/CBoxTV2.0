@@ -11,5 +11,6 @@ public interface IListPagePresenter {
     void inflateListPageNav(NavListPageInfoResult value,String from);
     void onFailed(String desc);
     void requestListPageNav(String uuid);
+    void  destroy();
 
 }

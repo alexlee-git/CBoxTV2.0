@@ -112,7 +112,7 @@ public class EpisodeFragment extends Fragment {
                 @Override
                 public void run() {
                     if (viewHolders != null && viewHolders.size() > currentIndex) {
-                        viewHolders.get(currentIndex).performClick();
+                        viewHolders.get(currentIndex).performClick(false);
                     }
                 }
             }, 100);
@@ -237,7 +237,7 @@ public class EpisodeFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    performClick();
+                    performClick(true);
                 }
             });
         }
@@ -257,9 +257,9 @@ public class EpisodeFragment extends Fragment {
             itemView = null;
         }
 
-        public void performClick() {
+        public void performClick(boolean fromClick) {
             if (mChange != null) {
-                mChange.onChange(PosterView, mPosition * pageSize + mIndex);
+                mChange.onChange(PosterView, mPosition * pageSize + mIndex, true);
             }
         }
 
@@ -269,7 +269,7 @@ public class EpisodeFragment extends Fragment {
                 if (PosterView != null) {
                     PosterView.setScaleType(ImageView.ScaleType.FIT_XY);
                     if (!TextUtils.isEmpty(programsInfo.gethImage())) {
-                        Picasso.with(getContext())
+                        Picasso.get()
                                 .load(programsInfo.gethImage())
                                 .transform(new PosterCircleTransform(getActivity(), 4))
                                 .placeholder(R.drawable.focus_384_216)
@@ -277,7 +277,7 @@ public class EpisodeFragment extends Fragment {
                                 .resize(384, 216)
                                 .into(PosterView);
                     } else {
-                        Picasso.with(getContext())
+                        Picasso.get()
                                 .load(R.drawable.focus_384_216)
                                 .resize(384, 216)
                                 .transform(new PosterCircleTransform(getActivity(), 4))
@@ -314,7 +314,7 @@ public class EpisodeFragment extends Fragment {
         @Override
         public void update(ADHelper.AD.ADItem adItem){
             if(!TextUtils.isEmpty(adItem.AdUrl)){
-                Picasso.with(getContext())
+                Picasso.get()
                         .load(adItem.AdUrl)
                         .resize(384, 216)
                         .transform(new PosterCircleTransform(getActivity(), 4))

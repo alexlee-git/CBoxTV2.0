@@ -7,4 +7,5 @@ package tv.newtv.cboxtv.cms.listPage.model;
 public interface IListPageModel {
 
     void requestPageListNav(String url);
+    void  destroy();
 }

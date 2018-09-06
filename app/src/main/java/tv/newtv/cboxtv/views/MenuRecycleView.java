@@ -37,10 +37,10 @@ public class MenuRecycleView extends RecyclerView {
 
     private static final String TAG = MenuRecycleView.class.getSimpleName();
     private static boolean eatKeyEvent = false;
+    private static List<NavInfoResult.NavInfo> mNavInfos;//一级导航数据
+    private static List<NavListPageInfoResult.NavInfo> mNavResultInfos;//二级导航数据
     public View mCurrentCenterChildView;
-
     private boolean mIsScrolling = false;
-
     //默认第一次选中第一个位置
     private int mCurrentFocusPosition = 0;
     private int mCircleOffset = 40;
@@ -49,9 +49,6 @@ public class MenuRecycleView extends RecyclerView {
     private boolean TransPostion = true;
     private int menuSelectPos = 0;
     private View mFocusView;
-    private static List<NavInfoResult.NavInfo> mNavInfos;//一级导航数据
-    private static List<NavListPageInfoResult.NavInfo> mNavResultInfos;//二级导航数据
-
     @SuppressWarnings("unchecked")
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -80,7 +77,6 @@ public class MenuRecycleView extends RecyclerView {
             return false;
         }
     });
-
 
     public MenuRecycleView(Context context) {
         super(context);
@@ -160,7 +156,6 @@ public class MenuRecycleView extends RecyclerView {
     protected boolean onRequestFocusInDescendants(int direction, Rect previouslyFocusedRect) {
         return super.onRequestFocusInDescendants(direction, previouslyFocusedRect);
     }
-
 
     public void setFocusView(View focusView) {
         mFocusView = focusView;
@@ -310,6 +305,9 @@ public class MenuRecycleView extends RecyclerView {
         }
     }
 
+    public interface IHidden {
+        boolean isHidden(int position);
+    }
 
     public interface MenuFactory<T> {
         void onItemSelected(int position, T value);
@@ -328,10 +326,34 @@ public class MenuRecycleView extends RecyclerView {
 
     }
 
-    public static class MenuAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
+    public static abstract class MenuViewHolder extends ViewHolder {
+
+        protected boolean isHidden = false;
+        private IHidden mHiddenCallback;
+
+        public MenuViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        public void setHiddenCallback(IHidden hiddenCallback) {
+            mHiddenCallback = hiddenCallback;
+        }
+
+        void checkHidden() {
+            if (mHiddenCallback != null) {
+                isHidden = mHiddenCallback.isHidden(getAdapterPosition());
+                setItemVisible(!isHidden);
+            }
+        }
+
+        protected abstract void setItemVisible(boolean show);
+
+    }
+
+    public static class MenuAdapter<T> extends RecyclerView.Adapter<ViewHolder> implements IHidden {
         private static final String TAG_CENTER = "center";
         private static final String TAG_EMPTY = "";
-        ScollLinearLayoutManager linearLayoutManager;
+        MenuScrollLinearLayoutManager linearLayoutManager;
         private List<T> menuItems;
         private WeakReference<MenuRecycleView> mRecyclerView;
         private int selectPos = 0;
@@ -351,7 +373,8 @@ public class MenuRecycleView extends RecyclerView {
             mRecyclerView = new WeakReference<MenuRecycleView>(recyclerView);
             mLayoutRes = layout;
 
-            linearLayoutManager = new ScollLinearLayoutManager(recyclerView.getContext());
+
+            linearLayoutManager = new MenuScrollLinearLayoutManager(recyclerView.getContext());
             linearLayoutManager.setAutoResize(autoResize);
             recyclerView.setLayoutManager(linearLayoutManager);
             recyclerView.addOnScrollListener(new OnScrollListener() {
@@ -396,6 +419,7 @@ public class MenuRecycleView extends RecyclerView {
             refreshPosition(selectPos, false);
             linearLayoutManager.setDataSize(displaySize);
         }
+
 
         public void refreshDefaultPosition(boolean autoFocus) {
             refreshPosition(selectPos, autoFocus);
@@ -460,7 +484,6 @@ public class MenuRecycleView extends RecyclerView {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, final int viewType) {
-
             final ViewHolder viewHolder = mMenuFactory.createViewHolder(parent, viewType);
             viewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -468,30 +491,13 @@ public class MenuRecycleView extends RecyclerView {
                     mRecyclerView.get().mFocusView.setVisibility(hasFocus ? View.VISIBLE : View
                             .GONE);
                     sendFocusChangeToHandler(hasFocus, viewHolder.getAdapterPosition());//焦点变化，上传日志
-//                    if (hasFocus) {
-//                        view.bringToFront();
-//                        selectPos = viewHolder.getAdapterPosition();
-//                        currentFocus = view;
-//                    } else {
-//                        viewHolder.itemView.setAlpha(1);
-//                    }
                     focusChange(view, hasFocus, viewHolder);
-//                    if (hasFocus){
-//                        view.bringToFront();
-//                        selectPos = viewHolder.getAdapterPosition();
-//                        currentFocus = view;
-//                        view.setAlpha(1f);
-//                        view.setScaleX(1.3f);
-//                        view.setScaleY(1.3f);
-//                    }else{
-//
-//                        viewHolder.itemView.setAlpha(1);
-//                        view.setScaleX(1);
-//                        view.setScaleY(1);
-//                    }
                 }
             });
             viewHolder.itemView.setFocusable(true);
+            if (viewHolder instanceof MenuViewHolder) {
+                ((MenuViewHolder) viewHolder).setHiddenCallback(this);
+            }
 
             return viewHolder;
         }
@@ -501,12 +507,16 @@ public class MenuRecycleView extends RecyclerView {
 //            int position = viewHolder.getPosition();
             if (hasFocus) {
 //                if(menuItems.size()==mNavInfos.size()){
-//                    Log.e("gao","一级导航：get foces："+mNavInfos.get(position%menuItems.size()).getIcon1());
-//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_nav)).load(mNavInfos.get(position%menuItems.size()).getIcon1());
+//                    Log.e("gao","一级导航：get foces："+mNavInfos.get(position%menuItems.size())
+// .getIcon1());
+//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_nav))
+// .load(mNavInfos.get(position%menuItems.size()).getIcon1());
 //                }
 //                if(menuItems.size()==mNavResultInfos.size()){
-//                    Log.e("gao","二级导航：get foces："+mNavResultInfos.get(position%menuItems.size()).getIcon1());
-//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_list)).load(mNavResultInfos.get(position%menuItems.size()).getIcon1());
+//                    Log.e("gao","二级导航：get foces："+mNavResultInfos.get(position%menuItems.size()
+// ).getIcon1());
+//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_list))
+// .load(mNavResultInfos.get(position%menuItems.size()).getIcon1());
 //                }
                 selectPos = viewHolder.getAdapterPosition();
                 view.bringToFront();
@@ -524,12 +534,16 @@ public class MenuRecycleView extends RecyclerView {
                 view.startAnimation(sa);
             } else {
 //                if(menuItems.size()==mNavInfos.size()){
-//                    Log.e("gao","一级导航：失去foces："+mNavInfos.get(position%menuItems.size()).getIcon());
-//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_nav)).load(mNavInfos.get(position%menuItems.size()).getIcon());
+//                    Log.e("gao","一级导航：失去foces："+mNavInfos.get(position%menuItems.size())
+// .getIcon());
+//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_nav))
+// .load(mNavInfos.get(position%menuItems.size()).getIcon());
 //                }
 //                if(menuItems.size()==mNavResultInfos.size()){
-//                    Log.e("gao","二级导航：失去foces："+mNavResultInfos.get(position%menuItems.size()).getIcon());
-//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_list)).load(mNavResultInfos.get(position%menuItems.size()).getIcon());
+//                    Log.e("gao","二级导航：失去foces："+mNavResultInfos.get(position%menuItems.size())
+// .getIcon());
+//                    ((RecycleImageView)viewHolder.itemView.findViewById(R.id.title_icon_list))
+// .load(mNavResultInfos.get(position%menuItems.size()).getIcon());
 //                }
 
                 viewHolder.itemView.setAlpha(1);
@@ -575,12 +589,10 @@ public class MenuRecycleView extends RecyclerView {
 
         @Override
         @SuppressWarnings("unchecked")
-        public void onBindViewHolder(final ViewHolder holder, int position) {
+        public void onBindViewHolder(final ViewHolder holder, int pos) {
+            int position = holder.getAdapterPosition();
             if (menuItems == null) return;
             T menuItem = menuItems.get(position % menuItems.size());
-            if (menuItem != null) {
-                mMenuFactory.onBindView(holder, menuItem, position);
-            }
             if (isInitalized) {
                 if (mMenuFactory.isDefaultTabItem(menuItem, holder.getAdapterPosition()) &&
                         holder.getAdapterPosition() >= MiddleValue) {
@@ -591,11 +603,29 @@ public class MenuRecycleView extends RecyclerView {
                     isInitalized = false;
                 }
             }
+            if (menuItem != null) {
+                mMenuFactory.onBindView(holder, menuItem, position);
+            }
+
+            if(mRecyclerView != null && mRecyclerView.get() != null && mRecyclerView.get()
+                    .getChildCount() > 0) {
+                int count = mRecyclerView.get().getChildCount();
+                for (int index = 0; index < count; index++) {
+                    View target = mRecyclerView.get().getChildAt(index);
+                    linearLayoutManager.changeHolderList(mRecyclerView.get().getChildViewHolder(target));
+
+                }
+            }
         }
 
         @Override
         public int getItemCount() {
             return LooperUtil.MAX_VALUE;
+        }
+
+        @Override
+        public boolean isHidden(int position) {
+            return linearLayoutManager.isHidden(selectPos, position);
         }
     }
 

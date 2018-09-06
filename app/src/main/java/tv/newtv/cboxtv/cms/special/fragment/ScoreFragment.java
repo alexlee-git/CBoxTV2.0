@@ -237,7 +237,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                             ((TextView) cell_target).setText(getValue(programInfo, t));
                         } else if (cell_target instanceof ImageView) {
                             if (programInfo != null && !TextUtils.isEmpty(programInfo.getImg())) {
-                                Picasso.with(itemView.getContext())
+                                Picasso.get()
                                         .load(getValue(programInfo, t))
                                         .into((ImageView) cell_target);
                             }

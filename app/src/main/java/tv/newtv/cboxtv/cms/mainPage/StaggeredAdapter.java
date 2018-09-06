@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.mainPage;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -7,7 +8,9 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import tv.newtv.cboxtv.cms.mainPage.model.NavInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
+import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 
 /**
  * Created by lixin on 2018/1/17.
@@ -15,12 +18,8 @@ import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 
 public class StaggeredAdapter extends FragmentStatePagerAdapter {
 
-    private List<BaseFragment> mDatas;
-    private FragmentManager fragmentManager;
 
-    public StaggeredAdapter(FragmentManager fm) {
-        super(fm);
-    }
+    private List<NavInfoResult.NavInfo> navInfoList;
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
@@ -29,20 +28,31 @@ public class StaggeredAdapter extends FragmentStatePagerAdapter {
         return fragment;
     }
 
-    public StaggeredAdapter(FragmentManager fm, List<BaseFragment> datas) {
+    public StaggeredAdapter(FragmentManager fm, List<NavInfoResult.NavInfo> datas) {
         super(fm);
-        fragmentManager = fm;
-        this.mDatas = datas;
+        this.navInfoList = datas;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return mDatas.get(position);
+        NavInfoResult.NavInfo navInfo = navInfoList.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putString("nav_text", navInfo.getTitle());
+        bundle.putString("content_id", navInfo.getContentID());
+
+        BaseFragment fragment = ContentFragment.newInstance(bundle);
+
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        super.destroyItem(container, position, object);
     }
 
     @Override
     public int getCount() {
-        return mDatas != null ? mDatas.size(): 0;
+        return navInfoList != null ? navInfoList.size(): 0;
     }
 
     @Override
