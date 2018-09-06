@@ -48,6 +48,9 @@ public final class CmsLiveUtil {
     }
 
     public static int formatToSeconds(String timeFormat) {
+        if (timeFormat == null) {
+            return 0;
+        }
         String[] times = timeFormat.split(":");
         int result = 0;
         for (int index = 0; index < 3; index++) {
