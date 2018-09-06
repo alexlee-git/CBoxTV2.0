@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+
+    <LinearLayout
+
+        android:layout_width="@dimen/width_512px"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/width_48px"
+        android:background="@drawable/news_list"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+            android:id="@+id/news_recycle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/height_30px"
+            android:layout_marginTop="@dimen/height_72px"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/height_8px" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_612px"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:textColor="#ffffff"
+            android:textSize="@dimen/height_42px"
+            android:layout_marginTop="@dimen/height_76px"
+            android:id="@+id/title"
+            android:layout_width="@dimen/width_700px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_10px"
+            android:text="专题名称专题名称专题名称专题名称" />
+
+        <TextView
+            android:textColor="#ffffff"
+            android:textSize="30px"
+            android:id="@+id/title_direction"
+            android:layout_width="@dimen/width_900px"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title"
+            android:layout_marginTop="@dimen/height_16px"
+            android:layout_marginLeft="@dimen/width_10px"
+            android:text="专题名称专题名称专题名称专题名称专题名称" />
+
+
+        <FrameLayout
+            android:id="@+id/video_player_rl"
+            android:layout_width="@dimen/width_1198px"
+            android:layout_height="@dimen/height_674px"
+            android:layout_marginBottom="@dimen/height_140px"
+            android:layout_marginRight="@dimen/height_110px"
+            android:layout_marginTop="@dimen/height_102px"
+            android:background="@drawable/selector_pos_background">
+
+            <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+                android:id="@+id/video_player"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>

@@ -161,6 +161,31 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/id_module_31_view1"
+        android:layout_width="@dimen/width_882px"
+        android:layout_height="@dimen/height_546px"
+        android:layout_below="@id/id_module_31_title"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_031_1">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.LivePlayView
+            android:layout_width="@dimen/width_816px"
+            android:layout_height="@dimen/height_480px"
+            android:tag="cell_031_1_poster">
+            <tv.newtv.cboxtv.views.RecycleImageView
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </tv.newtv.cboxtv.views.LivePlayView>
+
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/id_module_31_view9"
         android:layout_width="@dimen/width_450px"
         android:layout_height="@dimen/height_282px"
@@ -241,30 +266,6 @@
 
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/id_module_31_view1"
-        android:layout_width="@dimen/width_882px"
-        android:layout_height="@dimen/height_546px"
-        android:layout_below="@id/id_module_31_title"
-        android:layout_marginLeft="@dimen/width_87px"
-        android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:tag="cell_031_1">
-
-        <!--海报-->
-        <tv.newtv.cboxtv.views.LivePlayView
-            android:layout_width="@dimen/width_816px"
-            android:layout_height="@dimen/height_480px"
-            android:tag="cell_031_1_poster">
-            <tv.newtv.cboxtv.views.RecycleImageView
-                android:scaleType="fitXY"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </tv.newtv.cboxtv.views.LivePlayView>
-
-    </FrameLayout>
 
 </RelativeLayout>
 
