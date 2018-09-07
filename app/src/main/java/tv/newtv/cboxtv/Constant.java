@@ -53,8 +53,8 @@ public class Constant {
     public static final String AD_DETAILPAGE_CONTENTLIST= "cbox_detaipage_contentlist";
     //详情页小窗口广告
     public static final String AD_DETAILPAGE_RIGHTPOS = "cbox_detailpage_rightpos";
-
-    public static final String AD_DETAILPAGE_SUSPEND= "cbox_detailpage_suspend";
+    //悬浮窗广告
+    public static final String AD_GLOBAL_POPUP = "cbox_global_popup";
 
     //广告内容类型
     public static final String AD_IMAGE_TYPE = "image";//图片广告

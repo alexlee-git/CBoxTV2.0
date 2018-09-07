@@ -36,7 +36,7 @@ public class AdPopupWindow extends PopupWindow implements IAdConstract.IADConstr
                 ScreenUtils.getScreenH() - height);
 
         adPresenter = new ADPresenter(this);
-        adPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_SUSPEND,"");
+        adPresenter.getAD(Constant.AD_DESK,Constant.AD_GLOBAL_POPUP,"");
     }
 
     @Override
