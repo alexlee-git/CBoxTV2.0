@@ -34,7 +34,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private AiyaRecyclerView news_recycle;
     private TextView title;
     private TextView title_direction;
-    private VideoPlayerView videoPlayerView;
     private FrameLayout video_player_rl;
     private View focusView;
     private TextView videoTitle;
