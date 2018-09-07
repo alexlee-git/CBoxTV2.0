@@ -50,7 +50,10 @@ public class AdPopupWindow extends PopupWindow implements IAdConstract.IADConstr
 
     @Override
     public void showAd(ADHelper.AD.ADItem item) {
-        if(!TextUtils.isEmpty(item.AdUrl) &&item.PlayTime > 0){
+        if(item.PlayTime <= 0){
+            item.PlayTime = 5;
+        }
+        if(!TextUtils.isEmpty(item.AdUrl)){
             Picasso.get().load(item.AdUrl).into(imageView);
             handler.sendEmptyMessageDelayed(0,item.PlayTime * 1000);
         }else {
