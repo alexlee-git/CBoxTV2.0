@@ -396,7 +396,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                                     .getContentUUID());//取消收藏
                             //mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
                             mCollectBtn.SetUseing(true);
-                            Toast.makeText(getApplicationContext(), "添加收藏成功", Toast.LENGTH_SHORT)
+                            Toast.makeText(getApplicationContext(), R.string.collect_success, Toast.LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
@@ -454,7 +454,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     }
 
     @Override
-    public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
 
     }
 

@@ -39,7 +39,34 @@
                 android:background="@drawable/search_result_label_focus_bottom"
                 android:visibility="invisible" />
         </FrameLayout>
+        <FrameLayout
+            android:id="@+id/id_frameLayout_result_label_drama"
+            android:layout_width="@dimen/width_80px"
+            android:layout_height="@dimen/height_43px"
+            android:layout_marginLeft="@dimen/width_46px"
+            android:layout_marginRight="@dimen/width_46px"
+            android:layout_marginTop="@dimen/height_30px"
+            android:focusable="true"
+            android:visibility="gone"
+            android:nextFocusRight="@+id/id_frameLayout_result_label_drama"
+            android:nextFocusUp="@id/id_frameLayout_result_label_drama">
 
+            <TextView
+                android:id="@+id/id_result_label_drama_title"
+                style="@style/StyleSearchResultLabelText"
+                android:layout_width="@dimen/width_80px"
+                android:layout_height="@dimen/height_36px"
+                android:layout_marginLeft="@dimen/width_4px"
+                android:text="@string/search_drama_title" />
+
+            <ImageView
+                android:id="@+id/id_result_label_drama_focus_bottom"
+                android:layout_width="@dimen/width_76px"
+                android:layout_height="@dimen/height_2px"
+                android:layout_marginTop="@dimen/height_41px"
+                android:background="@drawable/search_result_label_focus_bottom"
+                android:visibility="invisible" />
+        </FrameLayout>
         <FrameLayout
             android:id="@+id/id_frameLayout_result_label_person"
             android:layout_width="@dimen/width_80px"
@@ -70,34 +97,7 @@
                 android:visibility="invisible" />
         </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/id_frameLayout_result_label_drama"
-            android:layout_width="@dimen/width_80px"
-            android:layout_height="@dimen/height_43px"
-            android:layout_marginLeft="@dimen/width_46px"
-            android:layout_marginRight="@dimen/width_46px"
-            android:layout_marginTop="@dimen/height_30px"
-            android:focusable="true"
-            android:visibility="gone"
-            android:nextFocusRight="@+id/id_frameLayout_result_label_drama"
-            android:nextFocusUp="@id/id_frameLayout_result_label_drama">
 
-            <TextView
-                android:id="@+id/id_result_label_drama_title"
-                style="@style/StyleSearchResultLabelText"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_36px"
-                android:layout_marginLeft="@dimen/width_4px"
-                android:text="@string/search_drama_title" />
-
-            <ImageView
-                android:id="@+id/id_result_label_drama_focus_bottom"
-                android:layout_width="@dimen/width_76px"
-                android:layout_height="@dimen/height_2px"
-                android:layout_marginTop="@dimen/height_41px"
-                android:background="@drawable/search_result_label_focus_bottom"
-                android:visibility="invisible" />
-        </FrameLayout>
     </LinearLayout>
 
     <tv.newtv.cboxtv.cms.search.custom.SearchViewPager

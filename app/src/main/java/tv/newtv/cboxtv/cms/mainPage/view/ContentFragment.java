@@ -334,11 +334,11 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
         if (mDatas != null && mDatas.size() > 0 && mRecyclerView != null && mRecyclerView.getAdapter
                 () != null && mRecyclerView.getAdapter().getItemCount() > 0) {
-            return;
-        }
 
-        if (loadingView != null)
-            loadingView.setVisibility(View.VISIBLE);
+        } else {
+            if (loadingView != null)
+                loadingView.setVisibility(View.VISIBLE);
+        }
 
         if (TextUtils.isEmpty(contentId)) {
             onFailed("暂无数据内容。");

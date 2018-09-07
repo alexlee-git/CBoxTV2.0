@@ -507,7 +507,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
     }
 
     @Override
-    public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
 
     }
 

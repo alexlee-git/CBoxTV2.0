@@ -298,8 +298,7 @@ public class MainListPageManager implements ListPageView,
 
                 @Override
                 public View getNextFocusView() {
-                    int position = mViewPager.getCurrentItem() % mNavInfos.size();
-                    BaseFragment target = (BaseFragment) mViewPagerAdapter.getItem(position);
+                    BaseFragment target = (BaseFragment) mViewPagerAdapter.getCurrentFragment();
                     if (target == null) return null;
                     return target.getFirstFocusView();
                 }

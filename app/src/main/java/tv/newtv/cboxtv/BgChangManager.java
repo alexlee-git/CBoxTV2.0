@@ -54,7 +54,7 @@ public class BgChangManager {
      *
      * @param callback
      */
-    public void registTargetView(BGCallback callback) {
+    public void registerTargetView(BGCallback callback) {
         mCallback = callback;
     }
 

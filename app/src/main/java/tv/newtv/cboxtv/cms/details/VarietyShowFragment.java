@@ -246,7 +246,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
             }
 
             @Override
-            public void AllPalyComplete(boolean isError, String info, VideoPlayerView
+            public void AllPlayComplete(boolean isError, String info, VideoPlayerView
                     videoPlayerView) {
                 if (!isError) {
                     mVideoView.onComplete();
@@ -495,7 +495,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                                     LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0,"+entity.getContentUUID());
                                     mCollectIv.setImageResource(R.drawable
                                             .icon_details_collect_btn);
-                                    Toast.makeText(getActivity(), "添加收藏成功", Toast.LENGTH_SHORT)
+                                    Toast.makeText(getActivity(), R.string.collect_success, Toast.LENGTH_SHORT)
                                             .show();
                                     mAdapter.notifyItemChanged(0);
                                     RxBus.get().post(Constant.UPDATE_UC_DATA, true);

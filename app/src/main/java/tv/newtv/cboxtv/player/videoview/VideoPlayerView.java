@@ -304,7 +304,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             @Override
             public void run() {
                 if (mPlayerCallback != null) {
-                    mPlayerCallback.AllPalyComplete(isError, desc, VideoPlayerView.this);
+                    mPlayerCallback.AllPlayComplete(isError, desc, VideoPlayerView.this);
                 }
             }
         }, 1000);
@@ -352,7 +352,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         setHintText("播放已结束");
 
         if (mPlayerCallback != null) {
-            mPlayerCallback.AllPalyComplete(isError, info, this);
+            mPlayerCallback.AllPlayComplete(isError, info, this);
         }
     }
 

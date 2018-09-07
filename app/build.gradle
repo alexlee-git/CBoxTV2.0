@@ -146,6 +146,17 @@ android {
             ]
         }
 
+        ailang {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"200001\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "200001"
+            ]
+        }
+
         cboxtest {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
