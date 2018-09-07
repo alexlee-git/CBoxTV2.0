@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.views;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +23,13 @@ import tv.newtv.cboxtv.utils.ScreenUtils;
 public class AdPopupWindow extends PopupWindow implements IAdConstract.IADConstractView {
     private ADPresenter adPresenter;
     private ImageView imageView;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            dismiss();
+        }
+    };
 
     public void show(Context context,View parent){
         View popView = LayoutInflater.from(context).inflate(R.layout.layout_ad_pop,null);
@@ -41,11 +50,11 @@ public class AdPopupWindow extends PopupWindow implements IAdConstract.IADConstr
 
     @Override
     public void showAd(ADHelper.AD.ADItem item) {
-        if(!TextUtils.isEmpty(item.AdUrl)){
+        if(!TextUtils.isEmpty(item.AdUrl) &&item.PlayTime > 0){
             Picasso.get().load(item.AdUrl).into(imageView);
+            handler.sendEmptyMessageDelayed(0,item.PlayTime * 1000);
         }else {
             dismiss();
-//            imageView.setImageResource(R.drawable.about_logo);
         }
     }
 }

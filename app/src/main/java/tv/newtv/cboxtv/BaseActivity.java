@@ -14,6 +14,7 @@ import com.squareup.picasso.Target;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import tv.newtv.ActivityStacks;
+import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
@@ -99,11 +100,11 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setSuspendAD();
+        setPopupAD();
     }
 
-    private void setSuspendAD() {
-        if(isDetailActivity()){
+    private void setPopupAD() {
+        if(isDetailActivity() || hasPopoupAD()){
             adPopupWindow = new AdPopupWindow();
             adPopupWindow.show(this,findViewById(android.R.id.content));
         }
@@ -207,6 +208,15 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
                 ||clazz == ColumnPageActivity.class
                 || clazz == SingleDetailPageActivity.class
                 || clazz == ProgramCollectionActivity.class){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean hasPopoupAD(){
+        Class<? extends BaseActivity> clazz = getClass();
+        PopupAD annotation = clazz.getAnnotation(PopupAD.class);
+        if(annotation != null){
             return true;
         }
         return false;
