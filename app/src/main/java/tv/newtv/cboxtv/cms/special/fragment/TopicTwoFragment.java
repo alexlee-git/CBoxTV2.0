@@ -34,7 +34,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private AiyaRecyclerView news_recycle;
     private TextView title;
     private TextView title_direction;
-    private VideoPlayerView videoPlayerView;
     private FrameLayout video_player_rl;
     private View focusView;
     private TextView videoTitle;
@@ -150,7 +149,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     }
 
     @Override
-    public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
         if (news_recycle.getAdapter() != null) {
             NewsAdapter adapter = (NewsAdapter) news_recycle.getAdapter();
             LinearLayoutManager layoutManager = (LinearLayoutManager) news_recycle
@@ -175,6 +174,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
         }
     }
+
+
+
 
     @Override
     public void ProgramChange() {
