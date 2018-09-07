@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,13 +22,11 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
-import tv.newtv.cboxtv.views.FocusToggleView;
 
-public class NewsFragment extends BaseSpecialContentFragment implements PlayerCallback {
+public class TopicTwoFragment extends BaseSpecialContentFragment implements PlayerCallback {
     private ModuleInfoResult moduleInfoResult;
     private ProgramSeriesInfo mProgramSeriesInfo;
     private int videoIndex = 0;
@@ -46,7 +42,7 @@ public class NewsFragment extends BaseSpecialContentFragment implements PlayerCa
 
     @Override
     protected int getLayoutId() {
-        return R.layout.news_layout;
+        return R.layout.topic_two_layout;
     }
 
     @Override
@@ -109,7 +105,7 @@ public class NewsFragment extends BaseSpecialContentFragment implements PlayerCa
 
 
         moduleInfoResult = infoResult;
-        Log.d("NewsFragment", moduleInfoResult.toString());
+        Log.d("TopicTwoFragment", moduleInfoResult.toString());
         if (news_recycle != null && news_recycle.getAdapter() != null) {
             ((NewsAdapter) news_recycle.getAdapter()).refreshData(infoResult.getDatas().get(0)
                     .getDatas()).notifyDataSetChanged();

@@ -8,10 +8,8 @@
 
 
     <LinearLayout
-
         android:layout_width="@dimen/width_512px"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/width_48px"
         android:background="@drawable/news_list"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -57,24 +55,55 @@
             android:layout_marginTop="@dimen/height_16px"
             android:layout_marginLeft="@dimen/width_10px"
             android:text="专题名称专题名称专题名称专题名称专题名称" />
+<RelativeLayout
+    android:layout_marginBottom="@dimen/height_140px"
+    android:layout_marginRight="@dimen/height_110px"
+    android:layout_marginTop="@dimen/height_102px"
+    android:layout_width="@dimen/width_1198px"
+    android:layout_height="@dimen/height_674px">
+
+    <FrameLayout
+        android:id="@+id/video_player_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/selector_pos_background">
+
+        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+            android:id="@+id/video_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
+    </FrameLayout>
+
+    <TextView
+        android:background="@drawable/title_background"
+        android:layout_marginLeft="@dimen/height_40px"
+        android:layout_marginTop="@dimen/height_40px"
+        android:visibility="gone"
+        android:textColor="@color/colorWhite"
+        android:layout_alignParentTop="true"
+        android:textSize="@dimen/height_30px"
+        android:id="@+id/videoTitle"
+        android:layout_width="@dimen/width_880px"
+        android:layout_height="wrap_content" />
 
 
-        <FrameLayout
-            android:id="@+id/video_player_rl"
-            android:layout_width="@dimen/width_1198px"
-            android:layout_height="@dimen/height_674px"
-            android:layout_marginBottom="@dimen/height_140px"
-            android:layout_marginRight="@dimen/height_110px"
-            android:layout_marginTop="@dimen/height_102px"
-            android:background="@drawable/selector_pos_background">
+    <ImageView
+        android:layout_marginBottom="@dimen/width_44px"
+        android:layout_marginRight="@dimen/width_44px"
+        android:id="@+id/full_screen"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/full_screen"
+        />
 
-            <tv.newtv.cboxtv.player.videoview.VideoPlayerView
-                android:id="@+id/video_player"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-            </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
-        </FrameLayout>
+</RelativeLayout>
+
 
     </LinearLayout>
 
