@@ -23,6 +23,8 @@ public class DeviceUtil {
     public static final String XUN_MA = "xunma";
     public static final String XSJ = "xsj";
     public static final String CBOXTEST = "cboxtest";
+    public static final String FEILIERDE = "feilierde";
+    public static final String AILANG = "ailang"; //爱浪
 
     public static boolean isSelfDevice() {
         if (BuildConfig.DEBUG) {
@@ -43,6 +45,13 @@ public class DeviceUtil {
         } else if (BuildConfig.FLAVOR.equals(XSJ)) {
             return true;
         } else if (BuildConfig.FLAVOR.equals(CBOXTEST)) {
+            return true;
+        } else if (BuildConfig.FLAVOR.equals(FEILIERDE)) {
+            String fled = "pled-newtv-3229";
+            String fModel = Build.MODEL;
+            Log.i("device", fModel);
+            return !TextUtils.isEmpty(fModel) && fled.equalsIgnoreCase(fModel);
+        } else if (BuildConfig.FLAVOR.equals(AILANG)) {
             return true;
         }
         return false;
