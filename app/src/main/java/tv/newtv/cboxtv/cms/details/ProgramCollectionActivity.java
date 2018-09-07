@@ -137,7 +137,7 @@ public class ProgramCollectionActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void AllPalyComplete(boolean isError, String info,
+                            public void AllPlayComplete(boolean isError, String info,
                                                         VideoPlayerView videoPlayerView) {
 
                             }

@@ -35,6 +35,7 @@ public class SpecialLayoutManager {
      * special_008 积分榜
      * special_009 世界杯栏目详情页
      * special_010 首页
+     * special_011 奖牌榜
      **/
     private static SpecialLayoutManager layoutManager;
 

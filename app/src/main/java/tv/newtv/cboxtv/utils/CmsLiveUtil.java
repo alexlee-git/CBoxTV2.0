@@ -76,7 +76,8 @@ public final class CmsLiveUtil {
         return !TextUtils.isEmpty(weeks) && weeks.contains(day);
     }
 
-    public static boolean isInTime(String startTime,String endTime){
+    @SuppressWarnings("UnnecessaryBoxing")
+    public static boolean isInTime(String startTime, String endTime){
         Long start = Long.valueOf(formatToSeconds(startTime));
         Long end = Long.valueOf(formatToSeconds(endTime));
 

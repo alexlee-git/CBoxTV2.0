@@ -48,7 +48,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
         holder.tvCountry.setText(programInfo.getTitle());
         try {
 			Picasso.get().load(programInfo.getImg()).into(holder.ivCountry);
-		}catch (Exception e){}
+		}catch (Exception e){e.printStackTrace();}
 
         setBackground(holder.itemView,position);
 
@@ -78,7 +78,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
     }
 
 
-    class MyHolder extends RecyclerView.ViewHolder{
+    static class MyHolder extends RecyclerView.ViewHolder{
         private TextView ranking;
         private TextView tvCountry;
         private ImageView ivCountry;
@@ -86,7 +86,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
         private TextView silverMedal;
         private TextView bronzeMedal;
         private TextView total;
-        public MyHolder(View itemView) {
+        MyHolder(View itemView) {
             super(itemView);
             ranking = itemView.findViewById(R.id.text_ranking);
             tvCountry = itemView.findViewById(R.id.tv_country);
@@ -97,7 +97,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
             total = itemView.findViewById(R.id.total);
         }
 
-        public void restoreView(){
+        void restoreView(){
             ranking.setText("");
             tvCountry.setText("");
             goldMedal.setText("");

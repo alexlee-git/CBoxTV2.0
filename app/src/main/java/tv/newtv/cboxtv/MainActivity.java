@@ -1,8 +1,8 @@
 package tv.newtv.cboxtv;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -12,8 +12,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -45,6 +43,7 @@ import org.xml.sax.SAXException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,7 +100,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     View mFirFocus;
     @BindView(R.id.timer)
     TextView timeTV;
-    private Handler mHandler;
     private Map<String, String> mServerAddressMap;
     private int serverAddressRetryCnt;
     private int TIME_ONE_SECOND = 1 * 1000;
@@ -115,13 +113,23 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     private LinearLayout linerPrograss;
     private TextView tvPrograss;
     private ProgressBar pbUpdate;
-    private SharedPreferences.Editor editor;
     private Observable<String> versionUpFaildObservable;
+    private SharedPreferences mSharedPreferences;
+    private boolean isScroller = true;
+    //广播显示系统时间
+    private BroadcastReceiver mTimeRefreshReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
+                showServiceTime();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(savedInstanceState != null && savedInstanceState.containsKey
-                ("android:support:fragments")){
+        if (savedInstanceState != null && savedInstanceState.containsKey
+                ("android:support:fragments")) {
             savedInstanceState.remove("android:support:fragments");
         }
         super.onCreate(savedInstanceState);
@@ -129,7 +137,8 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initVersionUpFaild();
-        registerReceiver(mTimeRefreshReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));//注册广播，显示系统时间
+        registerReceiver(mTimeRefreshReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+        //注册广播，显示系统时间
 
         Intent mIntent = getIntent();
         if (mIntent != null) {
@@ -137,23 +146,8 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             mExternalParams = mIntent.getStringExtra("params");
             Log.e("---External", mExternalAction + "--" + mExternalParams);
         }
-        SharedPreferences pref = getSharedPreferences("VersionMd5", MODE_PRIVATE);
-        editor = pref.edit();
 
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                if (msg.what == MSG_INIT_SDK_RETRY) {
-//                    initSDK();
-                } else if (msg.what == MSG_GET_TIME) {
-
-                    long sysTime = System.currentTimeMillis();//获取系统时间
-                    CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
-                    timeTV.setText(sysTimeStr); //更新时间
-                }
-            }
-        };
-
+        mSharedPreferences = getSharedPreferences("VersionMd5", MODE_PRIVATE);
         initIsOriented();
         initModules();
         //loadVersion("");
@@ -239,6 +233,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
     }
 
+    @SuppressLint("CheckResult")
     private void initVersionUpFaild() {
         versionUpFaildObservable = RxBus.get().register(Constant.UP_VERSION_IS_SUCCESS);
         versionUpFaildObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<String>() {
@@ -255,7 +250,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             }
         });
     }
-
 
     //开始获取版本
     private void loadVersion(String hardwareCode) {
@@ -292,10 +286,12 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                             if (versionBeen == null) {
                                 return;
                             }
-                            if (versionBeen.getVersionCode() > versionCode && !TextUtils.isEmpty(versionBeen.getVersionName())) {
+                            if (versionBeen.getVersionCode() > versionCode && !TextUtils.isEmpty
+                                    (versionBeen.getVersionName())) {
                                 if (!TextUtils.isEmpty(versionBeen.getPackageMD5())) {
+                                    SharedPreferences.Editor editor = mSharedPreferences.edit();
                                     editor.putString("versionmd5", versionBeen.getPackageMD5());
-                                    editor.commit();
+                                    editor.apply();
                                 }
                                 if (versionBeen.getUpgradeType() == 1) {
                                     //强制升级
@@ -324,7 +320,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     private void initConstraintDialog(final VersionBeen versionBeen, boolean isForceUp) {
         View inflate = LayoutInflater.from(this).inflate(R.layout.version_up_item, null);
         TextView tvUserTitle = (TextView) inflate.findViewById(R.id.tv_user_title);
-        tvUserTitle.setText("亲爱的用户:\n能享受新版本的服务了,更新如下:");
+        tvUserTitle.setText(R.string.new_version_tip);
         rlUp = (RelativeLayout) inflate.findViewById(R.id.rl_up);
         TextView tvVersion = (TextView) inflate.findViewById(R.id.tv_version);
         linerPrograss = ((LinearLayout) inflate.findViewById(R.id.liner_prograss));
@@ -333,7 +329,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
         ImageView ivLatter = (ImageView) inflate.findViewById(R.id.iv_imate_latter);
         TextView tvInfo = (TextView) inflate.findViewById(R.id.tv_up_info);
         if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getVersionName())) {
-            tvVersion.setText("版本更新(" + versionBeen.getVersionName() + ")");
+            tvVersion.setText(String.format("版本更新(%s)", versionBeen.getVersionName()));
         }
         if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getVersionDescription())) {
             tvInfo.setText(versionBeen.getVersionDescription());
@@ -341,17 +337,20 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
         ImageView ivImateup = (ImageView) inflate.findViewById(R.id.iv_imate_up);
         if (isForceUp) {
             ivLatter.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivImateup.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivImateup
+                    .getLayoutParams();
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
             ivImateup.setLayoutParams(layoutParams);
 
         } else {
             ivLatter.setVisibility(View.VISIBLE);
-            RelativeLayout.LayoutParams layoutParamsLeft = (RelativeLayout.LayoutParams) ivImateup.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParamsLeft = (RelativeLayout.LayoutParams)
+                    ivImateup.getLayoutParams();
             layoutParamsLeft.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
             layoutParamsLeft.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
             ivImateup.setLayoutParams(layoutParamsLeft);
-            RelativeLayout.LayoutParams layoutParamsRight = (RelativeLayout.LayoutParams) ivLatter.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParamsRight = (RelativeLayout.LayoutParams)
+                    ivLatter.getLayoutParams();
             layoutParamsRight.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
             layoutParamsRight.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
             ivLatter.setLayoutParams(layoutParamsRight);
@@ -364,7 +363,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             public void onClick(View view) {
                 rlUp.setVisibility(View.GONE);
                 linerPrograss.setVisibility(View.VISIBLE);
-                if (!TextUtils.isEmpty(versionBeen.getPackageAddr())) {
+                if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getPackageAddr())) {
                     loadApk(versionBeen.getPackageAddr());
                 }
 
@@ -374,8 +373,12 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                 .setCancelable(false)
                 .setView(inflate)
                 .create();
-        constraintDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);//去掉这句话，背景会变暗
-        constraintDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        if (constraintDialog.getWindow() != null) {
+            constraintDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            //去掉这句话，背景会变暗
+            constraintDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color
+                    .TRANSPARENT));
+        }
         constraintDialog.show();
         ivLatter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -386,8 +389,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             }
         });
     }
-
-
 
     //更新下载apk
     private void loadApk(String addString) {
@@ -400,7 +401,8 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             @Override
             public void onProgressChange(long totalBytes, long curBytes, float progress) {
                 pbUpdate.setProgress((int) progress);
-                tvPrograss.setText("努力下载中" + (int) progress + "%");
+                tvPrograss.setText(String.format(Locale.getDefault(), "努力下载中 %d%", (int)
+                        progress));
                 if ((int) progress == 100) {
                     if (constraintDialog != null && constraintDialog.isShowing()) {
                         constraintDialog.dismiss();
@@ -439,16 +441,20 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
 
             dataBuff.delete(0, dataBuff.length());
-            dataBuff.append(Build.MANUFACTURER + ",")
-                    .append(Build.MODEL + ",")
+            dataBuff.append(Build.MANUFACTURER)
+                    .append(",")
+                    .append(Build.MODEL)
+                    .append(",")
                     .append(Build.VERSION.RELEASE)
                     .trimToSize(); // 设备信息
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DEVICE_INFO, dataBuff.toString());
 
             dataBuff.delete(0, dataBuff.length());
 
-            dataBuff.append(pckInfo.applicationInfo.loadLabel(getPackageManager()) + ",")
-                    .append(pckInfo.versionName + ",")
+            dataBuff.append(pckInfo.applicationInfo.loadLabel(getPackageManager()))
+                    .append(",")
+                    .append(pckInfo.versionName)
+                    .append(",")
                     .trimToSize(); // 版本信息
 
             LogUploadUtils.uploadLog(Constant.LOG_NODE_APP_VERSION, dataBuff.toString());
@@ -463,7 +469,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     protected void onResume() {
         // 上报进入首页日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_HOME_PAGE, "0");
-        BgChangManager.getInstance().registTargetView(this);
+        BgChangManager.getInstance().registerTargetView(this);
         super.onResume();
     }
 
@@ -480,13 +486,9 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
         LogUtils.e(Constant.TAG, "MainActivity onDestory");
         super.onDestroy();
         if (mTimeRefreshReceiver != null) {
-
             unregisterReceiver(mTimeRefreshReceiver);
         }
-        if (mHandler != null) {
-            mHandler.removeCallbacksAndMessages(null);
-            mHandler = null;
-        }
+
         serverAddressRetryCnt = 0;
 
         if (mAlertDialog != null) {
@@ -540,24 +542,22 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
         // TODO 跳转到相应的页面
     }
 
-    private boolean isScroller = true;
-
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(interruptKeyEvent(event)){
+        if (interruptKeyEvent(event)) {
             return super.dispatchKeyEvent(event);
         }
-        LogUtils.e("MainNavManager",MainNavManager.getInstance().toString());
+        LogUtils.e("MainNavManager", MainNavManager.getInstance().toString());
         BaseFragment currentFragment = (BaseFragment) MainNavManager.getInstance()
                 .getCurrentFragment();
         if (currentFragment != null) {
-            LogUtils.e("MainNavManager",currentFragment.toString());
+            LogUtils.e("MainNavManager", currentFragment.toString());
             currentFragment.dispatchKeyEvent(event);
         }
 
 
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-//            
             if (!BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
                 if (SystemUtils.isFastDoubleClick()) {
                     return true;
@@ -612,7 +612,8 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                         }
                     }
                 } else {
-                    if (currentFragment != null && currentFragment.isNoTopView() && currentFragment.getView() != null) {
+                    if (currentFragment != null && currentFragment.isNoTopView() &&
+                            currentFragment.getView() != null) {
                         View focusView = currentFragment.getView().findFocus();
                         View topView = FocusFinder.getInstance().findNextFocus((ViewGroup)
                                         currentFragment.getView(),
@@ -677,31 +678,20 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
         return result;
     }
 
-
-    //广播显示系统时间
-    private BroadcastReceiver mTimeRefreshReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (Intent.ACTION_TIME_TICK.equals(intent.getAction())) {
-                showServiceTime();
-            }
-        }
-    };
-
-
     private void showServiceTime() {
         ServiceTimeUtils.getServiceTime(new ServiceTimeUtils.TimeListener() {
             @Override
             public void success(TimeBean timeBean) {
-                CharSequence sysTimeStr = DateFormat.format("HH:mm", timeBean.getResponse());//时间显示格式
+                CharSequence sysTimeStr = DateFormat.format("HH:mm", timeBean.getResponse());
+                //时间显示格式
                 timeTV.setText(sysTimeStr); //更新时间
             }
 
             @Override
             public void fail() {
-        long sysTime = System.currentTimeMillis();//获取系统时间
-        CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
-        timeTV.setText(sysTimeStr); //更新时间
+                long sysTime = System.currentTimeMillis();//获取系统时间
+                CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
+                timeTV.setText(sysTimeStr); //更新时间
             }
         });
 
@@ -715,7 +705,8 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     private void toSecondPageFromAd(String eventContentString) {
         Log.i(TAG, "toSecondPageFromAd");
         try {
-            AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent.class);
+            AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent
+                    .class);
             JumpUtil.activityJump(this, adEventContent.actionType, adEventContent.contentType,
                     adEventContent.contentUUID, adEventContent.actionURI);
 

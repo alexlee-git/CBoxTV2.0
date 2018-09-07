@@ -196,7 +196,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
     }
 
     @Override
-    public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
         if (recyclerView.getAdapter() != null) {
             ShooterAdapter adapter = (ShooterAdapter) recyclerView.getAdapter();
             LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView

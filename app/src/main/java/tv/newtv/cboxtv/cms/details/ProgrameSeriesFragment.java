@@ -668,7 +668,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                         public void run() {
                             isCollect = true;
                             mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
-                            Toast.makeText(getContext().getApplicationContext(), "添加收藏成功", Toast
+                            Toast.makeText(getContext().getApplicationContext(), R.string.collect_success, Toast
                                     .LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -807,7 +807,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     @Override
-    public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
         if (!isError) {
             mVideoView.onComplete();
         }

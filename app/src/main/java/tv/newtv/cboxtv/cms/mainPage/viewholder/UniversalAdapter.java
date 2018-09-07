@@ -85,7 +85,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         return "cell_" + layoutId + "_1";
     }
 
-    public void setPlayerUUID(String uuid){
+    public void setPlayerUUID(String uuid) {
         PlayerUUID = uuid;
     }
 
@@ -168,6 +168,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
             Log.i(TAG, "layoutCode=" + layoutCode);
             for (int i = 0; i < posSize; ++i) {
+                if (moduleItem.getDatas().size() - 1 < i) break;
                 final ProgramInfo info = moduleItem.getDatas().get(i);
 
                 // 拿1号组件的1号推荐位为例, 其子海报控件的id为 : cell_001_1_poster
@@ -368,8 +369,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             int height = imageView.getLayoutParams().height;
 
             int placeHolderResId = ImageUtils.getProperPlaceHolderResId(imageView.getContext(),
-                    width,
-                    height);
+                    width, height);
             GlideUtil.loadImage(imageView.getContext(), imageView,
                     imgUrl, placeHolderResId, placeHolderResId, isCorner);
         } else {
