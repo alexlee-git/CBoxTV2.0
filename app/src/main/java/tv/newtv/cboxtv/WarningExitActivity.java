@@ -1,9 +1,6 @@
 package tv.newtv.cboxtv;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,7 +71,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         okButton.setOnFocusChangeListener(this);
         cancelButton.setOnFocusChangeListener(this);
 
-//        getAD();//获取广告
+        getAD();//获取广告
         initView();
     }
 
@@ -156,8 +153,6 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     public void onFocusChange(View v, boolean hasFocus) {
 
         if (hasFocus){
-
-
             ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
                     .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             sa.setFillAfter(true);
@@ -171,24 +166,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
             sa.setDuration(400);
             sa.setInterpolator(mSpringInterpolator);
             v.startAnimation(sa);
-
         }
-
-//        if (mScaleAnimator != null) mScaleAnimator.end();
-//        if (hasFocus) {
-//            ObjectAnimator animX = ObjectAnimator.ofFloat(v, "ScaleX",
-//                    new float[]{1.0F, 1.1F}).setDuration(400);
-//            ObjectAnimator animY = ObjectAnimator.ofFloat(v, "ScaleY",
-//                    new float[]{1.0F, 1.1F}).setDuration(400);
-//            mScaleAnimator = new AnimatorSet();
-//            mScaleAnimator.playTogether(new Animator[]{animX, animY});
-//            mScaleAnimator.setInterpolator(mSpringInterpolator);
-//            mScaleAnimator.start();
-//
-//        } else {
-//            v.setScaleX(1.0f);
-//            v.setScaleY(1.0f);
-//        }
     }
 
     /**
