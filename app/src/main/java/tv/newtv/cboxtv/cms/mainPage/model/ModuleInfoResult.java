@@ -26,6 +26,23 @@ public class ModuleInfoResult {
     private int    isCollection = 0;
     private List<ModuleItem> data;
 
+    @Override
+    public String toString() {
+        return "ModuleInfoResult{" +
+                "errorMessage='" + errorMessage + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                ", isNav=" + isNav +
+                ", pageTitle='" + pageTitle + '\'' +
+                ", subTitle='" + subTitle + '\'' +
+                ", templateZT='" + templateZT + '\'' +
+                ", description='" + description + '\'' +
+                ", background='" + background + '\'' +
+                ", isAd=" + isAd +
+                ", isCollection=" + isCollection +
+                ", data=" + data +
+                '}';
+    }
+
     public String getPageTitle() {
         return pageTitle;
     }

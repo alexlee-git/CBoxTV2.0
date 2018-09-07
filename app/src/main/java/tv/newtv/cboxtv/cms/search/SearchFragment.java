@@ -178,6 +178,7 @@ public class SearchFragment extends BaseFragment {
                     @Override
                     public void onNext(ResponseBody value) {
                         try {
+
                             String result = value.string();
                             ModuleInfoResult moduleData = ModuleUtils.getInstance()
                                     .parseJsonForModuleInfo(result);

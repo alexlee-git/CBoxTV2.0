@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,8 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 
 import java.util.List;
 
@@ -22,9 +24,11 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
+import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
+import tv.newtv.cboxtv.views.FocusToggleView;
 
 public class NewsFragment extends BaseSpecialContentFragment implements PlayerCallback {
     private ModuleInfoResult moduleInfoResult;
@@ -37,6 +41,8 @@ public class NewsFragment extends BaseSpecialContentFragment implements PlayerCa
     private VideoPlayerView videoPlayerView;
     private FrameLayout video_player_rl;
     private View focusView;
+    private TextView videoTitle;
+    private ImageView full_screen;
 
     @Override
     protected int getLayoutId() {
@@ -50,12 +56,14 @@ public class NewsFragment extends BaseSpecialContentFragment implements PlayerCa
         title_direction = view.findViewById(R.id.title_direction);
         videoPlayerView = view.findViewById(R.id.video_player);
         video_player_rl = view.findViewById(R.id.video_player_rl);
+        videoTitle =view.findViewById(R.id.videoTitle);
+        full_screen =view.findViewById(R.id.full_screen);
 
         news_recycle.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.VERTICAL, false));
-        int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.width_10px);
-        news_recycle.setSpace(0, space * -1);
-        NewsFragment.NewsAdapter adapter = new  NewsFragment.NewsAdapter();
+        int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.width_54px);
+        news_recycle.setSpace(space, 0);
+        NewsAdapter adapter = new NewsAdapter();
         news_recycle.setItemAnimator(null);
         news_recycle.setAlign(AiyaRecyclerView.ALIGN_START);
         news_recycle.setAdapter(adapter);
@@ -69,6 +77,7 @@ public class NewsFragment extends BaseSpecialContentFragment implements PlayerCa
             public void onItemClick(ProgramInfo item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
+
             }
 
             @Override
@@ -89,7 +98,7 @@ public class NewsFragment extends BaseSpecialContentFragment implements PlayerCa
         videoPlayerView.setPlayerCallback(this);
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_rl), true);
         if (moduleInfoResult != null) {
-title_direction.setText(moduleInfoResult.getDescription());
+            title_direction.setText(moduleInfoResult.getDescription());
             adapter.refreshData(moduleInfoResult.getDatas().get(0).getDatas())
                     .notifyDataSetChanged();
         }
@@ -102,11 +111,12 @@ title_direction.setText(moduleInfoResult.getDescription());
         moduleInfoResult = infoResult;
         Log.d("NewsFragment", moduleInfoResult.toString());
         if (news_recycle != null && news_recycle.getAdapter() != null) {
-            ((NewsFragment.NewsAdapter) news_recycle.getAdapter()).refreshData(infoResult.getDatas().get(0)
+            ((NewsAdapter) news_recycle.getAdapter()).refreshData(infoResult.getDatas().get(0)
                     .getDatas()).notifyDataSetChanged();
 
         }
     }
+
     private void onItemClickAction(ProgramInfo programInfo) {
 
         videoPlayerView.beginChange();
@@ -129,6 +139,7 @@ title_direction.setText(moduleInfoResult.getDescription());
             }
         });
     }
+
     @Override
     public void onEpisodeChange(int index, int position) {
         playIndex = index;
@@ -137,12 +148,15 @@ title_direction.setText(moduleInfoResult.getDescription());
     @Override
     public void onPlayerClick(VideoPlayerView videoPlayerView) {
         videoPlayerView.EnterFullScreen(getActivity(), false);
+        videoTitle.setVisibility(View.GONE);
+        full_screen.setVisibility(View.GONE);
+
     }
 
     @Override
     public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
         if (news_recycle.getAdapter() != null) {
-            NewsFragment.NewsAdapter adapter = (NewsFragment.NewsAdapter) news_recycle.getAdapter();
+            NewsAdapter adapter = (NewsAdapter) news_recycle.getAdapter();
             LinearLayoutManager layoutManager = (LinearLayoutManager) news_recycle
                     .getLayoutManager();
             videoIndex++;
@@ -158,7 +172,7 @@ title_direction.setText(moduleInfoResult.getDescription());
                 postion = videoIndex - first;
             }
             View view = news_recycle.getChildAt(postion);
-            NewsFragment.NewsViewHolder viewHolder = (  NewsFragment.NewsViewHolder) news_recycle.getChildViewHolder
+            NewsViewHolder viewHolder = (NewsViewHolder) news_recycle.getChildViewHolder
                     (view);
             if (viewHolder != null) {
                 viewHolder.dispatchSelect();
@@ -169,10 +183,11 @@ title_direction.setText(moduleInfoResult.getDescription());
     @Override
     public void ProgramChange() {
         videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-        videoPlayerView.playSingleOrSeries(playIndex,0);
+        videoPlayerView.playSingleOrSeries(playIndex, 0);
     }
 
-    private class NewsAdapter extends RecyclerView.Adapter<NewsFragment.NewsViewHolder> {
+
+    private class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
         private List<ProgramInfo> ModuleItems;
         private OnItemAction<ProgramInfo> onItemAction;
@@ -180,7 +195,7 @@ title_direction.setText(moduleInfoResult.getDescription());
         private int currentIndex = 0;
 
 
-        NewsFragment.NewsAdapter refreshData(List<ProgramInfo> datas) {
+        NewsAdapter refreshData(List<ProgramInfo> datas) {
             ModuleItems = datas;
             return this;
         }
@@ -190,7 +205,7 @@ title_direction.setText(moduleInfoResult.getDescription());
         }
 
         @Override
-        public NewsFragment.NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout
                     .news_item_layout, parent, false);
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view
@@ -199,13 +214,12 @@ title_direction.setText(moduleInfoResult.getDescription());
                     .height_18px) * -1;
             layoutParams.topMargin = space;
             view.setLayoutParams(layoutParams);
-            return new NewsFragment.NewsViewHolder(view);
+            return new NewsViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final NewsFragment.NewsViewHolder holder, int position) {
+        public void onBindViewHolder(final NewsViewHolder holder, int position) {
             ProgramInfo moduleItem = getItem(position);
-
 
 
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -213,9 +227,12 @@ title_direction.setText(moduleInfoResult.getDescription());
                 public void onFocusChange(View view, boolean hasFocus) {
 
                     if (hasFocus) {
-                        holder.news_title.setBackgroundResource(R.drawable.news_foucs);
+
+                        holder.layout.setBackgroundResource(R.drawable.news_foucs);
+
                     } else {
-                        holder.news_title.setBackgroundResource(R.drawable.news);
+
+                        holder.layout.setBackgroundResource(0);
 
                     }
                 }
@@ -226,16 +243,23 @@ title_direction.setText(moduleInfoResult.getDescription());
                     final ProgramInfo moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         title.setText(moduleItem.getSubTitle());
+                        videoTitle.setText(moduleItem.getSubTitle());
                         currentUUID = moduleItem.getContentUUID();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
 
                         currentIndex = holder.getAdapterPosition();
                         onItemAction.onItemClick(moduleItem, holder.getAdapterPosition());
+                        holder.isPlaying.setVisibility(View.VISIBLE);
                     }
                 }
             });
             if (moduleItem != null) {
                 holder.news_title.setText(moduleItem.getSubTitle());
+                if (moduleItem.getContentUUID().equals(currentUUID)) {
+                    holder.isPlaying.setVisibility(View.VISIBLE);
+                } else {
+                    holder.isPlaying.setVisibility(View.GONE);
+                }
 
                 if (TextUtils.isEmpty(currentUUID)) {
                     if (position == 0) {
@@ -260,10 +284,15 @@ title_direction.setText(moduleInfoResult.getDescription());
 
     private static class NewsViewHolder extends RecyclerView.ViewHolder {
         public TextView news_title;
+        public ImageView isPlaying;
+        public RelativeLayout layout;
+
 
         public NewsViewHolder(View itemView) {
             super(itemView);
             news_title = itemView.findViewById(R.id.news_title);
+            isPlaying = itemView.findViewById(R.id.isPlaying);
+            layout = itemView.findViewById(R.id.liner_fou);
         }
 
         public void dispatchSelect() {
@@ -283,8 +312,11 @@ title_direction.setText(moduleInfoResult.getDescription());
                 if (focusView instanceof VideoPlayerView) {
                     return true;
                 }
-                if (videoPlayerView!= null) {
+                if (videoPlayerView != null) {
                     videoPlayerView.requestFocus();
+                    videoTitle.setVisibility(View.VISIBLE);
+                    full_screen.setVisibility(View.VISIBLE);
+
                 }
                 return true;
             }
@@ -296,6 +328,8 @@ title_direction.setText(moduleInfoResult.getDescription());
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 if (focusView instanceof VideoPlayerView) {
                     news_recycle.getDefaultFocusView().requestFocus();
+                    videoTitle.setVisibility(View.GONE);
+                    full_screen.setVisibility(View.GONE);
                 }
                 return true;
             }
