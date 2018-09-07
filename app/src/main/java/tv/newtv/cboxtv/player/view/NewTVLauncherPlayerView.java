@@ -564,10 +564,14 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
     public void EnterFullScreen(Activity activity, boolean bringFront) {
         enterFullScreen = true;
+        /*
         DisplayMetrics dm = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
         int screenWidth = dm.widthPixels;
         int screenHeight = dm.heightPixels;
+        */
+        int screenWidth = activity.getWindow().getDecorView().getMeasuredWidth();
+        int screenHeight = activity.getWindow().getDecorView().getMeasuredHeight();
 
 
         defaultWidth = getWidth();
