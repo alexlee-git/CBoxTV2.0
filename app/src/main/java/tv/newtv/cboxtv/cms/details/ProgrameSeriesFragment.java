@@ -580,6 +580,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     public void onItemClick(View view, int position, Object object) {
         int targetIndex = mPageDaoImpl.getCurrentPosition(position);
 
+        if(scrollView.isScrollMode()) return;
+
         if (mIndex == targetIndex) {
             mVideoView.requestFocus();
             mVideoView.postDelayed(new Runnable() {
@@ -802,7 +804,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
     @Override
     public void onPlayerClick(VideoPlayerView videoPlayerView) {
+        if(scrollView.isScrollMode()) return;
         Log.d(TAG, "onPlayerClick");
+
         videoPlayerView.EnterFullScreen(getActivity(), false);
     }
 
