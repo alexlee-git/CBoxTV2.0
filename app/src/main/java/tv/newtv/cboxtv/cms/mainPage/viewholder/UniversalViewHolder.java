@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +32,10 @@ public class UniversalViewHolder extends RecyclerView.ViewHolder {
 
     public UniversalViewHolder(View itemView) {
         super(itemView);
+        if(itemView instanceof ViewGroup){
+            ((ViewGroup) itemView).setClipChildren(false);
+            ((ViewGroup) itemView).setClipToPadding(false);
+        }
         mViews = new HashMap<>(Constant.BUFFER_SIZE_8);
     }
 

@@ -334,6 +334,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void init(AttributeSet attrs) {
+        setClipChildren(false);
+        setClipToPadding(false);
+
         if (mVideoPlayer == null) {
             mVideoPlayer = new VideoFrameLayout(getContext());
 //            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams

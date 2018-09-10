@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/id_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:id="@+id/id_root"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
     <ImageView
         android:id="@+id/sub_focus"
         android:layout_width="@dimen/width_294px"
         android:layout_height="@dimen/height_96px"
-        android:layout_centerHorizontal="true"
         android:layout_alignBottom="@+id/sub_list_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/height_10px"
         android:background="@drawable/sec_nav_focus"
         android:scaleType="fitXY"
-        android:layout_marginBottom="@dimen/height_10px"
         android:visibility="gone"/>
     <tv.newtv.cboxtv.views.MenuRecycleView
         android:id="@+id/sub_list_view"
@@ -26,29 +28,14 @@
         android:clipToPadding="false">
     </tv.newtv.cboxtv.views.MenuRecycleView>
 
-    <!-- 内容区 -->
-    <tv.newtv.cboxtv.cms.mainPage.NewTVViewPager
-
-
-        android:id="@+id/id_viewpager"
-        android:layout_width="match_parent"
-        android:clipToPadding="false"
-        android:clipChildren="false"
-        android:layout_height="wrap_content"
-        android:descendantFocusability="afterDescendants"
-        android:layout_below="@+id/sub_list_view"
-        android:focusable="false">
-
-    </tv.newtv.cboxtv.cms.mainPage.NewTVViewPager>
-    <!--<TextView-->
-        <!--android:id="@+id/text"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_marginTop="230dp"-->
-        <!--android:textColor="@android:color/white"-->
-        <!--android:textSize="30dp"-->
-        <!--android:text="Hello World"/>-->
+    <!--android:id="@+id/text"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_marginTop="230dp"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:textSize="30dp"-->
+    <!--android:text="Hello World"/>-->
 
     <View
         android:id="@+id/img_ment_right"
@@ -56,10 +43,10 @@
         android:layout_height="@dimen/height_50px"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/width_205px"
-        android:background="@drawable/menu_right"
         android:layout_marginTop="@dimen/height_14px"
         android:alpha="0.8"
-        />
+        android:background="@drawable/menu_right"
+    />
 
     <View
         android:id="@+id/img_ment_left"
@@ -67,9 +54,23 @@
         android:layout_height="@dimen/height_50px"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="@dimen/width_205px"
-        android:background="@drawable/menu_left"
         android:layout_marginTop="@dimen/height_14px"
-        />
+        android:background="@drawable/menu_left"
+    />
+
+    <!-- 内容区 -->
+    <tv.newtv.cboxtv.cms.mainPage.NewTVViewPager
+        android:id="@+id/id_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sub_list_view"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:descendantFocusability="afterDescendants"
+        android:focusable="false">
+
+    </tv.newtv.cboxtv.cms.mainPage.NewTVViewPager>
+    <!--<TextView-->
 
 </RelativeLayout>
 

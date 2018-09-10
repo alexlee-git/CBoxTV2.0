@@ -855,8 +855,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public static class CustomFrame {
-        public int viewId;
-        public int dbType;
+        int viewId;
+        int dbType;
 
         public CustomFrame(int view, int type) {
             viewId = view;
@@ -864,10 +864,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    @SuppressWarnings("unused")
     public static class Builder {
         public static final int DB_TYPE_SUBSCRIP = 1;
         public static final int DB_TYPE_COLLECT = 2;
 
+        @SuppressWarnings("UnusedAssignment")
         private int mLayout = -1;
         private int mPlayerId = -1;
         private int mPlayerFocusId = -1;
