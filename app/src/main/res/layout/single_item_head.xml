@@ -13,6 +13,8 @@
     <include
         layout="@layout/left_top_logo"/>
 
+    <include
+        layout="@layout/ad_top_small_window"/>
     <FrameLayout
         android:id="@+id/video_container"
         android:background="@drawable/selector_pos_background"

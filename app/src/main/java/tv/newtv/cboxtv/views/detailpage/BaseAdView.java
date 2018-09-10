@@ -2,16 +2,23 @@ package tv.newtv.cboxtv.views.detailpage;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.ScaleUtils;
 import tv.newtv.cboxtv.views.RecycleImageView;
 
-public abstract class BaseAdView extends RecycleImageView implements View.OnFocusChangeListener{
+public abstract class BaseAdView extends RecycleImageView implements View.OnFocusChangeListener,View.OnClickListener, IAdConstract.IADConstractView {
 
     protected ADPresenter mADPresenter;
+    protected ADHelper.AD.ADItem result;
 
     public BaseAdView(Context context) {
         this(context,null);
@@ -28,10 +35,11 @@ public abstract class BaseAdView extends RecycleImageView implements View.OnFocu
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getAD();
+        mADPresenter = new ADPresenter(this);
+        getAD(mADPresenter);
     }
 
-    protected abstract void getAD();
+    protected abstract void getAD(ADPresenter mADPresenter);
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
@@ -39,6 +47,29 @@ public abstract class BaseAdView extends RecycleImageView implements View.OnFocu
             ScaleUtils.getInstance().onItemGetFocus(this);
         } else {
             ScaleUtils.getInstance().onItemLoseFocus(this);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(result != null && !TextUtils.isEmpty(result.eventContent)){
+            AdEventContent adEventContent = GsonUtil.fromjson(result.eventContent, AdEventContent.class);
+            JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
+                    adEventContent.contentUUID, adEventContent.actionURI);
+        }
+    }
+
+    public void showAd(ADHelper.AD.ADItem result) {
+        if(!TextUtils.isEmpty(result.AdUrl)){
+            hasCorner(true).load(result.AdUrl);
+            setVisibility(View.VISIBLE);
+            if(!TextUtils.isEmpty(result.eventContent)){
+                this.result = result;
+                setFocusable(true);
+                setFocusableInTouchMode(true);
+                setOnFocusChangeListener(this);
+                setOnClickListener(this);
+            }
         }
     }
 }

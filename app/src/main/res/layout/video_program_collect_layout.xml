@@ -12,6 +12,8 @@
     <include
         layout="@layout/left_top_logo"/>
 
+    <include
+        layout="@layout/ad_top_small_window"/>
     <!--<ImageView-->
     <!--android:id="@+id/video_focus"-->
     <!--android:layout_width="@dimen/width_750px"-->
