@@ -582,35 +582,24 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
         if(scrollView.isScrollMode()) return;
 
-        if (mIndex == targetIndex) {
+        if (mIndex != targetIndex) {
+            mIndex = targetIndex;
+            mPlayPosition = 0;
+
+            prepareMediaPlayer();
+
+            if (mVideoView == null) return;
+
+            mVideoView.playSingleOrSeries(mIndex, mPlayPosition);
+            mSeriesAdapter.setPlayerPosition(mIndex, true);
+            mMenuAdapter.setCurrenPage(mPageDaoImpl.getCurrentPage(mIndex) - 1);
+            mSeriesAdapter.notifyDataSetChanged();
+            mMenuAdapter.notifyDataSetChanged();
+        }else{
             mVideoView.requestFocus();
-            mVideoView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mVideoView.EnterFullScreen(getActivity(), false);
-                }
-            }, 500);
-            return;
         }
-        mIndex = targetIndex;
-        mPlayPosition = 0;
 
-        prepareMediaPlayer();
-
-        if (mVideoView == null) return;
-
-        mVideoView.playSingleOrSeries(mIndex, mPlayPosition);
-        mSeriesAdapter.setPlayerPosition(mIndex, true);
-        mMenuAdapter.setCurrenPage(mPageDaoImpl.getCurrentPage(mIndex) - 1);
-        mSeriesAdapter.notifyDataSetChanged();
-        mMenuAdapter.notifyDataSetChanged();
-
-        mVideoView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mVideoView.EnterFullScreen(getActivity(), false);
-            }
-        }, 500);
+        mVideoView.delayEnterFullScreen(getActivity(),false,500);
     }
 
     @Override

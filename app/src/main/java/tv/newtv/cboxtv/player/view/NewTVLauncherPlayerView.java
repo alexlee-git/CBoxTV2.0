@@ -125,44 +125,48 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private List<IPlayProgramsCallBackEvent> listener = new ArrayList<>();
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
-    private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
+    private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
-            LogUtils.i(TAG, "live onPrepared: ");
+            LogUtils.i(TAG, "onPrepared: ");
             mIsPrepared = true;
             stopLoading();
-
-            if (mShowingChildView == SHOWING_PROGRAM_TREE) {
-                menuGroupPresenter.gone();
+            mNewTVLauncherPlayerSeekbar.setDuration();
+            if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
+                    * 1000) {
+                mNewTVLauncherPlayer.seekTo(mHistoryPostion);
             }
-
-            if (!(isLiving() && mLiveInfo != null && !mLiveInfo.isTimeShift())) {
-                mNewTVLauncherPlayerSeekbar.setDuration();
-            }
-
             mHistoryPostion = 0;
         }
 
         @Override
         public void onCompletion() {
-            LogUtils.i(TAG, "live onCompletion: ");
+            LogUtils.i(TAG, "onCompletion: ");
+            /*
+             *  大屏点播完成后，
+             *  判断是否符合直播条件，如果符合则直播。 不符合则播放下一级
+             */
+            // 什么时候会修改Constant.isLiving的值？
+            // 3. 大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
+            Constant.isLiving = false;
+
+            playVodNext();
         }
 
         @Override
         public void onVideoBufferStart(String typeString) {
-
-            LogUtils.i(TAG, "live onVideoBufferStart: typeString=" + typeString);
+            LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
             startLoading();
         }
 
         @Override
         public void onVideoBufferEnd(String typeString) {
-            Log.i(TAG, "live onVideoBufferEnd: typeString=" + typeString);
+            Log.i(TAG, "onVideoBufferEnd: typeString=" + typeString);
             if ("702".equals(typeString)) {
                 unshowLoadBack = true;
             }
-            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") ||
-                    "ad_onPrepared".equals(typeString))) {
+            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") || "ad_onPrepared"
+                    .equals(typeString))) {
                 stopLoading();
                 hidePauseImage();
             }
@@ -170,29 +174,17 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
         @Override
         public void onTimeout() {
-            LogUtils.i(TAG, "live onTimeout: ");
+            LogUtils.i(TAG, "onTimeout: ");
         }
 
         @Override
-        public void changePlayWithDelay(int delay, String liveUrl) {
+        public void changePlayWithDelay(int delay, String url) {
 
-            if (mProgramSeriesInfo != null) {
-                String playUrl = translateUrl(liveUrl, delay);
-                LogUtils.d(TAG, "changePlayWithDelay video delay=" + delay + " url=" + playUrl);
-                if (mLiveInfo.getmLiveUrl().equals(playUrl)) {
-                    return;
-                }
-                mNewTVLauncherPlayer.release();
-                mLiveInfo.setLiveUrl(playUrl);
-                PlayerConfig.getInstance().setScreenChange(true);
-                PlayerConfig.getInstance().setJumpAD(true);
-                playLive(playUrl, mProgramSeriesInfo, false, 0, 0);
-            }
         }
 
         @Override
         public void onError(int what, int extra, String msg) {
-            LogUtils.i(TAG, "live onError: ");
+            LogUtils.i(TAG, "onError: ");
         }
     };
     private Callback<ResponseBody> mPlayPermissionCheckCallback = new Callback<ResponseBody>() {
@@ -343,48 +335,44 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     .search_fail_agin));
         }
     };
-    private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
+    private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
-            LogUtils.i(TAG, "onPrepared: ");
+            LogUtils.i(TAG, "live onPrepared: ");
             mIsPrepared = true;
             stopLoading();
-            mNewTVLauncherPlayerSeekbar.setDuration();
-            if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
-                    * 1000) {
-                mNewTVLauncherPlayer.seekTo(mHistoryPostion);
+
+            if (mShowingChildView == SHOWING_PROGRAM_TREE) {
+                menuGroupPresenter.gone();
             }
+
+            if (!(isLiving() && mLiveInfo != null && !mLiveInfo.isTimeShift())) {
+                mNewTVLauncherPlayerSeekbar.setDuration();
+            }
+
             mHistoryPostion = 0;
         }
 
         @Override
         public void onCompletion() {
-            LogUtils.i(TAG, "onCompletion: ");
-            /*
-             *  大屏点播完成后，
-             *  判断是否符合直播条件，如果符合则直播。 不符合则播放下一级
-             */
-            // 什么时候会修改Constant.isLiving的值？
-            // 3. 大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
-            Constant.isLiving = false;
-
-            playVodNext();
+            LogUtils.i(TAG, "live onCompletion: ");
         }
 
         @Override
         public void onVideoBufferStart(String typeString) {
-            LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
+
+            LogUtils.i(TAG, "live onVideoBufferStart: typeString=" + typeString);
             startLoading();
         }
 
         @Override
         public void onVideoBufferEnd(String typeString) {
-            Log.i(TAG, "onVideoBufferEnd: typeString=" + typeString);
+            Log.i(TAG, "live onVideoBufferEnd: typeString=" + typeString);
             if ("702".equals(typeString)) {
                 unshowLoadBack = true;
             }
-            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") || "ad_onPrepared"
-                    .equals(typeString))) {
+            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") ||
+                    "ad_onPrepared".equals(typeString))) {
                 stopLoading();
                 hidePauseImage();
             }
@@ -392,17 +380,29 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
         @Override
         public void onTimeout() {
-            LogUtils.i(TAG, "onTimeout: ");
+            LogUtils.i(TAG, "live onTimeout: ");
         }
 
         @Override
-        public void changePlayWithDelay(int delay, String url) {
+        public void changePlayWithDelay(int delay, String liveUrl) {
 
+            if (mProgramSeriesInfo != null) {
+                String playUrl = translateUrl(liveUrl, delay);
+                LogUtils.d(TAG, "changePlayWithDelay video delay=" + delay + " url=" + playUrl);
+                if (mLiveInfo.getmLiveUrl().equals(playUrl)) {
+                    return;
+                }
+                mNewTVLauncherPlayer.release();
+                mLiveInfo.setLiveUrl(playUrl);
+                PlayerConfig.getInstance().setScreenChange(true);
+                PlayerConfig.getInstance().setJumpAD(true);
+                playLive(playUrl, mProgramSeriesInfo, false, 0, 0);
+            }
         }
 
         @Override
         public void onError(int what, int extra, String msg) {
-            LogUtils.i(TAG, "onError: ");
+            LogUtils.i(TAG, "live onError: ");
         }
     };
     private ViewGroup.LayoutParams defaultLayoutParams;
@@ -471,7 +471,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     }
 
     public void ExitFullScreen() {
-        if(!enterFullScreen) return;
+        if (!enterFullScreen) return;
         enterFullScreen = false;
 
         if (mPlayerLocation != null) {
@@ -539,7 +539,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if(!enterFullScreen){
+        if (!enterFullScreen) {
             defaultWidth = getLayoutParams().width;
             defaultHeight = getLayoutParams().height;
         }
@@ -573,8 +573,20 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
     }
 
+    public void delayEnterFullScreen(final Activity activity, final boolean bringFront, int delay) {
+        if (enterFullScreen) return;
+        enterFullScreen = true;
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                enterFullScreen = false;
+                EnterFullScreen(activity, bringFront);
+            }
+        }, delay);
+    }
+
     public void EnterFullScreen(Activity activity, final boolean bringFront) {
-        if(enterFullScreen) return;
+        if (enterFullScreen) return;
         enterFullScreen = true;
 
         if (mPlayerLocation != null) {
