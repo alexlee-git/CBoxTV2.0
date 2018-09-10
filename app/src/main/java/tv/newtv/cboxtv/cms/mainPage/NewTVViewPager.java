@@ -35,6 +35,10 @@ public class NewTVViewPager extends ViewPager {
         this.mScrollable = scrollable;
     }
 
+    public boolean isScrolling(){
+        return mScroller.computeScrollOffset();
+    }
+
     public void setCustomScroller(Scroller scroller) {
         mScroller = scroller;
 

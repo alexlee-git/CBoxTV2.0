@@ -256,10 +256,11 @@ public class MenuRecycleView extends RecyclerView {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (mIsScrolling) return true;
-        if (event.getAction() == KeyEvent
-                .ACTION_DOWN) {
+        if(event.getAction() == KeyEvent.ACTION_UP) return true;
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent
                     .KEYCODE_DPAD_CENTER) {
+                Log.e("Menu", "return super center back");
                 return super.dispatchKeyEvent(event);
             }
 
@@ -272,14 +273,15 @@ public class MenuRecycleView extends RecyclerView {
                         if (mFocusView != null) {
                             mFocusView.setVisibility(View.GONE);
                         }
-                        return true;
                     }
                 } else {
                     Log.e("Menu", "找不到下方移动的焦点");
                 }
+                Log.e("Menu", "return true");
+                return true;
             }
         }
-
+        Log.e("Menu", "return super other");
         return super.dispatchKeyEvent(event);
     }
 

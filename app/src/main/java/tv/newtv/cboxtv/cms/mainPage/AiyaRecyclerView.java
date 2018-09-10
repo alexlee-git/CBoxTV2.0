@@ -54,6 +54,8 @@ public class AiyaRecyclerView extends RecyclerView {
         setFocusable(false);
     }
 
+
+
     public AiyaRecyclerView(Context context, Boolean autoScroll) {
         super(context);
         AutoScroll = autoScroll;

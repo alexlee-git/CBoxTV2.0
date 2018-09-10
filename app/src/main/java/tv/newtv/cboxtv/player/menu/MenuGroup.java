@@ -990,7 +990,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
         private final WeakReference<MenuGroup> mAdapter;
 
-        public MyHandler(MenuGroup menuGroup) {
+        MyHandler(MenuGroup menuGroup) {
             this.mAdapter = new WeakReference<MenuGroup>(menuGroup);
         }
 
@@ -1020,16 +1020,16 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
     }
 
-    class AnimEntity {
-        public float x;
-        public float toX;
-        public boolean gone;
+    static class AnimEntity {
+        float x;
+        float toX;
+        boolean gone;
 
-        public AnimEntity(float x, float toX) {
+        AnimEntity(float x, float toX) {
             this(x, toX, false);
         }
 
-        public AnimEntity(float x, float toX, boolean gone) {
+        AnimEntity(float x, float toX, boolean gone) {
             this.x = x;
             this.toX = toX;
             this.gone = gone;

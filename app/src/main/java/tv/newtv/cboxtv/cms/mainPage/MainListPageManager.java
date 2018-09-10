@@ -68,6 +68,8 @@ public class MainListPageManager implements ListPageView,
     private int Navbarfoused = -1;
     private String contentId;
 
+    private boolean pageIsScrolling = false;
+
     public MainListPageManager() {
 
     }
@@ -303,7 +305,7 @@ public class MainListPageManager implements ListPageView,
                 @Override
                 public View getNextFocusView() {
                     BaseFragment target = (BaseFragment) mViewPagerAdapter.getCurrentFragment();
-                    if (target == null) return null;
+                    if (target == null || pageIsScrolling) return null;
                     return target.getFirstFocusView();
                 }
 
@@ -364,10 +366,9 @@ public class MainListPageManager implements ListPageView,
 
                 @Override
                 public void onPageScrollStateChanged(int state) {
+                    pageIsScrolling = (state != ViewPager.SCROLL_STATE_IDLE);
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
                         currentFragment = mViewPagerAdapter.getCurrentFragment();
-                        //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager
-                        // .getCurrentItem());
                         if (currentFragment != null) {
                             currentFragment.onEnterComplete();
                         }

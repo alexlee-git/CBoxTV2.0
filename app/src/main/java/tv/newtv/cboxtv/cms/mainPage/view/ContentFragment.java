@@ -340,6 +340,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
         if (mDatas != null && mDatas.size() > 0 && mRecyclerView != null && mRecyclerView.getAdapter
                 () != null && mRecyclerView.getAdapter().getItemCount() > 0) {
+            return;
         } else {
             if (loadingView != null)
                 loadingView.setVisibility(View.VISIBLE);
@@ -419,6 +420,9 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
     private void updateRecycleView() {
         if (contentView == null || mRecyclerView == null || mDatas == null) return;
+        if(contentView.hasFocus()){
+
+        }
         adapter = (UniversalAdapter) mRecyclerView.getAdapter();
         if (adapter == null) {
             ScrollSpeedLinearLayoutManger layoutManager = new ScrollSpeedLinearLayoutManger
@@ -430,12 +434,13 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
             adapter = new UniversalAdapter(LauncherApplication.AppContext, mDatas);
             adapter.setPicassoTag(contentId);
             adapter.setPlayerUUID(contentId);
-            Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
             Log.d("contentFragment", "setAdapter param=" + param + " data=" + mDatas);
             mRecyclerView.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
         }
+
+        Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
 
         contentView.postDelayed(new Runnable() {
             @Override
