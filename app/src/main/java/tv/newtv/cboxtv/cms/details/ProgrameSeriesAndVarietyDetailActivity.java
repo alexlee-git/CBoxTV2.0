@@ -398,6 +398,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+            if (headPlayerView != null) {
+                headPlayerView.onActivityPause();
+            }
+        }
     }
 
     @Override

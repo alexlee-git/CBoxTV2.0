@@ -207,6 +207,13 @@ public class ColumnPageActivity extends BaseActivity {
                 null);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (headPlayerView != null) {
+            headPlayerView.onActivityPause();
+        }
+    }
 
     @Override
     protected void onStop() {

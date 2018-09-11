@@ -48,6 +48,14 @@ public class ProgramCollectionActivity extends BaseActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (headPlayerView != null) {
+            headPlayerView.onActivityPause();
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
 

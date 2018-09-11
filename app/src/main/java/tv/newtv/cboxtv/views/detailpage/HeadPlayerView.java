@@ -243,6 +243,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         return super.findViewWithTag(tag);
     }
 
+    public void onActivityPause(){
+        if (playerView != null) {
+            currentPosition = playerView.getCurrentPosition();
+            defaultConfig = playerView.getDefaultConfig();
+
+            addHistory();
+        }
+    }
+
     public void onActivityStop() {
         if (playerView != null) {
             currentPosition = playerView.getCurrentPosition();
