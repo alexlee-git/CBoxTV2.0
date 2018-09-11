@@ -27,7 +27,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
@@ -41,8 +40,8 @@ import tv.newtv.cboxtv.uc.db.DBConfig;
 import tv.newtv.cboxtv.uc.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.utils.BitmapUtil;
-import tv.newtv.cboxtv.utils.DeviceUtil;
 import tv.newtv.cboxtv.utils.ScaleUtils;
+import tv.newtv.cboxtv.utils.XunMaKeyUtils;
 
 /**
  * Created by gaoleichao on 2018/3/29.
@@ -114,30 +113,8 @@ public class HistoryActivity extends FragmentActivity implements
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        XunMaKeyUtils.key(event);
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent.ACTION_UP) {
-                switch (event.getKeyCode()) {
-                    case KeyEvent.KEYCODE_ESCAPE:
-                        if (deleteView != null) {
-                            deleteView.setFocusable(false);
-                            if (defaultFocusView != null) {
-                                defaultFocusView.requestFocus();
-                            }
-                            mAdapter.setAllowLostFocus(true);
-                            ViewGroup contentGroup = getWindow().getDecorView().findViewById(android
-                                    .R.id
-                                    .content);
-                            deleteView.release();
-                            contentGroup.removeView(deleteView);
-                            deleteView = null;
-                            defaultFocusView = null;
-                            return true;
-                        }
-                        finish();
-                        break;
-                }
-
-            }
             if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
                 if (deleteView != null) {
                     return true;
