@@ -172,6 +172,8 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                 }
             }
         }
+
+        showServiceTime();
     }
 
     //检查是否定向升级
