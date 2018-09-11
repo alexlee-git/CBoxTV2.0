@@ -103,6 +103,7 @@ public abstract class BaseActivity extends RxFragmentActivity {
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
                 return true;
             }
+            return false;
         }
         if(event.getAction() == KeyEvent.ACTION_UP) {
             if (isBackPressed(event)) {

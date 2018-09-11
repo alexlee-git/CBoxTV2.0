@@ -22,6 +22,7 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
+import tv.newtv.cboxtv.player.popupMenuWidget;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
@@ -38,6 +39,27 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private View focusView;
     private TextView videoTitle;
     private ImageView full_screen;
+    private popupMenuWidget mPopupMenuWidget;
+    private int widgetId = 0;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        /* 界面还原回来时候，重新注册控件 */
+        if (videoPlayerView != null && mPopupMenuWidget != null) {
+            widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        /* 销毁播放器的时候将注册的控件消除 */
+        if(videoPlayerView != null){
+            videoPlayerView.unregisterWidget(widgetId);
+        }
+        super.onStop();
+    }
 
     @Override
     protected int getLayoutId() {
@@ -50,9 +72,13 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         title = view.findViewById(R.id.title);
         title_direction = view.findViewById(R.id.title_direction);
         videoPlayerView = view.findViewById(R.id.video_player);
+
+        mPopupMenuWidget = new popupMenuWidget(getContext().getApplicationContext(), news_recycle);
+        widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
+
         video_player_rl = view.findViewById(R.id.video_player_rl);
-        videoTitle =view.findViewById(R.id.videoTitle);
-        full_screen =view.findViewById(R.id.full_screen);
+        videoTitle = view.findViewById(R.id.videoTitle);
+        full_screen = view.findViewById(R.id.full_screen);
 
         news_recycle.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.VERTICAL, false));
@@ -88,7 +114,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
             }
         });
-
 
         videoPlayerView.setPlayerCallback(this);
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_rl), true);
@@ -175,15 +200,66 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
     }
 
-
-
-
     @Override
     public void ProgramChange() {
         videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
         videoPlayerView.playSingleOrSeries(playIndex, 0);
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (getContentView() != null) {
+                focusView = getContentView().findFocus();
+            }
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                if (focusView instanceof VideoPlayerView) {
+                    return true;
+                }
+                if (videoPlayerView != null) {
+                    videoPlayerView.requestFocus();
+                    videoTitle.setVisibility(View.VISIBLE);
+                    full_screen.setVisibility(View.VISIBLE);
+
+                }
+                return true;
+            }
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                if (focusView instanceof VideoPlayerView) {
+                    return true;
+                }
+            }
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                if (focusView instanceof VideoPlayerView) {
+                    news_recycle.getDefaultFocusView().requestFocus();
+                    videoTitle.setVisibility(View.GONE);
+                    full_screen.setVisibility(View.GONE);
+                }
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    private static class NewsViewHolder extends RecyclerView.ViewHolder {
+        public TextView news_title;
+        public ImageView isPlaying;
+        public RelativeLayout layout;
+
+
+        public NewsViewHolder(View itemView) {
+            super(itemView);
+            news_title = itemView.findViewById(R.id.news_title);
+            isPlaying = itemView.findViewById(R.id.isPlaying);
+            layout = itemView.findViewById(R.id.liner_fou);
+        }
+
+        public void dispatchSelect() {
+            itemView.requestFocus();
+            itemView.performClick();
+        }
+    }
 
     private class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
@@ -278,60 +354,5 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         public int getItemCount() {
             return ModuleItems != null ? ModuleItems.size() : 0;
         }
-    }
-
-    private static class NewsViewHolder extends RecyclerView.ViewHolder {
-        public TextView news_title;
-        public ImageView isPlaying;
-        public RelativeLayout layout;
-
-
-        public NewsViewHolder(View itemView) {
-            super(itemView);
-            news_title = itemView.findViewById(R.id.news_title);
-            isPlaying = itemView.findViewById(R.id.isPlaying);
-            layout = itemView.findViewById(R.id.liner_fou);
-        }
-
-        public void dispatchSelect() {
-            itemView.requestFocus();
-            itemView.performClick();
-        }
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (getContentView() != null) {
-                focusView = getContentView().findFocus();
-            }
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                if (focusView instanceof VideoPlayerView) {
-                    return true;
-                }
-                if (videoPlayerView != null) {
-                    videoPlayerView.requestFocus();
-                    videoTitle.setVisibility(View.VISIBLE);
-                    full_screen.setVisibility(View.VISIBLE);
-
-                }
-                return true;
-            }
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                if (focusView instanceof VideoPlayerView) {
-                    return true;
-                }
-            }
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
-                if (focusView instanceof VideoPlayerView) {
-                    news_recycle.getDefaultFocusView().requestFocus();
-                    videoTitle.setVisibility(View.GONE);
-                    full_screen.setVisibility(View.GONE);
-                }
-                return true;
-            }
-        }
-        return super.dispatchKeyEvent(event);
     }
 }

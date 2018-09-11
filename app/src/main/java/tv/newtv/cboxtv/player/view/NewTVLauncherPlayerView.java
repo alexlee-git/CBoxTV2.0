@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.player.view;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +23,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -43,6 +48,8 @@ import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.player.Constants;
+import tv.newtv.cboxtv.player.FocusWidget;
+import tv.newtv.cboxtv.player.IFocusWidget;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.PlayerConfig;
@@ -125,48 +132,45 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private List<IPlayProgramsCallBackEvent> listener = new ArrayList<>();
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
-    private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
+    private Map<Integer, FocusWidget> widgetMap;
+    private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
-            LogUtils.i(TAG, "onPrepared: ");
+            LogUtils.i(TAG, "live onPrepared: ");
             mIsPrepared = true;
             stopLoading();
-            mNewTVLauncherPlayerSeekbar.setDuration();
-            if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
-                    * 1000) {
-                mNewTVLauncherPlayer.seekTo(mHistoryPostion);
+
+            if (mShowingChildView == SHOWING_PROGRAM_TREE) {
+                menuGroupPresenter.gone();
             }
+
+            if (!(isLiving() && mLiveInfo != null && !mLiveInfo.isTimeShift())) {
+                mNewTVLauncherPlayerSeekbar.setDuration();
+            }
+
             mHistoryPostion = 0;
         }
 
         @Override
         public void onCompletion() {
-            LogUtils.i(TAG, "onCompletion: ");
-            /*
-             *  大屏点播完成后，
-             *  判断是否符合直播条件，如果符合则直播。 不符合则播放下一级
-             */
-            // 什么时候会修改Constant.isLiving的值？
-            // 3. 大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
-            Constant.isLiving = false;
-
-            playVodNext();
+            LogUtils.i(TAG, "live onCompletion: ");
         }
 
         @Override
         public void onVideoBufferStart(String typeString) {
-            LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
+
+            LogUtils.i(TAG, "live onVideoBufferStart: typeString=" + typeString);
             startLoading();
         }
 
         @Override
         public void onVideoBufferEnd(String typeString) {
-            Log.i(TAG, "onVideoBufferEnd: typeString=" + typeString);
+            Log.i(TAG, "live onVideoBufferEnd: typeString=" + typeString);
             if ("702".equals(typeString)) {
                 unshowLoadBack = true;
             }
-            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") || "ad_onPrepared"
-                    .equals(typeString))) {
+            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") ||
+                    "ad_onPrepared".equals(typeString))) {
                 stopLoading();
                 hidePauseImage();
             }
@@ -174,17 +178,29 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
         @Override
         public void onTimeout() {
-            LogUtils.i(TAG, "onTimeout: ");
+            LogUtils.i(TAG, "live onTimeout: ");
         }
 
         @Override
-        public void changePlayWithDelay(int delay, String url) {
+        public void changePlayWithDelay(int delay, String liveUrl) {
 
+            if (mProgramSeriesInfo != null) {
+                String playUrl = translateUrl(liveUrl, delay);
+                LogUtils.d(TAG, "changePlayWithDelay video delay=" + delay + " url=" + playUrl);
+                if (mLiveInfo.getmLiveUrl().equals(playUrl)) {
+                    return;
+                }
+                mNewTVLauncherPlayer.release();
+                mLiveInfo.setLiveUrl(playUrl);
+                PlayerConfig.getInstance().setScreenChange(true);
+                PlayerConfig.getInstance().setJumpAD(true);
+                playLive(playUrl, mProgramSeriesInfo, false, 0, 0);
+            }
         }
 
         @Override
         public void onError(int what, int extra, String msg) {
-            LogUtils.i(TAG, "onError: ");
+            LogUtils.i(TAG, "live onError: ");
         }
     };
     private Callback<ResponseBody> mPlayPermissionCheckCallback = new Callback<ResponseBody>() {
@@ -335,44 +351,48 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     .search_fail_agin));
         }
     };
-    private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
+    private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
-            LogUtils.i(TAG, "live onPrepared: ");
+            LogUtils.i(TAG, "onPrepared: ");
             mIsPrepared = true;
             stopLoading();
-
-            if (mShowingChildView == SHOWING_PROGRAM_TREE) {
-                menuGroupPresenter.gone();
+            mNewTVLauncherPlayerSeekbar.setDuration();
+            if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
+                    * 1000) {
+                mNewTVLauncherPlayer.seekTo(mHistoryPostion);
             }
-
-            if (!(isLiving() && mLiveInfo != null && !mLiveInfo.isTimeShift())) {
-                mNewTVLauncherPlayerSeekbar.setDuration();
-            }
-
             mHistoryPostion = 0;
         }
 
         @Override
         public void onCompletion() {
-            LogUtils.i(TAG, "live onCompletion: ");
+            LogUtils.i(TAG, "onCompletion: ");
+            /*
+             *  大屏点播完成后，
+             *  判断是否符合直播条件，如果符合则直播。 不符合则播放下一级
+             */
+            // 什么时候会修改Constant.isLiving的值？
+            // 3. 大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
+            Constant.isLiving = false;
+
+            playVodNext();
         }
 
         @Override
         public void onVideoBufferStart(String typeString) {
-
-            LogUtils.i(TAG, "live onVideoBufferStart: typeString=" + typeString);
+            LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
             startLoading();
         }
 
         @Override
         public void onVideoBufferEnd(String typeString) {
-            Log.i(TAG, "live onVideoBufferEnd: typeString=" + typeString);
+            Log.i(TAG, "onVideoBufferEnd: typeString=" + typeString);
             if ("702".equals(typeString)) {
                 unshowLoadBack = true;
             }
-            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") ||
-                    "ad_onPrepared".equals(typeString))) {
+            if (!TextUtils.isEmpty(typeString) && (typeString.equals("702") || "ad_onPrepared"
+                    .equals(typeString))) {
                 stopLoading();
                 hidePauseImage();
             }
@@ -380,29 +400,17 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
         @Override
         public void onTimeout() {
-            LogUtils.i(TAG, "live onTimeout: ");
+            LogUtils.i(TAG, "onTimeout: ");
         }
 
         @Override
-        public void changePlayWithDelay(int delay, String liveUrl) {
+        public void changePlayWithDelay(int delay, String url) {
 
-            if (mProgramSeriesInfo != null) {
-                String playUrl = translateUrl(liveUrl, delay);
-                LogUtils.d(TAG, "changePlayWithDelay video delay=" + delay + " url=" + playUrl);
-                if (mLiveInfo.getmLiveUrl().equals(playUrl)) {
-                    return;
-                }
-                mNewTVLauncherPlayer.release();
-                mLiveInfo.setLiveUrl(playUrl);
-                PlayerConfig.getInstance().setScreenChange(true);
-                PlayerConfig.getInstance().setJumpAD(true);
-                playLive(playUrl, mProgramSeriesInfo, false, 0, 0);
-            }
         }
 
         @Override
         public void onError(int what, int extra, String msg) {
-            LogUtils.i(TAG, "live onError: ");
+            LogUtils.i(TAG, "onError: ");
         }
     };
     private ViewGroup.LayoutParams defaultLayoutParams;
@@ -412,10 +420,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         this(context, null, 0, config);
     }
 
-
     public NewTVLauncherPlayerView(@NonNull Context context) {
         this(context, null);
     }
+
 
     public NewTVLauncherPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
@@ -431,6 +439,33 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         updateDefaultConfig(config);
         initView(context);
+    }
+
+    @SuppressLint("UseSparseArrays")
+    public int registerWidget(int id,IFocusWidget widget) {
+        if(id != 0){
+            unregisterWidget(id);
+        }
+        FocusWidget focusWidget = new FocusWidget(widget);
+        if (widgetMap == null) {
+            widgetMap = new HashMap<>();
+        }
+        widgetMap.put(focusWidget.getId(), focusWidget);
+        return focusWidget.getId();
+    }
+
+    /**
+     * 接触外部控件注册
+     * @param id
+     */
+    public void unregisterWidget(int id){
+        if(widgetMap != null && widgetMap.containsKey(id)){
+            FocusWidget focusWidget = widgetMap.get(id);
+            if(focusWidget != null && focusWidget.isShowing()){
+                focusWidget.onBackPressed();
+            }
+            widgetMap.remove(id);
+        }
     }
 
     public void updateDefaultConfig(PlayerViewConfig config) {
@@ -1179,23 +1214,36 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         LogUtils.i(TAG, "dismissChildView: " + mShowingChildView);
         int current = mShowingChildView;
         mShowingChildView = SHOWING_NO_VIEW;
-        switch (current) {
-            case SHOWING_SEEKBAR_VIEW:
-                if (mNewTVLauncherPlayerSeekbar != null) {
-                    mNewTVLauncherPlayerSeekbar.dismiss();
+        boolean interrupt = false;
+        if (widgetMap != null) {
+            for (FocusWidget focusWidget : widgetMap.values()) {
+                if (current == focusWidget.getId()) {
+                    focusWidget.onBackPressed();
+                    interrupt = true;
+                    break;
                 }
-                break;
-            case SHOWING_PROGRAM_TREE:
-                if (menuGroupPresenter != null && menuGroupPresenter.isShow() &&
-                        menuGroupPresenter instanceof MenuGroupPresenter) {
-                    menuGroupPresenter.gone();
-                }
-                break;
-            default:
-                break;
+            }
+        }
+        if (!interrupt) {
+            switch (current) {
+                case SHOWING_SEEKBAR_VIEW:
+                    if (mNewTVLauncherPlayerSeekbar != null) {
+                        mNewTVLauncherPlayerSeekbar.dismiss();
+                    }
+                    break;
+                case SHOWING_PROGRAM_TREE:
+                    if (menuGroupPresenter != null && menuGroupPresenter.isShow() &&
+                            menuGroupPresenter instanceof MenuGroupPresenter) {
+                        menuGroupPresenter.gone();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         /**
@@ -1221,14 +1269,35 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         //有限处理BACK按键事件，关闭进度条显示
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (mShowingChildView == SHOWING_SEEKBAR_VIEW
-                        || mShowingChildView == SHOWING_PROGRAM_TREE) {
+                if (mShowingChildView != SHOWING_NO_VIEW) {
                     dismissChildView();
                 } else {
                     onBackPressed();
                 }
             }
             return true;
+        }
+
+        if (widgetMap != null) {
+            Collection<FocusWidget> widgets = widgetMap.values();
+            for (FocusWidget widget : widgets) {
+                if(widget.isOverride(event.getKeyCode())) {
+                    if (widget.isRegisterKey(event)) {
+                        if(!widget.isShowing()){
+                            widget.show(this, Gravity.LEFT);
+                            widget.requestDefaultFocus();
+                            NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget.getId());
+                        }else{
+                            if(widget.isToggleKey(event.getKeyCode())) {
+                                dismissChildView();
+                            }else{
+                                widget.dispatchKeyEvent(event);
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
         }
 
         if (mNewTVLauncherPlayer != null && mNewTVLauncherPlayer.isADPlaying()
@@ -1253,15 +1322,24 @@ public class NewTVLauncherPlayerView extends FrameLayout {
             }
         }
 
-        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
-            return true;
-        }
+        if(mShowingChildView != SHOWING_NO_VIEW) {
+            if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
+                return true;
+            }
 
-        if (mShowingChildView == SHOWING_SEEKBAR_VIEW &&
-                (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
-                        || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
-            mNewTVLauncherPlayerSeekbar.dispatchKeyEvent(event);
-            return true;
+            if (mShowingChildView == SHOWING_SEEKBAR_VIEW &&
+                    (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                            || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
+                mNewTVLauncherPlayerSeekbar.dispatchKeyEvent(event);
+                return true;
+            }
+
+            if(widgetMap.containsKey(mShowingChildView)) {
+                FocusWidget focusWidget = widgetMap.get(mShowingChildView);
+                if(focusWidget != null){
+                    focusWidget.dispatchKeyEvent(event);
+                }
+            }
         }
 
         if (isFullScreen()) {
