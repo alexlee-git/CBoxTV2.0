@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import tv.newtv.cboxtv.IDefaultFocus;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.utils.ScreenUtils;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -34,16 +34,16 @@ public class popupMenuWidget implements IFocusWidget {
     private ViewGroup parentView;
     private ViewGroup.LayoutParams layoutParams;
 
+    public popupMenuWidget(Context context, View outView) {
+        outerView = outView;
+    }
+
     @Override
     public void release() {
         Log.e(TAG, "release()");
         onBackPressed();
         popupWindow = null;
         contentView = null;
-    }
-
-    public popupMenuWidget(Context context, View outView) {
-        outerView = outView;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class popupMenuWidget implements IFocusWidget {
             popupWindow = null;
         }
 
-        if(outerView.getParent() == contentView) {
+        if (outerView.getParent() == contentView) {
             contentView.removeView(outerView);
         }
 
@@ -128,8 +128,23 @@ public class popupMenuWidget implements IFocusWidget {
 
     @Override
     public void requestDefaultFocus() {
+        if (outerView != null && outerView instanceof IDefaultFocus) {
+            focusView = ((IDefaultFocus) outerView).getDefaultFocusView();
+            if (focusView != null) {
+                ((IDefaultFocus) outerView).getDefaultFocusView().requestFocus();
+                return;
+            }
+        }
         if (focusView != null) {
             focusView.requestFocus();
+            return;
+        }
+        if(outerView != null) {
+            outerView.requestFocus();
+            return;
+        }
+        if(contentView != null) {
+            contentView.requestFocus();
         }
     }
 
