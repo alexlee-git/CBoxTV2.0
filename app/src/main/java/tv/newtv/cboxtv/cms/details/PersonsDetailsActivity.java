@@ -44,9 +44,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
@@ -69,7 +67,7 @@ import tv.newtv.cboxtv.uc.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DBUtil;
-import tv.newtv.cboxtv.utils.DeviceUtil;
+import tv.newtv.cboxtv.utils.XunMaKeyUtils;
 import tv.newtv.cboxtv.views.RecycleImageView;
 
 /**
@@ -555,15 +553,8 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        XunMaKeyUtils.key(event);
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-
-            if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent.ACTION_UP) {
-                switch (event.getKeyCode()) {
-                    case KeyEvent.KEYCODE_ESCAPE:
-                        finish();
-                        return super.dispatchKeyEvent(event);
-                }
-            }
             View focus = scrollView.findFocus();
             if (focus == null) {
                 return super.dispatchKeyEvent(event);
