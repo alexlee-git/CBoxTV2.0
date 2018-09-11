@@ -1323,23 +1323,24 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
 
         if(mShowingChildView != SHOWING_NO_VIEW) {
-            if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
-                return true;
-            }
-
-            if (mShowingChildView == SHOWING_SEEKBAR_VIEW &&
-                    (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
-                            || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
-                mNewTVLauncherPlayerSeekbar.dispatchKeyEvent(event);
-                return true;
-            }
-
-            if(widgetMap.containsKey(mShowingChildView)) {
+            if(widgetMap != null && widgetMap.containsKey(mShowingChildView)) {
                 FocusWidget focusWidget = widgetMap.get(mShowingChildView);
                 if(focusWidget != null){
                     focusWidget.dispatchKeyEvent(event);
+                    return true;
                 }
             }
+        }
+
+        if (mShowingChildView == SHOWING_SEEKBAR_VIEW &&
+                (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                        || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
+            mNewTVLauncherPlayerSeekbar.dispatchKeyEvent(event);
+            return true;
+        }
+
+        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
+            return true;
         }
 
         if (isFullScreen()) {
