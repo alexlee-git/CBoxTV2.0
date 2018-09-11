@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
+import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.utils.ScreenUtils;
 
 /**
@@ -74,6 +75,7 @@ public class popupMenuWidget implements IFocusWidget {
         contentView.addView(outerView, layoutParams);
         popupWindow.setWidth(outerView.getMeasuredWidth());
         popupWindow.setHeight(outerView.getMeasuredHeight());
+        popupWindow.setAnimationStyle(R.style.anim_x_side);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.showAtLocation(parent, gravity, 0, 0);
         mIsShowing = true;
