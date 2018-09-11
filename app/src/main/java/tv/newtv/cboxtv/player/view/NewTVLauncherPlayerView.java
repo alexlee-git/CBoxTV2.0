@@ -1590,6 +1590,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         return mNewTVLauncherPlayer != null && mNewTVLauncherPlayer.isPlaying();
     }
 
+    public void setVideoSilent(boolean isSilent) {
+        if (mNewTVLauncherPlayer != null) {
+            mNewTVLauncherPlayer.setVideoSilent(isSilent);
+        }
+    }
+
     public static class PlayerViewConfig {
         public boolean prepared = false;
         public ViewGroup.LayoutParams layoutParams;     //布局属性

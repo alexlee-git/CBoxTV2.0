@@ -17,4 +17,6 @@ public interface ILiveVideoPlayerInterface {
     public void setDataSource(String definition);
 
     public void releaseVideo();
+
+    public void setVideoSilent(boolean isSilent);
 }
