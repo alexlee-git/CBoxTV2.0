@@ -1362,7 +1362,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
             }
         }
 
-        return super.dispatchKeyEvent(event);
+        return true;
     }
 
     @Override
