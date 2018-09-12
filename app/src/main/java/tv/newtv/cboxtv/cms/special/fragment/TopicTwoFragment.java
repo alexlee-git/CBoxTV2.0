@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
+import android.media.Image;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -41,6 +42,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private ImageView full_screen;
     private popupMenuWidget mPopupMenuWidget;
     private int widgetId = 0;
+
 
     @Override
     public void onResume() {
@@ -84,7 +86,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 LinearLayoutManager.VERTICAL, false));
         int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.width_54px);
         news_recycle.setSpace(space, 0);
-        NewsAdapter adapter = new NewsAdapter();
+        final NewsAdapter adapter = new NewsAdapter();
         news_recycle.setItemAnimator(null);
         news_recycle.setAlign(AiyaRecyclerView.ALIGN_START);
         news_recycle.setAdapter(adapter);
@@ -95,9 +97,16 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
 
             @Override
-            public void onItemClick(ProgramInfo item, int index) {
+            public void onItemClick( ProgramInfo item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
+                adapter.setThisPosition(index);
+                videoPlayerView.setisPlayingView(adapter.getImageView());
+
+
+
+
+
 
             }
 
@@ -196,6 +205,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                     (view);
             if (viewHolder != null) {
                 viewHolder.dispatchSelect();
+                viewHolder.isPlaying.setVisibility(View.GONE);
+
             }
         }
     }
@@ -242,17 +253,19 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         return super.dispatchKeyEvent(event);
     }
 
-    private static class NewsViewHolder extends RecyclerView.ViewHolder {
+    public static class NewsViewHolder extends RecyclerView.ViewHolder {
         public TextView news_title;
         public ImageView isPlaying;
-        public RelativeLayout layout;
+        public RelativeLayout relative_fou;
+        public RelativeLayout relative_container;
 
 
         public NewsViewHolder(View itemView) {
             super(itemView);
             news_title = itemView.findViewById(R.id.news_title);
             isPlaying = itemView.findViewById(R.id.isPlaying);
-            layout = itemView.findViewById(R.id.liner_fou);
+            relative_fou = itemView.findViewById(R.id.relative_fou);
+            relative_container = itemView.findViewById(R.id.relative_container);
         }
 
         public void dispatchSelect() {
@@ -267,6 +280,24 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         private OnItemAction<ProgramInfo> onItemAction;
         private String currentUUID;
         private int currentIndex = 0;
+        private int thisPosition;
+        private ImageView imageView;
+
+        public ImageView getImageView() {
+            return imageView;
+        }
+
+        public void setImageView(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        public int getthisPosition() {
+            return thisPosition;
+        }
+
+        public void setThisPosition(int thisPosition) {
+            this.thisPosition = thisPosition;
+        }
 
 
         NewsAdapter refreshData(List<ProgramInfo> datas) {
@@ -292,21 +323,34 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
 
         @Override
-        public void onBindViewHolder(final NewsViewHolder holder, int position) {
+        public void onBindViewHolder(final NewsViewHolder holder,final int position) {
             ProgramInfo moduleItem = getItem(position);
+            setImageView(holder.isPlaying);
 
+            if (position == getthisPosition()) {
+
+                holder.relative_container.setBackgroundResource(R.drawable.topic_foucs);
+            } else {
+                holder.relative_container.setBackgroundResource(0);
+            }
 
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
 
                     if (hasFocus) {
+                        holder.relative_fou.setBackgroundResource(R.drawable.topic_foucs);
+                        if (position == getthisPosition()) {
 
-                        holder.layout.setBackgroundResource(R.drawable.news_foucs);
-
+                            holder.relative_container.setBackgroundResource(0);
+                        }
                     } else {
+                        if (position == getthisPosition()) {
 
-                        holder.layout.setBackgroundResource(0);
+                            holder.relative_container.setBackgroundResource(R.drawable.topic_background);
+                        }
+
+                        holder.relative_fou.setBackgroundResource(0);
 
                     }
                 }
@@ -323,7 +367,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
                         currentIndex = holder.getAdapterPosition();
                         onItemAction.onItemClick(moduleItem, holder.getAdapterPosition());
+
                         holder.isPlaying.setVisibility(View.VISIBLE);
+
                     }
                 }
             });
@@ -355,4 +401,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             return ModuleItems != null ? ModuleItems.size() : 0;
         }
     }
+
+
 }

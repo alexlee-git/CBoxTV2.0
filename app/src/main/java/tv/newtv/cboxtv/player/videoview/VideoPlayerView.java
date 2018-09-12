@@ -38,6 +38,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     private View defaultFocusView;
     private boolean KeyIsDown = false;
+    private ImageView isPlaying;
 
     public VideoPlayerView(@NonNull Context context) {
         this(context, null);
@@ -350,6 +351,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         stopPlay();
         setHintText("播放已结束");
+        isPlaying.setVisibility(GONE);
 
         if (mPlayerCallback != null) {
             mPlayerCallback.AllPlayComplete(isError, info, this);
@@ -381,4 +383,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return playCenter.getDataStruct().uuid;
     }
 
+    public void setisPlayingView(ImageView isPlaying) {
+        this.isPlaying = isPlaying;
+    }
 }
