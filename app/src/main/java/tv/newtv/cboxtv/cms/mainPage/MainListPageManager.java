@@ -249,7 +249,7 @@ public class MainListPageManager implements ListPageView,
                 @Override
                 public void onItemSelected(int position, NavListPageInfoResult.NavInfo
                         value) {
-                    if (mNavListPageInfoResult.getData().size() == 0) return;
+                    if (mNavListPageInfoResult.getData().size() == 0 || mViewPager == null) return;
                     if (mViewPager.getCurrentItem() % mNavListPageInfoResult.getData().size() ==
                             position % mNavListPageInfoResult.getData().size()) {
                         return;
