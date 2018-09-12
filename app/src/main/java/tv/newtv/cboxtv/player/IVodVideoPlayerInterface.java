@@ -37,4 +37,6 @@ public interface IVodVideoPlayerInterface {
     public void releaseVideo();
 
     public void setVideoSize(int sizeType);
+
+    public void setVideoSilent(boolean isSilent);
 }
