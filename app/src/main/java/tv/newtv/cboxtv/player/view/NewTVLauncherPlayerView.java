@@ -1678,7 +1678,15 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         return mNewTVLauncherPlayer != null && mNewTVLauncherPlayer.isPlaying();
     }
 
+
     public void setHintTextVisible(int visible) {
+
+    }
+
+    public void setVideoSilent(boolean isSilent) {
+        if (mNewTVLauncherPlayer != null) {
+            mNewTVLauncherPlayer.setVideoSilent(isSilent);
+        }
     }
 
     public static class PlayerViewConfig {

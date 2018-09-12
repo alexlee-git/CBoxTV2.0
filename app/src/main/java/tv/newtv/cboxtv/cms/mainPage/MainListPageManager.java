@@ -92,7 +92,7 @@ public class MainListPageManager implements ListPageView,
 
         if (mNavInfos != null) {
             mNavInfos.clear();
-            mNavInfos = null;
+            //mNavInfos = null;
         }
     }
 
@@ -254,17 +254,17 @@ public class MainListPageManager implements ListPageView,
                 @Override
                 public void onItemSelected(int position, NavListPageInfoResult.NavInfo
                         value) {
-                    if (mNavInfos.size() == 0) return;
-                    if (mViewPager.getCurrentItem() % mNavInfos.size() == position % mNavInfos
-                            .size()) {
+                    if (mNavListPageInfoResult.getData().size() == 0) return;
+                    if (mViewPager.getCurrentItem() % mNavListPageInfoResult.getData().size() ==
+                            position % mNavListPageInfoResult.getData().size()) {
                         return;
                     }
                     mViewPagerAdapter.setShowItem(position);
                     mViewPager.setCurrentItem(position);
                     currentFocus = value.getContentID();
                     /**/
-                    int select = position % mNavInfos.size();
-                    NavListPageInfoResult.NavInfo navInfo = mNavInfos.get(select);
+                    int select = position % mNavListPageInfoResult.getData().size();
+                    NavListPageInfoResult.NavInfo navInfo = mNavListPageInfoResult.getData().get(select);
                     String uuid = getContentUUID(navInfo);
                     if (!TextUtils.isEmpty(uuid)) {
                         mSharedPreferences.edit().putString("page-defaultFocus", uuid).apply();

@@ -558,6 +558,14 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         }
     }
 
+    @Override
+    public void setVideoSilent(boolean isSilent) {
+        Log.i(TAG, "setVideoSilent:" + isSilent);
+        if (mIcntvPlayer != null) {
+            mIcntvPlayer.setVideoSilent(isSilent);
+        }
+    }
+
 
 //    // 初始化央视网日志对象
 //    private void initCNTVVideoTracker() {

@@ -88,8 +88,10 @@ public class ContentPageModelImpl extends BaseRequestModel implements IContentPa
                                         MainLooper.get().post(new Runnable() {
                                             @Override
                                             public void run() {
-                                                mPresenter.inflateContentView(listNavInfoResult,
-                                                        "local");
+                                                if (mPresenter != null) {
+                                                    mPresenter.inflateContentView(listNavInfoResult,
+                                                            "local");
+                                                }
                                             }
                                         });
                                     }

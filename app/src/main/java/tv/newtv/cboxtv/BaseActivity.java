@@ -12,6 +12,7 @@ import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.DeviceUtil;
 import tv.newtv.cboxtv.utils.KeyEventUtils;
+import tv.newtv.cboxtv.utils.Utils;
 
 /**
  * 项目名称:         CBoxTV
@@ -77,6 +78,10 @@ public abstract class BaseActivity extends RxFragmentActivity {
         }
         super.onResume();
         FrontStage = true;
+
+        if (BuildConfig.FLAVOR.equals(DeviceUtil.XIONG_MAO)) {
+            NewTVLauncherPlayerViewManager.getInstance().setVideoSilent(false);
+        }
     }
 
     @Override
@@ -89,6 +94,12 @@ public abstract class BaseActivity extends RxFragmentActivity {
     protected void onPause() {
         super.onPause();
         ActivityStacks.get().onPause(this);
+
+        if (BuildConfig.FLAVOR.equals(DeviceUtil.XIONG_MAO)) {
+            if (Utils.isTopActivityIsAiassist()) {
+                NewTVLauncherPlayerViewManager.getInstance().setVideoSilent(true);
+            }
+        }
     }
 
     public boolean isFullScreen() {

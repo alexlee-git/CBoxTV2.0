@@ -278,4 +278,12 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         mIcntvPlayerCallback = null;
         mIPlayCallBackEvent = null;
     }
+
+    @Override
+    public void setVideoSilent(boolean isSilent) {
+        Log.i(TAG, "setVideoSilent:" + isSilent);
+        if (mIcntvLive != null) {
+            mIcntvLive.setVideoSilent(isSilent);
+        }
+    }
 }
