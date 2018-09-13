@@ -93,7 +93,7 @@ public class LogUploadUtils {
         return isinit;
     }
 
-    //传入88
+    //传入68 外部推荐位跳转
     public static void uploadEnterAppLog(Context context) {
         StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
         PackageInfo pckInfo = null;
@@ -102,7 +102,7 @@ public class LogUploadUtils {
             dataBuff.append("0,")
                     .append(pckInfo.versionName)
                     .trimToSize();
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_SWITCH, dataBuff.toString());//进入应用
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_JUMP, dataBuff.toString());//外部跳转
         } catch (Exception e) {
             e.printStackTrace();
         }
