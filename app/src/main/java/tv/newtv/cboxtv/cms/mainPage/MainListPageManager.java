@@ -419,7 +419,7 @@ public class MainListPageManager implements ListPageView,
 
     @Override
     public void onFailed(String desc) {
-        Toast.makeText(mContext, "数据解析错误", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LauncherApplication.AppContext, "数据解析错误", Toast.LENGTH_SHORT).show();
     }
 
     public void init(NavFragment navFragment, Context context, FragmentManager manager,
