@@ -312,7 +312,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     }
 
     private void setHeadData(ProgramSeriesInfo dataInfo) {
-        mCollectBtn.SetUseing(isCollect);
+        mCollectBtn.setSelect(isCollect);
         tvContent.setText(dataInfo.getDescription());
         tvtitle.setText(dataInfo.getTitle());
     }
@@ -372,7 +372,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "1," +
                                     contentUuId);//取消收藏
                             //mCollectIv.setImageResource(R.drawable.icon_details_uncollect_btn);
-                            mCollectBtn.SetUseing(false);
+                            mCollectBtn.setSelect(false);
                             Toast.makeText(getApplicationContext(), "取消收藏成功", Toast.LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -396,7 +396,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "1," + entity
                                     .getContentUUID());//取消收藏
                             //mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
-                            mCollectBtn.SetUseing(true);
+                            mCollectBtn.setSelect(true);
                             Toast.makeText(getApplicationContext(), "添加收藏成功", Toast.LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);

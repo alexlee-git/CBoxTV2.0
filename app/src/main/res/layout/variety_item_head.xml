@@ -82,37 +82,33 @@
 
     </RelativeLayout>
 
-    <tv.newtv.cboxtv.views.FocusToggleView
-        app:normal_drawable="@drawable/icon_details_big_screen_btn"
-        app:focus_drawable="@drawable/pos_zui"
-        app:drawable_width="@dimen/width_152px"
-        app:drawable_height="@dimen/height_76px"
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/full_screen"
-        android:layout_marginBottom="@dimen/height_26px"
         android:layout_alignBottom="@+id/video_container"
+        android:layout_marginBottom="@dimen/height_26px"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
         android:layout_marginLeft="@dimen/width_48px"
         android:layout_marginStart="@dimen/width_48px"
         android:layout_toEndOf="@+id/video_container"
         android:layout_toRightOf="@+id/video_container"
-        android:focusable="true"/>
-    <tv.newtv.cboxtv.views.FocusToggleView
+        android:focusable="true"
+        app:type="full_screen"
+        />
+
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/collect"
-        android:layout_alignBottom="@+id/video_container"
-        app:selected_drawable="@drawable/icon_details_collect_btn"
-        app:normal_drawable="@drawable/icon_details_uncollect_btn"
-        app:focus_drawable="@drawable/pos_zui"
-        app:drawable_width="@dimen/width_152px"
-        app:drawable_height="@dimen/height_76px"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_marginLeft="@dimen/width_54px"
         android:layout_marginStart="@dimen/width_54px"
-        android:layout_width="@dimen/width_152px"
-        android:layout_height="@dimen/height_76px"
         android:layout_toEndOf="@+id/full_screen"
         android:layout_toRightOf="@+id/full_screen"
-        android:focusable="true"/>
+        android:layout_alignBottom="@+id/video_container"
+        android:focusable="true"
+        app:type="collect"
+        />
 
     <tv.newtv.cboxtv.views.FocusToggleView
         android:id="@+id/add"

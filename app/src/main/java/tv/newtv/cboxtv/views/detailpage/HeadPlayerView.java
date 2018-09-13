@@ -51,6 +51,7 @@ import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.LiveTimingUtil;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
+import tv.newtv.cboxtv.views.FocusToggleSelect;
 import tv.newtv.cboxtv.views.FocusToggleView;
 
 /**
@@ -388,28 +389,27 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             DBUtil.CheckCollect(mBuilder.contentUUid, new DBCallback<String>() {
                                 @Override
                                 public void onResult(int code, String result) {
-                                    if (collect instanceof FocusToggleView) {
-                                        ((FocusToggleView) collect).SetUseing(code == 0 &&
-                                                !TextUtils.isEmpty
-                                                        (result));
+                                    if (collect instanceof FocusToggleSelect) {
+                                        ((FocusToggleSelect) collect).setSelect(code == 0 &&
+                                                !TextUtils.isEmpty(result));
                                     }
                                 }
                             });
                             collect.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (collect instanceof FocusToggleView) {
+                                    if (collect instanceof FocusToggleSelect) {
                                         if (System.currentTimeMillis() - lastClickTime >= 2000)
                                         {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
-                                            if (((FocusToggleView) collect).isUseing()) {
+                                            if (((FocusToggleSelect) collect).isSelect()) {
                                                 DBUtil.UnCollect(mBuilder.contentUUid, new
                                                         DBCallback<String>() {
                                                             @Override
                                                             public void onResult(int code, String
                                                                     result) {
-                                                                ((FocusToggleView) collect)
-                                                                        .SetUseing
+                                                                ((FocusToggleSelect) collect)
+                                                                        .setSelect
                                                                                 (code == 0 &&
                                                                                         !TextUtils
                                                                                                 .isEmpty(result));
@@ -433,7 +433,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                 DBUtil.PutCollect(mInfo, new DBCallback<String>() {
                                                     @Override
                                                     public void onResult(int code, String result) {
-                                                        ((FocusToggleView) collect).SetUseing
+                                                        ((FocusToggleSelect) collect).setSelect
                                                                 (code ==
                                                                         0 && !TextUtils
                                                                         .isEmpty
@@ -472,8 +472,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             DBUtil.CheckSubscrip(mBuilder.contentUUid, new DBCallback<String>() {
                                 @Override
                                 public void onResult(int code, String result) {
-                                    if (Subscrip instanceof FocusToggleView) {
-                                        ((FocusToggleView) Subscrip).SetUseing(code == 0 &&
+                                    if (Subscrip instanceof FocusToggleSelect) {
+                                        ((FocusToggleSelect) Subscrip).setSelect(code == 0 &&
                                                 !TextUtils.isEmpty
                                                         (result));
                                     }
@@ -482,11 +482,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             Subscrip.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (Subscrip instanceof FocusToggleView) {
+                                    if (Subscrip instanceof FocusToggleSelect) {
                                         if (System.currentTimeMillis() - lastClickTime >= 2000)
                                         {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
-                                            if (((FocusToggleView) Subscrip).isUseing()) {
+                                            if (((FocusToggleSelect) Subscrip).isSelect()) {
                                                 DBUtil.UnSubcribe(mBuilder.contentUUid, new
                                                         DBCallback<String>() {
                                                             @Override
@@ -494,8 +494,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     result) {
 
                                                                 if (code == 0) {
-                                                                    ((FocusToggleView) Subscrip)
-                                                                            .SetUseing(false);
+                                                                    ((FocusToggleSelect) Subscrip)
+                                                                            .setSelect(false);
                                                                     Toast.makeText(getContext()
                                                                                     .getApplicationContext(), "取消订阅成功",
                                                                             Toast
@@ -515,8 +515,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                      String
                                                                                              result) {
                                                                     if (code == 0) {
-                                                                        ((FocusToggleView) Subscrip)
-                                                                                .SetUseing(true);
+                                                                        ((FocusToggleSelect) Subscrip)
+                                                                                .setSelect(true);
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
                                                                                 "添加订阅成功", Toast

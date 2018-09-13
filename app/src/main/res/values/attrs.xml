@@ -83,6 +83,15 @@
         <attr name="topSpace" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="FocusToggleView2">
+        <attr name="type">
+            <flag name="collect" value="0"/>
+            <flag name="full_screen" value="1"/>
+            <flag name="attention" value="2"/>
+            <flag name="pay" value="3"/>
+        </attr>
+    </declare-styleable>
+
     <!--<declare-styleable name="FocusRelativeLayoutView">-->
         <!--<attr name="normal_drawable" format="reference"/>-->
         <!--<attr name="focus_drawable" format="reference"/>-->

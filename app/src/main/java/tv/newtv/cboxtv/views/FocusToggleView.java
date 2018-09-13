@@ -25,13 +25,13 @@ import tv.newtv.cboxtv.utils.UsefulBitmapFactory;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/7
  */
-public class FocusToggleView extends View {
+public class FocusToggleView extends View implements FocusToggleSelect {
     private Bitmap NormalDrawable;
     private Bitmap SelectDrawable;
     private int FocusDrawable;
     private Paint mPaint;
     private int space = 0, mWidth, mHeight;
-    private boolean isUseing = false;
+    private boolean isSelect = false;
     private  Context mContext;
 
     public FocusToggleView(Context context) {
@@ -112,12 +112,12 @@ public class FocusToggleView extends View {
         setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
     }
 
-    public boolean isUseing() {
-        return isUseing;
+    public boolean isSelect() {
+        return isSelect;
     }
 
-    public void SetUseing(boolean value) {
-        isUseing = value;
+    public void setSelect(boolean value) {
+        isSelect = value;
         postInvalidate();
     }
 
@@ -151,7 +151,7 @@ public class FocusToggleView extends View {
         }
 
 
-        if (isUseing) {
+        if (isSelect) {
             if (SelectDrawable != null&&!SelectDrawable.isRecycled()) {
                 canvas.drawBitmap(BitmapUtil.zoomImg(SelectDrawable, mWidth,
                         mHeight),
