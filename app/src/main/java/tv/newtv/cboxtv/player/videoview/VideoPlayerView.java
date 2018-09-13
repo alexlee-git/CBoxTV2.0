@@ -351,7 +351,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         stopPlay();
         setHintText("播放已结束");
-        isPlaying.setVisibility(GONE);
+        if (isPlaying != null) {
+            isPlaying.setVisibility(GONE);
+        }
 
         if (mPlayerCallback != null) {
             mPlayerCallback.AllPlayComplete(isError, info, this);
