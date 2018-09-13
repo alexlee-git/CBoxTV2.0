@@ -68,12 +68,6 @@ public class MainListPageManager implements ListPageView,
     private int Navbarfoused = -1;
     private String contentId;
 
-    private boolean pageIsScrolling = false;
-
-    public MainListPageManager() {
-
-    }
-
     public void unInit() {
         mViewPager = null;
         mNavBar = null;
@@ -83,10 +77,7 @@ public class MainListPageManager implements ListPageView,
         navFragment = null;
         mSharedPreferences = null;
         mNavBar = null;
-        if (mCircleMenuRv != null) {
-            mCircleMenuRv.destroy();
-            mCircleMenuRv = null;
-        }
+        mCircleMenuRv = null;
         mContext = null;
         mPresenter = null;
 
@@ -94,6 +85,10 @@ public class MainListPageManager implements ListPageView,
             mNavInfos.clear();
             //mNavInfos = null;
         }
+    }
+
+    public MainListPageManager() {
+
     }
 
     // 外部跳转action、params
@@ -194,9 +189,9 @@ public class MainListPageManager implements ListPageView,
             return;
         }
 
-        for (NavListPageInfoResult.NavInfo navInfo : mNavInfos) {
+        for(NavListPageInfoResult.NavInfo navInfo : mNavInfos){
             String fragmentUUID = getContentUUID(navInfo);
-            BgChangManager.getInstance().add(contentId, fragmentUUID);
+            BgChangManager.getInstance().add(contentId,fragmentUUID);
         }
 
         try {
@@ -254,7 +249,7 @@ public class MainListPageManager implements ListPageView,
                 @Override
                 public void onItemSelected(int position, NavListPageInfoResult.NavInfo
                         value) {
-                    if (mNavListPageInfoResult.getData().size() == 0) return;
+                    if (mNavListPageInfoResult.getData().size() == 0 || mViewPager == null) return;
                     if (mViewPager.getCurrentItem() % mNavListPageInfoResult.getData().size() ==
                             position % mNavListPageInfoResult.getData().size()) {
                         return;
@@ -270,7 +265,7 @@ public class MainListPageManager implements ListPageView,
                         mSharedPreferences.edit().putString("page-defaultFocus", uuid).apply();
                     }
                     PlayerConfig.getInstance().setSecondChannelId(uuid);
-                    BgChangManager.getInstance().setCurrent(mContext, uuid);
+                    BgChangManager.getInstance().setCurrent(mContext,uuid);
                 }
 
                 @Override
@@ -305,7 +300,7 @@ public class MainListPageManager implements ListPageView,
                 @Override
                 public View getNextFocusView() {
                     BaseFragment target = (BaseFragment) mViewPagerAdapter.getCurrentFragment();
-                    if (target == null || pageIsScrolling) return null;
+                    if (target == null) return null;
                     return target.getFirstFocusView();
                 }
 
@@ -328,8 +323,7 @@ public class MainListPageManager implements ListPageView,
 
         // 创建页面区域的适配器
         if (mViewPagerAdapter == null) {
-            mViewPagerAdapter = new LooperStaggeredAdapter(fragmentManager,
-                    mNavListPageInfoResult.getData(), parentId);
+            mViewPagerAdapter = new LooperStaggeredAdapter(fragmentManager, mNavListPageInfoResult.getData(), parentId);
             //先强制设定跳转到指定页面
             int MiddleValue = LooperUtil.getMiddleValue(mNavListPageInfoResult.getData().size());
             int defaultIndex = MiddleValue + defaultPageIdx;
@@ -355,7 +349,7 @@ public class MainListPageManager implements ListPageView,
                     currentPosition = position % mNavListPageInfoResult.getData().size();
                     // currentFragment = (ContentFragment) mViewPagerAdapter.getItem(position);
 
-                    if (mNavListPageInfoResult.getData().size() > currentPosition) {
+                    if(mNavListPageInfoResult.getData().size() > currentPosition){
                         currentTag = mNavListPageInfoResult.getData().get(currentPosition)
                                 .getContentID();
                     }
@@ -366,9 +360,9 @@ public class MainListPageManager implements ListPageView,
 
                 @Override
                 public void onPageScrollStateChanged(int state) {
-                    pageIsScrolling = (state != ViewPager.SCROLL_STATE_IDLE);
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
                         currentFragment = mViewPagerAdapter.getCurrentFragment();
+                        //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
                         if (currentFragment != null) {
                             currentFragment.onEnterComplete();
                         }
@@ -381,8 +375,7 @@ public class MainListPageManager implements ListPageView,
         }
 
         if ("server".equals(from)) {
-            //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager
-            // .getCurrentItem());
+            //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
             currentFragment = mViewPagerAdapter.getCurrentFragment();
             setContentFragmentRecyclerViewToNavFragment();
         }

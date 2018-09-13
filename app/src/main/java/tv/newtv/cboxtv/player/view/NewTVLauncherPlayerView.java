@@ -1678,9 +1678,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         return mNewTVLauncherPlayer != null && mNewTVLauncherPlayer.isPlaying();
     }
 
-
     public void setHintTextVisible(int visible) {
-
     }
 
     public void setVideoSilent(boolean isSilent) {
