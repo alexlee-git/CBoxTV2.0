@@ -33,7 +33,7 @@
         android:layout_below="@id/id_module_10_title"
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_010_1">
@@ -54,7 +54,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_10_view1"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_010_2">
@@ -75,7 +75,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_10_view1"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_010_5">
@@ -96,7 +96,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_10_view2"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_010_3">
@@ -117,7 +117,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_10_view3"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_010_6">
@@ -137,7 +137,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_10_view4"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_010_4">
@@ -157,7 +157,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_10_view5"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_010_7">
