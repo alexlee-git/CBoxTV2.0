@@ -19,7 +19,8 @@ public class FocusToggleView2 extends android.support.v7.widget.AppCompatImageVi
             {R.drawable.attention_normal_nofocus,R.drawable.attention_select_nofocus,R.drawable.attention_normal_hasfocus,R.drawable.attention_select_hasfocus},
             {R.drawable.pay_normal_nofocus,0,R.drawable.pay_normal_hasfocus,0},
             {R.drawable.like_normal_nofocus,0,R.drawable.like_normal_hasfocus,0},
-            {R.drawable.send_flowers_normal_nofocus,0,R.drawable.send_flowers_normal_hasfocus,0}};
+            {R.drawable.send_flowers_normal_nofocus,0,R.drawable.send_flowers_normal_hasfocus,0},
+            {R.drawable.subscibe_normal_nofocus,R.drawable.subscibe_select_nofocus,R.drawable.subscibe_normal_hasfocus,R.drawable.subscibe_select_hasfocus}};
     private int type;
     private boolean isSelect = false;
     private int noFoucsNormalId;

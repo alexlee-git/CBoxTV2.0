@@ -87,7 +87,7 @@
 
     </RelativeLayout>
 
-    <tv.newtv.cboxtv.views.FocusToggleView
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/full_screen"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -98,12 +98,10 @@
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toRightOf="@+id/video_container"
         android:focusable="true"
-        app:drawable_height="@dimen/height_76px"
-        app:drawable_width="@dimen/width_152px"
-        app:focus_drawable="@drawable/pos_zui"
-        app:normal_drawable="@drawable/icon_details_big_screen_btn" />
+        app:type="full_screen"
+        />
 
-    <tv.newtv.cboxtv.views.FocusToggleView
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/subscibe"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -114,13 +112,10 @@
         android:layout_toRightOf="@+id/full_screen"
         android:layout_marginBottom="@dimen/height_26px"
         android:focusable="true"
-        app:drawable_height="@dimen/height_76px"
-        app:drawable_width="@dimen/width_152px"
-        app:focus_drawable="@drawable/pos_zui"
-        app:normal_drawable="@drawable/subscibe_normal"
-        app:selected_drawable="@drawable/subscibe_select" />
+        app:type="subscribe"
+        />
 
-    <tv.newtv.cboxtv.views.FocusToggleView
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/add"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -131,10 +126,8 @@
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toRightOf="@+id/subscibe"
         android:focusable="true"
-        app:drawable_height="@dimen/height_76px"
-        app:drawable_width="@dimen/width_152px"
-        app:focus_drawable="@drawable/pos_zui"
-        app:normal_drawable="@drawable/icon_details_unpraise_btn" />
+        app:type="like"
+        />
 
     <tv.newtv.cboxtv.player.videoview.DivergeView
         android:id="@+id/view_praise"

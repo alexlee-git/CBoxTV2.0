@@ -42,7 +42,6 @@ public class ColumnPageActivity extends BaseActivity {
     private HeadPlayerView headPlayerView;
     private String contentUUID;
     private DivergeView mPaiseView;
-    private boolean isCollect = false;
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
 

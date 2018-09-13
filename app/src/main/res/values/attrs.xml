@@ -91,6 +91,7 @@
             <flag name="pay" value="3"/>
             <flag name="like" value="4"/>
             <flag name="send_flowers" value="5"/>
+            <flag name="subscribe" value="6"/>
         </attr>
     </declare-styleable>
 

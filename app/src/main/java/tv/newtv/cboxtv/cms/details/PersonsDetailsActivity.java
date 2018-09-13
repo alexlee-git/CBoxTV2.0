@@ -68,6 +68,7 @@ import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.XunMaKeyUtils;
+import tv.newtv.cboxtv.views.FocusToggleView2;
 import tv.newtv.cboxtv.views.RecycleImageView;
 
 /**
@@ -100,16 +101,12 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     @BindView(R.id.detail_tv_star)
     TextView detailStarTv;
 
-    @BindView(R.id.detail_rel_image_send_flower)
-    ImageView mBigScreenIv;
-    @BindView(R.id.detail_rel_image_attention)
-    ImageView mAttentionIv;
     @BindView(R.id.detail_rel_image_search_programe)
     ImageView mSearchProIv;
-    @BindView(R.id.btn_detail_send_flower)
-    RelativeLayout mSendflowerBtn;
-    @BindView(R.id.btn_detail_attention)
-    RelativeLayout mAttentionBtn;
+    @BindView(R.id.attention)
+    FocusToggleView2 attention;
+    @BindView(R.id.send_flower)
+    FocusToggleView2 sendFlower;
     @BindView(R.id.btn_detail_search_programe)
     RelativeLayout mSearchProBtn;
     @BindView(R.id.view_flower)
@@ -191,11 +188,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
         detailTypeTv = null;
         detailContentTv = null;
         detailStarTv = null;
-        mBigScreenIv = null;
-        mAttentionIv = null;
         mSearchProIv = null;
-        mSendflowerBtn = null;
-        mAttentionBtn = null;
         mSearchProBtn = null;
         mFlowerView = null;
         program_detail_ad_fl = null;
@@ -223,8 +216,8 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
     private void initView() {
         program_detail_ad_fl.setOnFocusChangeListener(this);
-        mAttentionBtn.setOnKeyListener(this);
-        mSendflowerBtn.setOnKeyListener(this);
+        attention.setOnKeyListener(this);
+        sendFlower.setOnKeyListener(this);
         mSearchProBtn.setOnKeyListener(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerView.setAdapter(mAdapter);
@@ -249,8 +242,6 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
             }
         });
         mFlowerView.setOnFocusChangeListener(this);
-        mAttentionBtn.setOnFocusChangeListener(this);
-        mSendflowerBtn.setOnFocusChangeListener(this);
 
     }
 
@@ -367,9 +358,9 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
         String des = dataInfo.discription;
         detailTypeTv.setText(dataInfo.district + " | " + dataInfo.country);
         if (isAttention) {
-            mAttentionIv.setImageResource(R.drawable.icon_details_attention_btn);
+            attention.setSelect(true);
         } else {
-            mAttentionIv.setImageResource(R.drawable.icon_details_unattention_btn);
+            attention.setSelect(false);
         }
 
 //        Picasso.with(getApplicationContext()).load(img).into(detailPlayIv);
@@ -434,7 +425,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                         @Override
                         public void run() {
                             isAttention = false;
-                            mAttentionIv.setImageResource(R.drawable.icon_details_unattention_btn);
+                            attention.setSelect(false);
                             Toast.makeText(getApplicationContext(), "取消关注成功", Toast.LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -458,7 +449,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                         @Override
                         public void run() {
                             isAttention = true;
-                            mAttentionIv.setImageResource(R.drawable.icon_details_attention_btn);
+                            attention.setSelect(true);
                             Toast.makeText(getApplicationContext(), "关注成功", Toast.LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -568,7 +559,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                         View upView = FocusFinder.getInstance().findNextFocus(mRecyclerView, focus, View.FOCUS_UP);
                         if (upView == null) {
                             //song hua
-                            mSendflowerBtn.requestFocus();
+                            sendFlower.requestFocus();
                         } else {
                             //判断下一个FocusView父级是什么
                             View upParent = getParentView(upView);
@@ -675,7 +666,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                 onClick(v);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 switch (v.getId()) {
-                    case R.id.btn_detail_attention:
+                    case R.id.attention:
 
                         return true;
 
@@ -690,7 +681,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_detail_attention:
+            case R.id.attention:
 
                 if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
@@ -702,7 +693,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
                 }
                 break;
-            case R.id.btn_detail_send_flower:
+            case R.id.send_flower:
                 mFlowerView.startDiverges(0);
                 break;
             case R.id.btn_detail_search_programe:
@@ -734,11 +725,6 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
-            case R.id.view_flower:
-            case R.id.btn_detail_send_flower:
-            case R.id.btn_detail_attention:
-                // scrollView.setScrollTop();
-                break;
 
             case R.id.person_detail_ad_fl:
                 if (hasFocus) {

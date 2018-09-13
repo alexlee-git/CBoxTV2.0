@@ -70,7 +70,7 @@
 
     </RelativeLayout>
 
-    <tv.newtv.cboxtv.views.FocusToggleView
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/full_screen"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -81,12 +81,10 @@
         android:layout_toEndOf="@+id/video_container"
         android:layout_toRightOf="@+id/video_container"
         android:focusable="true"
-        app:drawable_height="@dimen/height_76px"
-        app:drawable_width="@dimen/width_152px"
-        app:focus_drawable="@drawable/pos_zui"
-        app:normal_drawable="@drawable/icon_details_big_screen_btn"/>
+        app:type="full_screen"
+        />
 
-    <tv.newtv.cboxtv.views.FocusToggleView
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/collect"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -97,10 +95,7 @@
         android:layout_toEndOf="@+id/full_screen"
         android:layout_toRightOf="@+id/full_screen"
         android:focusable="true"
-        app:drawable_height="@dimen/height_76px"
-        app:drawable_width="@dimen/width_152px"
-        app:focus_drawable="@drawable/pos_zui"
-        app:normal_drawable="@drawable/icon_details_uncollect_btn"
-        app:selected_drawable="@drawable/icon_details_collect_btn"/>
+        app:type="collect"
+        />
 
 </RelativeLayout>
