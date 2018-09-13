@@ -110,13 +110,9 @@
         app:type="collect"
         />
 
-    <tv.newtv.cboxtv.views.FocusToggleView
+    <tv.newtv.cboxtv.views.FocusToggleView2
         android:id="@+id/add"
         android:layout_alignBottom="@+id/video_container"
-        app:normal_drawable="@drawable/icon_details_unpraise_btn"
-        app:focus_drawable="@drawable/pos_zui"
-        app:drawable_width="@dimen/width_152px"
-        app:drawable_height="@dimen/height_76px"
         android:layout_marginLeft="@dimen/width_54px"
         android:layout_marginStart="@dimen/width_54px"
         android:layout_width="@dimen/width_152px"
@@ -124,7 +120,9 @@
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toEndOf="@+id/collect"
         android:layout_toRightOf="@+id/collect"
-        android:focusable="true"/>
+        android:focusable="true"
+        app:type="like"
+        />
     <tv.newtv.cboxtv.player.videoview.DivergeView
         android:id="@+id/view_praise"
         android:layout_width="wrap_content"

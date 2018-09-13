@@ -89,6 +89,8 @@
             <flag name="full_screen" value="1"/>
             <flag name="attention" value="2"/>
             <flag name="pay" value="3"/>
+            <flag name="like" value="4"/>
+            <flag name="send_flowers" value="5"/>
         </attr>
     </declare-styleable>
 
