@@ -450,6 +450,9 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                 boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),
                         mExternalAction,
                         mExternalParams);
+                // add log
+                LogUploadUtils.uploadEnterAppLog(getApplicationContext());
+                // end
                 if (jump) {
                     finish();
                     return;

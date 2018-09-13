@@ -1,6 +1,8 @@
 package tv.newtv.cboxtv.cms.util;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.util.Log;
 
 import io.reactivex.Observable;
@@ -89,5 +91,20 @@ public class LogUploadUtils {
 
     public static boolean isInit() {
         return isinit;
+    }
+
+    //传入88
+    public static void uploadEnterAppLog(Context context) {
+        StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
+        PackageInfo pckInfo = null;
+        try {
+            pckInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            dataBuff.append("0,")
+                    .append(pckInfo.versionName)
+                    .trimToSize();
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_SWITCH, dataBuff.toString());//进入应用
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
