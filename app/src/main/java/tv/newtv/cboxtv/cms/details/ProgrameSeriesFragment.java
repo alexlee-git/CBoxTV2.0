@@ -65,6 +65,7 @@ import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
+import tv.newtv.cboxtv.views.FocusToggleView2;
 import tv.newtv.cboxtv.views.RecycleImageView;
 import tv.newtv.cboxtv.views.detailpage.SmoothScrollView;
 
@@ -84,8 +85,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     private static final String TAG = "ProgrameSeriesFragment";
     //    @BindView(R.id.id_detail_view)
 //    RelativeLayout mDetailsImgView;
-    @BindView(R.id.detail_rel_image_collect)
-    ImageView mCollectIv;
+    @BindView(R.id.collect)
+    FocusToggleView2 collect;
     //    @BindView(R.id.iv_detail_image_focus)
 //    ImageView mFocusIv;
     @BindView(R.id.tv_detail_title)
@@ -96,12 +97,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     TextView detailContentTv;
     @BindView(R.id.detail_tv_star)
     TextView detailStarTv;
-    @BindView(R.id.detail_rel_image_big_screen)
-    ImageView mBigScreenIv;
-    @BindView(R.id.btn_detail_big_screen)
-    RelativeLayout mBigScreenBtn;
-    @BindView(R.id.btn_detail_collect)
-    RelativeLayout mCollectBtn;
+    @BindView(R.id.full_screen)
+    FocusToggleView2 fullScreen;
     @BindView(R.id.id_series_list)
     RecyclerView mRecyclerView;
     @BindView(R.id.id_series_list_menu)
@@ -179,15 +176,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         }
 
 //        mDetailsImgView = null;
-        mCollectIv = null;
 //        mFocusIv = null;
         detailTitleTv = null;
         detailTypeTv = null;
         detailContentTv = null;
         detailStarTv = null;
-        mBigScreenIv = null;
-        mBigScreenBtn = null;
-        mCollectBtn = null;
         mRecyclerView = null;
         mMenuRecyclerView = null;
         verticallRecyclerView = null;
@@ -357,7 +350,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     private void initView() {
-        mBigScreenBtn.requestFocus();//bug系统31提出的要求，进入页面焦点默认在全屏按钮上
+        fullScreen.requestFocus();//bug系统31提出的要求，进入页面焦点默认在全屏按钮上
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext().getApplicationContext()
                 , 15));
         mMenuRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()
@@ -369,14 +362,14 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         mAdapter = new ColumnDetailsAdapter(getContext().getApplicationContext(), this);
         verticallRecyclerView.setAdapter(mAdapter);
 
-        mCollectBtn.setOnClickListener(new View.OnClickListener() {
+        collect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 doCollect();
             }
         });
 
-        mBigScreenBtn.setOnClickListener(new View.OnClickListener() {
+        fullScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 doBigScreen();
@@ -396,15 +389,15 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     dir = View.FOCUS_UP;
                     break;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    if (focusView != null && focusView.getId() == R.id.btn_detail_collect) {
+                    if (focusView != null && focusView.getId() == R.id.collect) {
                         return true;
                     }
                     dir = View.FOCUS_RIGHT;
                     break;
                 case KeyEvent.KEYCODE_DPAD_DOWN:
                     dir = View.FOCUS_DOWN;
-                    if (focusView.getId() == R.id.btn_detail_collect
-                            || focusView.getId() == R.id.btn_detail_big_screen
+                    if (focusView.getId() == R.id.collect
+                            || focusView.getId() == R.id.full_screen
                             || focusView.getId() == R.id.id_video_player) {
                         if (mRecyclerView != null && mRecyclerView.getChildAt(0) != null) {
                             mRecyclerView.getChildAt(0).requestFocus();
@@ -424,8 +417,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
             if (targetView != null) {
                 if (dir == View.FOCUS_UP) {
                     switch (targetView.getId()) {
-                        case R.id.btn_detail_collect:
-                        case R.id.btn_detail_big_screen:
+                        case R.id.collect:
+                        case R.id.full_screen:
                         case R.id.id_video_player:
                             mVideoView.requestFocus();
                             scrollView.scrollToTop();
@@ -474,11 +467,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                                             (), dataInfo.getAirtime(), dataInfo.getVideoType());
                                     detailTypeTv.setText(mType);
                                     if (isCollect) {
-                                        mCollectIv.setImageResource(R.drawable
-                                                .icon_details_collect_btn);
+                                        collect.setSelect(true);
                                     } else {
-                                        mCollectIv.setImageResource(R.drawable
-                                                .icon_details_uncollect_btn);
+                                        collect.setSelect(false);
                                     }
                                     detailContentTv.setText(dataInfo.getDescription());
                                     detailTitleTv.setText(dataInfo.getTitle());
@@ -646,7 +637,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                         @Override
                         public void run() {
                             isCollect = false;
-                            mCollectIv.setImageResource(R.drawable.icon_details_uncollect_btn);
+                            collect.setSelect(isCollect);
                             Toast.makeText(getContext().getApplicationContext(), "取消收藏成功", Toast
                                     .LENGTH_SHORT)
                                     .show();
@@ -662,13 +653,13 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     private void updateCollect(ProgramSeriesInfo entity) {
         DBUtil.PutCollect(entity, new DBCallback<String>() {
             @Override
-            public void onResult(int code, String result) {
+            public void onResult(final int code, String result) {
                 if (code == 0) {
                     mRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
                             isCollect = true;
-                            mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
+                            collect.setSelect(isCollect);
                             Toast.makeText(getContext().getApplicationContext(), "添加收藏成功", Toast
                                     .LENGTH_SHORT)
                                     .show();

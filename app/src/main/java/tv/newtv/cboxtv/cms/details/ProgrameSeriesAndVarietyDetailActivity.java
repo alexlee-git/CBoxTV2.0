@@ -127,8 +127,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                                     videoType = dataInfo.getVideoType();
                                 }
                                 //这里节目详情页 要换成电视剧
-                                if (videoType != null && TextUtils.equals(videoType, "电视剧") ||
-                                        videoType != null && TextUtils.equals(videoType, "动漫")) {
+                                if (!videoType()) {
                                     setContentView(R.layout.activity_details_programe_series);
                                     fragment = new ProgrameSeriesFragment();
                                     Bundle bundle = new Bundle();
@@ -340,7 +339,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 return true;
             }
         }
-        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        if (videoType()) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
 
                 ViewGroup viewGroup = findViewById(R.id.root_view);
@@ -398,7 +397,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        if (videoType()) {
             if (headPlayerView != null) {
                 headPlayerView.onActivityPause();
             }
@@ -407,7 +406,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
     @Override
     protected void onStop() {
-        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        if (videoType()) {
             if (headPlayerView != null) {
                 headPlayerView.onActivityStop();
             }
@@ -418,11 +417,19 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        if (videoType()) {
             if (headPlayerView != null) {
                 headPlayerView.onActivityResume();
             }
         }
+    }
+
+    private boolean videoType(){
+        if(!TextUtils.isEmpty(videoType) && (TextUtils.equals(videoType,"电视剧")
+                || TextUtils.equals(videoType,"动漫"))){
+            return false;
+        }
+        return true;
     }
 
     private void initFragment() {

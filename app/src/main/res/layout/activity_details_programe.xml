@@ -66,42 +66,26 @@
             android:textColor="@color/detail_tvcolor"
             android:textSize="@dimen/height_26px"/>
 
-        <RelativeLayout
-            android:id="@+id/btn_detail_big_screen"
-            android:layout_width="@dimen/height_206px"
-            android:layout_height="@dimen/height_130px"
-            android:layout_marginLeft="@dimen/height_812px"
-            android:layout_marginTop="@dimen/height_354px"
-            android:background="@drawable/fouse_btn"
-            android:focusable="true">
-
-            <ImageView
-                android:id="@+id/detail_rel_image_big_screen"
-                android:layout_width="@dimen/width_152px"
-                android:layout_height="@dimen/height_76px"
-                android:layout_centerInParent="true"
-                android:src="@drawable/icon_details_big_screen_btn"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn_detail_collect"
-            android:layout_width="@dimen/height_206px"
-            android:layout_height="@dimen/height_130px"
-            android:layout_marginLeft="-12px"
-            android:layout_marginTop="@dimen/height_354px"
-            android:layout_toRightOf="@+id/btn_detail_big_screen"
-            android:background="@drawable/fouse_btn"
+        <tv.newtv.cboxtv.views.FocusToggleView2
+            android:id="@+id/full_screen"
+            android:layout_width="@dimen/width_152px"
+            android:layout_height="@dimen/height_76px"
+            android:layout_marginLeft="@dimen/height_839px"
+            android:layout_marginTop="@dimen/height_381px"
             android:focusable="true"
-            android:gravity="center">
+            app:type="full_screen"
+            />
 
-            <ImageView
-                android:id="@+id/detail_rel_image_collect"
-                android:layout_width="@dimen/width_152px"
-                android:layout_height="@dimen/height_76px"
-                android:layout_centerInParent="true"
-                android:src="@drawable/icon_details_collect_btn"/>
-
-        </RelativeLayout>
+        <tv.newtv.cboxtv.views.FocusToggleView2
+            android:id="@+id/collect"
+            android:layout_width="@dimen/width_152px"
+            android:layout_height="@dimen/height_76px"
+            android:layout_toRightOf="@+id/full_screen"
+            android:layout_marginLeft="15px"
+            android:layout_marginTop="@dimen/height_381px"
+            android:focusable="true"
+            app:type="collect"
+            />
 
         <FrameLayout
             android:id="@+id/iv_detail_video_rl"
@@ -110,7 +94,9 @@
             android:layout_height="@dimen/height_422px"
             android:layout_marginLeft="@dimen/width_80px"
             android:layout_marginStart="@dimen/width_80px"
-            android:layout_marginTop="@dimen/height_54px">
+            android:layout_marginTop="@dimen/height_54px"
+            android:layout_marginBottom="@dimen/width_8px"
+            >
 
         </FrameLayout>
 
