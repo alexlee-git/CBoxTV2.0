@@ -254,7 +254,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         playCenter.setCurrentIndex(mIndex);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
-        if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
+        if (dataStruct != null && dataStruct.playType == VPlayCenter.PLAY_SERIES) {
             NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
                     playCenter.getCurrentSeriesInfo(), false, mIndex, position);
         } else {
