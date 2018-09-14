@@ -487,7 +487,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             } else {
 
 //                focusView.requestFocus();
-                focusView.setBackgroundResource(R.drawable.pos_zui);
+                focusView.setBackgroundResource(R.drawable.pos_zui_27px);
             }
         }
 

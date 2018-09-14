@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="cell_008_1_focus"
-            android:background="@drawable/selector_pos_background"
+            android:background="@drawable/selector_pos_background_27px"
             >
 
             <tv.newtv.cboxtv.views.RecycleImageView
@@ -103,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="cell_008_2_focus"
-            android:background="@drawable/selector_pos_background"
+            android:background="@drawable/selector_pos_background_27px"
             >
 
             <tv.newtv.cboxtv.views.RecycleImageView
@@ -159,7 +159,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="cell_008_3_focus"
-            android:background="@drawable/selector_pos_background"
+            android:background="@drawable/selector_pos_background_27px"
             >
 
             <tv.newtv.cboxtv.views.RecycleImageView
@@ -218,7 +218,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="cell_008_4_focus"
-            android:background="@drawable/selector_pos_background"
+            android:background="@drawable/selector_pos_background_27px"
             >
 
             <tv.newtv.cboxtv.views.RecycleImageView
@@ -270,7 +270,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="cell_008_5_focus"
-            android:background="@drawable/selector_pos_background"
+            android:background="@drawable/selector_pos_background_27px"
             >
 
             <tv.newtv.cboxtv.views.RecycleImageView
@@ -319,7 +319,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:tag="cell_008_6_focus"
-            android:background="@drawable/selector_pos_background"
+            android:background="@drawable/selector_pos_background_27px"
             >
 
             <tv.newtv.cboxtv.views.RecycleImageView
