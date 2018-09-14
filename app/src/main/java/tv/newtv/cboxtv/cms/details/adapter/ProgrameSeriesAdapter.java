@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import tv.newtv.MutipleClickListener;
+import tv.newtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
@@ -85,9 +85,9 @@ public class ProgrameSeriesAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo
             super(itemView);
             nameTv = (TextView) itemView.findViewById(R.id.tv_series);
             focusRl = (RelativeLayout) itemView.findViewById(R.id.rl_focus);
-            focusRl.setOnClickListener(new MutipleClickListener() {
+            focusRl.setOnClickListener(new MultipleClickListener() {
                 @Override
-                protected void onMutipleClick(View view) {
+                protected void onMultipleClick(View view) {
                     listener.onItemClick(view, getAdapterPosition(), getItem(getAdapterPosition()));
                 }
             });

@@ -98,7 +98,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                         mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
                     }
                 } else {
-                    PlayInfoUtil.getPlayInfo(mPlayInfo.ContentUUID, new PlayInfoUtil
+                    PlayInfoUtil.getInfo(mPlayInfo.ContentUUID,mPlayInfo.contentType, new
+                            PlayInfoUtil
                             .ProgramSeriesInfoCallback() {
                         @Override
                         public void onResult(final ProgramSeriesInfo info) {

@@ -321,38 +321,39 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                 scrollView.postDelayed(enterKeyRunnable, 200);
             }
         });
-
     }
 
-    private void prepareMediaPlayer() {
-        if (mVideoView != null && mVideoView.isReleased()) {
-            mVideoView.release();
-            mVideoView.destory();
-            if (mVideoView.getParent() != null) {
-                ((ViewGroup) mVideoView.getParent()).removeView(mVideoView);
-            }
-            mVideoView = null;
-        }
-
-        if (mVideoView == null) {
-            if (defaultConfig == null) {
-                mVideoView = new VideoPlayerView(getContext());
-                mVideoView.setId(R.id.id_video_player);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
-                        .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                mVideoView.setLayoutParams(layoutParams);
-                iv_detail_video_rl.addView(mVideoView, layoutParams);
-
-                mVideoView.setVisibility(View.VISIBLE);
-                mVideoView.setPlayerCallback(this);
-
-                if (dataInfo != null) {
-                    mVideoView.setSeriesInfo(dataInfo);
-                }
+    private boolean prepareMediaPlayer() {
+        if (mVideoView != null) {
+            if (mVideoView.isReady() || mVideoView.isPlaying() || mVideoView.isADPlaying()) {
+                return false;
             } else {
-                mVideoView = new VideoPlayerView(defaultConfig, getContext());
+                mVideoView.release();
+                mVideoView.destory();
+                if (mVideoView.getParent() != null) {
+                    ((ViewGroup) mVideoView.getParent()).removeView(mVideoView);
+                }
+                mVideoView = null;
             }
         }
+        if (defaultConfig == null) {
+            mVideoView = new VideoPlayerView(getContext());
+            mVideoView.setId(R.id.id_video_player);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
+                    .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+            mVideoView.setLayoutParams(layoutParams);
+            iv_detail_video_rl.addView(mVideoView, layoutParams);
+
+            mVideoView.setVisibility(View.VISIBLE);
+            mVideoView.setPlayerCallback(this);
+
+            if (dataInfo != null) {
+                mVideoView.setSeriesInfo(dataInfo);
+            }
+        } else {
+            mVideoView = new VideoPlayerView(defaultConfig, getContext());
+        }
+        return true;
     }
 
     private void initView() {
@@ -580,7 +581,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     public void onItemClick(View view, int position, Object object) {
         int targetIndex = mPageDaoImpl.getCurrentPosition(position);
 
-        if(scrollView.isScrollMode()) return;
+        if (scrollView.isScrollMode()) return;
 
         if (mIndex != targetIndex) {
             mIndex = targetIndex;
@@ -595,11 +596,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
             mMenuAdapter.setCurrenPage(mPageDaoImpl.getCurrentPage(mIndex) - 1);
             mSeriesAdapter.notifyDataSetChanged();
             mMenuAdapter.notifyDataSetChanged();
-        }else{
+        } else {
             mVideoView.requestFocus();
         }
 
-        mVideoView.delayEnterFullScreen(getActivity(),false,500);
+        mVideoView.delayEnterFullScreen(getActivity(), false, 500);
     }
 
     @Override
@@ -659,7 +660,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                         public void run() {
                             isCollect = true;
                             mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
-                            Toast.makeText(getContext().getApplicationContext(), R.string.collect_success, Toast
+                            Toast.makeText(getContext().getApplicationContext(), R.string
+                                    .collect_success, Toast
                                     .LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -699,9 +701,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     public void onResume() {
         super.onResume();
 
-        prepareMediaPlayer();
+        boolean prepare = prepareMediaPlayer();
 
-        if (isFirstStart && dataInfo != null) {
+        if (prepare && isFirstStart && dataInfo != null) {
             mVideoView.playSingleOrSeries(mIndex, mPlayPosition);
             mSeriesAdapter.setPlayerPosition(mIndex, false);
             mPageDaoImpl.setCurrentPage(mPageDaoImpl.getCurrentPage(mIndex));
@@ -714,7 +716,6 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     @Override
     public void onStop() {
         super.onStop();
-
 
         addHistory();
 
@@ -793,7 +794,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
     @Override
     public void onPlayerClick(VideoPlayerView videoPlayerView) {
-        if(scrollView.isScrollMode()) return;
+        if (scrollView.isScrollMode()) return;
         Log.d(TAG, "onPlayerClick");
 
         videoPlayerView.EnterFullScreen(getActivity(), false);

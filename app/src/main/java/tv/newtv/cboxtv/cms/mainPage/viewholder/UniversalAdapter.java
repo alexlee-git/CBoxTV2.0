@@ -26,7 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.newtv.MutipleClickListener;
+import tv.newtv.MultipleClickListener;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
@@ -268,9 +268,9 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                     });
 
                     // onClickListener
-                    frameLayout.setOnClickListener(new MutipleClickListener() {
+                    frameLayout.setOnClickListener(new MultipleClickListener() {
                         @Override
-                        protected void onMutipleClick(View view) {
+                        protected void onMultipleClick(View view) {
                             processOpenCell(view, info, moduleItem.getBlockId(), layoutCode);
                         }
                     });

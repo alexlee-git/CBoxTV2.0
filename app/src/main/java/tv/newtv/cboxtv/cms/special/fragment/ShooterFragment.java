@@ -228,7 +228,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         videoPlayerView.playSingleOrSeries(playIndex,0);
     }
 
-    private class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
+    private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
         private List<ProgramInfo> ModuleItems;
         private OnItemAction<ProgramInfo> onItemAction;
@@ -243,7 +243,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
             return this;
         }
 
-        public void setOnItemAction(OnItemAction<ProgramInfo> programInfoOnItemAction) {
+        void setOnItemAction(OnItemAction<ProgramInfo> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -336,7 +336,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         public CurrentPlayImageViewWorldCup poster;
         public ImageView posterFocus;
 
-        public ShooterViewHolder(View itemView) {
+        ShooterViewHolder(View itemView) {
             super(itemView);
             poster = itemView.findViewById(R.id.shooter_poster);
             posterFocus = itemView.findViewById(R.id.shooter_poster_onfocus);
