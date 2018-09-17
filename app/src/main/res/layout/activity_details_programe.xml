@@ -66,6 +66,16 @@
             android:textColor="@color/detail_tvcolor"
             android:textSize="@dimen/height_26px"/>
 
+        <ViewStub
+            android:id="@+id/more_view_stub"
+            android:layout="@layout/layout_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/detail_tv_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/width_120px"
+            />
+
         <tv.newtv.cboxtv.views.FocusToggleView2
             android:id="@+id/full_screen"
             android:layout_width="@dimen/width_152px"

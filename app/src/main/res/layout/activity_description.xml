@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/width_200px"
+    android:paddingTop="@dimen/width_110px"
+    android:paddingRight="@dimen/width_200px"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/width_38px"
+        android:layout_gravity="center_horizontal"
+        />
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/width_110px"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/width_28px"
+        android:layout_gravity="center_horizontal"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/width_110px"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        >
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_10px"
+            android:text="返回上一级"
+            android:textColor="@color/colorWhite"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

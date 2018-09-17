@@ -77,7 +77,16 @@
             android:maxLines="3"
             android:maxEms="100"
             android:textColor="@color/detail_tvcolor"
-            android:textSize="@dimen/height_26px"/>
+            android:textSize="@dimen/height_26px" />
+
+        <ViewStub
+            android:id="@+id/more_view_stub"
+            android:layout="@layout/layout_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_detail_content"
+            android:layout_alignParentRight="true"
+            />
 
 
     </RelativeLayout>

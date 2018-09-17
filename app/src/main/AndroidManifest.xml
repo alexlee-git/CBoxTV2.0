@@ -104,6 +104,8 @@
                   android:theme="@style/AppContentTheme"/>
         <activity android:name=".cms.details.SingleDetailPageActivity"
                   android:theme="@style/AppContentTheme"/>
+        <activity android:name=".cms.details.DescriptionActivity"
+                  android:theme="@style/AppContentTheme"/>
 
         <meta-data
             android:name="appKey"

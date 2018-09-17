@@ -12,8 +12,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,6 +122,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     RecycleImageView program_detail_ad_img;
     @BindView(R.id.id_scroll_view)
     SmoothScrollView scrollView;
+    @BindView(R.id.more_view_stub)
+    ViewStub moreStub;
+    private TextView more;
     LinearLayoutManager linearLayoutManager;
     private int historyposition = 0;
     private boolean isCollect = false;
@@ -389,7 +392,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     dir = View.FOCUS_UP;
                     break;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    if (focusView != null && focusView.getId() == R.id.collect) {
+                    if (focusView != null && focusView.getId() == (more == null ? R.id.collect : R.id.more)) {
                         return true;
                     }
                     dir = View.FOCUS_RIGHT;
@@ -486,6 +489,27 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                                     }
                                     for (int i = 1; i < mPageDaoImpl.getPageNum() + 1; i++) {
                                         mMenuAdapter.append(getPageText(dataInfo.getData(), i));
+                                    }
+                                    int ellipsisCount = detailContentTv.getLayout().getEllipsisCount(detailContentTv.getLineCount() - 1);
+                                    if(ellipsisCount > 0){
+                                        more = (TextView) moreStub.inflate();
+                                        more.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                                            @Override
+                                            public void onFocusChange(View v, boolean hasFocus) {
+                                                if(hasFocus){
+                                                    more.setBackgroundResource(R.drawable.more_hasfocus);
+                                                } else {
+                                                    more.setBackgroundResource(R.drawable.more_nofocus);
+                                                }
+                                            }
+                                        });
+
+                                        more.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                DescriptionActivity.runAction(getContext(),dataInfo.getTitle(),dataInfo.getDescription());
+                                            }
+                                        });
                                     }
                                 }
                             } else {

@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,6 +36,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.details.DescriptionActivity;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
@@ -638,6 +640,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 TextView typeTWO = contentView.findViewById(R.id.id_detail_type2);
                 TextView star = contentView.findViewById(R.id.id_detail_star);
                 TextView content = contentView.findViewById(R.id.id_detail_content);
+                ViewStub moreStub = contentView.findViewById(R.id.more_view_stub);
                 if (title != null) {
                     title.setText(mInfo.getTitle());
                 }
@@ -672,6 +675,27 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
                 if (content != null) {
                     content.setText(mInfo.getDescription().replace("\r\n", ""));
+                    int ellipsisCount = content.getLayout().getEllipsisCount(content.getLineCount() - 1);
+                    if(ellipsisCount > 0 && moreStub != null){
+                        final View view = moreStub.inflate();
+                        view.setOnFocusChangeListener(new OnFocusChangeListener() {
+                            @Override
+                            public void onFocusChange(View v, boolean hasFocus) {
+                                if(hasFocus){
+                                    view.setBackgroundResource(R.drawable.more_hasfocus);
+                                } else {
+                                    view.setBackgroundResource(R.drawable.more_nofocus);
+                                }
+                            }
+                        });
+
+                        view.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                DescriptionActivity.runAction(getContext(),mInfo.getTitle(),mInfo.getDescription());
+                            }
+                        });
+                    }
                 }
 
                 if (!TextUtils.isEmpty(mInfo.getPlayUrl()) && CmsLiveUtil.isInPlay(mInfo
