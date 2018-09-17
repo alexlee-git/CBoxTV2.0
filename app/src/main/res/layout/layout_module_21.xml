@@ -41,6 +41,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_296px"
+            android:scaleType="fitXY"
             android:tag="cell_021_1_poster" />
 
         <!-- 左上角角标 -->
@@ -69,6 +70,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_296px"
+            android:scaleType="fitXY"
             android:tag="cell_021_2_poster" />
 
         <!-- 左上角角标 -->
@@ -97,6 +99,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_296px"
+            android:scaleType="fitXY"
             android:tag="cell_021_3_poster" />
 
         <!-- 左上角角标 -->
@@ -124,6 +127,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
             android:tag="cell_021_4_poster" />
 
     </FrameLayout>
@@ -145,6 +149,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
             android:tag="cell_021_5_poster" />
     </FrameLayout>
 
@@ -166,6 +171,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
             android:tag="cell_021_6_poster" />
     </FrameLayout>
 
@@ -186,6 +192,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
             android:tag="cell_021_7_poster" />
     </FrameLayout>
 
@@ -207,6 +214,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
             android:tag="cell_021_8_poster" />
     </FrameLayout>
 
@@ -227,6 +235,7 @@
         <tv.newtv.cboxtv.views.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
             android:tag="cell_021_9_poster" />
 
     </FrameLayout>
