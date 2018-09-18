@@ -135,6 +135,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private View lastFoucsScreenDataView;
     private long mLastKeyTime = 0;
 
+    private final String ITEM_COUNT = "5000";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -942,7 +944,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         try {
             NetClient.INSTANCE.getListPageApi()
                     .getSearchCategoryData("PS;CG", firstCatagory, Constant.APP_KEY, Constant
-                            .CHANNEL_ID, "0", "1000")
+                            .CHANNEL_ID, "0", ITEM_COUNT)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -987,7 +989,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         try {
             NetClient.INSTANCE.getListPageApi()
                     .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG", year,
-                            area, classType, "0", "1000")
+                            area, classType, "0", ITEM_COUNT)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {

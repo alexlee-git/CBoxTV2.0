@@ -29,10 +29,9 @@ import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 
 public abstract class BaseFragment extends RxFragment {
     private static final String TAG = "BaseFragment";
-    private static final int POST_DELAY = 300;
+    private static final int POST_DELAY = 500;
     protected INotifyNoPageDataListener mNotifyNoPageDataListener;
     protected boolean isVisible = false;
-    //    protected boolean isPrepared = false;
     private boolean useHint = false;
     private View contentView;
 
@@ -81,8 +80,9 @@ public abstract class BaseFragment extends RxFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         contentView = view;
         super.onViewCreated(view, savedInstanceState);
-//        if(isVisible) {
-        invokeLazyLoad();
+
+//        if(isVisible){
+            invokeLazyLoad();
 //        }
     }
 

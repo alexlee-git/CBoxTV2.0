@@ -27,6 +27,10 @@ public class MenuScrollLinearLayoutManager extends LinearLayoutManager {
     private int mSize = 0;
     private boolean mAutoResize = true;
 
+    public void destroy(){
+        contxt = null;
+    }
+
     MenuScrollLinearLayoutManager(Context context) {
         super(context, LinearLayoutManager.HORIZONTAL, false);
         this.contxt = context;

@@ -38,6 +38,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     private View defaultFocusView;
     private boolean KeyIsDown = false;
+    private ImageView isPlaying;
 
     public VideoPlayerView(@NonNull Context context) {
         this(context, null);
@@ -253,12 +254,15 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         playCenter.setCurrentIndex(mIndex);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
-        if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
-            NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
-                    playCenter.getCurrentSeriesInfo(), false, mIndex, position);
-        } else {
-            NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
-                    playCenter.getCurrentSeriesInfo(), position, false);
+        if (dataStruct != null) {
+            if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
+                        playCenter.getCurrentSeriesInfo(), false, mIndex, position);
+            } else {
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
+                        playCenter.getCurrentSeriesInfo(), position, false);
+            }
+
         }
     }
 
@@ -304,7 +308,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             @Override
             public void run() {
                 if (mPlayerCallback != null) {
-                    mPlayerCallback.AllPalyComplete(isError, desc, VideoPlayerView.this);
+                    mPlayerCallback.AllPlayComplete(isError, desc, VideoPlayerView.this);
                 }
             }
         }, 1000);
@@ -350,9 +354,12 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         stopPlay();
         setHintText("播放已结束");
+        if (isPlaying != null) {
+            isPlaying.setVisibility(GONE);
+        }
 
         if (mPlayerCallback != null) {
-            mPlayerCallback.AllPalyComplete(isError, info, this);
+            mPlayerCallback.AllPlayComplete(isError, info, this);
         }
     }
 
@@ -381,4 +388,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return playCenter.getDataStruct().uuid;
     }
 
+    public void setisPlayingView(ImageView isPlaying) {
+        this.isPlaying = isPlaying;
+    }
 }

@@ -33,7 +33,7 @@
         android:layout_height="@dimen/height_546px"
         android:layout_below="@id/id_module_31_title"
         android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:tag="cell_031_2">
         <!--android:clickable="true"
         android:focusable="true">-->
@@ -52,7 +52,7 @@
         android:layout_height="@dimen/height_158px"
         android:layout_marginLeft="@dimen/width_958px"
         android:layout_marginTop="@dimen/height_80px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_3">
@@ -71,7 +71,7 @@
         android:layout_height="@dimen/height_158px"
         android:layout_marginLeft="@dimen/width_958px"
         android:layout_marginTop="@dimen/height_180px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_4">
@@ -90,7 +90,7 @@
         android:layout_height="@dimen/height_158px"
         android:layout_marginLeft="@dimen/width_958px"
         android:layout_marginTop="@dimen/height_280px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_5">
@@ -109,7 +109,7 @@
         android:layout_height="@dimen/height_158px"
         android:layout_marginLeft="@dimen/width_958px"
         android:layout_marginTop="@dimen/height_380px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_6">
@@ -128,7 +128,7 @@
         android:layout_below="@id/id_module_31_title"
         android:layout_marginLeft="@dimen/width_1383px"
         android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_7">
@@ -147,7 +147,7 @@
         android:layout_height="@dimen/height_282px"
         android:layout_marginLeft="@dimen/width_1383px"
         android:layout_marginTop="@dimen/height_280px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_8">
@@ -161,13 +161,38 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/id_module_31_view1"
+        android:layout_width="@dimen/width_882px"
+        android:layout_height="@dimen/height_546px"
+        android:layout_below="@id/id_module_31_title"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:background="@drawable/selector_pos_background_27px"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_031_1">
+
+        <!--海报-->
+        <tv.newtv.cboxtv.views.LivePlayView
+            android:layout_width="@dimen/width_816px"
+            android:layout_height="@dimen/height_480px"
+            android:tag="cell_031_1_poster">
+            <tv.newtv.cboxtv.views.RecycleImageView
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </tv.newtv.cboxtv.views.LivePlayView>
+
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/id_module_31_view9"
         android:layout_width="@dimen/width_450px"
         android:layout_height="@dimen/height_282px"
         android:layout_below="@id/id_module_31_view1"
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="@dimen/_height_18px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_9">
@@ -187,7 +212,7 @@
         android:layout_height="@dimen/height_282px"
         android:layout_below="@id/id_module_31_view1"
         android:layout_marginTop="@dimen/_height_18px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_10">
@@ -207,7 +232,7 @@
         android:layout_height="@dimen/height_282px"
         android:layout_below="@id/id_module_31_view2"
         android:layout_marginTop="@dimen/_height_18px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_11">
@@ -228,7 +253,7 @@
         android:layout_height="@dimen/height_282px"
         android:layout_below="@id/id_module_31_view2"
         android:layout_marginTop="@dimen/_height_18px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_031_12">
@@ -241,30 +266,6 @@
 
     </FrameLayout>
 
-    <FrameLayout
-        android:id="@+id/id_module_31_view1"
-        android:layout_width="@dimen/width_882px"
-        android:layout_height="@dimen/height_546px"
-        android:layout_below="@id/id_module_31_title"
-        android:layout_marginLeft="@dimen/width_87px"
-        android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:tag="cell_031_1">
-
-        <!--海报-->
-        <tv.newtv.cboxtv.views.LivePlayView
-            android:layout_width="@dimen/width_816px"
-            android:layout_height="@dimen/height_480px"
-            android:tag="cell_031_1_poster">
-            <tv.newtv.cboxtv.views.RecycleImageView
-                android:scaleType="fitXY"
-                android:layout_width="@dimen/width_816px"
-                android:layout_height="@dimen/height_480px"/>
-        </tv.newtv.cboxtv.views.LivePlayView>
-
-    </FrameLayout>
 
 </RelativeLayout>
 

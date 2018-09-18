@@ -10,6 +10,7 @@ import tv.newtv.cboxtv.cms.special.fragment.BallRoundFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
 import tv.newtv.cboxtv.cms.special.fragment.DefaultSpecial;
 import tv.newtv.cboxtv.cms.special.fragment.MedalFragment;
+import tv.newtv.cboxtv.cms.special.fragment.TopicTwoFragment;
 import tv.newtv.cboxtv.cms.special.fragment.ProgramPageFragment;
 import tv.newtv.cboxtv.cms.special.fragment.QXDFFragment;
 import tv.newtv.cboxtv.cms.special.fragment.ScheduleFragment;
@@ -34,6 +35,7 @@ public class SpecialLayoutManager {
      * special_008 积分榜
      * special_009 世界杯栏目详情页
      * special_010 首页
+     * special_011 奖牌榜
      **/
     private static SpecialLayoutManager layoutManager;
 
@@ -79,7 +81,10 @@ public class SpecialLayoutManager {
                 baseSpecialContentFragment = new ProgramPageFragment();
             }else if("special_011".equals(type)){
                 baseSpecialContentFragment = new MedalFragment();
+            }else if("special_012".equals(type)){
+                baseSpecialContentFragment = new TopicTwoFragment();
             }
+
         }
 
         if (baseSpecialContentFragment != null) {

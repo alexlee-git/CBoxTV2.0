@@ -24,6 +24,10 @@ public class SmoothScrollView extends RelativeLayout {
     private int topSpace = 0;
     private static final int SCROLL_DURATION = 450;
 
+    public boolean isScrollMode(){
+        return  mScroller.computeScrollOffset();
+    }
+
     public SmoothScrollView(Context context) {
         this(context, null);
     }

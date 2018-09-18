@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -18,8 +18,10 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
-import tv.newtv.cboxtv.LauncherApplication;
+import java.util.Locale;
+
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.PicassoBuilder;
@@ -69,16 +71,6 @@ public class RecycleImageView extends AppCompatImageView {
         }
         mPaintFilter = null;
         mPaint = null;
-
-//        BitmapDrawable bitmapDrawable = (BitmapDrawable) getDrawable();
-//        if (bitmapDrawable != null) {
-//            Bitmap bitmap = bitmapDrawable.getBitmap();
-//            if (bitmap != null && !bitmap.isRecycled()) {
-//                bitmap.recycle();
-//            }
-//            bitmap = null;
-//        }
-
     }
 
     public void recycle() {
@@ -189,6 +181,7 @@ public class RecycleImageView extends AppCompatImageView {
     }
 
     private void loadImage() {
+
         RequestCreator requestCreator = null;
 
         if (imageUrl instanceof String) {

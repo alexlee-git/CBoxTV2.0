@@ -36,7 +36,7 @@
         android:layout_below="@id/id_module_2_title"
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_002_1">
@@ -56,7 +56,7 @@
         android:layout_below="@id/id_module_2_title"
         android:layout_marginLeft="@dimen/width_951px"
         android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_002_2">

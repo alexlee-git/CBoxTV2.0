@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -27,6 +28,7 @@ import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DeviceUtil;
 import tv.newtv.cboxtv.utils.KeyEventUtils;
 import tv.newtv.cboxtv.views.AdPopupWindow;
+import tv.newtv.cboxtv.utils.Utils;
 
 /**
  * 项目名称:         CBoxTV
@@ -94,6 +96,12 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
         }
         super.onResume();
         FrontStage = true;
+
+        if (BuildConfig.FLAVOR.equals(DeviceUtil.XIONG_MAO)
+                || BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
+            NewTVLauncherPlayerViewManager.getInstance().setVideoSilent(false);
+        }
+
         setBackgroundAD();
     }
 
@@ -126,6 +134,13 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     protected void onPause() {
         super.onPause();
         ActivityStacks.get().onPause(this);
+
+        if (BuildConfig.FLAVOR.equals(DeviceUtil.XIONG_MAO)
+                || BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
+            if (Utils.isTopActivityIsAiassist()) {
+                NewTVLauncherPlayerViewManager.getInstance().setVideoSilent(true);
+            }
+        }
     }
 
     public boolean isFullScreen() {
@@ -140,6 +155,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
                 return true;
             }
+            return false;
         }
         if(event.getAction() == KeyEvent.ACTION_UP) {
             if (isBackPressed(event)) {

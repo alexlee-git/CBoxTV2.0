@@ -145,7 +145,7 @@ public class ProgramCollectionActivity extends BaseActivity {
                             }
 
                             @Override
-                            public void AllPalyComplete(boolean isError, String info,
+                            public void AllPlayComplete(boolean isError, String info,
                                                         VideoPlayerView videoPlayerView) {
 
                             }
@@ -179,6 +179,7 @@ public class ProgramCollectionActivity extends BaseActivity {
         });
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (interruptKeyEvent(event)) {
@@ -219,7 +220,7 @@ public class ProgramCollectionActivity extends BaseActivity {
                             (event)) {
                         return true;
                     } else {
-                        View toView = null;
+                        @SuppressWarnings("UnusedAssignment") View toView = null;
                         int pos = index;
                         int dir = 0;
                         boolean condition = false;

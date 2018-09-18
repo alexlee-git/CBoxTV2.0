@@ -48,6 +48,9 @@ public final class CmsLiveUtil {
     }
 
     public static int formatToSeconds(String timeFormat) {
+        if (timeFormat == null) {
+            return 0;
+        }
         String[] times = timeFormat.split(":");
         int result = 0;
         for (int index = 0; index < 3; index++) {
@@ -76,7 +79,8 @@ public final class CmsLiveUtil {
         return !TextUtils.isEmpty(weeks) && weeks.contains(day);
     }
 
-    public static boolean isInTime(String startTime,String endTime){
+    @SuppressWarnings("UnnecessaryBoxing")
+    public static boolean isInTime(String startTime, String endTime){
         Long start = Long.valueOf(formatToSeconds(startTime));
         Long end = Long.valueOf(formatToSeconds(endTime));
 

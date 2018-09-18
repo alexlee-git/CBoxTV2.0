@@ -450,7 +450,8 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                         public void run() {
                             isAttention = true;
                             attention.setSelect(true);
-                            Toast.makeText(getApplicationContext(), "关注成功", Toast.LENGTH_SHORT)
+                            Toast.makeText(getApplicationContext(), R.string.attention_success, Toast
+                                    .LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }

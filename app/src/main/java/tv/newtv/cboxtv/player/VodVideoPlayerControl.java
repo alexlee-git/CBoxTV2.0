@@ -150,4 +150,12 @@ public class VodVideoPlayerControl implements IVideoPlayerControlInterface {
             mVodVideoPlayer.setVideoSize(sizeType);
         }
     }
+
+    @Override
+    public void setVideoSilent(boolean isSilent) {
+        Log.i(TAG, "setVideoSilent");
+        if (mVodVideoPlayer != null) {
+            mVodVideoPlayer.setVideoSilent(isSilent);
+        }
+    }
 }

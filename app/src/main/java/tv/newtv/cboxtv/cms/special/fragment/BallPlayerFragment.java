@@ -87,7 +87,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
             }
 
             @Override
-            public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+            public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
 
             }
 

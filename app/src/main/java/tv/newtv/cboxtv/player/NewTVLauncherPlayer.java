@@ -221,4 +221,11 @@ public class NewTVLauncherPlayer {
         }
         return mVideoPlayerControl.isAlive();
     }
+
+    public void setVideoSilent(boolean isSilent) {
+        Log.i(TAG, "setVideoSilent:" + isSilent);
+        if (mVideoPlayerControl != null) {
+            mVideoPlayerControl.setVideoSilent(isSilent);
+        }
+    }
 }

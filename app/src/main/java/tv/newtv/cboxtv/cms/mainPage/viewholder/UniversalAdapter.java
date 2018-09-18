@@ -23,9 +23,10 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import tv.newtv.MutipleClickListener;
+import tv.newtv.MultipleClickListener;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
@@ -68,7 +69,22 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private String PlayerUUID = "";
     private int bottomMargin = 0;
     private boolean showFirstTitle = false;
-    private List<UniversalViewHolder> holderList = new java.util.ArrayList();
+    private List<UniversalViewHolder> holderList = new ArrayList<>();
+
+    public void destroy(){
+        if(mDatas != null){
+            mDatas.clear();
+            mDatas = null;
+        }
+        mContext = null;
+        if(holderList !=null){
+            for(UniversalViewHolder holder : holderList){
+                holder.destroy();
+            }
+            holderList.clear();
+            holderList = null;
+        }
+    }
 
 
     public UniversalAdapter(Context context, List<ModuleItem> datas) {
@@ -252,9 +268,9 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                     });
 
                     // onClickListener
-                    frameLayout.setOnClickListener(new MutipleClickListener() {
+                    frameLayout.setOnClickListener(new MultipleClickListener() {
                         @Override
-                        protected void onMutipleClick(View view) {
+                        protected void onMultipleClick(View view) {
                             processOpenCell(view, info, moduleItem.getBlockId(), layoutCode);
                         }
                     });
@@ -471,7 +487,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             } else {
 
 //                focusView.requestFocus();
-                focusView.setBackgroundResource(R.drawable.pos_zui);
+                focusView.setBackgroundResource(R.drawable.pos_zui_27px);
             }
         }
 

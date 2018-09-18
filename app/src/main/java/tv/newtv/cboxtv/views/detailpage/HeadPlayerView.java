@@ -105,9 +105,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         @Override
-        public void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+        public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
             if (mBuilder != null && mBuilder.playerCallback != null) {
-                mBuilder.playerCallback.AllPalyComplete(isError, info, videoPlayerView);
+                mBuilder.playerCallback.AllPlayComplete(isError, info, videoPlayerView);
             }
         }
 
@@ -450,7 +450,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     mInfo.getContentUUID());
                                                             Toast.makeText(getContext()
                                                                             .getApplicationContext(),
-                                                                    "收藏成功",
+                                                                    R.string.collect_success,
                                                                     Toast.LENGTH_SHORT)
                                                                     .show();
                                                         }
@@ -521,7 +521,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                 .setSelect(true);
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
-                                                                                "添加订阅成功", Toast
+                                                                                R.string.subscribe_success,
+                                                                                Toast
                                                                                         .LENGTH_SHORT).show();
                                                                         RxBus.get().post(Constant
                                                                                         .UPDATE_UC_DATA,
@@ -887,8 +888,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public static class CustomFrame {
-        public int viewId;
-        public int dbType;
+        int viewId;
+        int dbType;
 
         public CustomFrame(int view, int type) {
             viewId = view;
@@ -896,10 +897,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    @SuppressWarnings("unused")
     public static class Builder {
         public static final int DB_TYPE_SUBSCRIP = 1;
         public static final int DB_TYPE_COLLECT = 2;
 
+        @SuppressWarnings("UnusedAssignment")
         private int mLayout = -1;
         private int mPlayerId = -1;
         private int mPlayerFocusId = -1;
