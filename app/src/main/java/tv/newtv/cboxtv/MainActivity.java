@@ -560,11 +560,11 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
 
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (!BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
-                if (SystemUtils.isFastDoubleClick()) {
-                    return true;
-                }
-            }
+//            if (!BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
+//                if (SystemUtils.isFastDoubleClick()) {
+//                    return true;
+//                }
+//            }
 //            Log.e("mFirMenuRv1", "mFirMenuRv.getScrollState()" + mFirMenuRv.getScrollState());
             if (mFirMenuRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE) {
                 return true;
