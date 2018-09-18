@@ -49,6 +49,7 @@ import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.cms.util.SPrefUtils;
 import tv.newtv.cboxtv.cms.util.SystemUtils;
+import tv.newtv.cboxtv.player.adplayer.ADPlayerView;
 import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.CNTVLogUtils;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -68,7 +69,7 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
     private int num = 0;
     private View rootView;
     //广告内容显示
-    private VideoView videoView;
+    private ADPlayerView videoView;
     private ImageView imageView;
     private TextView mAuthingView;
 
@@ -104,6 +105,11 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
 
         if (imageView != null) {
             imageView.setImageDrawable(null);
+        }
+
+        if(videoView != null){
+            videoView.release();
+            videoView = null;
         }
 
         if (handler != null) {
@@ -394,11 +400,10 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                     } else if (Constant.AD_VIDEO_TYPE.equals(type)) {
                         imageView.setVisibility(View.GONE);
                         videoView.setVisibility(View.VISIBLE);
-                        videoView.setVideoPath(url);
-                        videoView.start();
+                        videoView.setDataSource(url);
+                        videoView.play();
                     }
                 }
-
             }
 
             @Override
