@@ -403,7 +403,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             @Override
             public void onProgressChange(long totalBytes, long curBytes, float progress) {
                 pbUpdate.setProgress((int) progress);
-                tvPrograss.setText(String.format(Locale.getDefault(), "努力下载中 %d%", (int)
+                tvPrograss.setText(String.format(Locale.getDefault(), "努力下载中 %d%%", (int)
                         progress));
                 if ((int) progress == 100) {
                     if (constraintDialog != null && constraintDialog.isShowing()) {
