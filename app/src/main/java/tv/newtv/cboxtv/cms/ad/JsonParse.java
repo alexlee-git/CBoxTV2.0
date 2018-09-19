@@ -17,7 +17,7 @@ import tv.newtv.cboxtv.cms.util.LogUtils;
 public class JsonParse
 {
 	private static final String LOG_TAG = "adsdk";
-	private static final String[] adTypes = {"before", "middle", "after", "float", "buffer", "pause", "open", "desk","topic"};
+	private static final String[] adTypes = {"before", "middle", "after", "float", "buffer", "pause", "open", "desk","topic","buygoods"};
 	
 	public JsonParse() {}
 	

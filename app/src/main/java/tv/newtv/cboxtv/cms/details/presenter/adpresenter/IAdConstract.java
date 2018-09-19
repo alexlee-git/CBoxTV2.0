@@ -8,7 +8,6 @@ import tv.newtv.cboxtv.utils.ADHelper;
 
 public interface IAdConstract {
 
-
     interface IADPresenter{
 //        void getAD(String adType,String contentId);
 
@@ -21,5 +20,12 @@ public interface IAdConstract {
 //        void showAd(String imgUrl);
 //        void showAd(String imgUrl,String adType);
         void showAd(ADHelper.AD.ADItem item);
+    }
+
+    interface AdCommonConstractView<T>{
+
+        void showAd(T adInfos);
+
+        void fail();
     }
 }

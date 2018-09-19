@@ -1,0 +1,35 @@
+package tv.newtv.cboxtv.cms.details.presenter.adpresenter;
+
+import android.text.TextUtils;
+
+import tv.newtv.cboxtv.cms.ad.model.AdBean;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
+
+public class BuyGoodsRequestAdPresenter extends BaseRequestAdPresenter{
+    private IAdConstract.AdCommonConstractView adCallback;
+
+    public BuyGoodsRequestAdPresenter(IAdConstract.AdCommonConstractView adTextConstractView){
+        this.adCallback = adTextConstractView;
+    }
+
+    @Override
+    public void dealResult(String result) {
+        if(adCallback == null){
+            return;
+        }
+        if(TextUtils.isEmpty(result)){
+            adCallback.fail();
+        }
+
+        AdBean bean = GsonUtil.fromjson(result, AdBean.class);
+        if(bean.adspaces != null && bean.adspaces.buygoods != null && bean.adspaces.buygoods.size() > 0){
+            AdBean.AdspacesItem adspacesItem = bean.adspaces.buygoods.get(0);
+            if(adspacesItem.materials != null && adspacesItem.materials.size() > 0){
+                AdBean.Material material = adspacesItem.materials.get(0);
+                adCallback.showAd(material);
+            }
+        }
+
+        adCallback.fail();
+    }
+}

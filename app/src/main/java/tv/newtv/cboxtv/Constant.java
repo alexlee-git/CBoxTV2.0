@@ -57,6 +57,8 @@ public class Constant {
     public static final String AD_GLOBAL_POPUP = "cbox_global_popup";
     //详情页顶部小窗口广告
     public static final String AD_DETAILPAGE_TOPPOS = "cbox_detailpage_toppos";
+    //边看变买广告
+    public static final String AD_BUY_GOODS = "buygoods";
 
     //广告内容类型
     public static final String AD_IMAGE_TYPE = "image";//图片广告

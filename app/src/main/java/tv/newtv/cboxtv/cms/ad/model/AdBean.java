@@ -17,6 +17,7 @@ public class AdBean {
         public List<AdspacesItem> open;
         public List<AdspacesItem> quit;
         public List<AdspacesItem> desk;
+        public List<AdspacesItem> buygoods;
     }
 
     public class AdspacesItem{
@@ -44,6 +45,14 @@ public class AdBean {
         public long fileSize;
         @SerializedName("play_time")
         public int playTime;
+        @SerializedName("font_content")
+        public String fontContent;
+        @SerializedName("font_color")
+        public String fontColor;
+        @SerializedName("font_size")
+        public String fontSize;
+        @SerializedName("font_style")
+        public String fontStyle;
     }
 
 
