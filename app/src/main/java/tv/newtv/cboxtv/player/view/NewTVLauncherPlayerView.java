@@ -1284,9 +1284,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 if(widget.isOverride(event.getKeyCode())) {
                     if (widget.isRegisterKey(event)) {
                         if(!widget.isShowing()){
-                            widget.show(this, Gravity.LEFT);
-                            widget.requestDefaultFocus();
-                            NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget.getId());
+//                            widget.show(this, Gravity.LEFT);
+//                            widget.requestDefaultFocus();
+//                            NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget.getId());
                         }else{
                             if(widget.isToggleKey(event.getKeyCode())) {
                                 dismissChildView();

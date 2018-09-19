@@ -36,6 +36,7 @@
 
 
         <TextView
+            android:maxEms="15"
             android:id="@+id/title"
             android:layout_width="@dimen/width_700px"
             android:layout_height="wrap_content"
@@ -46,6 +47,7 @@
             android:textSize="@dimen/height_42px"/>
 
         <TextView
+            android:singleLine="true"
             android:id="@+id/title_direction"
             android:layout_width="@dimen/width_900px"
             android:layout_height="wrap_content"
@@ -78,11 +80,11 @@
 
             <TextView
                 android:id="@+id/videoTitle"
-                android:layout_width="@dimen/width_880px"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_1130px"
+                android:layout_height="@dimen/height_70px"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="@dimen/height_40px"
-                android:layout_marginTop="@dimen/height_40px"
+                android:layout_marginTop="@dimen/height_34px"
+                android:layout_marginLeft="@dimen/width_34px"
                 android:background="@drawable/title_background"
                 android:textColor="@color/colorWhite"
                 android:textSize="@dimen/height_30px"

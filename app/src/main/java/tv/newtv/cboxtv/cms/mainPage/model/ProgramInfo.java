@@ -38,6 +38,15 @@ public class ProgramInfo implements Serializable {
     private String focusParam;
     private String isTimeShift;
     private String seriesSubUUID;
+    private int defaultFocus;
+
+    public int getDefaultFocus() {
+        return defaultFocus;
+    }
+
+    public void setDefaultFocus(int defaultFocus) {
+        this.defaultFocus = defaultFocus;
+    }
 
     public String getSeriesSubUUID() {
         return seriesSubUUID;

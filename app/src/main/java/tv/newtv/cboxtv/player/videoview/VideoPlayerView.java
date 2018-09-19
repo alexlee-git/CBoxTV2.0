@@ -348,9 +348,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             return;
         }
 
-        if (isFullScreen()) {
-            ExitFullScreen();
-        }
+//        if (isFullScreen()) {
+//            ExitFullScreen();
+//        }
 
         stopPlay();
         setHintText("播放已结束");
