@@ -237,8 +237,10 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > index && index >= 0) {
                 contentUUID = programSeriesInfo.getData().get(index).getContentUUID();
                 actionType = programSeriesInfo.getData().get(index).getActionType();
-                if(TextUtils.isEmpty(programSeries)){
-                    programSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
+
+                String proSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
+                if(TextUtils.isEmpty(programSeries) || (!TextUtils.isEmpty(proSeries) && !proSeries.equals(programSeries))){
+                    programSeries = proSeries;
                 }
             }
         }
