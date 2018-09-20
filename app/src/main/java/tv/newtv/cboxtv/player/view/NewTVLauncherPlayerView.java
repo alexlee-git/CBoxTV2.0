@@ -1148,7 +1148,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
+                    return true;
+                }
+                if (mShowingChildView == SHOWING_SEEKBAR_VIEW) {
+                    dismissChildView();
                     return true;
                 }
                 break;
@@ -1158,7 +1163,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
+                    return true;
+                }
+                if (mShowingChildView == SHOWING_SEEKBAR_VIEW) {
+                    dismissChildView();
                     return true;
                 }
                 break;
@@ -1202,9 +1212,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
         if (mNewTVLauncherPlayerSeekbar != null) {
             if (isPause) {
-                mNewTVLauncherPlayerSeekbar.showPauseIcon();
-            } else {
+                Log.e(TAG, "showSeekBar: "+isPause );
                 mNewTVLauncherPlayerSeekbar.show();
+            } else {
+                mNewTVLauncherPlayerSeekbar.showPauseIcon();
             }
         }
     }
@@ -1539,7 +1550,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         return mShowingChildView;
     }
 
-    public void setShowingView(int showingView) {
+    public void  setShowingView(int showingView) {
         if (mShowingChildView == showingView) return;
         LogUtils.i(TAG, "setShowingView: showingView=" + showingView);
         if (mShowingChildView != SHOWING_NO_VIEW) {
