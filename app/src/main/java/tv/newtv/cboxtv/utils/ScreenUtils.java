@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
+import tv.newtv.cboxtv.LauncherApplication;
+
 /**
  * 项目名称:         CBoxTV
  * 包名:            tv.newtv
@@ -39,11 +41,19 @@ public class ScreenUtils {
         screenDensity = metric.density;
     }
 
+    private static void checkInit(int size){
+        if(size <= 0){
+            initScreen(LauncherApplication.AppContext);
+        }
+    }
+
     public static int getScreenW(){
+        checkInit(screenW);
         return screenW;
     }
 
-    public static int getScreenH(){
+    public static int getScreenH() {
+        checkInit(screenH);
         return screenH;
     }
 
