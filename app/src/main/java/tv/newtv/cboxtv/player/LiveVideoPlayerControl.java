@@ -136,4 +136,12 @@ public class LiveVideoPlayerControl implements IVideoPlayerControlInterface {
     public void setVideoSize(int sizeType) {
 
     }
+
+    @Override
+    public void setVideoSilent(boolean isSilent) {
+        Log.i(TAG, "setVideoSilent");
+        if (mLiveVideoPlayer != null) {
+            mLiveVideoPlayer.setVideoSilent(isSilent);
+        }
+    }
 }

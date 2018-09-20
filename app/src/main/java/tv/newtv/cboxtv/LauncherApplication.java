@@ -7,8 +7,8 @@ import android.util.Log;
 
 //import com.tencent.bugly.crashreport.CrashReport;
 
+
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 

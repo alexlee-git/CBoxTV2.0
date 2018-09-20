@@ -12,6 +12,10 @@ import java.util.List;
  * 创建事件:         16:12
  * 创建人:           weihaichao
  * 创建日期:          2018/9/4
+ *
+ *
+ * 导航切换通知管理
+ * 当切换导航的时候会通知注册监听的View
  */
 public class Navigation {
 

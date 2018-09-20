@@ -254,12 +254,15 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         playCenter.setCurrentIndex(mIndex);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
-        if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
-            NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
-                    playCenter.getCurrentSeriesInfo(), false, mIndex, position);
-        } else {
-            NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
-                    playCenter.getCurrentSeriesInfo(), position, false);
+        if (dataStruct != null) {
+            if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
+                        playCenter.getCurrentSeriesInfo(), false, mIndex, position);
+            } else {
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
+                        playCenter.getCurrentSeriesInfo(), position, false);
+            }
+
         }
     }
 
@@ -351,7 +354,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         stopPlay();
         setHintText("播放已结束");
-        isPlaying.setVisibility(GONE);
+        if (isPlaying != null) {
+            isPlaying.setVisibility(GONE);
+        }
 
         if (mPlayerCallback != null) {
             mPlayerCallback.AllPlayComplete(isError, info, this);

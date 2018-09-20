@@ -32,7 +32,7 @@
         android:layout_below="@id/id_module_29_title"
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_1">
@@ -52,7 +52,7 @@
         android:layout_below="@id/id_module_29_view1"
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="-18px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_6">
@@ -73,7 +73,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_29_view2"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_7">
@@ -95,7 +95,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_29_view1"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_2">
@@ -117,7 +117,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_29_view1"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_4">
@@ -138,7 +138,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_29_view3"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_8">
@@ -160,7 +160,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_29_view6"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_9">
@@ -181,7 +181,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_29_view4"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_3">
@@ -203,7 +203,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_29_view5"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_5">
@@ -224,7 +224,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_29_view7"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_10">
@@ -245,7 +245,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="-18px"
         android:layout_toRightOf="@id/id_module_29_view10"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_029_11">

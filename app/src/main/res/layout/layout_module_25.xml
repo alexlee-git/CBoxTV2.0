@@ -32,7 +32,7 @@
         android:layout_below="@id/id_module_25_title"
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="@dimen/height_15px"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_025_1">
@@ -53,7 +53,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_25_view1"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_025_2">
@@ -74,7 +74,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_25_view2"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_025_3">
@@ -95,7 +95,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_25_view3"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_025_4">
@@ -116,7 +116,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_25_view4"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_025_5">
@@ -137,7 +137,7 @@
         android:layout_marginLeft="-18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_25_view5"
-        android:background="@drawable/selector_pos_background"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
         android:tag="cell_025_6">
