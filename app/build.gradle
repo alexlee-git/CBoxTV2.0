@@ -212,12 +212,11 @@ dependencies {
     //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     //    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
-
-    implementation ('jp.wasabeef:glide-transformations:3.3.0') {
+    implementation('jp.wasabeef:glide-transformations:3.3.0') {
         exclude group: "com.android.support"
     }
-
     compile 'com.github.bumptech.glide:okhttp3-integration:4.7.0@aar'
+    implementation files('libs/SmartTvShoppingSDK.jar')
 }
 
 

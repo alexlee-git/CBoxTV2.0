@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.views;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,6 +29,10 @@ public class BuyGoodsPopupWindow extends PopupWindow{
         showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width,
                 ScreenUtils.getScreenH() - height);
 
+    }
+
+    public void setImageView(Bitmap bitmap){
+        imageView.setImageBitmap(bitmap);
     }
 
 }
