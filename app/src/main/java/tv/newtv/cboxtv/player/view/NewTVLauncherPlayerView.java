@@ -306,8 +306,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 }
 
                 if (mPlaySeriesOrSingle == PLAY_SERIES) {
-                    //videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentUUID());
-                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
+                    videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentUUID());
+//                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
                 } else if (mPlaySeriesOrSingle == PLAY_SINGLE) {
                     videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
                 }
