@@ -53,6 +53,7 @@ public final class PlayInfoUtil {
         final String leftUUID = uuid.substring(0, 2);
         final String rightUUID = uuid.substring(uuid.length() - 2, uuid.length());
 
+
         NetClient.INSTANCE.getDetailsPageApi().getInfo(Constant.APP_KEY, Constant.CHANNEL_ID,
                 leftUUID, rightUUID, uuid).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

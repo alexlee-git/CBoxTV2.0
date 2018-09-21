@@ -1,6 +1,9 @@
 package tv.newtv.cboxtv;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -9,6 +12,7 @@ import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 
 /**
  * 项目名称:         CBoxTV
@@ -41,6 +45,9 @@ public class SplashActivity extends RxFragmentActivity {
                     boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),
                             mExternalAction,
                             mExternalParams);
+                    // add log
+                    LogUploadUtils.uploadEnterAppLog(this.getApplicationContext());
+                    // end
                     if (!jump) {
                         mIntent.setClass(this, EntryActivity.class);
                         startActivity(mIntent);

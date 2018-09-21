@@ -268,6 +268,12 @@ public class NewTVLauncherPlayerViewManager {
         PlayerConfig.getInstance().cleanColumnId();
     }
 
+    public void setVideoSilent(boolean isSilent) {
+        if (mNewTVLauncherPlayerView != null) {
+            mNewTVLauncherPlayerView.setVideoSilent(isSilent);
+        }
+    }
+
     private void closePlayerActivity() {
         Log.i(TAG, "closePlayerActivity: ");
         if (mPlayerPageContext != null && mPlayerPageContext instanceof Activity) {
