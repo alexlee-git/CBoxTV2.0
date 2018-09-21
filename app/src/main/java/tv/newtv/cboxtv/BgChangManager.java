@@ -29,6 +29,7 @@ import tv.newtv.cboxtv.cms.util.ADsdkUtils;
  * 创建人:           weihaichao
  * 创建日期:          2018/6/5
  */
+@SuppressWarnings("JavaDoc")
 public class BgChangManager {
     private static final String TAG = "BgChangManager";
 
@@ -67,7 +68,7 @@ public class BgChangManager {
      *
      * @param callback
      */
-    public void registTargetView(BGCallback callback) {
+    public void registerTargetView(BGCallback callback) {
         mCallback = callback;
     }
 
@@ -83,7 +84,7 @@ public class BgChangManager {
      * @param context
      * @param event
      */
-    public void dispatchEvent(Context context, BGEvent event) {
+    private void dispatchEvent(Context context, BGEvent event) {
         if(event == null || event.contentUUID == null || !event.contentUUID.equals(mCurrentId)){
             return;
         }
@@ -179,16 +180,7 @@ public class BgChangManager {
      * @param uuid
      * @param url
      */
-    private void loadImage(Context context, String uuid, String url) {
-        if (BuildConfig.DEBUG) {
-            if (url.contains("http://172.25.102.19/")) {
-                url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
-            }
-            if (url.contains("http://172.25.101.210/")) {
-                url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
-            }
-        }
-
+    private void loadImage(final Context context, final String uuid, final String url) {
         if (!bgHashmap.containsKey(uuid) || bgHashmap.get(uuid).drawable == null) {
             bgHashmap.put(uuid, new BGDrawable(url));
             requestImage(bgHashmap.get(uuid), context, uuid, url);

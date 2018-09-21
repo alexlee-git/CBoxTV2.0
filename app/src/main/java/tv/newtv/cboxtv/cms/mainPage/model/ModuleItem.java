@@ -21,7 +21,6 @@ public class ModuleItem {
     private List<ProgramInfo> programs;
 
 
-
     public String getBlockId() {
         return blockId;
     }

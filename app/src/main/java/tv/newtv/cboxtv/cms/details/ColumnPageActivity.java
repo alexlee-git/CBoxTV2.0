@@ -20,8 +20,10 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
+import tv.newtv.cboxtv.utils.Utils;
 import tv.newtv.cboxtv.views.detailpage.EpisodeHelper;
 import tv.newtv.cboxtv.views.detailpage.EpisodePageView;
 import tv.newtv.cboxtv.views.detailpage.HeadPlayerView;
@@ -145,7 +147,7 @@ public class ColumnPageActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void AllPalyComplete(boolean isError, String info, VideoPlayerView
+                    public void AllPlayComplete(boolean isError, String info, VideoPlayerView
                             videoPlayerView) {
                         if (!isError) {
                             videoPlayerView.onComplete();

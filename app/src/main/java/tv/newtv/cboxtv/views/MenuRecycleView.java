@@ -37,8 +37,8 @@ public class MenuRecycleView extends RecyclerView {
 
     private static final String TAG = MenuRecycleView.class.getSimpleName();
     private static boolean eatKeyEvent = false;
-    private static List<NavInfoResult.NavInfo> mNavInfos;//一级导航数据
-    private static List<NavListPageInfoResult.NavInfo> mNavResultInfos;//二级导航数据
+//    private static List<NavInfoResult.NavInfo> mNavInfos;//一级导航数据
+//    private static List<NavListPageInfoResult.NavInfo> mNavResultInfos;//二级导航数据
     public View mCurrentCenterChildView;
     private boolean mIsScrolling = false;
     //默认第一次选中第一个位置
@@ -49,6 +49,22 @@ public class MenuRecycleView extends RecyclerView {
     private boolean TransPostion = true;
     private int menuSelectPos = 0;
     private View mFocusView;
+
+
+    public void destroy(){
+        if(getAdapter() != null && getAdapter() instanceof MenuAdapter){
+            ((MenuAdapter) getAdapter()).destroy();
+        }
+        setAdapter(null);
+        if(mHandler != null){
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
+        }
+        mCurrentCenterChildView = null;
+        mSelectedListener = null;
+        mFocusView = null;
+    }
+
     @SuppressWarnings("unchecked")
     private Handler mHandler = new Handler(new Handler.Callback() {
         @Override
@@ -240,10 +256,11 @@ public class MenuRecycleView extends RecyclerView {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (mIsScrolling) return true;
-        if (event.getAction() == KeyEvent
-                .ACTION_DOWN) {
+        if(event.getAction() == KeyEvent.ACTION_UP) return true;
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent
                     .KEYCODE_DPAD_CENTER) {
+                Log.e("Menu", "return super center back");
                 return super.dispatchKeyEvent(event);
             }
 
@@ -256,14 +273,15 @@ public class MenuRecycleView extends RecyclerView {
                         if (mFocusView != null) {
                             mFocusView.setVisibility(View.GONE);
                         }
-                        return true;
                     }
                 } else {
                     Log.e("Menu", "找不到下方移动的焦点");
                 }
+                Log.e("Menu", "return true");
+                return true;
             }
         }
-
+        Log.e("Menu", "return super other");
         return super.dispatchKeyEvent(event);
     }
 
@@ -365,6 +383,27 @@ public class MenuRecycleView extends RecyclerView {
         private boolean isInitalized = true;
         private Interpolator mSpringInterpolator;
         private AnimatorSet mScaleAnimator;
+
+        public void destroy(){
+            mMenuFactory = null;
+            if(mHandler != null){
+                mHandler.removeCallbacksAndMessages(null);
+                mHandler = null;
+            }
+            if(mRecyclerView != null) {
+                mRecyclerView.clear();
+                mRecyclerView = null;
+            }
+            if(menuItems != null){
+                menuItems.clear();
+                menuItems = null;
+            }
+            if(linearLayoutManager != null) {
+                linearLayoutManager.destroy();
+                linearLayoutManager = null;
+            }
+
+        }
 
         public MenuAdapter(Context context, MenuRecycleView recyclerView, int layout, boolean
                 autoResize) {

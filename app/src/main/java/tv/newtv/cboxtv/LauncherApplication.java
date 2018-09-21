@@ -1,14 +1,14 @@
 package tv.newtv.cboxtv;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.tencent.bugly.crashreport.CrashReport;
+//import com.tencent.bugly.crashreport.CrashReport;
+
+
+import com.bumptech.glide.Glide;
 
 import java.util.Locale;
 
@@ -93,7 +93,7 @@ public class LauncherApplication extends MultiDexApplication {
      */
     private void initBugly() {
 
-        CrashReport.initCrashReport(getApplicationContext(), "e8a44dd463", false);
+//        CrashReport.initCrashReport(getApplicationContext(), "e8a44dd463", false);
 
     }
 
@@ -127,6 +127,20 @@ public class LauncherApplication extends MultiDexApplication {
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
 
+        if(level == TRIM_MEMORY_UI_HIDDEN){
+            Glide.get(this).clearMemory();
+            PicassoBuilder.getBuilder().clear();
+        }
+        Glide.get(this).trimMemory(level);
+
         LogUtils.d(String.format(Locale.getDefault(), "trimmemory level=%d", level));
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        Glide.get(this).clearMemory();
+        PicassoBuilder.getBuilder().clear();
     }
 }

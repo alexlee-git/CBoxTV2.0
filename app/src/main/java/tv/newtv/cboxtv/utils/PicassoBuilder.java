@@ -4,11 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Request;
+import com.squareup.picasso.RequestHandler;
+
+import java.io.IOException;
 
 
 /**
@@ -54,17 +59,20 @@ public class PicassoBuilder {
         }
     }
 
+    public void clear(){
+        mLruCache.clear();
+    }
+
     private void build(Context context) {
         //配置缓存
-        int maxMemory = (int) Runtime.getRuntime().maxMemory();
-        int cacheSize = maxMemory / 15;
+//        int maxMemory = (int) Runtime.getRuntime().maxMemory();
+        int cacheSize = 5 * 1024 * 1024;
         mLruCache = new LruCache(cacheSize);// 设置缓存大小
         //配置线程池
         //ExecutorService executorService = Executors.newFixedThreadPool(8);
 
         Picasso picasso = new Picasso.Builder(context.getApplicationContext())
                 .memoryCache(mLruCache)
-                //.executor(executorService)
                 .listener(new Picasso.Listener() {
                     @Override
                     public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {

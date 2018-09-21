@@ -83,7 +83,7 @@ public class MainListPageManager implements ListPageView,
 
         if (mNavInfos != null) {
             mNavInfos.clear();
-            mNavInfos = null;
+            //mNavInfos = null;
         }
     }
 
@@ -249,22 +249,24 @@ public class MainListPageManager implements ListPageView,
                 @Override
                 public void onItemSelected(int position, NavListPageInfoResult.NavInfo
                         value) {
-                    if (mNavInfos.size() == 0) return;
 
+                    if (mNavListPageInfoResult.getData().size() == 0 || mViewPager == null) return;
+
+                    /**/
                     int select = position % mNavListPageInfoResult.getData().size();
-                    NavListPageInfoResult.NavInfo navInfo = ((List<NavListPageInfoResult
-                            .NavInfo>) mNavListPageInfoResult.getData()).get(select);
+                    NavListPageInfoResult.NavInfo navInfo = mNavListPageInfoResult.getData().get(select);
                     String uuid = getContentUUID(navInfo);
-                    BgChangManager.getInstance().setCurrent(mContext,uuid);
                     PlayerConfig.getInstance().setSecondChannelId(uuid);
+                    BgChangManager.getInstance().setCurrent(mContext,uuid);
 
-                    if (mViewPager.getCurrentItem() % mNavInfos.size() == position % mNavInfos.size()) {
+                    if (mViewPager.getCurrentItem() % mNavListPageInfoResult.getData().size() ==
+                            position % mNavListPageInfoResult.getData().size()) {
                         return;
                     }
                     mViewPagerAdapter.setShowItem(position);
                     mViewPager.setCurrentItem(position);
                     currentFocus = value.getContentID();
-                    /**/
+
                     if (!TextUtils.isEmpty(uuid)) {
                         mSharedPreferences.edit().putString("page-defaultFocus", uuid).apply();
                     }
@@ -301,8 +303,7 @@ public class MainListPageManager implements ListPageView,
 
                 @Override
                 public View getNextFocusView() {
-                    int position = mViewPager.getCurrentItem() % mNavInfos.size();
-                    BaseFragment target = (BaseFragment) mViewPagerAdapter.getItem(position);
+                    BaseFragment target = (BaseFragment) mViewPagerAdapter.getCurrentFragment();
                     if (target == null) return null;
                     return target.getFirstFocusView();
                 }
@@ -422,7 +423,7 @@ public class MainListPageManager implements ListPageView,
 
     @Override
     public void onFailed(String desc) {
-        Toast.makeText(mContext, "数据解析错误", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LauncherApplication.AppContext, "数据解析错误", Toast.LENGTH_SHORT).show();
     }
 
     public void init(NavFragment navFragment, Context context, FragmentManager manager,

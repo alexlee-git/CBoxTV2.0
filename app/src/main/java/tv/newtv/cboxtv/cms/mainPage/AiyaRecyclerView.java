@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.IDefaultFocus;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
@@ -21,7 +22,7 @@ import tv.newtv.cboxtv.views.RecycleSpaceDecoration;
  * Created by lixin on 2018/2/8.
  */
 
-public class AiyaRecyclerView extends RecyclerView {
+public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
 
     public static final int ALIGN_START = 0;    //首对齐
     public static final int ALIGN_CENTER = 1;   //居中对齐
@@ -53,6 +54,8 @@ public class AiyaRecyclerView extends RecyclerView {
         setFocusableInTouchMode(true);
         setFocusable(false);
     }
+
+
 
     public AiyaRecyclerView(Context context, Boolean autoScroll) {
         super(context);
@@ -169,12 +172,14 @@ public class AiyaRecyclerView extends RecyclerView {
         return rect.top == 0;
     }
 
+    @Override
     public View getDefaultFocusView() {
         if (currentFocus == null) {
             return getChildAt(0);
         }
         return currentFocus;
     }
+
 
     @Override
     public void requestChildFocus(View child, View focused) {

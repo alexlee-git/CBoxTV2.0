@@ -36,6 +36,7 @@ import tv.newtv.cboxtv.views.detailpage.SuggestView;
  * 创建人:           weihaichao
  * 创建日期:          2018/8/6
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class SingleDetailPageActivity extends BaseActivity {
     private HeadPlayerView headPlayerView;
     private String leftUUID, rightUUID;
@@ -158,7 +159,7 @@ public class SingleDetailPageActivity extends BaseActivity {
                     }
 
                     @Override
-                    public void AllPalyComplete(boolean isError, String info, VideoPlayerView
+                    public void AllPlayComplete(boolean isError, String info, VideoPlayerView
                             videoPlayerView) {
                         if (!isError) {
                             videoPlayerView.onComplete();
@@ -199,6 +200,7 @@ public class SingleDetailPageActivity extends BaseActivity {
                 }));
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (interruptKeyEvent(event)) {
@@ -239,7 +241,7 @@ public class SingleDetailPageActivity extends BaseActivity {
                             (event)) {
                         return true;
                     } else {
-                        View toView = null;
+                        @SuppressWarnings("UnusedAssignment") View toView = null;
                         int pos = index;
                         int dir = 0;
                         boolean condition = false;

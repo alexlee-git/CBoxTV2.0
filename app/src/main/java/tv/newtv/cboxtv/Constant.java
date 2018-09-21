@@ -163,6 +163,7 @@ public class Constant {
     public static final int LOG_NODE_SCREEN = 700;               // 筛选页日志
     public static final int LOG_NODE_APP_VERSION = 87;          //版本信息
     public static final int LOG_NODE_SWITCH = 88;          //日志开关
+    public static final int LOG_NODE_JUMP = 68;            //外部推荐位跳转
     public static final int LOG_NODE_DEVICE_INFO = 86;          // 终端设备信息
     public static final int LOG_NODE_AUTH_INFO = 10;          // 认证
     public static final String BACK_FIRST_NAV = "back_first_nav"; // 返回一级导航

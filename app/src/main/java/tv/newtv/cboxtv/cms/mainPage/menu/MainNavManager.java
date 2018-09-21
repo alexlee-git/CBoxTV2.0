@@ -360,7 +360,7 @@ public class MainNavManager implements IMainPageView,
                 bundle.putString("nav_text", navInfo.getTitle());
                 bundle.putBoolean("is_from_nav", true);
                 willShowFragment = ContentFragment.newInstance(bundle);
-                ((BaseFragment) willShowFragment).setUseHint(false);
+//                ((BaseFragment) willShowFragment).setUseHint(false);//
 
             } else {
                 willShowFragment = ContentFragment.newInstance(bundle);

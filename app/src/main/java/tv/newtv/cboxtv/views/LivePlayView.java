@@ -25,6 +25,7 @@ import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -97,7 +98,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                         mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
                     }
                 } else {
-                    PlayInfoUtil.getPlayInfo(mPlayInfo.ContentUUID, new PlayInfoUtil
+                    PlayInfoUtil.getInfo(mPlayInfo.ContentUUID,mPlayInfo.contentType, new
+                            PlayInfoUtil
                             .ProgramSeriesInfoCallback() {
                         @Override
                         public void onResult(final ProgramSeriesInfo info) {
@@ -221,6 +223,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             LogUtils.e(e);
         } finally {
             mVideoPlayerView = null;
+            LiveTimingUtil.clearListener();
         }
     }
 
@@ -288,6 +291,14 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public void enterFullScreen() {
         Log.d(TAG, "enterFullScreen");
+        if (isLive()) {
+            Log.d(TAG, "直播中，特殊处理");
+            if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
+                JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mPlayInfo.contentType,
+                        mPlayInfo.ContentUUID, mProgramInfo.getActionUri());
+                return;
+            }
+        }
         if (mVideoPlayerView != null) {
             mVideoPlayerView.EnterFullScreen(MainNavManager.getInstance().getCurrentFragment()
                     .getActivity(), true);
@@ -324,6 +335,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void init(AttributeSet attrs) {
+        setClipChildren(false);
+        setClipToPadding(false);
+
         if (mVideoPlayer == null) {
             mVideoPlayer = new VideoFrameLayout(getContext());
 //            LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams

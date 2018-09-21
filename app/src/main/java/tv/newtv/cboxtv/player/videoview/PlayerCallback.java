@@ -12,7 +12,7 @@ public interface PlayerCallback {
 
     void onPlayerClick(VideoPlayerView videoPlayerView);
 
-    void AllPalyComplete(boolean isError, String info, VideoPlayerView videoPlayerView);
+    void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView);
 
     void ProgramChange();
 }
