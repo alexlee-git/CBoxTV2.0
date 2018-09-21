@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.cms.ad;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.jd.smartcloudmobilesdk.init.JDSmartSDK;
@@ -18,25 +20,44 @@ import com.jd.smartcloudmobilesdk.shopping.bean.BindStatusRecv;
 import com.jd.smartcloudmobilesdk.shopping.bean.SkuInfoRecv;
 import com.jd.smartcloudmobilesdk.shopping.listener.NetDataHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.cms.ad.model.AdBean;
+import tv.newtv.cboxtv.cms.ad.model.BuyGoodsView;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BaseRequestAdPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BuyGoodsRequestAdPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
 import tv.newtv.cboxtv.cms.util.SystemUtils;
 import tv.newtv.cboxtv.views.BuyGoodsPopupWindow;
 
-public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBean.Material>{
+public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBean.AdspacesItem>{
     private static final int DEFAULT_TIME = 25;
+    private static final String APP_KEY = "RP3ZYAYYWQ66YY7ZTZ8PY44HB9BSKUW3";
+    private static final String APP_SECRET = "nky7pr8x7v7rz66etwtudm6c5ud3tz9a";
+    /**
+     * 京东联盟ID
+     */
+    private static final String UNION_ID = "1001001488 ";
+    /**
+     * 电视在京东联盟创建的应用ID
+     */
+    private static final String SITE_ID = "1479901399";
+    private static final String TAG = "BuyGoodsBusiness";
+
+    private static boolean isInit = false;
     private BaseRequestAdPresenter adPresenter;
-    private BuyGoodsPopupWindow popupWindow;
+    private BuyGoodsView buyGoodsView;
     private Context context;
     private View view;
+    private Map<String,String> extMap;
+
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            if(popupWindow != null){
-                popupWindow.dismiss();
+            if(buyGoodsView != null){
+                buyGoodsView.dismiss();
             }
         }
     };
@@ -45,22 +66,32 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         this.context = context;
         this.view = view;
         adPresenter = new BuyGoodsRequestAdPresenter(this);
-        adPresenter.getAD(Constant.AD_DESK,Constant.AD_BUY_GOODS);
+        adPresenter.getAD(Constant.AD_BUY_GOODS,"");
     }
 
     @Override
-    public void showAd(AdBean.Material adInfos) {
-        if(adInfos.playTime <= 0){
-            adInfos.playTime = DEFAULT_TIME;
+    public void showAd(AdBean.AdspacesItem item) {
+        extMap = analyzeExt(item.ext);
+        int duration = Integer.parseInt(TextUtils.isEmpty(extMap.get("duration")) ? "0" : extMap.get("duration"));
+        if(duration <= 0){
+            duration = DEFAULT_TIME;
         }
-        popupWindow = new BuyGoodsPopupWindow();
-        popupWindow.show(context,view);
-        handler.sendEmptyMessageDelayed(0,adInfos.playTime * 1000);
 
-        //初始化
-        JDSmartSDK.getInstance().init(context,"", SystemUtils.getDeviceMac(context));
+        buyGoodsView = new BuyGoodsPopupWindow();
+        buyGoodsView.setParamsMap(extMap);
+        buyGoodsView.show(context,view);
+        buyGoodsView.setName(item.materials.get(0).name);
+
+        handler.sendEmptyMessageDelayed(0,duration * 1000);
+
+        if(!isInit){
+            //初始化
+            JDSmartSDK.getInstance().init(context,APP_KEY, SystemUtils.getDeviceMac(context));
+            isInit = true;
+        }
+
         //查询设备是否被绑定
-        SmartBuyManager.checkTvBindStatus("",new NetDataHandler(){
+        SmartBuyManager.checkTvBindStatus(APP_KEY,new NetDataHandler(){
             @Override
             public void netDataCallback(int code, Object inParam, Object outParam) {
                 if(code == 0 && outParam != null){
@@ -70,7 +101,10 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         getQrcode();
                     }else if(1 == recv.getIsBind()){
                         //已绑定
+                        //TODO  直接获取商品详情  等待用户操作添加到购物车
                     }
+                }else {
+                    Log.i(TAG, "netDataCallback: "+code);
                 }
             }
         });
@@ -182,6 +216,19 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
 
     @Override
     public void fail() {
+    }
 
+    private Map<String,String> analyzeExt(String ext){
+        Map<String,String> map = new HashMap<>();
+        if(!TextUtils.isEmpty(ext)){
+            String[] split = ext.split("|");
+            for(String s : split){
+                String[] split1 = s.split(":");
+                if(split1.length > 1){
+                    map.put(split[0],split[1]);
+                }
+            }
+        }
+        return map;
     }
 }

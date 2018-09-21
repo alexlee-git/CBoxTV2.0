@@ -53,6 +53,25 @@ public class AdBean {
         public String fontSize;
         @SerializedName("font_style")
         public String fontStyle;
+
+        @Override
+        public String toString() {
+            return "Material{" +
+                    "filePath='" + filePath + '\'' +
+                    ", eventContent='" + eventContent + '\'' +
+                    ", eventType='" + eventType + '\'' +
+                    ", fileName='" + fileName + '\'' +
+                    ", name='" + name + '\'' +
+                    ", id=" + id +
+                    ", type='" + type + '\'' +
+                    ", fileSize=" + fileSize +
+                    ", playTime=" + playTime +
+                    ", fontContent='" + fontContent + '\'' +
+                    ", fontColor='" + fontColor + '\'' +
+                    ", fontSize='" + fontSize + '\'' +
+                    ", fontStyle='" + fontStyle + '\'' +
+                    '}';
+        }
     }
 
 
