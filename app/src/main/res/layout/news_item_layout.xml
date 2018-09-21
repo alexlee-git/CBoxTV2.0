@@ -16,19 +16,20 @@
             android:id="@+id/news_title"
             android:layout_width="@dimen/width_512px"
             android:layout_height="@dimen/height_100px"
-            android:layout_marginLeft="@dimen/width_48px"
-            android:maxEms="15"
-            android:maxLines="2"
+            android:gravity="center"
             android:textColor="#ffffff"
             android:textSize="@dimen/height_28px"
-            />
+            >
+
+        </tv.newtv.cboxtv.cms.special.ScrollTextView>
+
 
         <ImageView
             android:id="@+id/isPlaying"
             android:layout_width="@dimen/width_18px"
             android:layout_height="@dimen/height_20px"
             android:layout_alignParentLeft="true"
-            android:layout_alignTop="@id/news_title"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/width_20px"
             android:layout_marginRight="@dimen/width_10px"
             android:layout_marginTop="@dimen/height_10px"

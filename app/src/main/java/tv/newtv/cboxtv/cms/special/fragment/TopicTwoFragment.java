@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,6 +48,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private String defaultFocusId;
     private int defaultFocusIndex = -1;
     private int isFirstEnter = 0;
+    private boolean hasDefaultFocus;
 
 
     @Override
@@ -79,23 +81,16 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         title = view.findViewById(R.id.title);
         title_direction = view.findViewById(R.id.title_direction);
         videoPlayerView = view.findViewById(R.id.video_player);
-
         mPopupMenuWidget = new popupMenuWidget(getContext().getApplicationContext(), news_recycle);
         widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
-
-
         video_player_rl = view.findViewById(R.id.video_player_rl);
         videoTitle = view.findViewById(R.id.videoTitle);
-
         full_screen = view.findViewById(R.id.full_screen);
-
         news_recycle.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.VERTICAL, false));
         int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.width_54px);
         news_recycle.setSpace(space, 0);
         final NewsAdapter adapter = new NewsAdapter();
-
-
         news_recycle.setItemAnimator(null);
         news_recycle.setAlign(AiyaRecyclerView.ALIGN_START);
         news_recycle.setAdapter(adapter);
@@ -112,34 +107,18 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             public void onItemClick(ProgramInfo item, int index) {
                 videoIndex = index;
                 if (defaultFocusId != null && defaultFocusIndex != -1) {
-
-                    news_recycle.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            LinearLayoutManager layoutManager = (LinearLayoutManager) news_recycle.getLayoutManager();
-                            int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
-                            if (defaultFocusIndex <= lastVisibleItemPosition) {
-                                news_recycle.getChildAt(defaultFocusIndex).setFocusable(true);
-                                news_recycle.getChildAt(defaultFocusIndex).requestFocus();
-                                defaultFocusId = null;
-                                isFirstEnter =1;
-
-                            }
-                        }
-                    });
+                    smoothMoveToPosition(news_recycle, defaultFocusIndex);
                     firstPlay(defaultFocusId, defaultFocusIndex);
 
                 } else {
-                    if (isFirstEnter==1){
+                    if (isFirstEnter == 1) {
                         NewsViewHolder viewHolder = (NewsViewHolder) news_recycle.findViewHolderForAdapterPosition(defaultFocusIndex);
                         viewHolder.isPlaying.setVisibility(View.GONE);
                         viewHolder.relative_container.setBackgroundResource(0);
-                        defaultFocusIndex =-1;
+                        defaultFocusIndex = -1;
+                        isFirstEnter = 0;
                     }
-
-
                     onItemClickAction(item);
-                    isFirstEnter = 0;
                 }
                 adapter.setThisPosition(index);
                 videoPlayerView.setisPlayingView(adapter.getImageView());
@@ -171,6 +150,77 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
             adapter.refreshData(moduleInfoResult.getDatas().get(0).getDatas())
                     .notifyDataSetChanged();
+        }
+
+        news_recycle.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) news_recycle.getLayoutManager();
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                if (defaultFocusIndex <= lastVisibleItemPosition) {
+                    news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition).setFocusable(true);
+                    news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition).requestFocus();
+                    defaultFocusId = null;
+                    isFirstEnter = 1;
+
+                } else {
+                    if (hasDefaultFocus) {
+                        news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition).setFocusable(true);
+                        news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition).requestFocus();
+                    }
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    news_recycle.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            }
+        });
+
+        news_recycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (mShouldScroll && RecyclerView.SCROLL_STATE_IDLE == newState) {
+                    mShouldScroll = false;
+                    smoothMoveToPosition(recyclerView, mToPosition);
+                    hasDefaultFocus = true;
+                }
+            }
+        });
+
+
+    }
+
+    //目标项是否在最后一个可见项之后
+    private boolean mShouldScroll;
+    //记录目标项位置
+    private int mToPosition;
+
+    /**
+     * 滑动到指定位置
+     */
+    private void smoothMoveToPosition(RecyclerView mRecyclerView, final int position) {
+        // 第一个可见位置
+        int firstItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0));
+        // 最后一个可见位置
+        int lastItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1));
+        if (position < firstItem) {
+            // 第一种可能:跳转位置在第一个可见位置之前
+            mRecyclerView.smoothScrollToPosition(position);
+        } else if (position <= lastItem) {
+            // 第二种可能:跳转位置在第一个可见位置之后
+            int movePosition = position - firstItem;
+            if (movePosition >= 0 && movePosition < mRecyclerView.getChildCount()) {
+                int top = mRecyclerView.getChildAt(movePosition).getTop();
+                mRecyclerView.smoothScrollBy(0, top);
+            }
+
+        } else {
+            // 第三种可能:跳转位置在最后可见项之后
+            mRecyclerView.smoothScrollToPosition(position);
+            mToPosition = position;
+            mShouldScroll = true;
         }
     }
 
@@ -416,7 +466,11 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 public void onFocusChange(View view, boolean hasFocus) {
 
                     if (hasFocus) {
-                        holder.news_title.startFor0();
+                        if (holder.news_title.getText().length() > 10) {
+                            holder.news_title.startFor0();
+                        }
+
+
                         holder.relative_fou.setBackgroundResource(R.drawable.topic_foucs);
                         if (position == getthisPosition()) {
                             holder.relative_container.setBackgroundResource(0);
@@ -484,7 +538,12 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
             });
             if (moduleItem != null) {
-                holder.news_title.setText(moduleItem.getSubTitle());
+                if (moduleItem.getSubTitle().length() > 15) {
+                    String s = moduleItem.getSubTitle().substring(0, 15);
+                    holder.news_title.setText(s);
+                } else {
+                    holder.news_title.setText(moduleItem.getSubTitle());
+                }
                 if (moduleItem.getContentUUID().equals(currentUUID)) {
                     holder.isPlaying.setVisibility(View.VISIBLE);
                 } else {

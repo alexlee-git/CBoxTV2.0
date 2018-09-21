@@ -1486,9 +1486,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private void playVodNext() {
         if (mPlaySeriesOrSingle == PLAY_SINGLE) {
             addHistory();
-            Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .play_complete),
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), getContext().getResources().getString(R.string
+//                            .play_complete),
+//                    Toast.LENGTH_SHORT).show();
             reportPlayerHistory();
             AllComplete(false, "播放结束");
 
@@ -1512,8 +1512,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                         l.onNext(null, next, false);
                     }
                 }
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                        .play_complete), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), getContext().getResources().getString(R.string
+//                        .play_complete), Toast.LENGTH_SHORT).show();
                 reportPlayerHistory();
                 if (startIsFullScreen) {
                     NewTVLauncherPlayerViewManager.getInstance().release();
