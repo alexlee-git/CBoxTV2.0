@@ -47,13 +47,16 @@
             android:textSize="@dimen/height_42px"/>
 
         <TextView
-            android:singleLine="true"
+            android:singleLine="false"
             android:id="@+id/title_direction"
-            android:layout_width="@dimen/width_900px"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:layout_marginLeft="@dimen/width_10px"
-            android:layout_marginTop="@dimen/height_16px"
+            android:maxLines="2"
+            android:maxEms="15"
+            android:ellipsize="end"
+            android:layout_marginTop="@dimen/height_10px"
             android:text="专题名称专题名称专题名称专题名称专题名称"
             android:textColor="#ffffff"
             android:textSize="30px"/>

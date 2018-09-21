@@ -5,11 +5,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.TextView;
 
 
-public class ScrollTextView extends TextView implements Runnable {
+
+public class ScrollTextView extends TextView implements Runnable{
     private int currentScrollX;// 当前滚动的位置
     private boolean isStop = false;
     private int textWidth;
@@ -46,6 +46,7 @@ public class ScrollTextView extends TextView implements Runnable {
             getTextWidth();
             isMeasure = true;
         }
+
     }
 
     /**
@@ -55,30 +56,28 @@ public class ScrollTextView extends TextView implements Runnable {
         Paint paint = this.getPaint();
         String str = this.getText().toString();
         textWidth = (int) paint.measureText(str);
-        arr = new int[2];
-        this.getLocationInWindow(arr);
-        Log.d("ScrollTextView", "arr[0]:" + arr[0]);
+
 
     }
 
     @Override
     public void run() {
-        currentScrollX-= 1;// 滚动速度
-        if (!isStop){
-            scrollTo(currentScrollX, 0);
-        }
+        currentScrollX+=2;// 滚动速度
+
+        scrollTo(currentScrollX, 0);
 
         if (isStop) {
-            scrollTo(0,0);
             currentScrollX =0;
+            scrollTo(currentScrollX,0);
+
             return;
         }
-        if (getScrollX() <= -(this.getWidth())) {
-            scrollTo(textWidth, 0);
-            currentScrollX = textWidth;
+        if (getScrollX() >= (this.getWidth())) {
+            scrollTo(-this.getWidth(), 0);
+            currentScrollX =- this.getWidth();
         }
 
-        postDelayed(this, 100);
+        postDelayed(this, 20);
     }
 
     // 开始滚动
@@ -103,25 +102,12 @@ public class ScrollTextView extends TextView implements Runnable {
 
 
     @Override
-    public void setText(CharSequence text, BufferType type) {
+    public void setText(CharSequence text, TextView.BufferType type) {
         // TODO Auto-generated method stub
         super.setText(text, type);
-        if (isStart()){
-            startScroll();
-        }
+//            startScroll();
 
     }
-
-    @Override
-    public void destroyDrawingCache() {
-        // TODO Auto-generated method stub
-        super.destroyDrawingCache();
-
-    }
-
-
-
-
 
 
 }
