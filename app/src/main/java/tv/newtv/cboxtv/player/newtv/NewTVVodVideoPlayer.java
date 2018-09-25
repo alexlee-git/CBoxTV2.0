@@ -240,8 +240,8 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         }
 
         @Override
-        public void onTimeout() {
-            Log.i(TAG, "onTimeout: ");
+        public void onTimeout(int i) {
+            Log.i(TAG, "onTimeout: " + i);
             if (mIPlayCallBackEvent != null) {
                 mIPlayCallBackEvent.onTimeout();
             }

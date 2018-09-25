@@ -168,8 +168,8 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         }
 
         @Override
-        public void onTimeout() {
-            Log.i(TAG, "onTimeout: ");
+        public void onTimeout(int i) {
+            Log.i(TAG, "onTimeout: " + i);
             if(mIPlayCallBackEvent!=null){
                 mIPlayCallBackEvent.onTimeout();
             }
