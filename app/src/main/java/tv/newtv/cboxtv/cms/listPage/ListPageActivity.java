@@ -149,6 +149,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         nav_id = getIntent().getStringExtra(Constant.DEFAULT_UUID);//导航id
         Log.e("list---pageuuid", mPageUUID + "-----------");
         if (mPageUUID == null) {
+
+
             Toast.makeText(ListPageActivity.this, getResources().getString(R.string
                     .list_no_pageuuid), Toast.LENGTH_LONG).show();
             finish();
@@ -161,6 +163,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         //        Constant.CHANNEL_ID + "/" + mPageUUID + ".json");
         mIListPagePresenter.requestListPageNav(mPageUUID);
         showPopwindow();
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + mPageUUID);
         uploadEnterLog();
     }
 
