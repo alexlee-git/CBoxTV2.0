@@ -121,8 +121,9 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
 
         @Override
         public void onCompletion(int type) {
-            Log.i(TAG, "onCompletion: ");
-            if(type ==  iICntvPlayInterface.VIDEO_COMPLETE_TYPE) {
+            Log.i(TAG, "onCompletion: " + type);
+            if(type ==  iICntvPlayInterface.VIDEO_COMPLETE_TYPE ||
+                    type == iICntvPlayInterface.AFTER_AD_COMPLETE_TYPE) {
                 // 点播结束日志上传
                 if (mIcntvPlayer != null) {
 
