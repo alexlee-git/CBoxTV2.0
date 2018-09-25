@@ -142,7 +142,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView.setPlayerCallback(this);
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_rl), true);
         if (moduleInfoResult != null) {
-            if (moduleInfoResult.getDescription().length() > 30) {
+            if (moduleInfoResult.getDescription().length() >= 30) {
                 title_direction.setText(moduleInfoResult.getDescription().substring(0, 30));
             } else {
                 title_direction.setText(moduleInfoResult.getDescription());
@@ -302,9 +302,10 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
     @Override
     public void onPlayerClick(VideoPlayerView videoPlayerView) {
-        videoPlayerView.EnterFullScreen(getActivity(), false);
         videoTitle.setVisibility(View.GONE);
         full_screen.setVisibility(View.GONE);
+        videoPlayerView.EnterFullScreen(getActivity(), false);
+        videoPlayerView.setView(videoTitle,full_screen);
 
     }
 
