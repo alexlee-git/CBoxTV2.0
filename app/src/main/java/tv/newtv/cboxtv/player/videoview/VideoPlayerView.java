@@ -92,8 +92,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (defaultFocusView != null) {
             if (defaultFocusView instanceof VideoPlayerView) {
                 VideoPlayerView.this.requestFocus();
-                full_screen.setVisibility(VISIBLE);
+                if (videoTitle!=null)
                 videoTitle.setVisibility(VISIBLE);
+                if (full_screen!=null)
+                full_screen.setVisibility(VISIBLE);
             } else {
                 defaultFocusView.requestFocus();
             }
@@ -393,7 +395,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     public void setisPlayingView(ImageView isPlaying) {
         this.isPlaying = isPlaying;
     }
-
     public void setView(TextView videoTitle, ImageView full_screen) {
         this.videoTitle =videoTitle;
         this.full_screen=full_screen;
