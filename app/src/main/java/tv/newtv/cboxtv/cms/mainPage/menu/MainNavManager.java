@@ -47,6 +47,8 @@ import tv.newtv.cboxtv.utils.ScreenUtils;
 import tv.newtv.cboxtv.views.MenuRecycleView;
 import tv.newtv.cboxtv.views.RecycleImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class MainNavManager implements IMainPageView,
         INotifyPageSelectedListener,
@@ -206,6 +208,15 @@ public class MainNavManager implements IMainPageView,
 
                     if (hasFocus) {
                         navLogUpload(position);
+                        SharedPreferences sp = mContext.getSharedPreferences("secondConfig", MODE_PRIVATE);
+                        String menu = sp.getString("secondMenu", "");
+                        if (TextUtils.isEmpty(menu)){
+                            return;
+                        }else{
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
+                                    menu);
+                        }
+
 
                     }
 
