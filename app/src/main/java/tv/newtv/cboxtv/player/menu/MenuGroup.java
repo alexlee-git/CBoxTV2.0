@@ -221,7 +221,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         if (lastMenuBean == null || lastMenuBean.getData() == null || lastMenuBean.getData()
                 .getPrograms() == null) {
             Log.e(TAG, "lastMenuBean or lastMenuBean.getData() or lastMenuBean.getData()" +
-                    ".getPrograms() is null , MenuGroup initView fail");
+                    ".getProgramList() is null , MenuGroup initView fail");
             return false;
         }
 

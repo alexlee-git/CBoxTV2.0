@@ -6,17 +6,27 @@ def abroad = "http://central.maven.org/maven2/"
 // 先从url中下载jar若没有找到，则在artifactUrls中寻找
 
 buildscript {
+    ext.kotlin_version = '1.2.70'
     ext.kotlin_version = '1.1.51'
 
     repositories {
-        jcenter()
-        maven {
-//            url 'https://maven.google.com/'
-//            name 'Google'
-            google()
+
+        maven{
             url "http://maven.aliyun.com/nexus/content/groups/public/"
-            artifactUrls "http://central.maven.org/maven2/"
         }
+        google()
+        jcenter()
+        mavenCentral()
+
+
+//        jcenter()
+//        maven {
+////            url 'https://maven.google.com/'
+////            name 'Google'
+//            google()
+//            url "http://maven.aliyun.com/nexus/content/groups/public/"
+//            artifactUrls "http://central.maven.org/maven2/"
+//        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -35,17 +45,12 @@ allprojects {
 //        }
 //    }
     repositories {
-        jcenter()
-
-
-
-        maven {
-//            url 'https://maven.google.com/'
-//            name 'Google'
-            google()
+        maven{
             url "http://maven.aliyun.com/nexus/content/groups/public/"
-            artifactUrls "http://central.maven.org/maven2/"
         }
+        google()
+        jcenter()
+        mavenCentral()
     }
 }
 

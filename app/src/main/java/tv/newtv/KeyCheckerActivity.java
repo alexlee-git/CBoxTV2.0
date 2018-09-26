@@ -1,18 +1,26 @@
 package tv.newtv;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
+import com.newtv.cms.DataObserver;
+import com.newtv.cms.Model;
+import com.newtv.cms.ModelFactory;
+import com.newtv.cms.api.ICategory;
+import com.newtv.cms.api.IFilter;
+import com.newtv.cms.api.INav;
+import com.newtv.cms.bean.CategoryTreeNode;
+import com.newtv.cms.bean.FilterItem;
+import com.newtv.cms.bean.ModelResult;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.SplashActivity;
-import tv.newtv.key.KeyHelper;
-import tv.newtv.key.KeyType;
 
 public class KeyCheckerActivity extends FragmentActivity {
 
@@ -20,20 +28,25 @@ public class KeyCheckerActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_key_checker);
+    }
 
-        Intent intent = new Intent(this,SplashActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Bundle bundle = new Bundle();
-        bundle.putString("action","OPEN_SPECIAL|Page");
-        bundle.putString("params","id=90943e7a-479a-11e8-8bed-c7d8a7a18cc4&uri=d211f144-4d00-11e8" +
-                "-a49e-c7d8a7a18cc4&fid=aa138e6a-47ae-11e8-8bed-c7d8a7a18cc4");
-        intent.putExtras(bundle);
-        Log.e("keyChecker",intent.toUri(0));
+    private void request(){
+
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(event.getAction() == KeyEvent.ACTION_UP){
+            if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() ==
+                    KeyEvent.KEYCODE_ENTER){
+                request();
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 }

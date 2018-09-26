@@ -38,7 +38,7 @@
                   android:launchMode="singleTask"
                   android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
-            android:name=".EntryActivity"
+            android:name="tv.newtv.KeyCheckerActivity"
             android:launchMode="singleTask"
             android:theme="@style/SplashTheme">
             <intent-filter>
