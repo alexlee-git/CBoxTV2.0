@@ -1172,6 +1172,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 break;
+            case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (!mIsPrepared) {
                     LogUtils.i(TAG, "onKeyDown: mIsPrepared is false");
