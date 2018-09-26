@@ -9,7 +9,7 @@
         android:layout_height="@dimen/height_70px"
         android:layout_marginRight="@dimen/width_24px"
         android:focusable="true"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:tag="id_btn_root">
 
         <TextView

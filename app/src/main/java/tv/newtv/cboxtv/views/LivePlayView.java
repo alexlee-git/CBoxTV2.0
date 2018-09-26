@@ -154,6 +154,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                                         }
                                     }
                                 });
+
                             }
                         });
             }
@@ -288,7 +289,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public boolean isVideoType() {
         return currentMode != MODE_IMAGE;
     }
-
+    //进入全屏
     public void enterFullScreen() {
         Log.d(TAG, "enterFullScreen");
 //        if (currentMode == MODE_LIVE) {
@@ -455,6 +456,13 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
         postDelayed(playLiveRunnable, 2000);
+
+
+
+
+
+
+
     }
 
     private void startPlayPermissionsCheck(ProgramInfo programInfo) {

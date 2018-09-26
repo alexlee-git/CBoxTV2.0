@@ -247,7 +247,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             setLayoutParams(layoutParams);
         }
     }
-
+    //添加播放源
     public void setSeriesInfo(ProgramSeriesInfo seriesInfo) {
         if (playCenter != null) {
             playCenter.addSeriesInfo(seriesInfo);
