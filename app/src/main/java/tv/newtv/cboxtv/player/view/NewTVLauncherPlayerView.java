@@ -66,6 +66,8 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
 import tv.newtv.cboxtv.uc.bean.HistoryBean;
 import tv.newtv.cboxtv.uc.db.DBCallback;
+import tv.newtv.cboxtv.uc.db.DBConfig;
+import tv.newtv.cboxtv.uc.db.DataSupport;
 import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -396,6 +398,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 stopLoading();
                 hidePauseImage();
             }
+
+            addHistoryToTree();//缓冲完毕添加到历史记录中
+
         }
 
         @Override
@@ -1642,6 +1647,23 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     }
                 }
             });
+    }
+
+    //  添加信息到栏目树
+    public void addHistoryToTree(){
+        if (mNewTVLauncherPlayer.getDuration()>0){
+            DBUtil.addHistory(mProgramSeriesInfo
+                    , getIndex(), getCurrentPosition(), new DBCallback<String>() {
+                        @Override
+                        public void onResult(int code, String result) {
+                            if (code == 0) {
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
+                                        mProgramSeriesInfo.getContentUUID());//添加历史记录
+                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                            }
+                        }
+                    });
+        }
     }
 
     /**
