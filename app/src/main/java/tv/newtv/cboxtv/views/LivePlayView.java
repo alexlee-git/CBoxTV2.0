@@ -498,6 +498,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 if (getVisibility() == View.VISIBLE) {
                     NewTVLauncherPlayerViewManager.getInstance().release();
                 }
+                currentMode = MODE_IMAGE;
             }
         });
     }
