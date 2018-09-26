@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.details;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,12 @@ import android.widget.Toast;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.cms.util.LogUploadUtils;
+import tv.newtv.cboxtv.player.Constants;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.BitmapUtil;
@@ -95,6 +99,7 @@ public class ProgramCollectionActivity extends BaseActivity {
         setContentView(R.layout.activity_program_collec_page);
 
         contentUUID = getIntent().getStringExtra("content_uuid");
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
             Toast.makeText(this, "节目合集信息异常", Toast.LENGTH_SHORT).show();
