@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * Created by gaoleichao on 2018/4/10.
+ * 视频播放器
  */
 
 public class VideoPlayerView extends NewTVLauncherPlayerView {
@@ -32,6 +34,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private ProgressBar mPlayerProgress;
     private VPlayCenter playCenter;
     private PlayerCallback mPlayerCallback;
+    private ExitVideoFullCallBack videoFullCallBack;
     private View mFocusView;
     private boolean repeatPlay = false;
     private TextView HintTextView;
@@ -72,6 +75,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (config != null) {
             defaultFocusView = config.defaultFocusView;
             mPlayerCallback = config.playerCallback;
+            videoFullCallBack=config.videoFullCallBack;
             playCenter = config.playCenter;
         }
     }
@@ -87,6 +91,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         setHintText(String.format("%s 错误码:%s", messgae, code));
     }
 
+    //退出全屏
     @Override
     public void ExitFullScreen() {
         if (defaultFocusView != null) {
@@ -104,6 +109,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             }
         }
         ProgramIsChange = false;
+
+        Log.i("Collection","退出全屏");
+        videoFullCallBack.VideoExitFullScreen();
+
 
     }
 
@@ -141,6 +150,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         PlayerViewConfig playerViewConfig = super.getDefaultConfig();
         playerViewConfig.defaultFocusView = defaultFocusView;
         playerViewConfig.playerCallback = mPlayerCallback;
+        playerViewConfig.videoFullCallBack=videoFullCallBack;
         playerViewConfig.playCenter = playCenter;
         return playerViewConfig;
     }
@@ -244,6 +254,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         }
     }
 
+    //设置播放视频的地址
     public void setSeriesInfo(ProgramSeriesInfo seriesInfo) {
         if (playCenter != null) {
             playCenter.addSeriesInfo(seriesInfo);
@@ -251,6 +262,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
+        //设置播放的位置
         playCenter.setCurrentIndex(mIndex);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
@@ -323,6 +335,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         mPlayerProgress = null;
         playCenter = null;
         mPlayerCallback = null;
+        videoFullCallBack=null;
         mFocusView = null;
 
         if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)) {
@@ -348,9 +361,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             return;
         }
 
-//        if (isFullScreen()) {
-//            ExitFullScreen();
-//        }
+        if (isFullScreen()) {
+            ExitFullScreen();
+        }
 
         stopPlay();
         setHintText("播放已结束");
@@ -382,6 +395,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void setPlayerCallback(PlayerCallback callback) {
         mPlayerCallback = callback;
+    }
+
+    public void setVideoFullCallBack(ExitVideoFullCallBack videoFullCallBack) {
+        this.videoFullCallBack = videoFullCallBack;
     }
 
     public String getCurrentUuId() {

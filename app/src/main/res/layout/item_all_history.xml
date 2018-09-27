@@ -44,9 +44,11 @@
             android:layout_marginLeft="@dimen/width_33px"
             android:layout_marginTop="@dimen/height_400px"
             android:ellipsize="marquee"
+            android:scrollHorizontally="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:tag="tag_poster_title"/>
+
 
 
     </FrameLayout>

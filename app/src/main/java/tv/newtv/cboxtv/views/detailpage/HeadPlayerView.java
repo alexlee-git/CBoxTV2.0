@@ -39,6 +39,7 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.RxBus;
+import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -114,8 +115,17 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 mBuilder.playerCallback.ProgramChange();
             }
         }
+
+
     };
 
+    //检测全屏退出回调
+    private ExitVideoFullCallBack videoFullCallBack=new ExitVideoFullCallBack() {
+        @Override
+        public void VideoExitFullScreen() {
+            mBuilder.videoFullCallBack.VideoExitFullScreen();
+        }
+    };
 
     public HeadPlayerView(Context context) {
         this(context, null);
@@ -157,6 +167,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             if (video instanceof VideoPlayerView) {
                 playerView = (VideoPlayerView) video;
             } else if (video instanceof FrameLayout) {
+                //全屏显示
                 if (defaultConfig == null) {
                     playerView = new VideoPlayerView(getContext());
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
@@ -170,9 +181,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     }
                 }
             }
-
             if (playerView != null) {
                 playerView.setPlayerCallback(mPlayerCallback);
+                playerView.setVideoFullCallBack(videoFullCallBack);
                 isBuildComplete = true;
             }
         }
@@ -310,7 +321,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    //显示全屏
     public void EnterFullScreen(Activity activity) {
+        Log.i("Collection","isPlayLive-->"+isPlayLive);
         if (isPlayLive && playerView != null) {
             playerView.enterFullScreen(activity, isPlayLive);
         } else if (playerView != null) {
@@ -567,7 +580,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    //播放
     public void Play(int index, int postion, boolean requestFocus) {
+
 
         if (isPlayLive) {
             isPlayLive = false;
@@ -693,6 +708,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         return mBuilder.contentUUid;
     }
 
+    //获取结果数据
     private void requestFromServer() {
         if (mBuilder == null) {
             return;
@@ -884,6 +900,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private List<CustomFrame> dbTypes;
         private int defaultFocusID = 0;
 
+        private ExitVideoFullCallBack videoFullCallBack;
+
         private Builder(int layout) {
             mLayout = layout;
         }
@@ -891,6 +909,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         public static Builder build(int id) {
             return new Builder(id);
         }
+
 
         public void release() {
             dbTypes = null;
@@ -900,6 +919,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             focusables = null;
             clickables = null;
             infoResult = null;
+            videoFullCallBack=null;
         }
 
         public Builder CheckFromDB(CustomFrame... types) {
@@ -934,6 +954,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         public Builder SetPlayerCallback(PlayerCallback callback) {
             playerCallback = callback;
+            return this;
+        }
+
+        public Builder SetVideoFullCallBack(ExitVideoFullCallBack videoFullCallBack) {
+            this.videoFullCallBack = videoFullCallBack;
             return this;
         }
 
