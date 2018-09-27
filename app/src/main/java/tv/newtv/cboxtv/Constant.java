@@ -144,7 +144,7 @@ public class Constant {
     public static final int LOG_NODE_COLLECT = 5;               // 收藏
     public static final int LOG_NODE_USER_CENTER = 8;               //用户中心
     public static final int LOG_NODE_ONE__DETAIL = 3;               // 某个影片的详情页
-    public static final int LOG_NODE_PAGE = 500;                 // 页面日志
+    public static final int LOG_NODE_PAGE = 19;                 // 页面日志
     public static final int LOG_NODE_RECOMMEND_POS = 501;        // 页面数据的推荐位日志
     public static final int LOG_NODE_SPECIAL_PAGE = 17;         // 专题页日志
     public static final int LOG_NODE_SCREEN = 700;               // 筛选页日志
@@ -215,6 +215,7 @@ public class Constant {
     public static boolean isInitStatus = true;
     public static String UUID_KEY = "uuid";
     public static String UUID;
+    public static String ALREADY_SAVE = "alreadySave";
     // 定义一个全局的静态变量   用于在小屏和大屏两种模式下， 确定当前是否符合直播的条件
     // 开启直播时，将该值置为true   到达直播结束时间，关闭直播时，将该值置为false
     // 什么时候会开启直播？

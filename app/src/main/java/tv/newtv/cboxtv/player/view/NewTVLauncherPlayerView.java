@@ -36,6 +36,7 @@ import retrofit2.Response;
 import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.MediaCDNInfo;
@@ -47,6 +48,7 @@ import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.cms.util.RxBus;
+import tv.newtv.cboxtv.cms.util.SPrefUtils;
 import tv.newtv.cboxtv.player.Constants;
 import tv.newtv.cboxtv.player.FocusWidget;
 import tv.newtv.cboxtv.player.IFocusWidget;
@@ -66,6 +68,8 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
 import tv.newtv.cboxtv.uc.bean.HistoryBean;
 import tv.newtv.cboxtv.uc.db.DBCallback;
+import tv.newtv.cboxtv.uc.db.DBConfig;
+import tv.newtv.cboxtv.uc.db.DataSupport;
 import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -133,6 +137,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
     private Map<Integer, FocusWidget> widgetMap;
+    private List<ScreenListener> screenListenerList = new ArrayList<>();
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -383,6 +388,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public void onVideoBufferStart(String typeString) {
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
             startLoading();
+
+            if (SPrefUtils.getValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"").equals("unsave")){
+
+                addHistoryToTree();//缓冲完毕添加到历史记录中
+            }
+
         }
 
         @Override
@@ -396,6 +407,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 stopLoading();
                 hidePauseImage();
             }
+
+           if (SPrefUtils.getValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"").equals("unsave")){
+
+                addHistoryToTree();//缓冲完毕添加到历史记录中
+            }
+
         }
 
         @Override
@@ -547,6 +564,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mIsPause && mNewTVLauncherPlayer != null) {
             start();
         }
+        for(ScreenListener screenListener : screenListenerList){
+            screenListener.exitFullScreen();
+        }
     }
 
     public void setFromFullScreen() {
@@ -658,6 +678,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
 
         updateUIPropertys(true);
+        for(ScreenListener screenListener : screenListenerList){
+            screenListener.enterFullScreen();
+        }
     }
 
     private void createMenuGroup() {
@@ -715,6 +738,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     }
 
     public void release() {
+        SPrefUtils.setValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"unsave");
         addHistory();
         Log.i(TAG, "release: ");
         if (listener != null) {
@@ -1170,6 +1194,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 break;
+            case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (!mIsPrepared) {
                     LogUtils.i(TAG, "onKeyDown: mIsPrepared is false");
@@ -1653,6 +1678,25 @@ public class NewTVLauncherPlayerView extends FrameLayout {
             });
     }
 
+    //  添加信息到栏目树
+    public void addHistoryToTree(){
+        if (mNewTVLauncherPlayer.getDuration()>0){
+            DBUtil.addHistory(mProgramSeriesInfo
+                    , getIndex(), getDuration(), new DBCallback<String>() {
+                        @Override
+                        public void onResult(int code, String result) {
+                            if (code == 0) {
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
+                                        mProgramSeriesInfo.getContentUUID());//添加历史记录
+                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                            }
+                        }
+                    });
+            SPrefUtils.setValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"save");
+        }
+        SPrefUtils.setValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"unsave");
+    }
+
     /**
      * 保存播放记录  在播放单节目和节目集的时候调用
      */
@@ -1696,6 +1740,14 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
     }
 
+    public void addScreenListener(ScreenListener listener){
+        screenListenerList.add(listener);
+    }
+
+    public void removeScreenListener(ScreenListener listener){
+        screenListenerList.remove(listener);
+    }
+
     public static class PlayerViewConfig {
         public boolean prepared = false;
         public ViewGroup.LayoutParams layoutParams;     //布局属性
@@ -1706,5 +1758,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public PlayerCallback playerCallback;
         public int playPosition;
         public VPlayCenter playCenter;
+    }
+
+    public interface ScreenListener{
+        void enterFullScreen();
+        void exitFullScreen();
     }
 }

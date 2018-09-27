@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="tv.newtv.cboxtv"
-          android:installLocation="auto">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="tv.newtv.cboxtv"
+          android:installLocation="auto"
+    tools:ignore="MissingLeanbackLauncher">
 
     <uses-feature
         android:name="android.software.leanback"
@@ -41,6 +43,7 @@
             android:name=".EntryActivity"
             android:launchMode="singleTask"
             android:theme="@style/SplashTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -49,7 +52,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-        />
+        >
+        </activity>
+
         <activity android:name=".player.view.NewTVLauncherPlayerActivity"
                   android:launchMode="singleTop"/>
         <activity android:name=".cms.details.ColumnPageActivity"

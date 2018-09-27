@@ -91,7 +91,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             leftUUID = contentUUID.substring(0, 2);
             rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+            LogUploadUtils.uploadLog(Constant.LOG_COLUMN_INTO, "0," + contentUUID);
             requestData();
         } else {
             Toast.makeText(ProgrameSeriesAndVarietyDetailActivity.this, "节目集信息有误", Toast

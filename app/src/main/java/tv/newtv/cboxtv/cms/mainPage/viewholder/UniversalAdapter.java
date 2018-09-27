@@ -55,7 +55,7 @@ import tv.newtv.cboxtv.views.RecycleImageView;
 /**
  * Created by lixin on 2018/2/1.
  */
-
+    //通用适配器
 public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> {
     private static final String TAG = UniversalAdapter.class.getName();
 

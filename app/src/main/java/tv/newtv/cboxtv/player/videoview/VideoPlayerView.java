@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.cms.special.fragment.TopicTwoFragment;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
@@ -38,7 +40,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     private View defaultFocusView;
     private boolean KeyIsDown = false;
-    private ImageView isPlaying;
+    private TopicTwoFragment fragment;
 
     public VideoPlayerView(@NonNull Context context) {
         this(context, null);
@@ -92,10 +94,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (defaultFocusView != null) {
             if (defaultFocusView instanceof VideoPlayerView) {
                 VideoPlayerView.this.requestFocus();
-                if (videoTitle!=null)
-                videoTitle.setVisibility(VISIBLE);
-                if (full_screen!=null)
-                full_screen.setVisibility(VISIBLE);
+                if (videoTitle != null)
+                    videoTitle.setVisibility(VISIBLE);
+                if (full_screen != null)
+                    full_screen.setVisibility(VISIBLE);
             } else {
                 defaultFocusView.requestFocus();
             }
@@ -247,8 +249,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             setLayoutParams(layoutParams);
         }
     }
-
+    //添加播放源
     public void setSeriesInfo(ProgramSeriesInfo seriesInfo) {
+
         if (playCenter != null) {
             playCenter.addSeriesInfo(seriesInfo);
         }
@@ -289,7 +292,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 //        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl, getContext(),
 //                getProgramSeriesInfo(), index, position);
 //        playLive(playUrl,playCenter.getCurrentSeriesInfo(),false,index,position);
-        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl, getContext(), playCenter
+        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl,contentUUID, getContext(), playCenter
                 .getCurrentSeriesInfo(), false, index, position);
     }
 
@@ -322,7 +325,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         super.destroy();
 
         removeAllViews();
-
         detailPlayIv = null;
         mPlayerProgress = null;
         playCenter = null;
@@ -337,7 +339,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     protected void playIndex(int index) {
         super.playIndex(index);
-
         if (mPlayerCallback != null && !ProgramIsChange) {
             mPlayerCallback.onEpisodeChange(index, getCurrentPosition());
         }
@@ -351,15 +352,21 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             playSingleOrSeries(getIndex(), 0);
             return;
         }
-
-//        if (isFullScreen()) {
-//            ExitFullScreen();
-//        }
-
-        stopPlay();
-        setHintText("播放已结束");
-        if (isPlaying != null) {
-            isPlaying.setVisibility(GONE);
+        if (fragment != null && fragment instanceof TopicTwoFragment) {
+            if (isEnd) {
+                if (isFullScreen()) {
+                    ExitFullScreen();
+                }
+                stopPlay();
+                setHintText("播放已结束");
+                isEnd = false;
+            }
+        } else {
+            if (isFullScreen()) {
+                ExitFullScreen();
+            }
+            stopPlay();
+            setHintText("播放已结束");
         }
 
         if (mPlayerCallback != null) {
@@ -392,13 +399,22 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return playCenter.getDataStruct().uuid;
     }
 
-    public void setisPlayingView(ImageView isPlaying) {
-        this.isPlaying = isPlaying;
-    }
     public void setView(TextView videoTitle, ImageView full_screen) {
-        this.videoTitle =videoTitle;
-        this.full_screen=full_screen;
+        this.videoTitle = videoTitle;
+        this.full_screen = full_screen;
     }
+
     private TextView videoTitle;
     private ImageView full_screen;
+    private boolean isEnd;
+
+
+    public void register(TopicTwoFragment topicTwoFragment) {
+        this.fragment = topicTwoFragment;
+    }
+
+    public void setisEnd(boolean b) {
+        this.isEnd = b;
+    }
+
 }
