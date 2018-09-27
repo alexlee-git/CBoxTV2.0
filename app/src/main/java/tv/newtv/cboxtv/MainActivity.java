@@ -158,7 +158,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                 if (mExternalParams != null) {
                     String params[] = mExternalParams.split("&");
                     if (params.length > 1) {
-                        Log.e("yml", "onCreate: ////////////////////////"+mExternalAction );
                         JumpUtil.detailsJumpActivity(MainActivity.this, params[0], params[1]);
                     }
                 }
