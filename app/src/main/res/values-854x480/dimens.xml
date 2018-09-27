@@ -6008,10 +6008,10 @@
     <dimen name="height_1dp">1dp</dimen>
     <dimen name="height_15dp">9dp</dimen>
     <dimen name="width_3dp">2dp</dimen>
-    <dimen name="width_17dp">11dp</dimen>
+    <dimen name="width_17dp">11px</dimen>
     <dimen name="height_16dp">10dp</dimen>
     <dimen name="height_17dp">11dp</dimen>
-    <dimen name="width_16dp">10dp</dimen>
+    <dimen name="width_16dp">10px</dimen>
     <dimen name="height_44dp">28dp</dimen>
     <dimen name="height_27dp">17dp</dimen>
     <dimen name="_height_1px">-1px</dimen>
