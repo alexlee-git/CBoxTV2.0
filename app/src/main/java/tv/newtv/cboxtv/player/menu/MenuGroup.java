@@ -215,7 +215,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public void addNodeToRoot(Node node) {
         for (int i=0;i<rootNodes.size();i++){
-            if (rootNodes.get(i).getTitle().equals(node.getTitle())){
+            if (rootNodes.get(i).getTitle().equals(node.getTitle()) && node.getTitle().equals("我的")){
                 rootNodes.remove(rootNodes.get(i));
             }
         }

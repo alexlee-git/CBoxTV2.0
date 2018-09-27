@@ -36,6 +36,7 @@ import retrofit2.Response;
 import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.MediaCDNInfo;
@@ -47,6 +48,7 @@ import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.cms.util.RxBus;
+import tv.newtv.cboxtv.cms.util.SPrefUtils;
 import tv.newtv.cboxtv.player.Constants;
 import tv.newtv.cboxtv.player.FocusWidget;
 import tv.newtv.cboxtv.player.IFocusWidget;
@@ -385,6 +387,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public void onVideoBufferStart(String typeString) {
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
             startLoading();
+
+            if (SPrefUtils.getValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"").equals("unsave")){
+
+                addHistoryToTree();//缓冲完毕添加到历史记录中
+            }
+
         }
 
         @Override
@@ -399,7 +407,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 hidePauseImage();
             }
 
-            addHistoryToTree();//缓冲完毕添加到历史记录中
+           if (SPrefUtils.getValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"").equals("unsave")){
+
+                addHistoryToTree();//缓冲完毕添加到历史记录中
+            }
 
         }
 
@@ -720,6 +731,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     }
 
     public void release() {
+        SPrefUtils.setValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"unsave");
         addHistory();
         Log.i(TAG, "release: ");
         if (listener != null) {
@@ -1653,7 +1665,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     public void addHistoryToTree(){
         if (mNewTVLauncherPlayer.getDuration()>0){
             DBUtil.addHistory(mProgramSeriesInfo
-                    , getIndex(), getCurrentPosition(), new DBCallback<String>() {
+                    , getIndex(), getDuration(), new DBCallback<String>() {
                         @Override
                         public void onResult(int code, String result) {
                             if (code == 0) {
@@ -1663,7 +1675,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                             }
                         }
                     });
+            SPrefUtils.setValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"save");
         }
+        SPrefUtils.setValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"unsave");
     }
 
     /**
