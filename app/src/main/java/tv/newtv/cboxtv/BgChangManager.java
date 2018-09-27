@@ -216,7 +216,7 @@ public class BgChangManager {
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-
+                mCallback.getTargetView().setBackground(placeHolderDrawable);
             }
         });
     }
