@@ -232,18 +232,21 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
             if (NewTVLauncherPlayerViewManager.getInstance().isLive()) {
                 return;
             }
-            DBUtil.addHistory(programSeriesInfo, mIndexPlay, mPositionPlay, new DBCallback<String>() {
-                @Override
-                public void onResult(int code, String result) {
-                    if (code == 0) {
-                        if (programSeriesInfo != null && programSeriesInfo.getData() != null
-                                && mIndexPlay < programSeriesInfo.getData().size() && mIndexPlay >= 0) {
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + programSeriesInfo.getData().get(mIndexPlay).getContentUUID());//添加历史记录
+            if (mPositionPlay > 0){
+                DBUtil.addHistory(programSeriesInfo, mIndexPlay, mPositionPlay, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0) {
+                            if (programSeriesInfo != null && programSeriesInfo.getData() != null
+                                    && mIndexPlay < programSeriesInfo.getData().size() && mIndexPlay >= 0) {
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + programSeriesInfo.getData().get(mIndexPlay).getContentUUID());//添加历史记录
+                            }
+                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
-                        RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                     }
-                }
-            });
+                });
+            }
+
         }
     }
 

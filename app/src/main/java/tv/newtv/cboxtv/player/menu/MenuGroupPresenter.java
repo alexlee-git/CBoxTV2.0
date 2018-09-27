@@ -366,6 +366,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 }).excute();
     }
 
+
     private List<DBProgram> dataDispose(String result) {
         if (!TextUtils.isEmpty(result)) {
             Gson gson = new Gson();
@@ -515,6 +516,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 case KeyEvent.KEYCODE_DPAD_UP:
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
                         if (playProgram != null) {
+                            searchDataInDB();
+                            playProgram = menuGroup.getPlayProgram();
                             menuGroup.show(playProgram);
                         } else {
                             menuGroup.show();
