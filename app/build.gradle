@@ -86,7 +86,7 @@ android {
                     CHANNEL_ID_VALUE: "600001"
             ]
         }
-
+/*
         letv {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
@@ -97,7 +97,7 @@ android {
                     CHANNEL_ID_VALUE: "600002"
             ]
         }
-
+*/
         /*
         xsj {
             buildConfigField "int", "LOG_DEBUG", "5"
@@ -111,6 +111,7 @@ android {
         }
         */
 
+        /*
         panda {
 
             buildConfigField "int", "LOG_DEBUG", "5"
@@ -146,7 +147,7 @@ android {
                     CHANNEL_ID_VALUE: "500003"
             ]
         }
-
+*/
         /*
         ailang {
             buildConfigField "int", "LOG_DEBUG", "5"
