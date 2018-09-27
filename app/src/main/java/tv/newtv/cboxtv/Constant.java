@@ -144,7 +144,7 @@ public class Constant {
     public static final int LOG_NODE_COLLECT = 5;               // 收藏
     public static final int LOG_NODE_USER_CENTER = 8;               //用户中心
     public static final int LOG_NODE_ONE__DETAIL = 3;               // 某个影片的详情页
-    public static final int LOG_NODE_PAGE = 500;                 // 页面日志
+    public static final int LOG_NODE_PAGE = 19;                 // 页面日志
     public static final int LOG_NODE_RECOMMEND_POS = 501;        // 页面数据的推荐位日志
     public static final int LOG_NODE_SPECIAL_PAGE = 17;         // 专题页日志
     public static final int LOG_NODE_SCREEN = 700;               // 筛选页日志
