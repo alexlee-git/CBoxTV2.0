@@ -35,7 +35,6 @@ public class JumpUtil {
         for (String param : params) {
             String[] values = param.split("=");
             paramsMap.put(values[0], values.length > 1 ? values[1] : "");
-            Log.e("yml", "parseParamMap:----------- "  + values);
         }
         return paramsMap;
     }
@@ -134,7 +133,6 @@ public class JumpUtil {
         }
 
         Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID);
-//        String defaultuuid = "a1b1b1bc-479b-11e8-8bed-c7d8a7a18cc4";
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
             jumpIntent.putExtra(Constant.CONTENT_UUID, contentUUID);
