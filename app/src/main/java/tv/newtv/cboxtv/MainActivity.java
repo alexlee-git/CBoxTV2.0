@@ -163,7 +163,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                 }
             } else if (Constant.EXTERNAL_OPEN_URI.equals(mExternalAction)) {
                 if (mExternalParams != null) {
-                    Log.e("yml", "onCreate: 123////////////////////////"+mExternalParams );
                     getWindow().getDecorView().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -296,7 +295,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                                     editor.putString("versionmd5", versionBeen.getPackageMD5());
                                     editor.apply();
                                 }
-                                if (versionBeen.getUpgradeType() == 2) {//1
+                                if (versionBeen.getUpgradeType() == 1) {//1
                                     //强制升级
                                     initConstraintDialog(versionBeen, true);
                                 } else {
