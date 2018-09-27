@@ -14,9 +14,11 @@ import android.widget.Toast;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -94,6 +96,7 @@ public class ColumnPageActivity extends BaseActivity {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
         contentUUID = getIntent().getStringExtra("content_uuid");
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
             Toast.makeText(this, "栏目信息异常", Toast.LENGTH_SHORT).show();

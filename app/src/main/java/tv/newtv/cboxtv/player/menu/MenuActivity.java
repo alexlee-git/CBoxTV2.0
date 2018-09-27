@@ -188,8 +188,8 @@ public class MenuActivity extends BaseActivity {
         }
         return result;
     }
-
     private void send() {
+
         handler.removeMessages(0);
         handler.sendEmptyMessageDelayed(0, 3000);
     }
