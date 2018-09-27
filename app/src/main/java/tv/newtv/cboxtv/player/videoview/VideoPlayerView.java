@@ -92,6 +92,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (defaultFocusView != null) {
             if (defaultFocusView instanceof VideoPlayerView) {
                 VideoPlayerView.this.requestFocus();
+                if (videoTitle!=null)
+                videoTitle.setVisibility(VISIBLE);
+                if (full_screen!=null)
+                full_screen.setVisibility(VISIBLE);
             } else {
                 defaultFocusView.requestFocus();
             }
@@ -243,7 +247,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             setLayoutParams(layoutParams);
         }
     }
-
+    //添加播放源
     public void setSeriesInfo(ProgramSeriesInfo seriesInfo) {
         if (playCenter != null) {
             playCenter.addSeriesInfo(seriesInfo);
@@ -348,9 +352,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             return;
         }
 
-        if (isFullScreen()) {
-            ExitFullScreen();
-        }
+//        if (isFullScreen()) {
+//            ExitFullScreen();
+//        }
 
         stopPlay();
         setHintText("播放已结束");
@@ -391,4 +395,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     public void setisPlayingView(ImageView isPlaying) {
         this.isPlaying = isPlaying;
     }
+    public void setView(TextView videoTitle, ImageView full_screen) {
+        this.videoTitle =videoTitle;
+        this.full_screen=full_screen;
+    }
+    private TextView videoTitle;
+    private ImageView full_screen;
 }

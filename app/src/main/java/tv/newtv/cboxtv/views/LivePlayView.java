@@ -154,6 +154,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                                         }
                                     }
                                 });
+
                             }
                         });
             }
@@ -288,17 +289,17 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public boolean isVideoType() {
         return currentMode != MODE_IMAGE;
     }
-
+    //进入全屏
     public void enterFullScreen() {
         Log.d(TAG, "enterFullScreen");
-        if (isLive()) {
-            Log.d(TAG, "直播中，特殊处理");
-            if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
-                JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mPlayInfo.contentType,
-                        mPlayInfo.ContentUUID, mProgramInfo.getActionUri());
-                return;
-            }
-        }
+//        if (currentMode == MODE_LIVE) {
+//            Log.d(TAG, "直播中，特殊处理");
+//            if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
+//                JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mPlayInfo.contentType,
+//                        mPlayInfo.ContentUUID, mProgramInfo.getActionUri());
+//                return;
+//            }
+//        }
         if (mVideoPlayerView != null) {
             mVideoPlayerView.EnterFullScreen(MainNavManager.getInstance().getCurrentFragment()
                     .getActivity(), true);
@@ -455,6 +456,13 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
         postDelayed(playLiveRunnable, 2000);
+
+
+
+
+
+
+
     }
 
     private void startPlayPermissionsCheck(ProgramInfo programInfo) {
@@ -498,6 +506,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 if (getVisibility() == View.VISIBLE) {
                     NewTVLauncherPlayerViewManager.getInstance().release();
                 }
+                currentMode = MODE_IMAGE;
             }
         });
     }

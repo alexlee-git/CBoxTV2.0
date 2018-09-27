@@ -99,8 +99,8 @@ public class LiveVideoPlayerView extends FrameLayout {
             }
 
             @Override
-            public void onTimeout() {
-                Log.e(BallPlayerFragment.class.getSimpleName(), "onTimeout()");
+            public void onTimeout(int i) {
+                Log.e(BallPlayerFragment.class.getSimpleName(), "onTimeout()" + i);
             }
         });
     }
