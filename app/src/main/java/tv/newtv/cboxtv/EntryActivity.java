@@ -451,6 +451,7 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                 intent = new Intent(EntryActivity.this, MainActivity.class);
                 intent.putExtra("action", mExternalAction);
                 intent.putExtra("params", mAdItem.eventContent);
+                Log.e("yml", "enterMain: mad//"+mAdItem.eventContent);
             } else {
                 boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),
                         mExternalAction,

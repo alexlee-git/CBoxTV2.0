@@ -35,6 +35,7 @@ public class JumpUtil {
         for (String param : params) {
             String[] values = param.split("=");
             paramsMap.put(values[0], values.length > 1 ? values[1] : "");
+            Log.e("yml", "parseParamMap:----------- "  + values);
         }
         return paramsMap;
     }
@@ -53,7 +54,7 @@ public class JumpUtil {
         JumpUtil.activityJump(context, actionType, contentType,
                 parseParamMap(params), true);
         Log.e("Splash", "SplashActivity---> onCreate 接收到外部应用跳转需求, action : "
-                + action + " param : " + params);
+                + action + " param : " + params+"============="+ action);
         return true;
     }
 
@@ -84,6 +85,7 @@ public class JumpUtil {
                                     String contentUUID, String actionUri) {
         activityJump(context, actionType, contentType, contentUUID, actionUri, "");
     }
+
 
     public static void activityJump(Context context, String actionType, String contentType,
                                     HashMap<String, String> params, boolean fromOuter) {
@@ -132,12 +134,14 @@ public class JumpUtil {
         }
 
         Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID);
+//        String defaultuuid = "a1b1b1bc-479b-11e8-8bed-c7d8a7a18cc4";
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
             jumpIntent.putExtra(Constant.CONTENT_UUID, contentUUID);
             jumpIntent.putExtra(Constant.PAGE_UUID, contentUUID);
             jumpIntent.putExtra(Constant.ACTION_TYPE, actionType);
             jumpIntent.putExtra(Constant.ACTION_URI, actionUri);
+            jumpIntent.putExtra(Constant.DEFAULT_UUID,seriesSubUUID);
             jumpIntent.putExtra(Constant.ACTION_FROM, fromOuter);
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
