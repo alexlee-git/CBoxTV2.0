@@ -65,7 +65,6 @@ import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.bean.TimeBean;
 import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
-import tv.newtv.cboxtv.cms.mainPage.MainPageManager;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
@@ -507,7 +506,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
         Constant.isInitStatus = true;
 
-        MainPageManager.getInstance().unInit();
         ModuleLayoutManager.getInstance().unit();
         SuperScriptManager.getInstance().unit();
         MainNavManager.getInstance().unInit();

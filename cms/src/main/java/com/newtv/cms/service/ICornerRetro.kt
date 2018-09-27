@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface ICornerRetro {
+internal interface ICornerRetro {
     @GET("api/v31/{appkey}/{channelCode}/corner/corner.json")
     fun getCorner(@Path("appkey") appkey: String, @Path("channelCode") channelid: String):
             Observable<ResponseBody>

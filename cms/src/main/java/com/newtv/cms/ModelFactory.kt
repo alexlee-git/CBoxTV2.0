@@ -10,7 +10,7 @@ import com.newtv.cms.models.*
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-object ModelFactory {
+internal object ModelFactory {
 
     private val modelMap: HashMap<String, BaseModel> = HashMap()
 

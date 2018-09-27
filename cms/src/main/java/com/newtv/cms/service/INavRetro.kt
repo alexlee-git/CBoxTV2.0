@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/21
  */
-interface INavRetro  {
+internal interface INavRetro  {
     @GET("api/v31/{appkey}/{channelCode}/navigation/index.json")
     fun getNavInfo(@Path("appkey") appkey: String, @Path("channelCode") channelid: String):
             Observable<ResponseBody>

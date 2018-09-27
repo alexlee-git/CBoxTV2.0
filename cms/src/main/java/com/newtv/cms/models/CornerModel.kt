@@ -16,7 +16,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class CornerModel : BaseModel(), ICorner {
+internal class CornerModel : BaseModel(), ICorner {
     override fun getCorner(appkey: String, channelCode: String, observer: DataObserver<ModelResult<List<Corner>>>) {
         execute<ModelResult<List<Corner>>>(Request.corner.getCorner(appkey, channelCode),
                 object : TypeToken<ModelResult<List<Corner>>>() {}.type)

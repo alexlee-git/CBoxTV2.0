@@ -16,7 +16,13 @@ import java.lang.reflect.Type
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class Executor<T>(val observable: Observable<ResponseBody>, val type: Type) {
+internal class Executor<T>(val observable: Observable<ResponseBody>, val type: Type, val callback:
+IExecutor<T>?) {
+    var isCancel:Boolean = false
+
+    interface IExecutor<T> {
+        fun onCancel(executor: Executor<T>)
+    }
 
     var mObserver: DataObserver<T>? = null
     var mDisposable: Disposable? = null
@@ -27,11 +33,13 @@ class Executor<T>(val observable: Observable<ResponseBody>, val type: Type) {
     }
 
     fun cancel() {
+        isCancel = true
         mDisposable?.let {
             if (!it.isDisposed) it.dispose()
             mDisposable = null
         }
         mObserver = null
+        callback?.onCancel(this)
     }
 
     fun execute() {
@@ -47,6 +55,7 @@ class Executor<T>(val observable: Observable<ResponseBody>, val type: Type) {
                     }
 
                     override fun onNext(t: ResponseBody) {
+                        if(isCancel) return
                         try {
                             val result = Gson().fromJson<T>(t.string(), type)
                             mObserver?.onResult(result)

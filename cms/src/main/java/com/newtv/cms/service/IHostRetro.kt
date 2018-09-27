@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface IHostRetro {
+internal interface IHostRetro {
     @GET("api/v31/{appkey}/{channelCode}/tvlist/{left}/{right}/{contentID}.json")
     fun getTvList(@Path("appkey") appKey: String,
                   @Path("channelCode") channelid: String,

@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.cms.special.viewholder;
 import android.content.Context;
 import android.widget.FrameLayout;
 
+import com.newtv.cms.bean.Page;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
@@ -19,13 +21,8 @@ public class SpecialUniversalAdapter extends UniversalAdapter {
 
     private int selectPosition = -1;
 
-    public SpecialUniversalAdapter(Context context, List<ModuleItem> datas) {
+    public SpecialUniversalAdapter(Context context, List<Page> datas) {
         super(context, datas);
-    }
-
-    @Override
-    public void processFirstRowRecommendUpKeyEvent(FrameLayout frameLayout, int position, String layoutCode, ProgramInfo info) {
-
     }
 
     @Override

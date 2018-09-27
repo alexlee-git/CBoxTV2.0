@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import com.newtv.cms.bean.Nav;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.Constant;
@@ -23,12 +25,12 @@ public class LooperStaggeredAdapter extends FragmentStatePagerAdapter {
 
     private int current;
 
-    private List<NavListPageInfoResult.NavInfo> navInfoList;
+    private List<Nav> navInfoList;
     String parentId;
 
     private BaseFragment currentFragment;
 
-    public LooperStaggeredAdapter(FragmentManager fm, List<NavListPageInfoResult.NavInfo> datas, String parentId) {
+    public LooperStaggeredAdapter(FragmentManager fm, List<Nav> datas, String parentId) {
         super(fm);
         this.navInfoList = datas;
         this.parentId = parentId;
@@ -121,11 +123,11 @@ public class LooperStaggeredAdapter extends FragmentStatePagerAdapter {
         return LooperUtil.MAX_VALUE;
     }
 
-    private Fragment createContentFragment(NavListPageInfoResult.NavInfo navInfo) {
+    private Fragment createContentFragment(Nav navInfo) {
         Bundle bundle = new Bundle();
         bundle.putString("nav_text", navInfo.getTitle());
         bundle.putString("nav_parent_contentid", parentId);//上级导航的id
-        bundle.putString("content_id", getContentUUID(navInfo));
+        bundle.putString("content_id", navInfo.getId());
 
         ContentFragment fragment = ContentFragment.newInstance(bundle);
         //fragment.setNotifyNoPageDataListener(this);

@@ -11,7 +11,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface IFilter {
+interface IFilter : IService {
 
     /**
      * 获取筛选选项列表

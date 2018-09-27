@@ -10,7 +10,7 @@ package com.newtv.cms.bean
 
 data class Page(
     val programs: List<Program>,
-    val blockId: Int,
+    val blockId: String,
     val blockTitle: String,
     val blockImg: String,
     val haveBlockTitle: String,

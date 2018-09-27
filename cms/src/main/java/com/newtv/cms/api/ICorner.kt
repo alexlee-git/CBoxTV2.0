@@ -11,7 +11,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface ICorner {
+interface ICorner : IService {
 
     /**
      * 获取角标列表

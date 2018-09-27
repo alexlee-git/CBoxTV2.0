@@ -90,12 +90,12 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
         UniversalAdapter adapter = (UniversalAdapter) mRecyclerView.getAdapter();
         if (adapter == null) {
             mDatas = mModuleInfoResult.getDatas();
-            adapter = new SpecialUniversalAdapter(getContext(), mDatas);
-             Log.e(Constant.TAG, "DefaultSpecial_mDatas : "+mDatas);
-
-            adapter.setHasStableIds(true);
-            mAdapter = adapter;
-            mRecyclerView.setAdapter(mAdapter);
+//            adapter = new SpecialUniversalAdapter(getContext(), mDatas);
+//             Log.e(Constant.TAG, "DefaultSpecial_mDatas : "+mDatas);
+//
+//            adapter.setHasStableIds(true);
+//            mAdapter = adapter;
+//            mRecyclerView.setAdapter(mAdapter);
         } else {
             mDatas.clear();
             mDatas.addAll(mModuleInfoResult.getDatas());

@@ -11,10 +11,14 @@ import com.newtv.cms.bean.Nav
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface INav {
+interface INav : IService {
 
     /**
      * 获取导航数据
+     *
+     * @param appkey APP_KEY
+     * @param channelId CHANNEL_ID
+     * @param observer 回调
      */
     fun getNav(appkey: String, channelId: String, observer:
     DataObserver<ModelResult<List<Nav>>>)

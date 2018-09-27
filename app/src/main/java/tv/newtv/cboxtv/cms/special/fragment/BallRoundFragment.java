@@ -57,7 +57,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
 
             @Override
             public void onItemClick(ProgramInfo item,int index) {
-                JumpUtil.activityJump(LauncherApplication.AppContext,item);
+//                JumpUtil.activityJump(LauncherApplication.AppContext,item);
             }
 
             @Override

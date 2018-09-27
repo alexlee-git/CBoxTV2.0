@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/25
  */
-interface IContentRetro {
+internal interface IContentRetro {
     @GET("api/v31/{appkey}/{channelCode}/content/{left}/{right}/{contentID}.json")
     fun getInfo(@Path("appkey") appkey: String,
                          @Path("channelCode") channelId: String,

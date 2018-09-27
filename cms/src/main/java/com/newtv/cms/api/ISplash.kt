@@ -11,7 +11,7 @@ import com.newtv.cms.bean.Splash
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface ISplash {
+interface ISplash : IService {
     /**
      * 获取开机图片列表
      */

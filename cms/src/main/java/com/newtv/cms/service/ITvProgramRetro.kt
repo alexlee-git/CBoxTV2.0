@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface ITvProgramRetro {
+internal interface ITvProgramRetro {
 
     /**
      * 最新一期电视栏目

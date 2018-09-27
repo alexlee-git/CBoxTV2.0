@@ -15,7 +15,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class ContentModel : BaseModel(), IContent {
+internal class ContentModel : BaseModel(), IContent {
 
     override fun getInfo(appkey: String, channelId: String, contentId: String,
                          observer: DataObserver<ModelResult<Content>>) {

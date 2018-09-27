@@ -11,11 +11,11 @@ import com.newtv.cms.bean.Page
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface IPage {
+interface IPage : IService {
 
     /**
      * 获取页面数据
      */
     fun getPage(appkey:String,channelId:String,pageId:String,observer:
-    DataObserver<ModelResult<Page>>)
+    DataObserver<ModelResult<List<Page>>>)
 }

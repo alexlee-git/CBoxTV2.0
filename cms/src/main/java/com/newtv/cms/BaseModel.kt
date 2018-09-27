@@ -11,11 +11,31 @@ import java.lang.reflect.Type
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-abstract class BaseModel {
+internal abstract class BaseModel {
+
+    private val executors: ArrayList<Executor<*>> = ArrayList()
+
+    fun stop() {
+        for (exe: Executor<*> in executors) {
+            exe.cancel()
+        }
+    }
+
+    fun destroy() {
+        stop()
+        executors.clear()
+    }
+
     abstract fun getType(): String
 
     fun <T> execute(observable: Observable<ResponseBody>, type: Type): Executor<T> {
-        return Executor(observable, type)
+        val executor: Executor<T> = Executor(observable, type, object : Executor.IExecutor<T> {
+            override fun onCancel(executor: Executor<T>) {
+                executors.remove(executor)
+            }
+        })
+        executors.add(executor)
+        return executor
     }
 
     fun getLeft(contentId: String): String {

@@ -70,7 +70,7 @@ public class ExitPromptLikeAdapter extends BaseRecyclerAdapter<SearchResultInfos
                     info.setContentUUID(entity.getUUID());
                     info.setActionUri(entity.getActionUri());
                     info.setContentType(entity.getContentType());
-                    JumpUtil.activityJump(mContext,info);
+//                    JumpUtil.activityJump(mContext,info);
                 }
             });
         }

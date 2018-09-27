@@ -12,7 +12,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface ICategory {
+interface ICategory : IService {
 
     /**
      * 获取指定EPG下栏目树，包含一级栏目和二级栏目

@@ -16,7 +16,7 @@ import com.newtv.cms.bean.Splash
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class SplashModel : BaseModel(), ISplash {
+internal class SplashModel : BaseModel(), ISplash {
     override fun getType(): String {
         return Model.MODEL_SPLASH
     }

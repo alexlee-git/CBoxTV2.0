@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/25
  */
-interface IPageRetro {
+internal interface IPageRetro {
     @GET("api/v31/{appkey}/{channelCode}/page/{pageID}.json")
     fun getPageData(@Path("appkey") appKey: String,
                     @Path("channelCode") channelid: String,

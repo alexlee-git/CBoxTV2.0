@@ -310,7 +310,7 @@ public class SearchFragment extends BaseFragment {
 //                        intent.putExtra("content_type", program.getContentType());
 //                        intent.putExtra("content_uuid", program.getContentUUID());
 //                        startActivity(intent);
-                        JumpUtil.activityJump(LauncherApplication.AppContext, program);
+//                        JumpUtil.activityJump(LauncherApplication.AppContext, program);
 
                     } catch (Exception e) {
                         LogUtils.e(e);

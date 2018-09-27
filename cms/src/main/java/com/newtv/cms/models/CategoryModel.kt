@@ -17,7 +17,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class CategoryModel : BaseModel(), ICategory {
+internal class CategoryModel : BaseModel(), ICategory {
 
     override fun getType(): String {
         return Model.MODEL_CATEGORY
@@ -25,8 +25,9 @@ class CategoryModel : BaseModel(), ICategory {
 
     override fun getCategoryTree(appkey: String, channelCode: String,
                                  observer: DataObserver<ModelResult<List<CategoryTreeNode>>>) {
-        execute<ModelResult<List<CategoryTreeNode>>>(Request.category.getCategoryTree(appkey,
-                channelCode), object : TypeToken<ModelResult<List<CategoryTreeNode>>>() {}.type)
+        execute<ModelResult<List<CategoryTreeNode>>>(
+                Request.category.getCategoryTree(appkey, channelCode),
+                object : TypeToken<ModelResult<List<CategoryTreeNode>>>() {}.type)
                 .observer(observer)
                 .execute()
     }

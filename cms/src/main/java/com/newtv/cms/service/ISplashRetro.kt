@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface ISplashRetro {
+internal interface ISplashRetro {
     @GET("api/v31/{appkey}/{channelCode}/logo/startuplogo.json")
     fun getList(@Path("appkey") appKey: String,
                     @Path("channelCode") channelid: String): Observable<ResponseBody>

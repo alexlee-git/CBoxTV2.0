@@ -16,15 +16,15 @@ import com.newtv.cms.bean.Page
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class PageModel : BaseModel(), IPage {
+internal class PageModel : BaseModel(), IPage {
     override fun getType(): String {
         return Model.MODEL_PAGE
     }
 
     override fun getPage(appkey: String, channelId: String, pageId: String,
-                         observer: DataObserver<ModelResult<Page>>) {
-        execute<ModelResult<Page>>(Request.page.getPageData(appkey, channelId, pageId),
-                object : TypeToken<ModelResult<Page>>() {}.type)
+                         observer: DataObserver<ModelResult<List<Page>>>) {
+        execute<ModelResult<List<Page>>>(Request.page.getPageData(appkey, channelId, pageId),
+                object : TypeToken<ModelResult<List<Page>>>() {}.type)
                 .observer(observer)
                 .execute()
     }

@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Program;
+
 import java.util.HashMap;
 
 import tv.newtv.cboxtv.Constant;
@@ -21,7 +23,6 @@ import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
@@ -57,23 +58,23 @@ public class JumpUtil {
         return true;
     }
 
-    public static void activityJump(Context context, ProgramInfo info) {
+    public static void activityJump(Context context, Program info) {
         // fix bug LETVYSYY-51
         if (!NetworkManager.getInstance().isConnected()) {
             Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Intent jumpIntent = getIntent(context, info.getActionType(), info.getContentType(), info
-                .getContentUUID(), info.getSeriesSubUUID());
+        Intent jumpIntent = getIntent(context, info.getL_actionType(), info.getContentType(), info
+                .getContentId(), info.getSeriesSubUUID());
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, info.getContentType());
-            jumpIntent.putExtra(Constant.CONTENT_UUID, info.getContentUUID());
-            jumpIntent.putExtra(Constant.PAGE_UUID, info.getContentUUID());
-            jumpIntent.putExtra(Constant.ACTION_TYPE, info.getActionType());
-            jumpIntent.putExtra(Constant.ACTION_URI, info.getActionUri());
-            jumpIntent.putExtra(Constant.DEFAULT_UUID, info.getFocusPageUUID());
-            jumpIntent.putExtra(Constant.FOCUSPARAM, info.getFocusParam());
+            jumpIntent.putExtra(Constant.CONTENT_UUID, info.getContentId());
+            jumpIntent.putExtra(Constant.PAGE_UUID, info.getContentId());
+            jumpIntent.putExtra(Constant.ACTION_TYPE, info.getL_actionType());
+            jumpIntent.putExtra(Constant.ACTION_URI, info.getL_actionUri());
+            jumpIntent.putExtra(Constant.DEFAULT_UUID, info.getL_focusId());
+            jumpIntent.putExtra(Constant.FOCUSPARAM, info.getL_focusParam());
 
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);

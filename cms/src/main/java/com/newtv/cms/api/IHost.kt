@@ -12,7 +12,7 @@ import com.newtv.cms.bean.HostProgram
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface IHost {
+interface IHost : IService {
 
     /**
      * 获取主治人主持的电视栏目列表

@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,8 +35,6 @@ import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavUtil;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
@@ -61,7 +61,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
 
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
-    private List<ModuleItem> mDatas;
+    private List<Page> mDatas;
     private Context mContext;
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
@@ -87,14 +87,14 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     }
 
 
-    public UniversalAdapter(Context context, List<ModuleItem> datas) {
+    public UniversalAdapter(Context context, List<Page> datas) {
         mContext = context;
         mDatas = datas;
         mSpringInterpolator = new OvershootInterpolator(2.2f);
     }
 
     public String getFirstViewId() {
-        ModuleItem moduleItem = mDatas.get(0);
+        Page moduleItem = mDatas.get(0);
         String layoutCode = moduleItem.getLayoutCode(); // 形如"layout_002"
         if (TextUtils.isEmpty(layoutCode)) return null;
         String layoutId = layoutCode.substring(layoutCode.indexOf("_") + 1); // 形如"002"
@@ -136,7 +136,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     @Override
     public void onBindViewHolder(UniversalViewHolder holder, final int position) {
         try {
-            final ModuleItem moduleItem = mDatas.get(position); // 这里mData.get(positon)拿到的是一行的信息
+            final Page moduleItem = mDatas.get(position); // 这里mData.get(positon)拿到的是一行的信息
             if (moduleItem == null) {
                 return;
             }
@@ -184,8 +184,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
             Log.i(TAG, "layoutCode=" + layoutCode);
             for (int i = 0; i < posSize; ++i) {
-                if (moduleItem.getDatas().size() - 1 < i) break;
-                final ProgramInfo info = moduleItem.getDatas().get(i);
+                if (moduleItem.getPrograms().size() - 1 < i) break;
+                final Program info = moduleItem.getPrograms().get(i);
 
                 // 拿1号组件的1号推荐位为例, 其子海报控件的id为 : cell_001_1_poster
                 final String cellCode = info.getCellCode();
@@ -215,18 +215,18 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                 if (posterView instanceof RecycleImageView) {
                     recycleImageView = (RecycleImageView) posterView;
                 } else if (posterView instanceof LivePlayView) {
-                    ((LivePlayView) posterView).setProgramInfo(info);
+//                    ((LivePlayView) posterView).setProgramInfo(info);
                     ((LivePlayView) posterView).setUUID(PlayerUUID);
                     recycleImageView = ((LivePlayView) posterView).getPosterImageView();
                 }
 
                 if (recycleImageView != null) {
-                    if (info.getIsAd() != 1) {
+                    if (info.isAd() != 1) {
                         showPosterByCMS(recycleImageView, info.getImg(), hasCorner);
                     } else {
                         Log.e(Constant.TAG, "block id : " + moduleItem.getBlockId() + ", cellcode" +
                                 " : "
-                                + info.getCellCode() + ", isAd : " + info.getIsAd());
+                                + info.getCellCode() + ", isAd : " + info.isAd());
                         showPosterByAD(moduleItem, recycleImageView, info, hasCorner);
                     }
                 }
@@ -299,8 +299,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                     }
                     */
 
-                    CmsLiveUtil.isInPlay(info.getLiveLoopType(), info.getLiveParam(), info
-                            .getPlayStartTime(), info.getPlayEndTime(), frameLayout);
+//                    CmsLiveUtil.isInPlay(info.getLiveLoopType(), info.getLiveParam(), info
+//                            .getPlayStartTime(), info.getPlayEndTime(), frameLayout);
 
                     // 按需添加角标控件
                     processSuperscript(layoutCode, info, frameLayout);
@@ -337,8 +337,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     /**
      * 推荐位显示广告
      */
-    private void showPosterByAD(final ModuleItem moduleItem, final RecycleImageView imageView, final
-    ProgramInfo info, final boolean hasCorner) {
+    private void showPosterByAD(final Page moduleItem, final RecycleImageView imageView, final
+    Program info, final boolean hasCorner) {
         if (imageView == null) {
             return;
         }
@@ -394,7 +394,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     }
 
     public void processFirstRowRecommendUpKeyEvent(FrameLayout frameLayout, int position, String
-            layoutCode, ProgramInfo info) {
+            layoutCode, Program info) {
         // 对于个panel第1排的推荐位需要监听向上按键时, 让其选中其所属的导航条目
         if (position == 0 && ModuleLayoutManager.getInstance().isNeedInterceptKeyEvent
                 (layoutCode, info.getCellCode())) {
@@ -433,7 +433,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     @Override
     public int getItemViewType(int position) {
         try {
-            ModuleItem item = mDatas.get(position);
+            Page item = mDatas.get(position);
             if (item != null) {
                 String layoutCode = item.getLayoutCode();
                 if (!TextUtils.isEmpty(layoutCode)) {
@@ -559,7 +559,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         }
     }
 
-    private void processOpenCell(View view, ProgramInfo info, String blockId, String layoutCode) {
+    private void processOpenCell(View view, Program info, String blockId, String layoutCode) {
         if (!NetworkManager.getInstance().isConnected()) {
             Toast.makeText(mContext, R.string.net_error, Toast.LENGTH_SHORT).show();
             return;
@@ -572,10 +572,10 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                 .append(blockId + "+")
                 .append(layoutCode + "+")
                 .append(info.getCellCode() + ",")
-                .append(info.getContentUUID() + ",")
+                .append(info.getContentId() + ",")
                 .append(info.getContentType() + ",")
-                .append(info.getActionType() + ",")
-                .append(info.getActionUri())
+                .append(info.getL_actionType() + ",")
+                .append(info.getL_actionUri())
                 .trimToSize();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_RECOMMEND, logBuff
@@ -591,27 +591,27 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     }
 
 
-    private void processSuperscript(String layoutCode, ProgramInfo info, ViewGroup parent) {
+    private void processSuperscript(String layoutCode, Program info, ViewGroup parent) {
         if (info == null || parent == null) {
             return;
         }
 
-        String leftTopUrl = info.getlSuperScript();
+        String leftTopUrl = info.getLSuperScript();
         if (!TextUtils.isEmpty(leftTopUrl)) {
             addLeftTopSuperscript(leftTopUrl, parent);
         }
 
-        String rightTopUrl = info.getrSuperScript();
+        String rightTopUrl = info.getRSuperScript();
         if (!TextUtils.isEmpty(rightTopUrl)) {
             addRightTopSuperscript(rightTopUrl, parent);
         }
 
-        String leftBottomUrl = info.getlSubScript();
+        String leftBottomUrl = info.getLSubScript();
         if (!TextUtils.isEmpty(leftBottomUrl)) {
             addLeftBottomSuperscript(layoutCode, leftBottomUrl, parent);
         }
 
-        String rightBottomUrl = info.getrSubScript();
+        String rightBottomUrl = info.getRSubScript();
         if (!TextUtils.isEmpty(rightBottomUrl)) {
             addRightBottomSuperscript(layoutCode, rightBottomUrl, parent);
         }
@@ -700,7 +700,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
      * 1.如果是5和8号组件, 只在海报上面添加一个标题, 展示subtitle
      * 2.对于其余组件, 在海报上添加两个TextView,负责展示Title和SubTitles
      */
-    private void processTitle(String layoutCode, ProgramInfo info, ViewGroup framelayout,
+    private void processTitle(String layoutCode, Program info, ViewGroup framelayout,
                               RecycleImageView recycleImageView) {
         if (TextUtils.isEmpty(layoutCode)) {
             return;

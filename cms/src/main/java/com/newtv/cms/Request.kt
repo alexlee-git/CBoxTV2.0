@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-object Request {
+internal object Request {
     private val logInterceptor = HttpLoggingInterceptor()
 
     init {

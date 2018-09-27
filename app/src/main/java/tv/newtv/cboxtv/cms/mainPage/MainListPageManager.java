@@ -13,21 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.Collections;
-import java.util.Comparator;
+import com.newtv.cms.bean.Nav;
+
 import java.util.List;
 import java.util.Map;
 
 import tv.newtv.cboxtv.BgChangManager;
 import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.listPage.model.NavListPageInfoResult;
-import tv.newtv.cboxtv.cms.listPage.presenter.IListPagePresenter;
-import tv.newtv.cboxtv.cms.listPage.presenter.ListPagePresenter;
-import tv.newtv.cboxtv.cms.listPage.view.ListPageView;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 import tv.newtv.cboxtv.cms.mainPage.model.INotifyNavItemSelectedListener;
 import tv.newtv.cboxtv.cms.mainPage.model.INotifyNoPageDataListener;
@@ -41,20 +35,19 @@ import tv.newtv.cboxtv.views.MenuRecycleView;
 import tv.newtv.cboxtv.views.RecycleImageView;
 
 
-public class MainListPageManager implements ListPageView,
+public class MainListPageManager implements
         INotifyPageSelectedListener,
         INotifyNavItemSelectedListener,
         INotifyNoPageDataListener {
 
     private String mCurNavDataFrom;
     private FragmentManager fragmentManager;
-    private IListPagePresenter mPresenter;
     private NewTVViewPager mViewPager;
     private Context mContext;
     private MenuRecycleView mCircleMenuRv;
     private RecyclerView mNavBar;
 
-    private List<NavListPageInfoResult.NavInfo> mNavInfos;
+    private List<Nav> mNavInfos;
     private boolean isNoPageData;
     private LooperStaggeredAdapter mViewPagerAdapter;
     private SharedPreferences mSharedPreferences;
@@ -68,6 +61,10 @@ public class MainListPageManager implements ListPageView,
     private int Navbarfoused = -1;
     private String contentId;
 
+    public MainListPageManager() {
+
+    }
+
     public void unInit() {
         mViewPager = null;
         mNavBar = null;
@@ -79,16 +76,6 @@ public class MainListPageManager implements ListPageView,
         mNavBar = null;
         mCircleMenuRv = null;
         mContext = null;
-        mPresenter = null;
-
-        if (mNavInfos != null) {
-            mNavInfos.clear();
-            //mNavInfos = null;
-        }
-    }
-
-    public MainListPageManager() {
-
     }
 
     // 外部跳转action、params
@@ -145,29 +132,11 @@ public class MainListPageManager implements ListPageView,
         return true;
     }
 
-    private String getContentUUID(NavListPageInfoResult.NavInfo navInfo) {
-        String result = "";
-        if (Constant.OPEN_PAGE.equals(navInfo.getActionType())) {
-            result = navInfo.getContentID();
-        } else if (Constant.OPEN_CHANNEL.equals(navInfo.getActionType())) {
-            result = navInfo.getActionURI();
-        } else {
-            result = navInfo.getContentID();
-        }
-
-        if (result == null) {
-            result = "";
-        }
-
-        return result;
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
-    public void inflateListPage(final NavListPageInfoResult mNavListPageInfoResult, final String
+    public void inflateListPage(final List<Nav> navList, final String
             from) {
 
-        if (mNavListPageInfoResult == null) {
+        if (navList == null) {
             Log.e(Constant.TAG, "navigation data invalid");
             // Toast.makeText(mContext, "-------未获取到导航栏数据, 请检查设备是否已联网", Toast.LENGTH_LONG).show();
             return;
@@ -184,32 +153,14 @@ public class MainListPageManager implements ListPageView,
 
         mCurNavDataFrom = "";
 
-        mNavInfos = mNavListPageInfoResult.getData();
+        mNavInfos = navList;
         if (mNavInfos == null || mNavInfos.size() == 0) {
             return;
         }
 
-        for(NavListPageInfoResult.NavInfo navInfo : mNavInfos){
-            String fragmentUUID = getContentUUID(navInfo);
-            BgChangManager.getInstance().add(contentId,fragmentUUID);
-        }
-
-        try {
-            Collections.sort(mNavInfos, new Comparator<NavListPageInfoResult.NavInfo>() {
-                @Override
-                public int compare(NavListPageInfoResult.NavInfo navInfo, NavListPageInfoResult
-                        .NavInfo t1) {
-                    int leftSortNum = Integer.parseInt(navInfo.getSortNum());
-                    int rightSortNum = Integer.parseInt(t1.getSortNum());
-
-                    if (leftSortNum >= rightSortNum) {
-                        return 0;
-                    }
-                    return -1;
-                }
-            });
-        } catch (Exception e) {
-            LogUtils.e(e);
+        for (Nav navInfo : mNavInfos) {
+            String fragmentUUID = navInfo.getId();
+            BgChangManager.getInstance().add(contentId, fragmentUUID);
         }
 
         if (defaultPageIdx == 0) {
@@ -217,55 +168,53 @@ public class MainListPageManager implements ListPageView,
             int count = mNavInfos.size();
             boolean contain = false;
             for (int index = 0; index < count; index++) {
-                NavListPageInfoResult.NavInfo navInfo = mNavInfos.get(index);
+                Nav navInfo = mNavInfos.get(index);
 
-                if (currentFocus.equals(getContentUUID(navInfo))) {
+                if (currentFocus.equals(navInfo.getId())) {
                     defaultPageIdx = index;
                     contain = true;
                     break;
                 }
 
-                if (mNavListPageInfoResult.getDefaultFocus().equals(navInfo.getContentID())) {
-                    defaultPageIdx = index;
-                }
+//                if (mNavListPageInfoResult.getDefaultFocus().equals(navInfo.getContentID())) {
+//                    defaultPageIdx = index;
+//                }
             }
-            if (!contain) currentFocus = mNavListPageInfoResult.getDefaultFocus();
+//            if (!contain) currentFocus = mNavListPageInfoResult.getDefaultFocus();
             if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
-                NavListPageInfoResult.NavInfo navInfo = mNavInfos.get(Navbarfoused);
-                currentFocus = navInfo.getContentID();
+                Nav navInfo = mNavInfos.get(Navbarfoused);
+                currentFocus = navInfo.getId();
             }
         }
 
         PlayerConfig.getInstance().setSecondChannelId(currentFocus);
-        MenuRecycleView.MenuAdapter<NavListPageInfoResult.NavInfo> menuAdapter = null;
+        MenuRecycleView.MenuAdapter<Nav> menuAdapter = null;
         mCircleMenuRv.setFocusable(true);
         if (mCircleMenuRv.getAdapter() == null) {
             menuAdapter = new MenuRecycleView.MenuAdapter<>
                     (mContext, mCircleMenuRv, R.layout.view_sec_list_item, false);
 
-            mCircleMenuRv.setMenuFactory(new MenuRecycleView.MenuFactory<NavListPageInfoResult
-                    .NavInfo>() {
+            mCircleMenuRv.setMenuFactory(new MenuRecycleView.MenuFactory<Nav>() {
 
                 @Override
-                public void onItemSelected(int position, NavListPageInfoResult.NavInfo
-                        value) {
+                public void onItemSelected(int position, Nav value) {
 
-                    if (mNavListPageInfoResult.getData().size() == 0 || mViewPager == null) return;
+                    if (mNavInfos.size() == 0 || mViewPager == null) return;
 
                     /**/
-                    int select = position % mNavListPageInfoResult.getData().size();
-                    NavListPageInfoResult.NavInfo navInfo = mNavListPageInfoResult.getData().get(select);
-                    String uuid = getContentUUID(navInfo);
+                    int select = position % mNavInfos.size();
+                    Nav navInfo = mNavInfos.get(select);
+                    String uuid = navInfo.getId();
                     PlayerConfig.getInstance().setSecondChannelId(uuid);
-                    BgChangManager.getInstance().setCurrent(mContext,uuid);
+                    BgChangManager.getInstance().setCurrent(mContext, uuid);
 
-                    if (mViewPager.getCurrentItem() % mNavListPageInfoResult.getData().size() ==
-                            position % mNavListPageInfoResult.getData().size()) {
+                    if (mViewPager.getCurrentItem() % mNavInfos.size() ==
+                            position % mNavInfos.size()) {
                         return;
                     }
                     mViewPagerAdapter.setShowItem(position);
                     mViewPager.setCurrentItem(position);
-                    currentFocus = value.getContentID();
+                    currentFocus = value.getId();
 
                     if (!TextUtils.isEmpty(uuid)) {
                         mSharedPreferences.edit().putString("page-defaultFocus", uuid).apply();
@@ -281,19 +230,19 @@ public class MainListPageManager implements ListPageView,
 
                 @Override
                 public void onBindView(RecyclerView.ViewHolder
-                                               holder, NavListPageInfoResult.NavInfo
+                                               holder, Nav
                                                value, int position) {
-                    if (!TextUtils.isEmpty(value.getIcon1())) {
-                        ((ListPageMenuViewHolder) holder).setIcon(value.getIcon1());
+                    if (!TextUtils.isEmpty(value.getFocusIcon())) {
+                        ((ListPageMenuViewHolder) holder).setIcon(value.getFocusIcon());
                     } else {
                         ((ListPageMenuViewHolder) holder).setText(value.getTitle());
                     }
                 }
 
                 @Override
-                public boolean isDefaultTabItem(NavListPageInfoResult.NavInfo value,
+                public boolean isDefaultTabItem(Nav value,
                                                 int position) {
-                    return getContentUUID(value).equals(currentFocus);
+                    return value.getId().equals(currentFocus);
                 }
 
                 @Override
@@ -327,15 +276,15 @@ public class MainListPageManager implements ListPageView,
 
         // 创建页面区域的适配器
         if (mViewPagerAdapter == null) {
-            mViewPagerAdapter = new LooperStaggeredAdapter(fragmentManager, mNavListPageInfoResult.getData(), parentId);
+            mViewPagerAdapter = new LooperStaggeredAdapter(fragmentManager, mNavInfos, parentId);
             //先强制设定跳转到指定页面
-            int MiddleValue = LooperUtil.getMiddleValue(mNavListPageInfoResult.getData().size());
+            int MiddleValue = LooperUtil.getMiddleValue(mNavInfos.size());
             int defaultIndex = MiddleValue + defaultPageIdx;
             mViewPager.setAdapter(mViewPagerAdapter);
             mViewPagerAdapter.setShowItem(defaultIndex);
             mViewPager.setCurrentItem(defaultIndex, false);
 
-            currentPosition = defaultIndex % mNavListPageInfoResult.getData().size();
+            currentPosition = defaultIndex % mNavInfos.size();
             currentFragment = (BaseFragment) mViewPagerAdapter.getItem(defaultIndex);
             setContentFragmentRecyclerViewToNavFragment();
 
@@ -350,12 +299,12 @@ public class MainListPageManager implements ListPageView,
 
                 @Override
                 public void onPageSelected(int position) {
-                    currentPosition = position % mNavListPageInfoResult.getData().size();
+                    currentPosition = position % mNavInfos.size();
                     // currentFragment = (ContentFragment) mViewPagerAdapter.getItem(position);
 
-                    if(mNavListPageInfoResult.getData().size() > currentPosition){
-                        currentTag = mNavListPageInfoResult.getData().get(currentPosition)
-                                .getContentID();
+                    if (mNavInfos.size() > currentPosition) {
+                        currentTag = mNavInfos.get(currentPosition)
+                                .getId();
                     }
                     Log.e(Constant.TAG, "viewpager onPageSelected pos : " + currentPosition);
 
@@ -366,7 +315,8 @@ public class MainListPageManager implements ListPageView,
                 public void onPageScrollStateChanged(int state) {
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
                         currentFragment = mViewPagerAdapter.getCurrentFragment();
-                        //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
+                        //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager
+                        // .getCurrentItem());
                         if (currentFragment != null) {
                             currentFragment.onEnterComplete();
                         }
@@ -379,7 +329,8 @@ public class MainListPageManager implements ListPageView,
         }
 
         if ("server".equals(from)) {
-            //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager.getCurrentItem());
+            //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager
+            // .getCurrentItem());
             currentFragment = mViewPagerAdapter.getCurrentFragment();
             setContentFragmentRecyclerViewToNavFragment();
         }
@@ -393,18 +344,18 @@ public class MainListPageManager implements ListPageView,
      */
     private void secondNavLogUpload(int position) {
         if (mNavInfos != null && position <= (mNavInfos.size() - 1)) {
-            NavListPageInfoResult.NavInfo info = mNavInfos.get(position);
-            String result = getContentUUID(info);
+            Nav info = mNavInfos.get(position);
             if (info != null) {
+                String result = info.getId();
                 StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_8);
-                logBuff.append(result + ",")
+                logBuff.append(result)
+                        .append(",")
                         .append(position)
                         .trimToSize();
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
                         logBuff.toString());
-
+                PlayerConfig.getInstance().setSecondChannelId(result);
             }
-            PlayerConfig.getInstance().setSecondChannelId(result);
         }
     }
 
@@ -421,19 +372,13 @@ public class MainListPageManager implements ListPageView,
         }
     }
 
-    @Override
-    public void onFailed(String desc) {
-        Toast.makeText(LauncherApplication.AppContext, "数据解析错误", Toast.LENGTH_SHORT).show();
-    }
-
     public void init(NavFragment navFragment, Context context, FragmentManager manager,
-                     Map<String, View> widgets, String
-                             id) {
+                     Map<String, View> widgets, String id, List<Nav> navData) {
+        mNavInfos = navData;
         this.navFragment = navFragment;
         parentId = id;
         mContext = context;
         fragmentManager = manager;
-        mPresenter = new ListPagePresenter(this, LauncherApplication.AppContext);
         mViewPager = (NewTVViewPager) widgets.get("viewpager");
         mCircleMenuRv = (MenuRecycleView) widgets.get("nav");
         mCircleMenuRv.setNeedTransPosition(false);
@@ -445,18 +390,13 @@ public class MainListPageManager implements ListPageView,
 
         //创建共享参数，存储一些需要的信息
         initSharedPreferences();
+
+        inflateListPage(mNavInfos,"server");
     }
 
     //创建共享参数，存储一些需要的信息
     private void initSharedPreferences() {
         mSharedPreferences = mContext.getSharedPreferences("config", 0);
-    }
-
-    public void requestNavData(String id) {
-        contentId = id;
-        if (mPresenter != null) {
-            mPresenter.requestListPageNav(id);
-        }
     }
 
     @Override

@@ -7,7 +7,8 @@ package com.newtv.cms
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-object Model {
+internal object Model {
+
     const val MODEL_NAV: String = "Nav"             //首页导航
     const val MODEL_CONTENT: String = "Content"     //内容
     const val MODEL_PAGE: String = "Page"           //页面内容
@@ -17,4 +18,9 @@ object Model {
     const val MODEL_HOST: String = "Host"           //主持人
     const val MODEL_TV_PROGRAM: String = "TvProgram"       //电视栏目
     const val MODEL_FILTER: String = "Filter"       //筛选
+
+    fun <T> findModel(type: String): T? {
+        return ModelFactory.findModel<T>(type)
+    }
+
 }

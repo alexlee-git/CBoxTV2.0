@@ -11,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.newtv.cms.bean.Nav;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.MainListPageManager;
-import tv.newtv.cboxtv.cms.mainPage.MainPageManager;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.views.MenuRecycleView;
@@ -33,19 +35,26 @@ public class NavFragment extends BaseFragment {
     private NewTVViewPager viewPager;
     private MenuRecycleView mMenuNav;
     private RelativeLayout mRootLayout;
+    private List<Nav> mMenus;
     private View rootView;
 
     private String mExternalAction, mExternalParams;
+
+    public static NavFragment newInstance(Bundle paramBundle) {
+        NavFragment fragment = new NavFragment();
+        fragment.setArguments(paramBundle);
+        return fragment;
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mRootLayout = null;
-        if(mMenuNav != null){
+        if (mMenuNav != null) {
             mMenuNav.setAdapter(null);
             mMenuNav = null;
         }
-        if(viewPager != null){
+        if (viewPager != null) {
             viewPager.destroy();
             viewPager = null;
         }
@@ -56,12 +65,6 @@ public class NavFragment extends BaseFragment {
         }
     }
 
-    public static NavFragment newInstance(Bundle paramBundle) {
-        NavFragment fragment = new NavFragment();
-        fragment.setArguments(paramBundle);
-        return fragment;
-    }
-
     @Override
     protected void onInvisible() {
         super.onInvisible();
@@ -70,7 +73,7 @@ public class NavFragment extends BaseFragment {
 
     public void requestMenuFocus() {
         if (mMenuNav.hasFocus()) return;
-        if (mMenuNav.getScrollState()== RecyclerView.SCROLL_STATE_IDLE){
+        if (mMenuNav.getScrollState() == RecyclerView.SCROLL_STATE_IDLE) {
             mMenuNav.requestDefaultFocus(true);
         }
     }
@@ -84,11 +87,12 @@ public class NavFragment extends BaseFragment {
             contentId = bundle.getString("content_id");
             mExternalAction = bundle.getString("action");
             mExternalParams = bundle.getString("params");
+            if (bundle.containsKey("child")) {
+                mMenus = bundle.getParcelableArrayList("child");
+            }
         }
         initSharedPreferences();
         defaultFocus = mSharedPreferences.getString("defaultFocus", "");
-        Log.e(Constant.TAG, "fragment onCreate navText : " + param + ", noData : " +
-                MainPageManager.getInstance().isNoPageData());
         super.onCreate(savedInstanceState);
     }
 
@@ -131,8 +135,9 @@ public class NavFragment extends BaseFragment {
             mainPageWidgets.put("viewpager", viewPager);
             mainPageWidgets.put("nav", mMenuNav);
             mainListPageManager = new MainListPageManager();
-            mainListPageManager.init(this,getActivity(), getChildFragmentManager(), mainPageWidgets,
-                    contentId);
+            mainListPageManager.init(this, getActivity(), getChildFragmentManager(),
+                    mainPageWidgets,
+                    contentId, mMenus);
             mainListPageManager.setActionIntent(mExternalAction, mExternalParams);
         }
 
@@ -142,17 +147,12 @@ public class NavFragment extends BaseFragment {
     @Override
     protected void lazyLoad() {
         super.lazyLoad();
-
-        if (mainListPageManager.isEmpty())
-            mainListPageManager.requestNavData(contentId);
-//        mainListPageManager.setTwoMenuData();
     }
 
     //创建共享参数，存储一些需要的信息
     private void initSharedPreferences() {
         mSharedPreferences = getContext().getSharedPreferences("config", 0);
     }
-
 
 
     @Override

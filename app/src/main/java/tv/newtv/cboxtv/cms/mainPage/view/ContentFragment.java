@@ -16,7 +16,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.newtv.cms.bean.Page;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -25,11 +27,7 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.MainPageManager;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.mainPage.presenter.ContentpagePresenter;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
@@ -39,7 +37,7 @@ import tv.newtv.cboxtv.views.ScrollSpeedLinearLayoutManger;
  * Created by lixin on 2018/1/23.
  */
 
-public class ContentFragment extends BaseFragment implements IContentPageView {
+public class ContentFragment extends BaseFragment implements PageContract.View {
 
     private String param;
     private String contentId;
@@ -53,7 +51,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
     private AiyaRecyclerView mRecyclerView; // 推荐位容器
     private TextView mEmptyView;
-    private List<ModuleItem> mDatas; // 数据源--即组件列表
+    private List<Page> mDatas; // 数据源--即组件列表
     private SharedPreferences mSharedPreferences;
 
     private View contentView;
@@ -61,8 +59,6 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
 
     @SuppressWarnings("unused")
     private boolean isPrepared = false;
-
-    private ContentpagePresenter mPresenter;
 
     private boolean isFromNav = false;
 
@@ -85,11 +81,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
             mRecyclerView.setAdapter(null);
             mRecyclerView = null;
         }
-        if (mPresenter != null) {
-            mPresenter.destroy();
-            mPresenter = null;
-        }
-        if(adapter != null) {
+        if (adapter != null) {
             adapter.destroyItem();
             adapter.destroy();
             adapter = null;
@@ -245,11 +237,7 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         initSharedPreferences();
         defaultFocus = mSharedPreferences.getString("page-defaultFocus", "");
-        LogUtils.e(Constant.TAG, "fragment onCreate navText : " + param + ", noData : " +
-                MainPageManager.getInstance().isNoPageData());
         super.onCreate(savedInstanceState);
-
-        mPresenter = new ContentpagePresenter(LauncherApplication.AppContext, this);
     }
 
     @Override
@@ -311,8 +299,6 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
             mRecyclerView.setItemAnimator(null);
             isPrepared = true;
 
-//            Picasso.with(getContext()).pauseTag(contentId);
-
             int pxSize = getResources().getDimensionPixelSize(R.dimen.width_60px);
 
             if (mRecyclerView != null) {
@@ -328,6 +314,8 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
             }
 
             updateRecycleView();
+
+            new PageContract.ContentPresenter(this);
         }
 
 
@@ -347,10 +335,9 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
         }
 
         if (TextUtils.isEmpty(contentId)) {
-            onFailed("暂无数据内容。");
+            onError("暂无数据内容。");
         } else {
-            if (mPresenter != null)
-                mPresenter.requestContentData(contentId);
+
         }
     }
 
@@ -396,33 +383,24 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
         }
     }
 
-    @Override
-    public void inflateContentPage(ModuleInfoResult moduleInfoResult, String dataFrom) {
+    public void inflateContentPage(List<Page> pageList, String dataFrom) {
         setTipVisibility(View.GONE);
 
         if (mDatas == null) {
-            mDatas = moduleInfoResult.getDatas();
+            mDatas = pageList;
         } else {
             mDatas.clear();
-            mDatas.addAll(moduleInfoResult.getDatas());
+            mDatas.addAll(pageList);
         }
         // 设置背景图片
-        changeBG(moduleInfoResult, contentId);
 
         updateRecycleView();
-    }
-
-    @Override
-    public void onFailed(String desc) {
-        loadingView.setText("暂无数据内容");
     }
 
 
     private void updateRecycleView() {
         if (contentView == null || mRecyclerView == null || mDatas == null) return;
-        if(contentView.hasFocus()){
 
-        }
         adapter = (UniversalAdapter) mRecyclerView.getAdapter();
         if (adapter == null) {
             ScrollSpeedLinearLayoutManger layoutManager = new ScrollSpeedLinearLayoutManger
@@ -448,6 +426,10 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
                 if (loadingView != null)
                     loadingView.setVisibility(View.GONE);
 
+                if(mDatas == null || mDatas.size() == 0){
+                    onError("数据为空");
+                }
+
             }
         }, 10);
     }
@@ -461,5 +443,20 @@ public class ContentFragment extends BaseFragment implements IContentPageView {
         if (adapter != null) {
             adapter.destroyItem();
         }
+    }
+
+    @Override
+    public void onPageResult(List<Page> page) {
+        inflateContentPage(page, "server");
+    }
+
+    @Override
+    public void setPresenter(@NotNull PageContract.Presenter presenter) {
+        presenter.getPageContent(contentId);
+    }
+
+    @Override
+    public void onError(@NotNull String desc) {
+        loadingView.setText("暂无数据内容");
     }
 }

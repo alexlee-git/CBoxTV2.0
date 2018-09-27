@@ -12,7 +12,7 @@ import retrofit2.http.Path
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface IFilterRetro {
+internal interface IFilterRetro {
 
     @GET("api/v31/{appkey}/{channelCode}/filterkeywords/{categoryID}.json")
     fun getFilterKeyWords(

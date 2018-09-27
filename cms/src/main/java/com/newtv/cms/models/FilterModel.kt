@@ -16,7 +16,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class FilterModel : BaseModel(), IFilter {
+internal class FilterModel : BaseModel(), IFilter {
     override fun getType(): String {
         return Model.MODEL_FILTER
     }

@@ -12,7 +12,7 @@ import com.newtv.cms.bean.TvProgram
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-interface ITvProgram {
+interface ITvProgram : IService {
     /**
      * 最新一期电视栏目
      */

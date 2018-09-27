@@ -29,7 +29,6 @@ import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.MainPageManager;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.RxBus;
@@ -128,7 +127,6 @@ public class UserCenterFragment extends BaseFragment implements OnRecycleItemCli
         pageData.add(new UserCenterPageBean("我的订阅"));
         pageData.add(new UserCenterPageBean("我的收藏"));
         pageData.add(new UserCenterPageBean("我的关注"));
-        Log.e(Constant.TAG, "fragment onCreate navText : " + param + ", noData : " + MainPageManager.getInstance().isNoPageData());
         super.onCreate(savedInstanceState);
     }
 

@@ -17,7 +17,7 @@ import com.newtv.cms.bean.TvProgram
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class TvProgramModel : BaseModel(), ITvProgram {
+internal class TvProgramModel : BaseModel(), ITvProgram {
     override fun getCurrentList(appKey: String, channelid: String, pageuuid: String,
                                 observer: DataObserver<ModelResult<List<TvProgram>>>) {
         val left: String = getLeft(pageuuid)

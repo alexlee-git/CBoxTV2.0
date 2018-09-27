@@ -17,7 +17,7 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-class HostModel : BaseModel(), IHost {
+internal class HostModel : BaseModel(), IHost {
 
     override fun getProgramList(appkey: String, channelId: String, contentId: String,
                                 observer: DataObserver<ModelResult<List<HostProgram>>>) {
