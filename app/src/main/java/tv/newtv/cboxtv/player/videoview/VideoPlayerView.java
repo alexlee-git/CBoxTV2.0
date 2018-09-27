@@ -289,7 +289,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 //        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl, getContext(),
 //                getProgramSeriesInfo(), index, position);
 //        playLive(playUrl,playCenter.getCurrentSeriesInfo(),false,index,position);
-        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl, getContext(), playCenter
+        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl,contentUUID, getContext(), playCenter
                 .getCurrentSeriesInfo(), false, index, position);
     }
 
