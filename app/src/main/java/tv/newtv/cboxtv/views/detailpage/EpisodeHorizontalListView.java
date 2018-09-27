@@ -81,7 +81,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .HORIZONTAL, false));
         mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
-                .getDimensionPixelOffset(R.dimen.width_40px)));
+                .getDimensionPixelOffset(R.dimen.width_50px)));
         mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id.dir_right));
 
         mTitleText = findViewById(R.id.id_title);
@@ -195,7 +195,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-//            titleText.setSelected(hasFocus);
+            titleText.setSelected(hasFocus);
 
             performFocus(hasFocus);
             if (hasFocus) {

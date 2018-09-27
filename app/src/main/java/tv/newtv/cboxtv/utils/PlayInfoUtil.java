@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -20,6 +21,9 @@ import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.views.detailpage.EpisodeHelper;
+
+import static tv.newtv.cboxtv.views.detailpage.EpisodeHelper.TYPE_COLUMN_DETAIL;
 
 /**
  * 项目名称:         CBoxTV
@@ -109,8 +113,60 @@ public final class PlayInfoUtil {
                                ProgramSeriesInfoCallback callback){
         if(Constant.CONTENTTYPE_PAGE.equals(contentType)){
             getPageInfo(uuid, callback);
+        }else if(Constant.CONTENTTYPE_TV.equals(contentType)){
+            getColumnInfo(uuid,callback);
         }else{
             getPlayInfo(uuid, callback);
+        }
+    }
+
+    public static void getColumnInfo(String uuid, final ProgramSeriesInfoCallback callback){
+        if(TextUtils.isEmpty(uuid)){
+            callback.onResult(null);
+            return;
+        }
+        String leftUUID = uuid.substring(0, 2);
+        String rightUUID = uuid.substring(uuid.length() - 2, uuid.length());
+        Observable<ResponseBody> observable = EpisodeHelper.GetInterface(TYPE_COLUMN_DETAIL, leftUUID,rightUUID,uuid);
+        if(observable != null){
+            observable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String result = responseBody.string();
+                                Log.i("PlayInfoUtil", "onNext: "+result);
+                                JSONObject object = new JSONObject(result);
+                                if (object.getInt("errorCode") == 0) {
+                                    JSONObject obj = object.getJSONObject("data");
+                                    Gson gson = new Gson();
+
+                                    final ProgramSeriesInfo entity = gson.fromJson(obj.toString(),
+                                            ProgramSeriesInfo.class);
+                                    if (callback != null)
+                                        callback.onResult(entity);
+                                }
+                            } catch (Exception e) {
+                                LogUtils.e(e.toString());
+                                if (callback != null)
+                                    callback.onResult(null);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
         }
     }
 

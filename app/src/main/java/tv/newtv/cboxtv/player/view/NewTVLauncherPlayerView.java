@@ -137,6 +137,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
     private Map<Integer, FocusWidget> widgetMap;
+    private List<ScreenListener> screenListenerList = new ArrayList<>();
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -310,8 +311,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 }
 
                 if (mPlaySeriesOrSingle == PLAY_SERIES) {
-                    //videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentUUID());
-                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
+                    videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentUUID());
+//                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
                 } else if (mPlaySeriesOrSingle == PLAY_SINGLE) {
                     videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
                 }
@@ -563,6 +564,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mIsPause && mNewTVLauncherPlayer != null) {
             start();
         }
+        for(ScreenListener screenListener : screenListenerList){
+            screenListener.exitFullScreen();
+        }
     }
 
     public void setFromFullScreen() {
@@ -674,6 +678,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
 
         updateUIPropertys(true);
+        for(ScreenListener screenListener : screenListenerList){
+            screenListener.enterFullScreen();
+        }
     }
 
     private void createMenuGroup() {
@@ -1165,7 +1172,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
+                    return true;
+                }
+                if (mShowingChildView == SHOWING_SEEKBAR_VIEW) {
+                    dismissChildView();
                     return true;
                 }
                 break;
@@ -1175,10 +1187,16 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
                     return true;
                 }
+                if (mShowingChildView == SHOWING_SEEKBAR_VIEW) {
+                    dismissChildView();
+                    return true;
+                }
                 break;
+            case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (!mIsPrepared) {
                     LogUtils.i(TAG, "onKeyDown: mIsPrepared is false");
@@ -1219,9 +1237,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
         if (mNewTVLauncherPlayerSeekbar != null) {
             if (isPause) {
-                mNewTVLauncherPlayerSeekbar.showPauseIcon();
-            } else {
+                Log.e(TAG, "showSeekBar: "+isPause );
                 mNewTVLauncherPlayerSeekbar.show();
+            } else {
+                mNewTVLauncherPlayerSeekbar.showPauseIcon();
             }
         }
     }
@@ -1301,9 +1320,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 if(widget.isOverride(event.getKeyCode())) {
                     if (widget.isRegisterKey(event)) {
                         if(!widget.isShowing()){
-                            widget.show(this, Gravity.LEFT);
-                            widget.requestDefaultFocus();
-                            NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget.getId());
+//                            widget.show(this, Gravity.LEFT);
+//                            widget.requestDefaultFocus();
+//                            NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget.getId());
                         }else{
                             if(widget.isToggleKey(event.getKeyCode())) {
                                 dismissChildView();
@@ -1503,9 +1522,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private void playVodNext() {
         if (mPlaySeriesOrSingle == PLAY_SINGLE) {
             addHistory();
-            Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .play_complete),
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), getContext().getResources().getString(R.string
+//                            .play_complete),
+//                    Toast.LENGTH_SHORT).show();
             reportPlayerHistory();
             AllComplete(false, "播放结束");
 
@@ -1529,8 +1548,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                         l.onNext(null, next, false);
                     }
                 }
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                        .play_complete), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), getContext().getResources().getString(R.string
+//                        .play_complete), Toast.LENGTH_SHORT).show();
                 reportPlayerHistory();
                 if (startIsFullScreen) {
                     NewTVLauncherPlayerViewManager.getInstance().release();
@@ -1556,7 +1575,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         return mShowingChildView;
     }
 
-    public void setShowingView(int showingView) {
+    public void  setShowingView(int showingView) {
         if (mShowingChildView == showingView) return;
         LogUtils.i(TAG, "setShowingView: showingView=" + showingView);
         if (mShowingChildView != SHOWING_NO_VIEW) {
@@ -1723,6 +1742,14 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
     }
 
+    public void addScreenListener(ScreenListener listener){
+        screenListenerList.add(listener);
+    }
+
+    public void removeScreenListener(ScreenListener listener){
+        screenListenerList.remove(listener);
+    }
+
     public static class PlayerViewConfig {
         public boolean prepared = false;
         public ViewGroup.LayoutParams layoutParams;     //布局属性
@@ -1733,5 +1760,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public PlayerCallback playerCallback;
         public int playPosition;
         public VPlayCenter playCenter;
+    }
+
+    public interface ScreenListener{
+        void enterFullScreen();
+        void exitFullScreen();
     }
 }
