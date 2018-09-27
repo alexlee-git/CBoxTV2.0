@@ -77,8 +77,9 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
 
         @Override
         public void onCompletion(int type) {
-            Log.i(TAG, "onCompletion: ");
-            if(type ==  iICntvPlayInterface.VIDEO_COMPLETE_TYPE) {
+            Log.i(TAG, "onCompletion: " + type);
+            if(type ==  iICntvPlayInterface.VIDEO_COMPLETE_TYPE ||
+                    type == iICntvPlayInterface.AFTER_AD_COMPLETE_TYPE) {
                 if (mIPlayCallBackEvent != null) {
                     mIPlayCallBackEvent.onCompletion();
                 }
@@ -168,8 +169,8 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         }
 
         @Override
-        public void onTimeout() {
-            Log.i(TAG, "onTimeout: ");
+        public void onTimeout(int i) {
+            Log.i(TAG, "onTimeout: " + i);
             if(mIPlayCallBackEvent!=null){
                 mIPlayCallBackEvent.onTimeout();
             }

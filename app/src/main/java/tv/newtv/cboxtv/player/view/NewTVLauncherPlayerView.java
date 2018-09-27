@@ -306,8 +306,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 }
 
                 if (mPlaySeriesOrSingle == PLAY_SERIES) {
-                    //videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentUUID());
-                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
+                    videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentUUID());
+//                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
                 } else if (mPlaySeriesOrSingle == PLAY_SINGLE) {
                     videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
                 }
@@ -1295,9 +1295,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 if(widget.isOverride(event.getKeyCode())) {
                     if (widget.isRegisterKey(event)) {
                         if(!widget.isShowing()){
-                            widget.show(this, Gravity.LEFT);
-                            widget.requestDefaultFocus();
-                            NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget.getId());
+//                            widget.show(this, Gravity.LEFT);
+//                            widget.requestDefaultFocus();
+//                            NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget.getId());
                         }else{
                             if(widget.isToggleKey(event.getKeyCode())) {
                                 dismissChildView();
@@ -1497,9 +1497,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private void playVodNext() {
         if (mPlaySeriesOrSingle == PLAY_SINGLE) {
             addHistory();
-            Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .play_complete),
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), getContext().getResources().getString(R.string
+//                            .play_complete),
+//                    Toast.LENGTH_SHORT).show();
             reportPlayerHistory();
             AllComplete(false, "播放结束");
 
@@ -1523,8 +1523,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                         l.onNext(null, next, false);
                     }
                 }
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                        .play_complete), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), getContext().getResources().getString(R.string
+//                        .play_complete), Toast.LENGTH_SHORT).show();
                 reportPlayerHistory();
                 if (startIsFullScreen) {
                     NewTVLauncherPlayerViewManager.getInstance().release();
