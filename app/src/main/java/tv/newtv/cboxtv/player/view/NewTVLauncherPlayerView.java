@@ -133,6 +133,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
     private Map<Integer, FocusWidget> widgetMap;
+    private List<ScreenListener> screenListenerList = new ArrayList<>();
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -547,6 +548,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mIsPause && mNewTVLauncherPlayer != null) {
             start();
         }
+        for(ScreenListener screenListener : screenListenerList){
+            screenListener.exitFullScreen();
+        }
     }
 
     public void setFromFullScreen() {
@@ -658,6 +662,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
 
         updateUIPropertys(true);
+        for(ScreenListener screenListener : screenListenerList){
+            screenListener.enterFullScreen();
+        }
     }
 
     private void createMenuGroup() {
@@ -1698,6 +1705,14 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
     }
 
+    public void addScreenListener(ScreenListener listener){
+        screenListenerList.add(listener);
+    }
+
+    public void removeScreenListener(ScreenListener listener){
+        screenListenerList.remove(listener);
+    }
+
     public static class PlayerViewConfig {
         public boolean prepared = false;
         public ViewGroup.LayoutParams layoutParams;     //布局属性
@@ -1708,5 +1723,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public PlayerCallback playerCallback;
         public int playPosition;
         public VPlayCenter playCenter;
+    }
+
+    public interface ScreenListener{
+        void enterFullScreen();
+        void exitFullScreen();
     }
 }
