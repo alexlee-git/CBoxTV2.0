@@ -148,8 +148,10 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView.setPlayerCallback(this);
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_rl), true);
         if (moduleInfoResult != null) {
-            if (moduleInfoResult.getDescription().length() >= 30) {
-                title_direction.setText(moduleInfoResult.getDescription().substring(0, 30));
+            if (moduleInfoResult.getDescription().length() >= 60) {
+                title_direction.setText(moduleInfoResult.getDescription().substring(0, 60));
+                title_direction.setMaxLines(2);
+                title_direction.setMaxEms(26);
             } else {
                 title_direction.setText(moduleInfoResult.getDescription());
             }

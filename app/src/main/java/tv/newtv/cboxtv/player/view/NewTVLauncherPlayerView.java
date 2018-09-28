@@ -1548,8 +1548,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                         l.onNext(null, next, false);
                     }
                 }
-//                Toast.makeText(getContext(), getContext().getResources().getString(R.string
-//                        .play_complete), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string
+                        .play_complete), Toast.LENGTH_SHORT).show();
                 reportPlayerHistory();
                 if (startIsFullScreen) {
                     NewTVLauncherPlayerViewManager.getInstance().release();

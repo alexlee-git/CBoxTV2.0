@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
@@ -359,6 +360,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 }
                 stopPlay();
                 setHintText("播放已结束");
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string
+                                .play_complete),
+                        Toast.LENGTH_SHORT).show();
                 isEnd = false;
             }
         } else {
