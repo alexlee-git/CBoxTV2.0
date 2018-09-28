@@ -189,7 +189,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             LogUtils.e(e.toString());
         }
         hashMap.put("versionCode", "" + versionCode);
-        hashMap.put("uuid", Constant.UUID);
+        hashMap.put("uuid", Constant.UUID);//Constant.UUID
         hashMap.put("mac", SystemUtils.getMac(this));
         hashMap.put("hardwareCode", "" + hardwareCode);
         NetClient.INSTANCE.getUpVersion().getIsOriented(hashMap).subscribeOn(Schedulers.io())
@@ -269,7 +269,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
         if (!TextUtils.isEmpty(hardwareCode)) {
             hashMap.put("hardwareCode", "" + hardwareCode);
         }
-        hashMap.put("uuid", Constant.UUID);
+        hashMap.put("uuid", Constant.UUID);//Constant.UUID
         hashMap.put("mac", SystemUtils.getMac(this));
         NetClient.INSTANCE.getUpVersion().getUpVersion(hashMap)
                 .subscribeOn(Schedulers.io())
@@ -295,7 +295,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                                     editor.putString("versionmd5", versionBeen.getPackageMD5());
                                     editor.apply();
                                 }
-                                if (versionBeen.getUpgradeType() == 1) {
+                                if (versionBeen.getUpgradeType() == 1) {//1
                                     //强制升级
                                     initConstraintDialog(versionBeen, true);
                                 } else {
@@ -709,7 +709,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent
                     .class);
             JumpUtil.activityJump(this, adEventContent.actionType, adEventContent.contentType,
-                    adEventContent.contentUUID, adEventContent.actionURI);
+                    adEventContent.contentUUID, adEventContent.actionURI,adEventContent.defaultUUID);
 
         } catch (Exception e) {
             Log.e(TAG, e.toString());

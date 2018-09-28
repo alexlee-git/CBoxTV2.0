@@ -173,12 +173,15 @@ public class Constant {
     public static final String SERVER_TIME_URL = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SERVER_TIME)) ? getBaseUrl(HeadersInterceptor.SERVER_TIME) : "https://bzo.cloud" +
             ".ottcn.com/";
+    public static final String VERSION_UP_BASE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String VERSION_UP = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .VERSION_UP)) ? getBaseUrl(HeadersInterceptor.VERSION_UP) : "https://bzo.cloud.ottcn" +
-            ".com/"; //版本升级
+            .VERSION_UP)) ? getBaseUrl(HeadersInterceptor.VERSION_UP) : VERSION_UP_BASE; //版本升级
+
+    public static final String IS_ORIENTED_BASE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String IS_ORIENTED = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .IS_ORIENTED)) ? getBaseUrl(HeadersInterceptor.IS_ORIENTED) : "https://bzo.cloud" +
-            ".ottcn.com/"; //检查是否是定向升级
+            .IS_ORIENTED)) ? getBaseUrl(HeadersInterceptor.IS_ORIENTED) : IS_ORIENTED_BASE; //检查是否是定向升级
     /**
      * log服务器地址
      */

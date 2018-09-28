@@ -315,8 +315,10 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
             mHandler.removeMessages(DISMISS_VIEW);
             return;
         }
+
         setVisibility(View.VISIBLE);
         bringToFront();
+        show();
         startAnimation(mAnimationIn);
         NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                 .SHOWING_SEEKBAR_VIEW);

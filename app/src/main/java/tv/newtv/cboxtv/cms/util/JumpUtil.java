@@ -53,7 +53,7 @@ public class JumpUtil {
         JumpUtil.activityJump(context, actionType, contentType,
                 parseParamMap(params), true);
         Log.e("Splash", "SplashActivity---> onCreate 接收到外部应用跳转需求, action : "
-                + action + " param : " + params);
+                + action + " param : " + params+"============="+ action);
         return true;
     }
 
@@ -84,6 +84,7 @@ public class JumpUtil {
                                     String contentUUID, String actionUri) {
         activityJump(context, actionType, contentType, contentUUID, actionUri, "");
     }
+
 
     public static void activityJump(Context context, String actionType, String contentType,
                                     HashMap<String, String> params, boolean fromOuter) {
@@ -138,6 +139,7 @@ public class JumpUtil {
             jumpIntent.putExtra(Constant.PAGE_UUID, contentUUID);
             jumpIntent.putExtra(Constant.ACTION_TYPE, actionType);
             jumpIntent.putExtra(Constant.ACTION_URI, actionUri);
+            jumpIntent.putExtra(Constant.DEFAULT_UUID,seriesSubUUID);
             jumpIntent.putExtra(Constant.ACTION_FROM, fromOuter);
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
