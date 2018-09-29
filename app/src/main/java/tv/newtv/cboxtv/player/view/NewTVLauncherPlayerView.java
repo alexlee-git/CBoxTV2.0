@@ -66,6 +66,7 @@ import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.uc.bean.HistoryBean;
 import tv.newtv.cboxtv.uc.db.DBCallback;
 import tv.newtv.cboxtv.uc.db.DBConfig;
@@ -1760,6 +1761,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public PlayerCallback playerCallback;
         public int playPosition;
         public VPlayCenter playCenter;
+        public VideoExitFullScreenCallBack videoExitFullScreenCallBack;
     }
 
     public interface ScreenListener{

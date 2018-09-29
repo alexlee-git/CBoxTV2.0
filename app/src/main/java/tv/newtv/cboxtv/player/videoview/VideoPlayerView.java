@@ -39,6 +39,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private View defaultFocusView;
     private boolean KeyIsDown = false;
     private ImageView isPlaying;
+    private VideoExitFullScreenCallBack videoExitFullScreenCallBack;
+
 
     public VideoPlayerView(@NonNull Context context) {
         this(context, null);
@@ -73,6 +75,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             defaultFocusView = config.defaultFocusView;
             mPlayerCallback = config.playerCallback;
             playCenter = config.playCenter;
+            videoExitFullScreenCallBack = config.videoExitFullScreenCallBack;
         }
     }
 
@@ -102,13 +105,18 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             defaultFocusView = null;
         }
         super.ExitFullScreen();
+
         if (ProgramIsChange) {
             if (mPlayerCallback != null) {
                 mPlayerCallback.ProgramChange();
+
             }
         }
         ProgramIsChange = false;
 
+        if (videoExitFullScreenCallBack != null){
+            videoExitFullScreenCallBack.videoEitFullScreen();
+        }
     }
 
     public void setSingleRepeat(boolean value) {
@@ -146,6 +154,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         playerViewConfig.defaultFocusView = defaultFocusView;
         playerViewConfig.playerCallback = mPlayerCallback;
         playerViewConfig.playCenter = playCenter;
+        playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
         return playerViewConfig;
     }
 
@@ -386,6 +395,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void setPlayerCallback(PlayerCallback callback) {
         mPlayerCallback = callback;
+    }
+
+    public void setVideoExitCallback(VideoExitFullScreenCallBack callback){
+        videoExitFullScreenCallBack = callback;
     }
 
     public String getCurrentUuId() {

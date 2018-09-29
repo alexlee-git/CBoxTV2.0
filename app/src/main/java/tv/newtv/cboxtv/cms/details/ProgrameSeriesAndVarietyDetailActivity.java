@@ -35,8 +35,10 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.Utils;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
+import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -65,6 +67,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     private long lastClickTime;
     private FragmentTransaction transaction;
     private FrameLayout frameLayout;
+    private int currentIndex = -1;
 
     @Override
     public boolean hasPlayer() {
@@ -200,6 +203,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 .SetPlayerCallback(new PlayerCallback() {
                     @Override
                     public void onEpisodeChange(int index, int position) {
+                        currentIndex = index;
                         if (index >= 0) {
                             playListView.setCurrentPlayIndex(index);
                         }
@@ -228,6 +232,12 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                         if (!isError) {
                             videoPlayerView.onComplete();
                         }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        playListView.moveToPosition(currentIndex);
                     }
                 })
                 .SetClickListener(new View.OnClickListener() {
