@@ -237,7 +237,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen() {
-                        playListView.moveToPosition(currentIndex);
+                        if (currentIndex>8){
+                            playListView.moveToPosition(currentIndex);
+                        }
                     }
                 })
                 .SetClickListener(new View.OnClickListener() {
