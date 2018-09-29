@@ -111,7 +111,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         ProgramIsChange = false;
 
         Log.i("Collection","退出全屏");
-        videoFullCallBack.VideoExitFullScreen();
+        if(videoFullCallBack!=null)
+        {
+            videoFullCallBack.VideoExitFullScreen();
+        }
 
 
     }

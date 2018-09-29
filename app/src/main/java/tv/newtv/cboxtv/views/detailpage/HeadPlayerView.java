@@ -123,7 +123,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private ExitVideoFullCallBack videoFullCallBack=new ExitVideoFullCallBack() {
         @Override
         public void VideoExitFullScreen() {
-            mBuilder.videoFullCallBack.VideoExitFullScreen();
+            if(mBuilder.videoFullCallBack!=null)
+            {
+                mBuilder.videoFullCallBack.VideoExitFullScreen();
+            }
         }
     };
 
