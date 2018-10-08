@@ -22,6 +22,7 @@ import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.Constants;
 
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -170,9 +171,9 @@ public class ProgramCollectionActivity extends BaseActivity {
 
                         )
                         //退出全屏操作
-                        .SetVideoFullCallBack(new ExitVideoFullCallBack() {
+                        .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                             @Override
-                            public void VideoExitFullScreen() {
+                            public void videoEitFullScreen() {
                                 if(indexNum>10)
                                 {
                                     mListView.initAdapter();
