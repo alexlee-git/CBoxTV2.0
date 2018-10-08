@@ -170,7 +170,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                         public void run() {
                             toSecondPageFromAd(mExternalParams);
                         }
-                    }, 1500);
+                    }, 0);
                 }
             }
         }
