@@ -1162,10 +1162,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
+
                 if (mIsLoading) {
                     return true;
                 }
-
                 break;
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 LogUtils.i(TAG, "onKeyDown: KEYCODE_DPAD_LEFT");
@@ -1173,7 +1173,6 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
-                    mIsPause = true;
                     showSeekBar(mIsPause);
                     return true;
                 }
@@ -1188,7 +1187,6 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
-                    mIsPause = true;
                     showSeekBar(mIsPause);
                     return true;
                 }
@@ -1239,9 +1237,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mNewTVLauncherPlayerSeekbar != null) {
             if (isPause) {
                 Log.e(TAG, "showSeekBar: "+isPause );
-                mNewTVLauncherPlayerSeekbar.show();
-            } else {
                 mNewTVLauncherPlayerSeekbar.showPauseIcon();
+            } else {
+                mNewTVLauncherPlayerSeekbar.show();
             }
         }
     }
@@ -1549,8 +1547,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                         l.onNext(null, next, false);
                     }
                 }
-//                Toast.makeText(getContext(), getContext().getResources().getString(R.string
-//                        .play_complete), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string
+                        .play_complete), Toast.LENGTH_SHORT).show();
                 reportPlayerHistory();
                 if (startIsFullScreen) {
                     NewTVLauncherPlayerViewManager.getInstance().release();
