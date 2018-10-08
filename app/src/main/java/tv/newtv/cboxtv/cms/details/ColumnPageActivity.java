@@ -14,11 +14,14 @@ import android.widget.Toast;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.BitmapUtil;
@@ -47,6 +50,7 @@ public class ColumnPageActivity extends BaseActivity {
     private boolean isCollect = false;
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
+    private int currentIndex = -1;
 
     @Override
     public void prepareMediaPlayer() {
@@ -94,6 +98,7 @@ public class ColumnPageActivity extends BaseActivity {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
         contentUUID = getIntent().getStringExtra("content_uuid");
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
             Toast.makeText(this, "栏目信息异常", Toast.LENGTH_SHORT).show();
@@ -126,6 +131,7 @@ public class ColumnPageActivity extends BaseActivity {
                 .SetPlayerCallback(new PlayerCallback() {
                     @Override
                     public void onEpisodeChange(int index, int position) {
+                        currentIndex = index;
                         if (index >= 0) {
                             playListView.setCurrentPlayIndex(index);
                         }
@@ -152,6 +158,14 @@ public class ColumnPageActivity extends BaseActivity {
                             videoPlayerView) {
                         if (!isError) {
                             videoPlayerView.onComplete();
+                        }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        if (currentIndex>8){
+                            playListView.moveToPosition(currentIndex);
                         }
                     }
                 })

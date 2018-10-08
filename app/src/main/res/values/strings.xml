@@ -7,7 +7,7 @@
     <string name="listpage_screen">筛选</string>
     <string name="weather_fail">天气获取失败</string>
     <string name="unknown">未知</string>
-    <string name="my_app">我的应用</string>
+    <string name="my_app">我的应用</string>　
     <!-- 详情页-->
     <string name="search_history">搜索历史</string>
     <string name="search_poster_title">搜索结果</string>

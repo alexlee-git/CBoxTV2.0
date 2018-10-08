@@ -58,7 +58,7 @@ public class SmoothScrollView extends RelativeLayout {
         int childCount = getChildCount();
         for (int index = 0; index < childCount; index++) {
             View child = getChildAt(index);
-//            if(child.getVisibility() == View.GONE) continue;
+            if(child.getVisibility() == View.GONE) continue;
             measureChild(child, widthMeasureSpec, heightMeasureSpec);
             height += child.getMeasuredHeight();
         }

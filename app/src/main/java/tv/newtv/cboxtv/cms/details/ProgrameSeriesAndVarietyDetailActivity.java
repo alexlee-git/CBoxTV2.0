@@ -36,8 +36,10 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.Utils;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
+import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -68,6 +70,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     private long lastClickTime;
     private FragmentTransaction transaction;
     private FrameLayout frameLayout;
+    private int currentIndex = -1;
 
     @Override
     public boolean hasPlayer() {
@@ -94,7 +97,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             leftUUID = contentUUID.substring(0, 2);
             rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+            LogUploadUtils.uploadLog(Constant.LOG_COLUMN_INTO, "0," + contentUUID);
             requestData();
         } else {
             Toast.makeText(ProgrameSeriesAndVarietyDetailActivity.this, "节目集信息有误", Toast
@@ -208,6 +211,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                     @Override
                     public void onEpisodeChange(int index, int position) {
                         Log.i("ProgrameSeries","当前显示index---->"+index);
+
+                        currentIndex = index;
+
                         if (index >= 0) {
                             playListView.setCurrentPlayIndex(index);
                         }
@@ -240,6 +246,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                         Log.i("ProgrameSeries","当前节目播放完毕");
                         if (!isError) {
                             videoPlayerView.onComplete();
+                        }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        if (currentIndex>8){
+                            playListView.moveToPosition(currentIndex);
                         }
                     }
                 })

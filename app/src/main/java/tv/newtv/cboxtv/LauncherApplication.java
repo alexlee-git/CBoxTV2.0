@@ -17,6 +17,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
@@ -53,6 +54,16 @@ public class LauncherApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //解决Rxjava的onError()异常
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Log.e("TAG","throw test");
+            }
+        });
+
+
         if (BuildConfig.DEBUG) {
 //            LeakCanary.install(this);
         }

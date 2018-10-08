@@ -260,7 +260,6 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         public void onFocusChange(View v, boolean hasFocus) {
             titleText.setSelected(hasFocus);
 
-
             performFocus(hasFocus);
             if (hasFocus) {
                 itemView.bringToFront();

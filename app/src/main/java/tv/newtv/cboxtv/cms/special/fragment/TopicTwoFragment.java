@@ -40,6 +40,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private TextView title;
     private TextView title_direction;
     private FrameLayout video_player_rl;
+    private FrameLayout frame_container;
     private View focusView;
     private TextView videoTitle;
     private ImageView full_screen;
@@ -49,6 +50,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private int defaultFocusIndex = -1;
     private int isFirstEnter = 0;
     private boolean hasDefaultFocus;
+    private List<ProgramInfo> datas;
 
 
     @Override
@@ -78,9 +80,11 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     @Override
     protected void setUpUI(final View view) {
         news_recycle = view.findViewById(R.id.news_recycle);
+        frame_container = view.findViewById(R.id.frame_container);
         title = view.findViewById(R.id.title);
         title_direction = view.findViewById(R.id.title_direction);
         videoPlayerView = view.findViewById(R.id.video_player);
+        videoPlayerView.register(this);
         mPopupMenuWidget = new popupMenuWidget(getContext().getApplicationContext(), news_recycle);
         widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
         video_player_rl = view.findViewById(R.id.video_player_rl);
@@ -106,10 +110,12 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             @Override
             public void onItemClick(ProgramInfo item, int index) {
                 videoIndex = index;
+                if (index+1 ==datas.size()){
+                    videoPlayerView.setisEnd(true);
+                }
                 if (defaultFocusId != null && defaultFocusIndex != -1) {
                     smoothMoveToPosition(news_recycle, defaultFocusIndex);
                     firstPlay(defaultFocusId, defaultFocusIndex);
-
                 } else {
                     if (isFirstEnter == 1) {
                         NewsViewHolder viewHolder = (NewsViewHolder) news_recycle.findViewHolderForAdapterPosition(defaultFocusIndex);
@@ -121,7 +127,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                     onItemClickAction(item);
                 }
                 adapter.setThisPosition(index);
-                videoPlayerView.setisPlayingView(adapter.getImageView());
+//                videoPlayerView.setisPlayingView(adapter.getImageView());
 
             }
 
@@ -142,8 +148,10 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView.setPlayerCallback(this);
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_rl), true);
         if (moduleInfoResult != null) {
-            if (moduleInfoResult.getDescription().length() > 30) {
-                title_direction.setText(moduleInfoResult.getDescription().substring(0, 30));
+            if (moduleInfoResult.getDescription().length() >= 60) {
+                title_direction.setText(moduleInfoResult.getDescription().substring(0, 60));
+                title_direction.setMaxLines(2);
+                title_direction.setMaxEms(26);
             } else {
                 title_direction.setText(moduleInfoResult.getDescription());
             }
@@ -227,17 +235,17 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     @Override
     public void setModuleInfo(ModuleInfoResult infoResult) {
 
-
+        if (infoResult.getPageBackground()==null){
+            frame_container.setBackgroundResource(R.drawable.bg);
+        }
         moduleInfoResult = infoResult;
-        List<ProgramInfo> datas = moduleInfoResult.getDatas().get(0).getDatas();
+        datas = moduleInfoResult.getDatas().get(0).getDatas();
         for (int i = 0; i < datas.size(); i++) {
             if (datas.get(i).getDefaultFocus() == 1) {
                 defaultFocusId = datas.get(i).getContentUUID();
                 defaultFocusIndex = i;
             }
         }
-        Log.d("TopicTwoFragment", "defaultFocusIndex:" + defaultFocusIndex);
-
         if (news_recycle != null && news_recycle.getAdapter() != null) {
             ((NewsAdapter) news_recycle.getAdapter()).refreshData(infoResult.getDatas().get(0)
                     .getDatas()).notifyDataSetChanged();
@@ -298,13 +306,18 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     @Override
     public void onEpisodeChange(int index, int position) {
         playIndex = index;
+
+//
     }
+
 
     @Override
     public void onPlayerClick(VideoPlayerView videoPlayerView) {
-        videoPlayerView.EnterFullScreen(getActivity(), false);
         videoTitle.setVisibility(View.GONE);
         full_screen.setVisibility(View.GONE);
+        videoPlayerView.EnterFullScreen(getActivity(), false);
+        videoPlayerView.setView(videoTitle,full_screen);
+
 
     }
 

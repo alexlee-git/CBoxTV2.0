@@ -179,11 +179,11 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
                 seekSlide = true;
                 mSeekCount++;
                 if (mSeekCount > 10 && mSeekCount <= 40) {
-                    mSeekStep = DEFAULT_SEEK_STEP * 2;
+                    mSeekStep = DEFAULT_SEEK_STEP * 8;//2 8
                 } else if (mSeekCount > 40 && mSeekCount < 80) {
-                    mSeekStep = DEFAULT_SEEK_STEP * 4;
+                    mSeekStep = DEFAULT_SEEK_STEP * 16;//4 16
                 } else {
-                    mSeekStep = DEFAULT_SEEK_STEP * 8;
+                    mSeekStep = DEFAULT_SEEK_STEP * 32;//8 32
                 }
                 mHandler.removeMessages(SEEK_TO);
                 mHandler.removeMessages(REFRESH_CURRENTTIME_AND_PROGRESS);
@@ -315,8 +315,10 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
             mHandler.removeMessages(DISMISS_VIEW);
             return;
         }
+
         setVisibility(View.VISIBLE);
         bringToFront();
+        show();
         startAnimation(mAnimationIn);
         NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                 .SHOWING_SEEKBAR_VIEW);
