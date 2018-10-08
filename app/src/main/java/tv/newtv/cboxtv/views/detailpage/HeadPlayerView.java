@@ -115,6 +115,44 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         public void ProgramChange() {
             if (mBuilder != null && mBuilder.playerCallback != null) {
                 mBuilder.playerCallback.ProgramChange();
+                Log.d("ywy_log", "HeadPlayerView  exitFull listener contentUUID : " + mBuilder.contentUUid);
+                DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.CONTENTUUID, mBuilder.contentUUid)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                Log.d("ywy_log", "code : " + code + "  result : " + result);
+                                if (!TextUtils.isEmpty(result)) {
+                                    Gson mGson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                                    }.getType();
+                                    List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
+                                    if (data.size() > 0) {
+                                        Log.d("ywy_log", "HeadPlayerView iniData title: " + data.get(0)._title_name + " contentUUID : " + data.get(0)._contentuuid);
+                                        UserCenterPageBean.Bean value = data.get(0);
+                                        if (value != null) {
+                                            Log.d("ywy_log", "playPosition : " + value.playPosition);
+                                            if (!TextUtils.isEmpty(value.playPosition)) {
+                                                currentPosition = Integer.valueOf(value.playPosition);
+                                            } else {
+                                                currentPosition = 0;
+                                            }
+                                            if (data.get(0).playIndex != null) {
+                                                setCurrentPlayIndex("DataSupport", Integer.valueOf(data
+                                                        .get(0)
+                                                        .playIndex));
+                                            } else {
+                                                setCurrentPlayIndex("DataSupport", 0);
+                                            }
+                                            playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                                        }
+                                    }
+                                }
+                            }
+                        }).excute();
+
             }
         }
     };
