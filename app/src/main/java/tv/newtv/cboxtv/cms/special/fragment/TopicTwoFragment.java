@@ -50,6 +50,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private int defaultFocusIndex = -1;
     private int isFirstEnter = 0;
     private boolean hasDefaultFocus;
+    private List<ProgramInfo> datas;
 
 
     @Override
@@ -83,6 +84,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         title = view.findViewById(R.id.title);
         title_direction = view.findViewById(R.id.title_direction);
         videoPlayerView = view.findViewById(R.id.video_player);
+        videoPlayerView.register(this);
         mPopupMenuWidget = new popupMenuWidget(getContext().getApplicationContext(), news_recycle);
         widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
         video_player_rl = view.findViewById(R.id.video_player_rl);
@@ -108,6 +110,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             @Override
             public void onItemClick(ProgramInfo item, int index) {
                 videoIndex = index;
+                if (index+1 ==datas.size()){
+                    videoPlayerView.setisEnd(true);
+                }
                 if (defaultFocusId != null && defaultFocusIndex != -1) {
                     smoothMoveToPosition(news_recycle, defaultFocusIndex);
                     firstPlay(defaultFocusId, defaultFocusIndex);
@@ -123,7 +128,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                     onItemClickAction(item);
                 }
                 adapter.setThisPosition(index);
-                videoPlayerView.setisPlayingView(adapter.getImageView());
+//                videoPlayerView.setisPlayingView(adapter.getImageView());
 
             }
 
@@ -235,7 +240,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         moduleInfoResult = infoResult;
         Log.e("TopicTwoFragmentaaaa", infoResult.getPageBackground());
 
-        List<ProgramInfo> datas = moduleInfoResult.getDatas().get(0).getDatas();
+        datas = moduleInfoResult.getDatas().get(0).getDatas();
+        Log.e("aaaaaaaaaa",moduleInfoResult.getDatas().get(0).getDatas().toString());
 
         for (int i = 0; i < datas.size(); i++) {
             if (datas.get(i).getDefaultFocus() == 1) {
