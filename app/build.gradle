@@ -75,8 +75,19 @@ android {
     }
 
     productFlavors {
+        xunmatouyingyi {
 
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"1000701\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "1000701"
+            ]
+        }
         xiaomi {
+
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600001\""
