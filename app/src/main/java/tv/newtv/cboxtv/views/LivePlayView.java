@@ -29,6 +29,7 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.utils.LivePermissionCheckUtil;
@@ -191,6 +192,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                             .MATCH_PARENT);
             mVideoPlayerView.setLayoutParams(layoutParams);
             mVideoPlayer.addView(mVideoPlayerView, layoutParams);
+            mVideoPlayerView.addScreenListener(new MyScreenListener());
         }
     }
 
@@ -529,6 +531,28 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         public boolean isCanUse() {
             return !TextUtils.isEmpty(actionType) && !TextUtils.isEmpty(ContentUUID);
+        }
+    }
+
+    private class MyScreenListener implements NewTVLauncherPlayerView.ScreenListener{
+
+        @Override
+        public void enterFullScreen() {
+
+        }
+
+        @Override
+        public void exitFullScreen() {
+            if (getParent() != null && getParent() instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) getParent();
+                int count = viewGroup.getChildCount();
+                for(int i=0;i<count;i++){
+                    View child = viewGroup.getChildAt(i);
+                    if(child instanceof AutoSizeTextView){
+                        child.bringToFront();
+                    }
+                }
+            }
         }
     }
 }

@@ -214,7 +214,14 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public void addNodeToRoot(Node node) {
-        rootNodes.add(node);
+        for (int i=0;i<rootNodes.size();i++){
+            if (rootNodes.get(i).getTitle().equals(node.getTitle()) && node.getTitle().equals("我的")){
+                rootNodes.remove(rootNodes.get(i));
+            }
+        }
+        if (node.getTitle().equals("我的")){
+            rootNodes.add(0,node);
+        }
     }
 
     public boolean setLastProgram(LastMenuBean lastMenuBean, String pId, String detailcontentUUID) {

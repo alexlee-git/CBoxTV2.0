@@ -336,7 +336,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         searchInDB(DBConfig.SUBSCRIBE_TABLE_NAME, subscribe);
         searchInDB(DBConfig.HISTORY_TABLE_NAME, history);
 
-        menuGroup.addNodeToRoot(root);
+        if (menuGroup != null){
+            menuGroup.addNodeToRoot(root);
+        }
     }
 
     private void searchInDB(String titleName, final Node node) {
@@ -365,6 +367,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                     }
                 }).excute();
     }
+
 
     private List<DBProgram> dataDispose(String result) {
         if (!TextUtils.isEmpty(result)) {
@@ -515,6 +518,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 case KeyEvent.KEYCODE_DPAD_UP:
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
                         if (playProgram != null) {
+                            searchDataInDB();
+                            playProgram = menuGroup.getPlayProgram();
                             menuGroup.show(playProgram);
                         } else {
                             menuGroup.show();

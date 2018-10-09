@@ -129,44 +129,46 @@ public class DBUtil {
         if (mInfo == null) {
             return;
         }
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentUUID());
-        if (mInfo.getContentType() != null) {
-            contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
-        }
-        contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-        if (!TextUtils.isEmpty(mInfo.getvImage())) {
-            contentValues.put(DBConfig.IMAGEURL, mInfo.getvImage());
-        }
-        if (!TextUtils.isEmpty(mInfo.getTitle())) {
-            contentValues.put(DBConfig.TITLE_NAME, mInfo.getTitle());
-        }
-        contentValues.put(DBConfig.PLAYINDEX, index + "");
-
-        String seriesUUID = "";
-        if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
-            if (mInfo.getData()!=null&&mInfo.getData().size()!=0){
-                contentValues.put(DBConfig.PLAYID,mInfo.getData().get(index).getContentUUID());
-                seriesUUID = mInfo.getData().get(index).getSeriesSubUUID();
+        if (Position > 0) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentUUID());
+            if (mInfo.getContentType() != null) {
+                contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
             }
-        }
-
-        contentValues.put(DBConfig.PLAYPOSITION, Position);
-        contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-        if(TextUtils.isEmpty(mInfo.getContentUUID())){
-            if(TextUtils.isEmpty(seriesUUID)){
-                return;
+            contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+            if (!TextUtils.isEmpty(mInfo.getvImage())) {
+                contentValues.put(DBConfig.IMAGEURL, mInfo.getvImage());
             }
-            contentValues.put(DBConfig.CONTENTUUID,seriesUUID);
-        } else {
-          seriesUUID = mInfo.getContentUUID();
+            if (!TextUtils.isEmpty(mInfo.getTitle())) {
+                contentValues.put(DBConfig.TITLE_NAME, mInfo.getTitle());
+            }
+            contentValues.put(DBConfig.PLAYINDEX, index + "");
+
+            String seriesUUID = "";
+            if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
+                if (mInfo.getData() != null && mInfo.getData().size() != 0) {
+                    contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
+                    seriesUUID = mInfo.getData().get(index).getSeriesSubUUID();
+                }
+            }
+
+            contentValues.put(DBConfig.PLAYPOSITION, Position);
+            contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+            if (TextUtils.isEmpty(mInfo.getContentUUID())) {
+                if (TextUtils.isEmpty(seriesUUID)) {
+                    return;
+                }
+                contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
+            } else {
+                seriesUUID = mInfo.getContentUUID();
+            }
+            DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
+                    .condition()
+                    .eq(DBConfig.CONTENTUUID, seriesUUID)
+                    .build()
+                    .withValue(contentValues)
+                    .withCallback(callback).excute();
         }
-        DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, seriesUUID)
-                .build()
-                .withValue(contentValues)
-                .withCallback(callback).excute();
     }
 
     public static void addAttention(ProgramSeriesInfo entity,DBCallback<String> callback){

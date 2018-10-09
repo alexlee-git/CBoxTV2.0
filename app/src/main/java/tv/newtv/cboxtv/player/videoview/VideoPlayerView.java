@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
@@ -24,6 +26,7 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * Created by gaoleichao on 2018/4/10.
+ * 视频播放器
  */
 
 public class VideoPlayerView extends NewTVLauncherPlayerView {
@@ -33,6 +36,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private ProgressBar mPlayerProgress;
     private VPlayCenter playCenter;
     private PlayerCallback mPlayerCallback;
+    private ExitVideoFullCallBack videoFullCallBack;
     private View mFocusView;
     private boolean repeatPlay = false;
     private TextView HintTextView;
@@ -40,6 +44,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private View defaultFocusView;
     private boolean KeyIsDown = false;
     private ImageView isPlaying;
+
+    private VideoExitFullScreenCallBack videoExitFullScreenCallBack;
+
     private TopicTwoFragment fragment;
 
     public VideoPlayerView(@NonNull Context context) {
@@ -74,7 +81,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (config != null) {
             defaultFocusView = config.defaultFocusView;
             mPlayerCallback = config.playerCallback;
+            videoFullCallBack=config.videoFullCallBack;
             playCenter = config.playCenter;
+            videoExitFullScreenCallBack = config.videoExitFullScreenCallBack;
         }
     }
 
@@ -89,28 +98,37 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         setHintText(String.format("%s 错误码:%s", messgae, code));
     }
 
+    //退出全屏
     @Override
     public void ExitFullScreen() {
         if (defaultFocusView != null) {
             if (defaultFocusView instanceof VideoPlayerView) {
                 VideoPlayerView.this.requestFocus();
-                if (videoTitle!=null)
-                videoTitle.setVisibility(VISIBLE);
-                if (full_screen!=null)
-                full_screen.setVisibility(VISIBLE);
+                if (videoTitle != null)
+                    videoTitle.setVisibility(VISIBLE);
+                if (full_screen != null)
+                    full_screen.setVisibility(VISIBLE);
             } else {
                 defaultFocusView.requestFocus();
             }
             defaultFocusView = null;
         }
         super.ExitFullScreen();
+
         if (ProgramIsChange) {
             if (mPlayerCallback != null) {
                 mPlayerCallback.ProgramChange();
+
             }
         }
         ProgramIsChange = false;
 
+
+        Log.i("Collection","退出全屏");
+
+        if (videoExitFullScreenCallBack != null){
+            videoExitFullScreenCallBack.videoEitFullScreen();
+        }
     }
 
     public void setSingleRepeat(boolean value) {
@@ -147,7 +165,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         PlayerViewConfig playerViewConfig = super.getDefaultConfig();
         playerViewConfig.defaultFocusView = defaultFocusView;
         playerViewConfig.playerCallback = mPlayerCallback;
+        playerViewConfig.videoFullCallBack=videoFullCallBack;
         playerViewConfig.playCenter = playCenter;
+        playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
         return playerViewConfig;
     }
 
@@ -249,14 +269,18 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             setLayoutParams(layoutParams);
         }
     }
+
+    //设置播放视频的地址
     //添加播放源
     public void setSeriesInfo(ProgramSeriesInfo seriesInfo) {
+
         if (playCenter != null) {
             playCenter.addSeriesInfo(seriesInfo);
         }
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
+        //设置播放的位置
         playCenter.setCurrentIndex(mIndex);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
@@ -324,11 +348,11 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         super.destroy();
 
         removeAllViews();
-
         detailPlayIv = null;
         mPlayerProgress = null;
         playCenter = null;
         mPlayerCallback = null;
+        videoFullCallBack=null;
         mFocusView = null;
 
         if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)) {
@@ -339,7 +363,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     protected void playIndex(int index) {
         super.playIndex(index);
-
         if (mPlayerCallback != null && !ProgramIsChange) {
             mPlayerCallback.onEpisodeChange(index, getCurrentPosition());
         }
@@ -354,20 +377,19 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             return;
         }
 
-//        if (isFullScreen()) {
-//            ExitFullScreen();
-//        }
-
-        if(fragment !=null && fragment instanceof TopicTwoFragment){
-            if(isEnd){
+        if (fragment != null && fragment instanceof TopicTwoFragment) {
+            if (isEnd) {
                 if (isFullScreen()) {
                     ExitFullScreen();
                 }
                 stopPlay();
                 setHintText("播放已结束");
-                isEnd=false;
+                Toast.makeText(getContext(), getContext().getResources().getString(R.string
+                                .play_complete),
+                        Toast.LENGTH_SHORT).show();
+                isEnd = false;
             }
-        }else{
+        } else {
             if (isFullScreen()) {
                 ExitFullScreen();
             }
@@ -405,17 +427,20 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         mPlayerCallback = callback;
     }
 
+    public void setVideoExitCallback(VideoExitFullScreenCallBack callback){
+        videoExitFullScreenCallBack = callback;
+
+    }
+
     public String getCurrentUuId() {
         return playCenter.getDataStruct().uuid;
     }
 
-    public void setisPlayingView(ImageView isPlaying) {
-        this.isPlaying = isPlaying;
-    }
     public void setView(TextView videoTitle, ImageView full_screen) {
-        this.videoTitle =videoTitle;
-        this.full_screen=full_screen;
+        this.videoTitle = videoTitle;
+        this.full_screen = full_screen;
     }
+
     private TextView videoTitle;
     private ImageView full_screen;
     private boolean isEnd;
