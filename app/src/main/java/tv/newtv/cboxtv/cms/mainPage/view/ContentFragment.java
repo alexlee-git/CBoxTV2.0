@@ -315,7 +315,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
 
             updateRecycleView();
 
-            new PageContract.ContentPresenter(this);
+            new PageContract.ContentPresenter(getContext(), this);
         }
 
 
@@ -335,7 +335,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         }
 
         if (TextUtils.isEmpty(contentId)) {
-            onError("暂无数据内容。");
+            onError(LauncherApplication.AppContext,"暂无数据内容。");
         } else {
 
         }
@@ -426,8 +426,8 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
                 if (loadingView != null)
                     loadingView.setVisibility(View.GONE);
 
-                if(mDatas == null || mDatas.size() == 0){
-                    onError("数据为空");
+                if (mDatas == null || mDatas.size() == 0) {
+                    onError(LauncherApplication.AppContext, "数据为空");
                 }
 
             }
@@ -456,7 +456,12 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     }
 
     @Override
-    public void onError(@NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String desc) {
         loadingView.setText("暂无数据内容");
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
     }
 }

@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.newtv.cms.bean.Content;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.Constant;
@@ -53,6 +55,30 @@ public class DBUtil {
         }
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
         contentValues.put(DBConfig.IMAGEURL, entity.getvImage());
+        contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
+        contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+        DataSupport.insertOrReplace(DBConfig.SUBSCRIBE_TABLE_NAME)
+                .withValue(contentValues)
+                .withCallback(callback).excute();
+    }
+
+    /**
+     * 添加订阅
+     *
+     * @param entity
+     * @param callback
+     */
+    public static void AddSubcribe(Content entity, DBCallback<String> callback) {
+        //TODO 写入本地数据库 历史记录
+        ContentValues contentValues = new ContentValues();
+        if (entity.getContentUUID() != null) {
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+        }
+        if (entity.getContentType() != null) {
+            contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
+        }
+        contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+        contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
         contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
         DataSupport.insertOrReplace(DBConfig.SUBSCRIBE_TABLE_NAME)
@@ -116,6 +142,28 @@ public class DBUtil {
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             contentValues.put(DBConfig.IMAGEURL, entity.getvImage());
+            contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
+            contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+            DataSupport.insertOrReplace(DBConfig.COLLECT_TABLE_NAME)
+                    .withValue(contentValues)
+                    .withCallback(callback).excute();
+        }
+
+    }
+
+    /**
+     * 更新收藏
+     * @param entity
+     * @param callback
+     */
+    public static void PutCollect(Content entity, DBCallback<String> callback) {
+        if (entity != null) {
+            //TODO 写入本地数据库 历史记录
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+            contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
+            contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+            contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
             contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
             contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
             DataSupport.insertOrReplace(DBConfig.COLLECT_TABLE_NAME)

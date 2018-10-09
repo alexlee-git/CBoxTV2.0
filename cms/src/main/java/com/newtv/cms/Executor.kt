@@ -16,9 +16,11 @@ import java.lang.reflect.Type
  * 创建人:           weihaichao
  * 创建日期:          2018/9/26
  */
-internal class Executor<T>(val observable: Observable<ResponseBody>, val type: Type, val callback:
-IExecutor<T>?) {
-    var isCancel:Boolean = false
+internal class Executor<T>(val observable: Observable<ResponseBody>,
+                           val type: Type,
+                           val callback: IExecutor<T>?
+) {
+    var isCancel:Boolean = false //是否已经退出请求
 
     interface IExecutor<T> {
         fun onCancel(executor: Executor<T>)
@@ -46,13 +48,19 @@ IExecutor<T>?) {
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ResponseBody> {
+                    override fun onSubscribe(d: Disposable) {
+                        mDisposable = d
+                    }
+
+                    override fun onError(e: Throwable) {
+                        mObserver?.onError(e.message)
+                        cancel()
+                    }
+
                     override fun onComplete() {
                         cancel()
                     }
 
-                    override fun onSubscribe(d: Disposable?) {
-                        mDisposable = d
-                    }
 
                     override fun onNext(t: ResponseBody) {
                         if(isCancel) return
@@ -63,11 +71,6 @@ IExecutor<T>?) {
                             e.printStackTrace()
                             mObserver?.onError(e.message)
                         }
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        mObserver?.onError(e?.message)
-                        cancel()
                     }
                 })
     }

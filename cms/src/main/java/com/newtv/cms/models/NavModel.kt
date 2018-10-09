@@ -1,5 +1,6 @@
 package com.newtv.cms.models
 
+import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
 import com.newtv.cms.*
 import com.newtv.cms.api.INav
@@ -18,6 +19,11 @@ internal
 class NavModel : BaseModel(), INav {
     override fun getNav(appkey: String, channelId: String,
                         observer: DataObserver<ModelResult<List<Nav>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+
         execute<ModelResult<List<Nav>>>(Request.nav.getNavInfo(appkey, channelId),
                 object : TypeToken<ModelResult<List<Nav>>>() {}.type)
                 .observer(observer)

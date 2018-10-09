@@ -2,11 +2,14 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.*
+import com.newtv.cms.BaseModel
+import com.newtv.cms.DataObserver
+import com.newtv.cms.Model
+import com.newtv.cms.Request
 import com.newtv.cms.api.IContent
-import com.newtv.cms.api.INav
 import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.ModelResult
+import com.newtv.cms.bean.SubContent
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -17,10 +20,38 @@ import com.newtv.cms.bean.ModelResult
  */
 internal class ContentModel : BaseModel(), IContent {
 
-    override fun getInfo(appkey: String, channelId: String, contentId: String,
-                         observer: DataObserver<ModelResult<Content>>) {
-        if(TextUtils.isEmpty(contentId) || contentId.length<2){
-            observer.onError("contentId is Empty")
+    override fun getSubContent(
+            appkey: String,
+            channelId: String,
+            contentId: String,
+            observer: DataObserver<ModelResult<List<SubContent>>>) {
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if (TextUtils.isEmpty(contentId) || contentId.length < 2) {
+            observer.onError("ContentId size is to short")
+            return
+        }
+        val left: String = getLeft(contentId)
+        val right: String = getRight(contentId)
+        execute<ModelResult<List<SubContent>>>(Request.content.getSubInfo(appkey, channelId, left, right,
+                contentId), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+                .observer(observer)
+                .execute()
+    }
+
+
+    override fun getContentInfo(appkey: String,
+                                channelId: String,
+                                contentId: String,
+                                observer: DataObserver<ModelResult<Content>>) {
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if (TextUtils.isEmpty(contentId) || contentId.length < 2) {
+            observer.onError("ContentId size is to short")
             return
         }
         val left: String = getLeft(contentId)

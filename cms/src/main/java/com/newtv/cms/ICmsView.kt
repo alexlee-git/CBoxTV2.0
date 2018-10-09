@@ -1,6 +1,6 @@
 package com.newtv.cms
 
-import io.reactivex.annotations.NonNull
+import android.content.Context
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -11,5 +11,6 @@ import io.reactivex.annotations.NonNull
  */
 interface ICmsView<P : ICmsPresenter> {
     fun setPresenter(presenter: P)
-    fun onError(desc:String)
+    fun tip(context: Context, message: String)
+    fun onError(context: Context, desc: String)
 }

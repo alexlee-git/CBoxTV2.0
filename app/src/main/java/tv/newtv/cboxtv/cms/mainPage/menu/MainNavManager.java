@@ -14,7 +14,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.newtv.cms.bean.Nav;
 
@@ -39,8 +38,7 @@ import tv.newtv.cboxtv.views.MenuRecycleView;
 public class MainNavManager implements MainContract.View {
 
     private static MainNavManager mInstance;
-    MenuRecycleView.MenuAdapter<Nav> menuAdapter = null;
-    private Context mContext;
+    private MenuRecycleView.MenuAdapter<Nav> menuAdapter = null;
     private List<BaseFragment> mFragments;
     private MenuRecycleView mFirMenu;
     private FragmentManager mFragmentManager;
@@ -68,9 +66,9 @@ public class MainNavManager implements MainContract.View {
     }
 
 
-    public void inflateNavigationBar(final List<Nav> navInfos, String dataFrom) {
+    private void inflateNavigationBar(final List<Nav> navInfos, Context context, String dataFrom) {
 
-        ScreenUtils.initScreen(mContext);
+        ScreenUtils.initScreen(context);
 
         // 添加导航栏控件
 
@@ -201,11 +199,10 @@ public class MainNavManager implements MainContract.View {
 
     @SuppressLint("CheckResult")
     public void init(Context context, FragmentManager manager, Map<String, View> widgets) {
-        mContext = context;
         mFragmentManager = manager;
 
         //创建共享参数，存储一些需要的信息
-        initSharedPreferences();
+        initSharedPreferences(context);
 
         mFirMenu = (MenuRecycleView) widgets.get("firmenu");
         if (mFirMenu != null) {
@@ -213,13 +210,13 @@ public class MainNavManager implements MainContract.View {
             mFirMenu.setFocusable(true);
             if (mFirMenu.getAdapter() == null) {
                 menuAdapter = new MenuRecycleView.MenuAdapter<Nav>
-                        (mContext, mFirMenu, R.layout.view_list_item, true);
+                        (context, mFirMenu, R.layout.view_list_item, true);
             } else {
                 //noinspection unchecked
                 menuAdapter = (MenuRecycleView.MenuAdapter<Nav>) mFirMenu.getAdapter();
             }
         }
-        new MainContract.MainPresenter(this);
+        new MainContract.MainPresenter(context, this);
     }
 
 
@@ -246,8 +243,8 @@ public class MainNavManager implements MainContract.View {
     }
 
     //创建共享参数，存储一些需要的信息
-    private void initSharedPreferences() {
-        mSharedPreferences = mContext.getSharedPreferences("config", 0);
+    private void initSharedPreferences(Context context) {
+        mSharedPreferences = context.getSharedPreferences("config", 0);
     }
 
     /**
@@ -349,8 +346,8 @@ public class MainNavManager implements MainContract.View {
     }
 
     @Override
-    public void onNavResult(List<Nav> result) {
-        inflateNavigationBar(result, "server");
+    public void onNavResult(Context context, List<Nav> result) {
+        inflateNavigationBar(result, context, "server");
     }
 
     @Override
@@ -359,7 +356,12 @@ public class MainNavManager implements MainContract.View {
     }
 
     @Override
-    public void onError(@NotNull String desc) {
-        Toast.makeText(mContext, desc, Toast.LENGTH_SHORT).show();
+    public void onError(@NotNull Context context, @NotNull String desc) {
+        tip(context, desc);
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
     }
 }

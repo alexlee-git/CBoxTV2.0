@@ -15,11 +15,13 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.cms.bean.SubContent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -88,6 +90,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         } else {
             contentUUID = savedInstanceState.getString("content_uuid");
         }
+
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             leftUUID = contentUUID.substring(0, 2);
             rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
@@ -176,6 +179,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
+
+
+        contentUUID = "4329022";
+
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
@@ -269,9 +276,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
-            public void onGetProgramSeriesInfo(ProgramSeriesInfo seriesInfo) {
+            public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
                 if (seriesInfo != null) {
-                    headPlayerView.setProgramSeriesInfo(seriesInfo);
+//                    headPlayerView.setProgramSeriesInfo(seriesInfo);
                 }
             }
 

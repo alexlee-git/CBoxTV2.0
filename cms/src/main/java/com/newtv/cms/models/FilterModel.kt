@@ -1,5 +1,6 @@
 package com.newtv.cms.models
 
+import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
 import com.newtv.cms.BaseModel
 import com.newtv.cms.DataObserver
@@ -23,6 +24,14 @@ internal class FilterModel : BaseModel(), IFilter {
 
     override fun getFilterKeyWords(appkey: String, channelId: String, categoryId: String,
                                    observer: DataObserver<ModelResult<List<FilterItem>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if(TextUtils.isEmpty(categoryId)){
+            observer.onError("CategoryId is Empty")
+            return
+        }
         execute<ModelResult<List<FilterItem>>>(Request.filter.getFilterKeyWords(appkey, channelId,
                 categoryId), object : TypeToken<ModelResult<List<FilterItem>>>() {}.type)
                 .observer(observer)

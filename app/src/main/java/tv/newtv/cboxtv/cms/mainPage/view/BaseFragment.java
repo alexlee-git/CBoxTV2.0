@@ -191,7 +191,6 @@ public abstract class BaseFragment extends RxFragment {
 
     protected void onVisible() {
         invokeLazyLoad();
-
     }
 
     protected void lazyLoad() {
@@ -209,7 +208,8 @@ public abstract class BaseFragment extends RxFragment {
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
                 //recyclerView已经滚动到底部 并且当前选中的是最底下的view  执行动画
-                if (animRecyclerView != null && animRecyclerView.hasFocus()) {
+                if (animRecyclerView != null && animRecyclerView.hasFocus() && event.getAction()
+                        == KeyEvent.ACTION_DOWN) {
                     boolean canScrollVertically = animRecyclerView.canScrollVertically(1);
                     if (!canScrollVertically) {
                         View focusedChild = animRecyclerView.getFocusedChild();

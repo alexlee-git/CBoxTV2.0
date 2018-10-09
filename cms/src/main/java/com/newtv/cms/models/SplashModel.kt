@@ -1,5 +1,6 @@
 package com.newtv.cms.models
 
+import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
 import com.newtv.cms.BaseModel
 import com.newtv.cms.DataObserver
@@ -22,6 +23,11 @@ internal class SplashModel : BaseModel(), ISplash {
     }
 
     override fun getList(appkey: String, channelId: String, observer: DataObserver<ModelResult<List<Splash>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+
         execute<ModelResult<List<Splash>>>(Request.splash.getList(appkey, channelId),
                 object : TypeToken<ModelResult<List<Splash>>>() {}.type)
                 .observer(observer)

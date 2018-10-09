@@ -1,7 +1,7 @@
 package com.newtv.cms
 
+import android.content.Context
 import com.newtv.cms.api.IService
-import com.newtv.cms.bean.ModelResult
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -10,8 +10,8 @@ import com.newtv.cms.bean.ModelResult
  * 创建人:           weihaichao
  * 创建日期:          2018/9/27
  */
-@Suppress("unused")
-open class CmsServicePresenter<P>(val view: P) : ICmsPresenter {
+open class CmsServicePresenter<P>(val context: Context, val view: P) :
+        ICmsPresenter {
     override fun destroy() {
         stop()
         models.forEach { it.destroy() }

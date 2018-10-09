@@ -17,9 +17,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
+import com.newtv.cms.bean.SubContent;
 
-import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +51,8 @@ import tv.newtv.cboxtv.views.CurrentPlayImageView;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/3
  */
-public class EpisodePageView extends RelativeLayout implements IEpisode, EpisodeChange, IAdConstract.IADConstractView {
+public class EpisodePageView extends RelativeLayout implements IEpisode, EpisodeChange,
+        IAdConstract.IADConstractView, EpisodePageConstract.View {
     private static final int DEFAULT_SIZE = 8;
     private static final int HAS_AD_SIZE = 7;
 
@@ -73,18 +74,18 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private Disposable mDisposable;
     private SmallWindowView smallWindowView;
 
-    private ProgramSeriesInfo mSeriesInfo;
+    private List<SubContent> mContentList;
 
     private ADPresenter adPresenter;
     private ADHelper.AD.ADItem adItem = null;
     private int pageSize = DEFAULT_SIZE;
 
     public EpisodePageView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public EpisodePageView(Context context, AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public EpisodePageView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -95,12 +96,12 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     private void getAD() {
         adPresenter = new ADPresenter(this);
-        adPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_CONTENTLIST,"");
+        adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_CONTENTLIST, "");
     }
 
     @Override
     public void destroy() {
-        if(mDisposable != null){
+        if (mDisposable != null) {
             mDisposable.dispose();
             mDisposable = null;
         }
@@ -144,8 +145,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     public void resetProgramInfo() {
-        if (mOnEpisodeChange != null && mSeriesInfo != null) {
-            mOnEpisodeChange.onGetProgramSeriesInfo(mSeriesInfo);
+        if (mOnEpisodeChange != null && mContentList != null) {
+            mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
         }
     }
 
@@ -349,83 +350,38 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mContentUUID = uuid;
         mControlView = controlView;
 
-        String leftUUID = uuid.substring(0, 2);
-        String rightUUID = uuid.substring(uuid.length() - 2, uuid.length());
-
-        Observable<ResponseBody> observable = EpisodeHelper.GetInterface(EpisodeType, leftUUID,
-                rightUUID,
-                uuid);
-        if (observable != null) {
-            observable
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            mDisposable = d;
-                        }
-
-                        @Override
-                        public void onNext(ResponseBody responseBody) {
-                            if (responseBody != null) {
-                                try {
-                                    parseResult(responseBody.string());
-                                } catch (IOException e) {
-                                    LogUtils.e(e.toString());
-                                    onLoadError(e.getMessage());
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            onLoadError(e.getMessage());
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            mDisposable = null;
-                        }
-                    });
-        } else {
-            onLoadError("接口调用失败，暂时没有定义");
-        }
+        new EpisodePageConstract.EpisodePagePresenter(getContext(), this);
     }
 
     private void onLoadError(String message) {
         ShowInfoTextView(message);
     }
 
-    private void parseResult(String result) {
-        if (TextUtils.isEmpty(result)) {
+    private void parseResult(List<SubContent> results) {
+        if (results == null || results.size() == 0) {
             onLoadError("获取结果为空");
             return;
         }
         try {
-            JSONObject object = new JSONObject(result);
-            if (object.getInt("errorCode") == 0) {
-                JSONObject obj = object.getJSONObject("data");
-                Gson gson = new Gson();
-                mSeriesInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+            mContentList = results;
 
-                if (mOnEpisodeChange != null) {
-                    mOnEpisodeChange.onGetProgramSeriesInfo(mSeriesInfo);
+            if (mOnEpisodeChange != null) {
+                mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
+            }
+
+            if (mContentList != null && mContentList.size() > 0) {
+                if (mControlView != null) {
+                    mControlView.setVisibility(View.VISIBLE);
                 }
+                setVisibility(View.VISIBLE);
+                ShowInfoTextView("");
 
-                if (mSeriesInfo.getData() != null && mSeriesInfo.getData().size() > 0) {
-                    if (mControlView != null) {
-                        mControlView.setVisibility(View.VISIBLE);
-                    }
-                    setVisibility(View.VISIBLE);
-                    ShowInfoTextView("");
-
-                    if (mSeriesInfo.getData().size() > 0) {
-                        rightDir.setVisibility(View.VISIBLE);
-                    }
-                    initFragment();
-                } else {
-                    onLoadError("暂时没有数据");
+                if (mContentList.size() > 0) {
+                    rightDir.setVisibility(View.VISIBLE);
                 }
+                initFragment();
+            } else {
+                onLoadError("暂时没有数据");
             }
         } catch (Exception e) {
             LogUtils.e(e.toString());
@@ -433,9 +389,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         }
     }
 
-    private void initFragment(){
-        List<ProgramSeriesInfo.ProgramsInfo> results = mSeriesInfo.getData();
-        int size = mSeriesInfo.getData().size();
+    private void initFragment() {
+        int size = mContentList.size();
         fragments = new ArrayList<>();
         List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
         for (int index = 0; index < size; index += pageSize) {
@@ -445,7 +400,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             }
             EpisodeFragment episodeFragment = new EpisodeFragment();
             episodeFragment.setAdItem(adItem);
-            episodeFragment.setData(results.subList(index, endIndex));
+            episodeFragment.setData(mContentList.subList(index, endIndex));
             episodeFragment.setViewPager(ListPager, fragments.size(), this);
             fragments.add(episodeFragment);
             pageItems.add(new EpisodePageAdapter.PageItem(String
@@ -486,8 +441,9 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
             if (rightDir != null) {
                 LayoutParams rightParams = (LayoutParams) rightDir.getLayoutParams();
-                rightParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() - rightDir
-                        .getMeasuredHeight()) / 2;
+                rightParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() -
+                        rightDir
+                                .getMeasuredHeight()) / 2;
                 rightDir.setLayoutParams(rightParams);
             }
         }
@@ -557,7 +513,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     return true;
                 }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                if (!ListPager.hasFocus() && !aiyaRecyclerView.hasFocus() && !smallWindowView.hasFocus()) {
+                if (!ListPager.hasFocus() && !aiyaRecyclerView.hasFocus() && !smallWindowView
+                        .hasFocus()) {
                     if (aiyaRecyclerView.getDefaultFocusView() != null)
                         aiyaRecyclerView.getDefaultFocusView().requestFocus();
                     return true;
@@ -577,7 +534,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 } else if (ListPager.hasFocus()) {
                     focusView = ListPager.findFocus();
                     parentView = ListPager;
-                } else if(smallWindowView.hasFocus()){
+                } else if (smallWindowView.hasFocus()) {
                     return smallWindowView.interuptKeyEvent(event);
                 }
 
@@ -603,7 +560,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 } else if (ListPager.hasFocus()) {
                     focusView = ListPager.findFocus();
                     parentView = ListPager;
-                } else if(smallWindowView.hasFocus()){
+                } else if (smallWindowView.hasFocus()) {
                     return smallWindowView.interuptKeyEvent(event);
                 }
 
@@ -626,7 +583,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public void onChange(CurrentPlayImageView imageView, int index,boolean fromClick) {
+    public void onChange(CurrentPlayImageView imageView, int index, boolean fromClick) {
         if (mCurrentPlayImage != null) {
             mCurrentPlayImage.setIsPlaying(false);
         }
@@ -634,7 +591,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mCurrentPlayImage = imageView;
         imageView.setIsPlaying(true);
         if (mOnEpisodeChange != null) {
-            mOnEpisodeChange.onChange(index,fromClick);
+            mOnEpisodeChange.onChange(index, fromClick);
         }
     }
 
@@ -642,20 +599,42 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     public void showAd(ADHelper.AD.ADItem item) {
         adItem = item;
 //        item.AdUrl = "123";
-        if(!TextUtils.isEmpty(item.AdUrl)){
+        if (!TextUtils.isEmpty(item.AdUrl)) {
             pageSize = HAS_AD_SIZE;
-            if(mSeriesInfo != null && mSeriesInfo.getData() != null
-                    && mSeriesInfo.getData().size() > 0){
+            if (mContentList != null
+                    && mContentList.size() > 0) {
                 initFragment();
             }
         }
     }
 
+    @Override
+    public void onSubContentResult(List<SubContent> contents) {
+        parseResult(contents);
+    }
+
+    @Override
+    public void setPresenter(@NotNull EpisodePageConstract.Presenter presenter) {
+        if(TextUtils.isEmpty(mContentUUID)){
+            presenter.getSubContent(mContentUUID);
+        }
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @NotNull String desc) {
+
+    }
+
 
     public interface OnEpisodeChange {
-        void onGetProgramSeriesInfo(ProgramSeriesInfo seriesInfo);
+        void onGetProgramSeriesInfo(List<SubContent> seriesInfo);
 
-        void onChange(int index,boolean fromClick);
+        void onChange(int index, boolean fromClick);
     }
 
 

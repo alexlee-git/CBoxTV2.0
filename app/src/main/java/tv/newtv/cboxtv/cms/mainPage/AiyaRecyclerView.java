@@ -56,7 +56,6 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     }
 
 
-
     public AiyaRecyclerView(Context context, Boolean autoScroll) {
         super(context);
         AutoScroll = autoScroll;
@@ -204,7 +203,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     }
 
     public void setFocusView(View view) {
-        if(view.getHeight() == 0 || view.getWidth() == 0) return;
+        if (view.getHeight() == 0 || view.getWidth() == 0) return;
         View rootView = getRootView(view);
         if (rootView == null) return;
         if (isLinear) {
@@ -225,14 +224,15 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                     smoothScrollBy(rootView.getLeft() - getScrollX(), 0);
                 } else if (mAlign == ALIGN_END) {
                     smoothScrollBy(rootView.getRight() - (getScrollX() + getWidth()), 0);
-                }else if (mAlign==ALIGN_AUTO_TWO){
+                } else if (mAlign == ALIGN_AUTO_TWO) {
                     if (currentDir == View.FOCUS_RIGHT) {
-                        if (rootView.getLeft()-getScrollX()>rootView.getWidth()){
-                            smoothScrollBy(rootView.getLeft() - getScrollX() - rootView.getWidth(), 0);
+                        if (rootView.getLeft() - getScrollX() > rootView.getWidth()) {
+                            smoothScrollBy(rootView.getLeft() - getScrollX() - rootView.getWidth
+                                    (), 0);
                         }
                     } else if (currentDir == View.FOCUS_LEFT) {
-                        if (rootView.getLeft()-getScrollX()<=0){
-                            smoothScrollBy(rootView.getWidth()*-1,
+                        if (rootView.getLeft() - getScrollX() <= 0) {
+                            smoothScrollBy(rootView.getWidth() * -1,
                                     0);
                         }
 
@@ -248,9 +248,9 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 }
             } else {
                 if (mAlign == ALIGN_CENTER) {
-                    int space = rootView.getTop() - (getHeight() - rootView.getHeight()) / 2 ;
-                    Log.d(TAG,String.format("move height=%d parentHeight=%d top=%d space=%d",
-                            rootView.getHeight(),getHeight(),rootView.getTop(),space));
+                    int space = rootView.getTop() - (getHeight() - rootView.getHeight()) / 2;
+                    Log.d(TAG, String.format("move height=%d parentHeight=%d top=%d space=%d",
+                            rootView.getHeight(), getHeight(), rootView.getTop(), space));
                     smoothScrollBy(0, space);
                 } else if (mAlign == ALIGN_START) {
                     smoothScrollBy(0, rootView.getTop() - getScrollY());
@@ -311,8 +311,12 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 Log.e(Constant.TAG, "view tag : " + cellCode + ", height : " + focusView
                         .getHeight());
                 int index = getLayoutManager().getPosition(root);
-                RecycleSpaceDecoration recycleSpaceDecoration = (RecycleSpaceDecoration)
-                        getItemDecorationAt(index);
+                @Nullable RecycleSpaceDecoration recycleSpaceDecoration = null;
+                int decorationCount = getItemDecorationCount();
+                if (getAdapter() != null && decorationCount > 0 && index < decorationCount) {
+                    recycleSpaceDecoration = (RecycleSpaceDecoration)
+                            getItemDecorationAt(index);
+                }
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
                         if (!isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
@@ -407,10 +411,6 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
         return result;
     }
 
-    public interface DispatchKeyHandle {
-        boolean HandleDispatchKeyEvent(KeyEvent event, View focusView, boolean defaultResult);
-    }
-
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
@@ -419,5 +419,9 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         super.onMeasure(widthSpec, heightSpec);
+    }
+
+    public interface DispatchKeyHandle {
+        boolean HandleDispatchKeyEvent(KeyEvent event, View focusView, boolean defaultResult);
     }
 }

@@ -19,4 +19,12 @@ internal interface IContentRetro {
                          @Path("left") left: String,
                          @Path("right") right: String,
                          @Path("contentID") contentUUID: String): Observable<ResponseBody>
+
+
+    @GET("api/v31/{appkey}/{channelCode}/subcontents/{left}/{right}/{contentID}.json")
+    fun getSubInfo(@Path("appkey") appkey: String,
+                @Path("channelCode") channelId: String,
+                @Path("left") left: String,
+                @Path("right") right: String,
+                @Path("contentID") contentUUID: String): Observable<ResponseBody>
 }

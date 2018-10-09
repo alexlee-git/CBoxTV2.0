@@ -1,5 +1,6 @@
 package com.newtv.cms.models
 
+import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
 import com.newtv.cms.BaseModel
 import com.newtv.cms.DataObserver
@@ -21,6 +22,14 @@ internal class HostModel : BaseModel(), IHost {
 
     override fun getProgramList(appkey: String, channelId: String, contentId: String,
                                 observer: DataObserver<ModelResult<List<HostProgram>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if(TextUtils.isEmpty(contentId) || contentId.length < 2){
+            observer.onError("ContentId size is to short")
+            return
+        }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
         execute<ModelResult<List<HostProgram>>>(Request.tv.getProgramList(appkey, channelId, left, right,
@@ -31,6 +40,14 @@ internal class HostModel : BaseModel(), IHost {
 
     override fun getFigureList(appkey: String, channelId: String, contentId: String,
                                observer: DataObserver<ModelResult<List<HostProgram>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if(TextUtils.isEmpty(contentId) || contentId.length < 2){
+            observer.onError("ContentId size is to short")
+            return
+        }
 //        val left: String = getLeft(contentId)
 //        val right: String = getRight(contentId)
 //        execute<ModelResult<List<HostListItem>>>(Request.tv.getFigureList(appkey, channelId, left, right,
@@ -45,6 +62,14 @@ internal class HostModel : BaseModel(), IHost {
 
     override fun getTvList(appkey: String, channelId: String, contentId: String,
                            observer: DataObserver<ModelResult<List<HostListItem>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if(TextUtils.isEmpty(contentId) || contentId.length < 2){
+            observer.onError("ContentId size is to short")
+            return
+        }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
         execute<ModelResult<List<HostListItem>>>(Request.tv.getTvList(appkey, channelId, left, right,

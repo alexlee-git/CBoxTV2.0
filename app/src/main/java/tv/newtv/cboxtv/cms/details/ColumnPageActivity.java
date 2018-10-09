@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.SubContent;
+
+import java.util.List;
+
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
@@ -99,6 +103,8 @@ public class ColumnPageActivity extends BaseActivity {
             finish();
             return;
         }
+
+        contentUUID = "4598904";
 
         final SuggestView sameType = findViewById(R.id.same_type);
         headPlayerView = findViewById(R.id.header_video);
@@ -193,8 +199,8 @@ public class ColumnPageActivity extends BaseActivity {
 
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
-            public void onGetProgramSeriesInfo(ProgramSeriesInfo seriesInfo) {
-                headPlayerView.setProgramSeriesInfo(seriesInfo);
+            public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
+//                headPlayerView.setProgramSeriesInfo(seriesInfo);
             }
 
             @Override

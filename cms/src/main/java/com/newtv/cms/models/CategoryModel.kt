@@ -1,5 +1,6 @@
 package com.newtv.cms.models
 
+import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
 import com.newtv.cms.BaseModel
 import com.newtv.cms.DataObserver
@@ -25,6 +26,10 @@ internal class CategoryModel : BaseModel(), ICategory {
 
     override fun getCategoryTree(appkey: String, channelCode: String,
                                  observer: DataObserver<ModelResult<List<CategoryTreeNode>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
         execute<ModelResult<List<CategoryTreeNode>>>(
                 Request.category.getCategoryTree(appkey, channelCode),
                 object : TypeToken<ModelResult<List<CategoryTreeNode>>>() {}.type)
@@ -34,6 +39,14 @@ internal class CategoryModel : BaseModel(), ICategory {
 
     override fun getCategoryContent(appkey: String, channelCode: String, contentId: String,
                                     observer: DataObserver<ModelResult<List<CategoryItem>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if(TextUtils.isEmpty(contentId) || contentId.length < 2){
+            observer.onError("ContentId size is to short")
+            return
+        }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
         execute<ModelResult<List<CategoryItem>>>(Request.category.getCategoryContent(appkey,

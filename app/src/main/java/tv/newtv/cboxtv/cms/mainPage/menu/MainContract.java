@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.cms.mainPage.menu;
 
+import android.content.Context;
+
 import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
@@ -20,9 +22,9 @@ import java.util.List;
  * 创建人:           weihaichao
  * 创建日期:          2018/9/27
  */
-public class MainContract {
+class MainContract {
     interface View extends ICmsView<Presenter> {
-        void onNavResult(List<Nav> result);
+        void onNavResult(Context context, List<Nav> result);
     }
 
     interface Presenter extends ICmsPresenter {
@@ -31,9 +33,8 @@ public class MainContract {
 
     static class MainPresenter extends CmsServicePresenter<View> implements Presenter {
 
-
-        public MainPresenter(View view) {
-            super(view);
+        MainPresenter(Context context, View view) {
+            super(context, view);
             view.setPresenter(this);
         }
 
@@ -45,15 +46,16 @@ public class MainContract {
                         new DataObserver<ModelResult<List<Nav>>>() {
                             @Override
                             public void onResult(ModelResult<List<Nav>> result) {
-                                if(result.isOk()){
-                                    getView().onNavResult(result.getData());
-                                }else{
+                                if (result.isOk()) {
+                                    getView().onNavResult(getContext(), result.getData());
+                                } else {
                                     onError(result.getErrorMesssage());
                                 }
                             }
+
                             @Override
                             public void onError(@Nullable String desc) {
-                                getView().onError(desc);
+                                getView().onError(getContext(), desc);
                             }
                         });
             }

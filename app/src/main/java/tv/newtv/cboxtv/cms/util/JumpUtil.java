@@ -65,11 +65,11 @@ public class JumpUtil {
             return;
         }
 
-        Intent jumpIntent = getIntent(context, info.getL_actionType(), info.getContentType(), info
-                .getContentId(), info.getSeriesSubUUID());
+        Intent jumpIntent = getIntent(context, info.getL_actionType(), info.getL_contentType(), info
+                .getL_uuid(), info.getSeriesSubUUID());
         if (jumpIntent != null) {
-            jumpIntent.putExtra(Constant.CONTENT_TYPE, info.getContentType());
-            jumpIntent.putExtra(Constant.CONTENT_UUID, info.getContentId());
+            jumpIntent.putExtra(Constant.CONTENT_TYPE, info.getL_contentType());
+            jumpIntent.putExtra(Constant.CONTENT_UUID, info.getL_uuid());
             jumpIntent.putExtra(Constant.PAGE_UUID, info.getContentId());
             jumpIntent.putExtra(Constant.ACTION_TYPE, info.getL_actionType());
             jumpIntent.putExtra(Constant.ACTION_URI, info.getL_actionUri());

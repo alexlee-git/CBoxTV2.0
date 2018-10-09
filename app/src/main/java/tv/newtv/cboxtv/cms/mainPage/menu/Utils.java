@@ -69,14 +69,14 @@ public class Utils {
     }
 
     /**
-     * Shows a (long) toast
+     * Shows a (long) tip
      */
     public static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
     /**
-     * Shows a (long) toast.
+     * Shows a (long) tip.
      */
     public static void showToast(Context context, int resourceId) {
         Toast.makeText(context, context.getString(resourceId), Toast.LENGTH_LONG).show();

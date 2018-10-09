@@ -17,10 +17,12 @@ internal object ModelFactory {
     @Suppress("UNCHECKED_CAST")
     fun <T> findModel(type: String): T? {
         if (!modelMap.containsKey(type)) {
-            val model: BaseModel? = buildModel(type)
-            model?.let {
-                modelMap[type] = it
-                return model as T
+            synchronized(modelMap) {
+                val model: BaseModel? = buildModel(type)
+                model?.let {
+                    modelMap[type] = it
+                    return model as T
+                }
             }
             return null
         }
@@ -28,8 +30,7 @@ internal object ModelFactory {
     }
 
     private fun buildModel(type: String): BaseModel? {
-        var result: BaseModel? = null
-        result = when (type) {
+        return when (type) {
             Model.MODEL_NAV -> NavModel()
             Model.MODEL_CONTENT -> ContentModel()
             Model.MODEL_PAGE -> PageModel()
@@ -40,11 +41,10 @@ internal object ModelFactory {
             Model.MODEL_FILTER -> FilterModel()
             Model.MODEL_TV_PROGRAM -> TvProgramModel()
             else -> {
-                Log.e("ModleFactory", "$type is not registered ! please write it in buildModel")
+                Log.e("ModuleFactory", "$type is not registered ! please write it in buildModel")
                 null
             }
         }
-        return result
     }
 
     fun attach(model: BaseModel) {

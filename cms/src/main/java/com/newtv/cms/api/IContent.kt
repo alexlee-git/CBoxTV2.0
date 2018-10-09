@@ -3,6 +3,7 @@ package com.newtv.cms.api
 import com.newtv.cms.DataObserver
 import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.ModelResult
+import com.newtv.cms.bean.SubContent
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -16,6 +17,12 @@ interface IContent : IService {
     /**
      * 获取内容详情
      */
-    fun getInfo(appkey: String, channelId: String, contentId: String,
-                observer: DataObserver<ModelResult<Content>>)
+    fun getContentInfo(appkey: String, channelId: String, contentId: String,
+                       observer: DataObserver<ModelResult<Content>>)
+
+    /**
+     * 获取节目集，节目合集，电视栏目，节目集合集等子集列表
+     */
+    fun getSubContent(appkey: String, channelId: String, contentId: String,
+                      observer: DataObserver<ModelResult<List<SubContent>>>)
 }

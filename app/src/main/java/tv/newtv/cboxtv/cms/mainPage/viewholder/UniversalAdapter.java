@@ -568,13 +568,20 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_16);
         //进入推荐位
 
-        logBuff.append(0 + ",")
-                .append(blockId + "+")
-                .append(layoutCode + "+")
-                .append(info.getCellCode() + ",")
-                .append(info.getContentId() + ",")
-                .append(info.getContentType() + ",")
-                .append(info.getL_actionType() + ",")
+        logBuff.append(0)
+                .append(",")
+                .append(blockId)
+                .append("+")
+                .append(layoutCode)
+                .append("+")
+                .append(info.getCellCode())
+                .append(",")
+                .append(info.getContentId())
+                .append(",")
+                .append(info.getContentType())
+                .append(",")
+                .append(info.getL_actionType())
+                .append(",")
                 .append(info.getL_actionUri())
                 .trimToSize();
 

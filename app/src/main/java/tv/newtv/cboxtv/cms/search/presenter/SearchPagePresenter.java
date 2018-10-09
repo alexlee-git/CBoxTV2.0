@@ -18,12 +18,10 @@ import tv.newtv.cboxtv.cms.search.view.ISearchPageView;
  */
 public class SearchPagePresenter implements ISearchPagePresenter {
     private ISearchPageModel mSearchModel;
-    private Context mContext;
     private ISearchPageView mSearchPageView;
 
     public SearchPagePresenter(Context context, ISearchPageView searchPageView) {
         mSearchModel = new SearchPageModel(this, context);
-        this.mContext = context;
         this.mSearchPageView = searchPageView;
     }
 

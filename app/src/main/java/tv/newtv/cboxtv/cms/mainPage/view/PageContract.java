@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.cms.mainPage.view;
 
+import android.content.Context;
+
 import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
@@ -29,33 +31,33 @@ class PageContract {
         void getPageContent(String contentId);
     }
 
-    static class ContentPresenter extends CmsServicePresenter<View> implements Presenter{
+    static class ContentPresenter extends CmsServicePresenter<View> implements Presenter {
 
-        ContentPresenter(View view) {
-            super(view);
+        ContentPresenter(Context context, View view) {
+            super(context, view);
             view.setPresenter(this);
         }
 
         @Override
         public void getPageContent(String contentId) {
             IPage page = getService(SERVICE_PAGE);
-            if(page != null){
+            if (page != null) {
                 page.getPage(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentId, new
                         DataObserver<ModelResult<List<Page>>>() {
-                    @Override
-                    public void onResult(ModelResult<List<Page>> result) {
-                        if(result.isOk()){
-                            getView().onPageResult(result.getData());
-                        }else{
-                            onError(result.getErrorMesssage());
-                        }
-                    }
+                            @Override
+                            public void onResult(ModelResult<List<Page>> result) {
+                                if (result.isOk()) {
+                                    getView().onPageResult(result.getData());
+                                } else {
+                                    onError(result.getErrorMesssage());
+                                }
+                            }
 
-                    @Override
-                    public void onError(@Nullable String desc) {
-                        getView().onError(desc);
-                    }
-                });
+                            @Override
+                            public void onError(@Nullable String desc) {
+                                getView().onError(getContext(),desc);
+                            }
+                        });
             }
         }
     }

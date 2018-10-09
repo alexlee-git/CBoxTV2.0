@@ -19,6 +19,15 @@ internal object Model {
     const val MODEL_TV_PROGRAM: String = "TvProgram"       //电视栏目
     const val MODEL_FILTER: String = "Filter"       //筛选
 
+
+    const val CONTENT_TYPE_PS: String = "PS" //节目集
+    const val CONTENT_TYPE_CG: String = "CG" //节目合集
+    const val CONTENT_TYPE_CP: String = "CP" //子节目
+    const val CONTENT_TYPE_PG: String = "PG" //单节目
+    const val CONTENT_TYPE_FG: String = "FG" //人物
+    const val CONTENT_TYPE_LV: String = "LV" //直播
+    const val CONTENT_TYPE_TV: String = "TV" //电视栏目
+
     fun <T> findModel(type: String): T? {
         return ModelFactory.findModel<T>(type)
     }

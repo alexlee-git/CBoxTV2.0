@@ -19,27 +19,23 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.LiveParam;
+import com.newtv.cms.util.CmsUtil;
 
-import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -49,12 +45,10 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.db.DBCallback;
 import tv.newtv.cboxtv.uc.db.DBConfig;
 import tv.newtv.cboxtv.uc.db.DataSupport;
-import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.LiveTimingUtil;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
 import tv.newtv.cboxtv.views.FocusToggleSelect;
-import tv.newtv.cboxtv.views.FocusToggleView;
 
 /**
  * 项目名称:         CBoxTV
@@ -63,11 +57,12 @@ import tv.newtv.cboxtv.views.FocusToggleView;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/5
  */
-public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnClickListener {
+public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnClickListener,
+        HeaderViewConstract.View {
 
     private static final String TAG = "HeadPlayerView";
 
-    ProgramSeriesInfo mInfo;
+    Content mInfo;
     private VideoPlayerView playerView;
     private int currentPlayIndex = 0;
     private int currentPosition = 0;
@@ -130,7 +125,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -181,8 +175,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
-    public ProgramSeriesInfo getInfo() {
-
+    public Content getInfo() {
         return mInfo;
     }
 
@@ -246,7 +239,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         return super.findViewWithTag(tag);
     }
 
-    public void onActivityPause(){
+    public void onActivityPause() {
         if (playerView != null) {
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
@@ -302,10 +295,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (isPlayLive && mInfo != null) {
-            Log.e(TAG, "player view is builded, play live video....");
-            playerView.playLiveVideo(mInfo.getContentUUID(), mInfo.getPlayUrl(), mInfo
-                    .getTitle(), 0, 0);
-            timer();
+//            Log.e(TAG, "player view is builded, play live video....");
+//            playerView.playLiveVideo(mInfo.getContentUUID(), mInfo.getPlayUrl(), mInfo
+//                    .getTitle(), 0, 0);
+//            timer();
             return;
         }
         if (playerView != null && currentProgramSeriesInfo != null) {
@@ -371,6 +364,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
+        new HeaderViewConstract.HeaderViewPresenter(getContext(), this);
 
         postDelayed(new Runnable() {
             @Override
@@ -517,7 +511,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                      String
                                                                                              result) {
                                                                     if (code == 0) {
-                                                                        ((FocusToggleSelect) Subscrip)
+                                                                        ((FocusToggleSelect)
+                                                                                Subscrip)
                                                                                 .setSelect(true);
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
@@ -550,8 +545,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 .LENGTH_SHORT).show();
     }
 
-    public void setProgramSeriesInfo(ProgramSeriesInfo
-                                             programSeriesInfo) {
+    public void setProgramSeriesInfo(ProgramSeriesInfo programSeriesInfo) {
         if (TextUtils.isEmpty(programSeriesInfo.getTitle())) {
             if (mInfo != null) {
                 programSeriesInfo.setTitle(mInfo.getTitle());
@@ -560,7 +554,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
         if (TextUtils.isEmpty(programSeriesInfo.getvImage())) {
             if (mInfo != null) {
-                programSeriesInfo.setvImage(mInfo.getvImage());
+                programSeriesInfo.setvImage(mInfo.getVImage());
             }
         }
 
@@ -620,104 +614,87 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }, 500);
     }
 
-    private void parseResult(String result) {
-        if (TextUtils.isEmpty(result)) {
-            onLoadError("获取结果为空");
-            return;
+    private void parseResult() {
+        if (mInfo == null) return;
+
+        TextView title = contentView.findViewById(R.id.id_detail_title);
+        TextView type = contentView.findViewById(R.id.id_detail_type);
+        TextView typeTWO = contentView.findViewById(R.id.id_detail_type2);
+        TextView star = contentView.findViewById(R.id.id_detail_star);
+        TextView content = contentView.findViewById(R.id.id_detail_content);
+        ViewStub moreStub = contentView.findViewById(R.id.more_view_stub);
+        if (title != null) {
+            title.setText(mInfo.getTitle());
         }
-        try {
-            JSONObject object = new JSONObject(result);
-            if (object.getInt("errorCode") == 0) {
-                JSONObject obj = object.getJSONObject("data");
-                Gson gson = new Gson();
-                mInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
 
-                if (mBuilder.infoResult != null) {
-                    mBuilder.infoResult.onResult(mInfo);
-                }
-
-                TextView title = contentView.findViewById(R.id.id_detail_title);
-                TextView type = contentView.findViewById(R.id.id_detail_type);
-                TextView typeTWO = contentView.findViewById(R.id.id_detail_type2);
-                TextView star = contentView.findViewById(R.id.id_detail_star);
-                TextView content = contentView.findViewById(R.id.id_detail_content);
-                ViewStub moreStub = contentView.findViewById(R.id.more_view_stub);
-                if (title != null) {
-                    title.setText(mInfo.getTitle());
-                }
-
-                Log.e("HeadPlayerparseResult: ", mInfo.toString());
+        Log.e("HeadPlayerparseResult: ", mInfo.toString());
 //              第一行是 地区、年代、一级分级  第二行是 主持人、导演、主演，所有人员名称就是 连续一行显示，用竖线前后空格区分。
-                // mInfo.getDistrict() 地区  mInfo.getArea()//国家地区 mInfo.getPresenter
+        // mInfo.getDistrict() 地区  mInfo.getArea()//国家地区 mInfo.getPresenter
 
-                if (type != null) {
-                    type.setText(PlayInfoUtil.formatSplitInfo(mInfo.getArea()
-                            , mInfo.getAirtime()
-                            , mInfo.getVideoType()));
+        if (type != null) {
+            type.setText(PlayInfoUtil.formatSplitInfo(mInfo.getArea()
+                    , mInfo.getAirtime()
+                    , mInfo.getVideoType()));
+        }
 
-
-                }
-
-                if (star != null) {
-                    if (!TextUtils.isEmpty(mInfo.getDirector()) && !TextUtils.isEmpty(mInfo
-                            .getActors()) && !mInfo.getDirector().equals("无") && !mInfo.getActors
-                            ().equals("无")) {
-                        star.setVisibility(VISIBLE);
-                        star.setText(PlayInfoUtil.formatSplitInfo("导演:" + mInfo.getDirector(),
-                                "主演:" + mInfo
-                                        .getActors()));
-                    } else if (!TextUtils.isEmpty(mInfo.getPresenter())) {
-                        star.setText(PlayInfoUtil.formatSplitInfo("主持人:" + mInfo.getPresenter()));
-                    } else {
-                        star.setVisibility(GONE);
-                    }
-
-                }
-
-                if (content != null) {
-                    content.setText(mInfo.getDescription().replace("\r\n", ""));
-                    int ellipsisCount = content.getLayout().getEllipsisCount(content.getLineCount() - 1);
-                    if(ellipsisCount > 0 && moreStub != null){
-                        final View view = moreStub.inflate();
-                        view.setOnFocusChangeListener(new OnFocusChangeListener() {
-                            @Override
-                            public void onFocusChange(View v, boolean hasFocus) {
-                                if(hasFocus){
-                                    view.setBackgroundResource(R.drawable.more_hasfocus);
-                                } else {
-                                    view.setBackgroundResource(R.drawable.more_nofocus);
-                                }
-                            }
-                        });
-
-                        view.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                DescriptionActivity.runAction(getContext(),mInfo.getTitle(),mInfo.getDescription());
-                            }
-                        });
-                    }
-                }
-
-                if (!TextUtils.isEmpty(mInfo.getPlayUrl()) && CmsLiveUtil.isInPlay(mInfo
-                        .getLiveLoopType(), mInfo.getLiveParam(), mInfo
-                        .getPlayStartTime(), mInfo.getPlayEndTime(), null)) {
-                    //需要直播
-                    playerView.setSeriesInfo(mInfo);
-                    playerView.playLiveVideo(mInfo.getContentUUID(), mInfo.getPlayUrl(), mInfo
-                            .getTitle(), 0, 0);
-                    timer();
-                    isPlayLive = true;
-                } else {
-                    if (currentProgramSeriesInfo != null && mPlayInfo != null) {
-                        playerView.setSeriesInfo(currentProgramSeriesInfo);
-                        playerView.playSingleOrSeries(mPlayInfo.index, mPlayInfo.position);
-                    }
-                }
+        if (star != null) {
+            if (!TextUtils.isEmpty(mInfo.getDirector()) && !TextUtils.isEmpty(mInfo
+                    .getActors()) && !mInfo.getDirector().equals("无") && !mInfo.getActors
+                    ().equals("无")) {
+                star.setVisibility(VISIBLE);
+                star.setText(PlayInfoUtil.formatSplitInfo("导演:" + mInfo.getDirector(),
+                        "主演:" + mInfo
+                                .getActors()));
+            } else if (!TextUtils.isEmpty(mInfo.getPresenter())) {
+                star.setText(PlayInfoUtil.formatSplitInfo("主持人:" + mInfo.getPresenter()));
+            } else {
+                star.setVisibility(GONE);
             }
-        } catch (Exception e) {
-            LogUtils.e(e.toString());
-            //onLoadError(e.getMessage());
+
+        }
+
+        if (content != null) {
+            content.setText(mInfo.getDescription().replace("\r\n", ""));
+            int ellipsisCount = content.getLayout().getEllipsisCount(content.getLineCount
+                    () - 1);
+            if (ellipsisCount > 0 && moreStub != null) {
+                final View view = moreStub.inflate();
+                view.setOnFocusChangeListener(new OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            view.setBackgroundResource(R.drawable.more_hasfocus);
+                        } else {
+                            view.setBackgroundResource(R.drawable.more_nofocus);
+                        }
+                    }
+                });
+
+                view.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DescriptionActivity.runAction(getContext(), mInfo.getTitle(),
+                                mInfo.getDescription());
+                    }
+                });
+            }
+        }
+
+        if (mInfo.getLiveLoopParam() != null) {
+            LiveParam param = CmsUtil.INSTANCE.isLiveTime(mInfo.getLiveLoopParam());
+            if (param != null) {
+                //需要直播
+//                        playerView.setSeriesInfo(mInfo);
+                playerView.playLiveVideo(mInfo.getContentUUID(), param.getLiveParam(), mInfo
+                        .getTitle(), 0, 0);
+                timer();
+                isPlayLive = true;
+            }
+        } else {
+            if (currentProgramSeriesInfo != null && mPlayInfo != null) {
+                playerView.setSeriesInfo(currentProgramSeriesInfo);
+                playerView.playSingleOrSeries(mPlayInfo.index, mPlayInfo.position);
+            }
         }
     }
 
@@ -727,51 +704,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void requestFromServer() {
-        if (mBuilder == null) {
-            return;
-        }
-        String uuid = mBuilder.contentUUid;
-        if (uuid == null) {
-            return;
-        }
-        String leftUUID = uuid.substring(0, 2);
-        String rightUUID = uuid.substring(uuid.length() - 2, uuid.length());
 
-        Observable<ResponseBody> observable = EpisodeHelper.GetInfo(leftUUID, rightUUID, uuid);
-        if (observable != null) {
-            observable.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            mDisposable = d;
-                        }
 
-                        @Override
-                        public void onNext(ResponseBody responseBody) {
-                            if (responseBody != null) {
-                                try {
-                                    parseResult(responseBody.string());
-                                } catch (IOException e) {
-                                    LogUtils.e(e.toString());
-                                    onLoadError(e.getMessage());
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            onLoadError(e.getMessage());
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            mDisposable = null;
-                        }
-                    });
-        } else {
-            onLoadError("接口调用失败，暂时没有定义");
-        }
     }
 
     @Override
@@ -857,19 +791,43 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void timer() {
-        if (mInfo == null || TextUtils.isEmpty(mInfo.getPlayEndTime())) {
+//        if (mInfo == null || TextUtils.isEmpty(mInfo.getPlayEndTime())) {
+//            return;
+//        }
+//        LiveTimingUtil.endTime(mInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
+//            @Override
+//            public void end() {
+//                if (playerView != null) {
+//                    playerView.setHintText("播放已结束");
+//                    playerView.setHintTextVisible(View.VISIBLE);
+//                    playerView.release();
+//                }
+//            }
+//        });
+    }
+
+    @Override
+    public void onInfoResult(Content content) {
+        mInfo = content;
+        parseResult();
+    }
+
+    @Override
+    public void setPresenter(@NotNull HeaderViewConstract.Presenter presenter) {
+        if (mBuilder == null) {
             return;
         }
-        LiveTimingUtil.endTime(mInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
-            @Override
-            public void end() {
-                if (playerView != null) {
-                    playerView.setHintText("播放已结束");
-                    playerView.setHintTextVisible(View.VISIBLE);
-                    playerView.release();
-                }
-            }
-        });
+        presenter.requestInfo(mBuilder.contentUUid);
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @NotNull String desc) {
+
     }
 
     public interface InfoResult {

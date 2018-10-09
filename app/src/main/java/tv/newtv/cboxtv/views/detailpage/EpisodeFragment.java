@@ -12,15 +12,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.GsonUtil;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
@@ -40,7 +41,7 @@ public class EpisodeFragment extends Fragment {
     private static final int HAS_AD_SIZE = 7;
 
     private static final String TAG = EpisodeFragment.class.getSimpleName();
-    private List<ProgramSeriesInfo.ProgramsInfo> mData;
+    private List<SubContent> mData;
     private View contentView;
     private View firstView;
     private View lastView;
@@ -119,7 +120,7 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
-    public void setData(List<ProgramSeriesInfo.ProgramsInfo> data) {
+    public void setData(List<SubContent> data) {
         mData = data;
         updateUI();
     }
@@ -176,7 +177,7 @@ public class EpisodeFragment extends Fragment {
     }
 
     private void updateItem(View view, int index){
-        ProgramSeriesInfo.ProgramsInfo item = getData(index);
+        SubContent item = getData(index);
         if (item != null) {
             if (view != null) {
                 ViewHolder holder = null;
@@ -207,7 +208,7 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
-    private ProgramSeriesInfo.ProgramsInfo getData(int index) {
+    private SubContent getData(int index) {
         return index < mData.size() ? mData.get(index) : null;
     }
 
@@ -228,7 +229,7 @@ public class EpisodeFragment extends Fragment {
         updateUI();
     }
 
-    private class ViewHolder extends BaseHolder<ProgramSeriesInfo>{
+    private class ViewHolder extends BaseHolder<SubContent>{
         int mIndex;
 
         ViewHolder(View view, int postion) {
@@ -263,15 +264,15 @@ public class EpisodeFragment extends Fragment {
             }
         }
 
-        private void update(ProgramSeriesInfo.ProgramsInfo programsInfo) {
+        public void update(SubContent programsInfo) {
             if (programsInfo != null) {
                 itemView.setVisibility(View.VISIBLE);
                 if (PosterView != null) {
                     PosterView.setScaleType(ImageView.ScaleType.FIT_XY);
-                    if (!TextUtils.isEmpty(programsInfo.gethImage())) {
+                    if (!TextUtils.isEmpty(programsInfo.getHImage())) {
                         Picasso.get()
-                                .load(programsInfo.gethImage())
-                                .transform(new PosterCircleTransform(getActivity(), 4))
+                                .load(programsInfo.getHImage())
+                                .transform(new PosterCircleTransform(LauncherApplication.AppContext, 4))
                                 .placeholder(R.drawable.focus_384_216)
                                 .error(R.drawable.focus_384_216)
                                 .resize(384, 216)
@@ -280,7 +281,7 @@ public class EpisodeFragment extends Fragment {
                         Picasso.get()
                                 .load(R.drawable.focus_384_216)
                                 .resize(384, 216)
-                                .transform(new PosterCircleTransform(getActivity(), 4))
+                                .transform(new PosterCircleTransform(LauncherApplication.AppContext, 4))
                                 .into(PosterView);
                     }
                 }
@@ -317,7 +318,7 @@ public class EpisodeFragment extends Fragment {
                 Picasso.get()
                         .load(adItem.AdUrl)
                         .resize(384, 216)
-                        .transform(new PosterCircleTransform(getActivity(), 4))
+                        .transform(new PosterCircleTransform(LauncherApplication.AppContext, 4))
                         .into(PosterView);
             }
         }
@@ -330,7 +331,7 @@ public class EpisodeFragment extends Fragment {
         protected TextView TitleView;
         protected T mData;
 
-        public BaseHolder(View view){
+        BaseHolder(View view){
             this.itemView = view;
             view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override

@@ -1,5 +1,6 @@
 package com.newtv.cms.models
 
+import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
 import com.newtv.cms.BaseModel
 import com.newtv.cms.DataObserver
@@ -23,6 +24,14 @@ internal class PageModel : BaseModel(), IPage {
 
     override fun getPage(appkey: String, channelId: String, pageId: String,
                          observer: DataObserver<ModelResult<List<Page>>>) {
+        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+            observer.onError("AppKey or ChannelCode is Empty")
+            return
+        }
+        if(TextUtils.isEmpty(pageId) ){
+            observer.onError("PageId is Empty")
+            return
+        }
         execute<ModelResult<List<Page>>>(Request.page.getPageData(appkey, channelId, pageId),
                 object : TypeToken<ModelResult<List<Page>>>() {}.type)
                 .observer(observer)
