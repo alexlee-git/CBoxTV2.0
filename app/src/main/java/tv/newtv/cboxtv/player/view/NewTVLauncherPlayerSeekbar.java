@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.player.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -76,6 +77,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
 
     private int position;
     private boolean seekToEnd = false;
+    private Context mContext;
 
 
     public NewTVLauncherPlayerSeekbar(@NonNull Context context) {
@@ -89,6 +91,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
     public NewTVLauncherPlayerSeekbar(@NonNull Context context, @Nullable AttributeSet attrs, int
             defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mContext= context;
         initView(context);
         initData(context);
     }
@@ -266,6 +269,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
     private void refreshTimeAndProgress() {
         int duration = mNewTVLauncherPlayer.getDuration();
         int currentPosition = mNewTVLauncherPlayer.getCurrentPosition();
+        saveCurrentPosition(currentPosition);
         int progress = 0;
         if (duration != 0) {
             progress = (int) (currentPosition * 1.00000f * mSeekBar.getMax() / duration);
@@ -281,6 +285,13 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         mHandler.sendEmptyMessageDelayed(REFRESH_CURRENTTIME_AND_PROGRESS,
                 REFRESH_CURRENTTIME_AND_PROGRESS_DELAY_TIME);
     }
+
+    private void saveCurrentPosition(int currentPosition) {
+        SharedPreferences sp = mContext.getSharedPreferences("positionConfig", Context.MODE_PRIVATE);
+        sp.edit().putInt("position",currentPosition).commit();
+
+    }
+
 
     public void show() {
         if (NewTVLauncherPlayerViewManager.getInstance().getShowView() != NewTVLauncherPlayerView

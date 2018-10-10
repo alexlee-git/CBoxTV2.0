@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -309,9 +310,10 @@ public class JumpUtil {
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
+                int getposition = getposition(context);
                 Context tmpContext = getMainContext(context);
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(
-                        tmpContext, info, 0, true);
+                        tmpContext, info, getposition, true);
             }
         });
     }
@@ -335,18 +337,25 @@ public class JumpUtil {
                             break;
                         }
                     }
-
+                    int getposition = getposition(context);
                     //播放
                     Context tmpContext = getMainContext(context);
                     NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(
-                            tmpContext, info, true, index, 0);
+                            tmpContext, info, true, index, getposition);
                 } else {
                     Toast.makeText(context, "获取节目集信息有误", Toast.LENGTH_SHORT).show();
                 }
             }
+
+
         });
     }
+    private static int getposition(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("positionConfig", Context.MODE_PRIVATE);
+        int position = sp.getInt("position", 0);
+        return position;
 
+    }
     private static Context getMainContext(Context context) {
         Context tmpContext = context;
         if (MainNavManager.getInstance().getCurrentFragment() != null) {
