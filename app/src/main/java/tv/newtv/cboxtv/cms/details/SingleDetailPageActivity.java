@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
@@ -42,6 +44,7 @@ public class SingleDetailPageActivity extends BaseActivity {
     private String leftUUID, rightUUID;
     private String contentUUID;
     private SmoothScrollView scrollView;
+    private boolean isADEntry = false;
 
     @Override
     public boolean hasPlayer() {
@@ -108,6 +111,7 @@ public class SingleDetailPageActivity extends BaseActivity {
 
         if (savedInstanceState == null) {
             contentUUID = getIntent().getStringExtra("content_uuid");
+             isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
         } else {
             contentUUID = savedInstanceState.getString("content_uuid");
         }
@@ -227,6 +231,10 @@ public class SingleDetailPageActivity extends BaseActivity {
         }
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if(isADEntry){
+                    startActivity(new Intent(SingleDetailPageActivity.this,MainActivity.class));
+                    isADEntry = false;
+                }
                 return super.dispatchKeyEvent(event);
             }
             ViewGroup viewGroup = findViewById(R.id.root_view);

@@ -85,6 +85,35 @@ public class JumpUtil {
         activityJump(context, actionType, contentType, contentUUID, actionUri, "");
     }
 
+    //bug YSYY130XM-10
+    public static void activityJump(Context context, boolean isADEntry,String actionType, String contentType,
+                                    String contentUUID, String actionUri) {
+        activityJump(context, actionType, contentType, contentUUID, actionUri, "",false,isADEntry);
+    }
+    //bug YSYY130XM-10
+    public static void activityJump(Context context, String actionType, String contentType,
+                                    String contentUUID, String actionUri, String seriesSubUUID,
+                                    boolean fromOuter,boolean isADEntry) {
+        // fix bug LETVYSYY-51
+        if (!NetworkManager.getInstance().isConnected()) {
+            Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID);
+        if (jumpIntent != null) {
+            jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
+            jumpIntent.putExtra(Constant.CONTENT_UUID, contentUUID);
+            jumpIntent.putExtra(Constant.PAGE_UUID, contentUUID);
+            jumpIntent.putExtra(Constant.ACTION_TYPE, actionType);
+            jumpIntent.putExtra(Constant.ACTION_URI, actionUri);
+            jumpIntent.putExtra(Constant.ACTION_FROM, fromOuter);
+            jumpIntent.putExtra(Constant.ACTION_AD_ENTRY,isADEntry);
+            jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ActivityCompat.startActivity(context, jumpIntent, null);
+        }
+    }
+
     public static void activityJump(Context context, String actionType, String contentType,
                                     HashMap<String, String> params, boolean fromOuter) {
         Intent jumpIntent = getIntent(context, actionType, contentType, getParamValue

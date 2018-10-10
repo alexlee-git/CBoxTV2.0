@@ -36,12 +36,14 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.cms.DataCenter;
+import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
 import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
 import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.ActivateAuthUtils;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
@@ -447,10 +449,10 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                 intent = new Intent(EntryActivity.this, MainActivity.class);
                 intent.putExtra("action", mExternalAction);
                 intent.putExtra("params", mExternalParams);
+                //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
+                startActivity(intent);
             } else if (Constant.EXTERNAL_OPEN_URI.equals(mExternalAction)) {//点击广告进入详情页
-                intent = new Intent(EntryActivity.this, MainActivity.class);
-                intent.putExtra("action", mExternalAction);
-                intent.putExtra("params", mAdItem.eventContent);
+                toSecondPageFromAd(mAdItem.eventContent);
             } else {
                 boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),
                         mExternalAction,
@@ -462,13 +464,14 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                     finish();
                     return;
                 }
+                //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
+                startActivity(intent);
             }
         } else {
             intent = new Intent(EntryActivity.this, MainActivity.class);
+            //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
+            startActivity(intent);
         }
-        //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
-        startActivity(intent);
-
         finish();
     }
 
@@ -608,4 +611,19 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
 
         return errorMsg;
     }
+
+    //开屏广告点击跳转详情页
+    private void toSecondPageFromAd(String eventContentString) {
+        Log.i(TAG, "toSecondPageFromAd");
+        try {
+            AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent
+                    .class);
+            JumpUtil.activityJump(this, true, adEventContent.actionType, adEventContent.contentType,
+                    adEventContent.contentUUID, adEventContent.actionURI);
+
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
 }

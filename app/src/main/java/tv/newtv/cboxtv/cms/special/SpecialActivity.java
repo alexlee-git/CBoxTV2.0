@@ -7,6 +7,7 @@ import android.view.KeyEvent;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.special.util.ActivityUtils;
 import tv.newtv.cboxtv.cms.special.util.Injection;
@@ -21,6 +22,7 @@ public class SpecialActivity extends BaseActivity {
     private String mPageUUid;
     private String mActionType;
     private String mActionUri;
+    private boolean isADEntry = false;
 
     private SpecialFragment mSpecialFragment;
     private SpecialPresenter mSpecialPresenter;
@@ -50,6 +52,7 @@ public class SpecialActivity extends BaseActivity {
 
         mSpecialFragment = (SpecialFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.content);
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
         if (mSpecialFragment == null) {
             mSpecialFragment = SpecialFragment.newInstance();
             mSpecialFragment.setArguments(getIntent().getExtras());
@@ -75,6 +78,10 @@ public class SpecialActivity extends BaseActivity {
 
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if(isADEntry){
+                    startActivity(new Intent(SpecialActivity.this, MainActivity.class));
+                    isADEntry = false;
+                }
                 finish();
                 return true;
             }

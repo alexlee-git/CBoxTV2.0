@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.listPage;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.model.CircleTransform;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
@@ -134,6 +136,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private ScreenInfo mBlockTypeScreen;
     private View lastFoucsScreenDataView;
     private long mLastKeyTime = 0;
+    private boolean isADEntry = false;
 
     private final String ITEM_COUNT = "5000";
 
@@ -146,11 +149,10 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         mPageUUID = getIntent().getStringExtra("page_uuid");
         mActionType = getIntent().getStringExtra("action_type");
         mActionUri = getIntent().getStringExtra("action_uri");
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         nav_id = getIntent().getStringExtra(Constant.DEFAULT_UUID);//导航id
         Log.e("list---pageuuid", mPageUUID + "-----------");
         if (mPageUUID == null) {
-
-
             Toast.makeText(ListPageActivity.this, getResources().getString(R.string
                     .list_no_pageuuid), Toast.LENGTH_LONG).show();
             finish();
@@ -599,6 +601,16 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     @Override
     public void onFailed(String desc) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isADEntry) {
+            startActivity(new Intent(ListPageActivity.this, MainActivity.class));
+            isADEntry = false;
+        }
+        finish();
     }
 
     private void setMarkPageData(int i) {

@@ -124,6 +124,7 @@ public class Constant {
     public static final String ACTION_FROM = "action_from";
     public static final String CONTENT_TYPE = "content_type";
     public static final String ACTION_TYPE = "action_type";
+    public static final String ACTION_AD_ENTRY = "action_ad_entry";//判断是不是从广告点击进入
     public static final String CONTENT_UUID = "content_uuid";
     public static final String DEFAULT_UUID = "default_uuid";
     public static final String FOCUSPARAM = "focusParam";
