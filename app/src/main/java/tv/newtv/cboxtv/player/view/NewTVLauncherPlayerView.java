@@ -64,8 +64,10 @@ import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
+import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.uc.bean.HistoryBean;
 import tv.newtv.cboxtv.uc.db.DBCallback;
 import tv.newtv.cboxtv.uc.db.DBConfig;
@@ -1756,8 +1758,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public boolean startIsFullScreen;       //开始时候是不是全屏状态
         public View defaultFocusView;           //进入全屏时候的默认焦点位置
         public PlayerCallback playerCallback;
+        public ExitVideoFullCallBack videoFullCallBack;//退出全屏
         public int playPosition;
         public VPlayCenter playCenter;
+        public VideoExitFullScreenCallBack videoExitFullScreenCallBack;
     }
 
     public interface ScreenListener{

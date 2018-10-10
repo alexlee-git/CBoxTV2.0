@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,10 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.Utils;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
+import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -50,9 +53,11 @@ import tv.newtv.cboxtv.views.detailpage.SuggestView;
 
 /**
  * Created by gaoleichao on 2018/4/28.
+ * 相关推荐详情页
  */
 
 public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
+    private static final String TAG = "ProgrameSeriesAndVariet";
     private String leftUUID, rightUUID;
     private String contentUUID;
     private HeadPlayerView headPlayerView;
@@ -65,6 +70,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     private long lastClickTime;
     private FragmentTransaction transaction;
     private FrameLayout frameLayout;
+    private int currentIndex = -1;
 
     @Override
     public boolean hasPlayer() {
@@ -101,7 +107,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         }
 
     }
-
+    //请求数据
     private void requestData() {
         NetClient.INSTANCE.getDetailsPageApi().getInfo(Constant.APP_KEY, Constant.CHANNEL_ID,
                 leftUUID, rightUUID, contentUUID)
@@ -126,18 +132,22 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                                 if (dataInfo != null) {
                                     videoType = dataInfo.getVideoType();
                                 }
+                                Log.i(TAG,"videoType--->"+videoType);
                                 //这里节目详情页 要换成电视剧
                                 if (videoType != null && TextUtils.equals(videoType, "电视剧") ||
                                         videoType != null && TextUtils.equals(videoType, "动漫")) {
+
                                     setContentView(R.layout.activity_details_programe_series);
                                     fragment = new ProgrameSeriesFragment();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("content_uuid", contentUUID);
                                     fragment.setArguments(bundle);
+                                    //初始化Fragment
                                     initFragment();
                                 } else {
                                     setContentView(R.layout.fragment_new_variety_show);
                                     ADConfig.getInstance().setSeriesID(contentUUID);
+                                    //初始化View
                                     initView();
                                     // fragment = NewVarietyShowFragment.newInstance(contentUUID);
 
@@ -200,6 +210,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 .SetPlayerCallback(new PlayerCallback() {
                     @Override
                     public void onEpisodeChange(int index, int position) {
+                        Log.i("ProgrameSeries","当前显示index---->"+index);
+
+                        currentIndex = index;
+
                         if (index >= 0) {
                             playListView.setCurrentPlayIndex(index);
                         }
@@ -207,14 +221,18 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
                     @Override
                     public void ProgramChange() {
-
+                        Log.i("ProgrameSeries","当前节目改变");
                         if (playListView != null) {
                             playListView.resetProgramInfo();
                         }
                     }
 
+
+
                     @Override
                     public void onPlayerClick(VideoPlayerView videoPlayerView) {
+                        Log.i("ProgrameSeries","当前点击播放节目");
+
                         if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                             videoPlayerView.EnterFullScreen(ProgrameSeriesAndVarietyDetailActivity
@@ -225,8 +243,17 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                     @Override
                     public void AllPlayComplete(boolean isError, String info, VideoPlayerView
                             videoPlayerView) {
+                        Log.i("ProgrameSeries","当前节目播放完毕");
                         if (!isError) {
                             videoPlayerView.onComplete();
+                        }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        if (currentIndex>8){
+                            playListView.moveToPosition(currentIndex);
                         }
                     }
                 })
@@ -256,6 +283,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
 
                             case R.id.full_screen:
+                                Log.i("ProgrameSeries","点击显示全屏播放");
                                 if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen
@@ -268,9 +296,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 }));
 
 
+        //当前电视剧播放改变
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(ProgramSeriesInfo seriesInfo) {
+                Log.i("ProgrameSeries","onGetProgramSeriesInfo-->"+seriesInfo.toString());
                 if (seriesInfo != null) {
                     headPlayerView.setProgramSeriesInfo(seriesInfo);
                 }
@@ -278,11 +308,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
             @Override
             public void onChange(int index,boolean fromClick) {
+                Log.i("ProgrameSeries","onChange-->"+index);
                 headPlayerView.Play(index, 0, fromClick);
             }
         });
-
-
     }
 
 
@@ -340,7 +369,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 return true;
             }
         }
-        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+
+        if ((videoType != null && (!TextUtils.equals(videoType, "电视剧")&&!TextUtils.equals(videoType, "动漫")))) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
 
                 ViewGroup viewGroup = findViewById(R.id.root_view);
@@ -386,6 +416,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 }
             }
         }else{
+            Log.i(TAG,"走Fragment的按键操作");
             if(fragment != null && fragment.interruptKeyEvent(event)){
                 return true;
             }
@@ -402,7 +433,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
     @Override
     protected void onStop() {
-        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        // if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        if (videoType != null && (!TextUtils.equals(videoType, "电视剧")&&!TextUtils.equals(videoType, "动漫"))) {
             if (headPlayerView != null) {
                 headPlayerView.onActivityStop();
             }
@@ -413,7 +445,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        //if (videoType != null && !TextUtils.equals(videoType, "电视剧")) {
+        if (videoType != null && (!TextUtils.equals(videoType, "电视剧")&&!TextUtils.equals(videoType, "动漫"))) {
             if (headPlayerView != null) {
                 headPlayerView.onActivityResume();
             }
@@ -450,5 +483,4 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     public void onBackPressed() {
         finish();
     }
-
 }

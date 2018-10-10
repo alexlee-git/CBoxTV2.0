@@ -21,6 +21,7 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.BitmapUtil;
@@ -49,6 +50,7 @@ public class ColumnPageActivity extends BaseActivity {
     private boolean isCollect = false;
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
+    private int currentIndex = -1;
 
     @Override
     public void prepareMediaPlayer() {
@@ -129,6 +131,7 @@ public class ColumnPageActivity extends BaseActivity {
                 .SetPlayerCallback(new PlayerCallback() {
                     @Override
                     public void onEpisodeChange(int index, int position) {
+                        currentIndex = index;
                         if (index >= 0) {
                             playListView.setCurrentPlayIndex(index);
                         }
@@ -155,6 +158,14 @@ public class ColumnPageActivity extends BaseActivity {
                             videoPlayerView) {
                         if (!isError) {
                             videoPlayerView.onComplete();
+                        }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        if (currentIndex>8){
+                            playListView.moveToPosition(currentIndex);
                         }
                     }
                 })
