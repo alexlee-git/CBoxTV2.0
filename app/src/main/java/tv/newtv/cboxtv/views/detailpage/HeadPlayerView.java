@@ -631,6 +631,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 JSONObject obj = object.getJSONObject("data");
                 Gson gson = new Gson();
                 mInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                mInfo.resolveVip();
 
                 if (mBuilder.infoResult != null) {
                     mBuilder.infoResult.onResult(mInfo);

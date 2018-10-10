@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.cms.details.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -100,7 +102,7 @@ public class ProgramSeriesInfo implements Serializable {
     private String videoClass;
     private String channelId;
     private String tags;
-    private String vipFlag;
+    private String vipFlag;//0 免费；1 VIP免费；2 单点付费
     private String vipProductId;
     private String movieLevel;     //1正片 2预告片 3花絮
     private String definition;     //SD标清  HD高清
@@ -573,6 +575,32 @@ public class ProgramSeriesInfo implements Serializable {
         this.stepSize = stepSize;
     }
 
+    public void resolveVip(){
+        if(getData() != null && getData().size() > 0){
+            if(getVipFlag() != null && !getVipFlag().equals("0")){
+
+                if(TextUtils.isEmpty(vipNumber)){
+                    for(ProgramsInfo info : getData()){
+                        info.setVipFlag(getVipFlag());
+                    }
+                } else {
+                    int number = Integer.parseInt(vipNumber);
+                    int min = Math.min(number,getData().size());
+                    int temp = 0;
+                    for(int i=0;i<min;i++){
+                        if("0".equals(sortType)){
+                            temp = getData().size() - i;
+                        } else {
+                            temp = i;
+                        }
+                        getData().get(temp).setVipFlag(vipFlag);
+                    }
+                }
+
+            }
+        }
+    }
+
     public static class ProgramsInfo implements Serializable {
 
         private static final long serialVersionUID = 3461360387779387505L;
@@ -599,6 +627,8 @@ public class ProgramSeriesInfo implements Serializable {
         //是否从栏目树观看历史进入的，如果是鉴权的AlbumId传seriesSubUUID
         private boolean isMenuGroupHistory;
 
+        private String vipFlag;
+
         public ProgramsInfo() {
         }
 
@@ -618,6 +648,14 @@ public class ProgramSeriesInfo implements Serializable {
             this.rSubScript = rSubScript;
             this.periods = periods;
             this.des = des;
+        }
+
+        public String getVipFlag() {
+            return vipFlag;
+        }
+
+        public void setVipFlag(String vipFlag) {
+            this.vipFlag = vipFlag;
         }
 
         public boolean isMenuGroupHistory() {

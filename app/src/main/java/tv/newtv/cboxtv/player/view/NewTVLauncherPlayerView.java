@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -38,6 +38,7 @@ import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
+import tv.newtv.cboxtv.cms.details.DescriptionActivity;
 import tv.newtv.cboxtv.cms.details.model.MediaCDNInfo;
 import tv.newtv.cboxtv.cms.details.model.ProgramDetailInfo;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
@@ -75,6 +76,7 @@ import tv.newtv.cboxtv.utils.LivePermissionCheckUtil;
 import tv.newtv.cboxtv.utils.LiveTimingUtil;
 import tv.newtv.cboxtv.utils.ScreenUtils;
 import tv.newtv.cboxtv.views.VideoFrameLayout;
+import tv.newtv.cboxtv.vip.VipCheck;
 
 //import tv.newtv.cboxtv.cms.details.PushManager;
 
@@ -133,6 +135,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
     private Map<Integer, FocusWidget> widgetMap;
+    private TextView hintVip;
+    private boolean isTrySee;
+    private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new FreeDuration();
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -297,7 +302,19 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 videoDataStruct.setPlayType(0);
 
                 mContentUUid = mProgramDetailInfo.getContentUUID();
-                videoDataStruct.setPlayUrl(mPlayUrl);
+
+                if(isPayProgram() && VipCheck.isTrySee(mProgramSeriesInfo.getVipFlag(),mContentUUid)){
+                    videoDataStruct.setPlayUrl(mPlayUrl);
+                    hintVip.setVisibility(View.VISIBLE);
+                    isTrySee = true;
+                    if(!TextUtils.isEmpty(mProgramDetailInfo.getFreeDuration())){
+                        int duration = Integer.parseInt(mProgramDetailInfo.getFreeDuration());
+                        mNewTVLauncherPlayerSeekbar.setFreeDuration(duration,freeDurationListener);
+                    }
+                } else {
+                    videoDataStruct.setPlayUrl(mPlayUrl);
+                    hintVip.setVisibility(View.GONE);
+                }
                 videoDataStruct.setProgramId(mProgramDetailInfo.getContentUUID());
 
                 String duration = mProgramDetailInfo.getDuration();
@@ -764,6 +781,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         updateUIPropertys(defaultConfig != null ? defaultConfig.isFullScreen : startIsFullScreen);
 
         PLAYER_ID = NewTVLauncherPlayerViewManager.getInstance().setPlayerView(this);
+        hintVip = view.findViewById(R.id.hint_vip);
     }
 
     private boolean equalsInfo(ProgramSeriesInfo AInfo, ProgramSeriesInfo BInfo) {
@@ -1002,6 +1020,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
      * type 1为单节目 2为节目集 3为直播
      */
     private void updatePlayStatus(int type, int index, int position) {
+        isTrySee = false;
         setHintTextVisible(GONE);
         mIsPrepared = false;
         dismissChildView();
@@ -1401,6 +1420,11 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                         return true;
                     }
 
+                    if(isFullScreen() && isTrySee){
+                        goToBuy();
+                        return true;
+                    }
+
                     if (isLiving() && mLiveInfo != null && !mLiveInfo.isTimeShift()) {
                         return true;
                     }
@@ -1496,6 +1520,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
     // add by lxf
     private void playVodNext() {
+        if(isTrySee){
+            goToBuy();
+            return;
+        }
         if (mPlaySeriesOrSingle == PLAY_SINGLE) {
             addHistory();
 //            Toast.makeText(getContext(), getContext().getResources().getString(R.string
@@ -1699,6 +1727,25 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
     }
 
+    private boolean isPayProgram(){
+        String vipFlag = "";
+        if(mPlaySeriesOrSingle == PLAY_SERIES){
+            vipFlag = mProgramSeriesInfo.getData().get(getIndex()).getVipFlag();
+
+        }else if(mPlaySeriesOrSingle == PLAY_SINGLE){
+            vipFlag = mProgramSeriesInfo.getVipFlag();
+        }
+
+        if(!TextUtils.isEmpty(vipFlag) && !"0".equals(vipFlag)){
+            return true;
+        }
+        return false;
+    }
+
+    private void goToBuy(){
+//        DescriptionActivity.runAction(getContext(),"跳转到购买页","购买");
+    }
+
     public static class PlayerViewConfig {
         public boolean prepared = false;
         public ViewGroup.LayoutParams layoutParams;     //布局属性
@@ -1709,5 +1756,13 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public PlayerCallback playerCallback;
         public int playPosition;
         public VPlayCenter playCenter;
+    }
+
+    public class FreeDuration implements NewTVLauncherPlayerSeekbar.FreeDurationListener{
+
+        @Override
+        public void end() {
+            goToBuy();
+        }
     }
 }

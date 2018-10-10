@@ -168,8 +168,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
         Log.i(TAG, "onResume: ");
 
         if (isContinue == abNormalExit)
-            NewTVLauncherPlayerViewManager.getInstance().setContinuePlay(LauncherApplication
-                    .AppContext,mProgramSeriesInfo,defaultConfig,playPostion);
+            NewTVLauncherPlayerViewManager.getInstance().setContinuePlay(this,
+                    mProgramSeriesInfo,defaultConfig,playPostion);
         isContinue = normalExit;
     }
 

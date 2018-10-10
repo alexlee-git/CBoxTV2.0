@@ -77,6 +77,8 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
     private int position;
     private boolean seekToEnd = false;
 
+    private int freeDuration;
+    private FreeDurationListener freeDurationListener;
 
     public NewTVLauncherPlayerSeekbar(@NonNull Context context) {
         this(context, null);
@@ -280,6 +282,12 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         }
         mHandler.sendEmptyMessageDelayed(REFRESH_CURRENTTIME_AND_PROGRESS,
                 REFRESH_CURRENTTIME_AND_PROGRESS_DELAY_TIME);
+
+        if(freeDuration > 0 && freeDurationListener != null){
+            if(currentPosition / 1000 > freeDuration){
+                freeDurationListener.end();
+            }
+        }
     }
 
     public void show() {
@@ -432,6 +440,11 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         }
     }
 
+    public void setFreeDuration(int freeDuration,FreeDurationListener freeDurationListener){
+        this.freeDuration = freeDuration;
+        this.freeDurationListener = freeDurationListener;
+    }
+
     @SuppressLint("HandlerLeak")
     private static class SeekBarAreaHandler extends Handler {
 
@@ -465,5 +478,9 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
                     break;
             }
         }
+    }
+
+    public interface FreeDurationListener{
+        void end();
     }
 }

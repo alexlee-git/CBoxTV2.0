@@ -413,6 +413,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 }
 
                 if (mSeriesInfo.getData() != null && mSeriesInfo.getData().size() > 0) {
+                    mSeriesInfo.resolveVip();
                     if (mControlView != null) {
                         mControlView.setVisibility(View.VISIBLE);
                     }
