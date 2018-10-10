@@ -4,12 +4,20 @@ package tv.newtv.cboxtv.cms.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
@@ -25,9 +33,15 @@ import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
+import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.db.DBCallback;
+import tv.newtv.cboxtv.uc.db.DBConfig;
+import tv.newtv.cboxtv.uc.db.DataSupport;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
 
 public class JumpUtil {
+
+    private static int mPlayPosition;
 
     private static HashMap<String, String> parseParamMap(String paramStr) {
         HashMap<String, String> paramsMap = new HashMap<>();
@@ -75,6 +89,7 @@ public class JumpUtil {
             jumpIntent.putExtra(Constant.ACTION_URI, info.getActionUri());
             jumpIntent.putExtra(Constant.DEFAULT_UUID, info.getFocusPageUUID());
             jumpIntent.putExtra(Constant.FOCUSPARAM, info.getFocusParam());
+
 
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
@@ -302,18 +317,40 @@ public class JumpUtil {
      * @param contentUUID
      */
     private static void openCPVideo(final Context context, final String contentUUID) {
+
+        DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
+                .condition()
+                .eq(DBConfig.CONTENTUUID, contentUUID)
+                .build()
+                .withCallback(new DBCallback<String>() {
+
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (!TextUtils.isEmpty(result)) {
+                            Gson mGson = new Gson();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                            }.getType();
+                            List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
+                            mPlayPosition = Integer.parseInt(data.get(0).playPosition);
+
+                        }
+                    }
+                }).excute();
         PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
+            public void onResult(final ProgramSeriesInfo info) {
                 if (info == null || TextUtils.isEmpty(info.getProgramSeriesUUIDs())) {
                     Toast.makeText(LauncherApplication.AppContext, "子节目缺少节目集ID",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                int getposition = getposition(context);
+           Log.d("JumpUtil", "mPlayPosition:" + mPlayPosition);
+
                 Context tmpContext = getMainContext(context);
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(
-                        tmpContext, info, getposition, true);
+                        tmpContext, info, mPlayPosition, true);
+
+
             }
         });
     }
@@ -324,6 +361,25 @@ public class JumpUtil {
      */
     private static void openCPVideo(final Context context, final String contentUUID, String
             seriesSubUUID) {
+
+        DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
+                .condition()
+                .eq(DBConfig.CONTENTUUID, contentUUID)
+                .build()
+                .withCallback(new DBCallback<String>() {
+
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (!TextUtils.isEmpty(result)) {
+                            Gson mGson = new Gson();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                            }.getType();
+                            List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
+                            mPlayPosition = Integer.parseInt(data.get(0).playPosition);
+
+                        }
+                    }
+                }).excute();
         PlayInfoUtil.getPlayInfo(seriesSubUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
             @Override
             public void onResult(ProgramSeriesInfo info) {
@@ -337,11 +393,12 @@ public class JumpUtil {
                             break;
                         }
                     }
-                    int getposition = getposition(context);
+
+
                     //播放
                     Context tmpContext = getMainContext(context);
                     NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(
-                            tmpContext, info, true, index, getposition);
+                            tmpContext, info, true, index, mPlayPosition);
                 } else {
                     Toast.makeText(context, "获取节目集信息有误", Toast.LENGTH_SHORT).show();
                 }
@@ -350,12 +407,7 @@ public class JumpUtil {
 
         });
     }
-    private static int getposition(Context context) {
-        SharedPreferences sp = context.getSharedPreferences("positionConfig", Context.MODE_PRIVATE);
-        int position = sp.getInt("position", 0);
-        return position;
 
-    }
     private static Context getMainContext(Context context) {
         Context tmpContext = context;
         if (MainNavManager.getInstance().getCurrentFragment() != null) {
