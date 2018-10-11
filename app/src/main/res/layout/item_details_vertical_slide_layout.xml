@@ -20,7 +20,7 @@
         android:tag="cell_008_1"
         android:visibility="gone">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:src="@drawable/focus_240_360"
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"

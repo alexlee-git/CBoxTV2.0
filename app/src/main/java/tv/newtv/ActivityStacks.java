@@ -2,13 +2,14 @@ package tv.newtv;
 
 import android.app.Activity;
 
+import com.newtv.libs.util.LogUtils;
+
 import java.util.Stack;
 
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
-import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerActivity;
 
 /**

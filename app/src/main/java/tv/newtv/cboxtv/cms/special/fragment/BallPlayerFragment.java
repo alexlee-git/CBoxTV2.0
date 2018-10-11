@@ -4,25 +4,24 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.libs.util.CmsLiveUtil;
+import com.newtv.libs.util.LiveTimingUtil;
+import com.newtv.libs.util.LogUtils;
+
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.squareup.picasso.Picasso;
 
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
+import tv.newtv.cboxtv.player.util.LivePermissionCheckUtil;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.CmsLiveUtil;
-import tv.newtv.cboxtv.utils.LivePermissionCheckUtil;
-import tv.newtv.cboxtv.utils.LiveTimingUtil;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
 import tv.newtv.cboxtv.views.TimeDialog;
 
 /**
@@ -33,11 +32,9 @@ import tv.newtv.cboxtv.views.TimeDialog;
  * 创建日期:          2018/4/25
  */
 public class BallPlayerFragment extends BaseSpecialContentFragment {
-//    private IcntvLive icntvLive;
-//    private FrameLayout mFocusView;
     private TextView textTitle;
     private ImageView mImageView;
-    private ProgramInfo mProgramInfo;
+    private ProgramsInfo mProgramInfo;
     private LivePermissionCheckBean livePermissionCheck;
     private ProgramSeriesInfo info;
     private boolean isDestroyed = false;
@@ -57,7 +54,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
 
         if(savedInstanceState != null){
             if(savedInstanceState.containsKey("programInfo")){
-                mProgramInfo = (ProgramInfo) savedInstanceState.getSerializable("programInfo");
+                mProgramInfo = (ProgramsInfo) savedInstanceState.getSerializable("programInfo");
             }
         }
     }
@@ -191,7 +188,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
                         .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
     }
 
-    private void startPlayPermissionsCheck(ProgramInfo programInfo) {
+    private void startPlayPermissionsCheck(ProgramsInfo programInfo) {
         LivePermissionCheckUtil.startPlayPermissionsCheck(LivePermissionCheckUtil.createPlayCheckRequest(programInfo)
                 , new LivePermissionCheckUtil.PermissionCheck() {
                     @Override

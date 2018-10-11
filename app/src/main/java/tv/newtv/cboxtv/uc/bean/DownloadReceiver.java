@@ -14,13 +14,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.RxBus;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
 
-import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.cms.util.LogUtils;
-import tv.newtv.cboxtv.cms.util.RxBus;
 
 import static android.content.Context.MODE_PRIVATE;
 

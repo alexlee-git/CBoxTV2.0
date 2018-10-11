@@ -217,8 +217,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    //央视网日志上传使用
-    implementation files('libs/Gridsum.jar')
+
     compile 'com.tencent.bugly:crashreport:2.6.6'
     compile 'com.tencent.bugly:nativecrashreport:3.3.1'
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
@@ -229,6 +228,8 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation project(':cms')
+    implementation project(':libs')
+    implementation project(':player')
 }
 
 

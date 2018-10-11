@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
         android:id="@+id/id_module_4_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"
@@ -37,7 +37,7 @@
         android:focusable="true"
         android:tag="cell_004_1">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_004_1_poster" />
@@ -56,7 +56,7 @@
         android:focusable="true"
         android:tag="cell_004_2">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_004_2_poster" />
@@ -75,7 +75,7 @@
         android:focusable="true"
         android:tag="cell_004_3">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_004_3_poster" />
@@ -94,7 +94,7 @@
         android:focusable="true"
         android:tag="cell_004_4">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_004_4_poster" />

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/normalplayer_bg">
+
+    <View
+        android:id="@+id/player_loading_drawable"
+        android:layout_width="@dimen/width_532px"
+        android:layout_height="@dimen/height_175px"
+        android:visibility="visible"
+        android:layout_centerInParent="true"
+        android:background="@drawable/loading_gif"/>
+
+    <LinearLayout
+        android:id="@+id/player_loading_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/player_loading_drawable"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/loading_program_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="即将播放"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/height_25px"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/loading_net_speed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_15px"
+            android:gravity="center"
+            android:text="100kb/s"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/height_20px" />
+
+    </LinearLayout>
+</RelativeLayout>
+
+

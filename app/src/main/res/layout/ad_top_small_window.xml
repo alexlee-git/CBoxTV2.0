@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tv.newtv.cboxtv.views.detailpage.TopSmallWindowView
+<tv.newtv.cboxtv.views.detail.TopSmallWindowView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/width_600px"
     android:layout_height="@dimen/width_55px"
@@ -8,4 +8,4 @@
     android:visibility="gone"
     >
 
-</tv.newtv.cboxtv.views.detailpage.TopSmallWindowView>
+</tv.newtv.cboxtv.views.detail.TopSmallWindowView>

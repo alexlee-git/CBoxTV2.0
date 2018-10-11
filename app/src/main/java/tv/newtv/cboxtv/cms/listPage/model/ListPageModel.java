@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -16,13 +18,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.cms.BaseRequestModel;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.listPage.presenter.IListPagePresenter;
 //import tv.newtv.cboxtv.cms.net.ApiUtil;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 
 /**
  * Created by caolonghe on 2018/3/6 0006.
@@ -43,7 +44,7 @@ public class ListPageModel extends BaseRequestModel implements IListPageModel {
         try {
 
             String url = String.format(LISTPAGE_URL, Constant.BASE_URL_CMS + Constant.CMS_URL, Constant
-                    .BASE_URL_LISTPAGE, Constant.APP_KEY, Constant.CHANNEL_ID, uuid);
+                    .BASE_URL_LISTPAGE, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, uuid);
 
             requestData(uuid, url);
 //            ApiUtil.getInstance().getiListPageApi()

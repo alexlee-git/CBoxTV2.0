@@ -13,15 +13,15 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.mainPage.model.ExtendAttr;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
+import tv.newtv.cboxtv.player.ExtendAttr;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 
 public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
 
-    private List<ProgramInfo> mData;
+    private List<ProgramsInfo> mData;
     private Context mContext;
 
-    public MedalAdapter(List<ProgramInfo> mData, Context mContext) {
+    public MedalAdapter(List<ProgramsInfo> mData, Context mContext) {
         this.mData = mData;
         this.mContext = mContext;
     }
@@ -34,7 +34,7 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
 
     @Override
     public void onBindViewHolder(final MyHolder holder, final int position) {
-        ProgramInfo programInfo = mData.get(position);
+        ProgramsInfo programInfo = mData.get(position);
         holder.restoreView();
         List<ExtendAttr> attrList = programInfo.getExtendAttr();
         if(attrList != null && attrList.size() > 0){

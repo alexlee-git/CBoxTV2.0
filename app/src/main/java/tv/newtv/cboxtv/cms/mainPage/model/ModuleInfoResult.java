@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.cms.mainPage.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.player.ProgramsInfo;
+
 /**
  * Created by lixin on 2018/1/24.
  */
@@ -135,21 +137,21 @@ public class ModuleInfoResult {
      * 获取亚运会奖牌榜的数据
      * @return
      */
-    public List<ProgramInfo> getAsianList(){
-        List<ProgramInfo> result = new ArrayList<>();
+    public List<ProgramsInfo> getAsianList(){
+        List<ProgramsInfo> result = new ArrayList<>();
         if(data == null){
             return result;
         }
 
         for(ModuleItem item : data){
-            List<ProgramInfo> datas = item.getDatas();
+            List<ProgramsInfo> datas = item.getDatas();
             if(datas != null && datas.size() > 0){
-                List<ExtendAttr> extendAttr = datas.get(0).getExtendAttr();
-                if(extendAttr != null && extendAttr.size() > 0){
-                    if(ExtendAttr.TYPE_ASIAN_GAMES.equals(extendAttr.get(0).getType())){
-                        result.addAll(datas);
-                    }
-                }
+//                List<ExtendAttr> extendAttr = datas.get(0).getExtendAttr();
+//                if(extendAttr != null && extendAttr.size() > 0){
+//                    if(ExtendAttr.TYPE_ASIAN_GAMES.equals(extendAttr.get(0).getType())){
+//                        result.addAll(datas);
+//                    }
+//                }
             }
         }
 

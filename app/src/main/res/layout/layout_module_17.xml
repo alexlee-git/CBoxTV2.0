@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
         android:id="@+id/id_module_17_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"
@@ -38,15 +38,15 @@
         android:nextFocusRight="@+id/id_module_17_view2"
         android:tag="cell_017_1">
         <!--海报-->
-        <tv.newtv.cboxtv.views.LivePlayView
+        <tv.newtv.cboxtv.views.custom.LivePlayView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_480px"
             android:tag="cell_017_1_poster">
-            <tv.newtv.cboxtv.views.RecycleImageView
+            <tv.newtv.cboxtv.views.custom.RecycleImageView
                 android:layout_width="@dimen/width_816px"
                 android:layout_height="@dimen/height_480px"
                 android:scaleType="fitXY"/>
-        </tv.newtv.cboxtv.views.LivePlayView>
+        </tv.newtv.cboxtv.views.custom.LivePlayView>
 
     </FrameLayout>
 
@@ -64,7 +64,7 @@
         android:tag="cell_017_2">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_017_2_poster"/>
@@ -85,7 +85,7 @@
         android:tag="cell_017_3">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_017_3_poster"/>
@@ -106,7 +106,7 @@
         android:tag="cell_017_4">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_017_4_poster"/>
@@ -127,7 +127,7 @@
         android:tag="cell_017_5">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_017_5_poster"/>
@@ -148,7 +148,7 @@
         android:tag="cell_017_6">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_017_6_poster"/>
@@ -169,7 +169,7 @@
         android:tag="cell_017_7">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_017_7_poster"/>
@@ -190,7 +190,7 @@
         android:tag="cell_017_8">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/tv.newtv.views.RecycleImageView7"
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
@@ -211,7 +211,7 @@
         android:tag="cell_017_9">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_017_9_poster"/>

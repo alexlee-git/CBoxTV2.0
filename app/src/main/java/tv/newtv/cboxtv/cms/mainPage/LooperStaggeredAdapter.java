@@ -8,10 +8,10 @@ import android.util.Log;
 import android.view.ViewGroup;
 
 import com.newtv.cms.bean.Nav;
+import com.newtv.libs.Constant;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.cms.listPage.model.NavListPageInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;

@@ -11,12 +11,13 @@ import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 
-import tv.newtv.cboxtv.Constant;
+import com.newtv.libs.Constant;
+
 import tv.newtv.cboxtv.IDefaultFocus;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
-import tv.newtv.cboxtv.views.RecycleSpaceDecoration;
+import tv.newtv.cboxtv.views.widget.RecycleSpaceDecoration;
 
 /**
  * Created by lixin on 2018/2/8.

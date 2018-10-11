@@ -10,27 +10,28 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.libs.util.LogUtils;
+
 import tv.newtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 
 /**
  * Created by gaoleichao on 2018/4/13.
  */
-public class ProgrameSeriesAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo.ProgramsInfo,
+public class ProgrameSeriesAdapter extends BaseRecyclerAdapter<ProgramsInfo,
         ProgrameSeriesAdapter.ProgrameSeriesViewHolder> {
 
     private Context context;
-    private OnRecycleItemClickListener<ProgramSeriesInfo.ProgramsInfo> listener;
+    private OnRecycleItemClickListener<ProgramsInfo> listener;
     private int mCurrenPage;
     private int playerPosition;
 
     private boolean isFocus = false;
 
-    public ProgrameSeriesAdapter(Context context, OnRecycleItemClickListener<ProgramSeriesInfo.ProgramsInfo> listener) {
+    public ProgrameSeriesAdapter(Context context, OnRecycleItemClickListener<ProgramsInfo> listener) {
         this.context = context;
         this.listener = listener;
     }
@@ -54,7 +55,7 @@ public class ProgrameSeriesAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo
     @Override
     public void onBindViewHolder(ProgrameSeriesViewHolder holder, int position) {
         int i = position + (mCurrenPage * 30);
-        ProgramSeriesInfo.ProgramsInfo entity = mList.get(position);
+        ProgramsInfo entity = mList.get(position);
         holder.nameTv.setText(entity.getPeriods());
         if (i == playerPosition) {
             LogUtils.i("ProgrameSeriesAdapter", "playerPosition=" + playerPosition);

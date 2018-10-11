@@ -9,7 +9,7 @@
         <!--android:text="test23"-->
         <!--android:textColor="#fff" />-->
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
         android:id="@+id/id_module_23_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"
@@ -44,7 +44,7 @@
         android:tag="cell_023_1">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_240px"
             android:tag="cell_023_1_poster" />
@@ -65,7 +65,7 @@
         android:tag="cell_023_2">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_240px"
             android:tag="cell_023_2_poster" />

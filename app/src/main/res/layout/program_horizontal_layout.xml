@@ -5,7 +5,7 @@
                 android:padding="@dimen/width_33px"
                 android:clipToPadding="false">
 
-    <tv.newtv.cboxtv.views.detailpage.FocusRelativeLayout
+    <tv.newtv.cboxtv.views.detail.FocusRelativeLayout
         android:id="@+id/id_module_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,13 +16,13 @@
         android:tag="tag_focus_layout"
         android:visibility="visible">
 
-        <tv.newtv.cboxtv.views.CurrentPlayImageView
+        <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
             android:id="@+id/iv_player"
             android:layout_width="@dimen/width_390px"
             android:layout_height="@dimen/height_214px"
             android:scaleType="fitXY"
             android:tag="tag_poster_image"/>
-    </tv.newtv.cboxtv.views.detailpage.FocusRelativeLayout>
+    </tv.newtv.cboxtv.views.detail.FocusRelativeLayout>
 
     <TextView
         android:layout_marginTop="@dimen/height_43px"

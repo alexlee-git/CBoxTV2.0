@@ -15,29 +15,25 @@ import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Nav;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 
 import java.util.List;
 import java.util.Map;
 
 import tv.newtv.cboxtv.BgChangManager;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
-import tv.newtv.cboxtv.cms.mainPage.model.INotifyNavItemSelectedListener;
 import tv.newtv.cboxtv.cms.mainPage.model.INotifyNoPageDataListener;
-import tv.newtv.cboxtv.cms.mainPage.model.INotifyPageSelectedListener;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import tv.newtv.cboxtv.views.MenuRecycleView;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.widget.MenuRecycleView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 
 public class MainListPageManager implements
-        INotifyPageSelectedListener,
-        INotifyNavItemSelectedListener,
         INotifyNoPageDataListener {
 
     private String mCurNavDataFrom;
@@ -397,23 +393,6 @@ public class MainListPageManager implements
     //创建共享参数，存储一些需要的信息
     private void initSharedPreferences() {
         mSharedPreferences = mContext.getSharedPreferences("config", 0);
-    }
-
-    @Override
-    public void notifyPageSelected(int pos) {
-        if (mViewPager != null) {
-            mViewPager.setCurrentItem(pos);
-        }
-    }
-
-    @Override
-    public void notifyNavItemSelected(int position) {
-        if (mNavBar != null) {
-            View child = mNavBar.getChildAt(position);
-            if (child != null) {
-                child.requestFocus();
-            }
-        }
     }
 
     /**

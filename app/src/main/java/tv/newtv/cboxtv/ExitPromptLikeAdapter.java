@@ -17,9 +17,9 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 
 /**
  * Created by slp on 2018/4/19.
@@ -65,7 +65,7 @@ public class ExitPromptLikeAdapter extends BaseRecyclerAdapter<SearchResultInfos
                 public void onClick(View v) {
                     entity = mList.get(position);
 
-                    ProgramInfo info = new ProgramInfo();
+                    ProgramsInfo info = new ProgramsInfo();
                     info.setActionType(entity.getType());
                     info.setContentUUID(entity.getUUID());
                     info.setActionUri(entity.getActionUri());

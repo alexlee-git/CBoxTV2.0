@@ -12,24 +12,25 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.libs.util.DisplayUtils;
+
+import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
+import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
-import tv.newtv.cboxtv.utils.ScaleUtils;
-import tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup;
+import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
 
 /**
  * 项目名称:         CBoxTV
@@ -69,14 +70,14 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         ShooterAdapter adapter = new ShooterAdapter();
-        adapter.setOnItemAction(new OnItemAction<ProgramInfo>() {
+        adapter.setOnItemAction(new OnItemAction<ProgramsInfo>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(ProgramInfo item, int index) {
+            public void onItemClick(ProgramsInfo item, int index) {
                 playVideo(item);
                 currentIndex = index;
             }
@@ -125,7 +126,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         return super.dispatchKeyEvent(event);
     }
 
-    private void playVideo(ProgramInfo programInfo) {
+    private void playVideo(ProgramsInfo programInfo) {
         if (programInfo == null) return;
         PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
@@ -197,17 +198,17 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<ProgramInfo> ModuleItems;
-        private OnItemAction<ProgramInfo> onItemAction;
+        private List<ProgramsInfo> ModuleItems;
+        private OnItemAction<ProgramsInfo> onItemAction;
         private String currentID;
         private int currentIndex = 0;
 
-        ShooterAdapter refreshData(List<ProgramInfo> datas) {
+        ShooterAdapter refreshData(List<ProgramsInfo> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        public void setOnItemAction(OnItemAction<ProgramInfo> programInfoOnItemAction) {
+        public void setOnItemAction(OnItemAction<ProgramsInfo> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -221,7 +222,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            ProgramInfo moduleItem = getItem(position);
+            ProgramsInfo moduleItem = getItem(position);
             holder.container.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -236,7 +237,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProgramInfo programInfo = getItem(holder.getAdapterPosition());
+                    ProgramsInfo programInfo = getItem(holder.getAdapterPosition());
                     if (programInfo != null) {
                         currentID = programInfo.getContentUUID();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -270,7 +271,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             }
         }
 
-        private ProgramInfo getItem(int position) {
+        private ProgramsInfo getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

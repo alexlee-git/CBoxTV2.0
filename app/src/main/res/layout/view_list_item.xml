@@ -20,7 +20,7 @@
         android:textColor="@color/menu_text_color"
         android:textSize="@dimen/height_29px"/>
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
         android:visibility="gone"
         android:duplicateParentState="true"
         android:id="@+id/title_icon_nav"

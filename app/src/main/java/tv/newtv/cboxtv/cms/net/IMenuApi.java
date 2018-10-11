@@ -5,7 +5,7 @@ import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
-import tv.newtv.cboxtv.player.menu.model.HeadMenuBean;
+import tv.newtv.cboxtv.menu.model.HeadMenuBean;
 
 /**
  * Created by TCP on 2018/4/17.

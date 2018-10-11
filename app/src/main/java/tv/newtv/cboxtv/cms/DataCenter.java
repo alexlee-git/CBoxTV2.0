@@ -6,7 +6,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.cms.mainPage.model.NavInfoResult;
 import tv.newtv.cboxtv.cms.net.NetClient;
 
@@ -34,7 +34,7 @@ public class DataCenter {
 
     public void preloadNavigation() {
         NetClient.INSTANCE.getNavInfoApi()
-                .getNavInfo(Constant.APP_KEY, Constant.CHANNEL_ID)
+                .getNavInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<NavInfoResult<List<NavInfoResult.NavInfo>>>() {

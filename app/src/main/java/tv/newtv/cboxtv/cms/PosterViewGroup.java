@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * Created by lin on 2018/1/30.

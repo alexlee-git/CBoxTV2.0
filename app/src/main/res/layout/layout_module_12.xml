@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
         android:id="@+id/id_module_12_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"
@@ -39,7 +39,7 @@
         android:focusable="true"
         android:tag="cell_012_1">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_320px"
             android:tag="cell_012_1_poster" />
@@ -59,7 +59,7 @@
         android:focusable="true"
         android:tag="cell_012_3">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_296px"
             android:tag="cell_012_3_poster" />
@@ -79,7 +79,7 @@
         android:focusable="true"
         android:tag="cell_012_4">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_296px"
             android:tag="cell_012_4_poster" />
@@ -99,7 +99,7 @@
         android:focusable="true"
         android:tag="cell_012_2">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_320px"
             android:tag="cell_012_2_poster" />
@@ -119,7 +119,7 @@
         android:focusable="true"
         android:tag="cell_012_5">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_296px"
             android:tag="cell_012_5_poster" />

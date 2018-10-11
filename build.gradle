@@ -6,6 +6,7 @@ def abroad = "http://central.maven.org/maven2/"
 // 先从url中下载jar若没有找到，则在artifactUrls中寻找
 
 buildscript {
+    ext.kotlin_version = '1.2.71'
     ext.kotlin_version = '1.2.70'
     ext.kotlin_version = '1.1.51'
 

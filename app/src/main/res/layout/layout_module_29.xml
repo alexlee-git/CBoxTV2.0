@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
         android:id="@+id/id_module_29_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"
@@ -38,7 +38,7 @@
         android:tag="cell_029_1">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_480px"
             android:tag="cell_029_1_poster" />
@@ -58,7 +58,7 @@
         android:tag="cell_029_6">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_162px"
             android:tag="cell_029_6_poster" />
@@ -79,7 +79,7 @@
         android:tag="cell_029_7">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_162px"
             android:tag="cell_029_7_poster" />
@@ -101,7 +101,7 @@
         android:tag="cell_029_2">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_029_2_poster" />
@@ -123,7 +123,7 @@
         android:tag="cell_029_4">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_029_4_poster" />
@@ -144,7 +144,7 @@
         android:tag="cell_029_8">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/tv.newtv.views.RecycleImageView2"
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_162px"
@@ -166,7 +166,7 @@
         android:tag="cell_029_9">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_162px"
             android:tag="cell_029_9_poster" />
@@ -187,7 +187,7 @@
         android:tag="cell_029_3">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_029_3_poster" />
@@ -209,7 +209,7 @@
         android:tag="cell_029_5">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_528px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_029_5_poster" />
@@ -230,7 +230,7 @@
         android:tag="cell_029_10">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_162px"
             android:tag="cell_029_10_poster" />
@@ -251,7 +251,7 @@
         android:tag="cell_029_11">
 
         <!--海报-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_162px"
             android:tag="cell_029_11_poster" />

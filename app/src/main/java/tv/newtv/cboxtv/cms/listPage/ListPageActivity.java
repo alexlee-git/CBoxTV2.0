@@ -32,6 +32,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.libs.AnimationBuilder;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -42,8 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.model.CircleTransform;
@@ -60,11 +64,8 @@ import tv.newtv.cboxtv.cms.listPage.presenter.ListPagePresenter;
 import tv.newtv.cboxtv.cms.listPage.view.ListMenuView;
 import tv.newtv.cboxtv.cms.listPage.view.ListPageView;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.AnimationBuilder;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.player.BaseActivity;
 
 //import tv.newtv.cboxtv.cms.net.ApiUtil;
 
@@ -752,7 +753,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG",
+                    .getScreenResult(type, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, "PS;CG",
                             getScreenType(year), getScreenType(area), getScreenType(classType),
                             startnum, size)
                     .subscribeOn(Schedulers.io())
@@ -851,8 +852,8 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private void requestMarkData(String contentUUid) {
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getMarkDataResult(Constant.BASE_URL_CMS + Constant.CMS_URL + Constant
-                            .APP_KEY + "/" + Constant.CHANNEL_ID + "/page/" + contentUUid + ".json")
+                    .getMarkDataResult(Constant.BASE_URL_CMS + Constant.CMS_URL + BuildConfig
+                            .APP_KEY + "/" + BuildConfig.CHANNEL_ID + "/page/" + contentUUid + ".json")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -943,7 +944,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         mRelativeLayout_error.setVisibility(View.GONE);
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getSearchCategoryData("PS;CG", firstCatagory, Constant.APP_KEY, Constant
+                    .getSearchCategoryData("PS;CG", firstCatagory, BuildConfig.APP_KEY, BuildConfig
                             .CHANNEL_ID, "0", ITEM_COUNT)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -988,7 +989,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         mScreenInfo = null;
         try {
             NetClient.INSTANCE.getListPageApi()
-                    .getScreenResult(type, Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CG", year,
+                    .getScreenResult(type, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, "PS;CG", year,
                             area, classType, "0", ITEM_COUNT)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

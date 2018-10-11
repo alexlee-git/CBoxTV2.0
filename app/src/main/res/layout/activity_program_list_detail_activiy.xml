@@ -29,7 +29,7 @@
         </FrameLayout>
 
 
-        <tv.newtv.cboxtv.views.FocusToggleView
+        <tv.newtv.cboxtv.views.custom.FocusToggleView
             android:id="@+id/full_screen"
             android:layout_width="@dimen/width_152px"
             android:layout_height="@dimen/height_76px"
@@ -45,7 +45,7 @@
             app:focus_drawable="@drawable/pos_zui"
             app:normal_drawable="@drawable/icon_details_big_screen_btn"/>
 
-        <tv.newtv.cboxtv.views.FocusToggleView
+        <tv.newtv.cboxtv.views.custom.FocusToggleView
             android:id="@+id/btn_detail_collect"
             android:layout_width="@dimen/width_152px"
             android:layout_height="@dimen/height_76px"
@@ -115,7 +115,7 @@
             android:focusable="true"
             android:visibility="gone">
 
-            <tv.newtv.cboxtv.views.RecycleImageView
+            <tv.newtv.cboxtv.views.custom.RecycleImageView
                 android:id="@+id/program_list_detail_ad_img"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

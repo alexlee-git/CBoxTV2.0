@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.cms.mainPage.model;
 
 import java.util.List;
 
+import tv.newtv.cboxtv.player.ProgramsInfo;
+
 /**
  * Created by lixin on 2018/2/1.
  */
@@ -18,7 +20,7 @@ public class ModuleItem {
     private String colNum;
     private String BlockType;
     private String layoutCode;
-    private List<ProgramInfo> programs;
+    private List<ProgramsInfo> programs;
 
 
     public String getBlockId() {
@@ -109,11 +111,11 @@ public class ModuleItem {
         this.layoutCode = layoutCode;
     }
 
-    public List<ProgramInfo> getDatas() {
+    public List<ProgramsInfo> getDatas() {
         return programs;
     }
 
-    public void setDatas(List<ProgramInfo> datas) {
+    public void setDatas(List<ProgramsInfo> datas) {
         programs = datas;
     }
 

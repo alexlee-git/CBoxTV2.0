@@ -11,15 +11,16 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
+import com.newtv.libs.util.LogUtils;
+
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.player.BaseActivity;
 
 public class SoftWareInfoActivity extends BaseActivity {
 

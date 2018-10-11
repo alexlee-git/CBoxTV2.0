@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import tv.newtv.cboxtv.Constant;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
+
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 
 public class AboutMineActivity extends AppCompatActivity implements View.OnClickListener,
         View.OnFocusChangeListener {

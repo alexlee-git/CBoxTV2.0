@@ -5,9 +5,9 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.widget.Scroller;
 
-import java.lang.reflect.Field;
+import com.newtv.libs.util.LogUtils;
 
-import tv.newtv.cboxtv.cms.util.LogUtils;
+import java.lang.reflect.Field;
 
 /**
  * Created by lixin on 2018/3/17.

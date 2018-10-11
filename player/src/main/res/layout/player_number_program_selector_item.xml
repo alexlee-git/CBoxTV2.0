@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width_146px"
+    android:layout_height="@dimen/height_90px"
+    android:layout_marginTop="@dimen/height_0px"
+    android:layout_marginBottom="@dimen/height_0px"
+    android:focusable="true"
+    android:background="@drawable/player_program_selector_unfocused_bg">
+
+    <TextView
+        android:id="@+id/number_program_selector_item_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_40px"/>
+    <ImageView
+        android:id="@+id/number_program_selector_item_playing"
+
+        android:layout_width="@dimen/width_20px"
+        android:layout_height="@dimen/height_38px"
+        android:layout_gravity="center"
+        android:src="@drawable/program_selector_playing_arrow"
+        android:visibility="invisible"/>
+</FrameLayout>
+
+

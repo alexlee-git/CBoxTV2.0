@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.cms.details.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
+
 /**
  * Created by Administrator on 2018/2/3 0003.
  */

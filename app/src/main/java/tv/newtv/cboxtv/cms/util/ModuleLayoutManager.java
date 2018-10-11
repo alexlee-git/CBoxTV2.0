@@ -1,16 +1,15 @@
 package tv.newtv.cboxtv.cms.util;
 
 import android.text.TextUtils;
-import android.util.ArrayMap;
+
+import com.newtv.libs.Constant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 
 /**

@@ -5,8 +5,8 @@ import okhttp3.ResponseBody;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import tv.newtv.cboxtv.cms.ad.model.ActivateBean;
-import tv.newtv.cboxtv.cms.ad.model.AuthBean;
+import com.newtv.libs.bean.ActivateBean;
+import com.newtv.libs.bean.AuthBean;
 
 /**
  * Created by TCP on 2018/4/11.

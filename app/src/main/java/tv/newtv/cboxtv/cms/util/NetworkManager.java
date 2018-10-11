@@ -5,7 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import tv.newtv.cboxtv.Constant;
+import com.newtv.libs.Constant;
+
 
 /**
  * Created by lixin on 2018/2/11.

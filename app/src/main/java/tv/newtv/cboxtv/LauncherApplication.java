@@ -9,6 +9,16 @@ import android.util.Log;
 
 
 import com.bumptech.glide.Glide;
+import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.FileUtil;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.PicassoBuilder;
+import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.SystemUtils;
+import com.newtv.libs.util.YSLogUtils;
 
 import java.util.Locale;
 
@@ -19,17 +29,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import tv.newtv.cboxtv.cms.util.RxBus;
-import tv.newtv.cboxtv.cms.util.SystemUtils;
-import tv.newtv.cboxtv.cms.util.YSLogUtils;
-import tv.newtv.cboxtv.uc.db.DataSupport;
-import tv.newtv.cboxtv.utils.FileUtil;
-import tv.newtv.cboxtv.utils.PicassoBuilder;
-//import tv.newtv.key.KeyHelper;
+import com.newtv.libs.db.DataSupport;
 
 /**
  * Created by lixin on 2018/1/11.
@@ -58,6 +59,7 @@ public class LauncherApplication extends MultiDexApplication {
         }
 
         AppContext = this.getApplicationContext();
+        Libs.init(this,BuildConfig.APP_KEY,BuildConfig.CHANNEL_ID,BuildConfig.FLAVOR);
         //KeyHelper.init(getApplicationContext());
         initADsdk();
         DataSupport.init(getApplicationContext());
@@ -108,7 +110,7 @@ public class LauncherApplication extends MultiDexApplication {
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
                 e.onNext(AdSDK.getInstance().init(Constant.BASE_URL_AD,
                         SystemUtils.getMac(AppContext),
-                        Constant.APP_KEY, Constant.CHANNEL_ID,
+                        BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
                         FileUtil.getCacheDirectory(getApplicationContext(), "ad_cache")
                                 .getAbsolutePath()));//广告初始化
             }

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.libs.util.ScaleUtils;
 
 import java.util.HashMap;
 import java.util.Timer;
@@ -25,14 +26,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.uc.bean.ProgressListener;
 import tv.newtv.cboxtv.uc.bean.Updater;
 import tv.newtv.cboxtv.uc.bean.VersionBeen;
-import tv.newtv.cboxtv.utils.ScaleUtils;
 
 public class VersionUpdateActivity extends BaseActivity {
 
@@ -171,8 +171,8 @@ public class VersionUpdateActivity extends BaseActivity {
             e.printStackTrace();
         }
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("appKey", Constant.APP_KEY);
-        hashMap.put("channelCode", Constant.CHANNEL_ID);
+        hashMap.put("appKey", BuildConfig.APP_KEY);
+        hashMap.put("channelCode", BuildConfig.CHANNEL_ID);
         hashMap.put("versionCode", "" + versionCode);
         NetClient.INSTANCE.getUpVersion().getUpVersion(hashMap)
                 .subscribeOn(Schedulers.io())

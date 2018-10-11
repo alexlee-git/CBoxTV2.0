@@ -23,7 +23,7 @@ import java.util.List;
  * 创建日期:          2018/9/27
  */
 class PageContract {
-    interface View extends ICmsView<Presenter> {
+    interface View extends ICmsView {
         void onPageResult(List<Page> page);
     }
 
@@ -35,7 +35,6 @@ class PageContract {
 
         ContentPresenter(Context context, View view) {
             super(context, view);
-            view.setPresenter(this);
         }
 
         @Override
@@ -49,7 +48,7 @@ class PageContract {
                                 if (result.isOk()) {
                                     getView().onPageResult(result.getData());
                                 } else {
-                                    onError(result.getErrorMesssage());
+                                    onError(result.getErrorMessage());
                                 }
                             }
 

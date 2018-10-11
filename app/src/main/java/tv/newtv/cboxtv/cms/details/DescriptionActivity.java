@@ -8,8 +8,9 @@ import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
+import com.newtv.libs.util.XunMaKeyUtils;
+
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.utils.XunMaKeyUtils;
 
 public class DescriptionActivity extends Activity{
     private static final String TITLE = "title";

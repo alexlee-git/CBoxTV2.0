@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.player.BaseActivity;
 
 
 public class UserDealActivity extends BaseActivity {

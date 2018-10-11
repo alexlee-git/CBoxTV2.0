@@ -29,7 +29,7 @@
         android:tag="module_008_title"
         android:text="播放列表"/>
 
-    <tv.newtv.cboxtv.views.detailpage.SmallWindowView
+    <tv.newtv.cboxtv.views.detail.SmallWindowView
         android:id="@+id/small_window_view"
         android:layout_width="@dimen/width_255px"
         android:layout_height="@dimen/width_110px"

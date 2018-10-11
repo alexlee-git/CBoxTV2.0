@@ -11,7 +11,7 @@ import android.graphics.RectF;
 
 import com.squareup.picasso.Transformation;
 
-import tv.newtv.cboxtv.cms.details.model.DensityUtil;
+import com.newtv.libs.util.DensityUtil;
 
 /**
  * 项目名称： NewTVLauncher

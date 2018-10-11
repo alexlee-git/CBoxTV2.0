@@ -2,18 +2,16 @@ package tv.newtv.cboxtv.utils;
 
 import android.content.ContentValues;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.libs.Constant;
 
-import java.util.List;
-
-import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.Utils;
-import tv.newtv.cboxtv.uc.db.DBCallback;
-import tv.newtv.cboxtv.uc.db.DBConfig;
-import tv.newtv.cboxtv.uc.db.DataSupport;
+
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 
 /**
  * 项目名称:         CBoxTV
@@ -173,7 +171,8 @@ public class DBUtil {
 
     }
 
-    public static void addHistory(ProgramSeriesInfo mInfo, int index, int Position, DBCallback<String> callback) {
+    public static void addHistory(ProgramSeriesInfo mInfo, int index, int Position, DBCallback<String>
+            callback) {
         if (mInfo == null) {
             return;
         }

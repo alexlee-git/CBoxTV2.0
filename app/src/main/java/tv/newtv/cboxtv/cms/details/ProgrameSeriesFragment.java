@@ -20,6 +20,17 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.ad.ADHelper;
+import com.newtv.libs.ad.ADPresenter;
+import com.newtv.libs.ad.IAdConstract;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.PageHelper;
+
+import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
+import com.newtv.libs.util.RxBus;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,36 +49,29 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
 import tv.newtv.cboxtv.cms.details.adapter.EpisodeAdapter;
 import tv.newtv.cboxtv.cms.details.adapter.ProgrameSeriesAdapter;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.PageHelper;
-import tv.newtv.cboxtv.cms.util.RxBus;
+import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.uc.db.DBCallback;
-import tv.newtv.cboxtv.uc.db.DBConfig;
-import tv.newtv.cboxtv.uc.db.DataSupport;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
-import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DBUtil;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
-import tv.newtv.cboxtv.views.FocusToggleView2;
-import tv.newtv.cboxtv.views.RecycleImageView;
-import tv.newtv.cboxtv.views.detailpage.SmoothScrollView;
+import tv.newtv.cboxtv.views.custom.FocusToggleView2;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
+import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 
 /**
  * Created by gaoleichao on 2018/4/8.
@@ -438,7 +442,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     private void requestData() {
-        NetClient.INSTANCE.getDetailsPageApi().getInfo(Constant.APP_KEY, Constant.CHANNEL_ID,
+        NetClient.INSTANCE.getDetailsPageApi().getInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
                 leftUUID, rightUUID, contentUUID)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<ResponseBody>bindToLifecycle())
@@ -484,8 +488,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                                     }
                                     if (mPageDaoImpl == null) {
                                         mVideoView.setSeriesInfo(dataInfo);
-                                        mPageDaoImpl = new PageHelper<ProgramSeriesInfo
-                                                .ProgramsInfo>
+                                        mPageDaoImpl = new PageHelper<ProgramsInfo>
                                                 (dataInfo.getData(), 30);
                                     }
                                     for (int i = 1; i < mPageDaoImpl.getPageNum() + 1; i++) {
@@ -531,7 +534,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                             videoType = "";
                         }
                         return NetClient.INSTANCE.getListPageApi()
-                                .getScreenResult(videoType, Constant.APP_KEY, Constant
+                                .getScreenResult(videoType, BuildConfig.APP_KEY, BuildConfig
                                                 .CHANNEL_ID, "PS", "",
                                         "", "", "0", "6").subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
@@ -551,11 +554,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     ProgramSeriesInfo info = new ProgramSeriesInfo();
                     info.layoutTitle = "相关推荐";
                     info.layoutId = 4;
-                    List<ProgramSeriesInfo.ProgramsInfo> list = new ArrayList<>();
+                    List<ProgramsInfo> list = new ArrayList<>();
                     if (mScreenInfo != null && mScreenInfo.getResultList().size() > 0) {
                         for (int i = 0; i < mScreenInfo.getResultList().size(); i++) {
                             ScreenInfo.ResultListBean entity = mScreenInfo.getResultList().get(i);
-                            list.add(new ProgramSeriesInfo.ProgramsInfo(entity.getUUID(), entity
+                            list.add(new ProgramsInfo(entity.getUUID(), entity
                                     .getName(), entity.getContentType(), entity.getHpicurl(),
                                     entity.getHpicurl(), "", "", "", "", "", "", "", "", "",
                                     entity.getDesc()));
@@ -569,7 +572,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
                         }
                         adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
-                                .AD_DETAILPAGE_BANNER);//获取广告
+                                .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance()
+                                .getFirstChannelId(),PlayerConfig.getInstance()
+                                .getSecondChannelId(),PlayerConfig.getInstance().getTopicId());//获取广告
 
 
                         mVideoView.playSingleOrSeries(mIndex, mPlayPosition);
@@ -830,11 +835,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
 
-    public String getPageText(List<ProgramSeriesInfo.ProgramsInfo> allData, int mPage) {
+    public String getPageText(List<ProgramsInfo> allData, int mPage) {
         int allNum = allData.size();
         int pageNum = mPageDaoImpl.getPageNum();
         int perPage = 30;
-        List<ProgramSeriesInfo.ProgramsInfo> data = new ArrayList<>();
+        List<ProgramsInfo> data = new ArrayList<>();
         if (mPage == 1) {
             if (allNum <= perPage) {
                 data = allData.subList(0, allNum);

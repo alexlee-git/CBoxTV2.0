@@ -1,6 +1,9 @@
 package com.newtv.cms
 
+import com.newtv.cms.api.IUpVersion
 import com.newtv.cms.service.*
+import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.util.HttpsUtils
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,6 +19,7 @@ import java.util.concurrent.TimeUnit
  */
 internal object Request {
     private val logInterceptor = HttpLoggingInterceptor()
+    private val headersInterceptor = HeadersInterceptor();
 
     init {
         if (BuildConfig.DEBUG) {
@@ -25,8 +29,11 @@ internal object Request {
         }
     }
 
+    private val sslFactory = HttpsUtils.getSslSocketFactory(null, null, null)
     private val httpClient = okhttp3.OkHttpClient.Builder()
+            .sslSocketFactory(sslFactory.sSLSocketFactory, sslFactory.trustManager)
             .connectTimeout(10, TimeUnit.SECONDS)
+            .addInterceptor(headersInterceptor)
             .addInterceptor(logInterceptor)
             .build()!!
 
@@ -41,11 +48,15 @@ internal object Request {
     val nav: INavRetro by lazy { retrofit.create(INavRetro::class.java) }
     val content: IContentRetro by lazy { retrofit.create(IContentRetro::class.java) }
     val page: IPageRetro by lazy { retrofit.create(IPageRetro::class.java) }
-    val category:ICategoryRetro by lazy { retrofit.create(ICategoryRetro::class.java) }
-    val corner:ICornerRetro by lazy { retrofit.create(ICornerRetro::class.java) }
-    val splash:ISplashRetro by lazy { retrofit.create(ISplashRetro::class.java) }
-    val tv:IHostRetro by lazy { retrofit.create(IHostRetro::class.java) }
-    val program:ITvProgramRetro by lazy { retrofit.create(ITvProgramRetro::class.java) }
-    val filter:IFilterRetro by lazy { retrofit.create(IFilterRetro::class.java) }
+    val category: ICategoryRetro by lazy { retrofit.create(ICategoryRetro::class.java) }
+    val corner: ICornerRetro by lazy { retrofit.create(ICornerRetro::class.java) }
+    val splash: ISplashRetro by lazy { retrofit.create(ISplashRetro::class.java) }
+    val tv: IHostRetro by lazy { retrofit.create(IHostRetro::class.java) }
+    val program: ITvProgramRetro by lazy { retrofit.create(ITvProgramRetro::class.java) }
+    val filter: IFilterRetro by lazy { retrofit.create(IFilterRetro::class.java) }
+    val upVersion: IUpVersionRetro by lazy { retrofit.create(IUpVersionRetro::class.java) }
+    val clock: IClockRetro by lazy { retrofit.create(IClockRetro::class.java) }
+    val bootGuide: IBootGuideRetro by lazy { retrofit.create(IBootGuideRetro::class.java) }
+    val activeAuth: IActiveAuthRetro by lazy { retrofit.create(IActiveAuthRetro::class.java) }
 
 }

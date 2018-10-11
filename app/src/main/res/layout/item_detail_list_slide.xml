@@ -5,7 +5,7 @@
     android:clipToPadding="false"
     android:layout_height="wrap_content">
 
-    <tv.newtv.cboxtv.views.CurrentPlayImageView
+    <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
         android:id="@+id/id_module_8_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"

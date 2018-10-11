@@ -3,20 +3,17 @@ package tv.newtv.cboxtv.cms.special.fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
-import tv.newtv.cboxtv.cms.special.viewholder.SpecialUniversalAdapter;
 
 /**
  * 项目名称:         CBoxTV

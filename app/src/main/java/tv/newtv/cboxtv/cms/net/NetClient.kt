@@ -5,8 +5,8 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import tv.newtv.cboxtv.BuildConfig
-import tv.newtv.cboxtv.Constant
-import tv.newtv.cboxtv.cms.util.HttpsUtils
+import com.newtv.libs.Constant
+import com.newtv.libs.util.HttpsUtils
 import java.util.concurrent.TimeUnit
 
 /**
@@ -38,7 +38,7 @@ object NetClient {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(Constant.BASE_URL_CMS)
+            .baseUrl(com.newtv.libs.Constant.BASE_URL_CMS)
             .build()
 
 

@@ -1,11 +1,12 @@
 package tv.newtv.cboxtv.cms.net;
 
+import com.newtv.libs.Constant;
+
 import java.io.IOException;
 
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
-import tv.newtv.cboxtv.Constant;
 
 /**
  * Created by TCP on 2018/5/8.

@@ -3,6 +3,9 @@ package tv.newtv.cboxtv.cms.superscript;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,12 +22,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
-//import tv.newtv.cboxtv.cms.net.ApiUtil;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfoResult;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 
 /**
  * Created by lixin on 2018/3/9.

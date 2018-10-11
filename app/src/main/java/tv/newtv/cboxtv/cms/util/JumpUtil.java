@@ -9,10 +9,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Program;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
+
+import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 
 import java.util.HashMap;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
@@ -20,12 +24,11 @@ import tv.newtv.cboxtv.cms.details.PersonsDetailsActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
 
 public class JumpUtil {
 
@@ -328,7 +331,7 @@ public class JumpUtil {
                     //获取在节目集中的集数
                     int index = 0;
                     for (int i = 0; i < info.getData().size(); i++) {
-                        ProgramSeriesInfo.ProgramsInfo programsInfo = info.getData().get(i);
+                        ProgramsInfo programsInfo = info.getData().get(i);
                         if (contentUUID.equals(programsInfo.getContentUUID())) {
                             index = i;
                             break;

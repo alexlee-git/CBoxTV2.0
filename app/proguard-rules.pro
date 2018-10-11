@@ -193,7 +193,7 @@
 -keep class tv.newtv.cboxtv.player.model.**{*;}
 -keep class tv.newtv.cboxtv.uc.bean.**{*;}
 
--keep class tv.newtv.cboxtv.player.menu.**{*;}
+-keep class tv.newtv.cboxtv.menu.**{*;}
 
 -keep class com.letv.**{*;}
 -keep class com.android.letvmanager.**{*;}

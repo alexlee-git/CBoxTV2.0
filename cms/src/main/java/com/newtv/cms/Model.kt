@@ -18,6 +18,10 @@ internal object Model {
     const val MODEL_HOST: String = "Host"           //主持人
     const val MODEL_TV_PROGRAM: String = "TvProgram"       //电视栏目
     const val MODEL_FILTER: String = "Filter"       //筛选
+    const val MODEL_UP_VERSTION: String = "UpVersion"       //更新
+    const val MODEL_CLOCK: String = "Clock"       //同步时间
+    const val MODEL_BOOTGUIDE: String = "BootGuide"       //获取服务地址
+    const val MODEL_ACTIVE_AUTH: String = "ActiveAuth"       //认证鉴权
 
 
     const val CONTENT_TYPE_PS: String = "PS" //节目集

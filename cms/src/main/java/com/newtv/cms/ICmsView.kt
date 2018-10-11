@@ -9,8 +9,7 @@ import android.content.Context
  * 创建人:           weihaichao
  * 创建日期:          2018/9/27
  */
-interface ICmsView<P : ICmsPresenter> {
-    fun setPresenter(presenter: P)
+interface ICmsView {
     fun tip(context: Context, message: String)
     fun onError(context: Context, desc: String)
 }

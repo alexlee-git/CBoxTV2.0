@@ -13,6 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.ad.ADHelper;
+import com.newtv.libs.ad.ADPresenter;
+import com.newtv.libs.ad.IAdConstract;
+import com.newtv.libs.util.DeviceUtil;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.RxBus;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -32,32 +40,24 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.RxBus;
+import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
-import tv.newtv.cboxtv.uc.db.DBCallback;
-import tv.newtv.cboxtv.uc.db.DBConfig;
-import tv.newtv.cboxtv.uc.db.DataSupport;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
-import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DBUtil;
-import tv.newtv.cboxtv.utils.DeviceUtil;
-import tv.newtv.cboxtv.views.FocusToggleView;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.custom.FocusToggleView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * 节目合集详情页
@@ -174,7 +174,8 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
         }
         ADConfig.getInstance().setSeriesID(contentUUID);
         adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
-                .AD_DETAILPAGE_BANNER);//获取广告
+                .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance().getFirstChannelId(),PlayerConfig
+                .getInstance().getSecondChannelId(),PlayerConfig.getInstance().getTopicId());//获取广告
         if (contentUUID.length() >= 2) {
             leftUUID = contentUUID.substring(0, 2);
             rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
@@ -209,7 +210,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
 
     private void requestData() {
         dataList.clear();
-        NetClient.INSTANCE.getDetailsPageApi().getInfo(Constant.APP_KEY, Constant.CHANNEL_ID,
+        NetClient.INSTANCE.getDetailsPageApi().getInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
                 leftUUID, rightUUID, contentUUID)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<ResponseBody>bindToLifecycle())

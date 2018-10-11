@@ -16,6 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.newtv.cms.bean.Nav;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.ScreenUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,17 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.cms.search.SearchFragment;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.uc.UserCenterFragment;
-import tv.newtv.cboxtv.utils.ScreenUtils;
-import tv.newtv.cboxtv.views.MenuRecycleView;
+import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
 public class MainNavManager implements MainContract.View {
 
@@ -216,7 +216,7 @@ public class MainNavManager implements MainContract.View {
                 menuAdapter = (MenuRecycleView.MenuAdapter<Nav>) mFirMenu.getAdapter();
             }
         }
-        new MainContract.MainPresenter(context, this);
+        new MainContract.MainPresenter(context, this).requestNav();
     }
 
 
@@ -348,11 +348,6 @@ public class MainNavManager implements MainContract.View {
     @Override
     public void onNavResult(Context context, List<Nav> result) {
         inflateNavigationBar(result, context, "server");
-    }
-
-    @Override
-    public void setPresenter(@NotNull MainContract.Presenter presenter) {
-        presenter.requestNav();
     }
 
     @Override

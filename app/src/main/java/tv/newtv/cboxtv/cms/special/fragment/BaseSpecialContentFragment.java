@@ -9,16 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.newtv.libs.Constant;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.cms.details.model.VideoPlayInfo;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
-import tv.newtv.cboxtv.utils.BitmapUtil;
+import com.newtv.libs.util.RxBus;
 
 /**
  * 项目名称:         CBoxTV
@@ -67,7 +67,6 @@ public abstract class BaseSpecialContentFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        BitmapUtil.recycleImageBitmap((ViewGroup) contentView);
         contentView = null;
         RxBus.get().unregister(Constant.UPDATE_VIDEO_PLAY_INFO, mUpdateVideoInfoObservable);
         mUpdateVideoInfoObservable = null;

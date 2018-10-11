@@ -1,11 +1,10 @@
 package tv.newtv.cboxtv;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -20,54 +19,45 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.gridsum.tracker.GridsumWebDissector;
 import com.gridsum.videotracker.VideoTracker;
+import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADHelper;
+import com.newtv.libs.ad.ADSdkCallback;
+import com.newtv.libs.ad.ADsdkUtils;
+import com.newtv.libs.util.CNTVLogUtils;
+import com.newtv.libs.util.DeviceUtil;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.SystemUtils;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
-import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.cms.DataCenter;
-import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
 import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
-import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.ADsdkUtils;
-import tv.newtv.cboxtv.cms.util.ActivateAuthUtils;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import tv.newtv.cboxtv.cms.util.RxBus;
-import tv.newtv.cboxtv.cms.util.SPrefUtils;
-import tv.newtv.cboxtv.cms.util.SystemUtils;
-import tv.newtv.cboxtv.player.adplayer.ADPlayerView;
-import tv.newtv.cboxtv.utils.ADHelper;
-import tv.newtv.cboxtv.utils.CNTVLogUtils;
-import tv.newtv.cboxtv.utils.DeviceUtil;
+import tv.newtv.cboxtv.player.ad.ADPlayerView;
+import tv.newtv.contract.ActiveAuthContract;
+import tv.newtv.contract.SplashContract;
 
 /**
  * Created by TCP on 2018/4/12.
  */
-public class EntryActivity extends RxFragmentActivity implements ActivateAuthUtils.Callback {
-    private static final int MAX_NUM = 3;
+public class EntryActivity extends RxFragmentActivity implements ActiveAuthContract.View,
+        SplashContract.View {
     private static final String TAG = "EntryActivity";
     private static final String EXTERNAL = "external";
 
-    private static final int TIME_ONE_SECOND = 200;
-    private static final int RETRY_ACTIVE = 0x998;
+    private ActiveAuthContract.ActiveAuthPresenter mAuthPresenter;
+    private SplashContract.SplashPresenter mSplashPresenter;
 
-
-    private int num = 0;
-    private View rootView;
     //广告内容显示
     private ADPlayerView videoView;
     private ImageView imageView;
@@ -77,17 +67,6 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
 
     private boolean mStoped = false;
 
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            switch (message.what) {
-                case RETRY_ACTIVE:
-                    activateAuth();
-                    break;
-            }
-            return false;
-        }
-    });
     private Intent mIntent;
     private String mExternalAction;
     private String mExternalParams;
@@ -107,14 +86,21 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
             imageView.setImageDrawable(null);
         }
 
-        if(videoView != null){
-            videoView.release();
-            videoView = null;
+        if (mAuthPresenter != null) {
+            mAuthPresenter.destroy();
+            mAuthPresenter = null;
         }
 
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-            handler = null;
+
+        if (mSplashPresenter != null) {
+            mSplashPresenter.destroy();
+            mAuthPresenter = null;
+        }
+
+
+        if (videoView != null) {
+            videoView.release();
+            videoView = null;
         }
 
         isShowingAD = false;
@@ -158,7 +144,7 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
         if (!DeviceUtil.isSelfDevice()) {
             String displayMessage = getResources().getString(R.string
                     .tip_text_auth_error) + "\n\n";
-            displayMessage += getErrorMsg(ActivateAuthUtils.NOT_SELF_DEVICE);
+            displayMessage += getErrorMsg(ActiveAuthContract.ActiveAuthPresenter.NOT_SELF_DEVICE);
             mAlertDialog = getDialog(displayMessage, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -198,18 +184,12 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
             mExternalParams = mIntent.getStringExtra("params");
         }
 
-        // 调取boot_guide接口
-        if (!DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR)) {
-            getServerAddressByBootGuide();
-        }
-
         initView();
-        initRetryUrls();
-
-        // 2、调取激活接口，获取UUID
-        activateAuth();
 
         initCNTVLog();
+
+        mAuthPresenter = new ActiveAuthContract.ActiveAuthPresenter(getApplicationContext(), this);
+        mSplashPresenter = new SplashContract.SplashPresenter(getApplicationContext(), this);
     }
 
     private void initRetryUrls() {
@@ -231,7 +211,6 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
 
         DataCenter.getInstance().preloadNavigation();
 
-        rootView = findViewById(R.id.root_view);
         videoView = findViewById(R.id.splash_video_view);
         imageView = findViewById(R.id.splash_image_view);
         mAuthingView = findViewById(R.id.authing);
@@ -247,80 +226,49 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
         videoView.setLayoutParams(layoutParams);
     }
 
-    public void activateAuth() {
-        String appkey = Constant.APPKEY;
-        String channelId = Constant.CHANNEL_ID;
-        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            Toast.makeText(this, "参数丢失，无法激活设备", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-
-        ActivateAuthUtils.activate(this, appkey, channelId, this);
-    }
-
     @Override
-    public void success(int type) {
+    public void failed(int type, int status) {
         switch (type) {
-            case ActivateAuthUtils.AUTH:
+            case ActiveAuthContract.ActiveAuthPresenter.AUTH:
+
+                //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
                 RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
-                getAD();
-                mAuthingView.setVisibility(View.GONE);
+                authLogFailed(status);//认证失败
+
+                mAlertDialog = getDialog(new StringBuilder().append(getResources().getString(R
+                        .string.tip_text_auth_error)).append("\n\n").append(getErrorMsg(status))
+                        .toString(), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mAlertDialog != null) {
+                            mAlertDialog.dismiss();
+                        }
+                        finish();
+                    }
+                });
+                if (!isFinishing()) {
+                    mAlertDialog.show();
+                }
+                break;
+            case ActiveAuthContract.ActiveAuthPresenter.ACTIVATE:
+                mAlertDialog = getDialog(new StringBuilder().append(getResources().getString(R
+                        .string.tip_text_active_error)).append(getErrorMsg(status)).toString(),
+                        new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (mAlertDialog != null) {
+                            mAlertDialog.dismiss();
+                        }
+                        finish();
+                    }
+                });
+                if (!isFinishing()) {
+                    mAlertDialog.show();
+                }
                 break;
         }
-    }
 
-    @Override
-    public void fail(int type, int status) {
-        if (status < ActivateAuthUtils.LOCAL_EXCEPTION
-                && num < MAX_NUM * Constant.activateUrls.size() && handler != null) {
-            Constant.BASE_URL_ACTIVATE = Constant.activateUrls.get(num / MAX_NUM);
-            Message message = handler.obtainMessage(RETRY_ACTIVE);
-            handler.sendMessageDelayed(message, TIME_ONE_SECOND);
-            num++;
-        } else {
-            switch (type) {
-                case ActivateAuthUtils.AUTH:
-                    String displayMessage = getResources().getString(R.string
-                            .tip_text_auth_error) + "\n\n";
-                    displayMessage += getErrorMsg(status);
-                    //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
-                    RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
-                    authLogFailed(status);//认证失败
-
-                    mAlertDialog = getDialog(displayMessage, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (mAlertDialog != null) {
-                                mAlertDialog.dismiss();
-                            }
-                            finish();
-                        }
-                    });
-                    if (!isFinishing()) {
-                        mAlertDialog.show();
-                    }
-                    break;
-                case ActivateAuthUtils.ACTIVATE:
-                    String errorMsg = getResources().getString(R.string.tip_text_active_error);
-                    errorMsg += getErrorMsg(status);
-                    mAlertDialog = getDialog(errorMsg, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (mAlertDialog != null) {
-                                mAlertDialog.dismiss();
-                            }
-                            finish();
-                        }
-                    });
-                    if (!isFinishing()) {
-                        mAlertDialog.show();
-                    }
-                    break;
-            }
-
-            mAuthingView.setVisibility(View.GONE);
-
-        }
+        mAuthingView.setVisibility(View.GONE);
     }
 
     @Override
@@ -343,16 +291,6 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_ENTER:
                     // TODO test
-                    /*
-                    mAdItem.eventType = "uri";
-                    mAdItem.eventContent = "{\n" +
-                            " \"actionType\": \"OPEN_DETAILS\",\n" +
-                            " \"contentType\": \"PS\",\n" +
-                            " \"contentUUID\": \"29880\",\n" +
-                            " \"actionURI\": \"\"\n" +
-                            " }";
-                            */
-                    // end test
                     if (isAdHasEvent(mAdItem)) {
                         mExternalAction = Constant.EXTERNAL_OPEN_URI;
                         enterMain();
@@ -370,6 +308,10 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
         super.onStop();
         //当在播放广告的时候用户按home键，如果没有取消，会自动弹出此activity
         mStoped = true;
+        if (mAuthPresenter != null) {
+            mAuthPresenter.destroy();
+            mAuthPresenter = null;
+        }
         finish();
     }
 
@@ -506,10 +448,10 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
         Log.i(TAG, "---入口activity" + this.getApplication());
         String AppVersionName = CNTVLogUtils.getVersionName(this);
         Log.i(TAG, "---版本号" + AppVersionName);
-        Log.i(TAG, "---渠道号" + Constant.CHANNEL_ID);
+        Log.i(TAG, "---渠道号" + BuildConfig.CHANNEL_ID);
         GridsumWebDissector.getInstance().setAppVersion(AppVersionName);// 设置App版本号
         GridsumWebDissector.getInstance().setServiceId("GWD-005100");// 设置统计服务ID
-        GridsumWebDissector.getInstance().setChannel(Constant.CHANNEL_ID);// 设置来源渠道（不适用于多渠道打包）
+        GridsumWebDissector.getInstance().setChannel(BuildConfig.CHANNEL_ID);// 设置来源渠道（不适用于多渠道打包）
         // 央视网日志： （传入设备型号，如：MI 2S）
         VideoTracker.setMfrs(android.os.Build.MODEL);
         // 央视网日志：（传入播放平台，如：Android）
@@ -517,51 +459,6 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
         // 央视网日志：（传入操作系统，如：Android_4.4.4）
         VideoTracker.setChip(android.os.Build.VERSION.RELEASE);
     }
-
-    /**
-     * 调用bootguide接口获取众多服务端地址
-     */
-    private void getServerAddressByBootGuide() {
-
-        NetClient.INSTANCE
-                .getBootGuideApi()
-                .getServerAddresses(Constant.APP_KEY + Constant.CHANNEL_ID)
-                .subscribeOn(Schedulers.io())
-                .compose(this.<ResponseBody>bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody value) {
-                        try {
-                            String result = value.string();
-                            String cacheValue = (String) SPrefUtils.getValue(EntryActivity.this,
-                                    SPrefUtils.KEY_SERVER_ADDRESS, "");
-                            if (!TextUtils.isEmpty(result) && !result.equals(cacheValue)) {
-                                SPrefUtils.setValue(EntryActivity.this, SPrefUtils
-                                        .KEY_SERVER_ADDRESS, result);
-                                Constant.parseServerAddress(result);
-                            }
-                        } catch (IOException e) {
-                            LogUtils.e("data from bootguide ocurr IOException" + e);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtils.e("perform get bootguide occur onError" + e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
-    }
-
 
     private void authLogSuccess() {
         //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
@@ -607,5 +504,41 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                 "\nQQ : 800085092";
 
         return errorMsg;
+    }
+
+    @Override
+    public void bootGuildResult() {
+        initRetryUrls();
+
+        String appkey = BuildConfig.APP_KEY;
+        String channelId = BuildConfig.CHANNEL_ID;
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
+            Toast.makeText(this, "参数丢失，无法激活设备", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        mAuthPresenter.active();
+    }
+
+    @Override
+    public void authResult() {
+        RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
+        getAD();
+        mAuthingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void activeResult() {
+        mAuthPresenter.auth();
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @NotNull String desc) {
+
     }
 }

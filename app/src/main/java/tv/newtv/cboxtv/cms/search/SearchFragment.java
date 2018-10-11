@@ -16,6 +16,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,24 +31,18 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.search.view.SearchActivity;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.cms.util.Utils;
-import tv.newtv.cboxtv.utils.ScaleUtils;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 
 //import tv.newtv.cboxtv.cms.net.ApiUtil;
 
@@ -56,7 +55,7 @@ public class SearchFragment extends BaseFragment {
     private String contentId;
     private String actionType;
     private HorizontalRecyclerView hotSearchRecyclerView;
-    private List<ProgramInfo> mPrograms = new ArrayList<>();
+    private List<ProgramsInfo> mPrograms = new ArrayList<>();
 
     private Interpolator mSpringInterpolator;
     private Disposable mDisposable;
@@ -166,7 +165,7 @@ public class SearchFragment extends BaseFragment {
     private void getData() {
         NetClient.INSTANCE
                 .getPageDataApi()
-                .getPageData(Constant.APP_KEY, Constant.CHANNEL_ID, contentId)
+                .getPageData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
@@ -274,7 +273,7 @@ public class SearchFragment extends BaseFragment {
             if (mPrograms == null || mPrograms.size() <= 0) {
                 return;
             }
-            final ProgramInfo programInfo = mPrograms.get(position);
+            final ProgramsInfo programInfo = mPrograms.get(position);
             holder.tv_name.setText(programInfo.getTitle());
             String url = programInfo.getImg();
             if (!TextUtils.isEmpty(url)) {
@@ -305,7 +304,7 @@ public class SearchFragment extends BaseFragment {
                 public void onClick(View view) {
                     try {
                         // TODO 添加类型判断进行跳转
-                        ProgramInfo program = mPrograms.get(position);
+                        ProgramsInfo program = mPrograms.get(position);
 //                        Intent intent = new Intent(getActivity(), DetailsPageActivity.class);
 //                        intent.putExtra("content_type", program.getContentType());
 //                        intent.putExtra("content_uuid", program.getContentUUID());

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tv.newtv.cboxtv.views.detailpage.SmoothScrollView
+<tv.newtv.cboxtv.views.detail.SmoothScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/id_scroll_view"
@@ -76,7 +76,7 @@
             android:layout_marginRight="@dimen/width_120px"
             />
 
-        <tv.newtv.cboxtv.views.FocusToggleView2
+        <tv.newtv.cboxtv.views.custom.FocusToggleView2
             android:id="@+id/full_screen"
             android:layout_width="@dimen/width_152px"
             android:layout_height="@dimen/height_76px"
@@ -86,7 +86,7 @@
             app:type="full_screen"
             />
 
-        <tv.newtv.cboxtv.views.FocusToggleView2
+        <tv.newtv.cboxtv.views.custom.FocusToggleView2
             android:id="@+id/collect"
             android:layout_width="@dimen/width_152px"
             android:layout_height="@dimen/height_76px"
@@ -198,7 +198,7 @@
         android:focusable="true"
         android:visibility="gone">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/program_detail_ad_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -206,4 +206,4 @@
             android:tag="cell_001_1_poster"/>
 
     </FrameLayout>
-</tv.newtv.cboxtv.views.detailpage.SmoothScrollView>
+</tv.newtv.cboxtv.views.detail.SmoothScrollView>

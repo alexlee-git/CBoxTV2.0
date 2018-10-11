@@ -23,6 +23,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.ad.ADHelper;
+import com.newtv.libs.ad.ADPresenter;
+import com.newtv.libs.ad.IAdConstract;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.XunMaKeyUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -43,33 +52,27 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.NewSmoothVorizontalScrollView;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.search.view.SearchActivity;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.cboxtv.cms.util.RxBus;
-import tv.newtv.cboxtv.player.videoview.DivergeView;
-import tv.newtv.cboxtv.uc.db.DBCallback;
-import tv.newtv.cboxtv.uc.db.DBConfig;
-import tv.newtv.cboxtv.uc.db.DataSupport;
+import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.views.custom.DivergeView;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
-import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.DBUtil;
-import tv.newtv.cboxtv.utils.XunMaKeyUtils;
-import tv.newtv.cboxtv.views.FocusToggleView2;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.custom.FocusToggleView2;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * Created by gaoleichao on 2018/4/2.
@@ -247,7 +250,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
     private void requestData() {
         dataList.clear();
-        NetClient.INSTANCE.getDetailsPageApi().getInfo(Constant.APP_KEY, Constant.CHANNEL_ID,
+        NetClient.INSTANCE.getDetailsPageApi().getInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
                 leftUUID, rightUUID, contentUUID)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<ResponseBody>bindToLifecycle())
@@ -269,7 +272,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                             finish();
                         }
                         return NetClient.INSTANCE.getDetailsPageApi().getColumnsByPersons
-                                (Constant.APP_KEY, Constant.CHANNEL_ID, leftUUID, rightUUID,
+                                (BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, leftUUID, rightUUID,
                                         contentUUID).subscribeOn(Schedulers.io());
                     }
                 }).flatMap(new Function<ResponseBody, ObservableSource<ResponseBody>>() {
@@ -277,15 +280,15 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
             public ObservableSource<ResponseBody> apply(ResponseBody responseBody) throws
                     Exception {
                 addData(responseBody.string(), 5, "TA 主持的CCTV+栏目");
-                return NetClient.INSTANCE.getDetailsPageApi().getProgramList(Constant.APP_KEY,
-                        Constant.CHANNEL_ID, leftUUID, rightUUID, contentUUID);
+                return NetClient.INSTANCE.getDetailsPageApi().getProgramList(BuildConfig.APP_KEY,
+                        BuildConfig.CHANNEL_ID, leftUUID, rightUUID, contentUUID);
             }
         }).flatMap(new Function<ResponseBody, ObservableSource<ResponseBody>>() {
             @Override
             public ObservableSource<ResponseBody> apply(ResponseBody value) throws Exception {
                 addData(value.string(), 3, "TA 的节目");
-                return NetClient.INSTANCE.getDetailsPageApi().getCharacterlist(Constant.APP_KEY,
-                        Constant.CHANNEL_ID, leftUUID, rightUUID, contentUUID);
+                return NetClient.INSTANCE.getDetailsPageApi().getCharacterlist(BuildConfig.APP_KEY,
+                        BuildConfig.CHANNEL_ID, leftUUID, rightUUID, contentUUID);
             }
         }).flatMap(new Function<ResponseBody, ObservableSource<List<ProgramSeriesInfo>>>() {
             @Override
@@ -311,7 +314,9 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                             mAdapter.appendToList(columnPageBean);
                             mAdapter.notifyDataSetChanged();
                             adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
-                                    .AD_DETAILPAGE_BANNER);//获取广告
+                                    .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance()
+                                    .getFirstChannelId(),PlayerConfig.getInstance()
+                                    .getSecondChannelId(),PlayerConfig.getInstance().getTopicId());//获取广告
                         }
                     }
 
@@ -464,7 +469,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
     @Override
     public void onItemClick(View view, int position, Object object) {
-        ProgramSeriesInfo.ProgramsInfo entity = ((ProgramSeriesInfo) object).getData().get
+        ProgramsInfo entity = ((ProgramSeriesInfo) object).getData().get
                 (position);
         Intent intent = new Intent();
         Class clazz = null;

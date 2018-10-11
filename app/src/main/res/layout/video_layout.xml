@@ -95,7 +95,7 @@
 
     </RelativeLayout>
 
-    <tv.newtv.cboxtv.views.FocusToggleView2
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/full_screen"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -109,7 +109,7 @@
         app:type="full_screen"
         />
 
-    <tv.newtv.cboxtv.views.FocusToggleView2
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/subscibe"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -123,7 +123,7 @@
         app:type="subscribe"
         />
 
-    <tv.newtv.cboxtv.views.FocusToggleView2
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/add"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -137,7 +137,7 @@
         app:type="like"
         />
 
-    <tv.newtv.cboxtv.player.videoview.DivergeView
+    <tv.newtv.cboxtv.views.custom.DivergeView
         android:id="@+id/view_praise"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_300px"

@@ -12,7 +12,7 @@
         android:clickable="true"
         android:focusable="true" />
 
-    <tv.newtv.cboxtv.player.menu.MenuGroup
+    <tv.newtv.cboxtv.menu.MenuGroup
         android:id="@+id/menu_group"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

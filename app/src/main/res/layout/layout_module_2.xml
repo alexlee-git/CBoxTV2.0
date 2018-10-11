@@ -6,7 +6,7 @@
     android:clipToPadding="false">
     <!--世界杯最下面--> 
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
 
         android:id="@+id/id_module_2_title_icon"
         android:layout_width="@dimen/width_17px"
@@ -41,7 +41,7 @@
         android:focusable="true"
         android:tag="cell_002_1">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_320px"
             android:tag="cell_002_1_poster" />
@@ -61,7 +61,7 @@
         android:focusable="true"
         android:tag="cell_002_2">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_320px"
             android:tag="cell_002_2_poster" />

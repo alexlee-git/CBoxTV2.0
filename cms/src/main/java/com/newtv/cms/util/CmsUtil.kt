@@ -11,8 +11,19 @@ import com.newtv.cms.bean.LiveParam
  */
 object CmsUtil {
 
-    fun isLiveTime(params:List<LiveParam>): LiveParam? {
+    /**
+     *
+     */
+    fun isLiveTime(params: List<LiveParam>): LiveParam? {
 
         return null
+    }
+
+    /**
+     *
+     */
+    fun checkLiveParam(param: LiveParam): Boolean {
+
+        return false
     }
 }

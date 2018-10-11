@@ -10,6 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
+import com.newtv.libs.AnimationBuilder;
+import com.newtv.libs.util.LogUtils;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.player.PlayerConfig;

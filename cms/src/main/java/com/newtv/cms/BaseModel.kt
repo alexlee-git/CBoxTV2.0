@@ -21,6 +21,10 @@ internal abstract class BaseModel {
         }
     }
 
+    fun stop(executor: Executor<*>) {
+        executor.cancel()
+    }
+
     fun destroy() {
         stop()
         executors.clear()
@@ -28,7 +32,7 @@ internal abstract class BaseModel {
 
     abstract fun getType(): String
 
-    fun <T> execute(observable: Observable<ResponseBody>, type: Type): Executor<T> {
+    fun <T> execute(observable: Observable<ResponseBody>, type: Type?): Executor<T> {
         val executor: Executor<T> = Executor(observable, type, object : Executor.IExecutor<T> {
             override fun onCancel(executor: Executor<T>) {
                 executors.remove(executor)

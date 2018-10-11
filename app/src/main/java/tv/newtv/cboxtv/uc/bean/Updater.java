@@ -15,14 +15,14 @@ import android.widget.Toast;
 
 import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
+import com.newtv.libs.util.FileUtil;
+import com.newtv.libs.util.LogUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.LauncherApplication;
-import tv.newtv.cboxtv.cms.util.LogUtils;
-import tv.newtv.cboxtv.utils.FileUtil;
 
 
 /**

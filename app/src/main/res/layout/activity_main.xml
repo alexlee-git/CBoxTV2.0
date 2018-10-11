@@ -33,7 +33,7 @@
             android:src="@drawable/nav_first_tip"/>
     </RelativeLayout>
 
-    <tv.newtv.cboxtv.views.MenuRecycleView
+    <tv.newtv.cboxtv.views.widget.MenuRecycleView
         android:id="@+id/list_view"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_60px"
@@ -44,7 +44,7 @@
         android:layout_marginTop="@dimen/height_96px"
         android:clipChildren="false"
         android:clipToPadding="false">
-    </tv.newtv.cboxtv.views.MenuRecycleView>
+    </tv.newtv.cboxtv.views.widget.MenuRecycleView>
     <FrameLayout
         android:id="@+id/main_page_content"
         android:layout_width="match_parent"

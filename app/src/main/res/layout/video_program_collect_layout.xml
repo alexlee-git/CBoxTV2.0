@@ -79,7 +79,7 @@
 
     </RelativeLayout>
 
-    <tv.newtv.cboxtv.views.FocusToggleView2
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/full_screen"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
@@ -93,7 +93,7 @@
         app:type="full_screen"
         />
 
-    <tv.newtv.cboxtv.views.FocusToggleView2
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/collect"
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"

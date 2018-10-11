@@ -9,7 +9,8 @@ import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 
-import tv.newtv.cboxtv.Constant;
+import com.newtv.libs.Constant;
+
 
 /**
  * Created by gaoleichao on 2018/4/24.

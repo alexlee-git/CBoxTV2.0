@@ -17,9 +17,10 @@ import java.lang.reflect.Type
  * 创建日期:          2018/9/26
  */
 internal class Executor<T>(val observable: Observable<ResponseBody>,
-                           val type: Type,
+                           val type: Type?,
                            val callback: IExecutor<T>?
 ) {
+    
     var isCancel:Boolean = false //是否已经退出请求
 
     interface IExecutor<T> {
@@ -44,6 +45,7 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
         callback?.onCancel(this)
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun execute() {
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -65,8 +67,12 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                     override fun onNext(t: ResponseBody) {
                         if(isCancel) return
                         try {
-                            val result = Gson().fromJson<T>(t.string(), type)
-                            mObserver?.onResult(result)
+                            if(type != null) {
+                                val result = Gson().fromJson<T>(t.string(), type)
+                                mObserver?.onResult(result)
+                            }else{
+                                mObserver?.onResult(t.string() as T)
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                             mObserver?.onError(e.message)

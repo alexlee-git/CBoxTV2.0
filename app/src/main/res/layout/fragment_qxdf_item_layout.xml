@@ -4,7 +4,7 @@
     android:layout_width="@dimen/width_256px"
     android:layout_height="@dimen/height_360px"
     android:focusable="true">
-    <tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup
+    <tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup
         android:id="@+id/shooter_poster"
         android:scaleType="fitXY"
         android:layout_marginLeft="@dimen/height_33px"

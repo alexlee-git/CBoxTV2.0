@@ -1,18 +1,15 @@
 package tv.newtv.cboxtv;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 
 /**
  * 项目名称:         CBoxTV

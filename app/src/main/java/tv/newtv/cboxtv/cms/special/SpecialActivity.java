@@ -5,14 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 
-import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.Constant;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.KeyEventUtils;
+import com.newtv.libs.util.LogUploadUtils;
+
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.special.util.ActivityUtils;
 import tv.newtv.cboxtv.cms.special.util.Injection;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
+import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import tv.newtv.cboxtv.utils.KeyEventUtils;
 
 /**
  * 专题页

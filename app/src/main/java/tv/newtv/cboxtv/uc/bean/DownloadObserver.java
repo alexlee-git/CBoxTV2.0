@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import tv.newtv.cboxtv.cms.util.LogUtils;
+import com.newtv.libs.util.LogUtils;
+
 
 /**
  * Created by simple on 16/12/19.

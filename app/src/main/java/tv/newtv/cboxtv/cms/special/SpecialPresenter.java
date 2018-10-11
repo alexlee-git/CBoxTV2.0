@@ -1,12 +1,13 @@
 package tv.newtv.cboxtv.cms.special;
 
 
+import com.newtv.libs.util.LogUtils;
+
 import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.data.SpecialRepository;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.cms.special.data.SpecialDataSource;
 

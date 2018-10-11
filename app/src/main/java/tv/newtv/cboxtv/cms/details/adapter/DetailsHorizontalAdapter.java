@@ -15,16 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * Created by gaoleichao on 2018/4/4.
  */
 
-public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo.ProgramsInfo, DetailsHorizontalAdapter.DetailsHorizontalViewHolder> {
+public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<ProgramsInfo, DetailsHorizontalAdapter.DetailsHorizontalViewHolder> {
     private static String TAG = "DetailsHorizontalAdapter";
     private Context context;
     private Interpolator mSpringInterpolator;
@@ -44,7 +44,7 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<ProgramSeriesI
 
     @Override
     public void onBindViewHolder(DetailsHorizontalViewHolder holder, int position) {
-        ProgramSeriesInfo.ProgramsInfo entity = mList.get(position);
+        ProgramsInfo entity = mList.get(position);
         if (entity != null) {
             if (holder.posterIv != null) {
                 holder.posterIv.placeHolder(R.drawable.focus_384_216).hasCorner(true)
@@ -129,7 +129,7 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<ProgramSeriesI
                     }
 
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-                    ProgramSeriesInfo.ProgramsInfo entity = mList.get(getAdapterPosition());
+                    ProgramsInfo entity = mList.get(getAdapterPosition());
                     if (entity != null) {
                         if (TextUtils.isEmpty(entity.getActionType())) {
                             JumpUtil.detailsJumpActivity(context, entity.getContentType(),

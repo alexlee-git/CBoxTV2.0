@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.RxBus;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -25,19 +27,17 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.uc.db.DBCallback;
-import tv.newtv.cboxtv.uc.db.DBConfig;
-import tv.newtv.cboxtv.uc.db.DataSupport;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
-import tv.newtv.cboxtv.views.ScrollSpeedLinearLayoutManger;
+import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 //收藏节目集和节目
 //关注人物
 //订阅CCtv

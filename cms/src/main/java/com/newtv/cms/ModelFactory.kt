@@ -40,6 +40,10 @@ internal object ModelFactory {
             Model.MODEL_HOST -> HostModel()
             Model.MODEL_FILTER -> FilterModel()
             Model.MODEL_TV_PROGRAM -> TvProgramModel()
+            Model.MODEL_UP_VERSTION -> UpVersionModel()
+            Model.MODEL_CLOCK -> ClockModel()
+            Model.MODEL_BOOTGUIDE -> BootGuideModel()
+            Model.MODEL_ACTIVE_AUTH -> AutiveAuthModel()
             else -> {
                 Log.e("ModuleFactory", "$type is not registered ! please write it in buildModel")
                 null

@@ -21,6 +21,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.RxBus;
 
 import org.json.JSONObject;
 
@@ -40,27 +44,25 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.details.model.VideoPlayInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
-import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.cms.util.Utils;
-import tv.newtv.cboxtv.player.videoview.DivergeView;
+import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.uc.db.DBCallback;
-import tv.newtv.cboxtv.uc.db.DBConfig;
-import tv.newtv.cboxtv.uc.db.DataSupport;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 
 
@@ -293,7 +295,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
 
     private void requestData() {
         dataList.clear();
-        NetClient.INSTANCE.getDetailsPageApi().getInfo(Constant.APP_KEY, Constant.CHANNEL_ID,
+        NetClient.INSTANCE.getDetailsPageApi().getInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
                 leftUUID, rightUUID, contentUUID)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<ResponseBody>bindToLifecycle())
@@ -312,7 +314,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                             if (dataInfo != null) {
                                 String playOrder = dataInfo.getPlayOrder();
                                 if (playOrder.equals("0")) {
-                                    List<ProgramSeriesInfo.ProgramsInfo> programsInfoList =
+                                    List<ProgramsInfo> programsInfoList =
                                             dataInfo.getData();
                                     Collections.reverse(programsInfoList);// 反转List列表中元素的顺序
                                     dataInfo.setData(programsInfoList);
@@ -333,7 +335,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                         }
 
                         return NetClient.INSTANCE.getListPageApi()
-                                .getScreenResult(videoType, Constant.APP_KEY, Constant
+                                .getScreenResult(videoType, BuildConfig.APP_KEY, BuildConfig
                                                 .CHANNEL_ID, "PS", "",
                                         "", "", 0 + "", 6 + "").subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
@@ -410,11 +412,11 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
             ProgramSeriesInfo infoRecommdend = new ProgramSeriesInfo();
             infoRecommdend.layoutTitle = "相关推荐";
             infoRecommdend.layoutId = 4;
-            List<ProgramSeriesInfo.ProgramsInfo> list = new ArrayList<>();
+            List<ProgramsInfo> list = new ArrayList<>();
             if (mScreenInfo != null && mScreenInfo.getResultList().size() > 0) {
                 for (int i = 0; i < mScreenInfo.getResultList().size(); i++) {
                     ScreenInfo.ResultListBean entity = mScreenInfo.getResultList().get(i);
-                    list.add(new ProgramSeriesInfo.ProgramsInfo(entity.getUUID(), entity.getName
+                    list.add(new ProgramsInfo(entity.getUUID(), entity.getName
                             (), entity.getContentType(), entity.getHpicurl(), entity.getHpicurl()
                             , "", "", "", "", "", "", "", "", "", entity.getDesc()));
                 }

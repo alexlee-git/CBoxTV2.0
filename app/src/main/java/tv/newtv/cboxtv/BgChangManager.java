@@ -7,9 +7,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADSdkCallback;
+import com.newtv.libs.ad.ADsdkUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -18,9 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
 import tv.newtv.cboxtv.cms.mainPage.menu.BGEvent;
-import tv.newtv.cboxtv.cms.util.ADsdkUtils;
 
 /**
  * 项目名称:         CBoxTV

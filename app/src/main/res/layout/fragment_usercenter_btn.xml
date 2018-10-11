@@ -21,7 +21,7 @@
         android:focusable="true"
         android:tag="cell_008_1">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_240px"
             android:layout_marginLeft="@dimen/width_33px"
@@ -52,7 +52,7 @@
         android:focusable="true"
         android:tag="cell_008_2">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/imageView3"
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_240px"
@@ -83,7 +83,7 @@
         android:focusable="true"
         android:tag="cell_008_3">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_240px"
             android:layout_marginLeft="@dimen/width_33px"
@@ -114,7 +114,7 @@
         android:focusable="true"
         android:tag="cell_008_4">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_240px"
             android:layout_marginLeft="@dimen/width_33px"
@@ -145,7 +145,7 @@
         android:focusable="true"
         android:tag="cell_008_5">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_240px"
             android:layout_marginLeft="@dimen/width_33px"
@@ -177,7 +177,7 @@
         android:focusable="true"
         android:tag="cell_008_6">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_240px"
             android:layout_marginLeft="@dimen/width_33px"

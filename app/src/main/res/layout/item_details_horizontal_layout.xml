@@ -18,7 +18,7 @@
         android:clipToPadding="false"
         android:visibility="visible">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/iv_player"
             android:layout_width="@dimen/width_390px"
             android:layout_height="@dimen/height_214px"

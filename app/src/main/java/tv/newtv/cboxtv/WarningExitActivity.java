@@ -12,6 +12,10 @@ import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 
+import com.newtv.libs.ad.ADSdkCallback;
+import com.newtv.libs.bean.AdBean;
+import com.newtv.libs.util.GsonUtil;
+import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -25,18 +29,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
-import tv.newtv.cboxtv.cms.ad.model.AdBean;
-import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
 import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
 import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
 import tv.newtv.cboxtv.cms.search.view.ISearchPageView;
-import tv.newtv.cboxtv.cms.util.ADsdkUtils;
-import tv.newtv.cboxtv.cms.util.GsonUtil;
+import com.newtv.libs.ad.ADsdkUtils;
 
-import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.views.SpacesItemDecoration;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 
 public class WarningExitActivity extends BaseActivity implements View.OnClickListener, ISearchPageView ,View.OnFocusChangeListener{

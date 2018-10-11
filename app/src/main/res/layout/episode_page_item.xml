@@ -25,7 +25,7 @@
             android:tag="cell_008_1"
            >
             <!--390  214-->
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"
@@ -71,7 +71,7 @@
             android:tag="cell_008_2"
            >
 
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"
@@ -116,7 +116,7 @@
             android:tag="cell_008_3"
            >
 
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"
@@ -161,7 +161,7 @@
             android:tag="cell_008_4"
             >
 
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"
@@ -204,7 +204,7 @@
             android:tag="cell_008_5"
             android:visibility="gone">
             <!--390  214-->
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"
@@ -250,7 +250,7 @@
             android:tag="cell_008_6"
             android:visibility="gone">
 
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"
@@ -295,7 +295,7 @@
             android:tag="cell_008_7"
             android:visibility="gone">
 
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"
@@ -339,7 +339,7 @@
             android:clipChildren="false"
             android:tag="cell_008_8">
 
-            <tv.newtv.cboxtv.views.CurrentPlayImageView
+            <tv.newtv.cboxtv.views.custom.CurrentPlayImageView
                 android:layout_width="@dimen/width_390px"
                 android:layout_height="@dimen/height_214px"
                 android:layout_gravity="center_horizontal"

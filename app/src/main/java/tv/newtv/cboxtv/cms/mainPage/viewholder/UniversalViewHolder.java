@@ -2,18 +2,18 @@ package tv.newtv.cboxtv.cms.mainPage.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 
 /**
  * Created by lixin on 2018/1/31.

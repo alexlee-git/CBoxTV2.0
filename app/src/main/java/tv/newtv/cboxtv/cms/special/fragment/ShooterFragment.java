@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.newtv.libs.util.DisplayUtils;
+
+import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
+import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
@@ -17,18 +22,14 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
-import tv.newtv.cboxtv.utils.ScaleUtils;
-import tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup;
+import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
 
 /**
  * 项目名称:         CBoxTV
@@ -88,14 +89,14 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         recyclerView.setAlign(AiyaRecyclerView.ALIGN_START);
         recyclerView.setAdapter(adapter);
 //        recyclerView.setDirIndicator(topView,downView);
-        adapter.setOnItemAction(new OnItemAction<ProgramInfo>() {
+        adapter.setOnItemAction(new OnItemAction<ProgramsInfo>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(ProgramInfo item, int index) {
+            public void onItemClick(ProgramsInfo item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
             }
@@ -123,7 +124,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         }
     }
 
-    private void onItemClickAction(ProgramInfo programInfo) {
+    private void onItemClickAction(ProgramsInfo programInfo) {
         videoPlayerView.beginChange();
         PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
@@ -230,20 +231,20 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<ProgramInfo> ModuleItems;
-        private OnItemAction<ProgramInfo> onItemAction;
+        private List<ProgramsInfo> ModuleItems;
+        private OnItemAction<ProgramsInfo> onItemAction;
         private CurrentPlayImageViewWorldCup currentPlayImageView;
         private String currentUUID;
         private int currentIndex = 0;
         private Transformation transformation;
 
 
-        ShooterAdapter refreshData(List<ProgramInfo> datas) {
+        ShooterAdapter refreshData(List<ProgramsInfo> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        void setOnItemAction(OnItemAction<ProgramInfo> programInfoOnItemAction) {
+        void setOnItemAction(OnItemAction<ProgramsInfo> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -262,7 +263,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            ProgramInfo moduleItem = getItem(position);
+            ProgramsInfo moduleItem = getItem(position);
 
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -282,7 +283,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                     }
                     currentPlayImageView = holder.poster;
                     holder.poster.setIsPlaying(true, false);
-                    final ProgramInfo moduleItem = getItem(holder.getAdapterPosition());
+                    final ProgramsInfo moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         currentUUID = moduleItem.getContentUUID();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -319,7 +320,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
             }
         }
 
-        private ProgramInfo getItem(int position) {
+        private ProgramsInfo getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

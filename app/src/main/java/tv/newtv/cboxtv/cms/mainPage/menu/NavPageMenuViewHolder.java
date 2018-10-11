@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.views.MenuRecycleView;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.widget.MenuRecycleView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * 项目名称:         CBoxTV2.0

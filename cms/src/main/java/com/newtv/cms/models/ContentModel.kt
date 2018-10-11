@@ -29,6 +29,7 @@ internal class ContentModel : BaseModel(), IContent {
             observer.onError("AppKey or ChannelCode is Empty")
             return
         }
+
         if (TextUtils.isEmpty(contentId) || contentId.length < 2) {
             observer.onError("ContentId size is to short")
             return

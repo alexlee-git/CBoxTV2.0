@@ -12,17 +12,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.newtv.cms.bean.Nav;
+import com.newtv.libs.Constant;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.MainListPageManager;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
-import tv.newtv.cboxtv.views.MenuRecycleView;
+import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
 
 public class NavFragment extends BaseFragment {

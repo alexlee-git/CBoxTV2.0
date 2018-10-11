@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tv.newtv.cboxtv.views.detailpage.SmoothScrollView
+<tv.newtv.cboxtv.views.detail.SmoothScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_view"
@@ -10,12 +10,12 @@
     android:orientation="vertical"
     app:topSpace="@dimen/height_83px">
 
-    <tv.newtv.cboxtv.views.detailpage.HeadPlayerView
+    <tv.newtv.cboxtv.views.detail.HeadPlayerView
         android:id="@+id/header_video"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <tv.newtv.cboxtv.views.detailpage.EpisodeHorizontalListView
+    <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
         android:id="@+id/episode_horizontal_list_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,17 +23,17 @@
         android:clipChildren="false"
         android:clipToPadding="false">
 
-    </tv.newtv.cboxtv.views.detailpage.EpisodeHorizontalListView>
+    </tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView>
 
-    <tv.newtv.cboxtv.views.detailpage.SuggestView
+    <tv.newtv.cboxtv.views.detail.SuggestView
         android:id="@+id/suggest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/episode_horizontal_list_view">
 
-    </tv.newtv.cboxtv.views.detailpage.SuggestView>
+    </tv.newtv.cboxtv.views.detail.SuggestView>
 
-    <tv.newtv.cboxtv.views.detailpage.EpisodeAdView
+    <tv.newtv.cboxtv.views.detail.EpisodeAdView
         android:id="@+id/column_detail_ad_fl"
         android:layout_width="@dimen/width_1746px"
         android:layout_height="@dimen/height_386px"
@@ -45,6 +45,6 @@
         android:scaleType="fitXY"
         android:visibility="gone">
 
-    </tv.newtv.cboxtv.views.detailpage.EpisodeAdView>
+    </tv.newtv.cboxtv.views.detail.EpisodeAdView>
 
-</tv.newtv.cboxtv.views.detailpage.SmoothScrollView>
+</tv.newtv.cboxtv.views.detail.SmoothScrollView>

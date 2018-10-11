@@ -9,8 +9,21 @@ package com.newtv.cms.bean
  */
 class ModelResult<T> {
     var errorCode: String? = null
-    var errorMesssage: String? = null
-    val updateTime:String? = null
+    var errorMessage: String? = null
+        get() {
+            if (field == null) {
+                return "UnKnown Error"
+            }
+            return field
+        }
+    val updateTime: String? = null
+    val isNav: Int? = null
+    val subTitle: String? = null
+    val pageTitle: String? = null
+    val background: String? = null
+    val description: String? = null
+    val isAd: String? = null
+    val templateZT: String? = null
     var data: T? = null
 
     fun isOk(): Boolean {

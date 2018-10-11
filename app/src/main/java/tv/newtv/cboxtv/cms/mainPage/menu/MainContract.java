@@ -23,7 +23,7 @@ import java.util.List;
  * 创建日期:          2018/9/27
  */
 class MainContract {
-    interface View extends ICmsView<Presenter> {
+    interface View extends ICmsView {
         void onNavResult(Context context, List<Nav> result);
     }
 
@@ -35,7 +35,6 @@ class MainContract {
 
         MainPresenter(Context context, View view) {
             super(context, view);
-            view.setPresenter(this);
         }
 
         @Override
@@ -49,7 +48,7 @@ class MainContract {
                                 if (result.isOk()) {
                                     getView().onNavResult(getContext(), result.getData());
                                 } else {
-                                    onError(result.getErrorMesssage());
+                                    onError(result.getErrorMessage());
                                 }
                             }
 

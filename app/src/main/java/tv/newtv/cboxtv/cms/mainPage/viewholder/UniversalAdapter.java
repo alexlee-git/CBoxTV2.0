@@ -23,34 +23,33 @@ import android.widget.Toast;
 
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADSdkCallback;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.GlideUtil;
+import com.newtv.libs.util.ImageUtils;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.MultipleClickListener;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavUtil;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
-import tv.newtv.cboxtv.cms.util.ADsdkUtils;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.GlideUtil;
-import tv.newtv.cboxtv.cms.util.ImageUtils;
+import com.newtv.libs.ad.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import tv.newtv.cboxtv.utils.CmsLiveUtil;
-import tv.newtv.cboxtv.views.AutoSizeTextView;
-import tv.newtv.cboxtv.views.LivePlayView;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.custom.AutoSizeTextView;
+import tv.newtv.cboxtv.views.custom.LivePlayView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * Created by lixin on 2018/2/1.

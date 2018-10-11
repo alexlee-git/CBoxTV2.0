@@ -11,24 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.newtv.libs.util.DisplayUtils;
+
+import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
+import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
-import tv.newtv.cboxtv.utils.ScaleUtils;
-import tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup;
+import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
 
 /**
  * 项目名称:         CBoxTV
@@ -38,7 +39,7 @@ import tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup;
  * 创建日期:          2018/4/25
  */
 public class QXDFFragment extends BaseSpecialContentFragment implements
-        OnItemAction<ProgramInfo>, PlayerCallback {
+        OnItemAction<ProgramsInfo>, PlayerCallback {
     private AiyaRecyclerView recyclerView;
     private ModuleInfoResult moduleInfoResult;
     private View downView;
@@ -135,7 +136,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     @Override
-    public void onItemClick(ProgramInfo item, final int index) {
+    public void onItemClick(ProgramsInfo item, final int index) {
         videoPlayerView.beginChange();
         PlayInfoUtil.getPlayInfo(item.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
@@ -211,17 +212,17 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<ProgramInfo> ModuleItems;
+        private List<ProgramsInfo> ModuleItems;
         private String currentUUID;
-        private OnItemAction<ProgramInfo> mOnItemAction;
+        private OnItemAction<ProgramsInfo> mOnItemAction;
         private int currentIndex = 0;
 
-        ShooterAdapter refreshData(List<ProgramInfo> datas) {
+        ShooterAdapter refreshData(List<ProgramsInfo> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        void setOnItemAction(OnItemAction<ProgramInfo> onItemAction) {
+        void setOnItemAction(OnItemAction<ProgramsInfo> onItemAction) {
             mOnItemAction = onItemAction;
         }
 
@@ -241,7 +242,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            ProgramInfo moduleItem = getItem(position);
+            ProgramsInfo moduleItem = getItem(position);
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -257,7 +258,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProgramInfo moduleItem = getItem(holder.getAdapterPosition());
+                    ProgramsInfo moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         currentUUID = moduleItem.getContentUUID();
                         mOnItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -289,7 +290,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
             }
         }
 
-        private ProgramInfo getItem(int position) {
+        private ProgramsInfo getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

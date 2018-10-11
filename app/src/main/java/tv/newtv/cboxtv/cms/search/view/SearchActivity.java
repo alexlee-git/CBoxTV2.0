@@ -10,11 +10,16 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.DeviceUtil;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
@@ -28,10 +33,6 @@ import tv.newtv.cboxtv.cms.search.listener.OnGetSearchHotRecommendFocus;
 import tv.newtv.cboxtv.cms.search.listener.OnGetSearchResultFocus;
 import tv.newtv.cboxtv.cms.search.listener.OnReturnInputString;
 import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
-import tv.newtv.cboxtv.utils.DeviceUtil;
 
 
 /**
@@ -80,7 +81,7 @@ public class SearchActivity extends FragmentActivity implements ISearchPageView 
             if (bundle != null) {
                 mSearchType = bundle.getString("SearchType");
                 if (TextUtils.isEmpty(mSearchType)) {
-                    mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);
+                    mSearchPagePresenter.requestPageRecommendData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
                 } else {
                     if (!TextUtils.isEmpty(mSearchType) && mSearchType.equals("SearchListByKeyword")) {
                         mInputString = bundle.getString("keyword");
@@ -95,7 +96,7 @@ public class SearchActivity extends FragmentActivity implements ISearchPageView 
                     mSearchResult.setExternalParams(bundle);
                 }
             } else {
-                mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);
+                mSearchPagePresenter.requestPageRecommendData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
             }
 
 //            Bundle bundle = mIntent.getBundleExtra("bundle");
@@ -213,7 +214,7 @@ public class SearchActivity extends FragmentActivity implements ISearchPageView 
                 } else {
 
                     if (!mSearchHotRecommendDataStatus) {
-                        mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);
+                        mSearchPagePresenter.requestPageRecommendData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
                     }
                     mSearchResult.setEmptyViewVisiable(View.GONE);
                     mSearchResult.setKey(key);

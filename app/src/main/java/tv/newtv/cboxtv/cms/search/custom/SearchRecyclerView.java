@@ -9,10 +9,10 @@ import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 
-import tv.newtv.cboxtv.Constant;
+import com.newtv.libs.Constant;
+
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.player.menu.MenuRecyclerView;
 
 
 /**

@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -27,9 +29,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
 import tv.newtv.cboxtv.cms.search.listener.INotifySearchHotRecommendData;
 import tv.newtv.cboxtv.cms.search.listener.OnGetSearchHotRecommendFocus;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
 

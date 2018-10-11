@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.cms;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import tv.newtv.cboxtv.Constant;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 
 /**
  * 项目名称:         CBoxTV

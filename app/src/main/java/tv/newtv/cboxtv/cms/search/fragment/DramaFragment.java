@@ -21,6 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -31,16 +34,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
 import tv.newtv.cboxtv.cms.search.listener.OnGetSearchResultFocus;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
 //import tv.newtv.cboxtv.cms.net.ApiUtil;
@@ -288,7 +288,7 @@ public class DramaFragment extends BaseFragment {
     public void requestKeywordSearchResultData(String keyword, String keywordType, String programType, final Integer startNum, Integer size) {
         try {
             Log.e(TAG, "-----requestKeywordSearchResultData---" + keyword);
-            NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(Constant.APP_KEY, Constant.CHANNEL_ID, contentType, keyword, keywordType, programType, startNum, size).subscribeOn(Schedulers.io())
+            NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentType, keyword, keywordType, programType, startNum, size).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override
                 public void onSubscribe(Disposable d) {
@@ -340,7 +340,7 @@ public class DramaFragment extends BaseFragment {
     public void requestRetrievalSearchResultData(String type, String year, String area, String classType, final int startNum, int size) {
         try {
             Log.e(TAG, "-----requestRetrievalSearchResultData---" + type);
-            NetClient.INSTANCE.getSearchResultApi().getRetrievalSearchResultResponse(Constant.APP_KEY, Constant.CHANNEL_ID, contentType, type, year, area, classType, startNum, size).subscribeOn(Schedulers.io())
+            NetClient.INSTANCE.getSearchResultApi().getRetrievalSearchResultResponse(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentType, type, year, area, classType, startNum, size).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override
                 public void onSubscribe(Disposable d) {

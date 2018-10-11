@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,32 +14,18 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADSdkCallback;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.ad.JsonParse;
-import tv.newtv.cboxtv.cms.ad.model.AdInfo;
-import tv.newtv.cboxtv.cms.ad.model.AdInfos;
-import tv.newtv.cboxtv.cms.ad.model.MaterialInfo;
-import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
-import tv.newtv.cboxtv.cms.util.ADsdkUtils;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
+import com.newtv.libs.ad.ADsdkUtils;
 
 import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
@@ -130,9 +115,9 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
         if (currentFragment == null) {
             mLoadingView.setVisibility(View.VISIBLE);
             if (BuildConfig.DEBUG) {
-                mPresenter.start(Constant.APP_KEY, Constant.CHANNEL_ID, mPageUUid);
+                mPresenter.start(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, mPageUUid);
             } else {
-                mPresenter.start(Constant.APP_KEY, Constant.CHANNEL_ID, mPageUUid);
+                mPresenter.start(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, mPageUUid);
             }
         }
     }

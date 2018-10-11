@@ -21,27 +21,27 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.libs.Constant;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.uc.db.DBCallback;
-import tv.newtv.cboxtv.uc.db.DBConfig;
-import tv.newtv.cboxtv.uc.db.DataSupport;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
-import tv.newtv.cboxtv.utils.BitmapUtil;
-import tv.newtv.cboxtv.utils.ScaleUtils;
-import tv.newtv.cboxtv.utils.XunMaKeyUtils;
+import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.ScaleUtils;
+import com.newtv.libs.util.XunMaKeyUtils;
 
 /**
  * Created by gaoleichao on 2018/3/29.

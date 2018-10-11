@@ -14,7 +14,7 @@
         android:background="@drawable/sec_nav_focus"
         android:scaleType="fitXY"
         android:visibility="gone"/>
-    <tv.newtv.cboxtv.views.MenuRecycleView
+    <tv.newtv.cboxtv.views.widget.MenuRecycleView
         android:id="@+id/sub_list_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_60px"
@@ -24,7 +24,7 @@
         android:layout_marginStart="@dimen/width_220px"
         android:clipChildren="false"
         android:clipToPadding="false">
-    </tv.newtv.cboxtv.views.MenuRecycleView>
+    </tv.newtv.cboxtv.views.widget.MenuRecycleView>
 
     <!--android:id="@+id/text"-->
     <!--android:layout_width="match_parent"-->

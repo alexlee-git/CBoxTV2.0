@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <tv.newtv.cboxtv.views.RecycleImageView
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
         android:id="@+id/id_module_22_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"
@@ -38,15 +38,15 @@
         android:focusable="true"
         android:tag="cell_022_1">
 
-        <tv.newtv.cboxtv.views.LivePlayView
+        <tv.newtv.cboxtv.views.custom.LivePlayView
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_480px"
             android:tag="cell_022_1_poster">
-            <tv.newtv.cboxtv.views.RecycleImageView
+            <tv.newtv.cboxtv.views.custom.RecycleImageView
                 android:scaleType="fitXY"
                 android:layout_width="@dimen/width_816px"
                 android:layout_height="@dimen/height_480px"/>
-        </tv.newtv.cboxtv.views.LivePlayView>
+        </tv.newtv.cboxtv.views.custom.LivePlayView>
 
     </FrameLayout>
 
@@ -63,7 +63,7 @@
         android:focusable="true"
         android:tag="cell_022_6">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_6_poster" />
@@ -84,7 +84,7 @@
         android:focusable="true"
         android:tag="cell_022_7">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_7_poster" />
@@ -105,7 +105,7 @@
         android:focusable="true"
         android:tag="cell_022_8">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/tv.newtv.views.RecycleImageView"
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_216px"
@@ -127,7 +127,7 @@
         android:focusable="true"
         android:tag="cell_022_2">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_2_poster" />
@@ -148,7 +148,7 @@
         android:focusable="true"
         android:tag="cell_022_4">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_4_poster" />
@@ -169,7 +169,7 @@
         android:focusable="true"
         android:tag="cell_022_9">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_9_poster" />
@@ -190,7 +190,7 @@
         android:focusable="true"
         android:tag="cell_022_3">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_3_poster" />
@@ -211,7 +211,7 @@
         android:focusable="true"
         android:tag="cell_022_5">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_5_poster" />
@@ -232,7 +232,7 @@
         android:focusable="true"
         android:tag="cell_022_10">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_022_10_poster" />

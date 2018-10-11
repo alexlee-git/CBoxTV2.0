@@ -28,7 +28,7 @@
               android:background="@drawable/icon_detail_tips_left"
               android:layout_marginEnd="@dimen/width_15px"/>
 
-        <tv.newtv.cboxtv.views.HorizontalRecycleView
+        <tv.newtv.cboxtv.views.widget.HorizontalRecycleView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_360px"
@@ -41,7 +41,7 @@
             android:paddingLeft="@dimen/width_14px"
             android:paddingRight="@dimen/width_14px">
 
-        </tv.newtv.cboxtv.views.HorizontalRecycleView>
+        </tv.newtv.cboxtv.views.widget.HorizontalRecycleView>
 
         <View android:id="@+id/dir_right"
               android:layout_marginLeft="@dimen/width_15px"

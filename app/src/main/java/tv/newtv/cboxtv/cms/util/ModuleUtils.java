@@ -2,18 +2,9 @@ package tv.newtv.cboxtv.cms.util;
 
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.newtv.libs.util.GsonUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import tv.newtv.cboxtv.cms.mainPage.model.ExtendAttr;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
-import tv.newtv.cboxtv.cms.mainPage.model.SearchConditions;
 
 /**
  * 类描述：解析数据的工具类

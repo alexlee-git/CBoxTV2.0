@@ -17,23 +17,25 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.PageHelper;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.cms.util.PageHelper;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
-import tv.newtv.cboxtv.views.CurrentPlayImageView;
-import tv.newtv.cboxtv.views.RecycleImageView;
+import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * Created by gaoleichao on 2018/4/1.
@@ -168,7 +170,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                     viewHolder.titleTv.setVisibility(View.VISIBLE);
                     viewHolder.titleTv.setText(entity.layoutTitle);
                     for (int i = 0; i < entity.getData().size(); i++) {
-                        ProgramSeriesInfo.ProgramsInfo programsInfo = entity.getData().get(i);
+                        ProgramsInfo programsInfo = entity.getData().get(i);
                         setPosterData(viewHolder.viewList.get(i),
                                 programsInfo.getvImage(), programsInfo.getTitle(),
                                 CONTENT_VERTICAL, programsInfo.getContentUUID());
@@ -231,7 +233,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                     viewHolder.titleTv.setText(entity.layoutTitle);
 
                     if (viewHolder.mPageDaoImpl == null) {
-                        viewHolder.mPageDaoImpl = new PageHelper<ProgramSeriesInfo.ProgramsInfo>
+                        viewHolder.mPageDaoImpl = new PageHelper<ProgramsInfo>
                                 (entity.getData(), 8);
                         viewHolder.dataList.clear();
                         viewHolder.mPageDaoImpl.setCurrentPage(viewHolder.mPageDaoImpl
@@ -275,7 +277,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                     for (int i = 0; i < viewHolder.viewList.size(); i++) {
                         FrameLayout view = viewHolder.viewList.get(i);
                         if (i < viewHolder.dataList.size()) {
-                            ProgramSeriesInfo.ProgramsInfo programsInfo = viewHolder.dataList.get
+                            ProgramsInfo programsInfo = viewHolder.dataList.get
                                     (i);
                             setPosterData(view, programsInfo.gethImage(), programsInfo.getTitle()
                                     , PLAY_LIST, programsInfo.getContentUUID());
@@ -458,7 +460,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                             position = 5;
                             break;
                     }
-                    ProgramSeriesInfo.ProgramsInfo entity = getItem(getAdapterPosition()).getData
+                    ProgramsInfo entity = getItem(getAdapterPosition()).getData
                             ().get(position);
                     if (entity != null) {
 
@@ -632,9 +634,9 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
         private FrameLayout mModuleView1, mModuleView2, mModuleView3, mModuleView4, mModuleView5,
                 mModuleView6, mModuleView7, mModuleView8;
         private List<FrameLayout> viewList;
-        private PageHelper<ProgramSeriesInfo.ProgramsInfo> mPageDaoImpl;
+        private PageHelper<ProgramsInfo> mPageDaoImpl;
         private PlayerSelectPageAdapter mAdapter;
-        private List<ProgramSeriesInfo.ProgramsInfo> dataList;
+        private List<ProgramsInfo> dataList;
         private ImageView mRightIv;
         private ImageView mLeftIv;
         private LinearLayoutManager pageLayoutMananger;
@@ -780,7 +782,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                     return false;
                 }
 
-                ProgramSeriesInfo.ProgramsInfo programInfo = mPageDaoImpl
+                ProgramsInfo programInfo = mPageDaoImpl
                         .currentList().get(position);
                 currentPlayUUID = programInfo.getContentUUID();
                 defultFocusPosition = position;

@@ -4,18 +4,17 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.presenter.ISearchPagePresenter;
-import tv.newtv.cboxtv.cms.util.LogUtils;
-//import tv.newtv.cboxtv.cms.net.ApiUtil;
 
 /**
  * 类描述：搜索页面获取数据类

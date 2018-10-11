@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Constant;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,26 +29,27 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.ad.ADConfig;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
-import tv.newtv.cboxtv.cms.mainPage.menu.Utils;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.LogUploadUtils;
-import tv.newtv.cboxtv.player.videoview.DivergeView;
+import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.BitmapUtil;
-import tv.newtv.cboxtv.utils.DeviceUtil;
-import tv.newtv.cboxtv.views.detailpage.EpisodeHelper;
-import tv.newtv.cboxtv.views.detailpage.EpisodePageView;
-import tv.newtv.cboxtv.views.detailpage.HeadPlayerView;
-import tv.newtv.cboxtv.views.detailpage.IEpisode;
-import tv.newtv.cboxtv.views.detailpage.SmoothScrollView;
-import tv.newtv.cboxtv.views.detailpage.SuggestView;
+
+import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.DeviceUtil;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.ToastUtil;
+
+import tv.newtv.cboxtv.views.detail.EpisodeHelper;
+import tv.newtv.cboxtv.views.detail.EpisodePageView;
+import tv.newtv.cboxtv.views.detail.HeadPlayerView;
+import tv.newtv.cboxtv.views.detail.IEpisode;
+import tv.newtv.cboxtv.views.detail.SmoothScrollView;
+import tv.newtv.cboxtv.views.detail.SuggestView;
 
 
 /**
@@ -106,7 +108,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     }
 
     private void requestData() {
-        NetClient.INSTANCE.getDetailsPageApi().getInfo(Constant.APP_KEY, Constant.CHANNEL_ID,
+        NetClient.INSTANCE.getDetailsPageApi().getInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
                 leftUUID, rightUUID, contentUUID)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<ResponseBody>bindToLifecycle())
@@ -146,14 +148,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                                 }
 
                             } else {
-                                Utils.showToast(getApplicationContext(), "没有节目集信息");
+                                ToastUtil.showToast(getApplicationContext(), "没有节目集信息");
                                 finish();
                             }
                         } catch (IOException e) {
-                            Utils.showToast(getApplicationContext(), "读取异常");
+                            ToastUtil.showToast(getApplicationContext(), "读取异常");
                             finish();
                         } catch (JSONException j) {
-                            Utils.showToast(getApplicationContext(), "解析失败");
+                            ToastUtil.showToast(getApplicationContext(), "解析失败");
                             finish();
                         }
 
@@ -162,7 +164,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Utils.showToast(getApplicationContext(), "没有节目集信息");
+                        ToastUtil.showToast(getApplicationContext(), "没有节目集信息");
                         finish();
 
                     }

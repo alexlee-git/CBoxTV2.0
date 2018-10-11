@@ -8,22 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.ad.ADConfig;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.BitmapUtil;
-import tv.newtv.cboxtv.utils.DeviceUtil;
-import tv.newtv.cboxtv.views.detailpage.EpisodeHelper;
-import tv.newtv.cboxtv.views.detailpage.EpisodeHorizontalListView;
-import tv.newtv.cboxtv.views.detailpage.HeadPlayerView;
-import tv.newtv.cboxtv.views.detailpage.IEpisode;
-import tv.newtv.cboxtv.views.detailpage.SmoothScrollView;
-import tv.newtv.cboxtv.views.detailpage.SuggestView;
-import tv.newtv.cboxtv.views.detailpage.onEpisodeItemClick;
+
+import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.DeviceUtil;
+
+import tv.newtv.cboxtv.views.detail.EpisodeHelper;
+import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
+import tv.newtv.cboxtv.views.detail.HeadPlayerView;
+import tv.newtv.cboxtv.views.detail.IEpisode;
+import tv.newtv.cboxtv.views.detail.SmoothScrollView;
+import tv.newtv.cboxtv.views.detail.SuggestView;
+import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
 
 /**
  * 项目名称:         CBoxTV

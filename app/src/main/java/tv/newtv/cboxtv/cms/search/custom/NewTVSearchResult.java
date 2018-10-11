@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -31,7 +33,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.NewTVScroller;
 import tv.newtv.cboxtv.cms.net.NetClient;
@@ -40,10 +42,7 @@ import tv.newtv.cboxtv.cms.search.fragment.BaseFragment;
 import tv.newtv.cboxtv.cms.search.fragment.ColumnFragment;
 import tv.newtv.cboxtv.cms.search.fragment.DramaFragment;
 import tv.newtv.cboxtv.cms.search.fragment.PersonFragment;
-import tv.newtv.cboxtv.cms.search.listener.INotifySearchResultData;
 import tv.newtv.cboxtv.cms.search.listener.OnGetSearchResultFocus;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
 
 /**
  * 项目名称： NewTVLauncher
@@ -374,7 +373,7 @@ public class NewTVSearchResult extends RelativeLayout {
 
     private void requestSearchKey(final String key) {
         mCacheFragment.clear();
-        NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(Constant.APP_KEY, Constant.CHANNEL_ID, "TV", key, "name", "-1", 0, 1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).flatMap(new Function<ResponseBody, ObservableSource<ResponseBody>>() {
+        NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, "TV", key, "name", "-1", 0, 1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).flatMap(new Function<ResponseBody, ObservableSource<ResponseBody>>() {
             @Override
             public ObservableSource<ResponseBody> apply(ResponseBody result) throws Exception {
                 SearchResultInfos mSearchResultInfos = mGson.fromJson(result.string(), SearchResultInfos.class);
@@ -387,7 +386,7 @@ public class NewTVSearchResult extends RelativeLayout {
                     mColumnFrameLayout.setVisibility(GONE);
                 }
 
-                return NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(Constant.APP_KEY, Constant.CHANNEL_ID, "FG", key, "name", "-1", 0, 1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                return NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, "FG", key, "name", "-1", 0, 1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
         }).flatMap(new Function<ResponseBody, ObservableSource<ResponseBody>>() {
             @Override
@@ -401,7 +400,7 @@ public class NewTVSearchResult extends RelativeLayout {
                 } else {
                     mPersonFrameLayout.setVisibility(GONE);
                 }
-                return NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(Constant.APP_KEY, Constant.CHANNEL_ID, "PS;CS;CG;PG", key, "name", "-1", 0, 1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                return NetClient.INSTANCE.getSearchResultApi().getKeywordSearchResultResponse(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, "PS;CS;CG;PG", key, "name", "-1", 0, 1).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
         }).subscribe(new Observer<ResponseBody>() {
             @Override

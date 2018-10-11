@@ -11,20 +11,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.utils.ScaleUtils;
+import tv.newtv.cboxtv.player.ProgramsInfo;
 
 /**
  * 项目名称:         CBoxTV
@@ -214,7 +214,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                     .getPackageName());
         }
 
-        public void setData(String title, List<ProgramInfo> data) {
+        public void setData(String title, List<ProgramsInfo> data) {
             ((TextView) itemView.findViewById(R.id.match_title)).setText(title);
             for (int index = 1; index < 5; index++) {
                 String boxName = "data_" + index;
@@ -227,7 +227,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                     continue;
                 }
 
-                ProgramInfo programInfo = data.get(index - 1);
+                ProgramsInfo programInfo = data.get(index - 1);
                 for (int t = 0; t < ids.length; t++) {
                     String targetname = boxName + "_" + ids[t];
                     int cell_id = getId(targetname);
@@ -247,7 +247,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
             }
         }
 
-        private String getValue(ProgramInfo info, int index) {
+        private String getValue(ProgramsInfo info, int index) {
             if (info == null)
                 return "N/A";
 

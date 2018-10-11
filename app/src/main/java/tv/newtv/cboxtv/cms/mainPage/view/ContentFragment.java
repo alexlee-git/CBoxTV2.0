@@ -17,21 +17,21 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Page;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.LogUtils;
-import tv.newtv.cboxtv.views.ScrollSpeedLinearLayoutManger;
+import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
 /**
  * Created by lixin on 2018/1/23.
@@ -56,6 +56,8 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
 
     private View contentView;
     private TextView loadingView;
+
+    private PageContract.ContentPresenter mPresenter;
 
     @SuppressWarnings("unused")
     private boolean isPrepared = false;
@@ -90,7 +92,6 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         contentView = null;
         mSharedPreferences = null;
         mDatas = null;
-
     }
 
     public boolean isNoTopView() {
@@ -315,7 +316,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
 
             updateRecycleView();
 
-            new PageContract.ContentPresenter(getContext(), this);
+            mPresenter = new PageContract.ContentPresenter(getContext(), this);
         }
 
 
@@ -337,7 +338,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         if (TextUtils.isEmpty(contentId)) {
             onError(LauncherApplication.AppContext,"暂无数据内容。");
         } else {
-
+            mPresenter.getPageContent(contentId);
         }
     }
 
@@ -448,11 +449,6 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     @Override
     public void onPageResult(List<Page> page) {
         inflateContentPage(page, "server");
-    }
-
-    @Override
-    public void setPresenter(@NotNull PageContract.Presenter presenter) {
-        presenter.getPageContent(contentId);
     }
 
     @Override

@@ -20,9 +20,10 @@ import android.widget.PopupWindow.OnDismissListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.libs.util.DisplayUtils;
+
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.listener.OnReturnInputString;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
 
 
 /**

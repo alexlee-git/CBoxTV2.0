@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
-import android.media.Image;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -14,19 +13,20 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
-import tv.newtv.cboxtv.player.popupMenuWidget;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
+import tv.newtv.cboxtv.player.view.popupMenuWidget;
 
 public class TopicTwoFragment extends BaseSpecialContentFragment implements PlayerCallback {
     private ModuleInfoResult moduleInfoResult;
@@ -90,14 +90,14 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         news_recycle.setItemAnimator(null);
         news_recycle.setAlign(AiyaRecyclerView.ALIGN_START);
         news_recycle.setAdapter(adapter);
-        adapter.setOnItemAction(new OnItemAction<ProgramInfo>() {
+        adapter.setOnItemAction(new OnItemAction<ProgramsInfo>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick( ProgramInfo item, int index) {
+            public void onItemClick( ProgramsInfo item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
                 adapter.setThisPosition(index);
@@ -146,7 +146,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
     }
 
-    private void onItemClickAction(ProgramInfo programInfo) {
+    private void onItemClickAction(ProgramsInfo programInfo) {
 
         videoPlayerView.beginChange();
         PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
@@ -276,8 +276,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
     private class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
-        private List<ProgramInfo> ModuleItems;
-        private OnItemAction<ProgramInfo> onItemAction;
+        private List<ProgramsInfo> ModuleItems;
+        private OnItemAction<ProgramsInfo> onItemAction;
         private String currentUUID;
         private int currentIndex = 0;
         private int thisPosition;
@@ -300,12 +300,12 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
 
 
-        NewsAdapter refreshData(List<ProgramInfo> datas) {
+        NewsAdapter refreshData(List<ProgramsInfo> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        public void setOnItemAction(OnItemAction<ProgramInfo> programInfoOnItemAction) {
+        public void setOnItemAction(OnItemAction<ProgramsInfo> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -324,7 +324,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
         @Override
         public void onBindViewHolder(final NewsViewHolder holder,final int position) {
-            ProgramInfo moduleItem = getItem(position);
+            ProgramsInfo moduleItem = getItem(position);
             setImageView(holder.isPlaying);
 
             if (position == getthisPosition()) {
@@ -358,7 +358,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final ProgramInfo moduleItem = getItem(holder.getAdapterPosition());
+                    final ProgramsInfo moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         title.setText(moduleItem.getSubTitle());
                         videoTitle.setText(moduleItem.getSubTitle());
@@ -389,7 +389,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
         }
 
-        private ProgramInfo getItem(int position) {
+        private ProgramsInfo getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

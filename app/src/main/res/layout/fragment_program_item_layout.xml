@@ -22,7 +22,7 @@
         android:layout_width="@dimen/width_450px"
         android:layout_height="@dimen/height_282px">
 
-        <tv.newtv.cboxtv.views.CurrentPlayImageViewWorldCup
+        <tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup
             android:id="@+id/id_poster"
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_216px"

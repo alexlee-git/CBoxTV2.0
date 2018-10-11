@@ -1,51 +1,46 @@
+@file:Suppress("UNREACHABLE_CODE")
+
 package com.newtv.cms.bean
 
 import android.os.Parcel
 import android.os.Parcelable
 
+
 data class Program(
-        val playUrl: String,
-        val liveParam: String,
-        val playStartTime: String,
-        val playEndTime: String,
-        val defaultFocus: Int,
-        val contentId: String,
-        val contentType: String,
-        val img: String,
-        val title: String,
-        val subTitle: String,
-        val l_id: String,
-        val l_uuid: String,
-        val l_contentType: String,
-        val l_actionType: String,
-        val l_actionUri: String,
-        val l_focusId: String,
-        val l_focusParam: String,
-        val grade: String,
-        val lSuperScript: String,
-        val rSuperScript: String,
-        val lSubScript: String,
-        val rSubScript: String,
-        val columnPoint: String,
-        val rowPoint: String,
-        val columnLength: String,
-        val rowHeight: String,
-        val cellType: String,
-        val cellCode: String,
-        val isAd: Int,
-        val sortNum: String,
-        val seriesSubUUID: String,
-        val apk: String,
-        val apkPageType: String,
-        val apkPageParam: String,
-        val specialParam: String,
-        val recommendedType: String
+    val defaultFocus: Int,
+    val contentId: String,
+    val contentType: String,
+    val img: String,
+    val title: String,
+    val subTitle: String,
+    val l_id: String,
+    val l_uuid: String,
+    val l_contentType: String,
+    val l_actionType: String,
+    val l_actionUri: String,
+    val l_focusId: String,
+    val l_focusParam: String,
+    val grade: String,
+    val lSuperScript: String,
+    val rSuperScript: String,
+    val lSubScript: String,
+    val rSubScript: String,
+    val columnPoint: String,
+    val rowPoint: String,
+    val columnLength: String,
+    val rowHeight: String,
+    val cellType: String,
+    val cellCode: String,
+    val isAd: Int,
+    val sortNum: String,
+    val seriesSubUUID: String,
+    val apk: String,
+    val apkPageType: String,
+    val apkPageParam: String,
+    val specialParam: String,
+    val recommendedType: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
             parcel.readInt(),
             parcel.readString(),
             parcel.readString(),
@@ -81,10 +76,6 @@ data class Program(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(playUrl)
-        parcel.writeString(liveParam)
-        parcel.writeString(playStartTime)
-        parcel.writeString(playEndTime)
         parcel.writeInt(defaultFocus)
         parcel.writeString(contentId)
         parcel.writeString(contentType)

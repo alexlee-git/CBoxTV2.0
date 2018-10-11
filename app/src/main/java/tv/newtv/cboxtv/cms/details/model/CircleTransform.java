@@ -9,6 +9,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.newtv.libs.util.DensityUtil;
 import com.squareup.picasso.Transformation;
 
 /**

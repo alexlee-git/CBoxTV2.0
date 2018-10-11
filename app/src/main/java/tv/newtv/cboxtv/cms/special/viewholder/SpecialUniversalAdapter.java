@@ -7,11 +7,8 @@ import com.newtv.cms.bean.Page;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.cms.mainPage.model.ProgramInfo;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalViewHolder;
-import tv.newtv.cboxtv.cms.special.SpecialContract;
 
 /**
  * Created by lin on 2018/3/10.
