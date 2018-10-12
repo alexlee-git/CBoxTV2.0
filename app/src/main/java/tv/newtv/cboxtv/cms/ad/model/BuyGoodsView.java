@@ -16,4 +16,6 @@ public interface BuyGoodsView {
     void setImageUrl(String url);
 
     void setName(String name);
+
+    void showQrCode(String authCode);
 }

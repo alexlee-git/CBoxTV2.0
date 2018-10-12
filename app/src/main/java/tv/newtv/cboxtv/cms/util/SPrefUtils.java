@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 public class SPrefUtils {
     private static final String FILE_NAME = "config";
     public static final String KEY_SERVER_ADDRESS = "server_address";
+    public static final String FEED_ID = "feedId";
 
     public static <T>void setValue(Context context,String key,T value){
         SharedPreferences sp = context.getSharedPreferences(FILE_NAME,context.MODE_PRIVATE);

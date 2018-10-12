@@ -20,7 +20,7 @@ public class AdBean {
         public List<AdspacesItem> buygoods;
     }
 
-    public class AdspacesItem{
+    public static class AdspacesItem{
         public String ext;
         public String pos;
         public List<Material> materials;

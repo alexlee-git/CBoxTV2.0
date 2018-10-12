@@ -10,15 +10,20 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.Map;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.ad.model.BuyGoodsView;
+import tv.newtv.cboxtv.cms.details.model.QrcodeUtil;
 import tv.newtv.cboxtv.utils.ScreenUtils;
 
 public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
 
     private ImageView imageView;
+    private ImageView qrCodeImage;
     private TextView textView;
     private int x;
     private int y;
@@ -26,26 +31,27 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     private int height;
 
     public void show(Context context,View parent){
-        View popView = LayoutInflater.from(context).inflate(R.layout.layout_ad_pop,null);
+        View popView = LayoutInflater.from(context).inflate(R.layout.layout_buy_goods_pop,null);
         imageView = popView.findViewById(R.id.image);
         textView = popView.findViewById(R.id.text);
+        qrCodeImage = popView.findViewById(R.id.qr_code_image);
         setContentView(popView);
 
         int width = this.width;
         int height = this.height;
         if(width <= 0){
-            width = 300;
+            width = 500;
         }
         if(height <= 0){
-            height = 150;
+            height = 370;
         }
         setWidth(width);
         setHeight(height);
         setBackgroundDrawable(new BitmapDrawable());
 
         if(x <=0 || y <= 0){
-            showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width,
-                    ScreenUtils.getScreenH() - height);
+            showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width + 50,
+                    ScreenUtils.getScreenH() - height + 50);
         } else {
           showAtLocation(parent,Gravity.NO_GRAVITY,x,y);
         }
@@ -54,7 +60,13 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
 
     @Override
     public void setImageUrl(String url){
-
+        MainLooper.get().post(new Runnable() {
+            @Override
+            public void run() {
+                qrCodeImage.setVisibility(View.GONE);
+                Picasso.get().load(R.drawable.skuimage).into(imageView);
+            }
+        });
     }
 
     @Override
@@ -73,5 +85,19 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     private int getIntValue(Map<String,String> map,String key){
         String value = map.get(key);
         return Integer.parseInt(TextUtils.isEmpty(value) ? "0" : value);
+    }
+
+    @Override
+    public void showQrCode(final String authCode){
+        MainLooper.get().post(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImageResource(R.drawable.qrcode_bg);
+                setWidth(500);
+                setHeight(370);
+                QrcodeUtil qrcodeUtil = new QrcodeUtil();
+                qrcodeUtil.createQRImage(authCode,qrCodeImage,217,217);
+            }
+        });
     }
 }
