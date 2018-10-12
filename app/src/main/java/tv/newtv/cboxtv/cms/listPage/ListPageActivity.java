@@ -1313,6 +1313,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             if (dataBeans == null || dataBeans.size() <= 0) {
                 return;
             }
+            if (mProgramsBeanList == null || mProgramsBeanList.size() <= 0) {
+                return;
+            }
             final ListPageInfo.DataBean.ProgramsBean mProgramsBean = mProgramsBeanList.get
                     (position);
             holder.tvname.setText(mProgramsBean.getTitle());
