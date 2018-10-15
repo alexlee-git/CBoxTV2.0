@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:padding="@dimen/width_33px"
                 android:clipToPadding="false">
 
@@ -25,13 +26,28 @@
     </tv.newtv.cboxtv.views.detailpage.FocusRelativeLayout>
 
     <TextView
-        android:layout_marginTop="@dimen/height_43px"
+        android:layout_marginTop="@dimen/height_23px"
         style="@style/ModulePosterBottomTitleStyle"
         android:layout_width="@dimen/width_390px"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/id_module_view"
+        android:layout_height="@dimen/height_55px"
+        android:paddingLeft="@dimen/height_15px"
+        android:paddingRight="@dimen/height_15px"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         android:singleLine="true"
         android:tag="tag_poster_title"/>
-</RelativeLayout>
+
+    <!--<TextView-->
+        <!--style="@style/ModulePosterBottomTitleStyle"-->
+        <!--android:layout_width="@dimen/width_280px"-->
+        <!--android:layout_height="@dimen/height_65px"-->
+        <!--android:paddingBottom="@dimen/height_33px"-->
+        <!--android:paddingLeft="@dimen/height_30px"-->
+        <!--android:layout_marginTop="@dimen/height_410px"-->
+        <!--android:ellipsize="marquee"-->
+        <!--android:marqueeRepeatLimit="marquee_forever"-->
+        <!--android:scrollHorizontally="true"-->
+        <!--android:singleLine="true"-->
+        <!--android:tag="cell_008_1_title" />-->
+</LinearLayout>
