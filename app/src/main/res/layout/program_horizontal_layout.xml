@@ -37,17 +37,4 @@
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:tag="tag_poster_title"/>
-
-    <!--<TextView-->
-        <!--style="@style/ModulePosterBottomTitleStyle"-->
-        <!--android:layout_width="@dimen/width_280px"-->
-        <!--android:layout_height="@dimen/height_65px"-->
-        <!--android:paddingBottom="@dimen/height_33px"-->
-        <!--android:paddingLeft="@dimen/height_30px"-->
-        <!--android:layout_marginTop="@dimen/height_410px"-->
-        <!--android:ellipsize="marquee"-->
-        <!--android:marqueeRepeatLimit="marquee_forever"-->
-        <!--android:scrollHorizontally="true"-->
-        <!--android:singleLine="true"-->
-        <!--android:tag="cell_008_1_title" />-->
 </LinearLayout>
