@@ -6004,7 +6004,7 @@
 	<dimen name="_width_11px">-11px</dimen>
 	<dimen name="_height_13px">-13px</dimen>
 	<dimen name="_height_16px">-16px</dimen>
-	<dimen name="_height_18px">-18px</dimen>
+	<dimen name="_height_18px">18px</dimen>
 	<dimen name="_height_20px">-20px</dimen>
 	<dimen name="_height_21px">-21px</dimen>
 	<dimen name="_height_24px">-24px</dimen>
