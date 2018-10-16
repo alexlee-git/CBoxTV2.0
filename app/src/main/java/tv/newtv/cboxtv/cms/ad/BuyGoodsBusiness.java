@@ -21,7 +21,6 @@ import com.jd.smartcloudmobilesdk.shopping.bean.AuthResultSend;
 import com.jd.smartcloudmobilesdk.shopping.bean.BindStatusRecv;
 import com.jd.smartcloudmobilesdk.shopping.bean.SkuInfoRecv;
 import com.jd.smartcloudmobilesdk.shopping.listener.NetDataHandler;
-import com.jd.smartcloudmobilesdk.utils.JLog;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,15 +78,15 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     private MyScreenListener myScreenListener;
     private Disposable disposable;
     private boolean isShowQrCode = false;
+    private int duration;
+    private BuyGoodsLog log;
 
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 0:
-                    if(buyGoodsView != null){
-                        buyGoodsView.dismiss();
-                    }
+                    dismiss();
                     break;
                 case 1:
                     if(!NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener)){
@@ -104,6 +103,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         this.view = view;
         adPresenter = new BuyGoodsRequestAdPresenter(this);
         adPresenter.getAD(Constant.AD_BUY_GOODS,"");
+        log = new BuyGoodsLog();
 
         if(!isInit){
             //初始化
@@ -134,7 +134,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             skuId = item.materials.get(0).fontContent;
         }
 
-        int duration = Integer.parseInt(TextUtils.isEmpty(extMap.get("duration")) ? "0" : extMap.get("duration"));
+        duration = Integer.parseInt(TextUtils.isEmpty(extMap.get("duration")) ? "0" : extMap.get("duration"));
         if(duration <= 0){
             duration = DEFAULT_TIME;
         }
@@ -156,6 +156,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                             getQrcode();
                         }else {
                             buyGoodsView.setImageUrl(skuId);
+                            log.startShowGoods();
                         }
                     }
 
@@ -183,6 +184,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     buyGoodsView.showQrCode(authCode);
                     isShowQrCode = true;
                     getResult(authCode,expiresIn);
+                    log.startShowQrCode();
                 }
             }
         });
@@ -213,14 +215,14 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     String avatar = recv.getAvatar();
                     Log.i(TAG, "expiresIn: "+expiresIn+",time:"+time+",uid:"+uid+",userNick:"+userNick+",avatar:"+avatar);
                     if(!TextUtils.isEmpty(uid)){
-                        activateAndBindDevice();
+                        activateAndBindDevice(uid);
                     }
                 }
             }
         });
     }
 
-    private void activateAndBindDevice(){
+    private void activateAndBindDevice(final String uid){
         ActivateAndBindDeviceSend send = new ActivateAndBindDeviceSend();
         //对应产品UUID
         send.setProductUuid(PRODUCT_UUID);
@@ -244,6 +246,10 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         SPrefUtils.setValue(context,SPrefUtils.FEED_ID,feedId);
                         buyGoodsView.setImageUrl(skuId);
                         isShowQrCode = false;
+
+                        log.startShowGoods();
+                        log.bind(skuId,SystemUtils.getDeviceMac(context),uid);
+                        logShowQrCode();
                     }
                 }
             }
@@ -276,10 +282,9 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     }
 
     private void addToCartSuccess(){
-        if(buyGoodsView != null){
-            buyGoodsView.dismiss();
-        }
+        dismiss();
         showToast("商品添加成功");
+        log.addToCart(skuId);
     }
 
     private void getSkuInfo(final String skuId){
@@ -315,9 +320,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     }
 
     public void onDestroy(){
-        if(buyGoodsView != null){
-            buyGoodsView.dismiss();
-        }
+        dismiss();
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;
 
@@ -397,9 +400,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             if(disposable != null && !disposable.isDisposed()){
                 disposable.dispose();
             }
-            if(buyGoodsView != null){
-                buyGoodsView.dismiss();
-            }
+            dismiss();
         }
     }
 
@@ -428,13 +429,35 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     }
                     break;
                 case KeyEvent.KEYCODE_BACK:
-                    if(buyGoodsView != null){
-                        buyGoodsView.dismiss();
+                    if(dismiss()){
                         return true;
                     }
                     break;
             }
         }
         return false;
+    }
+
+    private boolean dismiss(){
+        if(buyGoodsView != null){
+            buyGoodsView.dismiss();
+
+            if(isShowQrCode){
+                logShowQrCode();
+            }else {
+                logShowGoods();
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    private void logShowQrCode(){
+        log.showQrCode(skuId,extMap.get("x"),extMap.get("y"),duration);
+    }
+
+    private void logShowGoods(){
+        log.showGoodsLog(skuId,extMap.get("x"),extMap.get("y"),duration);
     }
 }

@@ -167,6 +167,7 @@ public class Constant {
     public static final int LOG_NODE_JUMP = 68;            //外部推荐位跳转
     public static final int LOG_NODE_DEVICE_INFO = 86;          // 终端设备信息
     public static final int LOG_NODE_AUTH_INFO = 10;          // 认证
+    public static final int LOG_BUY_GOODS = 47;              //边看边买日志
     public static final String BACK_FIRST_NAV = "back_first_nav"; // 返回一级导航
     public static final String BG_EVENT = "bg_event";
     public static final String UPDATE_UC_DATA = "update_uc_data";
