@@ -55,9 +55,11 @@ public class DeviceUtil {
         } else if (BuildConfig.FLAVOR.equals(AILANG)) {
             return true;
         } else if (BuildConfig.FLAVOR.equals(XUNMATOUYINGYI)) {
-            String fvid = "1669";
+            String fvid = "unknown";
             String vid = SystemPropertiesProxy.getProperty("hw.yunos.vendorID", "");
-            return !TextUtils.isEmpty(vid) && fvid.equalsIgnoreCase(vid);
+            if (!TextUtils.isEmpty(vid)&&!fvid.equalsIgnoreCase(vid)){
+                return true;
+            }
         }
         return false;
     }

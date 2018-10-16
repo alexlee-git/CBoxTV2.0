@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.uc.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.Handler;
@@ -366,7 +367,7 @@ class SqlExcuters {
         @Override
         public void run() {
             Cursor cursor = null;
-            if (condition != null) {
+            if (condition != null ) {
                 cursor = db.query(condition.getDistinct(), tableName, condition.getSelect(),
                         condition.getClause(),
                         condition.getArgs(),
@@ -376,16 +377,21 @@ class SqlExcuters {
                         null);
             }
             JsonArray videoInfos = null;
-            if (cursor != null) {
-                cursor.moveToFirst();
-                if (cursor.getCount() > 0) {
-                    videoInfos = new JsonArray();
-                    do {
-                        videoInfos.add(translateCursor(cursor));
-                    } while (cursor.moveToNext());
+            try {
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    if (cursor.getCount() > 0) {
+                        videoInfos = new JsonArray();
+                         do {
+                            videoInfos.add(translateCursor(cursor));
+                        } while (cursor.moveToNext());
+                    }
+                    cursor.close();
                 }
-                cursor.close();
+            }catch (SQLiteCantOpenDatabaseException exception){
+                exception.printStackTrace();
             }
+
 
             final JsonArray finalVideoInfos = videoInfos;
             MainLooper.get().post(new Runnable() {
