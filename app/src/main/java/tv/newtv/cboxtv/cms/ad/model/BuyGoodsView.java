@@ -18,4 +18,6 @@ public interface BuyGoodsView {
     void setName(String name);
 
     void showQrCode(String authCode);
+
+    boolean isShow();
 }

@@ -16,6 +16,7 @@ import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.annotation.PopupAD;
+import tv.newtv.cboxtv.cms.ad.BuyGoodsBusiness;
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
@@ -43,6 +44,8 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     private boolean fromOuter = false;//是否是外部跳转进入的
     private ADPresenter adPresenter;
     private AdPopupWindow adPopupWindow;
+    private BuyGoodsBusiness buyGoodsBusiness;
+
 
     public boolean isFrontStage() {
         return FrontStage;
@@ -128,6 +131,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
         if(adPopupWindow != null && adPopupWindow.isShowing()){
             adPopupWindow.dismiss();
         }
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onDestroy();
+        }
     }
 
     @Override
@@ -152,6 +158,10 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!FrontStage) return true;
         if (isFullScreen()) {
+            if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                    && buyGoodsBusiness.dispatchKeyEvent(event)){
+                return true;
+            }
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
                 return true;
             }

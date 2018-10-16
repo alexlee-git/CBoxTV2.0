@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.player.listener.ScreenListener;
 
 /**
  * Created by wangkun on 2018/1/16.
@@ -340,5 +341,19 @@ public class NewTVLauncherPlayerViewManager {
 
     public boolean isADPlaying() {
         return mNewTVLauncherPlayerView != null && mNewTVLauncherPlayerView.isADPlaying();
+    }
+
+    public boolean registerScreenListener(ScreenListener listener){
+        if (mNewTVLauncherPlayerView != null) {
+            mNewTVLauncherPlayerView.registerScreenListener(listener);
+            return true;
+        }
+        return false;
+    }
+
+    public void unregisterScreenListener(ScreenListener listener){
+        if(mNewTVLauncherPlayerView != null){
+            mNewTVLauncherPlayerView.unregisterScreenListener(listener);
+        }
     }
 }

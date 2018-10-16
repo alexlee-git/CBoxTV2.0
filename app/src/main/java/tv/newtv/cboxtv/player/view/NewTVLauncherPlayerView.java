@@ -56,6 +56,7 @@ import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerNetworkRequestUtils;
 import tv.newtv.cboxtv.player.iPlayCallBackEvent;
+import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.player.menu.MenuGroupPresenter;
 import tv.newtv.cboxtv.player.menu.MenuPopupWindow;
@@ -138,6 +139,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private TextView hintVip;
     private boolean isTrySee;
     private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new FreeDuration();
+    private List<ScreenListener> screenListeners;
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -564,6 +566,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mIsPause && mNewTVLauncherPlayer != null) {
             start();
         }
+        callBackScreenListener(false);
     }
 
     public void setFromFullScreen() {
@@ -675,6 +678,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
 
         updateUIPropertys(true);
+        callBackScreenListener(true);
     }
 
     private void createMenuGroup() {
@@ -708,6 +712,11 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
         if (listener != null) {
             listener.clear();
+        }
+
+        if(screenListeners != null){
+            screenListeners.clear();
+            screenListeners = null;
         }
 
         if (menuPopupWindow != null) {
@@ -1744,6 +1753,31 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
     private void goToBuy(){
 //        DescriptionActivity.runAction(getContext(),"跳转到购买页","购买");
+    }
+
+    private void callBackScreenListener(boolean enterFullScreen){
+        if(screenListeners != null){
+            for(ScreenListener screenListener : screenListeners){
+                if(enterFullScreen){
+                    screenListener.enterFullScreen();
+                }else {
+                    screenListener.exitFullScreen();
+                }
+            }
+        }
+    }
+
+    public void registerScreenListener(ScreenListener listener){
+        if(screenListeners == null){
+            screenListeners = new ArrayList<>();
+        }
+        screenListeners.add(listener);
+    }
+
+    public void unregisterScreenListener(ScreenListener listener){
+        if(screenListeners != null){
+            screenListeners.remove(listener);
+        }
     }
 
     public static class PlayerViewConfig {

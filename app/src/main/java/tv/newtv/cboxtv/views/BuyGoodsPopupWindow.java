@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.views;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
@@ -22,6 +23,10 @@ import tv.newtv.cboxtv.utils.ScreenUtils;
 
 public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
 
+    private Context context;
+    private View parent;
+
+    private View rootView;
     private ImageView imageView;
     private ImageView qrCodeImage;
     private TextView textView;
@@ -31,11 +36,13 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     private int height;
 
     public void show(Context context,View parent){
-        View popView = LayoutInflater.from(context).inflate(R.layout.layout_buy_goods_pop,null);
-        imageView = popView.findViewById(R.id.image);
-        textView = popView.findViewById(R.id.text);
-        qrCodeImage = popView.findViewById(R.id.qr_code_image);
-        setContentView(popView);
+        this.context = context;
+        this.parent = parent;
+        rootView = LayoutInflater.from(context).inflate(R.layout.layout_buy_goods_pop,null);
+        imageView = rootView.findViewById(R.id.image);
+        textView = rootView.findViewById(R.id.text);
+        qrCodeImage = rootView.findViewById(R.id.qr_code_image);
+        setContentView(rootView);
 
         int width = this.width;
         int height = this.height;
@@ -45,17 +52,7 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
         if(height <= 0){
             height = 370;
         }
-        setWidth(width);
-        setHeight(height);
-        setBackgroundDrawable(new BitmapDrawable());
-
-        if(x <=0 || y <= 0){
-            showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width + 50,
-                    ScreenUtils.getScreenH() - height + 50);
-        } else {
-          showAtLocation(parent,Gravity.NO_GRAVITY,x,y);
-        }
-
+        show(width,height,x,y);
     }
 
     @Override
@@ -65,6 +62,7 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
             public void run() {
                 qrCodeImage.setVisibility(View.GONE);
                 Picasso.get().load(R.drawable.skuimage).into(imageView);
+                show();
             }
         });
     }
@@ -93,11 +91,46 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
             @Override
             public void run() {
                 imageView.setImageResource(R.drawable.qrcode_bg);
-                setWidth(500);
-                setHeight(370);
                 QrcodeUtil qrcodeUtil = new QrcodeUtil();
                 qrcodeUtil.createQRImage(authCode,qrCodeImage,217,217);
+                show(500,370);
             }
         });
+    }
+
+    private void show(){
+        show(width,height,x,y);
+    }
+
+    private void show(int width,int height){
+        show(width,height,0,0);
+    }
+
+    private void show(int width,int height,int x,int y){
+        setWidth(width);
+        setHeight(height);
+        setBackgroundDrawable(new BitmapDrawable());
+        if(isShowing()){
+            dismiss();
+        }
+
+        if(x <=0 || y <= 0){
+            showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width + 50,
+                    ScreenUtils.getScreenH() - height + 50);
+        } else {
+            showAtLocation(parent,Gravity.NO_GRAVITY,x,y);
+        }
+        startAnim(width,0);
+    }
+
+    private void startAnim(int fromX,int toX){
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(rootView, "translationX", fromX, toX);
+        translationX.setDuration(400);
+        translationX.start();
+    }
+
+    @Override
+    public boolean isShow(){
+        return isShowing();
     }
 }
