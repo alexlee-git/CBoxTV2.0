@@ -29,13 +29,13 @@ open class CmsServicePresenter<V : ICmsView>(
         const val SERVICE_BOOT_GUIDE: String = Model.MODEL_BOOTGUIDE               // interface->
         // IBootGuide
         const val SERVICE_CONTENT: String = Model.MODEL_CONTENT       // interface-> IContent
+        const val SERVICE_SEARCH: String = Model.MODEL_SEARCH       // interface-> ISearch
         const val SERVICE_ACTIVE_AUTH: String = Model.MODEL_ACTIVE_AUTH       // interface->
         // IActiveAuth
         const val SERVICE_CATEGORY: String = Model.MODEL_CATEGORY     // interface-> ICategory
         const val SERVICE_PAGE: String = Model.MODEL_PAGE             // interface-> IPage
         const val SERVICE_TV_PROGRAM: String = Model.MODEL_TV_PROGRAM // interface-> ITvProgram
         const val SERVICE_FILTER: String = Model.MODEL_FILTER         // interface-> IFilter
-        const val SERVICE_HOST: String = Model.MODEL_HOST             // interface-> IHost
         const val SERVICE_SPLASH: String = Model.MODEL_SPLASH         // interface-> ISplash
         const val SERVICE_CORNER: String = Model.MODEL_CORNER         // interface-> ICorner
         const val SERVICE_CHK_PLAY: String = Model.MODEL_CHK_PLAY         // interface-> IPlayChk

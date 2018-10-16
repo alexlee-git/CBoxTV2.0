@@ -8,8 +8,8 @@ import com.newtv.cms.Model
 import com.newtv.cms.Request
 import com.newtv.cms.api.ITvProgram
 import com.newtv.cms.bean.ModelResult
+import com.newtv.cms.bean.SubContent
 import com.newtv.cms.bean.TvFigure
-import com.newtv.cms.bean.TvProgram
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -20,7 +20,7 @@ import com.newtv.cms.bean.TvProgram
  */
 internal class TvProgramModel : BaseModel(), ITvProgram {
     override fun getCurrentList(appKey: String, channelid: String, pageuuid: String,
-                                observer: DataObserver<ModelResult<List<TvProgram>>>) {
+                                observer: DataObserver<ModelResult<List<SubContent>>>) {
         if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -31,14 +31,14 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<TvProgram>>>(Request.program.getCurrentList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<TvProgram>>>() {}.type)
+        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getCurrentList(appKey, channelid,
+                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }
 
     override fun getHistoryList(appKey: String, channelid: String, pageuuid: String,
-                                observer: DataObserver<ModelResult<List<TvProgram>>>) {
+                                observer: DataObserver<ModelResult<List<SubContent>>>) {
         if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -49,8 +49,8 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<TvProgram>>>(Request.program.getHistoryList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<TvProgram>>>() {}.type)
+        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getHistoryList(appKey, channelid,
+                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }
@@ -67,14 +67,14 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<TvFigure>>>(Request.program.getTvFigureList(appKey, channelid,
+        BuildExecuter<ModelResult<List<TvFigure>>>(Request.program.getTvFigureTvList(appKey, channelid,
                 left, right, pageuuid), object : TypeToken<ModelResult<List<TvFigure>>>() {}.type)
                 .observer(observer)
                 .execute()
     }
 
     override fun getTvFigureTvList(appKey: String, channelid: String, pageuuid: String,
-                                   observer: DataObserver<ModelResult<List<TvProgram>>>) {
+                                   observer: DataObserver<ModelResult<List<SubContent>>>) {
         if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -85,8 +85,8 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<TvProgram>>>(Request.program.getTvFigureList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<TvProgram>>>() {}.type)
+        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getTvFigureList(appKey, channelid,
+                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }

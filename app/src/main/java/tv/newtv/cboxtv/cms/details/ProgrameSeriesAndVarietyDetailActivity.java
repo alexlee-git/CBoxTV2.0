@@ -186,17 +186,13 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
 
-
         contentUUID = "4329022";
-
-
 
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
                         .DB_TYPE_COLLECT))
                 .SetPlayerId(R.id.video_container)
-//                .SetPlayerFocusId(R.id.video_focus)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add)
                 .SetContentUUID(contentUUID)
@@ -204,9 +200,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                     @Override
                     public void onResult(Content info) {
                         pageContent = info;
-//                        headPlayerView.findViewUseId(R.id.video_container).requestFocus();
-                        suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, contentUUID, "",
-                                info.getVideoType(), null);
+                        suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info,null);
                         playListView.setContentUUID(EpisodeHelper.TYPE_VARIETY_SHOW,
                                 getSupportFragmentManager(),
                                 contentUUID, null);

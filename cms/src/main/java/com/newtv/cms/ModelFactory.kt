@@ -37,7 +37,6 @@ internal object ModelFactory {
             Model.MODEL_CATEGORY -> CategoryModel()
             Model.MODEL_CORNER -> CornerModel()
             Model.MODEL_SPLASH -> SplashModel()
-            Model.MODEL_HOST -> HostModel()
             Model.MODEL_FILTER -> FilterModel()
             Model.MODEL_TV_PROGRAM -> TvProgramModel()
             Model.MODEL_UP_VERSTION -> UpVersionModel()
@@ -46,6 +45,7 @@ internal object ModelFactory {
             Model.MODEL_ACTIVE_AUTH -> AutiveAuthModel()
             Model.MODEL_CHK_PLAY -> PlayChkModel()
             Model.MODEL_PERSON -> PersonModel()
+            Model.MODEL_SEARCH -> SearchModel()
             else -> {
                 Log.e("ModuleFactory", "$type is not registered ! please write it in buildModel")
                 null

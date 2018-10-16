@@ -2,6 +2,7 @@ package com.newtv.cms.api
 
 import com.newtv.cms.DataObserver
 import com.newtv.cms.bean.ModelResult
+import com.newtv.cms.bean.SubContent
 import com.newtv.cms.bean.TvFigure
 import com.newtv.cms.bean.TvProgram
 
@@ -19,7 +20,7 @@ interface ITvProgram : IService {
     fun getCurrentList(appKey: String,
                        channelid: String,
                        pageuuid: String,
-                       observer: DataObserver<ModelResult<List<TvProgram>>>)
+                       observer: DataObserver<ModelResult<List<SubContent>>>)
 
 
     /**
@@ -28,7 +29,7 @@ interface ITvProgram : IService {
     fun getHistoryList(appKey: String,
                        channelid: String,
                        pageuuid: String,
-                       observer: DataObserver<ModelResult<List<TvProgram>>>)
+                       observer: DataObserver<ModelResult<List<SubContent>>>)
 
     /**
      * 电视栏目相关人物列表
@@ -44,6 +45,6 @@ interface ITvProgram : IService {
     fun getTvFigureTvList(appKey: String,
                           channelid: String,
                           pageuuid: String,
-                          observer: DataObserver<ModelResult<List<TvProgram>>>)
+                          observer: DataObserver<ModelResult<List<SubContent>>>)
 
 }

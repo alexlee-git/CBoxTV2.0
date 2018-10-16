@@ -12,7 +12,7 @@ import com.newtv.cms.bean.TvFigure
  * 创建人:           weihaichao
  * 创建日期:          2018/10/16
  */
-interface IPerson {
+interface IPerson : IService {
 
     /**
      * 获取主持人主持的电视栏目列表

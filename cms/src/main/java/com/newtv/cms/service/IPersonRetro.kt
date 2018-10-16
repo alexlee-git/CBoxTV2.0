@@ -22,7 +22,7 @@ interface IPersonRetro {
                         @Path("channelCode") channel: String,
                         @Path("left") left: String,
                         @Path("right") right: String,
-                        @Path("contentId") contentId: String): Observable<ResponseBody>
+                        @Path("contentID") contentId: String): Observable<ResponseBody>
 
     /**
      * 获取主持人相关的节目
@@ -32,7 +32,7 @@ interface IPersonRetro {
                         @Path("channelCode") channel: String,
                         @Path("left") left: String,
                         @Path("right") right: String,
-                        @Path("contentId") contentId: String): Observable<ResponseBody>
+                        @Path("contentID") contentId: String): Observable<ResponseBody>
 
 
     /**
@@ -43,6 +43,6 @@ interface IPersonRetro {
                              @Path("channelCode") channel: String,
                              @Path("left") left: String,
                              @Path("right") right: String,
-                             @Path("contentId") contentId: String): Observable<ResponseBody>
+                             @Path("contentID") contentId: String): Observable<ResponseBody>
 
 }

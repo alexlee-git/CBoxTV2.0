@@ -28,6 +28,8 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
 
 /**
+ * 合集页
+ *
  * 项目名称:         CBoxTV
  * 包名:            tv.newtv.cboxtv.cms.details
  * 创建事件:         13:44
@@ -163,11 +165,7 @@ public class ProgramCollectionActivity extends BaseActivity {
                                 headPlayerView.setProgramSeriesInfo(info);
                                 mListView.setContentUUID(contentUUID, info);
                                 suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH,
-                                        info.getContentUUID(),
-//                                        info.getChannelId(),
-                                        "",
-                                        info.getVideoType()
-                                        , null);
+                                        info,null);
 //                                headPlayerView.Play(0, 0, false);
                             }
                         })

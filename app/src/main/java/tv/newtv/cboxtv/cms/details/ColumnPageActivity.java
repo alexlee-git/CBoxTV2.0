@@ -14,22 +14,19 @@ import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.DeviceUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.BaseActivity;
-import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-
-import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.util.BitmapUtil;
-import com.newtv.libs.util.DeviceUtil;
-
+import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
@@ -38,6 +35,8 @@ import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
 
 /**
+ * 栏目详情页
+ * <p>
  * 项目名称:         CBoxTV
  * 包名:            tv.newtv.cboxtv.cms.details
  * 创建事件:         19:13
@@ -88,9 +87,6 @@ public class ColumnPageActivity extends BaseActivity {
         mPaiseView = null;
         playListView = null;
         headPlayerView = null;
-
-        //UsefulBitmapFactory.recycle();
-
     }
 
     @Override
@@ -122,14 +118,16 @@ public class ColumnPageActivity extends BaseActivity {
                     @Override
                     public void onResult(Content info) {
                         pageContent = info;
+                        pageContent.setContentUUID(contentUUID);
                         playListView.setContentUUID(EpisodeHelper.TYPE_COLUMN_DETAIL,
                                 getSupportFragmentManager(),
                                 contentUUID, null);
                         if (sameType != null) {
-//                            sameType.setContentUUID(EpisodeHelper.TYPE_PROGRAME_SAMETYPE,
-//                                    contentUUID,
-//                                    info.getChannelId(), "", null);
+                            sameType.setContentUUID(SuggestView.TYPE_COLUMN_SUGGEST, info, null);
                         }
+
+                        SuggestView starView = findViewById(R.id.star);
+                        starView.setContentUUID(EpisodeHelper.TYPE_PROGRAME_STAR, info, null);
                     }
                 })
                 .SetPlayerCallback(new PlayerCallback() {
@@ -216,9 +214,7 @@ public class ColumnPageActivity extends BaseActivity {
             }
         });
 
-        SuggestView starView = findViewById(R.id.star);
-        starView.setContentUUID(EpisodeHelper.TYPE_PROGRAME_STAR, contentUUID, "", "",
-                null);
+
     }
 
     @Override
@@ -251,7 +247,6 @@ public class ColumnPageActivity extends BaseActivity {
         if (interruptKeyEvent(event)) {
             return super.dispatchKeyEvent(event);
         }
-
 
         //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
@@ -299,7 +294,9 @@ public class ColumnPageActivity extends BaseActivity {
                         }
                         while (condition) {
                             pos += dir;
-                            if (pos < 0 || pos > viewGroup.getChildCount()) break;
+                            if (pos < 0 || pos > viewGroup.getChildCount()) {
+                                condition = false;
+                            }
                             toView = viewGroup.getChildAt(pos);
                             if (toView != null) {
                                 if (toView instanceof IEpisode && ((IEpisode) toView)

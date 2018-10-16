@@ -61,5 +61,6 @@ internal object Request {
     val bootGuide: IBootGuideRetro by lazy { retrofit.create(IBootGuideRetro::class.java) }
     val activeAuth: IActiveAuthRetro by lazy { retrofit.create(IActiveAuthRetro::class.java) }
     val playChk: IPlayChkRetro by lazy { retrofit.create(IPlayChkRetro::class.java) }
+    val search: ISearchRetro by lazy { retrofit.create(ISearchRetro::class.java) }
 
 }

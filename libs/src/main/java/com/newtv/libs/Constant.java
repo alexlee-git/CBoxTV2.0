@@ -171,9 +171,10 @@ public class Constant {
     public static final String INIT_LOGSDK = "init_logsdk";//logsdk初始化
     public static final String CHECK_ERROR = "播控鉴权失败：";
     private static final Map<String, String> mServerAddressMap = new HashMap<>();
-    public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH) : "http://search.cloud.ottcn" +
-            ".com:8080/";
+//    public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
+//            .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH) : "http://search.cloud.ottcn" +
+//            ".com:8080/";
+public static final String BASE_URL_SEARCH = "http://111.32.138.94/";
     public static final String SERVER_TIME_URL = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SERVER_TIME)) ? getBaseUrl(HeadersInterceptor.SERVER_TIME) : "https://bzo.cloud" +
             ".ottcn.com/";

@@ -139,8 +139,7 @@ public class SingleDetailPageActivity extends BaseActivity {
                     public void onResult(Content info) {
                         headPlayerView.setProgramSeriesInfo(info);
 //                        headPlayerView.Play(0, 0, false);
-                        suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, contentUUID, "",
-                                info.getVideoType(), null);
+                        suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info, null);
                     }
                 })
                 .SetPlayerCallback(new PlayerCallback() {

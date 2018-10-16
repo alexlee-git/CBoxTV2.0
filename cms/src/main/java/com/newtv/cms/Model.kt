@@ -15,7 +15,6 @@ internal object Model {
     const val MODEL_CATEGORY: String = "Category"   //栏目
     const val MODEL_CORNER: String = "Corner"       //角标
     const val MODEL_SPLASH: String = "Splash"       //开机图片
-    const val MODEL_HOST: String = "Host"           //主持人
     const val MODEL_TV_PROGRAM: String = "TvProgram"       //电视栏目
     const val MODEL_FILTER: String = "Filter"       //筛选
     const val MODEL_UP_VERSTION: String = "UpVersion"       //更新
@@ -24,6 +23,7 @@ internal object Model {
     const val MODEL_ACTIVE_AUTH: String = "ActiveAuth"       //认证鉴权
     const val MODEL_CHK_PLAY: String = "ChkPlay"       //播控鉴权
     const val MODEL_PERSON: String = "Person"       //播控鉴权
+    const val MODEL_SEARCH: String = "Search"       //搜索
 
 
     const val CONTENT_TYPE_PS: String = "PS" //节目集
@@ -33,6 +33,7 @@ internal object Model {
     const val CONTENT_TYPE_FG: String = "FG" //人物
     const val CONTENT_TYPE_LV: String = "LV" //直播
     const val CONTENT_TYPE_TV: String = "TV" //电视栏目
+
 
     fun <T> findModel(type: String): T? {
         return ModelFactory.findModel<T>(type)

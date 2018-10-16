@@ -15,33 +15,26 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.TvFigure;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
-import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
+import tv.newtv.contract.SearchContract;
+import tv.newtv.contract.SuggestContract;
 
 /**
  * 项目名称:         CBoxTV
@@ -50,26 +43,26 @@ import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/5
  */
-public class SuggestView extends RelativeLayout implements IEpisode {
+public class SuggestView extends RelativeLayout implements IEpisode, SuggestContract.View,
+        SearchContract.View {
+
+    public static final int TYPE_COLUMN_SUGGEST = 0;    //相关栏目
+    public static final int TYPE_COLUMN_FIGURE = 1;    //相关主持人
 
     private static final String INFO_TEXT_TAG = "info_text";
     private String contentUUID;
     private int mType;
     private View currentFocus;
-    private String mVideoType;
+    private SuggestContract.Presenter mSuggestPresenter;
+    private SearchContract.Presenter mSearchPresenter;
     private View controlView;
-    private String leftUUID;
-    private String rightUUID;
-    private Disposable mDisposable;
 
     public SuggestView(Context context) {
-        super(context);
-        initalize();
+        this(context, null);
     }
 
     public SuggestView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        initalize();
+        this(context, attrs, 0);
     }
 
     public SuggestView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -79,13 +72,19 @@ public class SuggestView extends RelativeLayout implements IEpisode {
 
     @Override
     public void destroy() {
-        if(mDisposable != null){
-            mDisposable.dispose();
-            mDisposable = null;
-        }
         controlView = null;
         currentFocus = null;
         removeAllViews();
+
+        if (mSearchPresenter != null) {
+            mSearchPresenter.destroy();
+            mSearchPresenter = null;
+        }
+
+        if (mSuggestPresenter != null) {
+            mSuggestPresenter.destroy();
+            mSuggestPresenter = null;
+        }
     }
 
     private void ShowInfoTextView(String text) {
@@ -106,7 +105,8 @@ public class SuggestView extends RelativeLayout implements IEpisode {
     }
 
     private void initalize() {
-//        ShowInfoTextView("正在加载...");
+        mSuggestPresenter = new SuggestContract.SuggestPresenter(getContext(), this);
+        mSearchPresenter = new SearchContract.SearchPresenter(getContext(), this);
     }
 
     public View getDefaultFocus() {
@@ -118,151 +118,41 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         }
     }
 
-    public void setContentUUID(int type, String uuid, String channelId, String videoType, View
-            controlLayout) {
+    public void setContentUUID(int type, Content content, View controllView) {
         mType = type;
-        contentUUID = uuid;
-        mVideoType = videoType;
-        controlView = controlLayout;
+        controlView = controllView;
+        contentUUID = content.getContentUUID();
 
-        if (contentUUID == null) {
-            return;
-        }
-        if (!TextUtils.isEmpty(uuid) && uuid.length() > 2) {
-            leftUUID = contentUUID.substring(0, 2);
-            rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
-        } else if (uuid.length() == 2) {
-            leftUUID = uuid;
-            rightUUID = uuid;
-        }
-        Observable<ResponseBody> observable = null;
         switch (mType) {
-            case EpisodeHelper.TYPE_PROGRAME_SAMETYPE:
-                observable = EpisodeHelper.GetInterface(mType, channelId);
+            case TYPE_COLUMN_FIGURE:
+                mSuggestPresenter.getColumnFigures(contentUUID);
                 break;
-
+            case TYPE_COLUMN_SUGGEST:
+                mSuggestPresenter.getColumnSuggest(contentUUID);
+                break;
             case EpisodeHelper.TYPE_SEARCH:
-                observable = EpisodeHelper.GetInterface(mType, mVideoType);
+                SearchContract.SearchCondition searchCondition = SearchContract.SearchCondition
+                        .Builder()
+                        .setContentType(content.getContentType())
+                        .setVideoType(content.getVideoType());
+                mSearchPresenter.search(searchCondition);
                 break;
             default:
-                observable = EpisodeHelper.GetInterface(mType, leftUUID,
-                        rightUUID, contentUUID);
+
                 break;
-
         }
-        if (observable != null) {
-            observable.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            mDisposable = d;
-                        }
 
-                        @Override
-                        public void onNext(ResponseBody responseBody) {
-                            try {
-                                if (mType != EpisodeHelper.TYPE_SEARCH) {
-                                    parseResult(responseBody.string());
-                                } else {
-                                    searchResult(responseBody.string());
-                                }
-
-                            } catch (Exception e) {
-                                LogUtils.e(e.toString());
-                                onLoadError(e.getMessage());
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            onLoadError(e.getMessage());
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        }
     }
 
-    public void onActivityDestory() {
-        unSubscribe();
-    }
-
-    /**
-     * 解除绑定
-     */
-    private void unSubscribe() {
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
-            mDisposable = null;
-        }
-    }
-
-    private void searchResult(String string) {
-        if (TextUtils.isEmpty(string)) {
-            onLoadError("获取结果为空");
-            return;
-        }
-        Gson mGson = new Gson();
-        ScreenInfo mScreenInfo = mGson.fromJson(string, ScreenInfo.class);
-        List<ScreenInfo.ResultListBean> ListBeans = mScreenInfo.getResultList();
-        if (ListBeans != null && ListBeans.size() > 0) {
-            Content infoRecommdend = new Content();
-            List<SubContent> list = new ArrayList<>();
-            int size = ListBeans.size();
-            setVisibility(View.VISIBLE);
-            if (controlView != null) {
-                controlView.setVisibility(View.VISIBLE);
-            }
-            for (int i = 0; i < size; i++) {
-                ScreenInfo.ResultListBean entity = ListBeans.get(i);
-                if (entity != null) {
-//                    list.add(new SubContent(entity.getUUID(), entity.getName(),
-//                            entity.getContentType(), entity.getHpicurl(), entity.getHpicurl(), "",
-//                            "", "", "", "", "", "", "", "", entity.getDesc()));
-                }
-            }
-            infoRecommdend.setData(list);
-            buildUI(infoRecommdend);
-        }
-    }
-
-    private void parseResult(String result) {
-        if (TextUtils.isEmpty(result)) {
-            onLoadError("获取结果为空");
-            return;
-        }
-        try {
-            JSONObject object = new JSONObject(result);
-            if (object.getInt("errorCode") == 0) {
-                JSONObject obj = object.getJSONObject("data");
-                Gson gson = new Gson();
-                Content info = gson.fromJson(obj.toString(), Content.class);
-                if (info != null && info.getData() != null && info.getData().size() != 0) {
-                    buildUI(info);
-                }
-            } else {
-                onLoadError(object.getString("errorMessage"));
-            }
-        } catch (Exception e) {
-            LogUtils.e(e.toString());
-            onLoadError(e.getMessage());
-        }
-    }
-
-    private void buildUI(Content info) {
-
+    private void buildUI(List<SubContent> infos) {
         switch (mType) {
             case EpisodeHelper.TYPE_PROGRAME_XG:
-                buildRecycleView(info);
+                buildRecycleView(infos);
                 break;
             case EpisodeHelper.TYPE_SEARCH:
             case EpisodeHelper.TYPE_PROGRAME_STAR:
             case EpisodeHelper.TYPE_PROGRAME_SAMETYPE:
-                buildListView(info);
+                buildListView(infos);
                 break;
         }
 
@@ -271,8 +161,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
             public void run() {
                 if (controlView != null) {
                     RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
-                            controlView
-                            .getLayoutParams();
+                            controlView.getLayoutParams();
                     layoutParams.height = (int) getResources().getDimension(R.dimen.height_83px);
                     controlView.setLayoutParams(layoutParams);
                     controlView.setVisibility(View.VISIBLE);
@@ -290,8 +179,8 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         return infos.get(index);
     }
 
-    private void buildListView(Content info) {
-        if (info.getData().size() > 0) {
+    private void buildListView(List<SubContent> infos) {
+        if (infos.size() > 0) {
             removeAllViews();
 
             View view = LayoutInflater.from(getContext()).inflate(R.layout
@@ -307,7 +196,6 @@ public class SuggestView extends RelativeLayout implements IEpisode {
             view.setLayoutParams(layoutParams);
             addView(view, layoutParams);
 
-            List<SubContent> infos = info.getData();
             for (int index = 0; index < 8; index++) {
                 final View target = view.findViewWithTag("cell_008_" + (index + 1));
                 SubContent itemInfo = getItem(infos, index);
@@ -319,8 +207,8 @@ public class SuggestView extends RelativeLayout implements IEpisode {
     }
 
 
-    private void buildRecycleView(Content info) {
-        if (info.getData().size() > 0) {
+    private void buildRecycleView(List<SubContent> infos) {
+        if (infos.size() > 0) {
             removeAllViews();
 
             AiyaRecyclerView aiyaRecyclerView = new AiyaRecyclerView(getContext());
@@ -335,7 +223,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
             aiyaRecyclerView.setLayoutParams(layoutParams);
             addView(aiyaRecyclerView, layoutParams);
 
-            AiyaAdapter aiyaAdapter = new AiyaAdapter(info.getData());
+            AiyaAdapter aiyaAdapter = new AiyaAdapter(infos);
             aiyaRecyclerView.setAdapter(aiyaAdapter);
         } else {
             onLoadError("暂时没有数据");
@@ -343,7 +231,6 @@ public class SuggestView extends RelativeLayout implements IEpisode {
     }
 
     private void onLoadError(String message) {
-//        ShowInfoTextView(message);
 
         if (getParent() != null) {
             ViewGroup parentView = (ViewGroup) getParent();
@@ -404,6 +291,41 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
+    }
+
+    @Override
+    public void columnSuggestResult(List<SubContent> result) {
+        if (result == null || result.size() <= 0) {
+            onLoadError("获取结果为空");
+            return;
+        }
+
+        buildUI(result);
+    }
+
+    @Override
+    public void columnFiguresResult(List<TvFigure> result) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @NotNull String desc) {
+
+    }
+
+    @Override
+    public void searchResult(List<SubContent> result) {
+        if (result == null || result.size() <= 0) {
+            onLoadError("获取结果为空");
+            return;
+        }
+
+        buildUI(result);
     }
 
     private static class AiyaAdapter extends RecyclerView.Adapter<AiyaViewHolder> {

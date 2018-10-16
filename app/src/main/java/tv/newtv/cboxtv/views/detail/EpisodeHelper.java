@@ -46,7 +46,7 @@ public class EpisodeHelper {
     }
 
 
-    public static Observable<ResponseBody> GetInterface(int type, Object... params) {
+    static Observable<ResponseBody> GetInterface(int type, Object... params) {
         switch (type) {
             case TYPE_COLUMN_DETAIL:
                 return NetClient.INSTANCE.getDetailsPageApi().getHistoryColmn(BuildConfig
