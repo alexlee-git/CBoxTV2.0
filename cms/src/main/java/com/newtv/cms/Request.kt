@@ -53,7 +53,6 @@ internal object Request {
     val category: ICategoryRetro by lazy { retrofit.create(ICategoryRetro::class.java) }
     val corner: ICornerRetro by lazy { retrofit.create(ICornerRetro::class.java) }
     val splash: ISplashRetro by lazy { retrofit.create(ISplashRetro::class.java) }
-    val tv: IHostRetro by lazy { retrofit.create(IHostRetro::class.java) }
     val program: ITvProgramRetro by lazy { retrofit.create(ITvProgramRetro::class.java) }
     val filter: IFilterRetro by lazy { retrofit.create(IFilterRetro::class.java) }
     val upVersion: IUpVersionRetro by lazy { retrofit.create(IUpVersionRetro::class.java) }

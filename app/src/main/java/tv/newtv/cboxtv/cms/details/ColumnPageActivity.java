@@ -127,7 +127,7 @@ public class ColumnPageActivity extends BaseActivity {
                         }
 
                         SuggestView starView = findViewById(R.id.star);
-                        starView.setContentUUID(EpisodeHelper.TYPE_PROGRAME_STAR, info, null);
+                        starView.setContentUUID(SuggestView.TYPE_COLUMN_FIGURES, info, null);
                     }
                 })
                 .SetPlayerCallback(new PlayerCallback() {

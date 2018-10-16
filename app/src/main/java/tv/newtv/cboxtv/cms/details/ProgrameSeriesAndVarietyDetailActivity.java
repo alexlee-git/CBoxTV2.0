@@ -200,7 +200,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                     @Override
                     public void onResult(Content info) {
                         pageContent = info;
-                        suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info,null);
+                        suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info,null);
                         playListView.setContentUUID(EpisodeHelper.TYPE_VARIETY_SHOW,
                                 getSupportFragmentManager(),
                                 contentUUID, null);

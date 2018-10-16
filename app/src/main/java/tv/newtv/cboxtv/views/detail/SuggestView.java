@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
-import com.newtv.cms.bean.TvFigure;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -46,12 +45,12 @@ import tv.newtv.contract.SuggestContract;
 public class SuggestView extends RelativeLayout implements IEpisode, SuggestContract.View,
         SearchContract.View {
 
-    public static final int TYPE_COLUMN_SUGGEST = 0;    //相关栏目
-    public static final int TYPE_COLUMN_FIGURE = 1;    //相关主持人
+    public static final int TYPE_COLUMN_SEARCH = 0;     //搜索
+    public static final int TYPE_COLUMN_SUGGEST = 1;    //相关栏目
+    public static final int TYPE_COLUMN_FIGURES = 2;    //相关主持人
 
     private static final String INFO_TEXT_TAG = "info_text";
     private String contentUUID;
-    private int mType;
     private View currentFocus;
     private SuggestContract.Presenter mSuggestPresenter;
     private SearchContract.Presenter mSearchPresenter;
@@ -119,18 +118,17 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
     }
 
     public void setContentUUID(int type, Content content, View controllView) {
-        mType = type;
         controlView = controllView;
         contentUUID = content.getContentUUID();
 
-        switch (mType) {
-            case TYPE_COLUMN_FIGURE:
+        switch (type) {
+            case TYPE_COLUMN_FIGURES:
                 mSuggestPresenter.getColumnFigures(contentUUID);
                 break;
             case TYPE_COLUMN_SUGGEST:
                 mSuggestPresenter.getColumnSuggest(contentUUID);
                 break;
-            case EpisodeHelper.TYPE_SEARCH:
+            case TYPE_COLUMN_SEARCH:
                 SearchContract.SearchCondition searchCondition = SearchContract.SearchCondition
                         .Builder()
                         .setContentType(content.getContentType())
@@ -144,15 +142,15 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
 
     }
 
-    private void buildUI(List<SubContent> infos) {
-        switch (mType) {
+    private void buildUI(List<SubContent> infos,int type) {
+        switch (type) {
             case EpisodeHelper.TYPE_PROGRAME_XG:
                 buildRecycleView(infos);
                 break;
-            case EpisodeHelper.TYPE_SEARCH:
-            case EpisodeHelper.TYPE_PROGRAME_STAR:
-            case EpisodeHelper.TYPE_PROGRAME_SAMETYPE:
-                buildListView(infos);
+            case TYPE_COLUMN_SEARCH:
+            case TYPE_COLUMN_SUGGEST:
+            case TYPE_COLUMN_FIGURES:
+                buildListView(infos,type);
                 break;
         }
 
@@ -179,7 +177,19 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
         return infos.get(index);
     }
 
-    private void buildListView(List<SubContent> infos) {
+    public static String getTitleByType(int type) {
+        switch (type) {
+            case TYPE_COLUMN_FIGURES:
+                return "名人堂";
+            case TYPE_COLUMN_SEARCH:
+            case TYPE_COLUMN_SUGGEST:
+                return "相关推荐";
+            default:
+                return "内容列表";
+        }
+    }
+
+    private void buildListView(List<SubContent> infos,int type) {
         if (infos.size() > 0) {
             removeAllViews();
 
@@ -191,7 +201,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             TextView titleview = view.findViewWithTag("module_008_title");
             if (titleview != null) {
                 titleview.setVisibility(View.VISIBLE);
-                titleview.setText(EpisodeHelper.getTitleByType(mType));
+                titleview.setText(getTitleByType(type));
             }
             view.setLayoutParams(layoutParams);
             addView(view, layoutParams);
@@ -199,7 +209,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             for (int index = 0; index < 8; index++) {
                 final View target = view.findViewWithTag("cell_008_" + (index + 1));
                 SubContent itemInfo = getItem(infos, index);
-                SuggestViewHolder viewHolder = new SuggestViewHolder(target, index, itemInfo);
+                new SuggestViewHolder(target, index, itemInfo);
             }
         } else {
             onLoadError("暂时没有数据");
@@ -300,12 +310,17 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             return;
         }
 
-        buildUI(result);
+        buildUI(result,TYPE_COLUMN_SUGGEST);
     }
 
     @Override
-    public void columnFiguresResult(List<TvFigure> result) {
+    public void columnFiguresResult(List<SubContent> result) {
+        if (result == null || result.size() <= 0) {
+            onLoadError("获取结果为空");
+            return;
+        }
 
+        buildUI(result,TYPE_COLUMN_FIGURES);
     }
 
     @Override
@@ -325,7 +340,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             return;
         }
 
-        buildUI(result);
+        buildUI(result,TYPE_COLUMN_SEARCH);
     }
 
     private static class AiyaAdapter extends RecyclerView.Adapter<AiyaViewHolder> {

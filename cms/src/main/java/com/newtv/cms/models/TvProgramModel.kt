@@ -56,7 +56,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
     }
 
     override fun getTvFigureList(appKey: String, channelid: String, pageuuid: String,
-                                 observer: DataObserver<ModelResult<List<TvFigure>>>) {
+                                 observer: DataObserver<ModelResult<List<SubContent>>>) {
         if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -67,8 +67,8 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<TvFigure>>>(Request.program.getTvFigureTvList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<TvFigure>>>() {}.type)
+        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getTvFigureList(appKey, channelid,
+                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }
@@ -85,7 +85,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getTvFigureList(appKey, channelid,
+        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getTvFigureTvList(appKey, channelid,
                 left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()

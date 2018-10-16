@@ -28,18 +28,17 @@ public class SuggestContract {
 
     public interface View extends ICmsView {
         void columnSuggestResult(List<SubContent> result);
-
-        void columnFiguresResult(List<TvFigure> result);
+        void columnFiguresResult(List<SubContent> result);
     }
 
     public interface Presenter extends ICmsPresenter {
         /**
-         * 相关推荐
+         * 栏目相关主持人
          */
         void getColumnFigures(String contentUUID);
 
         /**
-         * 同分类
+         * 栏目相关推荐
          */
         void getColumnSuggest(String contentUUID);
 
@@ -57,9 +56,9 @@ public class SuggestContract {
             ITvProgram tvProgram = getService(SERVICE_TV_PROGRAM);
             if (tvProgram != null) {
                 tvProgram.getTvFigureList(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
-                        contentUUID, new DataObserver<ModelResult<List<TvFigure>>>() {
+                        contentUUID, new DataObserver<ModelResult<List<SubContent>>>() {
                             @Override
-                            public void onResult(ModelResult<List<TvFigure>> result) {
+                            public void onResult(ModelResult<List<SubContent>> result) {
                                 if (result.isOk()) {
                                     getView().columnFiguresResult(result.getData());
                                 } else {

@@ -37,7 +37,7 @@ interface ITvProgram : IService {
     fun getTvFigureList(appKey: String,
                         channelid: String,
                         pageuuid: String,
-                        observer: DataObserver<ModelResult<List<TvFigure>>>)
+                        observer: DataObserver<ModelResult<List<SubContent>>>)
 
     /**
      * 同栏目下的电视栏目列表
