@@ -3,7 +3,6 @@ package com.newtv.cms.api
 import com.newtv.cms.DataObserver
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
-import com.newtv.cms.bean.TvFigure
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -30,5 +29,5 @@ interface IPerson : IService {
      * 获取主持人相关的主持人
      */
     fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer:
-    DataObserver<ModelResult<List<TvFigure>>>)
+    DataObserver<ModelResult<List<SubContent>>>)
 }

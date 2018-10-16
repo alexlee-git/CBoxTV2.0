@@ -7,9 +7,9 @@ import com.newtv.cms.DataObserver
 import com.newtv.cms.Model
 import com.newtv.cms.Request
 import com.newtv.cms.api.ICategory
-import com.newtv.cms.bean.CategoryItem
 import com.newtv.cms.bean.CategoryTreeNode
 import com.newtv.cms.bean.ModelResult
+import com.newtv.cms.bean.SubContent
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -38,7 +38,7 @@ internal class CategoryModel : BaseModel(), ICategory {
     }
 
     override fun getCategoryContent(appkey: String, channelCode: String, contentId: String,
-                                    observer: DataObserver<ModelResult<List<CategoryItem>>>) {
+                                    observer: DataObserver<ModelResult<List<SubContent>>>) {
         if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)){
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -49,9 +49,9 @@ internal class CategoryModel : BaseModel(), ICategory {
         }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
-        BuildExecuter<ModelResult<List<CategoryItem>>>(Request.category.getCategoryContent(appkey,
+        BuildExecuter<ModelResult<List<SubContent>>>(Request.category.getCategoryContent(appkey,
                 channelCode, left, right, contentId),
-                object : TypeToken<ModelResult<List<CategoryItem>>>() {}.type)
+                object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }

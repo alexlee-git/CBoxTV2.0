@@ -10,7 +10,6 @@ import com.newtv.cms.ICmsView;
 import com.newtv.cms.api.ITvProgram;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.SubContent;
-import com.newtv.cms.bean.TvFigure;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

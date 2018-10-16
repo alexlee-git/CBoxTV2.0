@@ -9,7 +9,6 @@ import com.newtv.cms.Request
 import com.newtv.cms.api.ITvProgram
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
-import com.newtv.cms.bean.TvFigure
 
 /**
  * 项目名称:         CBoxTV2.0

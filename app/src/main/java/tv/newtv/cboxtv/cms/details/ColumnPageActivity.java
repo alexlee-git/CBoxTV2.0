@@ -198,7 +198,6 @@ public class ColumnPageActivity extends BaseActivity {
                     }
                 }));
 
-
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {

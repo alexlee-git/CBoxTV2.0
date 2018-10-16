@@ -3,8 +3,6 @@ package com.newtv.cms.api
 import com.newtv.cms.DataObserver
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
-import com.newtv.cms.bean.TvFigure
-import com.newtv.cms.bean.TvProgram
 
 /**
  * 项目名称:         CBoxTV2.0

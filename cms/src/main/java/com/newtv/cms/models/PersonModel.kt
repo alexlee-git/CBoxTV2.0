@@ -9,7 +9,6 @@ import com.newtv.cms.Request
 import com.newtv.cms.api.IPerson
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
-import com.newtv.cms.bean.TvFigure
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -57,7 +56,7 @@ internal class PersonModel : BaseModel(), IPerson {
                 .execute()
     }
 
-    override fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<List<TvFigure>>>) {
+    override fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<List<SubContent>>>) {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -68,8 +67,8 @@ internal class PersonModel : BaseModel(), IPerson {
         }
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
-        BuildExecuter<ModelResult<List<TvFigure>>>(Request.person.getPersonFigureList(appkey, channelId,
-                left, right, UUID), object : TypeToken<ModelResult<List<TvFigure>>>() {}.type)
+        BuildExecuter<ModelResult<List<SubContent>>>(Request.person.getPersonFigureList(appkey, channelId,
+                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }

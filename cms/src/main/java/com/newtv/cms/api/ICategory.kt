@@ -1,9 +1,9 @@
 package com.newtv.cms.api
 
 import com.newtv.cms.DataObserver
-import com.newtv.cms.bean.CategoryItem
 import com.newtv.cms.bean.CategoryTreeNode
 import com.newtv.cms.bean.ModelResult
+import com.newtv.cms.bean.SubContent
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -24,5 +24,5 @@ interface ICategory : IService {
      * 获取栏目下内容列表
      */
     fun getCategoryContent(appkey: String, channelCode: String, contentId: String,
-                           observer: DataObserver<ModelResult<List<CategoryItem>>>)
+                           observer: DataObserver<ModelResult<List<SubContent>>>)
 }
