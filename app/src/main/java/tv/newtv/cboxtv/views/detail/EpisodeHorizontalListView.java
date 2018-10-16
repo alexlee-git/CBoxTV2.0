@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
+
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
 import tv.newtv.cboxtv.views.widget.HorizontalRecycleView;
 import tv.newtv.cboxtv.views.widget.NewTvRecycleAdapter;
@@ -33,10 +34,10 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private String mContentUuid;
     private Disposable mDisposable;
     private HorizontalRecycleView mRecycleView;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
     private TextView mTitleText;
     private String title = "播放列表";
-    private NewTvRecycleAdapter<ProgramsInfo, ViewHolder> mAdapter;
+    private NewTvRecycleAdapter<SubContent, ViewHolder> mAdapter;
     private onEpisodeItemClick onItemClickListener;
 
 
@@ -89,9 +90,9 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             mTitleText.setText(title);
         }
 
-        mAdapter = new NewTvRecycleAdapter<ProgramsInfo, ViewHolder>() {
+        mAdapter = new NewTvRecycleAdapter<SubContent, ViewHolder>() {
             @Override
-            public List<ProgramsInfo> getDatas() {
+            public List<SubContent> getDatas() {
                 return mProgramSeriesInfo != null ? mProgramSeriesInfo.getData() : null;
             }
 
@@ -103,17 +104,17 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             }
 
             @Override
-            public void bind(ProgramsInfo data, ViewHolder holder, boolean
+            public void bind(SubContent data, ViewHolder holder, boolean
                     select) {
                 holder.posterView.placeHolder(R.drawable.focus_384_216)
                         .errorHolder(R.drawable.focus_384_216).hasCorner
-                        (true).load(data.gethImage());
+                        (true).load(data.getHImage());
                 holder.titleText.setText(data.getTitle());
                 holder.posterView.setIsPlaying(select);
             }
 
             @Override
-            public void onItemClick(ProgramsInfo data, int position) {
+            public void onItemClick(SubContent data, int position) {
                 mAdapter.setSelectedIndex(position);
                 if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(position);
@@ -148,7 +149,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
     }
 
-    public void setContentUUID(String uuid, ProgramSeriesInfo info) {
+    public void setContentUUID(String uuid, Content info) {
         mContentUuid = uuid;
         mProgramSeriesInfo = info;
         if (mAdapter != null) {

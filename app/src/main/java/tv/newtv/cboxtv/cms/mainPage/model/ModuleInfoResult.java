@@ -1,9 +1,11 @@
 package tv.newtv.cboxtv.cms.mainPage.model;
 
+import com.newtv.cms.bean.SubContent;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
+import tv.newtv.cboxtv.player.ExtendAttr;
 
 /**
  * Created by lixin on 2018/1/24.
@@ -137,14 +139,14 @@ public class ModuleInfoResult {
      * 获取亚运会奖牌榜的数据
      * @return
      */
-    public List<ProgramsInfo> getAsianList(){
-        List<ProgramsInfo> result = new ArrayList<>();
+    public List<SubContent> getAsianList(){
+        List<SubContent> result = new ArrayList<>();
         if(data == null){
             return result;
         }
 
         for(ModuleItem item : data){
-            List<ProgramsInfo> datas = item.getDatas();
+            List<SubContent> datas = item.getDatas();
             if(datas != null && datas.size() > 0){
 //                List<ExtendAttr> extendAttr = datas.get(0).getExtendAttr();
 //                if(extendAttr != null && extendAttr.size() > 0){

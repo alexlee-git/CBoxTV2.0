@@ -8,11 +8,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import tv.newtv.cboxtv.cms.details.PersonsDetailsActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
@@ -222,7 +222,7 @@ public class JumpUtil {
 
                 PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
                     @Override
-                    public void onResult(ProgramSeriesInfo info) {
+                    public void onResult(Content info) {
                         if (info == null) {
                             return;
                         }
@@ -305,12 +305,12 @@ public class JumpUtil {
     private static void openCPVideo(final Context context, final String contentUUID) {
         PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
-                if (info == null || TextUtils.isEmpty(info.getProgramSeriesUUIDs())) {
-                    Toast.makeText(LauncherApplication.AppContext, "子节目缺少节目集ID",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            public void onResult(Content info) {
+//                if (info == null || TextUtils.isEmpty(info.getProgramSeriesUUIDs())) {
+//                    Toast.makeText(LauncherApplication.AppContext, "子节目缺少节目集ID",
+//                            Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
                 Context tmpContext = getMainContext(context);
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(
                         tmpContext, info, 0, true);
@@ -326,12 +326,12 @@ public class JumpUtil {
             seriesSubUUID) {
         PlayInfoUtil.getPlayInfo(seriesSubUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
+            public void onResult(Content info) {
                 if (info != null && info.getData() != null && info.getData().size() > 0) {
                     //获取在节目集中的集数
                     int index = 0;
                     for (int i = 0; i < info.getData().size(); i++) {
-                        ProgramsInfo programsInfo = info.getData().get(i);
+                        SubContent programsInfo = info.getData().get(i);
                         if (contentUUID.equals(programsInfo.getContentUUID())) {
                             index = i;
                             break;

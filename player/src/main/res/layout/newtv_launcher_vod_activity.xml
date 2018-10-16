@@ -5,13 +5,13 @@
     android:id="@+id/root_view"
     >
 
-    <tv.newtv.cboxtv.views.custom.VideoFrameLayout
+    <tv.newtv.cboxtv.player.view.VideoFrameLayout
         android:id="@+id/player_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#000000">
 
-    </tv.newtv.cboxtv.views.custom.VideoFrameLayout>
+    </tv.newtv.cboxtv.player.view.VideoFrameLayout>
 
 </FrameLayout>
 

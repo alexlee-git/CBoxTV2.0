@@ -20,27 +20,18 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.NetworkManager;
-import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.util.CmsLiveUtil;
 import com.newtv.libs.util.DeviceUtil;
-import com.newtv.libs.util.Encryptor;
-import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.KeyEventUtils;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUtils;
-
-import tv.newtv.cboxtv.menu.MenuPopupWindow;
-import tv.newtv.cboxtv.player.ProgramDetailInfo;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
-import tv.newtv.cboxtv.player.model.VideoPlayInfo;
-import tv.newtv.cboxtv.player.util.PlayerNetworkRequestUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ScreenUtils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,11 +40,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
+import tv.newtv.cboxtv.menu.MenuGroupPresenter;
+import tv.newtv.cboxtv.menu.MenuPopupWindow;
 import tv.newtv.cboxtv.player.ActivityStacks;
+import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.FocusWidget;
 import tv.newtv.cboxtv.player.IFocusWidget;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
@@ -61,15 +52,12 @@ import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerConstants;
+import tv.newtv.cboxtv.player.contract.LiveContract;
+import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.iPlayCallBackEvent;
-import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
-import tv.newtv.cboxtv.menu.MenuGroupPresenter;
-import tv.newtv.cboxtv.player.model.CdnInfo;
 import tv.newtv.cboxtv.player.model.LiveInfo;
-import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
-import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
-import tv.newtv.cboxtv.player.util.LivePermissionCheckUtil;
+import tv.newtv.cboxtv.player.model.VideoPlayInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
 import tv.newtv.player.R;
@@ -80,7 +68,8 @@ import tv.newtv.player.R;
  * Created by wangkun on 2018/1/16.
  */
 
-public class NewTVLauncherPlayerView extends FrameLayout {
+public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract.View, VodContract
+        .View {
 
     public static final int SHOWING_NO_VIEW = 0;
     public static final int SHOWING_SEEKBAR_VIEW = 2;
@@ -90,11 +79,18 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     public static final int SHOWING_EXIT_VIEW = 6;
     public static final int SHOWING_PROGRAM_TREE = 7;
     private static final String TAG = NewTVLauncherPlayerView.class.getName();
+
+
     private static final int PROGRAM_SELECTOR_TYPE_NONE = 0; //不显示选集
     private static final int PROGRAM_SELECTOR_TYPE_NUMBER = 1; //显示数字选集
     private static final int PROGRAM_SELECTOR_TYPE_NAME = 2; //显示名称选集
-    private static final int PLAY_SINGLE = 0;
-    private static final int PLAY_SERIES = 1;
+
+
+    private static final int PLAY_TYPE_SINGLE = 0;
+    private static final int PLAY_TYPE_SERIES = 1;
+    private static final int PLAY_TYPE_LIVE = 2;
+
+
     private static int defaultWidth;
     private static int defaultHeight;
     private static boolean enterFullScreen = false;
@@ -111,12 +107,11 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private boolean mIsPrepared;
     //    private ImageView mPauseImageView;
     private boolean mIsNeedPause;
-    private ProgramSeriesInfo mProgramSeriesInfo; //当前播放的节目集信息
-    private ProgramDetailInfo mProgramDetailInfo; //当前播放的节目信息
+    private Content mProgramSeriesInfo; //当前播放的节目集信息
+    private ChkPlayResult mProgramDetailInfo; //当前播放的节目信息
     private int mPlayingIndex; //当前播放第几集
     private String mContentUUid; //当前播放第几集
-    private int mProgramSelectorType; //显示哪种选集
-    private int mPlaySeriesOrSingle;
+    private int mPlayType;
     private int mHistoryPostion;
     private String mPlayUrl; //进入播放指定清晰度的url
     private boolean isLiving = false;
@@ -129,6 +124,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
     private Map<Integer, FocusWidget> widgetMap;
+
+    private LiveContract.Presenter mLivePresenter;
+    private VodContract.Presenter mVodPresenter;
 
 
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
@@ -193,153 +191,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
             LogUtils.i(TAG, "onError: ");
         }
     };
-    private Callback<ResponseBody> mPlayPermissionCheckCallback = new Callback<ResponseBody>() {
-        @Override
-        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-            try {
-                if (response == null) {
-                    LogUtils.i(TAG, "onResponse: response==null");
-                    if (!NetworkManager.getInstance().isConnected()) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                                .search_fail_agin), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                                .check_error), Toast.LENGTH_SHORT).show();
-                    }
-                    onError("-1", getContext().getResources().getString(R.string.check_error));
-                    LogUtils.e("调用鉴权接口后没有返回数据");
-                    return;
-                }
-                ResponseBody responseBody = response.body();
-                if (responseBody == null) {
-                    LogUtils.i(TAG, "onResponse: responseBody==null");
-                    if (!NetworkManager.getInstance().isConnected()) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                                .search_fail_agin), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                                .check_error), Toast.LENGTH_SHORT).show();
-                    }
-                    onError("-2", getContext().getResources().getString(R.string.check_error));
-                    LogUtils.e("调用鉴权接口后没有返回数据");
-                    return;
-                }
-                String responseStr = responseBody.string();
-                LogUtils.i(TAG, "onResponse: " + responseStr);
-                if (isLiving) {
-                    LivePermissionCheckBean livePermissionCheck = GsonUtil.fromjson(responseStr,
-                            LivePermissionCheckBean.class);
-                    if ("0".equals(livePermissionCheck.getErrorCode())) {
-                        if (livePermissionCheck.getData() != null && livePermissionCheck.getData
-                                ().isEncryptFlag()) {
-                            mLiveInfo.setKey(Encryptor.decrypt(Constant.APPSECRET,
-                                    livePermissionCheck.getData().getDecryptKey()));
-                        }
-                        LogUtils.i(TAG, "getEncryptFlag:" + livePermissionCheck.getData()
-                                .isEncryptFlag() + ",key=" + Encryptor.decrypt(Constant
-                                .APPSECRET, livePermissionCheck.getData().getDecryptKey()));
-                        playAlive(mLiveInfo);
-                    } else {
-                        onError(livePermissionCheck.getErrorCode(), getContext().getResources()
-                                .getString(R.string.check_error));
-                        LogUtils.i(TAG, "直播鉴权失败");
-                    }
-                    return;
-                }
 
-//                mProgramDetailInfo = PlayerNetworkRequestUtils.getInstance()
-//                        .parsePlayPermissionCheckResult(responseStr);
-                if (mProgramDetailInfo == null) {
-                    LogUtils.i(TAG, "onResponse: programDetailInfo==null");
-                    String errorCode = PlayerNetworkRequestUtils.getErrorCode(responseStr);
-                    if (!NetworkManager.getInstance().isConnected()) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                                .search_fail_agin), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                                .check_error) + errorCode, Toast.LENGTH_SHORT).show();
-                    }
-                    onError(errorCode, getContext().getResources().getString(R.string
-                            .check_error));
-                    LogUtils.e("调用鉴权接口后没有返回数据");
-                    return;
-                }
-                if (mProgramDetailInfo.getData().size() < 1) {
-                    LogUtils.i(TAG, "onResponse: programDetailInfo.getData().size()<1");
-                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .program_info_no_data), Toast.LENGTH_SHORT).show();
-                    onError("-3", getContext().getResources().getString(R.string
-                            .program_info_no_data));
-                    LogUtils.e("暂无节目内容");
-                    return;
-                }
-                if (sendSharpnessesToSetting()) return;
 
-                VideoDataStruct videoDataStruct = new VideoDataStruct();
-                if (mProgramDetailInfo.getEncryptFlag()) {
-                    videoDataStruct.setKey(Encryptor.decrypt(Constant.APPSECRET,
-                            mProgramDetailInfo.getDecryptKey()));
-                }
-                LogUtils.i(TAG, "playViewgetEncryptFlag:" + mProgramDetailInfo.getEncryptFlag() +
-                        ",key=" + Encryptor.decrypt(Constant.APPSECRET, mProgramDetailInfo
-                        .getDecryptKey()));
-                videoDataStruct.setPlayType(0);
-
-                mContentUUid = mProgramDetailInfo.getContentUUID();
-                videoDataStruct.setPlayUrl(mPlayUrl);
-                videoDataStruct.setProgramId(mProgramDetailInfo.getContentUUID());
-
-                String duration = mProgramDetailInfo.getDuration();
-                if (!TextUtils.isEmpty(duration)) {
-                    videoDataStruct.setDuration(Integer.parseInt(mProgramDetailInfo.getDuration()));
-                }
-
-                if (mPlaySeriesOrSingle == PLAY_SERIES) {
-                    //videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentUUID());
-                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
-                } else if (mPlaySeriesOrSingle == PLAY_SINGLE) {
-                    videoDataStruct.setSeriesId(mProgramDetailInfo.getProgramSeriesUUIDs());
-                }
-                videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
-                videoDataStruct.setDeviceID(Constant.UUID);
-                videoDataStruct.setCategoryIds(mProgramDetailInfo.getCategoryIds());
-                ADConfig.getInstance().setCategoryIds(mProgramDetailInfo.getCategoryIds());
-
-                if (mNewTVLauncherPlayer == null) {
-                    mNewTVLauncherPlayer = new NewTVLauncherPlayer();
-                }
-
-                if (mNewTVLauncherPlayerSeekbar != null) {
-                    mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
-                }
-
-                mNewTVLauncherPlayer.play(getContext(), mPlayerFrameLayout, mCallBackEvent,
-                        videoDataStruct);
-
-            } catch (Exception e) {
-                LogUtils.e(e.toString());
-                onError("-3", getContext().getResources().getString(R.string
-                        .check_error));
-            }
-        }
-
-        @Override
-        public void onFailure(Call<ResponseBody> call, Throwable t) {
-            LogUtils.e(TAG, "onFailure: " + t.toString());
-            if (getContext() != null) {
-                if (!NetworkManager.getInstance().isConnected()) {
-                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .search_fail_agin), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .check_error), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            onError("-6", getContext().getResources().getString(R.string
-                    .search_fail_agin));
-        }
-    };
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -391,18 +244,18 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         @Override
         public void changePlayWithDelay(int delay, String liveUrl) {
 
-            if (mProgramSeriesInfo != null) {
-                String playUrl = translateUrl(liveUrl, delay);
-                LogUtils.d(TAG, "changePlayWithDelay video delay=" + delay + " url=" + playUrl);
-                if (mLiveInfo.getmLiveUrl().equals(playUrl)) {
-                    return;
-                }
-                mNewTVLauncherPlayer.release();
-                mLiveInfo.setLiveUrl(playUrl);
-                PlayerConfig.getInstance().setScreenChange(true);
-                PlayerConfig.getInstance().setJumpAD(true);
-                playLive(playUrl, mProgramSeriesInfo, false, 0, 0);
-            }
+//            if (mProgramSeriesInfo != null) {
+//                String playUrl = translateUrl(liveUrl, delay);
+//                LogUtils.d(TAG, "changePlayWithDelay video delay=" + delay + " url=" + playUrl);
+//                if (mLiveInfo.getmLiveUrl().equals(playUrl)) {
+//                    return;
+//                }
+//                mNewTVLauncherPlayer.release();
+//                mLiveInfo.setLiveUrl(playUrl);
+//                PlayerConfig.getInstance().setScreenChange(true);
+//                PlayerConfig.getInstance().setJumpAD(true);
+//                playLive(playUrl, mProgramSeriesInfo, false, 0, 0);
+//            }
         }
 
         @Override
@@ -410,7 +263,6 @@ public class NewTVLauncherPlayerView extends FrameLayout {
             LogUtils.i(TAG, "live onError: ");
         }
     };
-    private ViewGroup.LayoutParams defaultLayoutParams;
     private PlayerLocation mPlayerLocation;
 
     public NewTVLauncherPlayerView(PlayerViewConfig config, @NonNull Context context) {
@@ -762,9 +614,13 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         updateUIPropertys(defaultConfig != null ? defaultConfig.isFullScreen : startIsFullScreen);
 
         PLAYER_ID = NewTVLauncherPlayerViewManager.getInstance().setPlayerView(this);
+
+
+        mLivePresenter = new LiveContract.LivePresenter(getContext(), this);
+        mVodPresenter = new VodContract.VodPresenter(getContext(), this);
     }
 
-    private boolean equalsInfo(ProgramSeriesInfo AInfo, ProgramSeriesInfo BInfo) {
+    private boolean equalsInfo(Content AInfo, Content BInfo) {
         if (AInfo == null || BInfo == null) return false;
         if (TextUtils.isEmpty(AInfo.getContentUUID()) || TextUtils.isEmpty(BInfo.getContentUUID()
         )) {
@@ -781,69 +637,53 @@ public class NewTVLauncherPlayerView extends FrameLayout {
      * index 播放第几集
      * position 从什么位置开始播放
      * */
-    public void playProgramSeries(ProgramSeriesInfo programSeriesInfo, boolean
+    public void playProgramSeries(Content programSeriesInfo, boolean
             isNeedStartActivity, int index, int position) {
         unshowLoadBack = false;
         LogUtils.i(TAG, "playVideo: index=" + index + " position=" + position);
         updatePlayStatus(2, index, position);
         if (isFullScreen() && !equalsInfo(mProgramSeriesInfo, programSeriesInfo)) {
-//            Toast.makeText(getContext().getApplicationContext(), "剧集发生改变了", Toast.LENGTH_SHORT)
-//                    .show();
             ProgramIsChange = true;
         }
         mProgramSeriesInfo = programSeriesInfo;
 
-        mProgramSelectorType = getContext().getResources().getString(R.string.tv_series).equals
-                (programSeriesInfo.getVideoType()) ? PROGRAM_SELECTOR_TYPE_NUMBER :
-                PROGRAM_SELECTOR_TYPE_NAME;
-
-        List<ProgramsInfo> programsInfos = programSeriesInfo.getData();
+        List<SubContent> programsInfos = programSeriesInfo.getData();
         if (programsInfos != null && programsInfos.size() > index) {
-
+            SubContent program = programsInfos.get(index);
             if (mNewTVLauncherPlayerSeekbar != null) {
                 boolean hasMutipleProgram = programsInfos.size() > 1;
-                if (0 < index && index < programsInfos.size()) {
-                    mNewTVLauncherPlayerSeekbar.setProgramName(programsInfos.get(index).getTitle(),
-                            hasMutipleProgram);
-                }
+                mNewTVLauncherPlayerSeekbar.setProgramName(program.getTitle(),
+                        hasMutipleProgram);
             }
 
             if (mNewTVLauncherPlayerSeekbar != null) {
-                mNewTVLauncherPlayerSeekbar.setProgramName(programsInfos.get(index).getTitle(),
+                mNewTVLauncherPlayerSeekbar.setProgramName(program.getTitle(),
                         false);
             }
 
             if (mLoading != null) {
-                mLoading.setProgramName(programsInfos.get(index).getTitle());
+                mLoading.setProgramName(program.getTitle());
             }
 
             playIndex(index);
 
-            PlayCheckRequestBean playCheckRequestBean = null;
-            if (programsInfos.get(index).isMenuGroupHistory()) {
-                playCheckRequestBean = createPlayCheckRequest(programSeriesInfo.getData().get
-                                (index).getContentUUID(),
-                        programsInfos.get(index).getSeriesSubUUID());
-            } else {
-                playCheckRequestBean = createPlayCheckRequest(programSeriesInfo.getData().get
-                                (index).getContentUUID(),
-                        programSeriesInfo.getContentUUID());
-            }
-            startPlayPermissionsCheck(playCheckRequestBean);
+            String seriesUUID = programSeriesInfo.getContentUUID();
+
+//            if (programsInfos.get(index).isMenuGroupHistory()) {
+//                seriesUUID = programsInfos.get(index).getSeriesSubUUID();
+//            } else {
+//                seriesUUID = programSeriesInfo.getContentUUID();
+//            }
+
+            mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
 
             startLoading();
             isNeedStartActivity(isNeedStartActivity, programSeriesInfo, index);
         } else {
             LogUtils.i(TAG, "playVideo: programsInfos == null || programsInfos.size() <= index");
-//            NewTVLauncherPlayerViewManager.getInstance().release();
             onError("-8", "播放信息为空");
         }
 
-    }
-
-    public void playLive(String liveUrl, ProgramSeriesInfo programSeriesInfo, boolean
-            isNeedStartActivity, int index, int position) {
-        playLive(liveUrl, "", programSeriesInfo, isNeedStartActivity, index, position);
     }
 
     /*
@@ -854,260 +694,15 @@ public class NewTVLauncherPlayerView extends FrameLayout {
      * index 播放第几集
      * position 从什么位置开始播放
      * */
-    public void playLive(String liveUrl, String contentUUID, ProgramSeriesInfo programSeriesInfo,
-                         boolean isNeedStartActivity, int index, int position) {
+    public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity) {
         unshowLoadBack = false;
-        LogUtils.i(TAG, "playlive playVideo: index=" + index + " position=" + position);
-        updatePlayStatus(3, index, position);
-        mProgramSeriesInfo = programSeriesInfo;
-
-        boolean isNewLive = false;
-        if (mLiveInfo == null) {
-            mLiveInfo = new LiveInfo();
-            isNewLive = true;
-        }
-        mLiveInfo.setLiveUrl(liveUrl);
-
-        PlayCheckRequestBean playCheckRequest = null;
-
-        if (programSeriesInfo != null) {
-            if (isNewLive) {
-                if (TextUtils.isEmpty(programSeriesInfo.getPlayStartTime()) || TextUtils.isEmpty
-                        (programSeriesInfo.getPlayEndTime())) {
-                    if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size()
-                            > 0) {
-                        ProgramsInfo info = programSeriesInfo.getData().get(0);
-                        mLiveInfo.setPlayTimeInfo(CmsLiveUtil.formatToSeconds(info.getPlayStartTime()),
-                                CmsLiveUtil.formatToSeconds(info.getPlayEndTime()));
-                    }
-                } else {
-                    mLiveInfo.setPlayTimeInfo(CmsLiveUtil.formatToSeconds(programSeriesInfo
-                                    .getPlayStartTime()),
-                            CmsLiveUtil.formatToSeconds(programSeriesInfo.getPlayEndTime()));
-                }
-
-
-                LogUtils.i(TAG, "startTime: " + programSeriesInfo.getPlayStartTime() + "," +
-                        "endTime:" +
-                        programSeriesInfo.getPlayEndTime());
-            }
-            mLiveInfo.setIsTimeShift(programSeriesInfo.getIsTimeShift());
-
-            mProgramSelectorType = getContext().getResources().getString(R.string.tv_series).equals
-                    (programSeriesInfo.getVideoType()) ? PROGRAM_SELECTOR_TYPE_NUMBER :
-                    PROGRAM_SELECTOR_TYPE_NAME;
-
-            if (mNewTVLauncherPlayerSeekbar != null) {
-                mNewTVLauncherPlayerSeekbar.setLiveInfo(mLiveInfo);
-                mNewTVLauncherPlayerSeekbar.setProgramName(programSeriesInfo.getTitle(),
-                        false);
-            }
-
-            if (mLoading != null) {
-                mLoading.setProgramName(programSeriesInfo.getTitle());
-            }
-            playCheckRequest = createPlayCheckRequest(programSeriesInfo, index);
-        } else {
-            playCheckRequest = LivePermissionCheckUtil.createPlayCheckRequest(contentUUID, liveUrl);
-        }
-        mLiveInfo.setContentUUID(playCheckRequest.getId());
-
-        startPlayPermissionsCheck(playCheckRequest);
-//        timer(programSeriesInfo);
+        LogUtils.i(TAG, "playlive playVideo");
+        updatePlayStatus(3, 0, 0);
+        mLivePresenter.checkLive(liveInfo);
         startLoading();
-        isNeedStartActivity(isNeedStartActivity, programSeriesInfo, index);
+        isNeedStartActivity(isNeedStartActivity, null, 0);
     }
 
-    /**
-     * 创建直播鉴权数据
-     */
-    private PlayCheckRequestBean createPlayCheckRequest(ProgramSeriesInfo programSeriesInfo, int
-            index) {
-        PlayCheckRequestBean playCheckRequestBean = new PlayCheckRequestBean();
-        playCheckRequestBean.setAppKey(Libs.get().getAppKey());
-        playCheckRequestBean.setChannelId(Libs.get().getChannelId());
-        playCheckRequestBean.setSource("NEWTV");
-        if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > index) {
-            playCheckRequestBean.setId(programSeriesInfo.getData().get(index).getContentUUID());
-        } else {
-            playCheckRequestBean.setId(programSeriesInfo.getContentUUID());
-        }
-        playCheckRequestBean.setPid(mLiveInfo.getDefaultLiveUrl());
-
-        return playCheckRequestBean;
-    }
-
-    /*
-     * 播放节目
-     * programDetailInfo 节目信息
-     * position 从什么位置开始播放
-     * */
-    public void playProgramSingle(ProgramSeriesInfo programDetailInfo, int position, boolean
-            openActivity) {
-        unshowLoadBack = false;
-        LogUtils.i(TAG, "playProgram: ");
-        if (programDetailInfo == null) {
-            return;
-        }
-        updatePlayStatus(1, 0, position);
-        mProgramSeriesInfo = programDetailInfo;
-        mProgramSelectorType = PROGRAM_SELECTOR_TYPE_NONE;
-        if (mNewTVLauncherPlayerSeekbar != null) {
-            mNewTVLauncherPlayerSeekbar.setProgramName(programDetailInfo.getTitle(), false);
-        }
-
-        if (mLoading != null) {
-            mLoading.setProgramName(programDetailInfo.getTitle());
-        }
-
-        PlayCheckRequestBean playCheckRequestBean = createPlayCheckRequest(programDetailInfo
-                .getContentUUID(), programDetailInfo.getProgramSeriesUUIDs());
-        startPlayPermissionsCheck(playCheckRequestBean);
-        startLoading();
-
-        isNeedStartActivity(openActivity, programDetailInfo, 0);
-    }
-
-    /**
-     * 创建点播鉴权数据
-     */
-    private PlayCheckRequestBean createPlayCheckRequest(String contentUUID, String
-            programSeriesUUID) {
-        PlayCheckRequestBean playCheckRequestBean = new PlayCheckRequestBean();
-
-        playCheckRequestBean.setAppKey(Libs.get().getAppKey());
-        playCheckRequestBean.setChannelId(Libs.get().getChannelId());
-        playCheckRequestBean.setSource("NEWTV");
-        playCheckRequestBean.setId(contentUUID);
-        if (!TextUtils.isEmpty(programSeriesUUID)) {
-            playCheckRequestBean.setAlbumId(programSeriesUUID);
-        }
-
-        PlayCheckRequestBean.Product productInfo = new PlayCheckRequestBean.Product();
-        productInfo.setId(1);
-
-        List<PlayCheckRequestBean.Product> productList = new ArrayList<>();
-        productList.add(productInfo);
-        playCheckRequestBean.setProductDTOList(productList);
-
-        return playCheckRequestBean;
-    }
-
-    /**
-     * 开始播放时进行状态和行为变更
-     * type 1为单节目 2为节目集 3为直播
-     */
-    private void updatePlayStatus(int type, int index, int position) {
-        setHintTextVisible(GONE);
-        mIsPrepared = false;
-        dismissChildView();
-
-        switch (type) {
-            case 1:
-                mPlaySeriesOrSingle = PLAY_SINGLE;
-                isLiving = false;
-                break;
-            case 2:
-                mPlaySeriesOrSingle = PLAY_SERIES;
-                isLiving = false;
-                break;
-            case 3:
-                mPlaySeriesOrSingle = PLAY_SERIES;
-                isLiving = true;
-                break;
-        }
-
-        if (!isLiving) {
-            addHistory();
-            PlayerConfig.getInstance().setJumpAD(NeedJumpAd);
-            NeedJumpAd = false;
-            if (enterFullScreen) {
-                createMenuGroup();
-            }
-        }
-
-        mPlayingIndex = index;
-        mHistoryPostion = position;
-    }
-
-    private void isNeedStartActivity(boolean isNeedStartActivity, ProgramSeriesInfo
-            programDetailInfo, int index) {
-        if (isNeedStartActivity) {
-            Intent intent = new Intent(getContext(), NewTVLauncherPlayerActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("programSeriesInfo", programDetailInfo);
-            bundle.putInt("index", index);
-            intent.putExtras(bundle);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getContext().startActivity(intent);
-        }
-    }
-
-    private boolean sendSharpnessesToSetting() {
-        LogUtils.i(TAG, "sendSharpnessesToSetting: ");
-        List<CdnInfo> mediaCDNInfos = mProgramDetailInfo.getData();
-        List<CdnInfo> specifiedCDNInfos = new ArrayList<CdnInfo>();
-        for (int i = 0; i < mediaCDNInfos.size(); i++) {
-            CdnInfo mediaCDNInfo = mediaCDNInfos.get(i);
-            if (mediaCDNInfo.getCDNId() == mediaCDNInfos.get(0).getCDNId()) {
-                specifiedCDNInfos.add(mediaCDNInfo);
-                //测试专用
-//                MediaCDNInfo test = new MediaCDNInfo(mediaCDNInfo.getCDNId(),"SD",mediaCDNInfo
-// .getPlayURL());
-//                specifiedCDNInfos.add(test);
-                LogUtils.i(TAG, "sendSharpnessesToSetting: " + mediaCDNInfo.toString());
-            }
-        }
-
-        if (specifiedCDNInfos.size() < 1) {
-            LogUtils.i(TAG, "onResponse: specifiedCDNInfos == null");
-            Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                    .program_info_no_data), Toast.LENGTH_SHORT).show();
-            LogUtils.e("鉴权接口后没有返回视频地址");
-            onError("-5", "视频地址为空");
-            return true;
-        }
-        for (int j = 0; j < specifiedCDNInfos.size(); j++) {
-            CdnInfo mediaCDNInfo = specifiedCDNInfos.get(j);
-            if (PlayerConstants.SHARPNESS_HD.equals(mediaCDNInfo.getMediaType())) {
-                mPlayUrl = mediaCDNInfo.getPlayURL();
-                LogUtils.i(TAG, "sendSharpnessesToSetting: mPlayUrl=" + mPlayUrl);
-                if (TextUtils.isEmpty(mPlayUrl)) {
-                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .program_info_no_data), Toast.LENGTH_SHORT).show();
-                    LogUtils.e("鉴权接口后没有返回视频地址");
-                    onError("-5", "视频地址为空");
-                    return true;
-                }
-                break;
-            } else if ("ts".equals(mediaCDNInfo.getMediaType()) || "TS".equals(mediaCDNInfo
-                    .getMediaType())) {
-                mPlayUrl = mediaCDNInfo.getPlayURL();
-                break;
-            } else if ("M3U8".equals(mediaCDNInfo.getMediaType().toUpperCase())) {
-                mPlayUrl = mediaCDNInfo.getPlayURL();
-            }
-        }
-        return false;
-    }
-
-    private void startPlayPermissionsCheck(PlayCheckRequestBean playCheckRequestBean) {
-        LogUtils.i(TAG, "startPlayPermissionsCheck: ");
-        try {
-            Gson gson = new Gson();
-            String requestJson = gson.toJson(playCheckRequestBean);
-            LogUtils.i(TAG, "startPlayPermissionsCheck: requestJson=" + requestJson);
-//            String requestJson = "{\"vipFlag\":1,\"whetherTencentProduct\":false,
-// \"appKey\":\"newtv\",\"channelId\":\"2\",\"contentUuid\":\"chenfei\",\"user\":{\"userId\":1,
-// \"userToken\":\"1111111111\",\"logon\":true},\"tencentOrderDTO\":{\"cid\":1,\"vid\":1,
-// \"pid\":1}}";
-            PlayerNetworkRequestUtils.getInstance().playPermissionCheck(requestJson,
-                    mPlayPermissionCheckCallback);
-
-        } catch (Exception e) {
-            LogUtils.e(e.toString());
-        }
-    }
 
     private void playAlive(LiveInfo liveInfo) {
         VideoDataStruct videoDataStruct = new VideoDataStruct();
@@ -1126,6 +721,91 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 mLiveCallBackEvent,
                 videoDataStruct);
     }
+
+    /*
+     * 播放节目
+     * programDetailInfo 节目信息
+     * position 从什么位置开始播放
+     * */
+    public void playProgramSingle(Content programDetailInfo, int position, boolean
+            openActivity) {
+        unshowLoadBack = false;
+        LogUtils.i(TAG, "playProgram: ");
+        if (programDetailInfo == null) {
+            return;
+        }
+
+        updatePlayStatus(1, 0, position);
+        mProgramSeriesInfo = programDetailInfo;
+
+        if (mNewTVLauncherPlayerSeekbar != null) {
+            mNewTVLauncherPlayerSeekbar.setProgramName(programDetailInfo.getTitle(), false);
+        }
+
+        if (mLoading != null) {
+            mLoading.setProgramName(programDetailInfo.getTitle());
+        }
+
+        mVodPresenter.checkVod(programDetailInfo.getContentUUID(),
+                programDetailInfo.getCgContentIDs());
+
+        startLoading();
+
+        isNeedStartActivity(openActivity, programDetailInfo, 0);
+    }
+
+    /**
+     * 开始播放时进行状态和行为变更
+     * type 1为单节目 2为节目集 3为直播
+     */
+    private void updatePlayStatus(int type, int index, int position) {
+        setHintTextVisible(GONE);
+        mIsPrepared = false;
+        dismissChildView();
+
+        switch (type) {
+            case 1:
+                mPlayType = PLAY_TYPE_SINGLE;
+                isLiving = false;
+                break;
+            case 2:
+                mPlayType = PLAY_TYPE_SERIES;
+                isLiving = false;
+                break;
+            case 3:
+                mPlayType = PLAY_TYPE_LIVE;
+                isLiving = true;
+                break;
+        }
+
+        if (!isLiving) {
+            addHistory();
+            PlayerConfig.getInstance().setJumpAD(NeedJumpAd);
+            NeedJumpAd = false;
+            if (enterFullScreen) {
+                createMenuGroup();
+            }
+        }
+
+        mPlayingIndex = index;
+        mHistoryPostion = position;
+    }
+
+    private void isNeedStartActivity(boolean isNeedStartActivity, Content
+            programDetailInfo, int index) {
+        if (isNeedStartActivity) {
+            Intent intent = new Intent(getContext(), NewTVLauncherPlayerActivity.class);
+            Bundle bundle = new Bundle();
+            if (programDetailInfo != null) {
+                bundle.putSerializable("programSeriesInfo", programDetailInfo);
+            }
+            bundle.putInt("index", index);
+            intent.putExtras(bundle);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(intent);
+        }
+    }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1159,17 +839,17 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (!mIsPrepared) {
+                if (!mIsPrepared || mPlayType == PLAY_TYPE_LIVE) {
                     LogUtils.i(TAG, "onKeyDown: mIsPrepared is false");
                     return true;
                 }
-                if (mPlaySeriesOrSingle == PLAY_SERIES) {
+                if (mPlayType == PLAY_TYPE_SERIES) {
                     if (mProgramSeriesInfo == null || mProgramSeriesInfo.getData() == null ||
                             mProgramSeriesInfo.getData().size() <= 1) {
                         LogUtils.i(TAG, "onKeyDown: mProgramSeriesInfo.getData()==null");
                         return true;
                     }
-                } else if (mPlaySeriesOrSingle == PLAY_SINGLE) {
+                } else if (mPlayType == PLAY_TYPE_SINGLE) {
                     return true;
                 }
 
@@ -1436,17 +1116,18 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
     // add by lxf
     private void playVodNext() {
-        if (mPlaySeriesOrSingle == PLAY_SINGLE) {
-            addHistory();
+        if (mPlayType == PLAY_TYPE_SINGLE || mPlayType == PLAY_TYPE_LIVE) {
+            if (mPlayType != PLAY_TYPE_LIVE) {
+                addHistory();
+            }
             Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .play_complete),
-                    Toast.LENGTH_SHORT).show();
+                    .play_complete), Toast.LENGTH_SHORT).show();
             AllComplete(false, "播放结束");
 
             if (startIsFullScreen) {
                 NewTVLauncherPlayerViewManager.getInstance().release();
             }
-        } else if (mPlaySeriesOrSingle == PLAY_SERIES) {
+        } else if (mPlayType == PLAY_TYPE_SERIES) {
             int next = mPlayingIndex + 1;
             if (mProgramSeriesInfo.getData().size() > next) {
                 playProgramSeries(mProgramSeriesInfo, false, next, 0);
@@ -1455,7 +1136,6 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                         l.onNext(mProgramSeriesInfo.getData().get(next), next, true);
                     }
                 }
-
             } else {
                 addHistory();
                 if (listener != null && listener.size() > 0) {
@@ -1580,7 +1260,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     /**
      * 直播有结束时间，并且没有时移功能，就启动计时在结束时关闭直播
      */
-    private void timer(ProgramSeriesInfo mProgramSeriesInfo) {
+    private void timer(Content mProgramSeriesInfo) {
         if (mProgramSeriesInfo != null && !TextUtils.isEmpty(mProgramSeriesInfo.getPlayEndTime())
                 && !"1".equals(mProgramSeriesInfo.getIsTimeShift()))
             LiveTimingUtil.endTime(mProgramSeriesInfo.getPlayEndTime(), new LiveTimingUtil
@@ -1638,6 +1318,39 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mNewTVLauncherPlayer != null) {
             mNewTVLauncherPlayer.setVideoSilent(isSilent);
         }
+    }
+
+    @Override
+    public void onVodchkResult(VideoDataStruct videoDataStruct, String contentUUID) {
+        mContentUUid = contentUUID;
+        if (mNewTVLauncherPlayer == null) {
+            mNewTVLauncherPlayer = new NewTVLauncherPlayer();
+        }
+        if (mNewTVLauncherPlayerSeekbar != null) {
+            mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
+        }
+        mNewTVLauncherPlayer.play(getContext(), mPlayerFrameLayout, mCallBackEvent,
+                videoDataStruct);
+    }
+
+    @Override
+    public void liveChkResult(LiveInfo liveInfo) {
+        playAlive(mLiveInfo);
+    }
+
+    @Override
+    public void onChkError(String code, String desc) {
+        onError(code, desc);
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @NotNull String desc) {
+
     }
 
     public static class PlayerViewConfig {

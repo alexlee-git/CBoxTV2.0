@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.cms.details.model;
+package com.newtv.libs.bean;
 
 /**
  * Created by gaoleichao on 2018/4/18.

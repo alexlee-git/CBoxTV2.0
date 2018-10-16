@@ -1,8 +1,8 @@
 package tv.newtv.cboxtv.player;
 
-import java.util.List;
+import com.newtv.cms.bean.CdnUrl;
 
-import tv.newtv.cboxtv.player.model.CdnInfo;
+import java.util.List;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -25,7 +25,7 @@ public class PlayerPlayInfoItem {
     private String playStartTime;
     private String playEndTime;
     private Boolean isMenuGroupHistory;
-    private List<CdnInfo> data;
+    private List<CdnUrl> data;
 
     public Boolean isMenuGroupHistory() {
         return isMenuGroupHistory;
@@ -59,7 +59,7 @@ public class PlayerPlayInfoItem {
         return duration;
     }
 
-    public List<CdnInfo> getData() {
+    public List<CdnUrl> getData() {
         return data;
     }
 
@@ -135,7 +135,7 @@ public class PlayerPlayInfoItem {
         isMenuGroupHistory = menuGroupHistory;
     }
 
-    public void setData(List<CdnInfo> data) {
+    public void setData(List<CdnUrl> data) {
         this.data = data;
     }
 }

@@ -32,7 +32,7 @@ internal class FilterModel : BaseModel(), IFilter {
             observer.onError("CategoryId is Empty")
             return
         }
-        execute<ModelResult<List<FilterItem>>>(Request.filter.getFilterKeyWords(appkey, channelId,
+        BuildExecuter<ModelResult<List<FilterItem>>>(Request.filter.getFilterKeyWords(appkey, channelId,
                 categoryId), object : TypeToken<ModelResult<List<FilterItem>>>() {}.type)
                 .observer(observer)
                 .execute()

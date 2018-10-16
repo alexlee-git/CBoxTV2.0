@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Nav;
 import com.newtv.cms.bean.Time;
 import com.newtv.cms.bean.UpVersion;
 import com.newtv.libs.Constant;
@@ -27,11 +28,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
@@ -40,6 +41,7 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
+import tv.newtv.cboxtv.player.ActivityStacks;
 import tv.newtv.contract.MainContract;
 import tv.newtv.contract.VersionUpdateContract;
 import tv.newtv.cboxtv.player.BaseActivity;
@@ -337,8 +339,18 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
     @Override
     public void syncServerTime(Time result) {
-        CharSequence sysTimeStr = DateFormat.format("HH:mm", result.getResponse());
-        //时间显示格式
-        timeTV.setText(sysTimeStr); //更新时间
+        if(result != null) {
+            CharSequence sysTimeStr = DateFormat.format("HH:mm", result.getResponse());
+            timeTV.setText(sysTimeStr); //更新时间
+        }else{
+            long sysTime = System.currentTimeMillis();//获取系统时间
+            CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
+            timeTV.setText(sysTimeStr); //更新时间
+        }
+    }
+
+    @Override
+    public void onNavResult(Context context, List<Nav> result) {
+
     }
 }

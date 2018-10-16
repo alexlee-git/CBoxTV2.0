@@ -17,6 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -27,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
@@ -41,7 +41,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * Created by gaoleichao on 2018/4/1.
  */
 
-public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo, RecyclerView
+public class ColumnDetailsAdapter extends BaseRecyclerAdapter<Content, RecyclerView
         .ViewHolder> {
 
     public static final int HEAD_COLUMN = 1001;
@@ -100,7 +100,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
     }
 
     @Override
-    public void appendToList(List<ProgramSeriesInfo> list) {
+    public void appendToList(List<Content> list) {
         super.appendToList(list);
 
         if (list != null && list.size() > 0) {
@@ -144,16 +144,16 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
     //layoutId 2为播放列表布局,4竖海报、
     @Override
     public int getItemViewType(int position) {
-        ProgramSeriesInfo info = mList.get(position);
-        if (info.layoutId == 2) {
-            return PLAY_LIST;
-        } else if (info.layoutId == 3) {
-            return CONTENT_HORIZONTAL;
-        } else if (info.layoutId == 4) {
-            return CONTENT_VERTICAL;
-        } else if (info.layoutId == 5) {
-            return VERTICAL_SlIDE;
-        }
+        Content info = mList.get(position);
+//        if (info.layoutId == 2) {
+//            return PLAY_LIST;
+//        } else if (info.layoutId == 3) {
+//            return CONTENT_HORIZONTAL;
+//        } else if (info.layoutId == 4) {
+//            return CONTENT_VERTICAL;
+//        } else if (info.layoutId == 5) {
+//            return VERTICAL_SlIDE;
+//        }
         return super.getItemCount();
     }
 
@@ -164,15 +164,15 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
         if (holder instanceof ContentVericalViewHolder) {
             ContentVericalViewHolder viewHolder = (ContentVericalViewHolder) holder;
             if (mList != null && mList.size() > 0) {
-                ProgramSeriesInfo entity = mList.get(position);
+                Content entity = mList.get(position);
                 if (entity != null) {
                     viewHolder.titleIconIv.setVisibility(View.VISIBLE);
                     viewHolder.titleTv.setVisibility(View.VISIBLE);
-                    viewHolder.titleTv.setText(entity.layoutTitle);
+//                    viewHolder.titleTv.setText(entity.layoutTitle);
                     for (int i = 0; i < entity.getData().size(); i++) {
-                        ProgramsInfo programsInfo = entity.getData().get(i);
+                        SubContent programsInfo = entity.getData().get(i);
                         setPosterData(viewHolder.viewList.get(i),
-                                programsInfo.getvImage(), programsInfo.getTitle(),
+                                programsInfo.getVImage(), programsInfo.getTitle(),
                                 CONTENT_VERTICAL, programsInfo.getContentUUID());
                         if (i == 5) {
                             return;
@@ -184,11 +184,11 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
         } else if (holder instanceof ContentHorizontalViewHolder) {
             final ContentHorizontalViewHolder viewHolder = (ContentHorizontalViewHolder) holder;
             if (mList != null && mList.size() > 0) {
-                final ProgramSeriesInfo entity = mList.get(position);
+                final Content entity = mList.get(position);
                 if (entity != null) {
                     viewHolder.titleIconIv.setVisibility(View.VISIBLE);
                     viewHolder.titleTv.setVisibility(View.VISIBLE);
-                    viewHolder.titleTv.setText(entity.layoutTitle);
+//                    viewHolder.titleTv.setText(entity.layoutTitle);
                     viewHolder.mRecycleView.removeAllViews();
 
                     viewHolder.ivLeft.setVisibility(View.INVISIBLE);
@@ -206,7 +206,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
 
             final VerticalSlideHolder viewHolder = (VerticalSlideHolder) holder;
             if (mList != null && mList.size() > 0) {
-                final ProgramSeriesInfo entity = mList.get(position);
+                final Content entity = mList.get(position);
                 if (entity != null) {
                     if (entity.getData().size() > 6) {
                         viewHolder.ivRight.setVisibility(View.VISIBLE);
@@ -215,7 +215,7 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                     }
                     viewHolder.titleIconIv.setVisibility(View.VISIBLE);
                     viewHolder.titleTv.setVisibility(View.VISIBLE);
-                    viewHolder.titleTv.setText(entity.layoutTitle);
+//                    viewHolder.titleTv.setText(entity.layoutTitle);
                     viewHolder.aiyaRecyclerView.removeAllViews();
                     viewHolder.mAdapter.clear();
                     viewHolder.mAdapter.appendToList(entity.getData());
@@ -226,14 +226,14 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
         } else if (holder instanceof PlayListViewHolder) {
             final PlayListViewHolder viewHolder = (PlayListViewHolder) holder;
             if (mList != null && mList.size() > 0) {
-                final ProgramSeriesInfo entity = mList.get(position);
+                final Content entity = mList.get(position);
                 if (entity != null) {
                     viewHolder.titleIconIv.setVisibility(View.VISIBLE);
                     viewHolder.titleTv.setVisibility(View.VISIBLE);
-                    viewHolder.titleTv.setText(entity.layoutTitle);
+//                    viewHolder.titleTv.setText(entity.layoutTitle);
 
                     if (viewHolder.mPageDaoImpl == null) {
-                        viewHolder.mPageDaoImpl = new PageHelper<ProgramsInfo>
+                        viewHolder.mPageDaoImpl = new PageHelper<SubContent>
                                 (entity.getData(), 8);
                         viewHolder.dataList.clear();
                         viewHolder.mPageDaoImpl.setCurrentPage(viewHolder.mPageDaoImpl
@@ -277,9 +277,9 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                     for (int i = 0; i < viewHolder.viewList.size(); i++) {
                         FrameLayout view = viewHolder.viewList.get(i);
                         if (i < viewHolder.dataList.size()) {
-                            ProgramsInfo programsInfo = viewHolder.dataList.get
+                            SubContent programsInfo = viewHolder.dataList.get
                                     (i);
-                            setPosterData(view, programsInfo.gethImage(), programsInfo.getTitle()
+                            setPosterData(view, programsInfo.getHImage(), programsInfo.getTitle()
                                     , PLAY_LIST, programsInfo.getContentUUID());
 
                         } else {
@@ -460,19 +460,19 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                             position = 5;
                             break;
                     }
-                    ProgramsInfo entity = getItem(getAdapterPosition()).getData
+                    SubContent entity = getItem(getAdapterPosition()).getData
                             ().get(position);
                     if (entity != null) {
 
                         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL_SUGGESt,entity.getContentUUID());
-                        if (TextUtils.isEmpty(entity.getActionType())) {
-                            JumpUtil.detailsJumpActivity(context, entity.getContentType(), entity
-                                    .getContentUUID());
-                        } else {
-                            JumpUtil.activityJump(context, entity.getActionType(), entity
-                                    .getContentType(), entity.getContentUUID(), entity
-                                    .getActionUri());
-                        }
+//                        if (TextUtils.isEmpty(entity.getActionType())) {
+//                            JumpUtil.detailsJumpActivity(context, entity.getContentType(), entity
+//                                    .getContentUUID());
+//                        } else {
+//                            JumpUtil.activityJump(context, entity.getActionType(), entity
+//                                    .getContentType(), entity.getContentUUID(), entity
+//                                    .getActionUri());
+//                        }
                     }
 
                 }
@@ -634,9 +634,9 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
         private FrameLayout mModuleView1, mModuleView2, mModuleView3, mModuleView4, mModuleView5,
                 mModuleView6, mModuleView7, mModuleView8;
         private List<FrameLayout> viewList;
-        private PageHelper<ProgramsInfo> mPageDaoImpl;
+        private PageHelper<SubContent> mPageDaoImpl;
         private PlayerSelectPageAdapter mAdapter;
-        private List<ProgramsInfo> dataList;
+        private List<SubContent> dataList;
         private ImageView mRightIv;
         private ImageView mLeftIv;
         private LinearLayoutManager pageLayoutMananger;
@@ -782,19 +782,19 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<ProgramSeriesInfo,
                     return false;
                 }
 
-                ProgramsInfo programInfo = mPageDaoImpl
+                SubContent programInfo = mPageDaoImpl
                         .currentList().get(position);
                 currentPlayUUID = programInfo.getContentUUID();
                 defultFocusPosition = position;
                 int currentPosition = mPageDaoImpl.getCurrentPosition(position);
 
-                if (TextUtils.isEmpty(dataList.get(0).getLiveUrl())) {
-                    if (listener != null && listener.get() != null)
-                        listener.get().onItemClick(v, currentPosition, programInfo);
-                } else {
-                    if (listener != null && listener.get() != null)
-                        listener.get().onItemClick(v, currentPosition - 1, programInfo);
-                }
+//                if (TextUtils.isEmpty(dataList.get(0).getLiveUrl())) {
+//                    if (listener != null && listener.get() != null)
+//                        listener.get().onItemClick(v, currentPosition, programInfo);
+//                } else {
+//                    if (listener != null && listener.get() != null)
+//                        listener.get().onItemClick(v, currentPosition - 1, programInfo);
+//                }
 
                 mPageDaoImpl.setCurrentPage(mPageDaoImpl.getCurrentPage(currentPosition));
                 mAdapter.notifyDataSetChanged();

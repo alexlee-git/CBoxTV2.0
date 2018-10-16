@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -36,8 +38,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
@@ -210,8 +210,8 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         ScreenInfo mScreenInfo = mGson.fromJson(string, ScreenInfo.class);
         List<ScreenInfo.ResultListBean> ListBeans = mScreenInfo.getResultList();
         if (ListBeans != null && ListBeans.size() > 0) {
-            ProgramSeriesInfo infoRecommdend = new ProgramSeriesInfo();
-            List<ProgramsInfo> list = new ArrayList<>();
+            Content infoRecommdend = new Content();
+            List<SubContent> list = new ArrayList<>();
             int size = ListBeans.size();
             setVisibility(View.VISIBLE);
             if (controlView != null) {
@@ -220,9 +220,9 @@ public class SuggestView extends RelativeLayout implements IEpisode {
             for (int i = 0; i < size; i++) {
                 ScreenInfo.ResultListBean entity = ListBeans.get(i);
                 if (entity != null) {
-                    list.add(new ProgramsInfo(entity.getUUID(), entity.getName(),
-                            entity.getContentType(), entity.getHpicurl(), entity.getHpicurl(), "",
-                            "", "", "", "", "", "", "", "", entity.getDesc()));
+//                    list.add(new SubContent(entity.getUUID(), entity.getName(),
+//                            entity.getContentType(), entity.getHpicurl(), entity.getHpicurl(), "",
+//                            "", "", "", "", "", "", "", "", entity.getDesc()));
                 }
             }
             infoRecommdend.setData(list);
@@ -240,7 +240,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
             if (object.getInt("errorCode") == 0) {
                 JSONObject obj = object.getJSONObject("data");
                 Gson gson = new Gson();
-                ProgramSeriesInfo info = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                Content info = gson.fromJson(obj.toString(), Content.class);
                 if (info != null && info.getData() != null && info.getData().size() != 0) {
                     buildUI(info);
                 }
@@ -253,7 +253,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         }
     }
 
-    private void buildUI(ProgramSeriesInfo info) {
+    private void buildUI(Content info) {
 
         switch (mType) {
             case EpisodeHelper.TYPE_PROGRAME_XG:
@@ -282,7 +282,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         }, 300);
     }
 
-    private ProgramsInfo getItem(List<ProgramsInfo> infos, int
+    private SubContent getItem(List<SubContent> infos, int
             index) {
         if (infos == null || infos.size() <= index) {
             return null;
@@ -290,7 +290,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         return infos.get(index);
     }
 
-    private void buildListView(ProgramSeriesInfo info) {
+    private void buildListView(Content info) {
         if (info.getData().size() > 0) {
             removeAllViews();
 
@@ -307,10 +307,10 @@ public class SuggestView extends RelativeLayout implements IEpisode {
             view.setLayoutParams(layoutParams);
             addView(view, layoutParams);
 
-            List<ProgramsInfo> infos = info.getData();
+            List<SubContent> infos = info.getData();
             for (int index = 0; index < 8; index++) {
                 final View target = view.findViewWithTag("cell_008_" + (index + 1));
-                ProgramsInfo itemInfo = getItem(infos, index);
+                SubContent itemInfo = getItem(infos, index);
                 SuggestViewHolder viewHolder = new SuggestViewHolder(target, index, itemInfo);
             }
         } else {
@@ -319,7 +319,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
     }
 
 
-    private void buildRecycleView(ProgramSeriesInfo info) {
+    private void buildRecycleView(Content info) {
         if (info.getData().size() > 0) {
             removeAllViews();
 
@@ -407,9 +407,9 @@ public class SuggestView extends RelativeLayout implements IEpisode {
     }
 
     private static class AiyaAdapter extends RecyclerView.Adapter<AiyaViewHolder> {
-        private List<ProgramsInfo> mData;
+        private List<SubContent> mData;
 
-        private AiyaAdapter(List<ProgramsInfo> data) {
+        private AiyaAdapter(List<SubContent> data) {
             mData = data;
         }
 
@@ -421,7 +421,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
             return new AiyaViewHolder(view);
         }
 
-        private ProgramsInfo getItem(int postion) {
+        private SubContent getItem(int postion) {
             if (mData == null) return null;
             if (mData.size() < postion) return null;
             if (postion < 0) return null;
@@ -431,7 +431,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
         @Override
         public void onBindViewHolder(AiyaViewHolder holder, int position) {
             if (holder != null) {
-                ProgramsInfo data = getItem(position);
+                SubContent data = getItem(position);
                 holder.setData(data);
             }
         }
@@ -444,7 +444,7 @@ public class SuggestView extends RelativeLayout implements IEpisode {
 
     private static class AiyaViewHolder extends RecyclerView.ViewHolder {
 
-        ProgramsInfo infoData;
+        SubContent infoData;
         private ImageView Poster;
         private TextView Title;
         private View FocusView;
@@ -459,11 +459,11 @@ public class SuggestView extends RelativeLayout implements IEpisode {
                     FocusView, R.dimen.width_16dp, R.dimen.width_16dp);//view适配
         }
 
-        public void setData(ProgramsInfo data) {
+        public void setData(SubContent data) {
             if (data == null) return;
             infoData = data;
             Picasso.get()
-                    .load(data.gethImage())
+                    .load(data.getHImage())
                     .resize(390, 214)
                     .into(Poster);
 
@@ -498,9 +498,9 @@ public class SuggestView extends RelativeLayout implements IEpisode {
     }
 
     private class SuggestViewHolder {
-        ProgramsInfo itemInfo;
+        SubContent itemInfo;
 
-        SuggestViewHolder(final View target, int index, ProgramsInfo info) {
+        SuggestViewHolder(final View target, int index, SubContent info) {
             itemInfo = info;
             if (target != null) {
                 if (itemInfo != null) {
@@ -513,13 +513,13 @@ public class SuggestView extends RelativeLayout implements IEpisode {
                     DisplayUtils.adjustView(getContext(), poster, focusView, R.dimen.width_16dp,
                             R.dimen.width_16dp);//适配
 
-                    if (!TextUtils.isEmpty(itemInfo.getvImage())) {
+                    if (!TextUtils.isEmpty(itemInfo.getVImage())) {
                         poster.setScaleType(ImageView.ScaleType.FIT_XY);
                         RequestCreator picasso = Picasso.get()
-                                .load(itemInfo.getvImage())
+                                .load(itemInfo.getVImage())
                                 .transform(new PosterCircleTransform(target.getContext(), 4))
                                 .priority(Picasso.Priority.HIGH)
-                                .stableKey(itemInfo.getvImage())
+                                .stableKey(itemInfo.getVImage())
                                 .resize(240, 360)
                                 .config(Bitmap.Config.RGB_565);
                         picasso = picasso.placeholder(R.drawable.focus_240_360).error(R.drawable

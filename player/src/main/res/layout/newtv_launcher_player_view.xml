@@ -3,12 +3,12 @@
              android:id="@+id/root_view"
     android:layout_width="match_parent" android:layout_height="match_parent">
     <!--播放容器-->
-    <tv.newtv.cboxtv.views.custom.VideoFrameLayout
+    <tv.newtv.cboxtv.player.view.VideoFrameLayout
         android:id="@+id/player_view_framelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <SurfaceView android:layout_width="0px" android:layout_height="0px"/>
-    </tv.newtv.cboxtv.views.custom.VideoFrameLayout>
+    </tv.newtv.cboxtv.player.view.VideoFrameLayout>
 
     <tv.newtv.cboxtv.player.view.NewTVLauncherPlayerLoading
         android:id="@+id/player_loading"

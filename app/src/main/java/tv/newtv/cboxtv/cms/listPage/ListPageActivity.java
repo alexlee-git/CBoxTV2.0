@@ -50,7 +50,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.model.CircleTransform;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.adapter.UniversalAdapter;
 import tv.newtv.cboxtv.cms.listPage.adapter.UniversalViewHolder;
@@ -65,6 +64,7 @@ import tv.newtv.cboxtv.cms.listPage.view.ListMenuView;
 import tv.newtv.cboxtv.cms.listPage.view.ListPageView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.BaseActivity;
 
 //import tv.newtv.cboxtv.cms.net.ApiUtil;
@@ -1197,7 +1197,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 //                        .resize(240, 360)
 //                        .centerInside()
                         .fit()      //智能展示图片，对于图片的大小和imageview的尺寸进行了测量，计算出最佳的大小和最佳的质量显示出来
-                        .transform(new CircleTransform(mContext))
+                        .transform(new PosterCircleTransform(mContext))
                         .into(holder.img);
             }
 
@@ -1326,7 +1326,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 //                        .resize(240, 360)
 //                        .centerInside()
                         .fit()      //智能展示图片，对于图片的大小和imageview的尺寸进行了测量，计算出最佳的大小和最佳的质量显示出来
-                        .transform(new CircleTransform(mContext))
+                        .transform(new PosterCircleTransform(mContext))
                         .into(holder.img);
             }
 

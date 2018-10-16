@@ -8,20 +8,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.ExtendAttr;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 
 public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
 
-    private List<ProgramsInfo> mData;
+    private List<SubContent> mData;
     private Context mContext;
 
-    public MedalAdapter(List<ProgramsInfo> mData, Context mContext) {
+    public MedalAdapter(List<SubContent> mData, Context mContext) {
         this.mData = mData;
         this.mContext = mContext;
     }
@@ -34,20 +34,20 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.MyHolder>{
 
     @Override
     public void onBindViewHolder(final MyHolder holder, final int position) {
-        ProgramsInfo programInfo = mData.get(position);
+        SubContent programInfo = mData.get(position);
         holder.restoreView();
-        List<ExtendAttr> attrList = programInfo.getExtendAttr();
-        if(attrList != null && attrList.size() > 0){
-            ExtendAttr attr = attrList.get(0);
-            holder.ranking.setText(attr.getRanking());
-            holder.goldMedal.setText(attr.getGold());
-            holder.silverMedal.setText(attr.getSiver());
-            holder.bronzeMedal.setText(attr.getBronze());
-            holder.total.setText(attr.getTotal());
-        }
+//        List<ExtendAttr> attrList = programInfo.getExtendAttr();
+//        if(attrList != null && attrList.size() > 0){
+//            ExtendAttr attr = attrList.get(0);
+//            holder.ranking.setText(attr.getRanking());
+//            holder.goldMedal.setText(attr.getGold());
+//            holder.silverMedal.setText(attr.getSiver());
+//            holder.bronzeMedal.setText(attr.getBronze());
+//            holder.total.setText(attr.getTotal());
+//        }
         holder.tvCountry.setText(programInfo.getTitle());
         try {
-			Picasso.get().load(programInfo.getImg()).into(holder.ivCountry);
+			Picasso.get().load(programInfo.getVImage()).into(holder.ivCountry);
 		}catch (Exception e){e.printStackTrace();}
 
         setBackground(holder.itemView,position);

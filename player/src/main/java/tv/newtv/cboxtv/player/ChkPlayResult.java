@@ -1,16 +1,16 @@
 package tv.newtv.cboxtv.player;
 
+import com.newtv.cms.bean.CdnUrl;
+
 import java.io.Serializable;
 import java.util.List;
-
-import tv.newtv.cboxtv.player.model.CdnInfo;
 
 /**
  * Created by Administrator on 2018/2/5 0005.
  * 单节目
  */
 
-public class ProgramDetailInfo implements Serializable {
+public class ChkPlayResult implements Serializable {
 
     private static final long serialVersionUID = -2062188526961737431L;
     private String contentUUID;       //内容ID
@@ -69,31 +69,31 @@ public class ProgramDetailInfo implements Serializable {
     private String periods;          // 集号
     private String programSeriesUUIDs;          // 节目集id
     private String categoryIds;          // 栏目id  cctv_colum_cctv/CCTV-4/
-    private List<CdnInfo> data;
+    private List<CdnUrl> data;
 
     private boolean encryptFlag;
     private String decryptKey;
 
-    public ProgramDetailInfo() {
+    public ChkPlayResult() {
     }
 
-    public ProgramDetailInfo(String contentUUID, String MAMID, String title, String contentType,
-                             String contentUrl, String subTitle, String duration, String
+    public ChkPlayResult(String contentUUID, String MAMID, String title, String contentType,
+                         String contentUrl, String subTitle, String duration, String
                                      videoType, String videoClass, String tags, String vipFlag,
-                             String vipProductId, String movieLevel, String definition, String
+                         String vipProductId, String movieLevel, String definition, String
                                      vipNumber, String sortType, String playOrder, String
                                      permiereTime, String permiereChannel, String prize, String
                                      issueDate, String leadingRole, String audiences, String
                                      presenter, String producer, String topic, String guest,
-                             String reporter, String competition, String subject, String
+                         String reporter, String competition, String subject, String
                                      classPeriod, String singer, String screenwriter, String
                                      enName, String area, String director, String actors, String
                                      language, String airtime, String hImage, String vImage,
-                             String description, String UUID, String seriesSum, String grade,
-                             String lSuperScript, String rSuperScript, String lSubScript, String
+                         String description, String UUID, String seriesSum, String grade,
+                         String lSuperScript, String rSuperScript, String lSubScript, String
                                      rSubScript, String cpCode, String videoSize, String
                                      freeDuration, String bitrateStream, String periods,
-                             List<CdnInfo> data) {
+                         List<CdnUrl> data) {
         this.contentUUID = contentUUID;
         this.MAMID = MAMID;
         this.title = title;
@@ -599,11 +599,11 @@ public class ProgramDetailInfo implements Serializable {
         this.periods = periods;
     }
 
-    public List<CdnInfo> getData() {
+    public List<CdnUrl> getData() {
         return data;
     }
 
-    public void setData(List<CdnInfo> data) {
+    public void setData(List<CdnUrl> data) {
         this.data = data;
     }
 

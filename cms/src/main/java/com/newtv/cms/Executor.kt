@@ -8,6 +8,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
 import java.lang.reflect.Type
+import java.util.concurrent.TimeUnit
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -20,8 +21,8 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                            val type: Type?,
                            val callback: IExecutor<T>?
 ) {
-    
-    var isCancel:Boolean = false //是否已经退出请求
+
+    var isCancel: Boolean = false //是否已经退出请求
 
     interface IExecutor<T> {
         fun onCancel(executor: Executor<T>)
@@ -47,7 +48,9 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
 
     @Suppress("UNCHECKED_CAST")
     fun execute() {
-        observable.subscribeOn(Schedulers.io())
+        observable
+                .retryWhen(RetryWithDelay(5, 2, TimeUnit.SECONDS))
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ResponseBody> {
                     override fun onSubscribe(d: Disposable) {
@@ -65,12 +68,12 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
 
 
                     override fun onNext(t: ResponseBody) {
-                        if(isCancel) return
+                        if (isCancel) return
                         try {
-                            if(type != null) {
+                            if (type != null) {
                                 val result = Gson().fromJson<T>(t.string(), type)
                                 mObserver?.onResult(result)
-                            }else{
+                            } else {
                                 mObserver?.onResult(t.string() as T)
                             }
                         } catch (e: Exception) {

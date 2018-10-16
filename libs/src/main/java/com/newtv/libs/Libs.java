@@ -20,6 +20,27 @@ public class Libs {
     private String mChannelId;
     private String mFlavor;
 
+    private Libs(Context context, String appkey, String channelId, String flavor) {
+        mContext = context.getApplicationContext();
+        mAppKey = appkey;
+        mChannelId = channelId;
+        mFlavor = flavor;
+
+        NetworkManager.init(context);
+    }
+
+    public static Libs get() {
+        return instance;
+    }
+
+    public static void init(Context context, String appkey, String channelId, String flavor) {
+        synchronized (Libs.class) {
+            if (instance == null) {
+                instance = new Libs(context, appkey, channelId, flavor);
+            }
+        }
+    }
+
     public String getFlavor() {
         return mFlavor;
     }
@@ -30,25 +51,6 @@ public class Libs {
 
     public String getChannelId() {
         return mChannelId;
-    }
-
-    private Libs(Context context,String appkey,String channelId,String flavor) {
-        mContext = context.getApplicationContext();
-        mAppKey = appkey;
-        mChannelId = channelId;
-        mFlavor = flavor;
-    }
-
-    public static Libs get() {
-        return instance;
-    }
-
-    public static void init(Context context,String appkey,String channelId,String flavor) {
-        synchronized (Libs.class) {
-            if (instance == null) {
-                instance = new Libs(context,appkey,channelId,flavor);
-            }
-        }
     }
 
     public Context getContext() {

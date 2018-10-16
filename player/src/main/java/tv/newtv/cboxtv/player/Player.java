@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.player;
 
+import com.newtv.cms.bean.Content;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +40,8 @@ public class Player implements PlayerObserver {
     }
 
     @Override
-    public void onFinish(ProgramSeriesInfo playInfo, int index, int position) {
+    public void onFinish(Content playInfo, int index, int position) {
+        if (observerList == null) return;
         synchronized (this) {
             for (PlayerObserver observer : observerList) {
                 observer.onFinish(playInfo, index, position);
@@ -48,6 +51,7 @@ public class Player implements PlayerObserver {
 
     @Override
     public void onExitApp() {
+        if (observerList == null) return;
         synchronized (this) {
             for (PlayerObserver observer : observerList) {
                 observer.onExitApp();

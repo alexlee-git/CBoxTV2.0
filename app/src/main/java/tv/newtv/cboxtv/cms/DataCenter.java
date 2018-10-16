@@ -1,14 +1,6 @@
 package tv.newtv.cboxtv.cms;
 
-import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.cms.mainPage.model.NavInfoResult;
-import tv.newtv.cboxtv.cms.net.NetClient;
 
 /**
  * 项目名称:         CBoxTV
@@ -21,8 +13,6 @@ public class DataCenter {
 
     private static DataCenter instance;
 
-    public NavInfoResult<List<NavInfoResult.NavInfo>> FirstnavInfoResult;
-
     public static DataCenter getInstance() {
         if (instance == null) {
             synchronized (DataCenter.class) {
@@ -32,32 +22,4 @@ public class DataCenter {
         return instance;
     }
 
-    public void preloadNavigation() {
-        NetClient.INSTANCE.getNavInfoApi()
-                .getNavInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<NavInfoResult<List<NavInfoResult.NavInfo>>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(NavInfoResult<List<NavInfoResult.NavInfo>>
-                                               listNavInfoResult) {
-                        FirstnavInfoResult = listNavInfoResult;
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 }

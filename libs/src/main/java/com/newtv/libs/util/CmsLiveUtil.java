@@ -97,12 +97,9 @@ public final class CmsLiveUtil {
         return format.equals(current);
     }
 
-
     public static boolean isInPlay(String loopTypeStr, String param, String start, String end,
                                    final ViewGroup parent) {
-
         boolean show = false;
-
         if (!TextUtils.isEmpty(start) && !TextUtils.isEmpty(end)) {
 
             long playStart = formatToSeconds(start);

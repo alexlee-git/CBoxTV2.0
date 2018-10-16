@@ -31,7 +31,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        execute<ModelResult<List<TvProgram>>>(Request.program.getCurrentList(appKey, channelid,
+        BuildExecuter<ModelResult<List<TvProgram>>>(Request.program.getCurrentList(appKey, channelid,
                 left, right, pageuuid), object : TypeToken<ModelResult<List<TvProgram>>>() {}.type)
                 .observer(observer)
                 .execute()
@@ -49,7 +49,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        execute<ModelResult<List<TvProgram>>>(Request.program.getHistoryList(appKey, channelid,
+        BuildExecuter<ModelResult<List<TvProgram>>>(Request.program.getHistoryList(appKey, channelid,
                 left, right, pageuuid), object : TypeToken<ModelResult<List<TvProgram>>>() {}.type)
                 .observer(observer)
                 .execute()
@@ -67,7 +67,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        execute<ModelResult<List<TvFigure>>>(Request.program.getTvFigureList(appKey, channelid,
+        BuildExecuter<ModelResult<List<TvFigure>>>(Request.program.getTvFigureList(appKey, channelid,
                 left, right, pageuuid), object : TypeToken<ModelResult<List<TvFigure>>>() {}.type)
                 .observer(observer)
                 .execute()
@@ -85,7 +85,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        execute<ModelResult<List<TvProgram>>>(Request.program.getTvFigureList(appKey, channelid,
+        BuildExecuter<ModelResult<List<TvProgram>>>(Request.program.getTvFigureList(appKey, channelid,
                 left, right, pageuuid), object : TypeToken<ModelResult<List<TvProgram>>>() {}.type)
                 .observer(observer)
                 .execute()

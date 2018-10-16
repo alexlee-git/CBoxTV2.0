@@ -14,10 +14,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -26,7 +26,8 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * Created by gaoleichao on 2018/4/4.
  */
 
-public class DetailsHorizontaVerticallAdapter extends BaseRecyclerAdapter<ProgramsInfo, DetailsHorizontaVerticallAdapter.DetailsHorizontalViewHolder> {
+public class DetailsHorizontaVerticallAdapter extends BaseRecyclerAdapter<SubContent,
+        DetailsHorizontaVerticallAdapter.DetailsHorizontalViewHolder> {
     private static String TAG = "DetailsHorizontalAdapter";
     private Context context;
     private Interpolator mSpringInterpolator;
@@ -46,12 +47,12 @@ public class DetailsHorizontaVerticallAdapter extends BaseRecyclerAdapter<Progra
 
     @Override
     public void onBindViewHolder(DetailsHorizontalViewHolder holder, int position) {
-        ProgramsInfo entity = mList.get(position);
+        SubContent entity = mList.get(position);
         if (entity != null) {
             if (holder.posterIv != null) {
-                if (!TextUtils.isEmpty(entity.getvImage())){
+                if (!TextUtils.isEmpty(entity.getVImage())){
                     holder.posterIv.placeHolder(R.drawable.focus_240_360).hasCorner(true)
-                            .load(entity.getvImage());
+                            .load(entity.getVImage());
                 }else {
                     holder.posterIv.placeHolder(R.drawable.focus_240_360).hasCorner(true)
                             .load(R.drawable.focus_240_360);
@@ -134,17 +135,17 @@ public class DetailsHorizontaVerticallAdapter extends BaseRecyclerAdapter<Progra
                     }
 
                 }else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-                    ProgramsInfo entity = mList.get(getAdapterPosition());
+                    SubContent entity = mList.get(getAdapterPosition());
                     if (entity != null) {
-                        if (TextUtils.isEmpty(entity.getActionType())) {
-                            JumpUtil.detailsJumpActivity(context, entity.getContentType()
-                                    , entity
-                                            .getContentUUID());
-                        } else {
-                            JumpUtil.activityJump(context, entity.getActionType(), entity
-                                    .getContentType(), entity.getContentUUID(), entity
-                                    .getActionUri());
-                        }
+//                        if (TextUtils.isEmpty(entity.getActionType())) {
+//                            JumpUtil.detailsJumpActivity(context, entity.getContentType()
+//                                    , entity
+//                                            .getContentUUID());
+//                        } else {
+//                            JumpUtil.activityJump(context, entity.getActionType(), entity
+//                                    .getContentType(), entity.getContentUUID(), entity
+//                                    .getActionUri());
+//                        }
                     }
                     return true;
                 }

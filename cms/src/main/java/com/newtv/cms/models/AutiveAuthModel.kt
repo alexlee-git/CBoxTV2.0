@@ -1,6 +1,5 @@
 package com.newtv.cms.models
 
-import com.google.gson.reflect.TypeToken
 import com.newtv.cms.BaseModel
 import com.newtv.cms.DataObserver
 import com.newtv.cms.Model
@@ -18,13 +17,13 @@ import com.newtv.libs.bean.AuthBean
  */
 internal class AutiveAuthModel : BaseModel(), IActiveAuth {
     override fun active(bean: ActivateBean, observer: DataObserver<String>) {
-        execute<String>(Request.activeAuth.activate(bean),  null)
+        BuildExecuter<String>(Request.activeAuth.activate(bean),  null)
                 .observer(observer)
                 .execute()
     }
 
     override fun auth(bean: AuthBean, observer: DataObserver<String>) {
-        execute<String>(Request.activeAuth.auth(bean), null)
+        BuildExecuter<String>(Request.activeAuth.auth(bean), null)
                 .observer(observer)
                 .execute()
     }

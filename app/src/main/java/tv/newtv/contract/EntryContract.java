@@ -22,14 +22,14 @@ import org.jetbrains.annotations.Nullable;
  * 创建人:           weihaichao
  * 创建日期:          2018/10/11
  */
-public class SplashContract {
+public class EntryContract {
     public interface View extends ICmsView {
         void bootGuildResult();
     }
 
-    public static class SplashPresenter extends CmsServicePresenter<View> {
+    public static class EntryPresenter extends CmsServicePresenter<View> {
 
-        public SplashPresenter(@NotNull Context context, @NotNull View view) {
+        public EntryPresenter(@NotNull Context context, @NotNull View view) {
             super(context, view);
             getBootGuide();
         }

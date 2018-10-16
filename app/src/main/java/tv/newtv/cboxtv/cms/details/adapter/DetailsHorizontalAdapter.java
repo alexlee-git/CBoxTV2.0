@@ -14,8 +14,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
+
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -24,7 +25,8 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * Created by gaoleichao on 2018/4/4.
  */
 
-public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<ProgramsInfo, DetailsHorizontalAdapter.DetailsHorizontalViewHolder> {
+public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, DetailsHorizontalAdapter
+        .DetailsHorizontalViewHolder> {
     private static String TAG = "DetailsHorizontalAdapter";
     private Context context;
     private Interpolator mSpringInterpolator;
@@ -44,11 +46,11 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<ProgramsInfo, 
 
     @Override
     public void onBindViewHolder(DetailsHorizontalViewHolder holder, int position) {
-        ProgramsInfo entity = mList.get(position);
+        SubContent entity = mList.get(position);
         if (entity != null) {
             if (holder.posterIv != null) {
                 holder.posterIv.placeHolder(R.drawable.focus_384_216).hasCorner(true)
-                        .load(entity.gethImage());
+                        .load(entity.getHImage());
                 holder.mModuleView.setVisibility(View.VISIBLE);
             }
 
@@ -129,15 +131,15 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<ProgramsInfo, 
                     }
 
                 } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-                    ProgramsInfo entity = mList.get(getAdapterPosition());
+                    SubContent entity = mList.get(getAdapterPosition());
                     if (entity != null) {
-                        if (TextUtils.isEmpty(entity.getActionType())) {
-                            JumpUtil.detailsJumpActivity(context, entity.getContentType(),
-                                    entity.getContentUUID(),entity.getSeriesSubUUID());
-                        } else {
-                            JumpUtil.activityJump(context, entity.getActionType(), entity.getContentType(),
-                                    entity.getContentUUID(), entity.getActionUri(),entity.getSeriesSubUUID());
-                        }
+//                        if (TextUtils.isEmpty(entity.getActionType())) {
+//                            JumpUtil.detailsJumpActivity(context, entity.getContentType(),
+//                                    entity.getContentUUID(),entity.getSeriesSubUUID());
+//                        } else {
+//                            JumpUtil.activityJump(context, entity.getActionType(), entity.getContentType(),
+//                                    entity.getContentUUID(), entity.getActionUri(),entity.getSeriesSubUUID());
+//                        }
                     }
                     return true;
                 }else if (keyCode==KeyEvent.KEYCODE_DPAD_LEFT){

@@ -4,21 +4,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.StringUtils;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 
 /**
  * 项目名称:         CBoxTV
@@ -173,6 +163,6 @@ public final class PlayInfoUtil {
     }
 
     public interface ProgramSeriesInfoCallback {
-        void onResult(ProgramSeriesInfo info);
+        void onResult(Content info);
     }
 }

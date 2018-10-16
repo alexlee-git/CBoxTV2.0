@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
@@ -24,7 +25,6 @@ import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 
 /**
  * 项目名称:         CBoxTV
@@ -203,10 +203,10 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                     index = 3;
                     break;
             }
-            String uuid = mAdapter.getItem(getAdapterPosition()).getDatas().get(index).getExtendAttr().get(0).getSeriesSubUUID();
-            if (!TextUtils.isEmpty(uuid)) {
-                JumpUtil.detailsJumpActivity(v.getContext(), Constant.CONTENTTYPE_PS, uuid);
-            }
+//            String uuid = mAdapter.getItem(getAdapterPosition()).getDatas().get(index).getExtendAttr().get(0).getSeriesSubUUID();
+//            if (!TextUtils.isEmpty(uuid)) {
+//                JumpUtil.detailsJumpActivity(v.getContext(), Constant.CONTENTTYPE_PS, uuid);
+//            }
         }
 
         private int getId(String name) {
@@ -214,7 +214,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                     .getPackageName());
         }
 
-        public void setData(String title, List<ProgramsInfo> data) {
+        public void setData(String title, List<SubContent> data) {
             ((TextView) itemView.findViewById(R.id.match_title)).setText(title);
             for (int index = 1; index < 5; index++) {
                 String boxName = "data_" + index;
@@ -227,7 +227,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                     continue;
                 }
 
-                ProgramsInfo programInfo = data.get(index - 1);
+                SubContent programInfo = data.get(index - 1);
                 for (int t = 0; t < ids.length; t++) {
                     String targetname = boxName + "_" + ids[t];
                     int cell_id = getId(targetname);
@@ -236,7 +236,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                         if (cell_target instanceof TextView) {
                             ((TextView) cell_target).setText(getValue(programInfo, t));
                         } else if (cell_target instanceof ImageView) {
-                            if (programInfo != null && !TextUtils.isEmpty(programInfo.getImg())) {
+                            if (programInfo != null && !TextUtils.isEmpty(programInfo.getVImage())) {
                                 Picasso.get()
                                         .load(getValue(programInfo, t))
                                         .into((ImageView) cell_target);
@@ -247,49 +247,49 @@ public class ScoreFragment extends BaseSpecialContentFragment {
             }
         }
 
-        private String getValue(ProgramsInfo info, int index) {
+        private String getValue(SubContent info, int index) {
             if (info == null)
                 return "N/A";
 
             switch (index) {
                 case 0:
-                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
-                        return info.getExtendAttr().get(0).getOrder();
-                    else
+//                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
+//                        return info.getExtendAttr().get(0).getOrder();
+//                    else
                         return "N/A";
                 case 1:
-                    return info.getImg();
+//                    return info.getImg();
                 case 2:
                     return info.getTitle();
                 case 3:
-                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
-                        return info.getExtendAttr().get(0).getMatch();
-                    else
+//                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
+//                        return info.getExtendAttr().get(0).getMatch();
+//                    else
                         return "N/A";
                 case 4:
-                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
-                        return info.getExtendAttr().get(0).getWin();
-                    else
+//                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
+//                        return info.getExtendAttr().get(0).getWin();
+//                    else
                         return "N/A";
                 case 5:
-                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
-                        return info.getExtendAttr().get(0).getDraw();
-                    else
+//                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
+//                        return info.getExtendAttr().get(0).getDraw();
+//                    else
                         return "N/A";
                 case 6:
-                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
-                        return info.getExtendAttr().get(0).getLost();
-                    else
+//                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
+//                        return info.getExtendAttr().get(0).getLost();
+//                    else
                         return "N/A";
                 case 7:
-                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
-                        return info.getExtendAttr().get(0).getGoal();
-                    else
+//                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
+//                        return info.getExtendAttr().get(0).getGoal();
+//                    else
                         return "N/A";
                 case 8:
-                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
-                        return info.getExtendAttr().get(0).getScore();
-                    else
+//                    if (info.getExtendAttr() != null && info.getExtendAttr().size() > 0)
+//                        return info.getExtendAttr().get(0).getScore();
+//                    else
                         return "N/A";
                 default:
                     return "N/A";

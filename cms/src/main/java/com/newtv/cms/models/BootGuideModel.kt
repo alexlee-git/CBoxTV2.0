@@ -1,6 +1,5 @@
 package com.newtv.cms.models
 
-import com.google.gson.reflect.TypeToken
 import com.newtv.cms.BaseModel
 import com.newtv.cms.DataObserver
 import com.newtv.cms.Model
@@ -21,7 +20,7 @@ internal class BootGuideModel : BaseModel(), IBootGuide {
     }
 
     override fun getBootGuide(platform: String, observer: DataObserver<String>) {
-        execute<String>(Request.bootGuide.getServerAddresses(platform), null)
+        BuildExecuter<String>(Request.bootGuide.getServerAddresses(platform), null)
                 .observer(observer)
                 .execute()
     }

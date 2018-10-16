@@ -25,7 +25,6 @@ import java.util.Map;
 import tv.newtv.cboxtv.BgChangManager;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
-import tv.newtv.cboxtv.cms.mainPage.model.INotifyNoPageDataListener;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.player.PlayerConfig;
@@ -33,8 +32,7 @@ import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 
-public class MainListPageManager implements
-        INotifyNoPageDataListener {
+public class MainListPageManager{
 
     private String mCurNavDataFrom;
     private FragmentManager fragmentManager;
@@ -44,7 +42,6 @@ public class MainListPageManager implements
     private RecyclerView mNavBar;
 
     private List<Nav> mNavInfos;
-    private boolean isNoPageData;
     private LooperStaggeredAdapter mViewPagerAdapter;
     private SharedPreferences mSharedPreferences;
     private String currentFocus = "";
@@ -417,15 +414,6 @@ public class MainListPageManager implements
         }
 
         return false;
-    }
-
-    @Override
-    public void notifyNoPageData(boolean flag) {
-        isNoPageData = flag;
-    }
-
-    public boolean isNoPageData() {
-        return isNoPageData;
     }
 
     public boolean isDataFromServer() {

@@ -38,6 +38,7 @@ open class CmsServicePresenter<V : ICmsView>(
         const val SERVICE_HOST: String = Model.MODEL_HOST             // interface-> IHost
         const val SERVICE_SPLASH: String = Model.MODEL_SPLASH         // interface-> ISplash
         const val SERVICE_CORNER: String = Model.MODEL_CORNER         // interface-> ICorner
+        const val SERVICE_CHK_PLAY: String = Model.MODEL_CHK_PLAY         // interface-> IPlayChk
         const val SERVICE_UPVERSTION: String = Model.MODEL_UP_VERSTION         // interface->
         // IUpVersion
     }

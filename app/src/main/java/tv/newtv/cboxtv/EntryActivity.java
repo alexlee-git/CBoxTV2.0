@@ -38,25 +38,25 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
-import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.cms.DataCenter;
 import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
+import tv.newtv.cboxtv.player.ActivityStacks;
 import tv.newtv.cboxtv.player.ad.ADPlayerView;
 import tv.newtv.contract.ActiveAuthContract;
-import tv.newtv.contract.SplashContract;
+import tv.newtv.contract.EntryContract;
 
 /**
  * Created by TCP on 2018/4/12.
  */
 public class EntryActivity extends RxFragmentActivity implements ActiveAuthContract.View,
-        SplashContract.View {
+        EntryContract.View {
     private static final String TAG = "EntryActivity";
     private static final String EXTERNAL = "external";
 
     private ActiveAuthContract.ActiveAuthPresenter mAuthPresenter;
-    private SplashContract.SplashPresenter mSplashPresenter;
+    private EntryContract.EntryPresenter mSplashPresenter;
 
     //广告内容显示
     private ADPlayerView videoView;
@@ -189,7 +189,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         initCNTVLog();
 
         mAuthPresenter = new ActiveAuthContract.ActiveAuthPresenter(getApplicationContext(), this);
-        mSplashPresenter = new SplashContract.SplashPresenter(getApplicationContext(), this);
+        mSplashPresenter = new EntryContract.EntryPresenter(getApplicationContext(), this);
     }
 
     private void initRetryUrls() {
@@ -208,8 +208,6 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
     protected void initView() {
         System.out.print("EntryActivity init");
-
-        DataCenter.getInstance().preloadNavigation();
 
         videoView = findViewById(R.id.splash_video_view);
         imageView = findViewById(R.id.splash_image_view);

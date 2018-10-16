@@ -214,7 +214,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                 if (posterView instanceof RecycleImageView) {
                     recycleImageView = (RecycleImageView) posterView;
                 } else if (posterView instanceof LivePlayView) {
-//                    ((LivePlayView) posterView).setProgramInfo(info);
+                    ((LivePlayView) posterView).setProgramInfo(info);
                     ((LivePlayView) posterView).setUUID(PlayerUUID);
                     recycleImageView = ((LivePlayView) posterView).getPosterImageView();
                 }

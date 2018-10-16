@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.ad.ADHelper;
@@ -43,7 +44,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.player.BaseActivity;
@@ -97,9 +97,9 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     private String leftUUID;
     private String rightUUID;
     private ColumnDetailsAdapter mAdapter;
-    private List<ProgramSeriesInfo> dataList;
+    private List<Content> dataList;
     private boolean isCollect = false;
-    private ProgramSeriesInfo dataInfo;
+    private Content dataInfo;
     private Disposable mDisposable;
     private IAdConstract.IADPresenter adPresenter;
 
@@ -215,22 +215,22 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                 .subscribeOn(Schedulers.io())
                 .compose(this.<ResponseBody>bindToLifecycle())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Function<ResponseBody, ObservableSource<List<ProgramSeriesInfo>>>() {
+                .flatMap(new Function<ResponseBody, ObservableSource<List<Content>>>() {
                     @Override
-                    public ObservableSource<List<ProgramSeriesInfo>> apply(ResponseBody value)
+                    public ObservableSource<List<Content>> apply(ResponseBody value)
                             throws Exception {
                         String data = value.string();
                         JSONObject object = new JSONObject(data);
                         if (object.getInt("errorCode") == 0) {
                             JSONObject obj = object.getJSONObject("data");
                             Gson gson = new Gson();
-                            dataInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                            dataInfo = gson.fromJson(obj.toString(), Content.class);
                             setHeadData(dataInfo);
 //                            basicLoad(dataInfo.gethImage(), ivPage);
                             if (dataInfo.getData() != null && dataInfo.getData().size() > 0) {
-                                ProgramSeriesInfo lis = new ProgramSeriesInfo();
-                                lis.layoutId = 3;
-                                lis.layoutTitle = "合集节目";
+                                Content lis = new Content();
+//                                lis.layoutId = 3;
+//                                lis.layoutTitle = "合集节目";
                                 lis.setData(dataInfo.getData());
                                 dataList.add(lis);
                             }
@@ -241,14 +241,14 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
 
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ProgramSeriesInfo>>() {
+                .subscribe(new Observer<List<Content>>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
                         mDisposable = disposable;
                     }
 
                     @Override
-                    public void onNext(List<ProgramSeriesInfo> columnPageBean) {
+                    public void onNext(List<Content> columnPageBean) {
                         mAdapter.appendToList(columnPageBean);
                         mAdapter.notifyDataSetChanged();
 
@@ -276,9 +276,9 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
             if (object.getInt("errorCode") == 0) {
                 JSONObject obj = object.getJSONObject("data");
                 Gson gson = new Gson();
-                ProgramSeriesInfo info = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
-                info.layoutId = layoutId;
-                info.layoutTitle = title;
+                Content info = gson.fromJson(obj.toString(), Content.class);
+//                info.layoutId = layoutId;
+//                info.layoutTitle = title;
                 dataList.add(info);
             }
         } catch (JSONException e) {
@@ -312,7 +312,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
         }
     }
 
-    private void setHeadData(ProgramSeriesInfo dataInfo) {
+    private void setHeadData(Content dataInfo) {
         mCollectBtn.setSelect(isCollect);
         tvContent.setText(dataInfo.getDescription());
         tvtitle.setText(dataInfo.getTitle());
@@ -385,7 +385,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
 
     }
 
-    private void updateCollect(final ProgramSeriesInfo entity) {
+    private void updateCollect(final Content entity) {
         DBUtil.PutCollect(entity, new DBCallback<String>() {
             @Override
             public void onResult(int code, String result) {

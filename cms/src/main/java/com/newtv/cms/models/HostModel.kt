@@ -32,7 +32,7 @@ internal class HostModel : BaseModel(), IHost {
         }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
-        execute<ModelResult<List<HostProgram>>>(Request.tv.getProgramList(appkey, channelId, left, right,
+        BuildExecuter<ModelResult<List<HostProgram>>>(Request.tv.getProgramList(appkey, channelId, left, right,
                 contentId), object : TypeToken<ModelResult<List<HostProgram>>>() {}.type)
                 .observer(observer)
                 .execute()
@@ -50,10 +50,10 @@ internal class HostModel : BaseModel(), IHost {
         }
 //        val left: String = getLeft(contentId)
 //        val right: String = getRight(contentId)
-//        execute<ModelResult<List<HostListItem>>>(Request.tv.getFigureList(appkey, channelId, left, right,
+//        BuildExecuter<ModelResult<List<HostListItem>>>(Request.tv.getFigureList(appkey, channelId, left, right,
 //                contentId), object : TypeToken<ModelResult<List<HostListItem>>>() {}.type)
 //                .observer(observer)
-//                .execute()
+//                .BuildExecuter()
     }
 
     override fun getType(): String {
@@ -72,7 +72,7 @@ internal class HostModel : BaseModel(), IHost {
         }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
-        execute<ModelResult<List<HostListItem>>>(Request.tv.getTvList(appkey, channelId, left, right,
+        BuildExecuter<ModelResult<List<HostListItem>>>(Request.tv.getTvList(appkey, channelId, left, right,
                 contentId), object : TypeToken<ModelResult<List<HostListItem>>>() {}.type)
                 .observer(observer)
                 .execute()

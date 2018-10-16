@@ -2,14 +2,14 @@ package tv.newtv.cboxtv.player.videoview;
 
 import android.text.TextUtils;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 
 /**
  * 项目名称:         CBoxTV
@@ -23,7 +23,7 @@ public class VPlayCenter {
     public static final int PLAY_SINGLE = 0;
     public static final int PLAY_SERIES = 1;
 
-    private List<ProgramSeriesInfo> programSeriesInfo;
+    private List<Content> programSeriesInfo;
     private int currentIndex = 0;
     private int currentType;
 
@@ -44,7 +44,7 @@ public class VPlayCenter {
      * @return
      */
     private DataStruct getDataStruct(int index) {
-        ProgramSeriesInfo seriesInfo = getCurrentSeriesInfo();
+        Content seriesInfo = getCurrentSeriesInfo();
         DataStruct dataStruct = null;
         if (seriesInfo != null) {
             try {
@@ -53,17 +53,16 @@ public class VPlayCenter {
                     dataStruct = new DataStruct();
                     dataStruct.title = seriesInfo.getTitle();
                     dataStruct.uuid = seriesInfo.getContentUUID();
-                    dataStruct.img = seriesInfo.gethImage();
+                    dataStruct.img = seriesInfo.getHImage();
                     dataStruct.playType = PLAY_SINGLE;
                     currentType = PLAY_SINGLE;
                 } else {
                     if (seriesInfo.getData() != null && seriesInfo.getData().size() > index) {
                         dataStruct = new DataStruct();
-                        ProgramsInfo programsInfo = seriesInfo.getData().get
-                                (index);
+                        SubContent programsInfo = seriesInfo.getData().get(index);
                         dataStruct.title = programsInfo.getTitle();
                         dataStruct.uuid = programsInfo.getContentUUID();
-                        dataStruct.img = programsInfo.gethImage();
+                        dataStruct.img = programsInfo.getHImage();
                         dataStruct.albumId = seriesInfo.getContentUUID();
                         dataStruct.playType = PLAY_SERIES;
                         currentType = PLAY_SERIES;
@@ -129,7 +128,7 @@ public class VPlayCenter {
      *
      * @return
      */
-    public ProgramSeriesInfo getCurrentSeriesInfo() {
+    public Content getCurrentSeriesInfo() {
         if (programSeriesInfo != null && programSeriesInfo.size() > 0) {
             return programSeriesInfo.get(0);
         }
@@ -141,7 +140,7 @@ public class VPlayCenter {
      *
      * @param seriesInfo
      */
-    public void addSeriesInfo(ProgramSeriesInfo seriesInfo) {
+    public void addSeriesInfo(Content seriesInfo) {
         if (seriesInfo == null) {
             return;
         }
@@ -154,7 +153,7 @@ public class VPlayCenter {
         programSeriesInfo.add(seriesInfo);
     }
 
-    public ProgramSeriesInfo getCurrentProgramSeriesInfo() {
+    public Content getCurrentProgramSeriesInfo() {
         if (programSeriesInfo == null) return null;
         if (programSeriesInfo.size() <= currentIndex) return null;
         return programSeriesInfo.get(currentIndex);

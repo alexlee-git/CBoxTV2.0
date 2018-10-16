@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -7,22 +8,24 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.CmsLiveUtil;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUtils;
-
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.squareup.picasso.Picasso;
+
+import org.jetbrains.annotations.NotNull;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
+import tv.newtv.cboxtv.player.contract.LiveContract;
+import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.util.LivePermissionCheckUtil;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.views.TimeDialog;
 
 /**
  * 项目名称:         CBoxTV
@@ -31,20 +34,22 @@ import tv.newtv.cboxtv.views.TimeDialog;
  * 创建人:           weihaichao
  * 创建日期:          2018/4/25
  */
-public class BallPlayerFragment extends BaseSpecialContentFragment {
+public class BallPlayerFragment extends BaseSpecialContentFragment implements LiveContract.View {
     private TextView textTitle;
     private ImageView mImageView;
-    private ProgramsInfo mProgramInfo;
+    private Content mProgramInfo;
     private LivePermissionCheckBean livePermissionCheck;
-    private ProgramSeriesInfo info;
+    private Content info;
     private boolean isDestroyed = false;
+
+    private LiveContract.Presenter livePresenter;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if(mProgramInfo != null){
-            outState.putSerializable("programInfo",mProgramInfo);
+        if (mProgramInfo != null) {
+            outState.putSerializable("programInfo", mProgramInfo);
         }
     }
 
@@ -52,9 +57,9 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        if(savedInstanceState != null){
-            if(savedInstanceState.containsKey("programInfo")){
-                mProgramInfo = (ProgramsInfo) savedInstanceState.getSerializable("programInfo");
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("programInfo")) {
+                mProgramInfo = (Content) savedInstanceState.getSerializable("programInfo");
             }
         }
     }
@@ -79,12 +84,13 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
 
             @Override
             public void onPlayerClick(VideoPlayerView videoPlayerView) {
-                if(!videoPlayerView.isReady()) return;
-                videoPlayerView.EnterFullScreen(getActivity(),true);
+                if (!videoPlayerView.isReady()) return;
+                videoPlayerView.EnterFullScreen(getActivity(), true);
             }
 
             @Override
-            public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+            public void AllPlayComplete(boolean isError, String info, VideoPlayerView
+                    videoPlayerView) {
 
             }
 
@@ -95,20 +101,19 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
         });
         videoPlayerView.requestFocus();
 
-//        mFocusView = view.findViewById(R.id.video_player_focus);
         textTitle = view.findViewById(R.id.id_title);
 
-//        mFocusView.requestFocus();
-//        mFocusView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                videoPlayerView.EnterFullScreen(getActivity(), false);
-//            }
-//        });
+        livePresenter = new LiveContract.LivePresenter(getContext(), this);
+
 
         if (mProgramInfo != null) {
             textTitle.setText(mProgramInfo.getSubTitle());
-            startPlayPermissionsCheck(mProgramInfo);
+            LiveInfo liveInfo = new LiveInfo();
+            liveInfo.setContentUUID(mProgramInfo.getContentUUID());
+            liveInfo.setLiveUrl(mProgramInfo.getLiveUrl());
+            liveInfo.setPlayTimeInfo(CmsLiveUtil.formatToSeconds(mProgramInfo.getPlayStartTime())
+                    , CmsLiveUtil.formatToSeconds(mProgramInfo.getPlayEndTime()));
+            livePresenter.checkLive(liveInfo);
             preData();
         }
     }
@@ -120,21 +125,16 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
 
     @Override
     public void setModuleInfo(ModuleInfoResult infoResult) {
-        mProgramInfo = infoResult.getDatas().get(0).getDatas().get(0);
-        if (UiReady && mProgramInfo != null) {
-            textTitle.setText(mProgramInfo.getSubTitle());
-//            startPlayPermissionsCheck(mProgramInfo);
-            preData();
-        }
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(livePermissionCheck != null){
+        if (livePermissionCheck != null) {
             startPlay();
-        }else {
-            startPlayPermissionsCheck(mProgramInfo);
+        } else {
+//            startPlayPermissionsCheck(mProgramInfo);
         }
     }
 
@@ -150,13 +150,13 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
 
     private void startPlay() {
 //        stopPlay();
-        if(isDestroyed || mProgramInfo == null) return;
+        if (isDestroyed || mProgramInfo == null) return;
 
         if (!isLive()) {
-            ((TextView)contentView.findViewById(R.id.tv_hint)).setText("暂无播放");
+            ((TextView) contentView.findViewById(R.id.tv_hint)).setText("暂无播放");
             mImageView.setVisibility(View.VISIBLE);
             Picasso.get()
-                    .load(mProgramInfo.getImg())
+                    .load(mProgramInfo.getHImage())
                     .into(mImageView);
             return;
         }
@@ -165,9 +165,9 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
             textTitle.setText(mProgramInfo.getTitle());
         }
 
-        timer();
-        videoPlayerView.playLiveVideo(mProgramInfo.getContentUUID(),mProgramInfo.getPlayUrl(),
-                mProgramInfo.getTitle(),0,0);
+
+//        videoPlayerView.playLiveVideo(mProgramInfo.getContentUUID(),mProgramInfo.getPlayUrl(),
+//                mProgramInfo.getTitle(),0,0);
 
     }
 
@@ -183,13 +183,16 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
     }
 
     private boolean isLive() {
-        return !TextUtils.isEmpty(mProgramInfo.getPlayUrl()) && CmsLiveUtil.isInPlay(
-                mProgramInfo.getLiveLoopType(), mProgramInfo.getLiveParam(), mProgramInfo
-                        .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
+//        return !TextUtils.isEmpty(mProgramInfo.getPlayUrl()) && CmsLiveUtil.isInPlay(
+//                mProgramInfo.getLiveLoopType(), mProgramInfo.getLiveParam(), mProgramInfo
+//                        .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
+
+        return false;
     }
 
-    private void startPlayPermissionsCheck(ProgramsInfo programInfo) {
-        LivePermissionCheckUtil.startPlayPermissionsCheck(LivePermissionCheckUtil.createPlayCheckRequest(programInfo)
+    private void startPlayPermissionsCheck(SubContent programInfo) {
+        LivePermissionCheckUtil.startPlayPermissionsCheck(LivePermissionCheckUtil
+                        .createPlayCheckRequest(programInfo)
                 , new LivePermissionCheckUtil.PermissionCheck() {
                     @Override
                     public void onSuccess(LivePermissionCheckBean result) {
@@ -199,15 +202,16 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
                 });
     }
 
-    private void preData(){
-        if(mProgramInfo == null || TextUtils.isEmpty(mProgramInfo.getContentUUID()) || info != null)
+    private void preData() {
+        if (mProgramInfo == null || TextUtils.isEmpty(mProgramInfo.getContentUUID()) || info !=
+                null)
             return;
 
         PlayInfoUtil.getPageInfo(mProgramInfo.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
-                if(info != null){
+            public void onResult(Content info) {
+                if (info != null) {
                     videoPlayerView.setSeriesInfo(info);
                     BallPlayerFragment.this.info = info;
                 }
@@ -215,23 +219,23 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
         });
     }
 
-    private void timer(){
-        LiveTimingUtil.endTime(mProgramInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
-            @Override
-            public void end() {
-//                if(videoPlayerView != null){
-//                    videoPlayerView.setHintText("播放已结束");
-//                    videoPlayerView.setHintTextVisible(View.VISIBLE);
-//                }
-                if(!TextUtils.isEmpty(mProgramInfo.getImg())){
-                    mImageView.setVisibility(View.VISIBLE);
-                    Picasso.get()
-                            .load(mProgramInfo.getImg())
-                            .into(mImageView);
-                }
-                TimeDialog.showBuilder(getContext());
-                stopPlay();
-            }
-        });
+    @Override
+    public void liveChkResult(LiveInfo liveInfo) {
+        videoPlayerView.playLive(liveInfo, false);
+    }
+
+    @Override
+    public void onChkError(String code, String desc) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @NotNull String desc) {
+
     }
 }

@@ -18,13 +18,13 @@ import com.newtv.cms.bean.UpVersion
  */
 internal class UpVersionModel : BaseModel(), IUpVersion {
     override fun getUpVersion(map: Map<String, String>, observer: DataObserver<UpVersion>) {
-        execute<UpVersion>(Request.upVersion.getUpVersion(map), object : TypeToken<UpVersion>() {}.type)
+        BuildExecuter<UpVersion>(Request.upVersion.getUpVersion(map), object : TypeToken<UpVersion>() {}.type)
                 .observer(observer)
                 .execute()
     }
 
     override fun getIsOriented(map: Map<String, String>, observer: DataObserver<Oriented>) {
-        execute<Oriented>(Request.upVersion.getIsOriented(map), object : TypeToken<Oriented>() {}.type)
+        BuildExecuter<Oriented>(Request.upVersion.getIsOriented(map), object : TypeToken<Oriented>() {}.type)
                 .observer(observer)
                 .execute()
     }

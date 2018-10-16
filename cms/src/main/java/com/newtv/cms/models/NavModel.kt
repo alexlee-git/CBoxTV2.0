@@ -24,7 +24,7 @@ class NavModel : BaseModel(), INav {
             return
         }
 
-        execute<ModelResult<List<Nav>>>(Request.nav.getNavInfo(appkey, channelId),
+        BuildExecuter<ModelResult<List<Nav>>>(Request.nav.getNavInfo(appkey, channelId),
                 object : TypeToken<ModelResult<List<Nav>>>() {}.type)
                 .observer(observer)
                 .execute()

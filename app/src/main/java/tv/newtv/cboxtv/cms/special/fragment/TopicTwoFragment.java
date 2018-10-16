@@ -13,14 +13,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
+
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
@@ -30,7 +31,7 @@ import tv.newtv.cboxtv.player.view.popupMenuWidget;
 
 public class TopicTwoFragment extends BaseSpecialContentFragment implements PlayerCallback {
     private ModuleInfoResult moduleInfoResult;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
     private int videoIndex = 0;
     private int playIndex = 0;
     private AiyaRecyclerView news_recycle;
@@ -90,14 +91,14 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         news_recycle.setItemAnimator(null);
         news_recycle.setAlign(AiyaRecyclerView.ALIGN_START);
         news_recycle.setAdapter(adapter);
-        adapter.setOnItemAction(new OnItemAction<ProgramsInfo>() {
+        adapter.setOnItemAction(new OnItemAction<SubContent>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick( ProgramsInfo item, int index) {
+            public void onItemClick( SubContent item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
                 adapter.setThisPosition(index);
@@ -146,13 +147,13 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
     }
 
-    private void onItemClickAction(ProgramsInfo programInfo) {
+    private void onItemClickAction(SubContent programInfo) {
 
         videoPlayerView.beginChange();
         PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
+            public void onResult(Content info) {
                 if (info != null) {
                     mProgramSeriesInfo = info;
                     Log.e("info", info.toString());
@@ -276,8 +277,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
     private class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
-        private List<ProgramsInfo> ModuleItems;
-        private OnItemAction<ProgramsInfo> onItemAction;
+        private List<SubContent> ModuleItems;
+        private OnItemAction<SubContent> onItemAction;
         private String currentUUID;
         private int currentIndex = 0;
         private int thisPosition;
@@ -300,12 +301,12 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
 
 
-        NewsAdapter refreshData(List<ProgramsInfo> datas) {
+        NewsAdapter refreshData(List<SubContent> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        public void setOnItemAction(OnItemAction<ProgramsInfo> programInfoOnItemAction) {
+        public void setOnItemAction(OnItemAction<SubContent> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -324,7 +325,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
         @Override
         public void onBindViewHolder(final NewsViewHolder holder,final int position) {
-            ProgramsInfo moduleItem = getItem(position);
+            SubContent moduleItem = getItem(position);
             setImageView(holder.isPlaying);
 
             if (position == getthisPosition()) {
@@ -358,7 +359,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final ProgramsInfo moduleItem = getItem(holder.getAdapterPosition());
+                    final SubContent moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         title.setText(moduleItem.getSubTitle());
                         videoTitle.setText(moduleItem.getSubTitle());
@@ -389,7 +390,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
         }
 
-        private ProgramsInfo getItem(int position) {
+        private SubContent getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

@@ -20,7 +20,6 @@ import tv.newtv.cboxtv.BgChangManager;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.menu.BGEvent;
-import tv.newtv.cboxtv.cms.mainPage.model.INotifyNoPageDataListener;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 
 /**
@@ -30,7 +29,6 @@ import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 public abstract class BaseFragment extends RxFragment {
     private static final String TAG = "BaseFragment";
     private static final int POST_DELAY = 500;
-    protected INotifyNoPageDataListener mNotifyNoPageDataListener;
     protected boolean isVisible = false;
     private boolean useHint = false;
     private View contentView;
@@ -54,12 +52,6 @@ public abstract class BaseFragment extends RxFragment {
             lazyRunnable = null;
             contentView = null;
         }
-
-        mNotifyNoPageDataListener = null;
-    }
-
-    public void setNotifyNoPageDataListener(INotifyNoPageDataListener l) {
-        mNotifyNoPageDataListener = l;
     }
 
     public void setUseHint(boolean value) {

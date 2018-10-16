@@ -5,12 +5,11 @@ import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-//import com.tencent.bugly.crashreport.CrashReport;
-
-
 import com.bumptech.glide.Glide;
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.FileUtil;
 import com.newtv.libs.util.LogUploadUtils;
@@ -30,7 +29,10 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import com.newtv.libs.db.DataSupport;
+import tv.newtv.cboxtv.player.Player;
+import tv.newtv.cboxtv.player.PlayerObserver;
+
+//import com.tencent.bugly.crashreport.CrashReport;
 
 /**
  * Created by lixin on 2018/1/11.
@@ -59,7 +61,21 @@ public class LauncherApplication extends MultiDexApplication {
         }
 
         AppContext = this.getApplicationContext();
-        Libs.init(this,BuildConfig.APP_KEY,BuildConfig.CHANNEL_ID,BuildConfig.FLAVOR);
+        Libs.init(this, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, BuildConfig.FLAVOR);
+
+        Player.get().attachObserver(new PlayerObserver() {
+            @Override
+            public void onFinish(Content playInfo, int index, int position) {
+
+            }
+
+            @Override
+            public void onExitApp() {
+
+            }
+        });
+
+
         //KeyHelper.init(getApplicationContext());
         initADsdk();
         DataSupport.init(getApplicationContext());
@@ -129,7 +145,7 @@ public class LauncherApplication extends MultiDexApplication {
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
 
-        if(level == TRIM_MEMORY_UI_HIDDEN){
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
             Glide.get(this).clearMemory();
             PicassoBuilder.getBuilder().clear();
         }

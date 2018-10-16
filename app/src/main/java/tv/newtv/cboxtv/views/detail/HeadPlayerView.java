@@ -39,7 +39,6 @@ import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -72,7 +71,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
 //    private boolean isFullScreen = false;
 
-    private ProgramSeriesInfo currentProgramSeriesInfo;
+    private Content currentProgramSeriesInfo;
     private Builder mBuilder;
     private View contentView;
 
@@ -369,15 +368,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         mPresenter = new HeaderViewConstract.HeaderViewPresenter(getContext(), this);
 
-
         mPresenter.requestInfo(mBuilder.contentUUid);
-
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                requestFromServer();
-            }
-        }, 500);
     }
 
     private void checkDataFromDB() {
@@ -551,16 +542,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 .LENGTH_SHORT).show();
     }
 
-    public void setProgramSeriesInfo(ProgramSeriesInfo programSeriesInfo) {
+    public void setProgramSeriesInfo(Content programSeriesInfo) {
         if (TextUtils.isEmpty(programSeriesInfo.getTitle())) {
             if (mInfo != null) {
                 programSeriesInfo.setTitle(mInfo.getTitle());
             }
 
         }
-        if (TextUtils.isEmpty(programSeriesInfo.getvImage())) {
+        if (TextUtils.isEmpty(programSeriesInfo.getVImage())) {
             if (mInfo != null) {
-                programSeriesInfo.setvImage(mInfo.getVImage());
+                programSeriesInfo.setVImage(mInfo.getVImage());
             }
         }
 
@@ -687,10 +678,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (mInfo.getLiveLoopParam() != null) {
-            LiveParam param = CmsUtil.INSTANCE.isLiveTime(mInfo.getLiveLoopParam());
+            LiveParam param = CmsUtil.isLiveTime(mInfo.getLiveLoopParam());
             if (param != null) {
                 //需要直播
-//                        playerView.setSeriesInfo(mInfo);
                 playerView.playLiveVideo(mInfo.getContentUUID(), param.getLiveParam(), mInfo
                         .getTitle(), 0, 0);
                 timer();
@@ -707,11 +697,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     @Override
     public String getContentUUID() {
         return mBuilder.contentUUid;
-    }
-
-    private void requestFromServer() {
-
-
     }
 
     @Override
@@ -815,6 +800,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     @Override
     public void onInfoResult(Content content) {
         mInfo = content;
+        mBuilder.infoResult.onResult(content);
         parseResult();
     }
 
@@ -829,7 +815,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public interface InfoResult {
-        void onResult(ProgramSeriesInfo info);
+        void onResult(Content info);
     }
 
     private static class PlayInfo {

@@ -1,5 +1,6 @@
 package com.newtv.cms
 
+import com.newtv.cms.api.IPlayChk
 import com.newtv.cms.api.IUpVersion
 import com.newtv.cms.service.*
 import com.newtv.libs.HeadersInterceptor
@@ -48,6 +49,7 @@ internal object Request {
     val nav: INavRetro by lazy { retrofit.create(INavRetro::class.java) }
     val content: IContentRetro by lazy { retrofit.create(IContentRetro::class.java) }
     val page: IPageRetro by lazy { retrofit.create(IPageRetro::class.java) }
+    val person: IPersonRetro by lazy { retrofit.create(IPersonRetro::class.java) }
     val category: ICategoryRetro by lazy { retrofit.create(ICategoryRetro::class.java) }
     val corner: ICornerRetro by lazy { retrofit.create(ICornerRetro::class.java) }
     val splash: ISplashRetro by lazy { retrofit.create(ISplashRetro::class.java) }
@@ -58,5 +60,6 @@ internal object Request {
     val clock: IClockRetro by lazy { retrofit.create(IClockRetro::class.java) }
     val bootGuide: IBootGuideRetro by lazy { retrofit.create(IBootGuideRetro::class.java) }
     val activeAuth: IActiveAuthRetro by lazy { retrofit.create(IActiveAuthRetro::class.java) }
+    val playChk: IPlayChkRetro by lazy { retrofit.create(IPlayChkRetro::class.java) }
 
 }

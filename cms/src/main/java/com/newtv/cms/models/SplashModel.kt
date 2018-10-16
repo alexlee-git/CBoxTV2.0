@@ -28,7 +28,7 @@ internal class SplashModel : BaseModel(), ISplash {
             return
         }
 
-        execute<ModelResult<List<Splash>>>(Request.splash.getList(appkey, channelId),
+        BuildExecuter<ModelResult<List<Splash>>>(Request.splash.getList(appkey, channelId),
                 object : TypeToken<ModelResult<List<Splash>>>() {}.type)
                 .observer(observer)
                 .execute()

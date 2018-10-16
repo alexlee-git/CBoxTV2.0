@@ -14,7 +14,7 @@ import com.newtv.libs.Constant;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import tv.newtv.cboxtv.cms.details.model.VideoPlayInfo;
+import com.newtv.libs.bean.VideoPlayInfo;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;

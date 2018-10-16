@@ -14,12 +14,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
 import com.squareup.picasso.Picasso;
 
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
-import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 
 /**
  * Created by slp on 2018/4/19.
@@ -65,10 +64,10 @@ public class ExitPromptLikeAdapter extends BaseRecyclerAdapter<SearchResultInfos
                 public void onClick(View v) {
                     entity = mList.get(position);
 
-                    ProgramsInfo info = new ProgramsInfo();
-                    info.setActionType(entity.getType());
+                    SubContent info = new SubContent();
+//                    info.setActionType(entity.getType());
                     info.setContentUUID(entity.getUUID());
-                    info.setActionUri(entity.getActionUri());
+//                    info.setActionUri(entity.getActionUri());
                     info.setContentType(entity.getContentType());
 //                    JumpUtil.activityJump(mContext,info);
                 }

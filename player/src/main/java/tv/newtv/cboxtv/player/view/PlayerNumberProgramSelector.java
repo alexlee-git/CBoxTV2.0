@@ -16,18 +16,18 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+
 import java.util.List;
 
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
 import tv.newtv.cboxtv.player.PlayerPlayInfoItem;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.player.R;
 
 /**
  * Created by wangkun on 2018/2/7.
  */
 
-public class PlayerNumberProgramSelector extends FrameLayout{
+public class PlayerNumberProgramSelector extends FrameLayout {
 
     private static final String TAG = PlayerNumberProgramSelector.class.getName();
     private static final int DISMISS_VIEW = 3001;
@@ -36,20 +36,21 @@ public class PlayerNumberProgramSelector extends FrameLayout{
 
     private PlayerRecyclerView mPlayerRecyclerView;
     private NumberProgramSelectorAdapter mNumberProgramSelectorAdapter;
-    private AnimationSet mAnimationIn,mAnimationOut;
+    private AnimationSet mAnimationIn, mAnimationOut;
     private NumberProgramSelectorHandler mHandler;
     private int mPlayingIndex;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
 
     public PlayerNumberProgramSelector(@NonNull Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public PlayerNumberProgramSelector(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context,attrs,0);
+        this(context, attrs, 0);
     }
 
-    public PlayerNumberProgramSelector(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public PlayerNumberProgramSelector(@NonNull Context context, @Nullable AttributeSet attrs,
+                                       int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context.getApplicationContext();
         initView(context);
@@ -57,30 +58,66 @@ public class PlayerNumberProgramSelector extends FrameLayout{
     }
 
     private void initView(Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.player_number_program_selector,this);
-        mPlayerRecyclerView = (PlayerRecyclerView) view.findViewById(R.id.player_number_program_selector_recyclerview);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.player_number_program_selector,
+                this);
+        mPlayerRecyclerView = (PlayerRecyclerView) view.findViewById(R.id
+                .player_number_program_selector_recyclerview);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL, false);
         mPlayerRecyclerView.setLayoutManager(linearLayoutManager);
     }
-    private void initData(Context context){
+
+    private void initData(Context context) {
         mHandler = new NumberProgramSelectorHandler();
-        mAnimationIn = (AnimationSet) AnimationUtils.loadAnimation(context,R.anim.seekbar_in);
-        mAnimationOut = (AnimationSet) AnimationUtils.loadAnimation(context,R.anim.seekbar_out);
+        mAnimationIn = (AnimationSet) AnimationUtils.loadAnimation(context, R.anim.seekbar_in);
+        mAnimationOut = (AnimationSet) AnimationUtils.loadAnimation(context, R.anim.seekbar_out);
     }
 
-    public void setProgramSeriesInfo(ProgramSeriesInfo programSeriesInfo, int index) {
+    public void setProgramSeriesInfo(Content programSeriesInfo, int index) {
         Log.i(TAG, "setProgramSeriesInfo: ");
         mProgramSeriesInfo = programSeriesInfo;
         mPlayingIndex = index;
-        if(mNumberProgramSelectorAdapter==null){
-            mNumberProgramSelectorAdapter = new NumberProgramSelectorAdapter(mContext,R.layout.player_number_program_selector_item,programSeriesInfo.getData());
+        if (mNumberProgramSelectorAdapter == null) {
+            mNumberProgramSelectorAdapter = new NumberProgramSelectorAdapter(mContext, R.layout
+                    .player_number_program_selector_item, programSeriesInfo.getData());
             mPlayerRecyclerView.setAdapter(mNumberProgramSelectorAdapter);
-        } else {
-
         }
     }
 
-    class NumberProgramSelectorAdapter extends PlayerRecyclerViewAdapter{
+    public void show() {
+        Log.i(TAG, "show: ");
+        setVisibility(View.VISIBLE);
+        bringToFront();
+        startAnimation(mAnimationIn);
+        mHandler.removeMessages(DISMISS_VIEW);
+        mHandler.sendEmptyMessageDelayed(DISMISS_VIEW, DISMISS_VIEW_DELAY_TIME);
+        NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
+                .SHOWING_NUMBER_PROGRAM_SELECTOR);
+    }
+
+    public void dismiss() {
+        Log.i(TAG, "dismiss: ");
+        mHandler.removeMessages(DISMISS_VIEW);
+
+        setVisibility(View.INVISIBLE);
+        startAnimation(mAnimationOut);
+        mPlayerRecyclerView.scrollToPosition(mPlayingIndex + 9);
+        NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
+                .SHOWING_NO_VIEW);
+    }
+
+    public void release() {
+        Log.i(TAG, "release: ");
+        mPlayingIndex = 0;
+        mProgramSeriesInfo = null;
+        mContext = null;
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
+        }
+    }
+
+    class NumberProgramSelectorAdapter extends PlayerRecyclerViewAdapter {
 
         private List<PlayerPlayInfoItem> datas;
 
@@ -88,14 +125,17 @@ public class PlayerNumberProgramSelector extends FrameLayout{
             super(context, layoutId, datas);
             this.datas = datas;
         }
+
         @Override
         public void onBindViewHolder(PlayerRecylerViewHolder holder, final int position) {
-            Log.i(TAG, "onBindViewHolder: "+position);
-            TextView numberTextView = (TextView) holder.itemView.findViewById(R.id.number_program_selector_item_number);
+            Log.i(TAG, "onBindViewHolder: " + position);
+            TextView numberTextView = (TextView) holder.itemView.findViewById(R.id
+                    .number_program_selector_item_number);
 //            numberTextView.setText(datas.get(position).getPeriods());
-            numberTextView.setText((position+1)+"");
-            ImageView playingImageView = (ImageView) holder.itemView.findViewById(R.id.number_program_selector_item_playing);
-            if(position==mPlayingIndex){
+            numberTextView.setText((position + 1) + "");
+            ImageView playingImageView = (ImageView) holder.itemView.findViewById(R.id
+                    .number_program_selector_item_playing);
+            if (position == mPlayingIndex) {
                 numberTextView.setVisibility(View.INVISIBLE);
                 playingImageView.setVisibility(View.VISIBLE);
             } else {
@@ -107,17 +147,19 @@ public class PlayerNumberProgramSelector extends FrameLayout{
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
                         v.setBackgroundResource(R.drawable.player_program_selector_focused_bg);
-//                        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//                        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f,
+// Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 //                        sa.setDuration(50);
 //                        sa.setFillAfter(true);
 //                        v.startAnimation(sa);
 
                         mHandler.removeMessages(DISMISS_VIEW);
-                        mHandler.sendEmptyMessageDelayed(DISMISS_VIEW,DISMISS_VIEW_DELAY_TIME);
+                        mHandler.sendEmptyMessageDelayed(DISMISS_VIEW, DISMISS_VIEW_DELAY_TIME);
                     } else {
                         v.setBackgroundResource(R.drawable.player_program_selector_unfocused_bg);
 
-//                        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//                        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1f, Animation
+// .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 //                        sa.setDuration(0);
 //                        sa.setFillAfter(true);
 //                        v.startAnimation(sa);
@@ -130,7 +172,8 @@ public class PlayerNumberProgramSelector extends FrameLayout{
                     Log.i(TAG, "onClick: ");
                     mPlayingIndex = position;
                     mNumberProgramSelectorAdapter.notifyDataSetChanged();
-                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(null,mProgramSeriesInfo,false,position,0);
+                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(null,
+                            mProgramSeriesInfo, false, position, 0);
                     dismiss();
                 }
             });
@@ -143,39 +186,11 @@ public class PlayerNumberProgramSelector extends FrameLayout{
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case DISMISS_VIEW:
                     dismiss();
                     break;
             }
-        }
-    }
-    public void show(){
-        Log.i(TAG, "show: ");
-        setVisibility(View.VISIBLE);
-        bringToFront();
-        startAnimation(mAnimationIn);
-        mHandler.removeMessages(DISMISS_VIEW);
-        mHandler.sendEmptyMessageDelayed(DISMISS_VIEW,DISMISS_VIEW_DELAY_TIME);
-        NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView.SHOWING_NUMBER_PROGRAM_SELECTOR);
-    }
-    public void dismiss(){
-        Log.i(TAG, "dismiss: ");
-        mHandler.removeMessages(DISMISS_VIEW);
-
-        setVisibility(View.INVISIBLE);
-        startAnimation(mAnimationOut);
-        mPlayerRecyclerView.scrollToPosition(mPlayingIndex+9);
-        NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView.SHOWING_NO_VIEW);
-    }
-    public void release() {
-        Log.i(TAG, "release: ");
-        mPlayingIndex = 0;
-        mProgramSeriesInfo = null;
-        mContext = null;
-        if(mHandler!=null){
-            mHandler.removeCallbacksAndMessages(null);
-            mHandler=null;
         }
     }
 }

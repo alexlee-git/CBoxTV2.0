@@ -112,9 +112,7 @@ public class NavFragment extends BaseFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mNotifyNoPageDataListener != null) {
-            mNotifyNoPageDataListener.notifyNoPageData(false);
-        }
+
         Log.e(Constant.TAG, "onDestroyView navText : " + param);
     }
 

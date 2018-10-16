@@ -1,11 +1,11 @@
 package tv.newtv.cboxtv.menu.model;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 
 /**
  * Created by TCP on 2018/4/17.
@@ -570,9 +570,9 @@ public class LastMenuBean {
             this.programs = programs;
         }
 
-        public ProgramSeriesInfo convertProgramSeriesInfo() {
+        public Content convertProgramSeriesInfo() {
 
-            ProgramSeriesInfo result = new ProgramSeriesInfo();
+            Content result = new Content();
             result.setContentUUID(contentUUID);
             result.setMAMID(MAMID);
             result.setContentType(contentType);
@@ -587,44 +587,44 @@ public class LastMenuBean {
             result.setVipProductId(vipProductId);
             result.setMovieLevel(movieLevel);
             result.setDefinition(definition);
-            result.setVipNumber(vipNumber);
+//            result.setVipNumber(vipNumber);
             result.setSortType(SortType);
             result.setPlayOrder(playOrder);
-            result.setPermiereTime(premiereTime);
-            result.setPermiereChannel(premiereChannel);
-            result.setPrize(prize);
-            result.setIssueDate(issueDate);
-            result.setLeadingRole(leadingRole);
-            result.setAudiences(audiences);
+//            result.setPermiereTime(premiereTime);
+//            result.setPermiereChannel(premiereChannel);
+//            result.setPrize(prize);
+//            result.setIssueDate(issueDate);
+//            result.setLeadingRole(leadingRole);
+//            result.setAudiences(audiences);
             result.setPresenter(presenter);
-            result.setProducer(producer);
-            result.setTopic(topic);
-            result.setGuest(guest);
-            result.setReporter(reporter);
-            result.setCompetition(competition);
-            result.setSubject(subject);
-            result.setClassPeriod(classPeriod);
-            result.setSinger(singer);
-            result.setScreenwriter(screenwriter);
+//            result.setProducer(producer);
+//            result.setTopic(topic);
+//            result.setGuest(guest);
+//            result.setReporter(reporter);
+//            result.setCompetition(competition);
+//            result.setSubject(subject);
+//            result.setClassPeriod(classPeriod);
+//            result.setSinger(singer);
+//            result.setScreenwriter(screenwriter);
             result.setEnName(enName);
             result.setArea(area);
             result.setDirector(director);
             result.setActors(actors);
             result.setLanguage(language);
             result.setAirtime(airtime);
-            result.sethImage(hImage);
-            result.setvImage(vImage);
+            result.setHImage(hImage);
+            result.setVImage(vImage);
             result.setDescription(description);
-            result.setUUID(UUID);
+            result.setContentUUID(UUID);
             result.setSeriesSum(seriesSum);
             result.setGrade(grade);
-            result.setlSuperScript(lSuperScript);
-            result.setrSuperScript(rSuperSctipt);
-            result.setlSubScript(lSubScript);
-            result.setrSubScript(rSubScript);
-            result.setCpCode(cpCode);
-            result.setStepSize(stepSize);
-            List<ProgramsInfo> data = new ArrayList<>();
+//            result.setlSuperScript(lSuperScript);
+//            result.setrSuperScript(rSuperSctipt);
+//            result.setlSubScript(lSubScript);
+//            result.setrSubScript(rSubScript);
+//            result.setCpCode(cpCode);
+//            result.setStepSize(stepSize);
+            List<SubContent> data = new ArrayList<>();
             int size = programs.size();
             for (int i = 0; i < size; i++) {
                 data.add(programs.get(i).convertProgramsInfo());

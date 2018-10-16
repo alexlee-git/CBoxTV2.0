@@ -8,8 +8,8 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
-import tv.newtv.ActivityStacks;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.ActivityStacks;
 
 /**
  * 项目名称:         CBoxTV

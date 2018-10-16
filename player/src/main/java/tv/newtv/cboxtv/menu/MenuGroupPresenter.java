@@ -16,6 +16,8 @@ import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -27,21 +29,12 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
-import tv.newtv.cboxtv.player.PlayerPlayInfoItem;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.menu.model.DBProgram;
-import tv.newtv.cboxtv.menu.model.HeadMenuBean;
 import tv.newtv.cboxtv.menu.model.LastMenuBean;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -165,7 +158,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 playProgram = program;
                 LastMenuBean.DataBean data = program.getParent().getLastMenuBean().getData();
                 int index = data.getPrograms().indexOf(program);
-                ProgramSeriesInfo programSeriesInfo = program.getParent().getLastMenuBean().getData()
+                Content programSeriesInfo = program.getParent().getLastMenuBean().getData()
                         .convertProgramSeriesInfo();
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context, programSeriesInfo, false, index, 0);
                 menuGroup.gone();
@@ -180,7 +173,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
 
             @Override
-            public void onNext(ProgramsInfo info, int index, boolean isNext) {
+            public void onNext(SubContent info, int index, boolean isNext) {
                 if (isNext) {
                     if (playProgram == null) {
                         return;
@@ -220,7 +213,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
      * @return
      */
     private boolean getProgramSeriesAndContentUUID() {
-        ProgramSeriesInfo programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance()
+        Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance()
                 .getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
 
@@ -231,7 +224,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
 
         if (typeIndex == -1) {
             //单节目
-            programSeries = programSeriesInfo.getProgramSeriesUUIDs();
+            programSeries = programSeriesInfo.getCgContentIDs();
             contentUUID = programSeriesInfo.getContentUUID();
         } else {
             //节目集
@@ -239,10 +232,10 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
             if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > index && index >= 0) {
                 contentUUID = programSeriesInfo.getData().get(index).getContentUUID();
-                actionType = programSeriesInfo.getData().get(index).getActionType();
-                if(TextUtils.isEmpty(programSeries)){
-                    programSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
-                }
+//                actionType = programSeriesInfo.getData().get(index).getActionType();
+//                if(TextUtils.isEmpty(programSeries)){
+//                    programSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
+//                }
             }
         }
 

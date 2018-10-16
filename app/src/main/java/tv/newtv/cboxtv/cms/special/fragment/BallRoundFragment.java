@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.newtv.cms.bean.SubContent;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -19,7 +20,6 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.views.widget.RecycleSpaceDecoration;
 
 /**
@@ -48,14 +48,14 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(LauncherApplication.AppContext,
                 LinearLayoutManager.VERTICAL, false));
         BallRoundAdapter adapter = new BallRoundAdapter();
-        adapter.setOnFocus(new OnItemAction<ProgramsInfo>() {
+        adapter.setOnFocus(new OnItemAction<SubContent>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(ProgramsInfo item,int index) {
+            public void onItemClick(SubContent item,int index) {
 //                JumpUtil.activityJump(LauncherApplication.AppContext,item);
             }
 
@@ -78,26 +78,26 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
     }
 
     private void UpdateUI() {
-        List<ProgramsInfo> infos = mModuleInfoResult.getDatas().get(0).getDatas();
+        List<SubContent> infos = mModuleInfoResult.getDatas().get(0).getDatas();
         ((BallRoundAdapter) recyclerView.getAdapter()).refresh(infos).notifyDataSetChanged();
     }
 
     private static class BallRoundAdapter extends RecyclerView.Adapter<BallRoundViewHolder> {
 
-        private List<ProgramsInfo> mValues;
-        private OnItemAction<ProgramsInfo> onItemFocus;
+        private List<SubContent> mValues;
+        private OnItemAction<SubContent> onItemFocus;
         private String currentUUID;
 
-        void setOnFocus(OnItemAction<ProgramsInfo> onFocus) {
+        void setOnFocus(OnItemAction<SubContent> onFocus) {
             onItemFocus = onFocus;
         }
 
-        BallRoundAdapter refresh(List<ProgramsInfo> value) {
+        BallRoundAdapter refresh(List<SubContent> value) {
             mValues = value;
             return this;
         }
 
-        private ProgramsInfo getItem(int pos) {
+        private SubContent getItem(int pos) {
             if (mValues != null && pos >= 0 && mValues.size() > pos) {
                 return mValues.get(pos);
             }
@@ -113,7 +113,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
 
         @Override
         public void onBindViewHolder(final BallRoundViewHolder holder, int position) {
-            ProgramsInfo programInfo = getItem(position);
+            SubContent programInfo = getItem(position);
             holder.poster.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
@@ -125,7 +125,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
             holder.poster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProgramsInfo info = getItem(holder.getAdapterPosition());
+                    SubContent info = getItem(holder.getAdapterPosition());
                     if(info != null) {
                         currentUUID = info.getContentUUID();
                         onItemFocus.onItemClick(info,holder.getAdapterPosition());
@@ -156,10 +156,10 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
             poster = itemView.findViewById(R.id.round_ball_poster);
         }
 
-        public void setData(ProgramsInfo programInfo, Context mcontext) {
+        public void setData(SubContent programInfo, Context mcontext) {
             int radius=mcontext.getResources().getDimensionPixelOffset(R.dimen.width_4px);
             Picasso.get()
-                    .load(programInfo.getImg())
+                    .load(programInfo.getVImage())
                     .transform(new PosterCircleTransform(mcontext, radius))
                     .into(poster);
         }

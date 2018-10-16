@@ -17,10 +17,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.CdnUrl;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
-import tv.newtv.cboxtv.player.model.CdnInfo;
 import tv.newtv.player.R;
 
 /**
@@ -43,7 +44,7 @@ public class NewTVLauncherPlayerSetting extends FrameLayout implements View.OnKe
     private int mSizeIndex;
 
     private int mSharpnessIndex;
-    private List<CdnInfo> mMediaCDNInfos;
+    private List<CdnUrl> mMediaCDNInfos;
     private PlayerSettingHandler mHandler;
     private AnimationSet mAnimationIn, mAnimationOut;
     private NewTVLauncherPlayer mNewTVLauncherPlayer;
@@ -210,7 +211,7 @@ public class NewTVLauncherPlayerSetting extends FrameLayout implements View.OnKe
         }
     }
 
-    public void setData(List<CdnInfo> mediaCDNInfos, int index) {
+    public void setData(List<CdnUrl> mediaCDNInfos, int index) {
         Log.i(TAG, "setData: ");
         mMediaCDNInfos = mediaCDNInfos;
         mSharpnessIndex = index;

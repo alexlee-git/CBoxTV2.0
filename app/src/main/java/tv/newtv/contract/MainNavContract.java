@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.cms.mainPage.menu;
+package tv.newtv.contract;
 
 import android.content.Context;
 
@@ -22,18 +22,18 @@ import java.util.List;
  * 创建人:           weihaichao
  * 创建日期:          2018/9/27
  */
-class MainContract {
-    interface View extends ICmsView {
+public class MainNavContract {
+    public interface View extends ICmsView {
         void onNavResult(Context context, List<Nav> result);
     }
 
-    interface Presenter extends ICmsPresenter {
+    public interface Presenter extends ICmsPresenter {
         void requestNav();
     }
 
-    static class MainPresenter extends CmsServicePresenter<View> implements Presenter {
+    public static class MainNavPresenter extends CmsServicePresenter<View> implements Presenter {
 
-        MainPresenter(Context context, View view) {
+        public MainNavPresenter(Context context, View view) {
             super(context, view);
         }
 

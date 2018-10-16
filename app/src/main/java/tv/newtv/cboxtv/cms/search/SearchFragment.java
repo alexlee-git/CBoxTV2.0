@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -42,7 +43,6 @@ import tv.newtv.cboxtv.cms.search.view.SearchActivity;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.cms.util.Utils;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 
 //import tv.newtv.cboxtv.cms.net.ApiUtil;
 
@@ -55,7 +55,7 @@ public class SearchFragment extends BaseFragment {
     private String contentId;
     private String actionType;
     private HorizontalRecyclerView hotSearchRecyclerView;
-    private List<ProgramsInfo> mPrograms = new ArrayList<>();
+    private List<SubContent> mPrograms = new ArrayList<>();
 
     private Interpolator mSpringInterpolator;
     private Disposable mDisposable;
@@ -273,9 +273,9 @@ public class SearchFragment extends BaseFragment {
             if (mPrograms == null || mPrograms.size() <= 0) {
                 return;
             }
-            final ProgramsInfo programInfo = mPrograms.get(position);
+            final SubContent programInfo = mPrograms.get(position);
             holder.tv_name.setText(programInfo.getTitle());
-            String url = programInfo.getImg();
+            String url = programInfo.getVImage();
             if (!TextUtils.isEmpty(url)) {
                 Picasso.get().load(url)
                         .transform(new PosterCircleTransform(getContext(), 4))
@@ -304,7 +304,7 @@ public class SearchFragment extends BaseFragment {
                 public void onClick(View view) {
                     try {
                         // TODO 添加类型判断进行跳转
-                        ProgramsInfo program = mPrograms.get(position);
+                        SubContent program = mPrograms.get(position);
 //                        Intent intent = new Intent(getActivity(), DetailsPageActivity.class);
 //                        intent.putExtra("content_type", program.getContentType());
 //                        intent.putExtra("content_uuid", program.getContentUUID());

@@ -11,9 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
@@ -22,7 +23,6 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
@@ -39,12 +39,12 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
  * 创建日期:          2018/4/25
  */
 public class QXDFFragment extends BaseSpecialContentFragment implements
-        OnItemAction<ProgramsInfo>, PlayerCallback {
+        OnItemAction<SubContent>, PlayerCallback {
     private AiyaRecyclerView recyclerView;
     private ModuleInfoResult moduleInfoResult;
     private View downView;
     private int videoIndex = 0;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
 
     @Override
     protected int getVideoPlayIndex() {
@@ -136,12 +136,12 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     @Override
-    public void onItemClick(ProgramsInfo item, final int index) {
+    public void onItemClick(SubContent item, final int index) {
         videoPlayerView.beginChange();
         PlayInfoUtil.getPlayInfo(item.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
+            public void onResult(Content info) {
                 mProgramSeriesInfo = info;
                 if (info != null) {
                     Log.e("info", info.toString());
@@ -212,17 +212,17 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<ProgramsInfo> ModuleItems;
+        private List<SubContent> ModuleItems;
         private String currentUUID;
-        private OnItemAction<ProgramsInfo> mOnItemAction;
+        private OnItemAction<SubContent> mOnItemAction;
         private int currentIndex = 0;
 
-        ShooterAdapter refreshData(List<ProgramsInfo> datas) {
+        ShooterAdapter refreshData(List<SubContent> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        void setOnItemAction(OnItemAction<ProgramsInfo> onItemAction) {
+        void setOnItemAction(OnItemAction<SubContent> onItemAction) {
             mOnItemAction = onItemAction;
         }
 
@@ -242,7 +242,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            ProgramsInfo moduleItem = getItem(position);
+            SubContent moduleItem = getItem(position);
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -258,7 +258,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProgramsInfo moduleItem = getItem(holder.getAdapterPosition());
+                    SubContent moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         currentUUID = moduleItem.getContentUUID();
                         mOnItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -274,7 +274,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 //                holder.poster.setLoadImageUrl(moduleItem.getImg());
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
                 Picasso.get()
-                        .load(moduleItem.getImg())
+                        .load(moduleItem.getVImage())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .into(holder.poster);
                 if (moduleItem.getContentUUID().equals(currentUUID) && position == currentIndex) {
@@ -290,7 +290,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
             }
         }
 
-        private ProgramsInfo getItem(int position) {
+        private SubContent getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

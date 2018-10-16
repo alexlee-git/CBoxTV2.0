@@ -15,10 +15,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.MainLooper;
 
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -128,10 +127,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void enterFullScreen(final Activity activity, boolean isLive) {
-        ProgramSeriesInfo programSeriesInfo = playCenter.getCurrentProgramSeriesInfo();
+        Content programSeriesInfo = playCenter.getCurrentProgramSeriesInfo();
 
         if (isLive && programSeriesInfo != null) {
-            NewTVLauncherPlayerViewManager.getInstance().playLive(programSeriesInfo.getPlayUrl(),
+            NewTVLauncherPlayerViewManager.getInstance().playLive(programSeriesInfo.getLiveUrl(),
                     activity, programSeriesInfo, 0, 0);
         } else {
             EnterFullScreen(activity, false);
@@ -246,7 +245,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         }
     }
 
-    public void setSeriesInfo(ProgramSeriesInfo seriesInfo) {
+    public void setSeriesInfo(Content seriesInfo) {
         if (playCenter != null) {
             playCenter.addSeriesInfo(seriesInfo);
         }

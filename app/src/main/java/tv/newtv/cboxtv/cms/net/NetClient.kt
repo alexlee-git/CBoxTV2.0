@@ -42,7 +42,6 @@ object NetClient {
             .build()
 
 
-    val navInfoApi by lazy { retrofit.create(INavInfoApi::class.java) }
     val clockSyncApi by lazy { retrofit.create(IClockSyncApi::class.java) }
     val pageDataApi by lazy { retrofit.create(IPageDataApi::class.java) }
     val programSeriesInfoApi by lazy { retrofit.create(IProgramSeriesInfoApi::class.java) }

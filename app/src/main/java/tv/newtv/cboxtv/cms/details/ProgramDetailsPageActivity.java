@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.ad.ADHelper;
@@ -50,9 +52,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
-import tv.newtv.cboxtv.cms.details.model.VideoPlayInfo;
+import com.newtv.libs.bean.VideoPlayInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.net.NetClient;
@@ -124,12 +124,12 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
     private ColumnDetailsAdapter mAdapter;
     private Disposable mDisposable;
     private boolean isCollect = false;
-    private List<ProgramSeriesInfo> dataList;
-    private ProgramSeriesInfo dataProgramSeriesInfoInfo;
+    private List<Content> dataList;
+    private Content dataProgramSeriesInfoInfo;
     private String contentUUID, leftUUID, rightUUID;
     private Observable<VideoPlayInfo> mUpdateVideoInfoObservable;
     private int mPlayPosition;
-    private ProgramSeriesInfo dataInfo;
+    private Content dataInfo;
     private IAdConstract.IADPresenter adPresenter;
     private String sqContentuuid;
     private boolean isFirstStart = false;
@@ -291,7 +291,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
                         if (object.getInt("errorCode") == 0) {
                             JSONObject obj = object.getJSONObject("data");
                             Gson gson = new Gson();
-                            dataInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                            dataInfo = gson.fromJson(obj.toString(), Content.class);
                             setHeadData(dataInfo);
                         } else {
                             Toast.makeText(getApplicationContext(), "没有此节目信息", Toast.LENGTH_SHORT).show();
@@ -303,21 +303,22 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
                                         "", "", 0 + "", 6 + "").subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
-                }).flatMap(new Function<ResponseBody, ObservableSource<List<ProgramSeriesInfo>>>() {
+                }).flatMap(new Function<ResponseBody, ObservableSource<List<Content>>>() {
             @Override
-            public ObservableSource<List<ProgramSeriesInfo>> apply(ResponseBody value) throws Exception {
+            public ObservableSource<List<Content>> apply(ResponseBody value) throws Exception {
                 try {
                     String data = value.string();
                     Gson mGson = new Gson();
                     ScreenInfo mScreenInfo = mGson.fromJson(data, ScreenInfo.class);
-                    ProgramSeriesInfo info = new ProgramSeriesInfo();
-                    info.layoutTitle = "相关推荐";
-                    info.layoutId = 4;
-                    List<ProgramsInfo> list = new ArrayList<>();
+                    Content info = new Content();
+//                    info.layoutTitle = "相关推荐";
+//                    info.layoutId = 4;
+                    List<SubContent> list = new ArrayList<>();
                     if (mScreenInfo.getResultList().size() > 0) {
                         for (int i = 0; i < mScreenInfo.getResultList().size(); i++) {
                             ScreenInfo.ResultListBean entity = mScreenInfo.getResultList().get(i);
-                            list.add(new ProgramsInfo(entity.getUUID(), entity.getName(), entity.getContentType(), entity.getHpicurl(), entity.getHpicurl(), "", "", "", "", "", "", "", "", "", entity.getDesc()));
+//                            list.add(new SubContent(entity.getUUID(), entity.getName(), entity
+//                                    .getContentType(), entity.getHpicurl(), entity.getHpicurl(), "", "", "", "", "", "", "", "", "", entity.getDesc()));
                         }
                         info.setData(list);
                         dataList.add(info);
@@ -332,14 +333,14 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
 
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ProgramSeriesInfo>>() {
+                .subscribe(new Observer<List<Content>>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
                         mDisposable = disposable;
                     }
 
                     @Override
-                    public void onNext(List<ProgramSeriesInfo> columnPageBean) {
+                    public void onNext(List<Content> columnPageBean) {
                         mAdapter.appendToList(columnPageBean);
                         mAdapter.notifyDataSetChanged();
                         mRecyclerView.setHasFixedSize(true);
@@ -361,7 +362,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
     }
 
 
-    private void setHeadData(ProgramSeriesInfo dataInfo) {
+    private void setHeadData(Content dataInfo) {
         String star = mAdapter.getInfalteContent(dataInfo.getDirector()) + mAdapter.getInfalteContent(dataInfo.getActors());
         String mStar = mAdapter.getsplit(star);
         detailStarTv.setText(mStar);
@@ -389,9 +390,9 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
             if (object.getInt("errorCode") == 0) {
                 JSONObject obj = object.getJSONObject("data");
                 Gson gson = new Gson();
-                ProgramSeriesInfo info = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
-                info.layoutId = layoutId;
-                info.layoutTitle = title;
+                Content info = gson.fromJson(obj.toString(), Content.class);
+//                info.layoutId = layoutId;
+//                info.layoutTitle = title;
                 dataList.add(info);
 
             }
@@ -442,13 +443,13 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
                 }).excute();
     }
 
-    private void updateCollect(final ProgramSeriesInfo entity) {
+    private void updateCollect(final Content entity) {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
         contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-        contentValues.put(DBConfig.IMAGEURL, entity.getvImage());
+        contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
         Log.e("MM", "收藏=" + entity.toString());
         contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
@@ -548,7 +549,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
             contentValues.put(DBConfig.CONTENTUUID, dataInfo.getContentUUID());
             contentValues.put(DBConfig.CONTENTTYPE, dataInfo.getContentType());
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-            contentValues.put(DBConfig.IMAGEURL, dataInfo.gethImage());
+            contentValues.put(DBConfig.IMAGEURL, dataInfo.getHImage());
             contentValues.put(DBConfig.TITLE_NAME, dataInfo.getTitle());
             contentValues.put(DBConfig.PLAYPOSITION, mVideoView.getCurrentPosition());
             contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());

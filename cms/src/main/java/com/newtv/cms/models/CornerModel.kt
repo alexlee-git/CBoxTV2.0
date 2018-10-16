@@ -26,7 +26,7 @@ internal class CornerModel : BaseModel(), ICorner {
             observer.onError("AppKey or ChannelCode is Empty")
             return
         }
-        execute<ModelResult<List<Corner>>>(Request.corner.getCorner(appkey, channelCode),
+        BuildExecuter<ModelResult<List<Corner>>>(Request.corner.getCorner(appkey, channelCode),
                 object : TypeToken<ModelResult<List<Corner>>>() {}.type)
                 .observer(observer)
                 .execute()

@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.ad.ADHelper;
@@ -28,7 +30,6 @@ import com.newtv.libs.ad.IAdConstract;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.PageHelper;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.RxBus;
 
@@ -54,7 +55,6 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
 import tv.newtv.cboxtv.cms.details.adapter.EpisodeAdapter;
 import tv.newtv.cboxtv.cms.details.adapter.ProgrameSeriesAdapter;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
@@ -140,12 +140,12 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     private PageHelper mPageDaoImpl;
     private int mIndex = 0;
     private int mPlayPosition = 0;
-    private ProgramSeriesInfo dataInfo;
+    private Content dataInfo;
     private boolean isFirstStart = false;
     //   private Observable<VideoPlayInfo> mUpdateVideoInfoObservable;
     private Disposable mDisposable;
     private ADPresenter adPresenter;
-    private List<ProgramSeriesInfo> dataList;
+    private List<Content> dataList;
     private long lastClickTime = 0;
     //    private Handler handler = new Handler(this);
     private int mPosition;
@@ -457,7 +457,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                             if (object.getInt("errorCode") == 0) {
                                 JSONObject obj = object.getJSONObject("data");
                                 Gson gson = new Gson();
-                                dataInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                                dataInfo = gson.fromJson(obj.toString(), Content.class);
                                 if (dataInfo != null) {
                                     //              第一行是 地区、年代、一级分类  第二行是 主持人、导演、主演，所有人员名称就是
                                     // 连续一行显示，用竖线前后空格区分。
@@ -488,7 +488,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                                     }
                                     if (mPageDaoImpl == null) {
                                         mVideoView.setSeriesInfo(dataInfo);
-                                        mPageDaoImpl = new PageHelper<ProgramsInfo>
+                                        mPageDaoImpl = new PageHelper<SubContent>
                                                 (dataInfo.getData(), 30);
                                     }
                                     for (int i = 1; i < mPageDaoImpl.getPageNum() + 1; i++) {
@@ -551,17 +551,20 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     String data = responseBody.string();
                     Gson mGson = new Gson();
                     ScreenInfo mScreenInfo = mGson.fromJson(data, ScreenInfo.class);
-                    ProgramSeriesInfo info = new ProgramSeriesInfo();
-                    info.layoutTitle = "相关推荐";
-                    info.layoutId = 4;
-                    List<ProgramsInfo> list = new ArrayList<>();
+                    Content info = new Content();
+//                    info.layoutTitle = "相关推荐";
+//                    info.layoutId = 4;
+                    List<SubContent> list = new ArrayList<>();
                     if (mScreenInfo != null && mScreenInfo.getResultList().size() > 0) {
                         for (int i = 0; i < mScreenInfo.getResultList().size(); i++) {
                             ScreenInfo.ResultListBean entity = mScreenInfo.getResultList().get(i);
-                            list.add(new ProgramsInfo(entity.getUUID(), entity
-                                    .getName(), entity.getContentType(), entity.getHpicurl(),
-                                    entity.getHpicurl(), "", "", "", "", "", "", "", "", "",
-                                    entity.getDesc()));
+                            SubContent subContent = new SubContent();
+                            subContent.setContentID(entity.getUUID());
+                            subContent.setTitle(entity.getName());
+                            subContent.setContentType(entity.getContentType());
+                            subContent.setHImage(entity.getHpicurl());
+                            subContent.setVImage(entity.getHpicurl());
+                            list.add(subContent);
                         }
                         if (list.size() > 0) {
                             info.setData(list);
@@ -671,7 +674,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
     }
 
-    private void updateCollect(ProgramSeriesInfo entity) {
+    private void updateCollect(Content entity) {
         DBUtil.PutCollect(entity, new DBCallback<String>() {
             @Override
             public void onResult(final int code, String result) {
@@ -835,11 +838,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
 
-    public String getPageText(List<ProgramsInfo> allData, int mPage) {
+    public String getPageText(List<SubContent> allData, int mPage) {
         int allNum = allData.size();
         int pageNum = mPageDaoImpl.getPageNum();
         int perPage = 30;
-        List<ProgramsInfo> data = new ArrayList<>();
+        List<SubContent> data = new ArrayList<>();
         if (mPage == 1) {
             if (allNum <= perPage) {
                 data = allData.subList(0, allNum);

@@ -30,7 +30,7 @@ internal class CategoryModel : BaseModel(), ICategory {
             observer.onError("AppKey or ChannelCode is Empty")
             return
         }
-        execute<ModelResult<List<CategoryTreeNode>>>(
+        BuildExecuter<ModelResult<List<CategoryTreeNode>>>(
                 Request.category.getCategoryTree(appkey, channelCode),
                 object : TypeToken<ModelResult<List<CategoryTreeNode>>>() {}.type)
                 .observer(observer)
@@ -49,7 +49,7 @@ internal class CategoryModel : BaseModel(), ICategory {
         }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
-        execute<ModelResult<List<CategoryItem>>>(Request.category.getCategoryContent(appkey,
+        BuildExecuter<ModelResult<List<CategoryItem>>>(Request.category.getCategoryContent(appkey,
                 channelCode, left, right, contentId),
                 object : TypeToken<ModelResult<List<CategoryItem>>>() {}.type)
                 .observer(observer)

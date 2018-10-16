@@ -13,10 +13,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
@@ -33,7 +34,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
@@ -54,7 +54,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
 
     private AiyaRecyclerView recyclerView;
     private ModuleInfoResult mModuleInfoResult;
-    private List<ProgramsInfo> pageInfos;
+    private List<SubContent> pageInfos;
     private FrameLayout viewStubCompat;
     private String currentUUID;
     private CurrentPlayImageViewWorldCup currentView;
@@ -67,7 +67,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
     private String defaultFrame;
 
     private PlayInfo playInfo;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
 
 
     private Runnable selectRunnable = new Runnable() {
@@ -181,7 +181,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
             if (moduleItems == null || moduleItems.size() == 0) {
                 return;
             }
-            final List<ProgramsInfo> programInfos = moduleItems.get(0).getDatas();
+            final List<SubContent> programInfos = moduleItems.get(0).getDatas();
             if (programInfos == null || programInfos.size() == 0) {
                 return;
             }
@@ -212,7 +212,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
             if (targetView != null) {
                 viewStubCompat.addView(targetView);//
                 for (int index = 0; index < size; index++) {
-                    ProgramsInfo programInfo = programInfos.get(index);
+                    SubContent programInfo = programInfos.get(index);
                     String frameId = "frame_" + index;
                     if (programInfo.getContentUUID().equals(defaultPlayUUID)) {
                         defaultFrame = frameId;
@@ -253,7 +253,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
                         currentPlayImageView.setIsPlaying(true, true);
                     }
                     Picasso.get()
-                            .load(programInfo.getImg())
+                            .load(programInfo.getVImage())
                             .into(currentPlayImageView);
                 }
 
@@ -271,11 +271,11 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
     }
 
     private void play(final int index) {
-        ProgramsInfo programInfo = pageInfos.get(index);
+        SubContent programInfo = pageInfos.get(index);
         PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
+            public void onResult(Content info) {
                 hintText.setVisibility(View.GONE);
                 mProgramSeriesInfo = info;
                 createPlayerView();
@@ -381,7 +381,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
     // TODO updateUI
     private void updateUI() {
         int defaultIndex = 0;
-        List<ProgramsInfo> values = mModuleInfoResult.getDatas().get(0).getDatas();
+        List<SubContent> values = mModuleInfoResult.getDatas().get(0).getDatas();
         if (getArguments() != null && getArguments().containsKey(Constant.DEFAULT_UUID)) {
             String uuid = getArguments().getString(Constant.DEFAULT_UUID);
             String focusParam = getArguments().getString(Constant.FOCUSPARAM);
@@ -407,7 +407,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
                     playIndexUUID = null;
                 }
 
-                for (ProgramsInfo programInfo : values) {
+                for (SubContent programInfo : values) {
                     if (programInfo.getContentUUID().equals(defaultUUID)) {
                         defaultIndex = values.indexOf(programInfo);
                     }
@@ -541,11 +541,11 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
     private static class ScheduleAdapter extends RecyclerView.Adapter<ScheduleViewHolder> {
         public String currentUUID;
         private OnItemClick clickListen;
-        private List<ProgramsInfo> programInfos;
+        private List<SubContent> programInfos;
         private ScheduleViewHolder currentViewHolder;
         private String mDefaultFocus;
 
-        ScheduleAdapter refresh(List<ProgramsInfo> value, String defaultFocus) {
+        ScheduleAdapter refresh(List<SubContent> value, String defaultFocus) {
             programInfos = value;
             mDefaultFocus = defaultFocus;
             return this;
@@ -575,7 +575,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
             clickListen = onItemClick;
         }
 
-        private ProgramsInfo getItem(int pos) {
+        private SubContent getItem(int pos) {
             if (programInfos != null && pos >= 0 && programInfos.size() > pos) {
                 return programInfos.get(pos);
             }
@@ -591,7 +591,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
 
         @Override
         public void onBindViewHolder(final ScheduleViewHolder holder, int position) {
-            ProgramsInfo programInfo = getItem(position);
+            SubContent programInfo = getItem(position);
             if (programInfo != null) {
                 holder.setOnClickListen(new OnItemClick() {
                     @Override
@@ -641,7 +641,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
     private static class ScheduleViewHolder extends RecyclerView.ViewHolder {
 
         private TextView title;
-        private ProgramsInfo mProgramInfo;
+        private SubContent mProgramInfo;
         private ScheduleAdapter mAdapter;
 
         ScheduleViewHolder(View itemView, ScheduleAdapter adapter) {
@@ -669,7 +669,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
             });
         }
 
-        public void setData(ProgramsInfo programInfo) {
+        public void setData(SubContent programInfo) {
             mProgramInfo = programInfo;
             title.setText(programInfo.getTitle());
             if (programInfo.getContentUUID().equals(mAdapter.currentUUID)) {

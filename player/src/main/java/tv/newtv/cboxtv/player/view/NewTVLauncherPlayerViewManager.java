@@ -7,9 +7,10 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.newtv.cms.bean.Content;
+
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 
 /**
  * Created by wangkun on 2018/1/16.
@@ -22,7 +23,7 @@ public class NewTVLauncherPlayerViewManager {
     private NewTVLauncherPlayerView mNewTVLauncherPlayerView;
     private Context mPlayerPageContext; //播放activity实例
 
-    private ProgramSeriesInfo programSeriesInfo;
+    private Content programSeriesInfo;
     private int typeIndex = -1;
 
     private long currentPlayer = 0;
@@ -111,7 +112,7 @@ public class NewTVLauncherPlayerViewManager {
 
 
     // add by lxf for living streaming
-    public void playLive(String liveUrl, Context context, ProgramSeriesInfo programSeriesInfo, int
+    public void playLive(String liveUrl, Context context, Content programSeriesInfo, int
             index, int position) {
         isLive = true;
         this.programSeriesInfo = programSeriesInfo;
@@ -121,12 +122,12 @@ public class NewTVLauncherPlayerViewManager {
 
 
     // add by lxf for living streaming
-    public void playLive(String liveUrl, Context context, ProgramSeriesInfo programSeriesInfo,
+    public void playLive(String liveUrl, Context context, Content programSeriesInfo,
                          boolean isNeedStartActivity, int index, int position) {
         playLive(liveUrl, "", context, programSeriesInfo, isNeedStartActivity, index, position);
     }
 
-    public void playLive(String liveUrl, String contentUUid, Context context, ProgramSeriesInfo
+    public void playLive(String liveUrl, String contentUUid, Context context, Content
             programSeriesInfo, boolean
                                  isNeedStartActivity, int index, int position) {
         Log.i(TAG, "playLive: ");
@@ -138,21 +139,21 @@ public class NewTVLauncherPlayerViewManager {
             mNewTVLauncherPlayerViewManager.init(context);
         }
         if (mNewTVLauncherPlayerView != null) {
-            mNewTVLauncherPlayerView.playLive(liveUrl, contentUUid, programSeriesInfo,
-                    isNeedStartActivity,
-                    index, position);
+//            mNewTVLauncherPlayerView.playLive(liveUrl, contentUUid, programSeriesInfo,
+//                    isNeedStartActivity,
+//                    index, position);
         } else {
             Log.i(TAG, "playLive: mNewTVLauncherPlayerView==null");
 
         }
     }
 
-    public void playProgramSeries(Context context, ProgramSeriesInfo programSeriesInfo, int
+    public void playProgramSeries(Context context, Content programSeriesInfo, int
             index, int position) {
         playProgramSeries(context, programSeriesInfo, true, index, position);
     }
 
-    public void playProgramSeries(Context context, ProgramSeriesInfo programSeriesInfo, boolean
+    public void playProgramSeries(Context context, Content programSeriesInfo, boolean
             isNeedStartActivity, int index, int position) {
         Log.i(TAG, "playProgramSeries: ");
         if (programSeriesInfo == null || programSeriesInfo.getData() == null || programSeriesInfo
@@ -180,7 +181,7 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
-    public void playProgramSingle(Context context, ProgramSeriesInfo programDetailInfo, int
+    public void playProgramSingle(Context context, Content programDetailInfo, int
             position, boolean openActivity) {
         Log.i(TAG, "playProgramSingle: ");
         if (programDetailInfo == null) {
@@ -300,7 +301,7 @@ public class NewTVLauncherPlayerViewManager {
         return -1;
     }
 
-    public ProgramSeriesInfo getProgramSeriesInfo() {
+    public Content getProgramSeriesInfo() {
         return programSeriesInfo;
     }
 
@@ -321,7 +322,7 @@ public class NewTVLauncherPlayerViewManager {
         return false;
     }
 
-    public void setContinuePlay(Context context, ProgramSeriesInfo mProgramSeriesInfo,
+    public void setContinuePlay(Context context, Content mProgramSeriesInfo,
                                 NewTVLauncherPlayerView
                                         .PlayerViewConfig config,
                                 int position) {

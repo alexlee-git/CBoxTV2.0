@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.Utils;
 
 import com.newtv.libs.db.DBCallback;
@@ -42,30 +41,6 @@ public class DBUtil {
      * @param entity
      * @param callback
      */
-    public static void AddSubcribe(ProgramSeriesInfo entity, DBCallback<String> callback) {
-        //TODO 写入本地数据库 历史记录
-        ContentValues contentValues = new ContentValues();
-        if (entity.getContentUUID() != null) {
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
-        }
-        if (entity.getContentType() != null) {
-            contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
-        }
-        contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-        contentValues.put(DBConfig.IMAGEURL, entity.getvImage());
-        contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
-        contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-        DataSupport.insertOrReplace(DBConfig.SUBSCRIBE_TABLE_NAME)
-                .withValue(contentValues)
-                .withCallback(callback).excute();
-    }
-
-    /**
-     * 添加订阅
-     *
-     * @param entity
-     * @param callback
-     */
     public static void AddSubcribe(Content entity, DBCallback<String> callback) {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
@@ -83,6 +58,8 @@ public class DBUtil {
                 .withValue(contentValues)
                 .withCallback(callback).excute();
     }
+
+
 
     /**
      * 检查是否属于订阅
@@ -132,28 +109,6 @@ public class DBUtil {
      * @param entity
      * @param callback
      */
-    public static void PutCollect(ProgramSeriesInfo entity, DBCallback<String> callback) {
-        if (entity != null) {
-            //TODO 写入本地数据库 历史记录
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
-            contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
-            contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-            contentValues.put(DBConfig.IMAGEURL, entity.getvImage());
-            contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
-            contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-            DataSupport.insertOrReplace(DBConfig.COLLECT_TABLE_NAME)
-                    .withValue(contentValues)
-                    .withCallback(callback).excute();
-        }
-
-    }
-
-    /**
-     * 更新收藏
-     * @param entity
-     * @param callback
-     */
     public static void PutCollect(Content entity, DBCallback<String> callback) {
         if (entity != null) {
             //TODO 写入本地数据库 历史记录
@@ -171,7 +126,7 @@ public class DBUtil {
 
     }
 
-    public static void addHistory(ProgramSeriesInfo mInfo, int index, int Position, DBCallback<String>
+    public static void addHistory(Content mInfo, int index, int Position, DBCallback<String>
             callback) {
         if (mInfo == null) {
             return;
@@ -182,8 +137,8 @@ public class DBUtil {
             contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
         }
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-        if (!TextUtils.isEmpty(mInfo.getvImage())) {
-            contentValues.put(DBConfig.IMAGEURL, mInfo.getvImage());
+        if (!TextUtils.isEmpty(mInfo.getVImage())) {
+            contentValues.put(DBConfig.IMAGEURL, mInfo.getVImage());
         }
         if (!TextUtils.isEmpty(mInfo.getTitle())) {
             contentValues.put(DBConfig.TITLE_NAME, mInfo.getTitle());
@@ -194,7 +149,7 @@ public class DBUtil {
         if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
             if (mInfo.getData()!=null&&mInfo.getData().size()!=0){
                 contentValues.put(DBConfig.PLAYID,mInfo.getData().get(index).getContentUUID());
-                seriesUUID = mInfo.getData().get(index).getSeriesSubUUID();
+//                seriesUUID = mInfo.getData().get(index).getSeriesSubUUID();
             }
         }
 
@@ -216,7 +171,7 @@ public class DBUtil {
                 .withCallback(callback).excute();
     }
 
-    public static void addAttention(ProgramSeriesInfo entity,DBCallback<String> callback){
+    public static void addAttention(Content entity,DBCallback<String> callback){
         //TODO 写入本地数据库 历史记录
         if (entity==null){
             return;
@@ -228,7 +183,7 @@ public class DBUtil {
         if (!TextUtils.isEmpty(entity.getContentType())){
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
         }
-        contentValues.put(DBConfig.IMAGEURL, entity.getvImage());
+        contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
         contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());

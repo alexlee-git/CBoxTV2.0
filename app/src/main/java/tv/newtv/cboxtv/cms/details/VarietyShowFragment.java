@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
@@ -47,9 +49,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
-import tv.newtv.cboxtv.cms.details.model.VideoPlayInfo;
+import com.newtv.libs.bean.VideoPlayInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
@@ -113,8 +113,8 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
     private ColumnDetailsAdapter mAdapter;
     private Disposable mDisposable;
     private boolean isCollect = false;
-    private List<ProgramSeriesInfo> dataList;
-    private ProgramSeriesInfo dataInfo;
+    private List<Content> dataList;
+    private Content dataInfo;
     private String contentUUID, leftUUID, rightUUID;
     private Observable<VideoPlayInfo> mUpdateVideoInfoObservable;
     private int mPlayPosition = 0;
@@ -310,17 +310,17 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                             JSONObject obj = object.getJSONObject("data");
                             Gson gson = new Gson();
 
-                            dataInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                            dataInfo = gson.fromJson(obj.toString(), Content.class);
                             if (dataInfo != null) {
                                 String playOrder = dataInfo.getPlayOrder();
                                 if (playOrder.equals("0")) {
-                                    List<ProgramsInfo> programsInfoList =
+                                    List<SubContent> programsInfoList =
                                             dataInfo.getData();
                                     Collections.reverse(programsInfoList);// 反转List列表中元素的顺序
                                     dataInfo.setData(programsInfoList);
                                 }
-                                dataInfo.layoutId = 2;
-                                dataInfo.layoutTitle = "播放列表";
+//                                dataInfo.layoutId = 2;
+//                                dataInfo.layoutTitle = "播放列表";
                                 dataList.add(dataInfo);
                                 setHeadData(dataInfo);
 
@@ -340,9 +340,9 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                                         "", "", 0 + "", 6 + "").subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread());
                     }
-                }).flatMap(new Function<ResponseBody, ObservableSource<List<ProgramSeriesInfo>>>() {
+                }).flatMap(new Function<ResponseBody, ObservableSource<List<Content>>>() {
             @Override
-            public ObservableSource<List<ProgramSeriesInfo>> apply(ResponseBody value) throws
+            public ObservableSource<List<Content>> apply(ResponseBody value) throws
                     Exception {
                 addData(value.string(), 4, "相关推荐");
                 return Observable.just(dataList);
@@ -351,14 +351,14 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
 
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ProgramSeriesInfo>>() {
+                .subscribe(new Observer<List<Content>>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
                         mDisposable = disposable;
                     }
 
                     @Override
-                    public void onNext(List<ProgramSeriesInfo> columnPageBean) {
+                    public void onNext(List<Content> columnPageBean) {
                         mAdapter.appendToList(columnPageBean);
                         mAdapter.notifyDataSetChanged();
                     }
@@ -378,7 +378,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                 });
     }
 
-    private void setHeadData(ProgramSeriesInfo dataInfo) {
+    private void setHeadData(Content dataInfo) {
         String star = mAdapter.getInfalteContent(dataInfo.getDirector()) + mAdapter
                 .getInfalteContent(dataInfo.getActors());
         String mStar = mAdapter.getsplit(star);
@@ -409,16 +409,17 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
         if (title.equals("相关推荐")) {
             Gson mGson = new Gson();
             ScreenInfo mScreenInfo = mGson.fromJson(data, ScreenInfo.class);
-            ProgramSeriesInfo infoRecommdend = new ProgramSeriesInfo();
-            infoRecommdend.layoutTitle = "相关推荐";
-            infoRecommdend.layoutId = 4;
-            List<ProgramsInfo> list = new ArrayList<>();
+            Content infoRecommdend = new Content();
+//            infoRecommdend.layoutTitle = "相关推荐";
+//            infoRecommdend.layoutId = 4;
+            List<SubContent> list = new ArrayList<>();
             if (mScreenInfo != null && mScreenInfo.getResultList().size() > 0) {
                 for (int i = 0; i < mScreenInfo.getResultList().size(); i++) {
                     ScreenInfo.ResultListBean entity = mScreenInfo.getResultList().get(i);
-                    list.add(new ProgramsInfo(entity.getUUID(), entity.getName
-                            (), entity.getContentType(), entity.getHpicurl(), entity.getHpicurl()
-                            , "", "", "", "", "", "", "", "", "", entity.getDesc()));
+//                    list.add(new SubContent( entity.getUUID(), entity.getName
+//                            (), entity.getContentType(), entity.getHpicurl(), entity
+//                            .getHpicurl()
+//                            , "", "", "", "", "", "", "", "", "", entity.getDesc()));
                 }
                 if (list.size() != 0) {
                     infoRecommdend.setData(list);
@@ -475,12 +476,12 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                 }).excute();
     }
 
-    private void updateCollect(final ProgramSeriesInfo entity) {
+    private void updateCollect(final Content entity) {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
         contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
-        contentValues.put(DBConfig.IMAGEURL, entity.getvImage());
+        contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
         contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
@@ -623,7 +624,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
             contentValues.put(DBConfig.CONTENTUUID, dataInfo.getContentUUID());
             contentValues.put(DBConfig.CONTENTTYPE, dataInfo.getContentType());
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-            contentValues.put(DBConfig.IMAGEURL, dataInfo.getvImage());
+            contentValues.put(DBConfig.IMAGEURL, dataInfo.getVImage());
             contentValues.put(DBConfig.TITLE_NAME, dataInfo.getTitle());
             contentValues.put(DBConfig.PLAYINDEX, mIndex + "");
             contentValues.put(DBConfig.PLAYPOSITION, mVideoView.getCurrentPosition());

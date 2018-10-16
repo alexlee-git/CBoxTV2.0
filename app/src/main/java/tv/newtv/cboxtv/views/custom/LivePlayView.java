@@ -17,14 +17,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.LiveParam;
+import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.Video;
+import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
-import com.newtv.libs.util.CmsLiveUtil;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUtils;
-
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
@@ -32,11 +32,12 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.util.LivePermissionCheckUtil;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
+import tv.newtv.cboxtv.player.view.VideoFrameLayout;
 
 /**
  * 项目名称:         CBoxTV
@@ -64,10 +65,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private TextView centerTextView;
     private ImageView LoadingView;
     private Animation loadingAnimation;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
     private PlayInfo mPlayInfo;
     private int currentMode = MODE_IMAGE;
-    private ProgramsInfo mProgramInfo;
+    private Program mProgramInfo;
 
     private boolean isPrepared = false;
     private boolean isFullScreen = false;
@@ -101,23 +102,24 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                         mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
                     }
                 } else {
-                    PlayInfoUtil.getInfo(mPlayInfo.ContentUUID,mPlayInfo.contentType, new
+                    PlayInfoUtil.getInfo(mPlayInfo.ContentUUID, mPlayInfo.contentType, new
                             PlayInfoUtil.ProgramSeriesInfoCallback() {
-                        @Override
-                        public void onResult(final ProgramSeriesInfo info) {
-                            if (info == null) return;
-                            mProgramSeriesInfo = info;
-                            MainLooper.get().post(new Runnable() {
                                 @Override
-                                public void run() {
-                                    if (mVideoPlayerView != null) {
-                                        mVideoPlayerView.setSeriesInfo(info);
-                                        mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
-                                    }
+                                public void onResult(final Content info) {
+                                    if (info == null) return;
+                                    mProgramSeriesInfo = info;
+                                    MainLooper.get().post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (mVideoPlayerView != null) {
+                                                mVideoPlayerView.setSeriesInfo(info);
+                                                mVideoPlayerView.playSingleOrSeries(mIndex,
+                                                        mPosition);
+                                            }
+                                        }
+                                    });
                                 }
                             });
-                        }
-                    });
                 }
 
             }
@@ -135,16 +137,19 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 PlayInfoUtil.getInfo(mPlayInfo.ContentUUID, mPlayInfo.contentType, new
                         PlayInfoUtil.ProgramSeriesInfoCallback() {
                             @Override
-                            public void onResult(final ProgramSeriesInfo info) {
+                            public void onResult(final Content info) {
                                 if (info == null) return;
                                 mProgramSeriesInfo = info;
-                                mProgramSeriesInfo.setLiveUrl(mProgramInfo.getPlayUrl());
-                                mProgramSeriesInfo.setLiveLoopType(mProgramInfo.getLiveLoopType());
-                                mProgramSeriesInfo.setLiveParam(mProgramInfo.getLiveParam());
-                                mProgramSeriesInfo.setPlayStartTime(mProgramInfo.getPlayStartTime
-                                        ());
-                                mProgramSeriesInfo.setPlayEndTime(mProgramInfo.getPlayEndTime());
-                                mProgramSeriesInfo.setIsTimeShift(mProgramInfo.getIsTimeShift());
+                                LiveParam liveParam = mProgramInfo.getLiveParam();
+                                if (liveParam != null) {
+                                    mProgramSeriesInfo.setLiveUrl(mProgramInfo.getVideo()
+                                            .getLiveUrl());
+                                    mProgramSeriesInfo.setLiveLoopType(liveParam.getLiveLoopType());
+                                    mProgramSeriesInfo.setLiveParam(liveParam.getLiveParam());
+                                    mProgramSeriesInfo.setPlayStartTime(liveParam
+                                            .getPlayStartTime());
+                                    mProgramSeriesInfo.setPlayEndTime(liveParam.getPlayEndTime());
+                                }
                                 MainLooper.get().post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -297,7 +302,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             Log.d(TAG, "直播中，特殊处理");
             if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
                 JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mPlayInfo.contentType,
-                        mPlayInfo.ContentUUID, mProgramInfo.getActionUri());
+                        mPlayInfo.ContentUUID, mProgramInfo.getL_actionUri());
                 return;
             }
         }
@@ -412,14 +417,14 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         }
     }
 
-    public void setProgramInfo(ProgramsInfo programInfo) {
+    public void setProgramInfo(Program programInfo) {
         if (programInfo == null) return;
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
         mPlayInfo.contentType = programInfo.getContentType();
-        mPlayInfo.actionType = programInfo.getActionType();
-        mPlayInfo.ContentUUID = programInfo.getContentUUID();
-        mPlayInfo.playUrl = programInfo.getPlayUrl();
+        mPlayInfo.actionType = programInfo.getL_actionType();
+        mPlayInfo.ContentUUID = programInfo.getContentId();
+        mPlayInfo.playUrl = programInfo.getVideo().getLiveUrl();
         mPlayInfo.title = programInfo.getTitle();
 
         if (!mPlayInfo.isCanUse()) return;
@@ -434,7 +439,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 } else {
                     startPlayPermissionsCheck(mProgramInfo);
                 }
-            } else if (Constant.OPEN_VIDEO.equals(mProgramInfo.getActionType())) {
+            } else if (Constant.OPEN_VIDEO.equals(mProgramInfo.getL_actionType())) {
                 currentMode = MODE_OPEN_VIDEO;
                 playVideo();
             } else {
@@ -459,7 +464,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         postDelayed(playLiveRunnable, 2000);
     }
 
-    private void startPlayPermissionsCheck(ProgramsInfo programInfo) {
+    private void startPlayPermissionsCheck(Program programInfo) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         if (liveState != STATE_NOT_STARTED && liveState != STATE_PERMISSION_FAIL) {
             return;
@@ -467,7 +472,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         liveState = STATE_PERMISSION;
 
         LivePermissionCheckUtil.startPlayPermissionsCheck(LivePermissionCheckUtil
-                        .createPlayCheckRequest(programInfo)
+                        .createPlayCheckRequest(programInfo.getContentId(), programInfo
+                                .getVideo().getLiveUrl())
                 , new LivePermissionCheckUtil.MyPermissionCheckListener() {
                     @Override
                     public void onSuccess(LivePermissionCheckBean result) {
@@ -483,13 +489,27 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private boolean isLive() {
-        return !TextUtils.isEmpty(mProgramInfo.getPlayUrl()) && CmsLiveUtil.isInPlay(
-                mProgramInfo.getLiveLoopType(), mProgramInfo.getLiveParam(), mProgramInfo
-                        .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
+        Video video = mProgramInfo.getVideo();
+        LiveParam param = CmsUtil.isLiveTime(video.getLiveparam());
+        if ("LIVE".equals(video.getVideoType())) {
+            return param != null && !TextUtils.isEmpty(video.getLiveUrl()) && CmsUtil.checkLiveParam
+                    (param);
+        }
+        return false;
+
     }
 
     private void timer() {
-        LiveTimingUtil.endTime(mProgramInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
+        if (mProgramInfo.getLiveParam() == null) {
+            if (centerTextView != null) {
+                centerTextView.setVisibility(View.VISIBLE);
+                centerTextView.setText("暂无播放");
+                releaseVideoPlayer();
+            }
+            return;
+        }
+        LiveTimingUtil.endTime(mProgramInfo.getLiveParam().getPlayStartTime(), new LiveTimingUtil
+                .LiveEndListener() {
             @Override
             public void end() {
                 if (centerTextView != null) {

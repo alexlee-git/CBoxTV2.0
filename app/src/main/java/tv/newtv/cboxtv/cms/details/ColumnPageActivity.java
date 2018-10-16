@@ -12,13 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -50,6 +52,7 @@ public class ColumnPageActivity extends BaseActivity {
     private DivergeView mPaiseView;
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
+    private Content pageContent;
 
     @Override
     public void prepareMediaPlayer() {
@@ -117,14 +120,15 @@ public class ColumnPageActivity extends BaseActivity {
                 .SetContentUUID(contentUUID)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
-                    public void onResult(ProgramSeriesInfo info) {
+                    public void onResult(Content info) {
+                        pageContent = info;
                         playListView.setContentUUID(EpisodeHelper.TYPE_COLUMN_DETAIL,
                                 getSupportFragmentManager(),
                                 contentUUID, null);
                         if (sameType != null) {
-                            sameType.setContentUUID(EpisodeHelper.TYPE_PROGRAME_SAMETYPE,
-                                    contentUUID,
-                                    info.getChannelId(), "", null);
+//                            sameType.setContentUUID(EpisodeHelper.TYPE_PROGRAME_SAMETYPE,
+//                                    contentUUID,
+//                                    info.getChannelId(), "", null);
                         }
                     }
                 })
@@ -200,7 +204,10 @@ public class ColumnPageActivity extends BaseActivity {
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
-//                headPlayerView.setProgramSeriesInfo(seriesInfo);
+                ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
+                pageContent.setData(contents);
+
+                headPlayerView.setProgramSeriesInfo(pageContent);
             }
 
             @Override

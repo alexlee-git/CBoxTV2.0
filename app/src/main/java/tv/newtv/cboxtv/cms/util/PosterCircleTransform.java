@@ -9,9 +9,8 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.squareup.picasso.Transformation;
-
 import com.newtv.libs.util.DensityUtil;
+import com.squareup.picasso.Transformation;
 
 /**
  * 项目名称： NewTVLauncher
@@ -31,12 +30,17 @@ public class PosterCircleTransform implements Transformation {
         this.radius = DensityUtil.dp2px(mContext, radius); // 圆角半径
     }
 
+    public PosterCircleTransform(Context context) {
+        mContext = context.getApplicationContext();
+    }
+
     @Override
     public Bitmap transform(Bitmap source) {
         int widthLight = source.getWidth();
         int heightLight = source.getHeight();
 
-        Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.RGB_565);
+        Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config
+                .RGB_565);
 
         Canvas canvas = new Canvas(output);
         Paint paintColor = new Paint();

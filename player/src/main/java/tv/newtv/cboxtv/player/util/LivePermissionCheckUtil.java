@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.player.util;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.Encryptor;
@@ -14,8 +15,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import tv.icntv.been.IcntvPlayerInfo;
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
@@ -47,8 +46,9 @@ public class LivePermissionCheckUtil {
         }
     }
 
-    public static PlayCheckRequestBean createPlayCheckRequest(ProgramsInfo liveProgramInfo) {
-        return createPlayCheckRequest(liveProgramInfo.getContentUUID(),liveProgramInfo.getPlayUrl());
+    public static PlayCheckRequestBean createPlayCheckRequest(SubContent liveProgramInfo) {
+//        return createPlayCheckRequest(liveProgramInfo.getContentUUID(),liveProgramInfo.get());
+        return null;
     }
 
     public static PlayCheckRequestBean createPlayCheckRequest(String contentUUID, String url) {

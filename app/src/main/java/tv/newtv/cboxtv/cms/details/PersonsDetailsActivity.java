@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.ad.ADHelper;
@@ -55,8 +57,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.NewSmoothVorizontalScrollView;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
@@ -121,12 +121,12 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     RecycleImageView program_detail_ad_img;
     @BindView(R.id.id_scroll_view)
     NewSmoothVorizontalScrollView scrollView;
-    List<ProgramSeriesInfo> dataList;
+    List<Content> dataList;
     private ColumnDetailsAdapter mAdapter;
     private Disposable mDisposable;
     private boolean isAttention;
     private Interpolator mSpringInterpolator;
-    private ProgramSeriesInfo dataInfo;
+    private Content dataInfo;
     private String contentUUID;
     private String leftUUID, rightUUID;
     private IAdConstract.IADPresenter adPresenter;
@@ -264,7 +264,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                         if (object.getInt("errorCode") == 0) {
                             JSONObject obj = object.getJSONObject("data");
                             Gson gson = new Gson();
-                            dataInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                            dataInfo = gson.fromJson(obj.toString(), Content.class);
                             setHeadData(dataInfo);
                         } else {
                             Toast.makeText(getApplicationContext(), "没有此人物信息", Toast
@@ -290,9 +290,9 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                 return NetClient.INSTANCE.getDetailsPageApi().getCharacterlist(BuildConfig.APP_KEY,
                         BuildConfig.CHANNEL_ID, leftUUID, rightUUID, contentUUID);
             }
-        }).flatMap(new Function<ResponseBody, ObservableSource<List<ProgramSeriesInfo>>>() {
+        }).flatMap(new Function<ResponseBody, ObservableSource<List<Content>>>() {
             @Override
-            public ObservableSource<List<ProgramSeriesInfo>> apply(ResponseBody value) throws
+            public ObservableSource<List<Content>> apply(ResponseBody value) throws
                     Exception {
                 addData(value.string(), 4, "TA 相关的名人");
                 if(dataList == null){
@@ -302,14 +302,14 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ProgramSeriesInfo>>() {
+                .subscribe(new Observer<List<Content>>() {
                     @Override
                     public void onSubscribe(Disposable disposable) {
                         mDisposable = disposable;
                     }
 
                     @Override
-                    public void onNext(List<ProgramSeriesInfo> columnPageBean) {
+                    public void onNext(List<Content> columnPageBean) {
                         if(mAdapter != null && adPresenter != null){
                             mAdapter.appendToList(columnPageBean);
                             mAdapter.notifyDataSetChanged();
@@ -343,10 +343,10 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
             if (object.getInt("errorCode") == 0) {
                 JSONObject obj = object.getJSONObject("data");
                 Gson gson = new Gson();
-                ProgramSeriesInfo info = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
+                Content info = gson.fromJson(obj.toString(), Content.class);
                 if (info.getData() != null && info.getData().size() != 0 && dataList != null) {
-                    info.layoutId = layoutId;
-                    info.layoutTitle = title;
+//                    info.layoutId = layoutId;
+//                    info.layoutTitle = title;
                     dataList.add(info);
                 }
 
@@ -358,10 +358,10 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
     }
 
-    private void setHeadData(ProgramSeriesInfo dataInfo) {
-        String img = dataInfo.getvImage();
-        String des = dataInfo.discription;
-        detailTypeTv.setText(dataInfo.district + " | " + dataInfo.country);
+    private void setHeadData(Content dataInfo) {
+        String img = dataInfo.getVImage();
+        String des = dataInfo.getDescription();
+        detailTypeTv.setText(dataInfo.getDistrict() + " | " + dataInfo.getCountry());
         if (isAttention) {
             attention.setSelect(true);
         } else {
@@ -441,7 +441,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
         });
     }
 
-    private void updateAttention(ProgramSeriesInfo entity) {
+    private void updateAttention(Content entity) {
         if (entity == null) {
             LogUtils.e("update Attention is null");
             return;
@@ -469,7 +469,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
     @Override
     public void onItemClick(View view, int position, Object object) {
-        ProgramsInfo entity = ((ProgramSeriesInfo) object).getData().get
+        SubContent entity = ((Content) object).getData().get
                 (position);
         Intent intent = new Intent();
         Class clazz = null;

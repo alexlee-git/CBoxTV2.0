@@ -32,6 +32,7 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
+import tv.newtv.contract.PageContract;
 
 /**
  * Created by lixin on 2018/1/23.
@@ -244,9 +245,9 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mNotifyNoPageDataListener != null) {
-            mNotifyNoPageDataListener.notifyNoPageData(false);
-        }
+//        if (mNotifyNoPageDataListener != null) {
+//            mNotifyNoPageDataListener.notifyNoPageData(false);
+//        }
         LogUtils.e(Constant.TAG, "onDestroyView navText : " + param);
     }
 
@@ -336,7 +337,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         }
 
         if (TextUtils.isEmpty(contentId)) {
-            onError(LauncherApplication.AppContext,"暂无数据内容。");
+            onError(LauncherApplication.AppContext, "暂无数据内容。");
         } else {
             mPresenter.getPageContent(contentId);
         }
@@ -453,7 +454,8 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
-        loadingView.setText("暂无数据内容");
+        if (loadingView != null)
+            loadingView.setText("暂无数据内容");
     }
 
     @Override

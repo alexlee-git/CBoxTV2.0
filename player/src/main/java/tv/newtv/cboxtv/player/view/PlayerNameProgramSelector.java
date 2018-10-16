@@ -16,11 +16,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
+
 import java.util.List;
 
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
-import tv.newtv.cboxtv.player.PlayerPlayInfoItem;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.player.R;
 
 /**
@@ -39,7 +39,7 @@ public class PlayerNameProgramSelector extends FrameLayout{
     private AnimationSet mAnimationIn,mAnimationOut;
     private NameProgramSelectorHandler mHandler;
     private int mPlayingIndex;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
 
     public PlayerNameProgramSelector(@NonNull Context context) {
         this(context,null);
@@ -68,7 +68,7 @@ public class PlayerNameProgramSelector extends FrameLayout{
         mAnimationOut = (AnimationSet) AnimationUtils.loadAnimation(context,R.anim.seekbar_out);
     }
 
-    public void setProgramSeriesInfo(ProgramSeriesInfo programSeriesInfo, int index) {
+    public void setProgramSeriesInfo(Content programSeriesInfo, int index) {
         Log.i(TAG, "setProgramSeriesInfo: ");
         mProgramSeriesInfo = programSeriesInfo;
         mPlayingIndex = index;
@@ -82,7 +82,7 @@ public class PlayerNameProgramSelector extends FrameLayout{
 
     class NameProgramSelectorAdapter extends PlayerRecyclerViewAdapter{
 
-        private List<PlayerPlayInfoItem> datas;
+        private List<SubContent> datas;
 
         public NameProgramSelectorAdapter(Context context, int layoutId, List datas) {
             super(context, layoutId, datas);
@@ -91,7 +91,7 @@ public class PlayerNameProgramSelector extends FrameLayout{
         @Override
         public void onBindViewHolder(PlayerRecylerViewHolder holder, final int position) {
             Log.i(TAG, "onBindViewHolder: "+position);
-            PlayerPlayInfoItem programsInfo = datas.get(position);
+            SubContent programsInfo = datas.get(position);
             if(programsInfo==null){
                 return;
             }

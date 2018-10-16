@@ -44,6 +44,8 @@ internal object ModelFactory {
             Model.MODEL_CLOCK -> ClockModel()
             Model.MODEL_BOOTGUIDE -> BootGuideModel()
             Model.MODEL_ACTIVE_AUTH -> AutiveAuthModel()
+            Model.MODEL_CHK_PLAY -> PlayChkModel()
+            Model.MODEL_PERSON -> PersonModel()
             else -> {
                 Log.e("ModuleFactory", "$type is not registered ! please write it in buildModel")
                 null

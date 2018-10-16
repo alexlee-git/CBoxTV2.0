@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
@@ -22,7 +23,6 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
@@ -45,7 +45,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
     private View downView;
     private int videoIndex = 0;
     private View focusView;
-    private ProgramSeriesInfo mProgramSeriesInfo;
+    private Content mProgramSeriesInfo;
 
     private int playIndex = 0;
     private int playPostion = 0;
@@ -89,14 +89,14 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         recyclerView.setAlign(AiyaRecyclerView.ALIGN_START);
         recyclerView.setAdapter(adapter);
 //        recyclerView.setDirIndicator(topView,downView);
-        adapter.setOnItemAction(new OnItemAction<ProgramsInfo>() {
+        adapter.setOnItemAction(new OnItemAction<SubContent>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(ProgramsInfo item, int index) {
+            public void onItemClick(SubContent item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
             }
@@ -124,12 +124,12 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         }
     }
 
-    private void onItemClickAction(ProgramsInfo programInfo) {
+    private void onItemClickAction(SubContent programInfo) {
         videoPlayerView.beginChange();
         PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
             @Override
-            public void onResult(ProgramSeriesInfo info) {
+            public void onResult(Content info) {
                 if (info != null) {
                     mProgramSeriesInfo = info;
                     Log.e("info", info.toString());
@@ -231,20 +231,20 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<ProgramsInfo> ModuleItems;
-        private OnItemAction<ProgramsInfo> onItemAction;
+        private List<SubContent> ModuleItems;
+        private OnItemAction<SubContent> onItemAction;
         private CurrentPlayImageViewWorldCup currentPlayImageView;
         private String currentUUID;
         private int currentIndex = 0;
         private Transformation transformation;
 
 
-        ShooterAdapter refreshData(List<ProgramsInfo> datas) {
+        ShooterAdapter refreshData(List<SubContent> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        void setOnItemAction(OnItemAction<ProgramsInfo> programInfoOnItemAction) {
+        void setOnItemAction(OnItemAction<SubContent> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -263,7 +263,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            ProgramsInfo moduleItem = getItem(position);
+            SubContent moduleItem = getItem(position);
 
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -283,7 +283,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                     }
                     currentPlayImageView = holder.poster;
                     holder.poster.setIsPlaying(true, false);
-                    final ProgramsInfo moduleItem = getItem(holder.getAdapterPosition());
+                    final SubContent moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         currentUUID = moduleItem.getContentUUID();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -300,7 +300,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                 int targetHeiht = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.height_200px);
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
                 Picasso.get()
-                        .load(moduleItem.getImg())
+                        .load(moduleItem.getVImage())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .resize(targetWidth,targetHeiht)
                         .into(holder.poster);
@@ -320,7 +320,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
             }
         }
 
-        private ProgramsInfo getItem(int position) {
+        private SubContent getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

@@ -8,6 +8,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.NetworkManager;
@@ -22,8 +24,6 @@ import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuGroup;
 import tv.newtv.cboxtv.menu.MenuGroupPresenter;
 import tv.newtv.cboxtv.menu.model.Program;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.model.VideoPlayInfo;
 import tv.newtv.player.R;
 
@@ -38,7 +38,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
     private FrameLayout mPlayerFrameLayoutContainer;
     private int mIndexPlay;
     private int mPositionPlay = 0;
-    private ProgramSeriesInfo programSeriesInfo;
+    private Content programSeriesInfo;
 
     private FrameLayout rootView;
     private IMenuGroupPresenter menuGroupPresenter;
@@ -95,7 +95,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            programSeriesInfo = (ProgramSeriesInfo) extras.getSerializable("programSeriesInfo");
+            programSeriesInfo = (Content) extras.getSerializable("programSeriesInfo");
         }
         NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer(mPlayerFrameLayoutContainer, this);
 
@@ -116,7 +116,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
         NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
 
             @Override
-            public void onNext(ProgramsInfo info, int index, boolean isNext) {
+            public void onNext(SubContent info, int index, boolean isNext) {
                 mIndexPlay = index;
                 mPositionPlay = 0;
                 RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay, mPositionPlay, NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo().getContentUUID()));
@@ -182,7 +182,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
 
     NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
     int playPostion = 0;
-    ProgramSeriesInfo mProgramSeriesInfo;
+    Content mProgramSeriesInfo;
 
 
     @Override

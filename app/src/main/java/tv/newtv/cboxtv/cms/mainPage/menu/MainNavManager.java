@@ -34,8 +34,9 @@ import tv.newtv.cboxtv.cms.search.SearchFragment;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
+import tv.newtv.contract.MainNavContract;
 
-public class MainNavManager implements MainContract.View {
+public class MainNavManager implements MainNavContract.View {
 
     private static MainNavManager mInstance;
     private MenuRecycleView.MenuAdapter<Nav> menuAdapter = null;
@@ -216,7 +217,7 @@ public class MainNavManager implements MainContract.View {
                 menuAdapter = (MenuRecycleView.MenuAdapter<Nav>) mFirMenu.getAdapter();
             }
         }
-        new MainContract.MainPresenter(context, this).requestNav();
+        new MainNavContract.MainNavPresenter(context, this).requestNav();
     }
 
 

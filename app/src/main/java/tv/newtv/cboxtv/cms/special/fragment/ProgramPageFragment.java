@@ -12,9 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
 
-import tv.newtv.cboxtv.player.ProgramsInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
@@ -70,14 +70,14 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         ShooterAdapter adapter = new ShooterAdapter();
-        adapter.setOnItemAction(new OnItemAction<ProgramsInfo>() {
+        adapter.setOnItemAction(new OnItemAction<SubContent>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(ProgramsInfo item, int index) {
+            public void onItemClick(SubContent item, int index) {
                 playVideo(item);
                 currentIndex = index;
             }
@@ -126,13 +126,13 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         return super.dispatchKeyEvent(event);
     }
 
-    private void playVideo(ProgramsInfo programInfo) {
+    private void playVideo(SubContent programInfo) {
         if (programInfo == null) return;
         PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
 
             @Override
-            public void onResult(ProgramSeriesInfo info) {
+            public void onResult(Content info) {
                 if (info != null) {
                     Log.e("info", info.toString());
                     videoPlayerView.setSeriesInfo(info);
@@ -198,17 +198,17 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<ProgramsInfo> ModuleItems;
-        private OnItemAction<ProgramsInfo> onItemAction;
+        private List<SubContent> ModuleItems;
+        private OnItemAction<SubContent> onItemAction;
         private String currentID;
         private int currentIndex = 0;
 
-        ShooterAdapter refreshData(List<ProgramsInfo> datas) {
+        ShooterAdapter refreshData(List<SubContent> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        public void setOnItemAction(OnItemAction<ProgramsInfo> programInfoOnItemAction) {
+        public void setOnItemAction(OnItemAction<SubContent> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -222,7 +222,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            ProgramsInfo moduleItem = getItem(position);
+            SubContent moduleItem = getItem(position);
             holder.container.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -237,7 +237,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ProgramsInfo programInfo = getItem(holder.getAdapterPosition());
+                    SubContent programInfo = getItem(holder.getAdapterPosition());
                     if (programInfo != null) {
                         currentID = programInfo.getContentUUID();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -253,7 +253,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
 
                 Picasso.get()
-                        .load(moduleItem.getImg())
+                        .load(moduleItem.getVImage())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .into(holder.poster);
 
@@ -271,7 +271,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             }
         }
 
-        private ProgramsInfo getItem(int position) {
+        private SubContent getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

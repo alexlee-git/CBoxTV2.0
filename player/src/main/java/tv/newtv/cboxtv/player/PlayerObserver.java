@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.player;
 
+import com.newtv.cms.bean.Content;
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            tv.newtv.cboxtv.player
@@ -8,6 +10,6 @@ package tv.newtv.cboxtv.player;
  * 创建日期:          2018/10/10
  */
 public interface PlayerObserver {
-    void onFinish(ProgramSeriesInfo playInfo, int index, int position);
+    void onFinish(Content playInfo, int index, int position);
     void onExitApp();
 }

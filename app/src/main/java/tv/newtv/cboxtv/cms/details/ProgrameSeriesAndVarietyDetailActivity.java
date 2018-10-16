@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 
@@ -22,6 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -31,7 +35,6 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.views.custom.DivergeView;
@@ -126,8 +129,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                             if (object.getInt("errorCode") == 0) {
                                 JSONObject obj = object.getJSONObject("data");
                                 Gson gson = new Gson();
-                                ProgramSeriesInfo dataInfo = gson.fromJson(obj.toString(),
-                                        ProgramSeriesInfo.class);
+                                Content dataInfo = gson.fromJson(obj.toString(),
+                                        Content.class);
                                 if (dataInfo != null) {
                                     videoType = dataInfo.getVideoType();
                                 }
@@ -177,6 +180,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     }
 
 
+    Content pageContent;
     private void initView() {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
@@ -184,6 +188,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
 
         contentUUID = "4329022";
+
+
 
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
@@ -196,7 +202,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                 .SetContentUUID(contentUUID)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
-                    public void onResult(ProgramSeriesInfo info) {
+                    public void onResult(Content info) {
+                        pageContent = info;
 //                        headPlayerView.findViewUseId(R.id.video_container).requestFocus();
                         suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, contentUUID, "",
                                 info.getVideoType(), null);
@@ -280,7 +287,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
                 if (seriesInfo != null) {
-//                    headPlayerView.setProgramSeriesInfo(seriesInfo);
+                    ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
+                    pageContent.setData(contents);
+                    headPlayerView.setProgramSeriesInfo(pageContent);
                 }
             }
 

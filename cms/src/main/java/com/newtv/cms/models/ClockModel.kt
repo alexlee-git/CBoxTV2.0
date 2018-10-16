@@ -18,7 +18,7 @@ import com.newtv.cms.bean.Time
 internal class ClockModel : BaseModel(), IClock {
 
     override fun sync(observer: DataObserver<Time>) {
-        execute<Time>(Request.clock.getClockData(), object : TypeToken<Time>() {}.type)
+        BuildExecuter<Time>(Request.clock.getClockData(), object : TypeToken<Time>() {}.type)
                 .observer(observer)
                 .execute()
     }

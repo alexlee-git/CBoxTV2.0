@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.cms.mainPage.view;
+package tv.newtv.contract;
 
 import android.content.Context;
 
@@ -22,18 +22,18 @@ import java.util.List;
  * 创建人:           weihaichao
  * 创建日期:          2018/9/27
  */
-class PageContract {
-    interface View extends ICmsView {
+public class PageContract {
+    public interface View extends ICmsView {
         void onPageResult(List<Page> page);
     }
 
-    interface Presenter extends ICmsPresenter {
+    public interface Presenter extends ICmsPresenter {
         void getPageContent(String contentId);
     }
 
-    static class ContentPresenter extends CmsServicePresenter<View> implements Presenter {
+    public static class ContentPresenter extends CmsServicePresenter<View> implements Presenter {
 
-        ContentPresenter(Context context, View view) {
+        public ContentPresenter(Context context, View view) {
             super(context, view);
         }
 

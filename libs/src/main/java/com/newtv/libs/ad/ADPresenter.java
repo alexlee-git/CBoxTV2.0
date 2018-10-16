@@ -69,8 +69,8 @@ public class ADPresenter implements IAdConstract.IADPresenter, ADConfig.ColumnLi
 
     @SuppressLint("CheckResult")
     @Override
-    public void getAD(final String adType, final String adLoc, final String flag, String
-            firstChannel, String secondChannel, String topicId) {
+    public void getAD(final String adType, final String adLoc, final String flag, final String
+            firstChannel, final String secondChannel, final String topicId) {
         this.adType = adType;
         this.adLoc = adLoc;
         this.flag = flag;
@@ -78,14 +78,12 @@ public class ADPresenter implements IAdConstract.IADPresenter, ADConfig.ColumnLi
         if (columnIsGet || !TextUtils.isEmpty(ADConfig.getInstance().getColumnId())) {
             excute(firstChannel, secondChannel, topicId);
         } else {
-            Message message = handler.obtainMessage();
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("firstChannel", firstChannel);
-            jsonObject.addProperty("secondChannel", secondChannel);
-            jsonObject.addProperty("topicId", topicId);
-            message.obj = jsonObject;
-            message.what = 0;
-            handler.sendMessageDelayed(message, 5000);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    excute(firstChannel, secondChannel, topicId);
+                }
+            },5000);
         }
     }
 
@@ -165,9 +163,9 @@ public class ADPresenter implements IAdConstract.IADPresenter, ADConfig.ColumnLi
             return;
         }
         if (TextUtils.isEmpty(result)) {
-            result.append(key + "=" + value);
+            result.append(key).append("=").append(value);
         } else {
-            result.append("&" + key + "=" + value);
+            result.append("&").append(key).append("=").append(value);
         }
     }
 

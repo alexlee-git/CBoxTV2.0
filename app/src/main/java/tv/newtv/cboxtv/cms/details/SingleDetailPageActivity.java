@@ -12,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -136,7 +136,7 @@ public class SingleDetailPageActivity extends BaseActivity {
                 .SetContentUUID(contentUUID)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
-                    public void onResult(ProgramSeriesInfo info) {
+                    public void onResult(Content info) {
                         headPlayerView.setProgramSeriesInfo(info);
 //                        headPlayerView.Play(0, 0, false);
                         suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, contentUUID, "",

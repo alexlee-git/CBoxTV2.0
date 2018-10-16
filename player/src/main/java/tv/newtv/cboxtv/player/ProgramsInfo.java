@@ -33,6 +33,7 @@ public class ProgramsInfo implements Serializable {
     private String seriesSubUUID;
     private String playStartTime;
     private String playEndTime;
+
     //是否从栏目树观看历史进入的，如果是鉴权的AlbumId传seriesSubUUID
     private boolean isMenuGroupHistory;
     private String liveLoopType;
@@ -45,7 +46,10 @@ public class ProgramsInfo implements Serializable {
     public ProgramsInfo() {
     }
 
-    public ProgramsInfo(String contentUUID, String title, String contentType, String hImage, String vImage, String subTitle, String actionType, String actionUri, String grade, String lSuperScript, String rSuperScript, String lSubScript, String rSubScript, String periods, String des) {
+    public ProgramsInfo(String contentUUID, String title, String contentType, String hImage,
+                        String vImage, String subTitle, String actionType, String actionUri,
+                        String grade, String lSuperScript, String rSuperScript, String
+                                lSubScript, String rSubScript, String periods, String des) {
         this.contentUUID = contentUUID;
         this.title = title;
         this.contentType = contentType;
@@ -211,16 +215,16 @@ public class ProgramsInfo implements Serializable {
         return periods;
     }
 
+    public void setPeriods(String periods) {
+        this.periods = periods;
+    }
+
     public String getLiveUrl() {
         return liveUrl;
     }
 
     public void setLiveUrl(String liveUrl) {
         this.liveUrl = liveUrl;
-    }
-
-    public void setPeriods(String periods) {
-        this.periods = periods;
     }
 
     @Override

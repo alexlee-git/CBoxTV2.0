@@ -10,11 +10,11 @@ import android.widget.Toast;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.DeviceUtil;
@@ -159,12 +159,13 @@ public class ProgramCollectionActivity extends BaseActivity {
                         })
                         .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                             @Override
-                            public void onResult(ProgramSeriesInfo info) {
+                            public void onResult(Content info) {
                                 headPlayerView.setProgramSeriesInfo(info);
                                 mListView.setContentUUID(contentUUID, info);
                                 suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH,
                                         info.getContentUUID(),
-                                        info.getChannelId(),
+//                                        info.getChannelId(),
+                                        "",
                                         info.getVideoType()
                                         , null);
 //                                headPlayerView.Play(0, 0, false);

@@ -1,9 +1,8 @@
 package tv.newtv.cboxtv.menu.model;
 
-import tv.newtv.cboxtv.player.PlayerPlayInfo;
-import tv.newtv.cboxtv.player.PlayerPlayInfoItem;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
-import tv.newtv.cboxtv.player.ProgramsInfo;
+
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 
 /**
  * Created by TCP on 2018/4/18.
@@ -179,41 +178,41 @@ public class Program {
         this.premiereTime = premiereTime;
     }
 
-    public ProgramSeriesInfo convertProgramInfo(){
-        ProgramSeriesInfo info = new ProgramSeriesInfo();
+    public Content convertProgramInfo(){
+        Content info = new Content();
         info.setContentUUID(contentUUID);
         info.setContentType(contentType);
-        info.sethImage(hImage);
-        info.setvImage(vImage);
+//        info.sethImage(hImage);
+//        info.setvImage(vImage);
         info.setTitle(title);
         info.setSubTitle(subTitle);
-        info.setActionType(actionType);
-        info.setActionUri(actionUri);
+//        info.setActionType(actionType);
+//        info.setActionUri(actionUri);
         info.setGrade(grade);
-        info.setlSuperScript(lSuperScript);
-        info.setrSuperScript(rSuperSctipt);
-        info.setlSubScript(lSubScript);
-        info.setrSubScript(rSubScript);
+//        info.setlSuperScript(lSuperScript);
+//        info.setrSuperScript(rSuperSctipt);
+//        info.setlSubScript(lSubScript);
+//        info.setrSubScript(rSubScript);
         return info;
     }
 
-    public ProgramsInfo convertProgramsInfo(){
-        ProgramsInfo info = new ProgramsInfo();
+    public SubContent convertProgramsInfo(){
+        SubContent info = new SubContent();
         info.setContentUUID(contentUUID);
         info.setContentType(contentType);
-        info.sethImage(hImage);
-        info.setvImage(vImage);
+        info.setHImage(hImage);
+        info.setVImage(vImage);
         info.setTitle(title);
         info.setSubTitle(subTitle);
-        info.setActionType(actionType);
-        info.setActionUri(actionUri);
+//        info.setActionType(actionType);
+//        info.setActionUri(actionUri);
         info.setGrade(grade);
-        info.setlSuperScript(lSuperScript);
-        info.setrSuperScript(rSuperSctipt);
-        info.setlSubScript(lSubScript);
-        info.setrSubScript(rSubScript);
-        info.setSeriesSubUUID(seriesSubUUID);
-        info.setMenuGroupHistory(true);
+//        info.setlSuperScript(lSuperScript);
+//        info.setrSuperScript(rSuperSctipt);
+//        info.setlSubScript(lSubScript);
+//        info.setrSubScript(rSubScript);
+//        info.setSeriesSubUUID(seriesSubUUID);
+//        info.setMenuGroupHistory(true);
         return info;
     }
 

@@ -7,11 +7,15 @@ import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 
+import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
 import com.newtv.cms.ICmsView;
 import com.newtv.cms.api.IClock;
+import com.newtv.cms.api.INav;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Nav;
 import com.newtv.cms.bean.Time;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
@@ -19,6 +23,8 @@ import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -30,11 +36,12 @@ import org.jetbrains.annotations.Nullable;
 public class MainContract {
     public interface View extends ICmsView {
         void syncServerTime(Time result);
+        void onNavResult(Context context, List<Nav> result);
     }
 
     public interface Presenter extends ICmsPresenter {
         void initLogUpload(Context context);
-
+        void requestNav();
         void syncServiceTime();
     }
 
@@ -50,10 +57,34 @@ public class MainContract {
             }
         };
 
+
         public MainPresenter(@NotNull Context context, @NotNull View view) {
             super(context, view);
             initLogUpload(context);
             registTimeSync(context);
+        }
+
+        @Override
+        public void requestNav() {
+            INav nav = getService(SERVICE_NAV);
+            if (nav != null) {
+                nav.getNav(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
+                        new DataObserver<ModelResult<List<Nav>>>() {
+                            @Override
+                            public void onResult(ModelResult<List<Nav>> result) {
+                                if (result.isOk()) {
+                                    getView().onNavResult(getContext(), result.getData());
+                                } else {
+                                    onError(result.getErrorMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onError(@Nullable String desc) {
+                                getView().onError(getContext(), desc);
+                            }
+                        });
+            }
         }
 
         @Override
@@ -72,16 +103,16 @@ public class MainContract {
                 clock.sync(new DataObserver<Time>() {
                     @Override
                     public void onResult(Time result) {
-                        if ("0".equals(result.getStatusCode())) {
+                        if ("1".equals(result.getStatusCode())) {
                             getView().syncServerTime(result);
                         } else {
-                            getView().onError(getContext(), result.getMessage());
+                            getView().syncServerTime(null);
                         }
                     }
 
                     @Override
                     public void onError(@Nullable String desc) {
-                        getView().onError(getContext(), desc);
+                        getView().syncServerTime(null);
                     }
                 });
             }

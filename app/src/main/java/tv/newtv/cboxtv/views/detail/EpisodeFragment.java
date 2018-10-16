@@ -258,9 +258,9 @@ public class EpisodeFragment extends Fragment {
             itemView = null;
         }
 
-        public void performClick(boolean fromClick) {
+        void performClick(boolean fromClick) {
             if (mChange != null) {
-                mChange.onChange(PosterView, mPosition * pageSize + mIndex, true);
+                mChange.onChange(PosterView, mPosition * pageSize + mIndex, fromClick);
             }
         }
 
