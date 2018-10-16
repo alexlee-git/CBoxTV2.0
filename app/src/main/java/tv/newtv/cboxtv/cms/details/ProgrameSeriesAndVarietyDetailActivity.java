@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -29,6 +30,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
@@ -65,6 +67,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     private long lastClickTime;
     private FragmentTransaction transaction;
     private FrameLayout frameLayout;
+    private boolean isADEntry = false;
 
     @Override
     public boolean hasPlayer() {
@@ -85,6 +88,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             contentUUID = getIntent().getStringExtra("content_uuid");
+            isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         } else {
             contentUUID = savedInstanceState.getString("content_uuid");
         }
@@ -460,6 +464,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        if (isADEntry) {
+            startActivity(new Intent(ProgrameSeriesAndVarietyDetailActivity.this, MainActivity.class));
+            isADEntry = false;
+        }
         finish();
     }
 

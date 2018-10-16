@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
@@ -48,6 +50,7 @@ public class ColumnPageActivity extends BaseActivity {
     private DivergeView mPaiseView;
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
+    private boolean isADEntry = false;
 
     @Override
     public void prepareMediaPlayer() {
@@ -95,6 +98,7 @@ public class ColumnPageActivity extends BaseActivity {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
         contentUUID = getIntent().getStringExtra("content_uuid");
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
@@ -262,6 +266,10 @@ public class ColumnPageActivity extends BaseActivity {
         }
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if(isADEntry){
+                    startActivity(new Intent(ColumnPageActivity.this, MainActivity.class));
+                    isADEntry = false;
+                }
                 return super.dispatchKeyEvent(event);
             }
             ViewGroup viewGroup = findViewById(R.id.root_view);

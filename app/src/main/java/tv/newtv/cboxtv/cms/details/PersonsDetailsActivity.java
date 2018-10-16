@@ -45,6 +45,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
@@ -129,6 +130,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     private IAdConstract.IADPresenter adPresenter;
     private String mTitleString;//title值，用于跳转搜索页使用 2018.4.30 wangquansheng
     private long lastClickTime = 0;
+    private boolean isADEntry = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -146,6 +148,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
         mAdapter = new ColumnDetailsAdapter(this, this);
         contentUUID = getIntent().getStringExtra("content_uuid");
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
             Toast.makeText(this, "人物信息有误", Toast.LENGTH_SHORT).show();
@@ -638,20 +641,21 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
                         }
 
 
-                    } else if (ParentView!=null&&ParentView instanceof VerticallRecyclerView) {
-
+                    } else if (ParentView != null && ParentView instanceof VerticallRecyclerView) {
                         return super.dispatchKeyEvent(event);
                     }
-
-
                     break;
-
+                case KeyEvent.KEYCODE_BACK:
+                    if (isADEntry) {
+                        startActivity(new Intent(PersonsDetailsActivity.this, MainActivity.class));
+                        isADEntry = false;
+                    }
+                    finish();
+                    break;
+                default:
+                    break;
             }
-
-
         }
-
-
         return super.dispatchKeyEvent(event);
     }
 

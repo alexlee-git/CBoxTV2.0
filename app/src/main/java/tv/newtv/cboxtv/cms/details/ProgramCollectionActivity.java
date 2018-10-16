@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
@@ -43,6 +45,7 @@ public class ProgramCollectionActivity extends BaseActivity {
     private HeadPlayerView headPlayerView;
     private SmoothScrollView scrollView;
     private EpisodeHorizontalListView mListView;
+    private boolean isADEntry = false;
 
     @Override
     public void prepareMediaPlayer() {
@@ -107,6 +110,7 @@ public class ProgramCollectionActivity extends BaseActivity {
         setContentView(R.layout.activity_program_collec_page);
 
         contentUUID = getIntent().getStringExtra("content_uuid");
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
@@ -211,6 +215,10 @@ public class ProgramCollectionActivity extends BaseActivity {
         }
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (isADEntry) {
+                    startActivity(new Intent(ProgramCollectionActivity.this, MainActivity.class));
+                    isADEntry = false;
+                }
                 return super.dispatchKeyEvent(event);
             }
             ViewGroup viewGroup = findViewById(R.id.root_view);
