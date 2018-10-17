@@ -6027,5 +6027,7 @@
 
 	<dimen name="_width_18dp">-20dp</dimen>
 	<dimen name="height_11sp">11px</dimen>
+	<dimen name="height_12sp">12px</dimen>
 	<dimen name="height_22sp">22px</dimen>
+
 	</resources>
