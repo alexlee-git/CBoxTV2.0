@@ -420,22 +420,25 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     dir = View.FOCUS_DOWN;
                     Log.i(TAG,"KEYCODE_DPAD_DOWN-->向下按键");
 
-                    if (focusView.getId() == R.id.btn_detail_collect  //收藏
-                            || focusView.getId() == R.id.btn_detail_big_screen  //全屏
-                            || focusView.getId() == R.id.id_video_player) {
+                    if(focusView!=null){
+                        if (focusView.getId() == R.id.btn_detail_collect  //收藏
+                                || focusView.getId() == R.id.btn_detail_big_screen  //全屏
+                                || focusView.getId() == R.id.id_video_player) {
 
-                        Log.i(TAG,"KEYCODE_DPAD_DOWN-->符合id条件-->"+focusView.getId());
+                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->符合id条件-->"+focusView.getId());
 
-                        if (mRecyclerView != null && mRecyclerView.getChildAt(0) != null) {
-                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->跳转第0个");
-                            mRecyclerView.getChildAt(0).requestFocus();
-                            return true;
+                            if (mRecyclerView != null && mRecyclerView.getChildAt(0) != null) {
+                                Log.i(TAG,"KEYCODE_DPAD_DOWN-->跳转第0个");
+                                mRecyclerView.getChildAt(0).requestFocus();
+                                return true;
+                            }else {
+                                Log.i(TAG,"KEYCODE_DPAD_DOWN-->mRecyclerView为空");
+                            }
                         }else {
-                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->mRecyclerView为空");
+                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->没有符合的id");
                         }
-                    }else {
-                        Log.i(TAG,"KEYCODE_DPAD_DOWN-->没有符合的id");
                     }
+
                     break;
                 //向左
                 case KeyEvent.KEYCODE_DPAD_LEFT:

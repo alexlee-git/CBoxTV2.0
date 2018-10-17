@@ -377,7 +377,7 @@ class SqlExcuters {
                         null);
             }
             JsonArray videoInfos = null;
-            try {
+            try{
                 if (cursor != null) {
                     cursor.moveToFirst();
                     if (cursor.getCount() > 0) {
@@ -390,8 +390,9 @@ class SqlExcuters {
                 }
             }catch (SQLiteCantOpenDatabaseException exception){
                 exception.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
             }
-
 
             final JsonArray finalVideoInfos = videoInfos;
             MainLooper.get().post(new Runnable() {
