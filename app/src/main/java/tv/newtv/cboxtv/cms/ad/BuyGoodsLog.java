@@ -27,7 +27,7 @@ public class BuyGoodsLog {
     private long startShowGoodsTime = 0;
     private long startShowQrCodeTime = 0;
 
-    public void showGoodsLog(String skuId,String x,String y,int defaultShowTime){
+    public void showGoodsLog(String skuId,String x,String y,int defaultShowTime,String productName){
         if(startShowGoodsTime == 0){
             Log.i(TAG, "商品实际展示时长不正确");
             return;
@@ -35,14 +35,14 @@ public class BuyGoodsLog {
 
         long duration = System.currentTimeMillis() - startShowGoodsTime;
         startShowGoodsTime = 0;
-        uploadLog(buildContent(TYPE_SHOW_GOODS,skuId,x,y,defaultShowTime*1000+"",duration+""));
+        uploadLog(buildContent(TYPE_SHOW_GOODS,skuId,x,y,defaultShowTime*1000+"",duration+"",productName));
     }
 
-    public void addToCart(String skuId){
-        uploadLog(buildContent(TYPE_ADD_TO_CART,skuId));
+    public void addToCart(String skuId,String productName){
+        uploadLog(buildContent(TYPE_ADD_TO_CART,skuId,productName));
     }
 
-    public void showQrCode(String skuId,String x,String y,int defaultShowTime){
+    public void showQrCode(String skuId,String x,String y,int defaultShowTime,String productName){
         if(startShowQrCodeTime == 0){
             Log.i(TAG, "二维码展示时长不正确");
             return;
@@ -50,11 +50,11 @@ public class BuyGoodsLog {
 
         long duration = System.currentTimeMillis() - startShowQrCodeTime;
         startShowQrCodeTime = 0;
-        uploadLog(buildContent(TYPE_SHOW_QR_CODE,skuId,x,y,defaultShowTime*1000+"",duration+""));
+        uploadLog(buildContent(TYPE_SHOW_QR_CODE,skuId,x,y,defaultShowTime*1000+"",duration+"",productName));
     }
 
-    public void bind(String skuId,String mac,String userId){
-        uploadLog(buildContent(TYPE_BIND,skuId,mac,userId));
+    public void bind(String skuId,String mac,String userId,String productName){
+        uploadLog(buildContent(TYPE_BIND,skuId,mac,userId,productName));
     }
 
     public void startShowQrCode(){

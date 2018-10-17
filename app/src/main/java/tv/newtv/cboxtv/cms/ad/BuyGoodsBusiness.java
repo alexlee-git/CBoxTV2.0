@@ -255,7 +255,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         isShowQrCode = false;
 
                         log.startShowGoods();
-                        log.bind(skuId,SystemUtils.getDeviceMac(context),uid);
+                        log.bind(skuId,SystemUtils.getDeviceMac(context),uid,item.materials.get(0).name);
                         logShowQrCode();
                     }
                 }
@@ -291,7 +291,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     private void addToCartSuccess(){
         dismiss();
         showToast("商品添加成功");
-        log.addToCart(skuId);
+        log.addToCart(skuId,item.materials.get(0).name);
     }
 
     private void getSkuInfo(final String skuId){
@@ -458,10 +458,10 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     }
 
     private void logShowQrCode(){
-        log.showQrCode(skuId,extMap.get("x"),extMap.get("y"),duration);
+        log.showQrCode(skuId,extMap.get("x"),extMap.get("y"),duration,item.materials.get(0).name);
     }
 
     private void logShowGoods(){
-        log.showGoodsLog(skuId,extMap.get("x"),extMap.get("y"),duration);
+        log.showGoodsLog(skuId,extMap.get("x"),extMap.get("y"),duration,item.materials.get(0).name);
     }
 }
