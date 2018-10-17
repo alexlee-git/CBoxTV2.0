@@ -6015,6 +6015,7 @@
     <dimen name="height_44dp">28dp</dimen>
     <dimen name="height_11sp">11px</dimen>
     <dimen name="height_12sp">16px</dimen>
+    <dimen name="height_18sp">18px</dimen>
     <dimen name="height_22sp">22px</dimen>
     <dimen name="height_27dp">17dp</dimen>
 
