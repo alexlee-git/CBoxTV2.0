@@ -56,12 +56,16 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     }
 
     @Override
-    public void setImageUrl(String url){
+    public void setImageUrl(final String url){
         MainLooper.get().post(new Runnable() {
             @Override
             public void run() {
                 qrCodeImage.setVisibility(View.GONE);
-                Picasso.get().load(R.drawable.skuimage).into(imageView);
+                if(TextUtils.isEmpty(url)){
+                    Picasso.get().load(R.drawable.skuimage).into(imageView);
+                }else {
+                    Picasso.get().load(url).into(imageView);
+                }
                 show();
             }
         });

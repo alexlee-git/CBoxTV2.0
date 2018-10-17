@@ -35,9 +35,11 @@ import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.ad.model.AdBean;
 import tv.newtv.cboxtv.cms.ad.model.BuyGoodsView;
+import tv.newtv.cboxtv.cms.ad.model.GoodsBean;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BaseRequestAdPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BuyGoodsRequestAdPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
 import tv.newtv.cboxtv.cms.util.SPrefUtils;
 import tv.newtv.cboxtv.cms.util.SystemUtils;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
@@ -78,7 +80,8 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     private MyScreenListener myScreenListener;
     private Disposable disposable;
     private boolean isShowQrCode = false;
-    private int duration;
+    private int duration = DEFAULT_TIME;
+    private int start;
     private BuyGoodsLog log;
 
     private Handler handler = new Handler(){
@@ -115,8 +118,20 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     @Override
     public void showAd(AdBean.AdspacesItem item) {
         Log.i(TAG, "showAd: ");
+        if(item.materials == null || item.materials.size() == 0){
+            Log.i(TAG, "数据不合法");
+            return;
+        }
         this.item = item;
         extMap = analyzeExt(item.ext);
+        GoodsBean goodsBean = GsonUtil.fromjson(item.materials.get(0).eventContent, GoodsBean.class);
+        skuId = goodsBean.sku;
+        start = goodsBean.start;
+
+        int playTime = item.materials.get(0).playTime;
+        if(playTime > 0){
+            duration = playTime;
+        }
 
         myScreenListener = new MyScreenListener();
         if(!NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener)){
@@ -129,15 +144,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         buyGoodsView = new BuyGoodsPopupWindow();
         buyGoodsView.setParamsMap(extMap);
         buyGoodsView.show(context,view);
-        if(item.materials != null && item.materials.size() > 0){
-//            buyGoodsView.setName(item.materials.get(0).name);
-            skuId = item.materials.get(0).fontContent;
-        }
 
-        duration = Integer.parseInt(TextUtils.isEmpty(extMap.get("duration")) ? "0" : extMap.get("duration"));
-        if(duration <= 0){
-            duration = DEFAULT_TIME;
-        }
         handler.sendEmptyMessageDelayed(0,duration * 1000);
 
         //查询设备是否被绑定
@@ -155,7 +162,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         if(TextUtils.isEmpty(feedId)){
                             getQrcode();
                         }else {
-                            buyGoodsView.setImageUrl(skuId);
+                            buyGoodsView.setImageUrl(item.materials.get(0).filePath);
                             log.startShowGoods();
                         }
                     }
@@ -244,7 +251,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         showToast("请在手机上解除绑定后，重新绑定");
                     }else {
                         SPrefUtils.setValue(context,SPrefUtils.FEED_ID,feedId);
-                        buyGoodsView.setImageUrl(skuId);
+                        buyGoodsView.setImageUrl(item.materials.get(0).filePath);
                         isShowQrCode = false;
 
                         log.startShowGoods();
@@ -372,8 +379,6 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         @Override
                         public void onNext(Long aLong) {
                             int currentPosition = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() / 1000;
-                            int start = getIntValue(extMap, "start");
-                            int duration  = getIntValue(extMap,"duration");
                             Log.i(TAG, "onNext: "+currentPosition+","+start+","+duration);
                             if(currentPosition >= start && currentPosition <= (start + duration)){
                                 show();
