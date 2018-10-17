@@ -17,9 +17,14 @@ import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
+import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
+
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.Constants;
+
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -41,11 +46,14 @@ import tv.newtv.cboxtv.views.detailpage.onEpisodeItemClick;
  */
 public class ProgramCollectionActivity extends BaseActivity {
 
-    private String contentUUID;
+    private String contentUUID;//UUID
     private HeadPlayerView headPlayerView;
     private SmoothScrollView scrollView;
     private EpisodeHorizontalListView mListView;
     private boolean isADEntry = false;
+
+    ProgramSeriesInfo programSeriesInfo;
+    private int indexNum=-1;
 
     @Override
     public void prepareMediaPlayer() {
@@ -65,7 +73,6 @@ public class ProgramCollectionActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
         if (headPlayerView != null) {
             headPlayerView.onActivityStop();
         }
@@ -77,6 +84,7 @@ public class ProgramCollectionActivity extends BaseActivity {
         if (headPlayerView != null) {
             headPlayerView.onActivityResume();
         }
+
     }
 
     @Override
@@ -134,39 +142,63 @@ public class ProgramCollectionActivity extends BaseActivity {
                             @Override
                             public void onClick(View v) {
                                 switch (v.getId()) {
+                                    //全屏
                                     case R.id.full_screen:
+
                                         headPlayerView.EnterFullScreen(ProgramCollectionActivity
                                                 .this);
+
                                         break;
                                 }
                             }
                         })
                         .SetPlayerCallback(new PlayerCallback() {
+                                               @Override
+                                               public void onEpisodeChange(int index, int position) {
+                                                   indexNum=index;
+                                                   LogUtils.i("Collection", "当前头部index-->" + index + "\tposition-->" + position);
+                                                   mListView.setCurrentPlay(index);
+                                               }
+
+                                               @Override
+                                               public void onPlayerClick(VideoPlayerView videoPlayerView) {
+                                                   videoPlayerView.enterFullScreen(ProgramCollectionActivity.this,
+                                                           false);
+                                                   LogUtils.i("Collection", "点击播放");
+                                               }
+
+                                               @Override
+                                               public void AllPlayComplete(boolean isError, String info,
+                                                                           VideoPlayerView videoPlayerView) {
+                                                   LogUtils.i("Collection", "所有播放完成");
+                                               }
+
+                                               @Override
+                                               public void ProgramChange() {
+                                                   LogUtils.i("Collection", "节目改变播放");
+                                               }
+
+
+                                           }
+
+                        )
+                        //退出全屏操作
+                        .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                             @Override
-                            public void onEpisodeChange(int index, int position) {
-                                mListView.setCurrentPlay(index);
-                            }
-
-                            @Override
-                            public void onPlayerClick(VideoPlayerView videoPlayerView) {
-                                videoPlayerView.enterFullScreen(ProgramCollectionActivity.this,
-                                        false);
-                            }
-
-                            @Override
-                            public void AllPlayComplete(boolean isError, String info,
-                                                        VideoPlayerView videoPlayerView) {
-
-                            }
-
-                            @Override
-                            public void ProgramChange() {
-
+                            public void videoEitFullScreen() {
+                                if(indexNum>10)
+                                {
+                                    mListView.initAdapter();
+                                    mListView.setContentUUID(contentUUID, programSeriesInfo);
+                                    mListView.setCurrentPlay(indexNum);
+                                }
                             }
                         })
+
                         .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                             @Override
                             public void onResult(ProgramSeriesInfo info) {
+                                programSeriesInfo=info;
                                 headPlayerView.setProgramSeriesInfo(info);
                                 mListView.setContentUUID(contentUUID, info);
                                 suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH,
@@ -183,10 +215,14 @@ public class ProgramCollectionActivity extends BaseActivity {
         mListView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position) {
+
+                //全屏显示播放
                 headPlayerView.Play(position, 0, true);
             }
         });
     }
+
+
 
     @SuppressWarnings("ConstantConditions")
     @Override

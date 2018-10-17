@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.player.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -221,7 +222,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent
                     .KEYCODE_DPAD_RIGHT) {
-                if(!seekSlide) return true;
+                if (!seekSlide) return true;
                 seekSlide = false;
                 mImgSeekStatus.setImageResource(R.drawable.seek_pause);
                 if (!mIsOnlyShowSeekBar) {
@@ -290,6 +291,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         }
     }
 
+
     public void show() {
         if (NewTVLauncherPlayerViewManager.getInstance().getShowView() != NewTVLauncherPlayerView
                 .SHOWING_NO_VIEW) {
@@ -323,8 +325,10 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
             mHandler.removeMessages(DISMISS_VIEW);
             return;
         }
+
         setVisibility(View.VISIBLE);
         bringToFront();
+        show();
         startAnimation(mAnimationIn);
         NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                 .SHOWING_SEEKBAR_VIEW);

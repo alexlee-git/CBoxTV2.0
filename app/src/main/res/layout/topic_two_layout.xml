@@ -53,10 +53,6 @@
             android:layout_below="@id/title"
             android:layout_marginLeft="@dimen/width_10px"
             android:layout_marginTop="@dimen/height_10px"
-            android:ellipsize="end"
-            android:maxEms="15"
-            android:maxLines="2"
-            android:singleLine="false"
             android:text="专题名称专题名称专题名称专题名称专题名称"
             android:textColor="#ffffff"
             android:textSize="30px" />

@@ -121,8 +121,9 @@ public class SpecialActivity extends BaseActivity {
                     .append(mPageUUid + ",")
                     .append("")//专题模板
                     .trimToSize();
+            Log.e("SpecialActivity", dataBuff.toString());
 
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
+//            LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
         }
     }
 

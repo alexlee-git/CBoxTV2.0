@@ -41,7 +41,9 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.RxBus;
+import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -155,8 +157,20 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
             }
         }
+
+
     };
 
+
+    //检测全屏退出回调
+    private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new VideoExitFullScreenCallBack() {
+        @Override
+        public void videoEitFullScreen() {
+            if (mBuilder != null && mBuilder.videoExitFullScreenCallBack != null){
+                mBuilder.videoExitFullScreenCallBack.videoEitFullScreen();
+            }
+        }
+    };
 
     public HeadPlayerView(Context context) {
         this(context, null);
@@ -174,7 +188,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void setCurrentPlayIndex(String tag, int index) {
-        Log.e(TAG, "setCurrentPlayIndex tag=" + tag + " index = " + index);
         currentPlayIndex = index;
     }
 
@@ -198,6 +211,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             if (video instanceof VideoPlayerView) {
                 playerView = (VideoPlayerView) video;
             } else if (video instanceof FrameLayout) {
+                //全屏显示
                 if (defaultConfig == null) {
                     playerView = new VideoPlayerView(getContext());
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
@@ -211,9 +225,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     }
                 }
             }
-
             if (playerView != null) {
                 playerView.setPlayerCallback(mPlayerCallback);
+                playerView.setVideoExitCallback(videoExitFullScreenCallBack);
                 isBuildComplete = true;
             }
         }
@@ -360,7 +374,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    //显示全屏
     public void EnterFullScreen(Activity activity) {
+        Log.i("Collection","isPlayLive-->"+isPlayLive);
         if (isPlayLive && playerView != null) {
             playerView.enterFullScreen(activity, isPlayLive);
         } else if (playerView != null) {
@@ -372,6 +388,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         mBuilder = builder;
         initData();
         if (mBuilder.playerCallback == null) return;
+        if (mBuilder.videoExitFullScreenCallBack == null) return;
         if (mBuilder.contentUUid == null) return;
         if (mBuilder.mPlayerId == -1) return;
         if (mBuilder.mLayout == -1) return;
@@ -616,7 +633,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    //播放
     public void Play(int index, int postion, boolean requestFocus) {
+
 
         if (isPlayLive) {
             isPlayLive = false;
@@ -765,6 +784,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         return mBuilder.contentUUid;
     }
 
+    //获取结果数据
     private void requestFromServer() {
         if (mBuilder == null) {
             return;
@@ -949,12 +969,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private List<Integer> focusables;
         private OnClickListener clickListener;
         private PlayerCallback playerCallback;
+        private VideoExitFullScreenCallBack videoExitFullScreenCallBack;
         private OnFocusChangeListener focusChangeListener;
         private InfoResult infoResult;
         private String contentUUid;
         private int ProgramType;
         private List<CustomFrame> dbTypes;
         private int defaultFocusID = 0;
+
+        private ExitVideoFullCallBack videoFullCallBack;
 
         private Builder(int layout) {
             mLayout = layout;
@@ -964,6 +987,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return new Builder(id);
         }
 
+
         public void release() {
             dbTypes = null;
             focusChangeListener = null;
@@ -972,6 +996,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             focusables = null;
             clickables = null;
             infoResult = null;
+            videoExitFullScreenCallBack = null;
         }
 
         public Builder CheckFromDB(CustomFrame... types) {
@@ -1006,6 +1031,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         public Builder SetPlayerCallback(PlayerCallback callback) {
             playerCallback = callback;
+            return this;
+        }
+
+
+        public Builder SetVideoExitFullScreenCallBack(VideoExitFullScreenCallBack callBack) {
+            this.videoExitFullScreenCallBack = callBack;
             return this;
         }
 

@@ -63,11 +63,6 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
 //    private Typeface mTypefaceltzh;
 
     private StringBuilder mInputStr = new StringBuilder(1024);
-    private String mSubInputStr01;
-    private String mSubInputStr02;
-    private String mSubInputStr03;
-    private String mSubInputStr04;
-    private String mSubInputStr05;
 
     private int mBtnTag;
     private int mLastBtnTag;
@@ -407,99 +402,19 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sub_btn_1:
-                mSubInputStr01 = mSubBtn01.getText().toString();
-                if (mSubInputStr01 != null) {
-                    if (mInputStr.length() < 10) {
-                        mInputStr.append(mSubInputStr01);
-                        onReturnInputString.onReturnInputString(mInputStr.toString());
-                        mSubBtn01.setVisibility(View.INVISIBLE);
-                        mSubBtn02.setVisibility(View.INVISIBLE);
-                        mSubBtn03.setVisibility(View.INVISIBLE);
-                        mSubBtn04.setVisibility(View.INVISIBLE);
-                        mSubBtn05.setVisibility(View.INVISIBLE);
-                        if (mPopupWindow.isShowing()){
-                            mPopupWindow.dismiss();
-                        }
-                    } else {
-                        searchResultAlet();
-                    }
-                }
+                setBtnClickStyle(mSubBtn01);
                 break;
             case R.id.sub_btn_2:
-                mSubInputStr02 = mSubBtn02.getText().toString();
-                if (mSubInputStr02 != null) {
-                    if (mInputStr.length() < 10) {
-                        mInputStr.append(mSubInputStr02);
-                        onReturnInputString.onReturnInputString(mInputStr.toString());
-                        mSubBtn01.setVisibility(View.INVISIBLE);
-                        mSubBtn02.setVisibility(View.INVISIBLE);
-                        mSubBtn03.setVisibility(View.INVISIBLE);
-                        mSubBtn04.setVisibility(View.INVISIBLE);
-                        mSubBtn05.setVisibility(View.INVISIBLE);
-                        if (mPopupWindow.isShowing()){
-                            mPopupWindow.dismiss();
-                        }
-                    } else {
-                        searchResultAlet();
-                    }
-                }
+                setBtnClickStyle(mSubBtn02);
                 break;
             case R.id.sub_btn_3:
-                mSubInputStr03 = mSubBtn03.getText().toString();
-                if (mSubInputStr03 != null) {
-                    if (mInputStr.length() < 10) {
-                        mInputStr.append(mSubInputStr03);
-                        onReturnInputString.onReturnInputString(mInputStr.toString());
-                        mSubBtn01.setVisibility(View.INVISIBLE);
-                        mSubBtn02.setVisibility(View.INVISIBLE);
-                        mSubBtn03.setVisibility(View.INVISIBLE);
-                        mSubBtn04.setVisibility(View.INVISIBLE);
-                        mSubBtn05.setVisibility(View.INVISIBLE);
-                        if (mPopupWindow.isShowing()){
-                            mPopupWindow.dismiss();
-                        }
-                    } else {
-                        searchResultAlet();
-                    }
-                }
+                setBtnClickStyle(mSubBtn03);
                 break;
             case R.id.sub_btn_4:
-                mSubInputStr04 = mSubBtn04.getText().toString();
-                if (mSubInputStr04 != null) {
-                    if (mInputStr.length() < 10) {
-                        mInputStr.append(mSubInputStr04);
-                        onReturnInputString.onReturnInputString(mInputStr.toString());
-                        mSubBtn01.setVisibility(View.INVISIBLE);
-                        mSubBtn02.setVisibility(View.INVISIBLE);
-                        mSubBtn03.setVisibility(View.INVISIBLE);
-                        mSubBtn04.setVisibility(View.INVISIBLE);
-                        mSubBtn05.setVisibility(View.INVISIBLE);
-                        if (mPopupWindow.isShowing()){
-                            mPopupWindow.dismiss();
-                        }
-                    } else {
-                        searchResultAlet();
-                    }
-                }
+                setBtnClickStyle(mSubBtn04);
                 break;
             case R.id.sub_btn_5:
-                mSubInputStr05 = mSubBtn05.getText().toString();
-                if (mSubInputStr05 != null) {
-                    if (mInputStr.length() < 10) {
-                        mInputStr.append(mSubInputStr05);
-                        onReturnInputString.onReturnInputString(mInputStr.toString());
-                        mSubBtn01.setVisibility(View.INVISIBLE);
-                        mSubBtn02.setVisibility(View.INVISIBLE);
-                        mSubBtn03.setVisibility(View.INVISIBLE);
-                        mSubBtn04.setVisibility(View.INVISIBLE);
-                        mSubBtn05.setVisibility(View.INVISIBLE);
-                        if (mPopupWindow.isShowing()){
-                            mPopupWindow.dismiss();
-                        }
-                    } else {
-                        searchResultAlet();
-                    }
-                }
+                setBtnClickStyle(mSubBtn05);
                 break;
             default:
                 break;
@@ -511,6 +426,26 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
         mSubInputTextView.setTextColor(Color.parseColor("#ffffff"));
         //上报日志
 //        logSDK.getInstance().logUpload(2, mInputStr.toString());
+    }
+
+    private void setBtnClickStyle(Button subBtn) {
+        String subInputStr = subBtn.getText().toString();
+        if (subInputStr != null) {
+            if (mInputStr.length() < 10) {
+                mInputStr.append(subInputStr);
+                onReturnInputString.onReturnInputString(mInputStr.toString());
+                mSubBtn01.setVisibility(View.INVISIBLE);
+                mSubBtn02.setVisibility(View.INVISIBLE);
+                mSubBtn03.setVisibility(View.INVISIBLE);
+                mSubBtn04.setVisibility(View.INVISIBLE);
+                mSubBtn05.setVisibility(View.INVISIBLE);
+                if (mPopupWindow.isShowing()){
+                    mPopupWindow.dismiss();
+            }
+            } else {
+                searchResultAlet();
+            }
+        }
     }
 
     @Override
