@@ -424,11 +424,10 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                             mRecyclerView.getChildAt(0).requestFocus();
                             return true;
                         }else {
-                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->mRecyclerView为空");
+                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->没有符合的id");
                         }
-                    }else {
-                        Log.i(TAG,"KEYCODE_DPAD_DOWN-->没有符合的id");
                     }
+
                     break;
                 //向左
                 case KeyEvent.KEYCODE_DPAD_LEFT:
