@@ -323,8 +323,6 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         dismiss();
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;
-
-        handler.removeCallbacksAndMessages(null);
     }
 
     private Map<String,String> analyzeExt(String ext){
@@ -439,9 +437,10 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     }
 
     private boolean dismiss(){
-        if(buyGoodsView != null){
+        if(buyGoodsView != null && buyGoodsView.isShow()){
             buyGoodsView.dismiss();
 
+            handler.removeCallbacksAndMessages(null);
             if(isShowQrCode){
                 logShowQrCode();
             }else {

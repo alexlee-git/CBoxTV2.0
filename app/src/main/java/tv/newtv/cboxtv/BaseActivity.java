@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -14,8 +13,12 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
+import java.lang.annotation.Annotation;
+
 import tv.newtv.ActivityStacks;
+import tv.newtv.cboxtv.annotation.BuyGoodsInject;
 import tv.newtv.cboxtv.annotation.PopupAD;
+import tv.newtv.cboxtv.cms.ad.AdInject;
 import tv.newtv.cboxtv.cms.ad.BuyGoodsBusiness;
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
@@ -44,6 +47,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     private boolean fromOuter = false;//是否是外部跳转进入的
     private ADPresenter adPresenter;
     private AdPopupWindow adPopupWindow;
+    @BuyGoodsInject
     private BuyGoodsBusiness buyGoodsBusiness;
 
 
@@ -112,6 +116,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setPopupAD();
+        AdInject.inject(this);
     }
 
     private void setPopupAD() {
@@ -240,8 +245,12 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     }
 
     private boolean hasPopoupAD(){
+        return hasAnnotation(PopupAD.class);
+    }
+
+    private boolean hasAnnotation(Class ann){
         Class<? extends BaseActivity> clazz = getClass();
-        PopupAD annotation = clazz.getAnnotation(PopupAD.class);
+        Annotation annotation = clazz.getAnnotation(ann);
         if(annotation != null){
             return true;
         }

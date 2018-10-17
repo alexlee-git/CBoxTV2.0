@@ -32,6 +32,7 @@ import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.mainPage.menu.Utils;
@@ -53,7 +54,7 @@ import tv.newtv.cboxtv.views.detailpage.SuggestView;
 /**
  * Created by gaoleichao on 2018/4/28.
  */
-
+@BuyGoodsAD
 public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     private String leftUUID, rightUUID;
     private String contentUUID;
