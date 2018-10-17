@@ -376,16 +376,22 @@ class SqlExcuters {
                         null);
             }
             JsonArray videoInfos = null;
-            if (cursor != null) {
-                cursor.moveToFirst();
-                if (cursor.getCount() > 0) {
-                    videoInfos = new JsonArray();
-                    do {
-                        videoInfos.add(translateCursor(cursor));
-                    } while (cursor.moveToNext());
+
+            try{
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    if (cursor.getCount() > 0) {
+                        videoInfos = new JsonArray();
+                        do {
+                            videoInfos.add(translateCursor(cursor));
+                        } while (cursor.moveToNext());
+                    }
+                    cursor.close();
                 }
-                cursor.close();
+            }catch (Exception e){
+                e.printStackTrace();
             }
+
 
             final JsonArray finalVideoInfos = videoInfos;
             MainLooper.get().post(new Runnable() {
