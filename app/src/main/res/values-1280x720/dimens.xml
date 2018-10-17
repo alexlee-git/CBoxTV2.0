@@ -6022,7 +6022,8 @@
     <dimen name="dp213">213dp</dimen>
     <dimen name="dp153">153dp</dimen>
     <dimen name="_height_1px">-1px</dimen>
-
+    <dimen name="height_11sp">7px</dimen>
+    <dimen name="height_22sp">15px</dimen>
     <dimen name="_width_18dp">-20dp</dimen>
 </resources>
 
