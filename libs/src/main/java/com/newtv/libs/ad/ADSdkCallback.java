@@ -11,9 +11,7 @@ public abstract class ADSdkCallback implements ADHelper.ADCallback{
 
     public void showAd(String type, String url){}
 
-    public void AdPrepare(ADHelper.AD ad){
-
-    }
+    public void AdPrepare(ADHelper.AD ad){ }
 
     public void showAd(AdInfo adInfo){}
 

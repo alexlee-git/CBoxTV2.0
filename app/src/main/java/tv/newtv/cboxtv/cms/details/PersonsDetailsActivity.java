@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
@@ -25,11 +26,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADPresenter;
-import com.newtv.libs.ad.IAdConstract;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
@@ -38,10 +37,12 @@ import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -63,8 +64,7 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.search.view.SearchActivity;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.cboxtv.player.BaseActivity;
-import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
@@ -82,8 +82,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 人物详情页
  */
 public class PersonsDetailsActivity extends BaseActivity implements OnRecycleItemClickListener,
-        View.OnKeyListener, IAdConstract.IADConstractView, View.OnFocusChangeListener {
-
+        View.OnKeyListener, AdContract.View, View.OnFocusChangeListener {
 
     @BindView(R.id.id_usercenter_fragment_root)
     VerticallRecyclerView mRecyclerView;
@@ -129,7 +128,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     private Content dataInfo;
     private String contentUUID;
     private String leftUUID, rightUUID;
-    private IAdConstract.IADPresenter adPresenter;
+//    private AdContract.Presenter adPresenter;
     private String mTitleString;//title值，用于跳转搜索页使用 2018.4.30 wangquansheng
     private long lastClickTime = 0;
 
@@ -138,7 +137,7 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_details);
         ButterKnife.bind(this);
-        adPresenter = new ADPresenter(this);
+//        adPresenter = new AdContract.AdPresenter(getApplicationContext(),this);
         init();
         initView();
         requestData();
@@ -202,9 +201,9 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     }
 
     private void uninit() {
-        if (adPresenter != null) {
-            adPresenter.destroy();
-        }
+//        if (adPresenter != null) {
+//            adPresenter.destroy();
+//        }
         if (mAdapter != null) {
             mAdapter.destroy();
             mAdapter = null;
@@ -310,14 +309,16 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
                     @Override
                     public void onNext(List<Content> columnPageBean) {
-                        if(mAdapter != null && adPresenter != null){
-                            mAdapter.appendToList(columnPageBean);
-                            mAdapter.notifyDataSetChanged();
-                            adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
-                                    .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance()
-                                    .getFirstChannelId(),PlayerConfig.getInstance()
-                                    .getSecondChannelId(),PlayerConfig.getInstance().getTopicId());//获取广告
-                        }
+//                        if(mAdapter != null && adPresenter != null){
+//                            mAdapter.appendToList(columnPageBean);
+//                            mAdapter.notifyDataSetChanged();
+//                            adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER,
+//                                    Constant
+//                                    .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance()
+//                                    .getFirstChannelId(),PlayerConfig.getInstance()
+//                                    .getSecondChannelId(),PlayerConfig.getInstance().getTopicId()
+//                                    ,null);//获取广告
+//                        }
                     }
 
                     @Override
@@ -717,18 +718,6 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     }
 
     @Override
-    public void showAd(ADHelper.AD.ADItem result) {
-        if (!TextUtils.isEmpty(result.AdUrl)) {
-            if (program_detail_ad_fl != null) {
-                program_detail_ad_fl.setVisibility(View.VISIBLE);
-            }
-            if (program_detail_ad_img != null) {
-                program_detail_ad_img.hasCorner(true).load(result.AdUrl);
-            }
-        }
-    }
-
-    @Override
     public void onFocusChange(View v, boolean hasFocus) {
         switch (v.getId()) {
 
@@ -741,6 +730,33 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
 
                 break;
         }
+    }
+
+    @Override
+    public void showAd(@org.jetbrains.annotations.Nullable String type, @org.jetbrains
+            .annotations.Nullable String url, @org.jetbrains.annotations.Nullable HashMap<?, ?>
+            hashMap) {
+
+    }
+
+    @Override
+    public void updateTime(int total, int left) {
+
+    }
+
+    @Override
+    public void complete() {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+
     }
 
 //    @Override

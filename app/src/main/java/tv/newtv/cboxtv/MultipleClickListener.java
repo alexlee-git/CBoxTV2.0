@@ -1,4 +1,4 @@
-package tv.newtv;
+package tv.newtv.cboxtv;
 
 import android.view.View;
 

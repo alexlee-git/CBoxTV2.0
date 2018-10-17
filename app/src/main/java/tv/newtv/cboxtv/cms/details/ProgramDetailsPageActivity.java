@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,20 +23,20 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADPresenter;
-import com.newtv.libs.ad.IAdConstract;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -57,7 +58,7 @@ import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.Utils;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -79,7 +80,8 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
 /**
  * 节目详情页
  */
-public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycleItemClickListener, View.OnKeyListener, IAdConstract.IADConstractView {
+public class ProgramDetailsPageActivity extends BaseActivity implements
+        OnRecycleItemClickListener, View.OnKeyListener, AdContract.View {
 
     @BindView(R.id.id_usercenter_fragment_root)
     VerticallRecyclerView mRecyclerView;
@@ -130,7 +132,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
     private Observable<VideoPlayInfo> mUpdateVideoInfoObservable;
     private int mPlayPosition;
     private Content dataInfo;
-    private IAdConstract.IADPresenter adPresenter;
+    private AdContract.Presenter adPresenter;
     private String sqContentuuid;
     private boolean isFirstStart = false;
 
@@ -139,7 +141,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_column_detail);
         ButterKnife.bind(this);
-        adPresenter = new ADPresenter(this);
+        adPresenter = new AdContract.AdPresenter(getApplicationContext(),this);
         mCollectIv.setBackgroundResource(R.drawable.icon_details_uncollect_btn);
         init();
         initView();
@@ -180,9 +182,10 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
         }
 
         ADConfig.getInstance().setSeriesID(contentUUID);
-        adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
+        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
                 .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance().getFirstChannelId(),PlayerConfig
-                .getInstance().getSecondChannelId(),PlayerConfig.getInstance().getTopicId());//获取广告
+                .getInstance().getSecondChannelId(),PlayerConfig.getInstance().getTopicId(),null);
+        //获取广告
         leftUUID = contentUUID.substring(0, 2);
         rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
         mAdapter = new ColumnDetailsAdapter(getApplicationContext(), this);
@@ -201,7 +204,6 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
                         }
                     }
                 }).excute();
-
 
         mUpdateVideoInfoObservable = RxBus.get().register(Constant.UPDATE_VIDEO_PLAY_INFO);
         mUpdateVideoInfoObservable.observeOn(AndroidSchedulers.mainThread())
@@ -590,14 +592,35 @@ public class ProgramDetailsPageActivity extends BaseActivity implements OnRecycl
     }
 
     @Override
-    public void showAd(ADHelper.AD.ADItem result) {
-        if (!TextUtils.isEmpty(result.AdUrl)) {
+    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?> hashMap) {
+
+        if (!TextUtils.isEmpty(url)) {
             if (program_detail_ad_fl != null) {
                 program_detail_ad_fl.setVisibility(View.VISIBLE);
             }
             if (program_detail_ad_img != null) {
-                program_detail_ad_img.hasCorner(true).load(result.AdUrl);
+                program_detail_ad_img.hasCorner(true).load(url);
             }
         }
+    }
+
+    @Override
+    public void updateTime(int total, int left) {
+
+    }
+
+    @Override
+    public void complete() {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+
     }
 }

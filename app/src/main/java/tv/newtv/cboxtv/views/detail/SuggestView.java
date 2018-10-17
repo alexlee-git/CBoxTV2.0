@@ -32,8 +32,8 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.contract.SearchContract;
-import tv.newtv.contract.SuggestContract;
+import com.newtv.cms.contract.SearchContract;
+import com.newtv.cms.contract.SuggestContract;
 
 /**
  * 项目名称:         CBoxTV
@@ -119,7 +119,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
 
     public void setContentUUID(int type, Content content, View controllView) {
         controlView = controllView;
-        contentUUID = content.getContentUUID();
+        contentUUID = content.getContentID();
 
         switch (type) {
             case TYPE_COLUMN_FIGURES:

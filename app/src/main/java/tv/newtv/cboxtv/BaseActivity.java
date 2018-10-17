@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.player;
+package tv.newtv.cboxtv;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,12 +9,9 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADPresenter;
-import com.newtv.libs.ad.AdPopupWindow;
-import com.newtv.libs.ad.IAdConstract;
 import com.newtv.libs.ad.annotation.PopupAD;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.KeyEventUtils;
@@ -24,7 +21,12 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
+import java.util.HashMap;
+
+import tv.newtv.cboxtv.player.Player;
+import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
+import tv.newtv.cboxtv.views.AdPopupWindow;
 
 
 /**
@@ -34,12 +36,11 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/7
  */
-public abstract class BaseActivity extends RxFragmentActivity implements IAdConstract
-        .IADConstractView {
+public abstract class BaseActivity extends RxFragmentActivity {
 
     protected boolean FrontStage = false;//是否已经进入前台
     private boolean fromOuter = false;//是否是外部跳转进入的
-    private ADPresenter adPresenter;
+    private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
 
     public boolean isFrontStage() {
@@ -211,10 +212,38 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
 
     protected void setBackgroundAD() {
         if (isDetailActivity()) {
-            adPresenter = new ADPresenter(this);
-            adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BACKGROUND, "",
-                    PlayerConfig.getInstance().getFirstChannelId(),PlayerConfig.getInstance()
-                            .getSecondChannelId(),PlayerConfig.getInstance().getTopicId());
+            adPresenter = new AdContract.AdPresenter(getApplicationContext(), null);
+            adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_BACKGROUND, "",
+                    PlayerConfig.getInstance().getFirstChannelId(), PlayerConfig.getInstance()
+                            .getSecondChannelId(), PlayerConfig.getInstance().getTopicId(), null,
+                    new AdContract.Callback() {
+                        @Override
+                        public void showAd(@org.jetbrains.annotations.Nullable String type, @org
+                                .jetbrains.annotations.Nullable String url, @org.jetbrains
+                                .annotations.Nullable HashMap<?, ?> hashMap) {
+                            if (!TextUtils.isEmpty(url)) {
+                                Picasso.get().load(url).into(new Target() {
+                                    @Override
+                                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom
+                                            from) {
+                                        getWindow().setBackgroundDrawable(new BitmapDrawable
+                                                (bitmap));
+                                    }
+
+                                    @Override
+                                    public void onBitmapFailed(Exception e, Drawable
+                                            errorDrawable) {
+
+                                    }
+
+                                    @Override
+                                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
         }
     }
 
@@ -238,25 +267,4 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
         return false;
     }
 
-    @Override
-    public void showAd(ADHelper.AD.ADItem result) {
-        if (!TextUtils.isEmpty(result.AdUrl)) {
-            Picasso.get().load(result.AdUrl).into(new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    getWindow().setBackgroundDrawable(new BitmapDrawable(bitmap));
-                }
-
-                @Override
-                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            });
-        }
-    }
 }

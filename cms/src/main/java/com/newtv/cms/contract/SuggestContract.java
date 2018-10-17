@@ -1,8 +1,7 @@
-package tv.newtv.contract;
+package com.newtv.cms.contract;
 
 import android.content.Context;
 
-import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
@@ -10,6 +9,7 @@ import com.newtv.cms.ICmsView;
 import com.newtv.cms.api.ITvProgram;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Libs;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,7 +54,9 @@ public class SuggestContract {
         public void getColumnFigures(String contentUUID) {
             ITvProgram tvProgram = getService(SERVICE_TV_PROGRAM);
             if (tvProgram != null) {
-                tvProgram.getTvFigureList(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
+                tvProgram.getTvFigureList(
+                        Libs.get().getAppKey(),
+                        Libs.get().getChannelId(),
                         contentUUID, new DataObserver<ModelResult<List<SubContent>>>() {
                             @Override
                             public void onResult(ModelResult<List<SubContent>> result) {
@@ -77,7 +79,9 @@ public class SuggestContract {
         public void getColumnSuggest(String contentUUID) {
             ITvProgram tvProgram = getService(SERVICE_TV_PROGRAM);
             if (tvProgram != null) {
-                tvProgram.getTvFigureTvList(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
+                tvProgram.getTvFigureTvList(
+                        Libs.get().getAppKey(),
+                        Libs.get().getChannelId(),
                         contentUUID, new DataObserver<ModelResult<List<SubContent>>>() {
                             @Override
                             public void onResult(ModelResult<List<SubContent>> result) {

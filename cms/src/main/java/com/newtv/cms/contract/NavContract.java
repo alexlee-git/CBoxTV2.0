@@ -1,8 +1,7 @@
-package tv.newtv.contract;
+package com.newtv.cms.contract;
 
 import android.content.Context;
 
-import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
@@ -10,6 +9,7 @@ import com.newtv.cms.ICmsView;
 import com.newtv.cms.api.INav;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Nav;
+import com.newtv.libs.Libs;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * 创建人:           weihaichao
  * 创建日期:          2018/9/27
  */
-public class MainNavContract {
+public class NavContract {
     public interface View extends ICmsView {
         void onNavResult(Context context, List<Nav> result);
     }
@@ -41,7 +41,9 @@ public class MainNavContract {
         public void requestNav() {
             INav nav = getService(SERVICE_NAV);
             if (nav != null) {
-                nav.getNav(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
+                nav.getNav(
+                        Libs.get().getAppKey(),
+                        Libs.get().getChannelId(),
                         new DataObserver<ModelResult<List<Nav>>>() {
                             @Override
                             public void onResult(ModelResult<List<Nav>> result) {

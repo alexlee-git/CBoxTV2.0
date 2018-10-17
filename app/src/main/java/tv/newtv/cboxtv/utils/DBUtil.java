@@ -53,7 +53,7 @@ public class DBUtil {
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
         contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
-        contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+        contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
         DataSupport.insertOrReplace(DBConfig.SUBSCRIBE_TABLE_NAME)
                 .withValue(contentValues)
                 .withCallback(callback).excute();
@@ -118,7 +118,7 @@ public class DBUtil {
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
             contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
-            contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+            contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
             DataSupport.insertOrReplace(DBConfig.COLLECT_TABLE_NAME)
                     .withValue(contentValues)
                     .withCallback(callback).excute();
@@ -154,7 +154,7 @@ public class DBUtil {
         }
 
         contentValues.put(DBConfig.PLAYPOSITION, Position);
-        contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+        contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
         if(TextUtils.isEmpty(mInfo.getContentUUID())){
             if(TextUtils.isEmpty(seriesUUID)){
                 return;
@@ -186,7 +186,7 @@ public class DBUtil {
         contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
-        contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+        contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
         DataSupport.insertOrReplace(DBConfig.ATTENTION_TABLE_NAME)
                 .withValue(contentValues)
                 .withCallback(callback).excute();

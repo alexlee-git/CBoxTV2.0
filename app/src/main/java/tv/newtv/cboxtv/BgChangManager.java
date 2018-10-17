@@ -9,11 +9,13 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADSdkCallback;
-import com.newtv.libs.ad.ADsdkUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,19 +40,26 @@ public class BgChangManager {
     private BGCallback mCallback;
     private HashMap<String, BGDrawable> bgHashmap = new HashMap<>();
 
+    private AdContract.Presenter mAdPresenter;
+
     private Map<String,BGEvent> secondLevelMap = new HashMap<>();
     private List<BGEvent> firstLevel = new ArrayList<>();
 
     private Context applicationContext;
     private int retry = 0;
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler(new Handler.Callback() {
         @Override
-        public void handleMessage(Message msg) {
+        public boolean handleMessage(Message message) {
             if(++retry < 10){
                 setCurrent(applicationContext,mCurrentId);
             }
+            return false;
         }
-    };
+    });
+
+    private BgChangManager(){
+        mAdPresenter = new AdContract.AdPresenter(LauncherApplication.AppContext,null);
+    }
 
     public static BgChangManager getInstance() {
         if (instance == null) {
@@ -131,10 +140,11 @@ public class BgChangManager {
      * 加载广告背景图 TODO
      */
     private void setAdBG(final Context context, final BGEvent bgEvent) {
-        ADsdkUtils.getAD(Constant.AD_TOPIC, bgEvent.contentUUID, -1, new ADSdkCallback() {
+
+        mAdPresenter.getAdByType(Constant.AD_TOPIC, bgEvent.contentUUID, "", null, new AdContract.Callback() {
             @Override
-            public void showAd(String type, String url) {
-                super.showAd(type, url);
+            public void showAd(@Nullable String type, @Nullable String url, @NotNull HashMap<?,
+                    ?> hashMap) {
                 if (TextUtils.isEmpty(url)) {
                     setCmsBG(context, bgEvent);
                 } else {

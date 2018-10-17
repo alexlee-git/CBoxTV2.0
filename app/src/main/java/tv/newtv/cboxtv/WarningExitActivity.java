@@ -12,7 +12,7 @@ import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 
-import com.newtv.libs.ad.ADSdkCallback;
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.bean.AdBean;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUtils;
@@ -20,6 +20,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -33,10 +34,10 @@ import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
 import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
 import tv.newtv.cboxtv.cms.search.view.ISearchPageView;
-import com.newtv.libs.ad.ADsdkUtils;
 
-import tv.newtv.cboxtv.player.BaseActivity;
-import tv.newtv.views.SpacesItemDecoration;
+import org.jetbrains.annotations.Nullable;
+
+import tv.newtv.cboxtv.views.SpacesItemDecoration;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 
@@ -50,6 +51,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private SearchPagePresenter mSearchPagePresenter;
     private AnimatorSet mScaleAnimator;
     private Interpolator mSpringInterpolator;
+    private AdContract.Presenter mAdPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,8 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         cancelButton.setOnClickListener(this);
         okButton.setOnFocusChangeListener(this);
         cancelButton.setOnFocusChangeListener(this);
+
+        mAdPresenter = new AdContract.AdPresenter(getApplicationContext(),null);
 
         getAD();//获取广告
         initView();
@@ -175,17 +179,17 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
      */
     public void getAD() {
 
-
-        ADsdkUtils.getAD("quit", null, -1, new ADSdkCallback() {
+        mAdPresenter.getAdByType("quit", null, "", null, new AdContract.Callback() {
             @Override
-            public void showAd(String type, String url) {
-                super.showAd(type, url);
+            public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?,
+                                ?> hashMap) {
                 if (!TextUtils.isEmpty(url)){
                     exit_image.setVisibility(View.VISIBLE);
                     Picasso.get().load(url).into(exit_image);
                 }
             }
         });
+
         final StringBuffer sb = new StringBuffer();
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override

@@ -20,13 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gridsum.tracker.GridsumWebDissector;
-import com.gridsum.videotracker.VideoTracker;
+import com.newtv.cms.contract.ActiveAuthContract;
+import com.newtv.cms.contract.AdContract;
+import com.newtv.cms.contract.EntryContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADSdkCallback;
-import com.newtv.libs.ad.ADsdkUtils;
-import com.newtv.libs.util.CNTVLogUtils;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -36,27 +33,25 @@ import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Locale;
 
-import tv.newtv.cboxtv.cms.DataCenter;
 import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import tv.newtv.cboxtv.player.ActivityStacks;
 import tv.newtv.cboxtv.player.ad.ADPlayerView;
-import tv.newtv.contract.ActiveAuthContract;
-import tv.newtv.contract.EntryContract;
 
 /**
  * Created by TCP on 2018/4/12.
  */
 public class EntryActivity extends RxFragmentActivity implements ActiveAuthContract.View,
-        EntryContract.View {
+        EntryContract.View, AdContract.View {
     private static final String TAG = "EntryActivity";
     private static final String EXTERNAL = "external";
 
     private ActiveAuthContract.ActiveAuthPresenter mAuthPresenter;
     private EntryContract.EntryPresenter mSplashPresenter;
+    private AdContract.AdPresenter mAdPresenter;
 
     //广告内容显示
     private ADPlayerView videoView;
@@ -72,11 +67,6 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     private String mExternalParams;
 
     private boolean isShowingAD = false;
-    private ADHelper.AD.ADItem mAdItem;
-    /**
-     * 测试获取所有广告数据
-     */
-    private ADHelper.AD mAD;
 
     @Override
     protected void onDestroy() {
@@ -104,11 +94,6 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         }
 
         isShowingAD = false;
-        mAdItem = null;
-        if (mAD != null) {
-            mAD.cancel();
-            mAD = null;
-        }
     }
 
     @Override
@@ -186,10 +171,10 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
         initView();
 
-        initCNTVLog();
-
         mAuthPresenter = new ActiveAuthContract.ActiveAuthPresenter(getApplicationContext(), this);
+        mAdPresenter = new AdContract.AdPresenter(getApplicationContext(), this);
         mSplashPresenter = new EntryContract.EntryPresenter(getApplicationContext(), this);
+        mSplashPresenter.initCNTVLog(getApplication());
     }
 
     private void initRetryUrls() {
@@ -224,6 +209,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         videoView.setLayoutParams(layoutParams);
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Override
     public void failed(int type, int status) {
         switch (type) {
@@ -250,16 +236,17 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 break;
             case ActiveAuthContract.ActiveAuthPresenter.ACTIVATE:
                 mAlertDialog = getDialog(new StringBuilder().append(getResources().getString(R
-                        .string.tip_text_active_error)).append(getErrorMsg(status)).toString(),
+                                .string.tip_text_active_error)).append(getErrorMsg(status))
+                                .toString(),
                         new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (mAlertDialog != null) {
-                            mAlertDialog.dismiss();
-                        }
-                        finish();
-                    }
-                });
+                            @Override
+                            public void onClick(View view) {
+                                if (mAlertDialog != null) {
+                                    mAlertDialog.dismiss();
+                                }
+                                finish();
+                            }
+                        });
                 if (!isFinishing()) {
                     mAlertDialog.show();
                 }
@@ -289,7 +276,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_ENTER:
                     // TODO test
-                    if (isAdHasEvent(mAdItem)) {
+                    if (mAdPresenter.isAdHasEvent()) {
                         mExternalAction = Constant.EXTERNAL_OPEN_URI;
                         enterMain();
                     }
@@ -313,66 +300,8 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         finish();
     }
 
-    public void getAD() {
-        final TextView timer = findViewById(R.id.count_down);
-        RxBus.get().post(Constant.INIT_SDK, Constant.INIT_ADSDK);
-
-        ADsdkUtils.getAD("open", "", -1, new ADSdkCallback() {
-
-            @Override
-            public void AdPrepare(ADHelper.AD ad) {
-                super.AdPrepare(ad);
-                mAD = ad;
-            }
-
-            @Override
-            public void showAd(String type, String url) {
-                super.showAd(type, url);
-                if (TextUtils.isEmpty(url)) {
-                    enterMain();
-                } else {
-                    isShowingAD = true;
-
-                    if (Constant.AD_IMAGE_TYPE.equals(type)) {
-                        imageView.setVisibility(View.VISIBLE);
-                        videoView.setVisibility(View.GONE);
-                        imageView.setImageURI(Uri.parse(url));
-                    } else if (Constant.AD_VIDEO_TYPE.equals(type)) {
-                        imageView.setVisibility(View.GONE);
-                        videoView.setVisibility(View.VISIBLE);
-                        videoView.setDataSource(url);
-                        videoView.play();
-                    }
-                }
-            }
-
-            @Override
-            public void showAdItem(ADHelper.AD.ADItem adItem) {
-                mAdItem = adItem;
-            }
-
-            @Override
-            public void updateTime(int total, int left) {
-                super.updateTime(total, left);
-                timer.setVisibility(View.VISIBLE);
-                timer.setText(String.format(Locale
-                        .getDefault(), "广告剩余时间 %d 秒", left));
-            }
-
-            @Override
-            public void complete() {
-                super.complete();
-                mAD = null;
-                enterMain();
-            }
-        });
-    }
-
     private void enterMain() {
-        if (mAD != null) {
-            mAD.cancel();
-            mAD = null;
-        }
+        mAdPresenter.destroy();
         authLogSuccess();//认证成功
 
         if (mStoped) {
@@ -390,7 +319,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
             } else if (Constant.EXTERNAL_OPEN_URI.equals(mExternalAction)) {//点击广告进入详情页
                 intent = new Intent(EntryActivity.this, MainActivity.class);
                 intent.putExtra("action", mExternalAction);
-                intent.putExtra("params", mAdItem.eventContent);
+                intent.putExtra("params", mAdPresenter.getAdItem().eventContent);
             } else {
                 boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),
                         mExternalAction,
@@ -427,35 +356,14 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         dialogBtn.setOnClickListener(l);
 
         Window window = dialog.getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = DisplayUtils.translate(543, 0);
-        lp.height = DisplayUtils.translate(423, 1);
-        window.setAttributes(lp);
+        if (window != null) {
+            WindowManager.LayoutParams lp = window.getAttributes();
+            lp.width = DisplayUtils.translate(543, 0);
+            lp.height = DisplayUtils.translate(423, 1);
+            window.setAttributes(lp);
+        }
 
         return dialog;
-    }
-
-    // 央视网日志初始化
-    private void initCNTVLog() {
-        // TODO Auto-generated method stub
-        // 央视网日志初始化
-//		String urls[] = { "http://115.182.217.24/gs.gif" };
-        String urls[] = {"http://wdrecv.app.cntvwb.cn/gs.gif"};
-        GridsumWebDissector.getInstance().setUrls(urls);
-        GridsumWebDissector.getInstance().setApplication(this.getApplication());
-        Log.i(TAG, "---入口activity" + this.getApplication());
-        String AppVersionName = CNTVLogUtils.getVersionName(this);
-        Log.i(TAG, "---版本号" + AppVersionName);
-        Log.i(TAG, "---渠道号" + BuildConfig.CHANNEL_ID);
-        GridsumWebDissector.getInstance().setAppVersion(AppVersionName);// 设置App版本号
-        GridsumWebDissector.getInstance().setServiceId("GWD-005100");// 设置统计服务ID
-        GridsumWebDissector.getInstance().setChannel(BuildConfig.CHANNEL_ID);// 设置来源渠道（不适用于多渠道打包）
-        // 央视网日志： （传入设备型号，如：MI 2S）
-        VideoTracker.setMfrs(android.os.Build.MODEL);
-        // 央视网日志：（传入播放平台，如：Android）
-        VideoTracker.setDevice("Android");
-        // 央视网日志：（传入操作系统，如：Android_4.4.4）
-        VideoTracker.setChip(android.os.Build.VERSION.RELEASE);
     }
 
     private void authLogSuccess() {
@@ -481,17 +389,6 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_AUTH_INFO, logBuff
                 .toString());//认证成功
-    }
-
-    private boolean isAdHasEvent(ADHelper.AD.ADItem adItem) {
-        if (adItem == null
-                || TextUtils.isEmpty(adItem.eventType)
-                || (!Constant.EXTERNAL_OPEN_URI.equals(adItem.eventType))
-                || TextUtils.isEmpty(adItem.eventContent)) {
-            return false;
-        }
-
-        return true;
     }
 
     private String getErrorMsg(int errorCode) {
@@ -521,7 +418,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     @Override
     public void authResult() {
         RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
-        getAD();
+        mAdPresenter.getAdByType("open", "", "",null);
         mAuthingView.setVisibility(View.GONE);
     }
 
@@ -538,5 +435,42 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
 
+    }
+
+
+    @Override
+    public void updateTime(int total, int left) {
+        TextView timer = findViewById(R.id.count_down);
+        if (timer != null) {
+            timer.setVisibility(View.VISIBLE);
+            timer.setText(String.format(Locale
+                    .getDefault(), "广告剩余时间 %d 秒", left));
+        }
+    }
+
+    @Override
+    public void complete() {
+        enterMain();
+    }
+
+    @Override
+    public void showAd(@org.jetbrains.annotations.Nullable String type, @org.jetbrains
+            .annotations.Nullable String url, @org.jetbrains.annotations.Nullable HashMap<?, ?> hashMap) {
+        if (TextUtils.isEmpty(url)) {
+            enterMain();
+        } else {
+            isShowingAD = true;
+
+            if (Constant.AD_IMAGE_TYPE.equals(type)) {
+                imageView.setVisibility(View.VISIBLE);
+                videoView.setVisibility(View.GONE);
+                imageView.setImageURI(Uri.parse(url));
+            } else if (Constant.AD_VIDEO_TYPE.equals(type)) {
+                imageView.setVisibility(View.GONE);
+                videoView.setVisibility(View.VISIBLE);
+                videoView.setDataSource(url);
+                videoView.play();
+            }
+        }
     }
 }

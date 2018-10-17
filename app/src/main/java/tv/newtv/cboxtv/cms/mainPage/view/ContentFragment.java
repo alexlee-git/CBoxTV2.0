@@ -32,7 +32,7 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
-import tv.newtv.contract.PageContract;
+import com.newtv.cms.contract.PageContract;
 
 /**
  * Created by lixin on 2018/1/23.

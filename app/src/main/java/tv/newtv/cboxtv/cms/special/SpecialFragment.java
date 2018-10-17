@@ -14,18 +14,19 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADSdkCallback;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.HashMap;
+
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
-import com.newtv.libs.ad.ADsdkUtils;
 
 import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
@@ -38,6 +39,7 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     private static final String TAG = SpecialFragment.class.getSimpleName();
 
     private SpecialContract.Presenter mPresenter;
+    private AdContract.Presenter mAdPresenter;
 
     private RelativeLayout mRootView;
 
@@ -51,6 +53,10 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
 
     ///////////////
 
+    public static SpecialFragment newInstance() {
+        return new SpecialFragment();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -62,6 +68,10 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
 
         mPresenter = null;
 
+        if (mAdPresenter != null) {
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
 
 
         StringBuilder dataBuff = new StringBuilder();
@@ -71,10 +81,6 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
                 .append(templateZT)//专题模板id
                 .trimToSize();
         LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL, dataBuff.toString());//离开专题
-    }
-
-    public static SpecialFragment newInstance() {
-        return new SpecialFragment();
     }
 
     public void setPageUUid(String pageUUid) {
@@ -125,6 +131,7 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     @Override
     public void setPresenter(SpecialContract.Presenter presenter) {
         mPresenter = checkNotNull(presenter);
+        mAdPresenter = new AdContract.AdPresenter(getContext(), null);
     }
 
     @Override
@@ -161,81 +168,20 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
 
     private void initBackground(final ModuleInfoResult moduleInfoResult) {
         // 测试数据
-        // moduleInfoResult.setIsAd(0);
-        // moduleInfoResult.setPageBackground
-        // ("http://111.32.138.56/img/cnlive/180228172554262_278.png");
-
         if (moduleInfoResult.getIsAd() == ModuleInfoResult.IS_AD_PAGE) {
 
-
-            ADsdkUtils.getAD(Constant.AD_TOPIC, mPageUUid, -1, new ADSdkCallback() {
+            mAdPresenter.getAdByType(Constant.AD_TOPIC, mPageUUid, "", null, new AdContract.Callback() {
                 @Override
-                public void showAd(String type, String url) {
-                    super.showAd(type, url);
-                    if (TextUtils.isEmpty(url)){
+                public void showAd(@org.jetbrains.annotations.Nullable String type, @org
+                        .jetbrains.annotations.Nullable String url, @org.jetbrains.annotations
+                        .Nullable HashMap<?, ?> hashMap) {
+                    if (TextUtils.isEmpty(url)) {
                         showPosterByCMS(moduleInfoResult);
-                    }else{
+                    } else {
                         Picasso.get().load(url).into(SpecialFragment.this);
                     }
                 }
             });
-
-//            final StringBuffer sb = new StringBuffer();
-//            Observable.create(new ObservableOnSubscribe<List<AdInfos>>() {
-//                @Override
-//                public void subscribe(ObservableEmitter<List<AdInfos>> e) throws Exception {
-//                    AdSDK.getInstance().getAD(Constant.AD_TOPIC, null, null, mPageUUid, null,
-//                            null, sb);
-//                    e.onNext(JsonParse.parseAdInfo(sb.toString()));
-//                }
-//            }).subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new Observer<List<AdInfos>>() {
-//                        @Override
-//                        public void onSubscribe(Disposable d) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onNext(List<AdInfos> value) {
-//
-//                            if (value == null || value.size() == 0 || value.get(0) == null ||
-//                                    value.get(0).m_info == null || value.get(0).m_info.size() ==
-//                                    0) {
-//                                showPosterByCMS(moduleInfoResult);
-//                                return;
-//                            }
-//                            AdInfo adInfo = value.get(0).m_info.get(0);
-//
-//                            if (adInfo == null || adInfo.m_material == null || adInfo.m_material
-//                                    .size() == 0) {
-//                                showPosterByCMS(moduleInfoResult);
-//                                return;
-//                            }
-//                            MaterialInfo materialInfo = adInfo.m_material.get(0);
-//
-//                            if (materialInfo != null) {
-//                                String url = materialInfo.m_filePath;
-//                                Log.i("mm", "url:" + url);
-//                                Picasso.with(getActivity()).load(url).into(SpecialFragment.this);
-//                                AdSDK.getInstance().report(adInfo.m_mid + "", adInfo.m_aid + "",
-//                                        materialInfo.m_id + "", null, null, null, null);
-//                            } else {
-//                                showPosterByCMS(moduleInfoResult);
-//
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            showPosterByCMS(moduleInfoResult);
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//
-//                        }
-//                    });
             // TODO 加载广告背景图
         } else {
             showPosterByCMS(moduleInfoResult);

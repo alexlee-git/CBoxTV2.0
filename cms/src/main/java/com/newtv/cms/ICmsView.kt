@@ -11,5 +11,5 @@ import android.content.Context
  */
 interface ICmsView {
     fun tip(context: Context, message: String)
-    fun onError(context: Context, desc: String)
+    fun onError(context: Context, desc: String?)
 }

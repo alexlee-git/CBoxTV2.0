@@ -1,7 +1,8 @@
-package tv.newtv.cboxtv.player.view;
+package tv.newtv.cboxtv;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -16,7 +17,6 @@ import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.YSLogUtils;
 
-import tv.newtv.cboxtv.player.BaseActivity;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerUrlConfig;
@@ -25,6 +25,8 @@ import tv.newtv.cboxtv.menu.MenuGroup;
 import tv.newtv.cboxtv.menu.MenuGroupPresenter;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.player.model.VideoPlayInfo;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
 
 /**

@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 

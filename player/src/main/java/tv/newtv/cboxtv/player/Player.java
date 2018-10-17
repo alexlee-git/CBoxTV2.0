@@ -1,9 +1,9 @@
 package tv.newtv.cboxtv.player;
 
-import com.newtv.cms.bean.Content;
+import android.app.Activity;
+import android.content.Intent;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.newtv.cms.bean.Content;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -15,7 +15,7 @@ import java.util.List;
 public class Player implements PlayerObserver {
 
     private static Player instance = null;
-    private List<PlayerObserver> observerList;
+    private PlayerObserver mObserver;
 
     private Player() {
 
@@ -31,31 +31,26 @@ public class Player implements PlayerObserver {
     }
 
     public void attachObserver(PlayerObserver observer) {
-        synchronized (this) {
-            if (observerList == null) {
-                observerList = new ArrayList<>();
-            }
-            observerList.add(observer);
-        }
+        this.mObserver = observer;
     }
 
     @Override
     public void onFinish(Content playInfo, int index, int position) {
-        if (observerList == null) return;
-        synchronized (this) {
-            for (PlayerObserver observer : observerList) {
-                observer.onFinish(playInfo, index, position);
-            }
-        }
+        mObserver.onFinish(playInfo, index, position);
     }
 
     @Override
     public void onExitApp() {
-        if (observerList == null) return;
-        synchronized (this) {
-            for (PlayerObserver observer : observerList) {
-                observer.onExitApp();
-            }
-        }
+        mObserver.onExitApp();
+    }
+
+    @Override
+    public Activity getCurrentActivity() {
+        return mObserver.getCurrentActivity();
+    }
+
+    @Override
+    public Intent getPlayerActivityIntent() {
+        return mObserver.getPlayerActivityIntent();
     }
 }

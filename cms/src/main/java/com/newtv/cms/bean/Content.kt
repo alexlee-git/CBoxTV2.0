@@ -29,7 +29,7 @@ open class Content  : Serializable {
     var priceNum: String? = null //最新付费节目数量 设置最后几集收费
     var videoType: String? = null //一级分类
     var director: String? = null //导演
-    var contentID: Int? = null //内容Id
+    var contentID: String? = null //内容Id
     var csContentIDs: String? = null //所属节目集ID	 节目所属节目集contentID   |  分隔
     var tags: String? = null //标签
     var actors: String? = null //主演

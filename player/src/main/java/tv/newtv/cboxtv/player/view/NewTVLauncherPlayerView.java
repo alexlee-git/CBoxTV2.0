@@ -43,7 +43,6 @@ import java.util.Map;
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuPopupWindow;
-import tv.newtv.cboxtv.player.ActivityStacks;
 import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.FocusWidget;
 import tv.newtv.cboxtv.player.IFocusWidget;
@@ -364,7 +363,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mPlayerLocation = null;
         }
 
-        Activity activity = ActivityStacks.get().getCurrentActivity();
+        Activity activity = Player.get().getCurrentActivity();
         dismissChildView();
 
         final int screenWidth = activity.getWindow().getDecorView().getMeasuredWidth();
@@ -794,7 +793,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void isNeedStartActivity(boolean isNeedStartActivity, Content
             programDetailInfo, int index) {
         if (isNeedStartActivity) {
-            Intent intent = new Intent(getContext(), NewTVLauncherPlayerActivity.class);
+            Intent intent = Player.get().getPlayerActivityIntent();
             Bundle bundle = new Bundle();
             if (programDetailInfo != null) {
                 bundle.putSerializable("programSeriesInfo", programDetailInfo);

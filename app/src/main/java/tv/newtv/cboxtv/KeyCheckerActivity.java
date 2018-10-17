@@ -1,4 +1,4 @@
-package tv.newtv;
+package tv.newtv.cboxtv;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -15,9 +15,6 @@ public class KeyCheckerActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_key_checker);
     }
-
-
-
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {

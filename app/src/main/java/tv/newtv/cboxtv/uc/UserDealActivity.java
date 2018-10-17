@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 
 
 public class UserDealActivity extends BaseActivity {

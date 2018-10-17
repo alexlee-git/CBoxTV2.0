@@ -65,7 +65,7 @@ import tv.newtv.cboxtv.cms.listPage.view.ListPageView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 
 //import tv.newtv.cboxtv.cms.net.ApiUtil;
 

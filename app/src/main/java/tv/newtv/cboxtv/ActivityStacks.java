@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.player;
+package tv.newtv.cboxtv;
 
 import android.app.Activity;
 

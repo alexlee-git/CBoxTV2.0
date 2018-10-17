@@ -30,7 +30,7 @@ public class SqlCondition {
     private boolean distinct = false;
     private SqlBuilder sqlBuilder;
 
-    public static SqlCondition prepare(SqlBuilder sqlBuilder) {
+    static SqlCondition prepare(SqlBuilder sqlBuilder) {
         return new SqlCondition(sqlBuilder);
     }
 

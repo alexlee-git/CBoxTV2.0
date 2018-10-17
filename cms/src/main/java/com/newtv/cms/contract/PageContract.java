@@ -1,8 +1,7 @@
-package tv.newtv.contract;
+package com.newtv.cms.contract;
 
 import android.content.Context;
 
-import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
@@ -10,6 +9,7 @@ import com.newtv.cms.ICmsView;
 import com.newtv.cms.api.IPage;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
+import com.newtv.libs.Libs;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +41,10 @@ public class PageContract {
         public void getPageContent(String contentId) {
             IPage page = getService(SERVICE_PAGE);
             if (page != null) {
-                page.getPage(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentId, new
+                page.getPage(
+                        Libs.get().getAppKey(),
+                        Libs.get().getChannelId(),
+                        contentId, new
                         DataObserver<ModelResult<List<Page>>>() {
                             @Override
                             public void onResult(ModelResult<List<Page>> result) {

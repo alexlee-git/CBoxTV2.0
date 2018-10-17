@@ -50,7 +50,7 @@
         </activity>
         <activity android:name=".MainActivity"
         />
-        <activity android:name=".player.view.NewTVLauncherPlayerActivity"
+        <activity android:name=".NewTVLauncherPlayerActivity"
                   android:launchMode="singleTop"/>
         <activity android:name=".cms.details.ColumnPageActivity"
                   android:theme="@style/AppContentTheme"/>

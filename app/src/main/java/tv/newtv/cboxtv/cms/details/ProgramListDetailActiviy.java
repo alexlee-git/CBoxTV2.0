@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,21 +15,25 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADPresenter;
-import com.newtv.libs.ad.IAdConstract;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,14 +51,11 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
-import com.newtv.libs.db.DBCallback;
-import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleView;
@@ -63,7 +65,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 节目合集详情页
  */
 public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleItemClickListener,
-        IAdConstract.IADConstractView, PlayerCallback,View.OnClickListener {
+        AdContract.View, PlayerCallback, View.OnClickListener {
 
     @BindView(R.id.id_usercenter_fragment_root)
     VerticallRecyclerView mRecyclerView;
@@ -101,7 +103,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     private boolean isCollect = false;
     private Content dataInfo;
     private Disposable mDisposable;
-    private IAdConstract.IADPresenter adPresenter;
+    private AdContract.Presenter adPresenter;
 
     private NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
     private long lastClickTime = 0;
@@ -111,7 +113,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program_list_detail_activiy);
         ButterKnife.bind(this);
-        adPresenter = new ADPresenter(this);
+        adPresenter = new AdContract.AdPresenter(getApplicationContext(), this);
         init();
         initView();
         requestData();
@@ -173,9 +175,10 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
             return;
         }
         ADConfig.getInstance().setSeriesID(contentUUID);
-        adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
-                .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance().getFirstChannelId(),PlayerConfig
-                .getInstance().getSecondChannelId(),PlayerConfig.getInstance().getTopicId());//获取广告
+        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
+                .AD_DETAILPAGE_BANNER, PlayerConfig.getInstance().getFirstChannelId(), PlayerConfig
+                .getInstance().getSecondChannelId(), PlayerConfig.getInstance().getTopicId(),null);
+        //获取广告
         if (contentUUID.length() >= 2) {
             leftUUID = contentUUID.substring(0, 2);
             rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
@@ -206,6 +209,10 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     protected void onDestroy() {
         unSubscribe();
         super.onDestroy();
+        if(adPresenter != null){
+            adPresenter.destroy();
+            adPresenter = null;
+        }
     }
 
     private void requestData() {
@@ -337,8 +344,8 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.full_screen:
-                if(mVideoPlayer != null && mVideoPlayer.isReady()){
-                    mVideoPlayer.EnterFullScreen(ProgramListDetailActiviy.this,false);
+                if (mVideoPlayer != null && mVideoPlayer.isReady()) {
+                    mVideoPlayer.EnterFullScreen(ProgramListDetailActiviy.this, false);
                 }
                 break;
             case R.id.btn_detail_collect:
@@ -399,7 +406,8 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                             //mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
 
                             mCollectBtn.setSelect(true);
-                            Toast.makeText(getApplicationContext(), R.string.collect_success, Toast.LENGTH_SHORT)
+                            Toast.makeText(getApplicationContext(), R.string.collect_success,
+                                    Toast.LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
@@ -421,18 +429,6 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     }
 
     @Override
-    public void showAd(ADHelper.AD.ADItem result) {
-        if (!TextUtils.isEmpty(result.AdUrl)) {
-            if (program_detail_ad_fl != null) {
-                program_detail_ad_fl.setVisibility(View.VISIBLE);
-            }
-            if (program_detail_ad_img != null) {
-                program_detail_ad_img.hasCorner(true).load(result.AdUrl);
-            }
-        }
-    }
-
-    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
                 .ACTION_UP) {
@@ -448,7 +444,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
 
     @Override
     public void onEpisodeChange(int index, int position) {
-        Toast.makeText(this, "播放下一集："+index, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "播放下一集：" + index, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -463,6 +459,38 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
 
     @Override
     public void ProgramChange() {
+
+    }
+
+    @Override
+    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?> hashMap) {
+        if (!TextUtils.isEmpty(url)) {
+            if (program_detail_ad_fl != null) {
+                program_detail_ad_fl.setVisibility(View.VISIBLE);
+            }
+            if (program_detail_ad_img != null) {
+                program_detail_ad_img.hasCorner(true).load(url);
+            }
+        }
+    }
+
+    @Override
+    public void updateTime(int total, int left) {
+
+    }
+
+    @Override
+    public void complete() {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
 
     }
 }

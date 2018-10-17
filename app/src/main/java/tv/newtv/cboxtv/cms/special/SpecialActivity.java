@@ -12,7 +12,7 @@ import com.newtv.libs.util.LogUploadUtils;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.special.util.ActivityUtils;
 import tv.newtv.cboxtv.cms.special.util.Injection;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.player.PlayerConfig;
 
 /**

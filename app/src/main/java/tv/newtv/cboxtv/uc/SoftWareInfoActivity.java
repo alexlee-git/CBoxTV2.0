@@ -20,7 +20,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 
 public class SoftWareInfoActivity extends BaseActivity {
 

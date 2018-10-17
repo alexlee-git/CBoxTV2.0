@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADSdkCallback;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.GlideUtil;
 import com.newtv.libs.util.ImageUtils;
@@ -32,10 +32,13 @@ import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import tv.newtv.MultipleClickListener;
+import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
@@ -43,7 +46,6 @@ import tv.newtv.cboxtv.cms.mainPage.menu.NavUtil;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
-import com.newtv.libs.ad.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
@@ -69,27 +71,32 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private int bottomMargin = 0;
     private boolean showFirstTitle = false;
     private List<UniversalViewHolder> holderList = new ArrayList<>();
-
-    public void destroy(){
-        if(mDatas != null){
-            mDatas.clear();
-            mDatas = null;
-        }
-        mContext = null;
-        if(holderList !=null){
-            for(UniversalViewHolder holder : holderList){
-                holder.destroy();
-            }
-            holderList.clear();
-            holderList = null;
-        }
-    }
-
+    private AdContract.Presenter mAdPresenter;
 
     public UniversalAdapter(Context context, List<Page> datas) {
         mContext = context;
         mDatas = datas;
         mSpringInterpolator = new OvershootInterpolator(2.2f);
+        mAdPresenter = new AdContract.AdPresenter(context, null);
+    }
+
+    public void destroy() {
+        if (mDatas != null) {
+            mDatas.clear();
+            mDatas = null;
+        }
+        if (mAdPresenter != null) {
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
+        mContext = null;
+        if (holderList != null) {
+            for (UniversalViewHolder holder : holderList) {
+                holder.destroy();
+            }
+            holderList.clear();
+            holderList = null;
+        }
     }
 
     public String getFirstViewId() {
@@ -350,11 +357,13 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
             return;
         }
 
-        ADsdkUtils.getAD(Constant.AD_DESK, moduleItem.getBlockId() + "_" + info.getCellCode(),
-                -1, new ADSdkCallback() {
+
+        mAdPresenter.getAdByType(Constant.AD_DESK, moduleItem.getBlockId() + "_" + info
+                        .getCellCode(),
+                "", null, new AdContract.Callback() {
                     @Override
-                    public void showAd(String type, String url) {
-                        super.showAd(type, url);
+                    public void showAd(@Nullable String type, @Nullable String url, @Nullable
+                            HashMap<?, ?> hashMap) {
                         if (TextUtils.isEmpty(url)) {
                             showPosterByCMS(imageView, info.getImg(), hasCorner);
                         } else {
@@ -371,7 +380,6 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                         }
                     }
                 });
-
     }
 
     /**

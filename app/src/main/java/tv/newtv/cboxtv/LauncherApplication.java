@@ -1,7 +1,9 @@
 package tv.newtv.cboxtv;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
@@ -9,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.FileUtil;
@@ -31,6 +34,7 @@ import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
+import tv.newtv.cboxtv.utils.DBUtil;
 
 //import com.tencent.bugly.crashreport.CrashReport;
 
@@ -66,12 +70,29 @@ public class LauncherApplication extends MultiDexApplication {
         Player.get().attachObserver(new PlayerObserver() {
             @Override
             public void onFinish(Content playInfo, int index, int position) {
-
+                DBUtil.addHistory(playInfo, index, position, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if(code == 0){
+                            LogUtils.e("写入历史记录成功");
+                        }
+                    }
+                });
             }
 
             @Override
             public void onExitApp() {
 
+            }
+
+            @Override
+            public Activity getCurrentActivity() {
+                return ActivityStacks.get().getCurrentActivity();
+            }
+
+            @Override
+            public Intent getPlayerActivityIntent() {
+                return new Intent(LauncherApplication.this,NewTVLauncherPlayerActivity.class);
             }
         });
 

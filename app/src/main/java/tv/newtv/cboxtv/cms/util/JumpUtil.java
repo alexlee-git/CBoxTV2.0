@@ -28,6 +28,7 @@ import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
+import tv.newtv.cboxtv.NewTVLauncherPlayerActivity;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 public class JumpUtil {
@@ -219,6 +220,8 @@ public class JumpUtil {
                         .show();
             } else if (Constant.OPEN_VIDEO.equals(actionType)) { //打开视频
                 // TODO 后面需要直接播放视频
+
+                jumpIntent = new Intent(context,NewTVLauncherPlayerActivity.class);
 
                 PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
                     @Override

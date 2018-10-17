@@ -29,7 +29,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.uc.bean.ProgressListener;
 import tv.newtv.cboxtv.uc.bean.Updater;
 import tv.newtv.cboxtv.uc.bean.VersionBeen;

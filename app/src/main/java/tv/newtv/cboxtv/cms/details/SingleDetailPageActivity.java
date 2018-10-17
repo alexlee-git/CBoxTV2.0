@@ -17,7 +17,7 @@ import com.newtv.libs.Constant;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;

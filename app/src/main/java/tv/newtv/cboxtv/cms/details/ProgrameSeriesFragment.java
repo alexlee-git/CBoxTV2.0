@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,23 +23,23 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADPresenter;
-import com.newtv.libs.ad.IAdConstract;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.PageHelper;
 
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.RxBus;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -83,7 +84,7 @@ import tv.newtv.cboxtv.views.detail.SmoothScrollView;
  * 节目集剧集详情页(电视剧)
  */
 public class ProgrameSeriesFragment extends BaseFragment implements
-        OnRecycleItemClickListener, IAdConstract.IADConstractView,
+        OnRecycleItemClickListener, AdContract.View,
         PlayerCallback {
 
     private static final String TAG = "ProgrameSeriesFragment";
@@ -144,7 +145,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     private boolean isFirstStart = false;
     //   private Observable<VideoPlayInfo> mUpdateVideoInfoObservable;
     private Disposable mDisposable;
-    private ADPresenter adPresenter;
+    private AdContract.Presenter adPresenter;
     private List<Content> dataList;
     private long lastClickTime = 0;
     //    private Handler handler = new Handler(this);
@@ -287,7 +288,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     private void init() {
-        adPresenter = new ADPresenter(this);
+        adPresenter = new AdContract.AdPresenter(getContext(),this);
 
         mAdapter = new ColumnDetailsAdapter(getContext().getApplicationContext(), this);
         dataList = new ArrayList<>();
@@ -574,10 +575,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                             mRecyclerView.setHasFixedSize(true);
 
                         }
-                        adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
+                        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
                                 .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance()
                                 .getFirstChannelId(),PlayerConfig.getInstance()
-                                .getSecondChannelId(),PlayerConfig.getInstance().getTopicId());//获取广告
+                                .getSecondChannelId(),PlayerConfig.getInstance().getTopicId(),null);
+                        //获取广告
 
 
                         mVideoView.playSingleOrSeries(mIndex, mPlayPosition);
@@ -780,24 +782,6 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     @Override
-    public void showAd(ADHelper.AD.ADItem result) {
-        if (!TextUtils.isEmpty(result.AdUrl)) {
-            if (program_detail_ad_fl != null) {
-                program_detail_ad_fl.setVisibility(View.VISIBLE);
-            }
-
-            if (program_detail_ad_img != null) {
-                program_detail_ad_img.hasCorner(true).load(result.AdUrl);
-            }
-        } else {
-            if (program_detail_ad_fl != null && program_detail_ad_fl.getParent() != null) {
-                ((ViewGroup) program_detail_ad_fl.getParent()).removeView(program_detail_ad_fl);
-                program_detail_ad_fl = null;
-            }
-        }
-    }
-
-    @Override
     public void onEpisodeChange(int mIndex, int position) {
         this.historyposition = mIndex;
         if (mPageDaoImpl != null) {
@@ -875,5 +859,44 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                 return indexlast + "-" + indexfirst;
             }
         }
+    }
+
+    @Override
+    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?>
+            hashMap) {
+        if (!TextUtils.isEmpty(url)) {
+            if (program_detail_ad_fl != null) {
+                program_detail_ad_fl.setVisibility(View.VISIBLE);
+            }
+
+            if (program_detail_ad_img != null) {
+                program_detail_ad_img.hasCorner(true).load(url);
+            }
+        } else {
+            if (program_detail_ad_fl != null && program_detail_ad_fl.getParent() != null) {
+                ((ViewGroup) program_detail_ad_fl.getParent()).removeView(program_detail_ad_fl);
+                program_detail_ad_fl = null;
+            }
+        }
+    }
+
+    @Override
+    public void updateTime(int total, int left) {
+
+    }
+
+    @Override
+    public void complete() {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+
     }
 }

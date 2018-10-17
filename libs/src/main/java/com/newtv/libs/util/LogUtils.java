@@ -27,7 +27,7 @@ public class LogUtils {
 	/** 日志输出时的TAG */
 	private static String mTag = "CBoxTV";
 	/** 是否允许输出log  默认是 0*/
-	private static int mDebuggable = 0;
+	private static int mDebuggable = LEVEL_VERBOSE;
 
 	/** 用于记时的变量 */
 	private static long mTimestamp = 0;

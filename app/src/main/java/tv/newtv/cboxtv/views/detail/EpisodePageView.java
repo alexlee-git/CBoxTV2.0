@@ -18,15 +18,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADPresenter;
-import com.newtv.libs.ad.IAdConstract;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,7 +46,7 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
  * 创建日期:          2018/5/3
  */
 public class EpisodePageView extends RelativeLayout implements IEpisode, EpisodeChange,
-        IAdConstract.IADConstractView, EpisodePageConstract.View {
+        AdContract.View, EpisodePageConstract.View {
     private static final int DEFAULT_SIZE = 8;
     private static final int HAS_AD_SIZE = 7;
 
@@ -70,8 +70,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     private List<SubContent> mContentList;
 
-    private ADPresenter adPresenter;
-    private ADHelper.AD.ADItem adItem = null;
+    private AdContract.Presenter adPresenter;
     private int pageSize = DEFAULT_SIZE;
 
     public EpisodePageView(Context context) {
@@ -89,10 +88,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     private void getAD() {
-        adPresenter = new ADPresenter(this);
-        adPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_CONTENTLIST, "",PlayerConfig
+        adPresenter = new AdContract.AdPresenter(getContext(),this);
+        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_CONTENTLIST, "",PlayerConfig
                 .getInstance().getFirstChannelId(),PlayerConfig.getInstance().getSecondChannelId
-                (),PlayerConfig.getInstance().getTopicId());
+                (),PlayerConfig.getInstance().getTopicId(),null);
     }
 
     @Override
@@ -395,7 +394,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 endIndex = size;
             }
             EpisodeFragment episodeFragment = new EpisodeFragment();
-            episodeFragment.setAdItem(adItem);
+            episodeFragment.setAdItem(adPresenter.getAdItem());
             episodeFragment.setData(mContentList.subList(index, endIndex));
             episodeFragment.setViewPager(ListPager, fragments.size(), this);
             fragments.add(episodeFragment);
@@ -592,19 +591,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public void showAd(ADHelper.AD.ADItem item) {
-        adItem = item;
-//        item.AdUrl = "123";
-        if (!TextUtils.isEmpty(item.AdUrl)) {
-            pageSize = HAS_AD_SIZE;
-            if (mContentList != null
-                    && mContentList.size() > 0) {
-                initFragment();
-            }
-        }
-    }
-
-    @Override
     public void onSubContentResult(List<SubContent> contents) {
         parseResult(contents);
     }
@@ -617,6 +603,28 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
+
+    }
+
+    @Override
+    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?>
+            hashMap) {
+        if (!TextUtils.isEmpty(url)) {
+            pageSize = HAS_AD_SIZE;
+            if (mContentList != null
+                    && mContentList.size() > 0) {
+                initFragment();
+            }
+        }
+    }
+
+    @Override
+    public void updateTime(int total, int left) {
+
+    }
+
+    @Override
+    public void complete() {
 
     }
 

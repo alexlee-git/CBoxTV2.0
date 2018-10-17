@@ -1,4 +1,4 @@
-package tv.newtv.views;
+package tv.newtv.cboxtv.views;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;

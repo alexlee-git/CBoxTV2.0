@@ -1,4 +1,4 @@
-package tv.newtv.contract;
+package com.newtv.cms.contract;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +13,7 @@ import com.newtv.cms.api.IUpVersion;
 import com.newtv.cms.bean.Oriented;
 import com.newtv.cms.bean.UpVersion;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.SystemUtils;
 
@@ -20,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-
-import tv.newtv.cboxtv.BuildConfig;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -36,7 +35,7 @@ public class VersionUpdateContract {
     }
 
     public interface Presenter extends ICmsPresenter {
-        void checkVerstionUpdate(Context context);
+        void checkVersionUpdate(Context context);
     }
 
     public static class UpdatePresenter extends CmsServicePresenter<View> implements Presenter {
@@ -46,7 +45,7 @@ public class VersionUpdateContract {
         }
 
         @Override
-        public void checkVerstionUpdate(final Context context) {
+        public void checkVersionUpdate(final Context context) {
             IUpVersion upVersion = getService(SERVICE_UPVERSTION);
             if (upVersion != null) {
                 final HashMap<String, String> params = createOrientedParam(context);
@@ -65,7 +64,7 @@ public class VersionUpdateContract {
             }
         }
 
-        public void checkUpVersion(final Context context, final int versionCode, String
+        void checkUpVersion(final Context context, final int versionCode, String
                 hardwareCode) {
             IUpVersion upVersion = getService(SERVICE_UPVERSTION);
             if (upVersion != null) {
@@ -109,11 +108,11 @@ public class VersionUpdateContract {
          * @param hardwareCode
          * @return
          */
-        private HashMap<String, String> createUpVersionParam(Context context, int versionCode,
-                                                             String hardwareCode) {
+        HashMap<String, String> createUpVersionParam(Context context, int versionCode,
+                                                     String hardwareCode) {
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("appKey", BuildConfig.APP_KEY);
-            hashMap.put("channelCode", BuildConfig.CHANNEL_ID);
+            hashMap.put("appKey", Libs.get().getAppKey());
+            hashMap.put("channelCode", Libs.get().getChannelId());
             hashMap.put("versionCode", Integer.toString(versionCode));
             if (!TextUtils.isEmpty(hardwareCode)) {
                 hashMap.put("hardwareCode", "" + hardwareCode);
@@ -127,12 +126,12 @@ public class VersionUpdateContract {
          * @param context
          * @return
          */
-        private HashMap<String, String> createOrientedParam(Context context) {
+        HashMap<String, String> createOrientedParam(Context context) {
             int versionCode = 0;
             final String hardwareCode = SystemUtils.getMac(context);
             HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("appKey", BuildConfig.APP_KEY);
-            hashMap.put("channelCode", BuildConfig.CHANNEL_ID);
+            hashMap.put("appKey", Libs.get().getAppKey());
+            hashMap.put("channelCode", Libs.get().getChannelId());
             try {
                 versionCode = context.getPackageManager().
                         getPackageInfo(context.getPackageName(), 0).versionCode;

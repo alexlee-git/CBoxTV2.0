@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.newtv.cms.bean.Nav;
 import com.newtv.cms.bean.Time;
 import com.newtv.cms.bean.UpVersion;
 import com.newtv.libs.Constant;
@@ -28,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -41,15 +39,15 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.cms.util.NetworkManager;
-import tv.newtv.cboxtv.player.ActivityStacks;
-import tv.newtv.contract.MainContract;
-import tv.newtv.contract.VersionUpdateContract;
-import tv.newtv.cboxtv.player.BaseActivity;
+
+import com.newtv.cms.contract.AppMainContract;
+import com.newtv.cms.contract.VersionUpdateContract;
+
 import tv.newtv.cboxtv.views.UpdateDialog;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
 @PopupAD
-public class MainActivity extends BaseActivity implements BgChangManager.BGCallback, MainContract
+public class MainActivity extends BaseActivity implements BgChangManager.BGCallback, AppMainContract
         .View, VersionUpdateContract.View {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -66,7 +64,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     @BindView(R.id.timer)
     TextView timeTV;
 
-    private MainContract.Presenter mPresenter;
+    private AppMainContract.Presenter mPresenter;
     private VersionUpdateContract.Presenter mUpdatePresenter;
 
     private String mExternalAction;
@@ -115,11 +113,10 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
         showServiceTime();
 
-        mPresenter = new MainContract.MainPresenter(getApplicationContext(), this);
-        mPresenter.syncServiceTime();
+        mPresenter = new AppMainContract.MainPresenter(getApplicationContext(), this);
 
         mUpdatePresenter = new VersionUpdateContract.UpdatePresenter(getApplicationContext(), this);
-        mUpdatePresenter.checkVerstionUpdate(getApplicationContext());
+        mUpdatePresenter.checkVersionUpdate(getApplicationContext());
     }
 
     private void versionUpDialog(final UpVersion versionBeen, boolean isForceUp) {
@@ -347,10 +344,5 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
             timeTV.setText(sysTimeStr); //更新时间
         }
-    }
-
-    @Override
-    public void onNavResult(Context context, List<Nav> result) {
-
     }
 }

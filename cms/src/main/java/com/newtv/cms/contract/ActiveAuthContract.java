@@ -1,17 +1,17 @@
-package tv.newtv.contract;
+package com.newtv.cms.contract;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 
-import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
 import com.newtv.cms.ICmsView;
 import com.newtv.cms.api.IActiveAuth;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.bean.ActivateBean;
 import com.newtv.libs.bean.AuthBean;
 import com.newtv.libs.util.LogUtils;
@@ -112,9 +112,9 @@ public class ActiveAuthContract {
         public void auth() {
             IActiveAuth activeAuth = getService(SERVICE_ACTIVE_AUTH);
             if (activeAuth != null) {
-                AuthBean authBean = new AuthBean(SystemUtils.getMac(getContext()), BuildConfig
-                        .APP_KEY,
-                        BuildConfig.CHANNEL_ID,
+                AuthBean authBean = new AuthBean(SystemUtils.getMac(getContext()),
+                        Libs.get().getAppKey(),
+                        Libs.get().getChannelId(),
                         Constant.UUID,
                         System.currentTimeMillis() + "");
                 activeAuth.auth(authBean, new DataObserver<String>() {
@@ -170,8 +170,9 @@ public class ActiveAuthContract {
                 if (activeAuth != null) {
 
                     ActivateBean activateBean = new ActivateBean(SystemUtils
-                            .getMac(getContext()), BuildConfig.APP_KEY,
-                            BuildConfig.CHANNEL_ID,
+                            .getMac(getContext()),
+                            Libs.get().getAppKey(),
+                            Libs.get().getChannelId(),
                             System.currentTimeMillis() + "");
                     activeAuth.active(activateBean, new DataObserver<String>() {
                         @Override
@@ -188,10 +189,6 @@ public class ActiveAuthContract {
                                     LogUtils.i("app激活成功");
                                     getView().activeResult();
 
-                                    AuthBean authBean = new AuthBean(SystemUtils.getMac
-                                            (getContext()), BuildConfig.APP_KEY,
-                                            BuildConfig.CHANNEL_ID, uuid,
-                                            System.currentTimeMillis() + "");
                                     auth();
                                 } else {
                                     LogUtils.i("app激活失败");

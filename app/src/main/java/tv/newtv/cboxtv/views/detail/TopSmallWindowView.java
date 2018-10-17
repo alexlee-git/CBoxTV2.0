@@ -4,14 +4,13 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADPresenter;
-import com.newtv.libs.ad.IAdConstract;
 
 import tv.newtv.cboxtv.player.PlayerConfig;
 
 
-public class TopSmallWindowView extends BaseAdView implements IAdConstract.IADConstractView{
+public class TopSmallWindowView extends BaseAdView{
 
     public TopSmallWindowView(Context context) {
         this(context,null);
@@ -26,10 +25,10 @@ public class TopSmallWindowView extends BaseAdView implements IAdConstract.IADCo
     }
 
     @Override
-    protected void getAD(ADPresenter mADPresenter) {
-        mADPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_TOPPOS,"",PlayerConfig
+    protected void getAD(AdContract.Presenter mADPresenter) {
+        mADPresenter.getAdByChannel(Constant.AD_DESK,Constant.AD_DETAILPAGE_TOPPOS,"",PlayerConfig
                 .getInstance().getFirstChannelId(),PlayerConfig.getInstance().getSecondChannelId
-                (),PlayerConfig.getInstance().getTopicId());
+                (),PlayerConfig.getInstance().getTopicId(),null);
     }
 
 }

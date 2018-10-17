@@ -11,7 +11,7 @@ import com.newtv.cms.api.IService
  * 创建日期:          2018/9/27
  */
 open class CmsServicePresenter<V : ICmsView>(
-        val context: Context, val view: V) : ICmsPresenter {
+        val context: Context, val view: V?) : ICmsPresenter {
 
     override fun destroy() {
         stop()

@@ -1,5 +1,9 @@
 package tv.newtv.cboxtv.player;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.newtv.cms.bean.Content;
 
 /**
@@ -12,4 +16,6 @@ import com.newtv.cms.bean.Content;
 public interface PlayerObserver {
     void onFinish(Content playInfo, int index, int position);
     void onExitApp();
+    Activity getCurrentActivity();
+    Intent getPlayerActivityIntent();
 }

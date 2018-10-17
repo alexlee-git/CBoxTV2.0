@@ -1,8 +1,7 @@
-package tv.newtv.contract;
+package com.newtv.cms.contract;
 
 import android.content.Context;
 
-import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
@@ -10,6 +9,7 @@ import com.newtv.cms.ICmsView;
 import com.newtv.cms.api.ISearch;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Libs;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -116,7 +116,9 @@ public class SearchContract {
         public void search(SearchCondition condition) {
             ISearch search = getService(SERVICE_SEARCH);
             if (search != null) {
-                search.search(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, condition.categoryId,
+                search.search(
+                        Libs.get().getAppKey(),
+                        Libs.get().getChannelId(), condition.categoryId,
                         condition.contentType, condition.videoType, condition.videoClass, condition
                                 .area, condition.year, condition.keyword, condition.page, condition
                                 .rows, condition.keywordType, new

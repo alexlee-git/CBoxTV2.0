@@ -7,7 +7,7 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import tv.newtv.cboxtv.player.ActivityStacks;
+import tv.newtv.cboxtv.player.Player;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -41,7 +41,7 @@ class PlayerLocation {
     private PlayerLocation attach(NewTVLauncherPlayerView playerView, boolean bringFront) {
         mPlayerView = playerView;
         mBringToFront = bringFront;
-        Activity activity = ActivityStacks.get().getCurrentActivity();
+        Activity activity = Player.get().getCurrentActivity();
         mContainer = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         resetLocation();
         activity.getWindow().getDecorView().getViewTreeObserver().addOnScrollChangedListener(mScrollChangeListener);
@@ -49,7 +49,7 @@ class PlayerLocation {
     }
 
     public void destroy() {
-        Activity activity = ActivityStacks.get().getCurrentActivity();
+        Activity activity = Player.get().getCurrentActivity();
         activity.getWindow().getDecorView().getViewTreeObserver().removeOnScrollChangedListener
                 (mScrollChangeListener);
         mPlayerView = null;

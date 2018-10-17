@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,15 +18,15 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -36,7 +37,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -59,8 +60,9 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
  * Created by gaoleichao on 2018/4/28.
  */
 
-public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
-    private String leftUUID, rightUUID;
+public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity implements
+        ContentContract.View {
+
     private String contentUUID;
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
@@ -71,7 +73,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     private Disposable mDisposable;
     private long lastClickTime;
     private FragmentTransaction transaction;
-    private FrameLayout frameLayout;
+
+    private ContentContract.Presenter mContentPresenter;
 
     @Override
     public boolean hasPlayer() {
@@ -97,90 +100,18 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         }
 
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
-            leftUUID = contentUUID.substring(0, 2);
-            rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-            requestData();
+
+            mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(),this);
+            mContentPresenter.getContent(contentUUID);
         } else {
-            Toast.makeText(ProgrameSeriesAndVarietyDetailActivity.this, "节目集信息有误", Toast
-                    .LENGTH_SHORT).show();
-            ProgrameSeriesAndVarietyDetailActivity.this.finish();
-
+            onError(getApplicationContext(),"节目集信息有误");
         }
-
     }
-
-    private void requestData() {
-        NetClient.INSTANCE.getDetailsPageApi().getInfo(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
-                leftUUID, rightUUID, contentUUID)
-                .subscribeOn(Schedulers.io())
-                .compose(this.<ResponseBody>bindToLifecycle())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable = d;
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody data) {
-                        try {
-                            JSONObject object = new JSONObject(data.string());
-                            if (object.getInt("errorCode") == 0) {
-                                JSONObject obj = object.getJSONObject("data");
-                                Gson gson = new Gson();
-                                Content dataInfo = gson.fromJson(obj.toString(),
-                                        Content.class);
-                                if (dataInfo != null) {
-                                    videoType = dataInfo.getVideoType();
-                                }
-                                //这里节目详情页 要换成电视剧
-                                if (!videoType()) {
-                                    setContentView(R.layout.activity_details_programe_series);
-                                    fragment = new ProgrameSeriesFragment();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("content_uuid", contentUUID);
-                                    fragment.setArguments(bundle);
-                                    initFragment();
-                                } else {
-                                    setContentView(R.layout.fragment_new_variety_show);
-                                    ADConfig.getInstance().setSeriesID(contentUUID);
-                                    initView();
-                                    // fragment = NewVarietyShowFragment.newInstance(contentUUID);
-
-                                }
-
-                            } else {
-                                ToastUtil.showToast(getApplicationContext(), "没有节目集信息");
-                                finish();
-                            }
-                        } catch (IOException e) {
-                            ToastUtil.showToast(getApplicationContext(), "读取异常");
-                            finish();
-                        } catch (JSONException j) {
-                            ToastUtil.showToast(getApplicationContext(), "解析失败");
-                            finish();
-                        }
-
-                    }
-
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ToastUtil.showToast(getApplicationContext(), "没有节目集信息");
-                        finish();
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
 
     Content pageContent;
+
+
     private void initView() {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
@@ -301,6 +232,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+        if(mContentPresenter != null){
+            mContentPresenter.destroy();
+            mContentPresenter = null;
+        }
+
         unSubscribe();
 
         ViewGroup viewGroup = findViewById(R.id.root_view);
@@ -325,7 +261,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         }
         mPaiseView = null;
         fragment = null;
-        frameLayout = null;
         // UsefulBitmapFactory.recycle();
     }
 
@@ -445,13 +380,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
     }
 
     private void initFragment() {
-        frameLayout = ((FrameLayout) findViewById(R.id.details_content));
         transaction = getSupportFragmentManager().beginTransaction();
         if (fragment != null) {
             transaction.replace(R.id.details_content, fragment);
             transaction.commitAllowingStateLoss();
         }
-
     }
 
     @Override
@@ -475,4 +408,41 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void onContentResult(@Nullable Content content) {
+        if (content != null) {
+            videoType = content.getVideoType();
+        }
+        //这里节目详情页 要换成电视剧
+        if (!videoType()) {
+            setContentView(R.layout.activity_details_programe_series);
+            fragment = new ProgrameSeriesFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("content_uuid", contentUUID);
+            fragment.setArguments(bundle);
+            initFragment();
+        } else {
+            setContentView(R.layout.fragment_new_variety_show);
+            ADConfig.getInstance().setSeriesID(contentUUID);
+            initView();
+        }
+    }
+
+    @Override
+    public void onSubContentResult(@org.jetbrains.annotations.Nullable List<? extends SubContent>
+                                               result) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+        Toast.makeText(context.getApplicationContext(), desc, Toast
+                .LENGTH_SHORT).show();
+        ProgrameSeriesAndVarietyDetailActivity.this.finish();
+    }
 }

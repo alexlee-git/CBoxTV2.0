@@ -1,4 +1,4 @@
-package tv.newtv.contract;
+package com.newtv.cms.contract;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,15 +33,12 @@ import java.util.List;
  * 创建人:           weihaichao
  * 创建日期:          2018/10/11
  */
-public class MainContract {
+public class AppMainContract {
     public interface View extends ICmsView {
         void syncServerTime(Time result);
-        void onNavResult(Context context, List<Nav> result);
     }
 
     public interface Presenter extends ICmsPresenter {
-        void initLogUpload(Context context);
-        void requestNav();
         void syncServiceTime();
     }
 
@@ -57,34 +54,11 @@ public class MainContract {
             }
         };
 
-
         public MainPresenter(@NotNull Context context, @NotNull View view) {
             super(context, view);
             initLogUpload(context);
+            syncServiceTime();
             registTimeSync(context);
-        }
-
-        @Override
-        public void requestNav() {
-            INav nav = getService(SERVICE_NAV);
-            if (nav != null) {
-                nav.getNav(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
-                        new DataObserver<ModelResult<List<Nav>>>() {
-                            @Override
-                            public void onResult(ModelResult<List<Nav>> result) {
-                                if (result.isOk()) {
-                                    getView().onNavResult(getContext(), result.getData());
-                                } else {
-                                    onError(result.getErrorMessage());
-                                }
-                            }
-
-                            @Override
-                            public void onError(@Nullable String desc) {
-                                getView().onError(getContext(), desc);
-                            }
-                        });
-            }
         }
 
         @Override
@@ -123,8 +97,7 @@ public class MainContract {
                     .ACTION_TIME_TICK));
         }
 
-        @Override
-        public void initLogUpload(Context context) {
+        private void initLogUpload(Context context) {
             try {
                 StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
                 PackageInfo pckInfo = context.getPackageManager().getPackageInfo(context

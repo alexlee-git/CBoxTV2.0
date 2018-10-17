@@ -6,9 +6,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.ad.ADPresenter;
 
 import tv.newtv.cboxtv.player.PlayerConfig;
 
@@ -29,18 +28,11 @@ public class SmallWindowView extends BaseAdView implements IEpisode {
     }
 
     @Override
-    protected void getAD(ADPresenter mADPresenter) {
-        mADPresenter.getAD(Constant.AD_DESK, Constant.AD_DETAILPAGE_RIGHTPOS, "", PlayerConfig
+    protected void getAD(AdContract.Presenter mADPresenter) {
+        mADPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_RIGHTPOS, "", PlayerConfig
                 .getInstance().getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId
-                (), PlayerConfig.getInstance().getTopicId());
+                (), PlayerConfig.getInstance().getTopicId(),null);
     }
-
-    @Override
-    public void showAd(ADHelper.AD.ADItem result) {
-        Log.i(TAG, "showAd: " + result);
-        super.showAd(result);
-    }
-
 
     @Override
     public String getContentUUID() {

@@ -23,7 +23,7 @@ import java.util.List;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.BaseActivity;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
@@ -118,10 +118,10 @@ public class ColumnPageActivity extends BaseActivity {
                     @Override
                     public void onResult(Content info) {
                         pageContent = info;
-                        pageContent.setContentUUID(contentUUID);
+                        pageContent.setContentUUID(info.getContentID());
                         playListView.setContentUUID(EpisodeHelper.TYPE_COLUMN_DETAIL,
                                 getSupportFragmentManager(),
-                                contentUUID, null);
+                                info.getContentID(), null);
                         if (sameType != null) {
                             sameType.setContentUUID(SuggestView.TYPE_COLUMN_SUGGEST, info, null);
                         }

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.LogUtils;
 
-import tv.newtv.MultipleClickListener;
+import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
