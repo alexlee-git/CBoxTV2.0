@@ -36,7 +36,7 @@ public class PosterCircleTransform implements Transformation {
         int widthLight = source.getWidth();
         int heightLight = source.getHeight();
 
-        Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.RGB_565);
+        Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(output);
         Paint paintColor = new Paint();
