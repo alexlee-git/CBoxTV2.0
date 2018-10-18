@@ -39,7 +39,7 @@ object CmsUtil {
     fun checkLiveParam(param: LiveParam): Boolean {
         val week: Int = CalendarUtil.getInstance().week
         if (!TextUtils.isEmpty(param.liveParam)) {
-            if (param.liveParam.contains(Integer.toString(week))) {
+            if (param.liveParam.split(",").contains(Integer.toString(week))) {
                 return checkInTime(param.playStartTime, param.playEndTime, false)
             }
         } else {

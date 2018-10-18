@@ -12,5 +12,5 @@ data class Video(
         val contentId: String,
         val contentUUID: String,
         val liveUrl: String,
-        val liveparam: List<LiveParam>
+        val liveparam: List<LiveParam>?
 )

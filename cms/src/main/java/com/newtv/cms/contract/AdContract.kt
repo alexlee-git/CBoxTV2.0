@@ -34,8 +34,7 @@ class AdContract {
         val ad: ADHelper.AD?
         val isAdHasEvent: Boolean
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?)
-        fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?,
-                        callback: Callback?)
+        fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?)
 
         fun getAdByChannel(adType: String?, adLoc: String?, flat: String?, firstChannel: String?,
                            secondChannel: String?, topicId: String?, extends: HashMap<*, *>?)
@@ -58,19 +57,19 @@ class AdContract {
     class AdPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
 
-        override fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*,
-                *>?, callback: Callback?) {
-            getAdByType(adType, adLoc, flag, extends, callback)
+        override fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?) {
+            getAdWithType(adType, adLoc, flag, extends, callback)
         }
 
         override fun getAdByChannel(adType: String?, adLoc: String?, flag: String?, firstChannel:
         String?, secondChannel: String?, topicId: String?, extends: HashMap<*,
                         *>?, callback: Callback?) {
-            getAdByChannel(adType, adLoc, flag, firstChannel, secondChannel, topicId, extends, callback)
+            getAdWithChannel(adType, adLoc, flag, firstChannel, secondChannel, topicId, extends,
+                    callback)
         }
 
-        fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?,
-                        callback: Any?) {
+        fun getAdWithType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?,
+                         callback: Any?) {
             LogUtils.e("AdConstract", "getAdByType")
             val sb = StringBuffer()
             Observable.create(ObservableOnSubscribe<Int> { e ->
@@ -95,7 +94,7 @@ class AdContract {
                     })
         }
 
-        fun getAdByChannel(adType: String?, adLoc: String?, flag: String?, firstChannel: String?,
+        fun getAdWithChannel(adType: String?, adLoc: String?, flag: String?, firstChannel: String?,
                            secondChannel: String?, topicId: String?, extends: HashMap<*,
                         *>?, callback: Any?) {
 
@@ -134,16 +133,14 @@ class AdContract {
 
 
         override fun getAdByChannel(adType: String?, adLoc: String?, flag: String?, firstChannel:
-        String?,
-                                    secondChannel: String?, topicId: String?, extends: HashMap<*,
-                        *>?) {
-            getAdByChannel(adType, adLoc, flag, firstChannel, secondChannel, topicId, extends, view)
+        String?, secondChannel: String?, topicId: String?, extends: HashMap<*, *>?) {
+            getAdWithChannel(adType, adLoc, flag, firstChannel, secondChannel, topicId, extends, view)
         }
 
         @SuppressLint("CheckResult")
         override fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*,
                 *>?) {
-            getAdByType(adType, adLoc, flag, extends, view)
+            getAdWithType(adType, adLoc, flag, extends, view)
         }
 
         private var mDisposable: Disposable? = null

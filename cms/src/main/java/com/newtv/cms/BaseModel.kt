@@ -3,6 +3,7 @@ package com.newtv.cms
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import java.lang.reflect.Type
+import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -13,11 +14,11 @@ import java.lang.reflect.Type
  */
 internal abstract class BaseModel {
 
-    private val executors: ArrayList<Executor<*>> = ArrayList()
+    private val executors: ConcurrentLinkedQueue<Executor<*>> = ConcurrentLinkedQueue()
 
     fun stop() {
-        for (exe: Executor<*> in executors) {
-            exe.cancel()
+        for (iterator: Executor<*> in executors.iterator()) {
+            iterator.cancel()
         }
     }
 

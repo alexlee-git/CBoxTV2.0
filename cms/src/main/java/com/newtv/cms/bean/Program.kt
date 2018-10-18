@@ -37,7 +37,7 @@ data class Program(
         val recommendedType: String,
         val recentNum: String,
         val isFinish: String,
-        val video: Video
+        val video: Video?
 ) {
     fun getLiveParam(): LiveParam? {
         

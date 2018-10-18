@@ -99,6 +99,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity impleme
             contentUUID = savedInstanceState.getString("content_uuid");
         }
 
+        contentUUID = "4329022";
+
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
 
@@ -116,8 +118,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity impleme
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
-
-        contentUUID = "4329022";
 
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)

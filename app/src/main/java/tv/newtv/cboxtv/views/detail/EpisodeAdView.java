@@ -99,11 +99,11 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
 
     private void getAd() {
         mADPresenter = new AdContract.AdPresenter(getContext(), this);
+        //获取广告
         mADPresenter.getAdByChannel(Constant.AD_DESK, Constant
                 .AD_DETAILPAGE_BANNER, Constant
                 .AD_DETAILPAGE_BANNER, PlayerConfig.getInstance().getFirstChannelId(), PlayerConfig
                 .getInstance().getSecondChannelId(), PlayerConfig.getInstance().getTopicId(), null);
-        //获取广告
     }
 
     @Override

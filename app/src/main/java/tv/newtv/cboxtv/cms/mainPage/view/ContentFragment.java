@@ -58,7 +58,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     private View contentView;
     private TextView loadingView;
 
-    private PageContract.ContentPresenter mPresenter;
+    private PageContract.Presenter mPresenter;
 
     @SuppressWarnings("unused")
     private boolean isPrepared = false;
@@ -83,6 +83,10 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         if (mRecyclerView != null) {
             mRecyclerView.setAdapter(null);
             mRecyclerView = null;
+        }
+        if(mPresenter != null){
+            mPresenter.destroy();
+            mPresenter = null;
         }
         if (adapter != null) {
             adapter.destroyItem();
