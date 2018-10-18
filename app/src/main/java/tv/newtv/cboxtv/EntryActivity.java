@@ -265,6 +265,7 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
         switch (type) {
             case ActivateAuthUtils.AUTH:
                 RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
+                LogUploadUtils.uploadLog(Constant.LOG_NODE_ADVERT, "0");
                 getAD();
                 mAuthingView.setVisibility(View.GONE);
                 break;
@@ -404,6 +405,7 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
                         videoView.setVisibility(View.VISIBLE);
                         videoView.setDataSource(url);
                         videoView.play();
+                        LogUploadUtils.uploadLog(Constant.LOG_NODE_ADVERT, "1");
                     }
                 }
             }
@@ -425,6 +427,7 @@ public class EntryActivity extends RxFragmentActivity implements ActivateAuthUti
             public void complete() {
                 super.complete();
                 mAD = null;
+                LogUploadUtils.uploadLog(Constant.LOG_NODE_ADVERT, "2");
                 enterMain();
             }
         });

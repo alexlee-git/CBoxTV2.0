@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
+import tv.newtv.cboxtv.cms.special.doubleList.fragment.NewSpecialFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BallPlayerFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BallRoundFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
@@ -83,6 +84,8 @@ public class SpecialLayoutManager {
                 baseSpecialContentFragment = new MedalFragment();
             }else if("special_012".equals(type)){
                 baseSpecialContentFragment = new TopicTwoFragment();
+            }else if("special_013".equals(type)){
+                baseSpecialContentFragment = new NewSpecialFragment();
             }
 
         }

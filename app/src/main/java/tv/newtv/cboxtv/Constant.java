@@ -147,6 +147,7 @@ public class Constant {
     public static final String EXTERNAL_PARAM_SERIES_SUB_UUID = "sid";//节目集ID
     // 定义log
     public static final int LOG_NODE_HOME_PAGE = 0;           // 首页日志
+    public static final int LOG_NODE_ADVERT = 6;           // 开屏广告日志
     public static final int LOG_COLUMN_INTO = 1;          // 进入栏目列表
     public static final int LOG_NODE_NAVIGATION_SELECT = 66;    // 导航日志
     public static final int LOG_NODE_SEARCH = 2;              // 搜索页日志
