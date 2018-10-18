@@ -31,6 +31,7 @@ object NetClient {
             .connectTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(headersInterceptor)
             .addInterceptor(logInterceptor)
+            .retryOnConnectionFailure(true)
             .build()!!
 
     private val retrofit = retrofit2.Retrofit.Builder()
