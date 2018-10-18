@@ -454,8 +454,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     }
 
     @Override
-    public void showAd(@org.jetbrains.annotations.Nullable String type, @org.jetbrains
-            .annotations.Nullable String url, @org.jetbrains.annotations.Nullable HashMap<?, ?> hashMap) {
+    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?> hashMap) {
         if (TextUtils.isEmpty(url)) {
             enterMain();
         } else {

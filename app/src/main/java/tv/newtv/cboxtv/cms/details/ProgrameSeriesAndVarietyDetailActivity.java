@@ -74,6 +74,12 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity impleme
     private long lastClickTime;
     private FragmentTransaction transaction;
 
+    @Override
+    protected void FocusToTop() {
+        Toast.makeText(getApplicationContext(), "ProgrameSeriesAndVarietyDetailActivity 到顶了",
+                Toast.LENGTH_LONG).show();
+    }
+
     private ContentContract.Presenter mContentPresenter;
 
     @Override
@@ -277,7 +283,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity impleme
             }
         }
 
-
         //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
                 headPlayerView.hasFocus()) {
@@ -302,6 +307,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity impleme
                         }
                         if (view instanceof IEpisode && ((IEpisode) view).interuptKeyEvent
                                 (event)) {
+
                             return true;
                         } else {
                             View toView = null;
@@ -429,8 +435,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity impleme
     }
 
     @Override
-    public void onSubContentResult(@org.jetbrains.annotations.Nullable List<? extends SubContent>
-                                               result) {
+    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
 
     }
 

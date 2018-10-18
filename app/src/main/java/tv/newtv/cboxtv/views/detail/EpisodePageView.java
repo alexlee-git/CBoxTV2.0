@@ -17,8 +17,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AdContract;
+import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
@@ -46,7 +48,7 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
  * 创建日期:          2018/5/3
  */
 public class EpisodePageView extends RelativeLayout implements IEpisode, EpisodeChange,
-        AdContract.View, EpisodePageConstract.View {
+        AdContract.View, ContentContract.View {
     private static final int DEFAULT_SIZE = 8;
     private static final int HAS_AD_SIZE = 7;
 
@@ -345,7 +347,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mContentUUID = uuid;
         mControlView = controlView;
 
-        new EpisodePageConstract.EpisodePagePresenter(getContext(), this).getSubContent(mContentUUID);
+        new ContentContract.ContentPresenter(getContext(), this).getSubContent(mContentUUID);
     }
 
     private void onLoadError(String message) {
@@ -591,12 +593,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public void onSubContentResult(List<SubContent> contents) {
-        parseResult(contents);
-    }
-
-
-    @Override
     public void tip(@NotNull Context context, @NotNull String message) {
 
     }
@@ -626,6 +622,16 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     @Override
     public void complete() {
 
+    }
+
+    @Override
+    public void onContentResult(@Nullable Content content) {
+
+    }
+
+    @Override
+    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+        parseResult(result);
     }
 
 

@@ -48,8 +48,8 @@ object CmsUtil {
         return false
     }
 
-    @Suppress("NAME_SHADOWING")
     @SuppressLint("SimpleDateFormat")
+    @Suppress("NAME_SHADOWING")
     private fun checkInTime(start: String, end: String, hasDate: Boolean = false): Boolean {
         val now = Date()
         val fmt: DateFormat

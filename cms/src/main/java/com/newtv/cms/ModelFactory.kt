@@ -46,6 +46,8 @@ internal object ModelFactory {
             Model.MODEL_CHK_PLAY -> PlayChkModel()
             Model.MODEL_PERSON -> PersonModel()
             Model.MODEL_SEARCH -> SearchModel()
+            Model.MODEL_DEFAULT -> DefaultModel()
+
             else -> {
                 Log.e("ModuleFactory", "$type is not registered ! please write it in buildModel")
                 null

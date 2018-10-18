@@ -10,6 +10,7 @@ import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
 import com.newtv.libs.Libs
+import java.util.ArrayList
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -21,7 +22,7 @@ import com.newtv.libs.Libs
 class ContentContract {
     interface View : ICmsView {
         fun onContentResult(content: Content?)
-        fun onSubContentResult(result: List<SubContent>?)
+        fun onSubContentResult(result: ArrayList<SubContent>?)
     }
 
     interface Presenter : ICmsPresenter {
@@ -37,7 +38,7 @@ class ContentContract {
                 : DataObserver<ModelResult<List<SubContent>>> {
                 override fun onResult(result: ModelResult<List<SubContent>>) {
                     if (result.isOk()) {
-                        view?.onSubContentResult(result.data)
+                        view?.onSubContentResult(ArrayList(result.data))
                     } else {
                         view?.onError(context, result.errorMessage)
                     }

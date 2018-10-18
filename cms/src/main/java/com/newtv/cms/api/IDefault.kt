@@ -1,0 +1,14 @@
+package com.newtv.cms.api
+
+import com.newtv.cms.DataObserver
+
+/**
+ * 项目名称:         CBoxTV2.0
+ * 包名:            com.newtv.cms.api
+ * 创建事件:         16:49
+ * 创建人:           weihaichao
+ * 创建日期:          2018/10/18
+ */
+interface IDefault : IService {
+    fun getJson(url: String,observer: DataObserver<String>)
+}

@@ -54,6 +54,12 @@ public class ColumnPageActivity extends BaseActivity {
     private Content pageContent;
 
     @Override
+    protected void FocusToTop() {
+        Toast.makeText(getApplicationContext(), "ColumnPageActivity 到顶了",
+                Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void prepareMediaPlayer() {
         super.prepareMediaPlayer();
 
@@ -203,7 +209,6 @@ public class ColumnPageActivity extends BaseActivity {
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
                 ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
                 pageContent.setData(contents);
-
                 headPlayerView.setProgramSeriesInfo(pageContent);
             }
 

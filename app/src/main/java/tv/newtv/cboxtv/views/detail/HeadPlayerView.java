@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.LiveParam;
+import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LiveTimingUtil;
@@ -32,7 +34,9 @@ import com.newtv.libs.util.RxBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -58,11 +62,11 @@ import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
  * 创建日期:          2018/5/5
  */
 public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnClickListener,
-        HeaderViewConstract.View {
+        ContentContract.View {
 
     private static final String TAG = "HeadPlayerView";
 
-    private HeaderViewConstract.HeaderViewPresenter mPresenter;
+    private ContentContract.Presenter mPresenter;
 
     Content mInfo;
     private VideoPlayerView playerView;
@@ -366,9 +370,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
-        mPresenter = new HeaderViewConstract.HeaderViewPresenter(getContext(), this);
+        mPresenter = new ContentContract.ContentPresenter(getContext(), this);
 
-        mPresenter.requestInfo(mBuilder.contentUUid);
+        mPresenter.getContent(mBuilder.contentUUid);
     }
 
     private void checkDataFromDB() {
@@ -798,13 +802,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     @Override
-    public void onInfoResult(Content content) {
-        mInfo = content;
-        mBuilder.infoResult.onResult(content);
-        parseResult();
-    }
-
-    @Override
     public void tip(@NotNull Context context, @NotNull String message) {
 
     }
@@ -813,6 +810,19 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     public void onError(@NotNull Context context, @NotNull String desc) {
 
     }
+
+    @Override
+    public void onContentResult(@org.jetbrains.annotations.Nullable Content content) {
+        mInfo = content;
+        mBuilder.infoResult.onResult(content);
+        parseResult();
+    }
+
+    @Override
+    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+
+    }
+
 
     public interface InfoResult {
         void onResult(Content info);

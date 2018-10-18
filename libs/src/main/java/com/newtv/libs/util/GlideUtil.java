@@ -14,8 +14,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.newtv.libs.BuildConfig;
 
-import javax.sql.DataSource;
-
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 
@@ -35,6 +33,7 @@ public class GlideUtil {
                 url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
             }
         }
+
 
         RequestListener<Drawable> requestListener = new RequestListener<Drawable>() {
 
@@ -67,6 +66,8 @@ public class GlideUtil {
         if (isCorner) {
             options = options.transform(new RoundedCornersTransformation(4, 0));
         }
+
+        LogUtils.e("loadImage", "img url=" + url);
 
         Glide.with(imageView.getContext())
                 .load(url)

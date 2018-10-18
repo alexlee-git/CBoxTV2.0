@@ -33,7 +33,9 @@ class AdContract {
         val adItem: ADHelper.AD.ADItem?
         val ad: ADHelper.AD?
         val isAdHasEvent: Boolean
+
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?)
+
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?)
 
         fun getAdByChannel(adType: String?, adLoc: String?, flat: String?, firstChannel: String?,
@@ -49,7 +51,18 @@ class AdContract {
     }
 
     interface View : ICmsView {
+        /**
+         * 展示广告图片或者Video
+         * @type 广告类型
+         * @url 广告地址
+         */
         fun showAd(type: String?, url: String?, extends: HashMap<*, *>?)
+
+        /**
+         * 更新广告时间
+         * @param total 总时长
+         * @param left 剩余时长
+         */
         fun updateTime(total: Int, left: Int)
         fun complete()
     }

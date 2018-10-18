@@ -73,7 +73,7 @@ public class JumpUtil {
                 .getL_uuid(), info.getSeriesSubUUID());
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, info.getL_contentType());
-            jumpIntent.putExtra(Constant.CONTENT_UUID, info.getL_uuid());
+            jumpIntent.putExtra(Constant.CONTENT_UUID, info.getL_id());
             jumpIntent.putExtra(Constant.PAGE_UUID, info.getContentId());
             jumpIntent.putExtra(Constant.ACTION_TYPE, info.getL_actionType());
             jumpIntent.putExtra(Constant.ACTION_URI, info.getL_actionUri());

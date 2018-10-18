@@ -37,6 +37,11 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
 
     private static String TAG = "NewTVLauncherPlayerActivity";
 
+
+    public static void play(String uuid){
+
+    }
+
     private FrameLayout mPlayerFrameLayoutContainer;
     private int mIndexPlay;
     private int mPositionPlay = 0;

@@ -7,7 +7,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.FocusFinder;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
@@ -42,6 +45,10 @@ public abstract class BaseActivity extends RxFragmentActivity {
     private boolean fromOuter = false;//是否是外部跳转进入的
     private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
+
+    protected void FocusToTop() {
+
+    }
 
     public boolean isFrontStage() {
         return FrontStage;
@@ -146,6 +153,21 @@ public abstract class BaseActivity extends RxFragmentActivity {
         return NewTVLauncherPlayerViewManager.getInstance().isFullScreen();
     }
 
+    protected void checkIsTop(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent
+                .KEYCODE_DPAD_UP) {
+            View rootView = getWindow().getDecorView();
+            if (rootView instanceof ViewGroup) {
+                View focusView = rootView.findFocus();
+                View nextFocus = FocusFinder.getInstance().findNextFocus((ViewGroup) rootView,
+                        focusView, View
+                                .FOCUS_UP);
+                if (nextFocus == null) {
+                    FocusToTop();
+                }
+            }
+        }
+    }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -156,7 +178,9 @@ public abstract class BaseActivity extends RxFragmentActivity {
             }
             return false;
         }
+
         if (event.getAction() == KeyEvent.ACTION_UP) {
+
             if (isBackPressed(event)) {
                 if (fromOuter) {
                     Player.get().onExitApp();
@@ -207,6 +231,7 @@ public abstract class BaseActivity extends RxFragmentActivity {
         if (fromOuter && isBackPressed(event)) {
             return true;
         }
+        checkIsTop(event);
         return isFullScreen();
     }
 

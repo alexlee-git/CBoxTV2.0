@@ -58,10 +58,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public static final int MODE_LIVE = 3;
     private static final String M3U8 = "http://s003.test.vod06.icntvcdn.com/live/sscntv63.m3u8";
     private static final String TimeFormat = "yyyy-MM-dd HH:mm:ss";
-    private static final int STATE_NOT_STARTED = 0;
-    private static final int STATE_PERMISSION = 1;
-    private static final int STATE_PERMISSION_FAIL = 2;
-    private static final int STATE_LIVING = 3;
     private static String TAG = "LivePlayView";
     private VideoFrameLayout mVideoPlayer;
     private RecycleImageView recycleImageView;
@@ -458,8 +454,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
-    public void onSubContentResult(@org.jetbrains.annotations.Nullable List<? extends SubContent>
-                                           result) {
+    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
         if (result != null) {
             mProgramSeriesInfo.setData(new ArrayList<SubContent>(result));
             if (currentMode == MODE_OPEN_VIDEO) {
@@ -470,7 +465,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             } else if (currentMode == MODE_LIVE) {
                 if (mVideoPlayerView != null) {
                     mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-//                    mVideoPlayerView.playLive(l, mPosition);
                 }
             }
         }
@@ -482,7 +476,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @Nullable String desc) {
 
     }
 

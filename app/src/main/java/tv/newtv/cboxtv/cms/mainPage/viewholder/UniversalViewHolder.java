@@ -22,13 +22,27 @@ import java.util.Set;
 public class UniversalViewHolder extends RecyclerView.ViewHolder {
 
     private Map<String, View> mViews;
+    private boolean custom = false;
+
+    public void setCustom(){
+        custom = true;
+    }
+
+    public boolean isCustom() {
+        return custom;
+    }
 
     public void destroy(){
+        if(itemView instanceof AutoBlockType){
+            ((AutoBlockType) itemView).destroy();
+        }
         if(mViews != null){
             mViews.clear();
             mViews = null;
         }
     }
+
+
 
     public UniversalViewHolder(View itemView) {
         super(itemView);

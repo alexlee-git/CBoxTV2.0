@@ -3,6 +3,7 @@
 package com.newtv.cms.bean
 
 data class Program(
+        val dataUrl: String,
         val defaultFocus: Int,
         val contentId: String,
         val contentType: String,

@@ -16,7 +16,7 @@ data class Page(
     val haveBlockTitle: String,
     val rowNum: String,
     val colNum: String,
-    val layoutCode: String,
-    val blockType: String
+    val layoutCode: String,         //
+    val blockType: String           //区块类型
 )
 
