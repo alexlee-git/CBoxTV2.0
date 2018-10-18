@@ -18,6 +18,7 @@ import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
@@ -43,6 +44,7 @@ import tv.newtv.cboxtv.views.detailpage.SuggestView;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/5
  */
+@BuyGoodsAD
 public class ColumnPageActivity extends BaseActivity {
 
     private EpisodePageView playListView;
