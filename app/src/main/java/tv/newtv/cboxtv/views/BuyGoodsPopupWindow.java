@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.Map;
@@ -35,7 +36,8 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     private int width;
     private int height;
 
-    public void show(Context context,View parent){
+    @Override
+    public void init(Context context,View parent){
         this.context = context;
         this.parent = parent;
         rootView = LayoutInflater.from(context).inflate(R.layout.layout_buy_goods_pop,null);
@@ -43,16 +45,6 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
         textView = rootView.findViewById(R.id.text);
         qrCodeImage = rootView.findViewById(R.id.qr_code_image);
         setContentView(rootView);
-
-        int width = this.width;
-        int height = this.height;
-        if(width <= 0){
-            width = 500;
-        }
-        if(height <= 0){
-            height = 370;
-        }
-        show(width,height,x,y);
     }
 
     @Override
@@ -64,9 +56,18 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
                 if(TextUtils.isEmpty(url)){
                     Picasso.get().load(R.drawable.skuimage).into(imageView);
                 }else {
-                    Picasso.get().load(url).into(imageView);
+                    Picasso.get().load(url).into(imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            show();
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
                 }
-                show();
             }
         });
     }
@@ -103,6 +104,12 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     }
 
     private void show(){
+        if(width <= 0){
+            width = 500;
+        }
+        if(height <= 0){
+            height = 370;
+        }
         show(width,height,x,y);
     }
 

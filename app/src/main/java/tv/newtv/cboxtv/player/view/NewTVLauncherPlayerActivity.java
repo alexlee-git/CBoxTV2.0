@@ -12,6 +12,7 @@ import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.details.model.VideoPlayInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
@@ -31,7 +32,7 @@ import tv.newtv.cboxtv.utils.DBUtil;
 /**
  * Created by wangkun on 2018/1/15.
  */
-
+@BuyGoodsAD
 public class NewTVLauncherPlayerActivity extends BaseActivity {
 
     private static String TAG = "NewTVLauncherPlayerActivity";

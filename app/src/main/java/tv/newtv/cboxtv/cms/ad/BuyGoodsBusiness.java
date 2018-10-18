@@ -68,6 +68,8 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
      */
     private static final String PRODUCT_SECRET = "fnsNR5bRk3zCEZof0WGP47uDeX6VQE6i1t9zZof8mxn4O2jh";
 
+    public static final int DISMISS_MSG = 0;
+
     private static boolean isInit = false;
     private BaseRequestAdPresenter adPresenter;
     private BuyGoodsView buyGoodsView;
@@ -88,7 +90,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case 0:
+                case DISMISS_MSG:
                     dismiss();
                     break;
                 case 1:
@@ -143,9 +145,8 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     private void show(){
         buyGoodsView = new BuyGoodsPopupWindow();
         buyGoodsView.setParamsMap(extMap);
-        buyGoodsView.show(context,view);
+        buyGoodsView.init(context,view);
 
-        handler.sendEmptyMessageDelayed(0,duration * 1000);
 
         //查询设备是否被绑定
         SmartBuyManager.checkTvBindStatus(PRODUCT_UUID,new NetDataHandler(){
@@ -164,6 +165,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         }else {
                             buyGoodsView.setImageUrl(item.materials.get(0).filePath);
                             log.startShowGoods();
+                            sendCloseMessage(duration);
                         }
                     }
 
@@ -192,6 +194,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     isShowQrCode = true;
                     getResult(authCode,expiresIn);
                     log.startShowQrCode();
+                    sendCloseMessage(duration);
                 }
             }
         });
@@ -257,6 +260,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         log.startShowGoods();
                         log.bind(skuId,SystemUtils.getDeviceMac(context),uid,item.materials.get(0).name);
                         logShowQrCode();
+                        sendCloseMessage(duration);
                     }
                 }
             }
@@ -463,5 +467,10 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
 
     private void logShowGoods(){
         log.showGoodsLog(skuId,extMap.get("x"),extMap.get("y"),duration,item.materials.get(0).name);
+    }
+
+    private void sendCloseMessage(int duration){
+        handler.removeMessages(DISMISS_MSG);
+        handler.sendEmptyMessageDelayed(DISMISS_MSG,duration * 1000);
     }
 }

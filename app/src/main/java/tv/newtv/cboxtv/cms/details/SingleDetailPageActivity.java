@@ -18,6 +18,7 @@ import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
@@ -39,6 +40,7 @@ import tv.newtv.cboxtv.views.detailpage.SuggestView;
  * 创建日期:          2018/8/6
  */
 @SuppressWarnings("FieldCanBeLocal")
+@BuyGoodsAD
 public class SingleDetailPageActivity extends BaseActivity {
     private HeadPlayerView headPlayerView;
     private String leftUUID, rightUUID;
