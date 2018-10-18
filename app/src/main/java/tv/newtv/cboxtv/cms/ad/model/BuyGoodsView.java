@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface BuyGoodsView {
 
-    void show(Context context, View parent);
+    void init(Context context, View parent);
 
     void dismiss();
 
