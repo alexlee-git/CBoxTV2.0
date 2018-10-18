@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header_video"
-        android:visibility="gone">
+        android:visibility="invisible">
 
     </tv.newtv.cboxtv.views.detailpage.EpisodePageView>
 
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/play_list"
         android:tag="suggest"
-        android:visibility="gone">
+        android:visibility="invisible">
 
     </tv.newtv.cboxtv.views.detailpage.SuggestView>
 

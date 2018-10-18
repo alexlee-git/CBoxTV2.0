@@ -58,8 +58,8 @@
         android:layout_marginLeft="@dimen/width_95px"
         android:layout_marginRight="@dimen/width_88px"
         android:layout_marginTop="@dimen/height_970px"
-        android:maxHeight="16px"
-        android:minHeight="16px"
+        android:maxHeight="@dimen/height_16px"
+        android:minHeight="@dimen/height_16px"
         android:progressDrawable="@drawable/player_seekbar_progress_drawable_blue"
         />
 

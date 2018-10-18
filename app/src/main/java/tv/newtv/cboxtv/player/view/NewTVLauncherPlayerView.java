@@ -722,7 +722,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
         if (mLoading != null) {
             mLoading.updatePropertys(getResources().getDimensionPixelSize(isFullScreen ? R.dimen
-                    .height_22px : R.dimen.height_11px), isFullScreen);
+                    .height_22sp : R.dimen.height_11sp), isFullScreen);
         }
     }
 
