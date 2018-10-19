@@ -12,16 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <tv.newtv.cboxtv.cms.special.ScrollTextView
-            android:id="@+id/news_title"
-            android:layout_width="@dimen/width_512px"
-            android:layout_height="@dimen/height_100px"
-            android:gravity="center"
-            android:textColor="#ffffff"
-            android:textSize="@dimen/height_28px"
-            >
 
-        </tv.newtv.cboxtv.cms.special.ScrollTextView>
+
+        <TextView
+        android:id="@+id/news_title"
+        android:layout_width="@dimen/width_512px"
+        android:layout_height="@dimen/height_100px"
+        android:focusable="false"
+        android:singleLine="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/height_28px" />
+
+
 
 
         <ImageView
