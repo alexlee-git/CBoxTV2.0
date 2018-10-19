@@ -1800,11 +1800,14 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private void callBackScreenListener(boolean enterFullScreen){
         if(screenListeners != null){
             for(ScreenListener screenListener : screenListeners){
-                if(enterFullScreen){
-                    screenListener.enterFullScreen();
-                }else {
-                    screenListener.exitFullScreen();
+                if(screenListener!=null){
+                    if(enterFullScreen){
+                        screenListener.enterFullScreen();
+                    }else {
+                        screenListener.exitFullScreen();
+                    }
                 }
+
             }
         }
     }
