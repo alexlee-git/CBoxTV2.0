@@ -332,6 +332,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
 
     public void onDestroy(){
         dismiss();
+        handler.removeCallbacksAndMessages(null);
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;
     }
