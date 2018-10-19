@@ -124,10 +124,10 @@ public class ColumnPageActivity extends BaseActivity {
                     @Override
                     public void onResult(Content info) {
                         pageContent = info;
-                        pageContent.setContentUUID(info.getContentID());
+//                        pageContent.setContentUUID(info.getContentID());
                         playListView.setContentUUID(EpisodeHelper.TYPE_COLUMN_DETAIL,
                                 getSupportFragmentManager(),
-                                info.getContentID(), null);
+                                contentUUID, null);
                         if (sameType != null) {
                             sameType.setContentUUID(SuggestView.TYPE_COLUMN_SUGGEST, info, null);
                         }

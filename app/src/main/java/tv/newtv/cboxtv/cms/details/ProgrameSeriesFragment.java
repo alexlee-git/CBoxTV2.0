@@ -765,20 +765,20 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     private void addHistory() {
-        if (mVideoView.getCurrentPosition() > 0) {
-            DBUtil.addHistory(dataInfo, historyposition, mVideoView.getCurrentPosition(), new
-                    DBCallback<String>() {
-                        @Override
-                        public void onResult(int code, String result) {
-                            if (code == 0) {
-                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + dataInfo
-                                        .getContentUUID());//添加历史记录
-                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                            }
-                        }
-                    });
-
-        }
+//        if (mVideoView.getCurrentPosition() > 0) {
+//            DBUtil.addHistory(dataInfo, historyposition, mVideoView.getCurrentPosition(), new
+//                    DBCallback<String>() {
+//                        @Override
+//                        public void onResult(int code, String result) {
+//                            if (code == 0) {
+//                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + dataInfo
+//                                        .getContentUUID());//添加历史记录
+//                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+//                            }
+//                        }
+//                    });
+//
+//        }
     }
 
     @Override

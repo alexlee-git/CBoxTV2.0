@@ -70,6 +70,7 @@ public class LauncherApplication extends MultiDexApplication {
         Player.get().attachObserver(new PlayerObserver() {
             @Override
             public void onFinish(Content playInfo, int index, int position) {
+                if(index == 0 && position == 0) return;
                 DBUtil.addHistory(playInfo, index, position, new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {

@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.Row;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
@@ -54,6 +55,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 创建日期:          2018/10/18
  */
 public class BlockBuilder {
+
     public static final String TAG = BlockBuilder.class.getSimpleName();
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
@@ -89,10 +91,18 @@ public class BlockBuilder {
             holder = new UniversalViewHolder(LayoutInflater.from(parent
                     .getContext()).inflate
                     (layoutResId, parent, false));
-        } else if(viewType == 0) {
+        } else if (viewType == 0) {
             holder = new UniversalViewHolder(new AutoBlockType(parent.getContext()));
         }
         return holder;
+    }
+
+    int parseItemViewType(Page item) {
+        String layoutCode = item.getLayoutCode();
+        if (!TextUtils.isEmpty(layoutCode)) {
+            return Integer.parseInt(layoutCode.substring(layoutCode.indexOf("_") + 1));
+        }
+        return -1;
     }
 
     int getItemViewType(int position, Page item) {
@@ -212,7 +222,7 @@ public class BlockBuilder {
                     processSuperscript(layoutCode, info, frameLayout);
 
                     // 按需添加标题控件
-                    processTitle(layoutCode, info, frameLayout);
+                    processTitle(layoutCode, info.getTitle(), info.getSubTitle(), frameLayout);
 
                     // onFocusChangeListener
                     frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -316,7 +326,7 @@ public class BlockBuilder {
      * @param viewId
      * @return
      */
-    private boolean hasCorner4Cup(String module, String viewId) {
+    boolean hasCorner4Cup(String module, String viewId) {
         boolean hasCorner = true;
         if ("005".equals(module)) {
             hasCorner = false;
@@ -375,7 +385,7 @@ public class BlockBuilder {
     /**
      * 推荐位显示海报
      */
-    private void showPosterByCMS(String imageId, final RecycleImageView imageView, final String
+    void showPosterByCMS(String imageId, final RecycleImageView imageView, final String
             imgUrl, boolean isCorner) {
         LogUtils.e(TAG, "load " + imageId + " cms image path=" + imgUrl);
         if (imageView != null) {
@@ -399,7 +409,7 @@ public class BlockBuilder {
      * @param delimiter
      * @return
      */
-    private String generateViewId(String layoutId, String viewId, String widgetIdPrefix, String
+    String generateViewId(String layoutId, String viewId, String widgetIdPrefix, String
             widgetId, String delimiter) {
         if (idBuffer == null) {
             idBuffer = new StringBuilder(Constant.BUFFER_SIZE_16);
@@ -418,7 +428,7 @@ public class BlockBuilder {
         return idBuffer.toString();
     }
 
-    private void onItemGetFocus(String layoutId, final View view) {
+    protected void onItemGetFocus(String layoutId, final View view) {
         if (TextUtils.equals("005", layoutId) || TextUtils.equals("008", layoutId)) {
             View focusView = (View) view.getTag(R.id.tag_imageview);
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
@@ -461,7 +471,7 @@ public class BlockBuilder {
         }
     }
 
-    private void onItemLoseFocus(String layoutId, View view) {
+    protected void onItemLoseFocus(String layoutId, View view) {
         if (TextUtils.equals("005", layoutId) || TextUtils.equals("008", layoutId)) {
             View focusView = (View) view.getTag(R.id.tag_imageview);
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
@@ -501,7 +511,7 @@ public class BlockBuilder {
         }
     }
 
-    private void processOpenCell(View view, Program info, String blockId, String layoutCode) {
+    void processOpenCell(View view, Object info, String blockId, String layoutCode) {
         if (!NetworkManager.getInstance().isConnected()) {
             Toast.makeText(mContext, R.string.net_error, Toast.LENGTH_SHORT).show();
             return;
@@ -509,24 +519,24 @@ public class BlockBuilder {
 
         StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_16);
         //进入推荐位
-
-        logBuff.append(0)
-                .append(",")
-                .append(blockId)
-                .append("+")
-                .append(layoutCode)
-                .append("+")
-                .append(info.getCellCode())
-                .append(",")
-                .append(info.getContentId())
-                .append(",")
-                .append(info.getContentType())
-                .append(",")
-                .append(info.getL_actionType())
-                .append(",")
-                .append(info.getL_actionUri())
-                .trimToSize();
-
+        if (info instanceof Program) {
+            logBuff.append(0)
+                    .append(",")
+                    .append(blockId)
+                    .append("+")
+                    .append(layoutCode)
+                    .append("+")
+                    .append(((Program) info).getCellCode())
+                    .append(",")
+                    .append(((Program) info).getContentId())
+                    .append(",")
+                    .append(((Program) info).getContentType())
+                    .append(",")
+                    .append(((Program) info).getL_actionType())
+                    .append(",")
+                    .append(((Program) info).getL_actionUri())
+                    .trimToSize();
+        }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_RECOMMEND, logBuff
                 .toString());//由首页进入下个推荐位
 
@@ -535,10 +545,14 @@ public class BlockBuilder {
             livePlayView.enterFullScreen();
             return;
         }
+        if (info instanceof Program) {
+            JumpUtil.activityJump(mContext, (Program) info);
+        } else if (info instanceof Row) {
+            Row row = (Row) info;
+            JumpUtil.detailsJumpActivity(mContext, row.getContentType(), row.getContentId());
+        }
 
-        JumpUtil.activityJump(mContext, info);
     }
-
 
     private void processSuperscript(String layoutCode, Program info, ViewGroup parent) {
         if (info == null || parent == null) {
@@ -649,12 +663,9 @@ public class BlockBuilder {
      * 1.如果是5和8号组件, 只在海报上面添加一个标题, 展示subtitle
      * 2.对于其余组件, 在海报上添加两个TextView,负责展示Title和SubTitles
      */
-    private void processTitle(String layoutCode, Program info, ViewGroup framelayout) {
+    void processTitle(String layoutCode, String title, String subTitle, ViewGroup
+            framelayout) {
         if (TextUtils.isEmpty(layoutCode)) {
-            return;
-        }
-
-        if (info == null) {
             return;
         }
 
@@ -664,7 +675,6 @@ public class BlockBuilder {
         int pxSize = mContext.getResources().getDimensionPixelSize(R.dimen.width_70px);
         int pxSize2 = mContext.getResources().getDimensionPixelSize(R.dimen.height_40px);
 
-        String title = info.getTitle();
         if (!TextUtils.isEmpty(title) && !TextUtils.equals(title, "null")) {
             if (!TextUtils.equals(layoutCode, "layout_005") && !TextUtils.equals(layoutCode,
                     "layout_008")) {
@@ -698,7 +708,6 @@ public class BlockBuilder {
             }
         }
 
-        String subTitle = info.getSubTitle();
         if (!TextUtils.isEmpty(subTitle) && !TextUtils.equals(subTitle, "null")) {
             TextView subTitleWidget = (TextView) framelayout.getTag(R.id.tag_sub_title);
             if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,

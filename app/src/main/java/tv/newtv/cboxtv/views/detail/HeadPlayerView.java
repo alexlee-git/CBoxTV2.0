@@ -208,8 +208,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                     }
                                     if (data.get(0).playIndex != null) {
                                         setCurrentPlayIndex("DataSupport", Integer.valueOf(data
-                                                .get(0)
-                                                .playIndex));
+                                                .get(0).playIndex));
                                     } else {
                                         setCurrentPlayIndex("DataSupport", 0);
                                     }
@@ -269,22 +268,22 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void addHistory() {
-        int position = playerView.getCurrentPosition();
-        if (position > 0 && !isPlayLive) {
-            if (currentProgramSeriesInfo != null) {
-                DBUtil.addHistory(currentProgramSeriesInfo
-                        , currentPlayIndex, position, new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, String result) {
-                                if (code == 0) {
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
-                                            currentProgramSeriesInfo.getContentUUID());//添加历史记录
-                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                                }
-                            }
-                        });
-            }
-        }
+//        int position = playerView.getCurrentPosition();
+//        if (position > 0 && !isPlayLive) {
+//            if (currentProgramSeriesInfo != null) {
+//                DBUtil.addHistory(currentProgramSeriesInfo
+//                        , currentPlayIndex, position, new DBCallback<String>() {
+//                            @Override
+//                            public void onResult(int code, String result) {
+//                                if (code == 0) {
+//                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
+//                                            currentProgramSeriesInfo.getContentUUID());//添加历史记录
+//                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+//                                }
+//                            }
+//                        });
+//            }
+//        }
     }
 
     public void onActivityResume() {
