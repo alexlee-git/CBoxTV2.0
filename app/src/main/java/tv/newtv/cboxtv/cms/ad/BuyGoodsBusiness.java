@@ -322,12 +322,12 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     @Override
     public void fail() {
         Log.i(TAG, "fail: ");
-        MainLooper.get().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showAd(new AdBean.AdspacesItem());
-            }
-        },3000);
+//        MainLooper.get().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showAd(new AdBean.AdspacesItem());
+//            }
+//        },3000);
     }
 
     public void onDestroy(){
