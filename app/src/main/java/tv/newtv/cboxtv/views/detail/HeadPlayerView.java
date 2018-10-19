@@ -371,7 +371,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
 
-        mPresenter.getContent(mBuilder.contentUUid);
+        mPresenter.getContent(mBuilder.contentUUid, true);
     }
 
     private void checkDataFromDB() {

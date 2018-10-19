@@ -91,7 +91,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                         mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
                     }
                 } else {
-                    mContentPresenter.getContent(mPlayInfo.ContentUUID);
+                    mContentPresenter.getContent(mPlayInfo.ContentUUID, true);
                 }
 
             }
@@ -106,7 +106,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 mVideoPlayerView.playLiveVideo(mPlayInfo.ContentUUID, mPlayInfo.playUrl, mPlayInfo
                         .title, 0, 0);
             } else {
-                mContentPresenter.getContent(mPlayInfo.ContentUUID);
+                mContentPresenter.getContent(mPlayInfo.ContentUUID, true);
             }
         }
     };
@@ -450,24 +450,21 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     @Override
     public void onContentResult(@Nullable Content content) {
         mProgramSeriesInfo = content;
-        mContentPresenter.getSubContent(mPlayInfo.ContentUUID);
+        if (currentMode == MODE_OPEN_VIDEO) {
+            if (mVideoPlayerView != null) {
+                mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+                mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
+            }
+        } else if (currentMode == MODE_LIVE) {
+            if (mVideoPlayerView != null) {
+                mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+            }
+        }
     }
 
     @Override
     public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
-        if (result != null) {
-            mProgramSeriesInfo.setData(new ArrayList<SubContent>(result));
-            if (currentMode == MODE_OPEN_VIDEO) {
-                if (mVideoPlayerView != null) {
-                    mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-                    mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
-                }
-            } else if (currentMode == MODE_LIVE) {
-                if (mVideoPlayerView != null) {
-                    mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-                }
-            }
-        }
+
     }
 
     @Override

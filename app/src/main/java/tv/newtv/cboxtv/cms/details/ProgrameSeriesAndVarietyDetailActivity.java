@@ -111,7 +111,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity impleme
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
 
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(),this);
-            mContentPresenter.getContent(contentUUID);
+            mContentPresenter.getContent(contentUUID, true);
         } else {
             onError(getApplicationContext(),"节目集信息有误");
         }

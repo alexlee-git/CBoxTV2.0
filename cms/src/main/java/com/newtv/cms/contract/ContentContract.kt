@@ -10,7 +10,7 @@ import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
 import com.newtv.libs.Libs
-import java.util.ArrayList
+import java.util.*
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -26,12 +26,19 @@ class ContentContract {
     }
 
     interface Presenter : ICmsPresenter {
-        fun getContent(uuid: String)
+        /**
+         * @param uuid ID
+         * @param autoSub 自动获取播放列表
+         *                  如果设置为true，onContentResult回调结果中Content中data自动获取
+         *                  如果设置为false，onContentResult回调结果中data为空
+         */
+        fun getContent(uuid: String, autoSub: Boolean)
         fun getSubContent(uuid: String)
     }
 
     class ContentPresenter(context: Context, view: View)
         : CmsServicePresenter<View>(context, view), Presenter {
+
         override fun getSubContent(uuid: String) {
             val content: IContent? = getService<IContent>(SERVICE_CONTENT)
             content?.getSubContent(Libs.get().appKey, Libs.get().channelId, uuid, object
@@ -50,13 +57,34 @@ class ContentContract {
             })
         }
 
-        override fun getContent(uuid: String) {
+        fun getSubContentsWithCallback(contentResult: Content?, uuid: String) {
+            if (contentResult != null) {
+                val content: IContent? = getService<IContent>(SERVICE_CONTENT)
+                content?.getSubContent(Libs.get().appKey, Libs.get().channelId, uuid, object
+                    : DataObserver<ModelResult<List<SubContent>>> {
+                    override fun onResult(result: ModelResult<List<SubContent>>) {
+                        if (result.isOk()) {
+                            contentResult.data = (ArrayList(result.data))
+                            view?.onContentResult(contentResult)
+                        } else {
+                            view?.onError(context, result.errorMessage)
+                        }
+                    }
+
+                    override fun onError(desc: String?) {
+                        view?.onError(context, desc)
+                    }
+                })
+            }
+        }
+
+        override fun getContent(uuid: String, autoSub: Boolean) {
             val content: IContent? = getService<IContent>(SERVICE_CONTENT)
             content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, object
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>) {
                     if (result.isOk()) {
-                        view?.onContentResult(result.data)
+                        getSubContentsWithCallback(result.data, uuid)
                     } else {
                         view?.onError(context, result.errorMessage)
                     }
