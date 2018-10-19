@@ -44,6 +44,9 @@ public class ScreenUtils {
     }
 
     public static int getScreenH(){
+        if (screenH == 1024){
+            screenH = 1080;
+        }
         return screenH;
     }
 

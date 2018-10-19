@@ -64,8 +64,10 @@ import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
+import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.uc.bean.HistoryBean;
 import tv.newtv.cboxtv.uc.db.DBCallback;
 import tv.newtv.cboxtv.uc.db.DBConfig;
@@ -592,7 +594,12 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
+
+        try {
+            super.onLayout(changed, left, top, right, bottom);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         if (!enterFullScreen) {
             defaultWidth = getLayoutParams().width;
@@ -701,7 +708,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         }
         if (mLoading != null) {
             mLoading.updatePropertys(getResources().getDimensionPixelSize(isFullScreen ? R.dimen
-                    .height_22px : R.dimen.height_11px), isFullScreen);
+                    .height_22sp : R.dimen.height_11sp), isFullScreen);
         }
     }
 
@@ -1756,8 +1763,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public boolean startIsFullScreen;       //开始时候是不是全屏状态
         public View defaultFocusView;           //进入全屏时候的默认焦点位置
         public PlayerCallback playerCallback;
+        public ExitVideoFullCallBack videoFullCallBack;//退出全屏
         public int playPosition;
         public VPlayCenter playCenter;
+        public VideoExitFullScreenCallBack videoExitFullScreenCallBack;
     }
 
     public interface ScreenListener{

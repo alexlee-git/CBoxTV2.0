@@ -26,6 +26,7 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * Created by gaoleichao on 2018/4/10.
+ * 视频播放器
  */
 
 public class VideoPlayerView extends NewTVLauncherPlayerView {
@@ -35,12 +36,17 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private ProgressBar mPlayerProgress;
     private VPlayCenter playCenter;
     private PlayerCallback mPlayerCallback;
+    private ExitVideoFullCallBack videoFullCallBack;
     private View mFocusView;
     private boolean repeatPlay = false;
     private TextView HintTextView;
 
     private View defaultFocusView;
     private boolean KeyIsDown = false;
+    private ImageView isPlaying;
+
+    private VideoExitFullScreenCallBack videoExitFullScreenCallBack;
+
     private TopicTwoFragment fragment;
 
     public VideoPlayerView(@NonNull Context context) {
@@ -75,7 +81,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (config != null) {
             defaultFocusView = config.defaultFocusView;
             mPlayerCallback = config.playerCallback;
+            videoFullCallBack=config.videoFullCallBack;
             playCenter = config.playCenter;
+            videoExitFullScreenCallBack = config.videoExitFullScreenCallBack;
         }
     }
 
@@ -90,6 +98,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         setHintText(String.format("%s 错误码:%s", messgae, code));
     }
 
+    //退出全屏
     @Override
     public void ExitFullScreen() {
         if (defaultFocusView != null) {
@@ -105,13 +114,21 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             defaultFocusView = null;
         }
         super.ExitFullScreen();
+
         if (ProgramIsChange) {
             if (mPlayerCallback != null) {
                 mPlayerCallback.ProgramChange();
+
             }
         }
         ProgramIsChange = false;
 
+
+        Log.i("Collection","退出全屏");
+
+        if (videoExitFullScreenCallBack != null){
+            videoExitFullScreenCallBack.videoEitFullScreen();
+        }
     }
 
     public void setSingleRepeat(boolean value) {
@@ -124,7 +141,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         if (HintTextView != null) {
             HintTextView.setTextSize(getResources().getDimensionPixelSize(!isFullScreen ? R.dimen
-                    .height_12px : R.dimen.height_18px));
+                    .height_12sp : R.dimen.height_18sp));
         }
     }
 
@@ -148,7 +165,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         PlayerViewConfig playerViewConfig = super.getDefaultConfig();
         playerViewConfig.defaultFocusView = defaultFocusView;
         playerViewConfig.playerCallback = mPlayerCallback;
+        playerViewConfig.videoFullCallBack=videoFullCallBack;
         playerViewConfig.playCenter = playCenter;
+        playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
         return playerViewConfig;
     }
 
@@ -250,6 +269,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             setLayoutParams(layoutParams);
         }
     }
+
+    //设置播放视频的地址
     //添加播放源
     public void setSeriesInfo(ProgramSeriesInfo seriesInfo) {
 
@@ -259,6 +280,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
+        //设置播放的位置
         playCenter.setCurrentIndex(mIndex);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
@@ -330,6 +352,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         mPlayerProgress = null;
         playCenter = null;
         mPlayerCallback = null;
+        videoFullCallBack=null;
         mFocusView = null;
 
         if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)) {
@@ -353,6 +376,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             playSingleOrSeries(getIndex(), 0);
             return;
         }
+
         if (fragment != null && fragment instanceof TopicTwoFragment) {
             if (isEnd) {
                 if (isFullScreen()) {
@@ -371,6 +395,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             }
             stopPlay();
             setHintText("播放已结束");
+        }
+
+        if (isPlaying != null) {
+            isPlaying.setVisibility(GONE);
         }
 
         if (mPlayerCallback != null) {
@@ -399,6 +427,11 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         mPlayerCallback = callback;
     }
 
+    public void setVideoExitCallback(VideoExitFullScreenCallBack callback){
+        videoExitFullScreenCallBack = callback;
+
+    }
+
     public String getCurrentUuId() {
         return playCenter.getDataStruct().uuid;
     }
@@ -412,7 +445,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private ImageView full_screen;
     private boolean isEnd;
 
-
     public void register(TopicTwoFragment topicTwoFragment) {
         this.fragment = topicTwoFragment;
     }
@@ -420,5 +452,4 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     public void setisEnd(boolean b) {
         this.isEnd = b;
     }
-
 }

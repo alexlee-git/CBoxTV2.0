@@ -247,7 +247,11 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             frame_container.setBackgroundResource(R.drawable.bg);
         }
         moduleInfoResult = infoResult;
+
+        Log.e("TopicTwoFragmentaaaa", infoResult.getPageBackground());
+
         datas = moduleInfoResult.getDatas().get(0).getDatas();
+
         for (int i = 0; i < datas.size(); i++) {
             if (datas.get(i).getDefaultFocus() == 1) {
                 defaultFocusId = datas.get(i).getContentUUID();

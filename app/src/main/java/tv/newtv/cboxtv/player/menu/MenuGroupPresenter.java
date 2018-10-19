@@ -336,7 +336,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         searchInDB(DBConfig.SUBSCRIBE_TABLE_NAME, subscribe);
         searchInDB(DBConfig.HISTORY_TABLE_NAME, history);
 
-        menuGroup.addNodeToRoot(root);
+        if (menuGroup != null){
+            menuGroup.addNodeToRoot(root);
+        }
     }
 
     private void searchInDB(String titleName, final Node node) {

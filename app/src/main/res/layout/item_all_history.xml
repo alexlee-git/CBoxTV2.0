@@ -12,7 +12,7 @@
         android:layout_height="@dimen/height_483px"
         android:layout_below="@id/id_module_8_title"
         android:layout_marginLeft="@dimen/_width_18px"
-        android:layout_marginTop="@dimen/height_15px"
+        android:layout_marginTop="@dimen/height_10px"
         android:clickable="true"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -42,11 +42,14 @@
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_32px"
             android:layout_marginLeft="@dimen/width_33px"
-            android:layout_marginTop="@dimen/height_417px"
+            android:layout_marginTop="@dimen/height_400px"
             android:ellipsize="marquee"
+            android:scrollHorizontally="true"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:tag="tag_poster_title"/>
+
+
 
     </FrameLayout>
 </RelativeLayout>

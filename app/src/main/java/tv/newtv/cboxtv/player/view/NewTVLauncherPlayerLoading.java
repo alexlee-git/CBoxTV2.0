@@ -172,7 +172,7 @@ public class NewTVLauncherPlayerLoading extends FrameLayout {
             mProgramNameTextView.setVisibility(View.GONE);
         } else {
             mProgramNameTextView.setVisibility(View.VISIBLE);
-            mProgramNameTextView.setText(String.format(Locale.getDefault(), "即将播放:%s",
+            mProgramNameTextView.setText(String.format(Locale.getDefault(), "正在播放:%s",
                     programName));
         }
     }

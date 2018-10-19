@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class SearchActivity extends FragmentActivity implements ISearchPageView 
     private String type, year, area, classType;
     private StringBuilder mScreenDataBuff;
     private static boolean eatKeyEvent = false;
-
+    private boolean mRightKey = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -383,6 +384,23 @@ public class SearchActivity extends FragmentActivity implements ISearchPageView 
                 } else {
                     if (!mSearchResultFocusStatus) {
                         if (mSearchViewKeyboard.getBtnTag() == 11 || mSearchViewKeyboard.getBtnTag() == 3 || mSearchViewKeyboard.getBtnTag() == 6 || mSearchViewKeyboard.getBtnTag() == 9) {
+                            mSearchResult.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                @Override
+                                public void onGlobalLayout() {
+                                    mRightKey = true;
+                                }
+                            });
+                            mSearchResult.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
+                                @Override
+                                public void onDraw() {
+                                    mRightKey = true;
+                                }
+                            });
+                            if (mRightKey){
+                                mRightKey = false;
+                                return true;
+                            }
+
                             if (mSearchResultItemView != null) {
                                 mSearchResultItemView.requestFocus();
                                 return true;
