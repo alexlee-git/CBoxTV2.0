@@ -64,10 +64,13 @@ public class LabelDataModelImpl implements LabelDataModel {
                     public void accept(ResponseBody responseBody) throws Exception {
 
                         Gson gson = new Gson();
-                        LabelDataBean dataBean = gson.fromJson(responseBody.string(), LabelDataBean.class);
-                        Log.d("DataModelImpl2", "pageDataBean:" + dataBean);
-                        if (dataBean != null)
-                            listener.sendLabelData(dataBean);
+                        if (responseBody!=null){
+                            LabelDataBean dataBean = gson.fromJson(responseBody.string(), LabelDataBean.class);
+                            Log.d("DataModelImpl2", "pageDataBean:" + dataBean);
+                            if (dataBean != null)
+                                listener.sendLabelData(dataBean);
+                        }
+
 
                     }
                 }, new Consumer<Throwable>() {

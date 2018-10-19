@@ -59,9 +59,12 @@ public class SecondLabelModelImpl implements SecondLabelModel {
                     public void accept(ResponseBody responseBody) throws Exception {
 
                         Gson gson = new Gson();
-                        LabelBean labelBean = gson.fromJson(responseBody.string(), LabelBean.class);
-                        Log.d("SecondLabelModelImpl", labelBean.toString());
-                        completeListener.sendSecondLabel(labelBean);
+                        if (responseBody!=null){
+                            LabelBean labelBean = gson.fromJson(responseBody.string(), LabelBean.class);
+
+                            completeListener.sendSecondLabel(labelBean);
+                        }
+
 
                     }
                 }, new Consumer<Throwable>() {

@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.screenList;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,6 +71,9 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     private TvTabLayout tab;
     private boolean mShouldScroll;
     private int mToPosition;
+    private long mTimeDelay;
+    private long mTimeLast;
+    private long mTimeSpace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +100,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         tab.setTabTextColors(Color.parseColor("#ffffff"), Color.BLUE, Color.parseColor("#ff00b7fd"));
         adapter = new FirstLabelAdapter(this, childData);
         labelRecyclerView.setAdapter(adapter);
+
 
         GridLayoutManager manager = new GridLayoutManager(this, 6);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -285,6 +291,9 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         presenter.getLabelData();
     }
 
+    // 两次点击按钮之间的点击间隔不能少于1000毫秒
+    private static final int MIN_CLICK_DELAY_TIME = 900;
+    private static long lastClickTime;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -510,4 +519,18 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         }
     }
 
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == 0) {
+            long nowTime = SystemClock.elapsedRealtime();
+            this.mTimeDelay = nowTime - this.mTimeLast;
+            this.mTimeLast = nowTime;
+            if(this.mTimeSpace <= 100L&&
+            this.mTimeDelay <= 100L){
+                this.mTimeSpace += this.mTimeDelay;
+                return true;
+            }
+            this.mTimeSpace = 0L;
+        }
+        return super.dispatchKeyEvent(event);
+    }
 }

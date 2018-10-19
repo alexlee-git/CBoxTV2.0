@@ -55,8 +55,11 @@ public class FirstLabelModelImpl implements FirstLabelModel {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         Gson gson = new Gson();
-                        TabBean tabBean = gson.fromJson(responseBody.string(), TabBean.class);
-                        completeListener.sendFirstLabel(tabBean);
+                        if (responseBody!=null){
+                            TabBean tabBean = gson.fromJson(responseBody.string(), TabBean.class);
+                            completeListener.sendFirstLabel(tabBean);
+                        }
+
 
                     }
                 }, new Consumer<Throwable>() {
