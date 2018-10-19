@@ -108,7 +108,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         }
                         break;
                     case CENTER_REFRESH_DATA:
-                        printLogAndToast("Handler", mSpecialBean.getData().getArea(), false);
+                        printLogAndToast("Handler", "case CENTER_REFRESH_DATA", false);
                         if (mSpecialBean.getData() != null) {
                             if (mSpecialBean.getData().getPrograms() != null) {
                                 mCenterData = mSpecialBean.getData().getPrograms();
@@ -142,7 +142,11 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                             mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
                             mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
                         } else {
-                            printLogAndToast("Handler", "video next play data: " + mLeftData.toString(), false);
+                            if(mLeftData != null){
+                                printLogAndToast("Handler", "video next play data: " + mLeftData.toString(), false);
+                            }else{
+                                printLogAndToast("Handler", "video next play data is null ", false);
+                            }
                         }
                         if (mCenterFocusedData != null && mCenterFocusedData.size() > 0) {
                             mVideoPlayerTitle.setText(mCenterFocusedData.get(centerPosition).getTitle());
@@ -174,10 +178,18 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     public void setModuleInfo(ModuleInfoResult infoResult) {
         mModuleInfoResult = infoResult;
         String uuid = getArguments().getString(Constant.DEFAULT_UUID);
-        printLogAndToast("setModuleInfo", "ywy Modulenfo 1 : " + mModuleInfoResult.toString() + "  uuid : " + uuid, false);
+        if(null != mModuleInfoResult){
+            printLogAndToast("setModuleInfo", "ywy Modulenfo 1 : " + mModuleInfoResult.toString() + "  uuid : " + uuid, false);
+        }else{
+            printLogAndToast("setModuleInfo", "ywy Modulenfo 1 is null :   uuid : " + uuid, false);
+        }
         Log.d(TAG, "ywy Modulenfo 1 : " + mModuleInfoResult.toString() + "  uuid : " + uuid);
         mLeftData = mModuleInfoResult.getDatas().get(0).getDatas();
-        printLogAndToast("setModuleInfo", "ywy Modulenfo 2 : " + mLeftData.toString(), false);
+        if(null != mLeftData){
+            printLogAndToast("setModuleInfo", "ywy Modulenfo 2 : " + mLeftData.toString(), false);
+        }else{
+            printLogAndToast("setModuleInfo", "ywy Modulenfo 2 : is null", false);
+        }
     }
 
     @Override
@@ -463,7 +475,11 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     private void getCenterData(final int position, String contentId) {
-        printLogAndToast("getCenterData", "left : " + contentId.substring(0, 2) + "  right : " + contentId.substring(contentId.length() - 2, contentId.length()) + "  all : " + contentId, false);
+        if(contentId.length()>2){
+            printLogAndToast("getCenterData", "left : " + contentId.substring(0, 2) + "  right : " + contentId.substring(contentId.length() - 2, contentId.length()) + "  all : " + contentId, false);
+        }else{
+            printLogAndToast("getCenterData", "contentId length < 2 " , false);
+        }
         // 从服务端去数据
         NetClient.INSTANCE.getSpecialApi().getDoublePageData(Constant.APP_KEY, Constant.CHANNEL_ID, contentId.substring(0, 2), contentId.substring(contentId.length() - 2, contentId.length()),
                 contentId)
