@@ -243,24 +243,6 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         super.onLayout(changed, l, t, r, b);
     }
 
-//    @Override
-//    public void setPersonTvList(List<SubContent> contents) {
-//        if (contents == null || contents.size() <= 0) {
-//            onLoadError();
-//            return;
-//        }
-//        buildUI(contents,TYPE_PERSON_HOST_LV);
-//    }
-
-//    @Override
-//    public void setPersonProgramList(List<SubContent> contents) {
-//        if (contents == null || contents.size() <= 0) {
-//            onLoadError();
-//            return;
-//        }
-//        buildUI(contents,TYPE_PERSON_RELATION_LV);
-//    }
-
     @Override
     public void tip(@NotNull Context context, @NotNull String message) {
 
