@@ -668,6 +668,66 @@ public class SpecialBean {
             return Objects.hash(subject, competition, language, CSUUIDs, subTitle, vImage, vipNumber, UUID, contentType, lSubScript, area, lSuperscript, presenter, videoType, director, realExclusive, tags, actors, grade, premiereChannel, producer, topic, guest, videoClass, vipFlag, cpCode, singer, stepSize, description, title, prize, playOrder, MAMID, duration, is4k, leadingRole, movieLevel, seriesSum, enName, audiences, definition, vipProductId, issueDate, screenwriter, rSubScript, reporter, classPeriod, airtime, rSupersctipt, sortType, contentUUID, premiereTime, hImage, programs);
         }
 
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "subject='" + subject + '\'' +
+                    ", competition='" + competition + '\'' +
+                    ", language='" + language + '\'' +
+                    ", CSUUIDs='" + CSUUIDs + '\'' +
+                    ", subTitle='" + subTitle + '\'' +
+                    ", vImage='" + vImage + '\'' +
+                    ", vipNumber='" + vipNumber + '\'' +
+                    ", UUID='" + UUID + '\'' +
+                    ", contentType='" + contentType + '\'' +
+                    ", lSubScript=" + lSubScript +
+                    ", area='" + area + '\'' +
+                    ", lSuperscript=" + lSuperscript +
+                    ", presenter='" + presenter + '\'' +
+                    ", videoType='" + videoType + '\'' +
+                    ", director='" + director + '\'' +
+                    ", realExclusive=" + realExclusive +
+                    ", tags='" + tags + '\'' +
+                    ", actors='" + actors + '\'' +
+                    ", grade=" + grade +
+                    ", premiereChannel=" + premiereChannel +
+                    ", producer='" + producer + '\'' +
+                    ", topic='" + topic + '\'' +
+                    ", guest='" + guest + '\'' +
+                    ", videoClass='" + videoClass + '\'' +
+                    ", vipFlag='" + vipFlag + '\'' +
+                    ", cpCode='" + cpCode + '\'' +
+                    ", singer='" + singer + '\'' +
+                    ", stepSize='" + stepSize + '\'' +
+                    ", description='" + description + '\'' +
+                    ", title='" + title + '\'' +
+                    ", prize='" + prize + '\'' +
+                    ", playOrder='" + playOrder + '\'' +
+                    ", MAMID='" + MAMID + '\'' +
+                    ", duration='" + duration + '\'' +
+                    ", is4k='" + is4k + '\'' +
+                    ", leadingRole='" + leadingRole + '\'' +
+                    ", movieLevel='" + movieLevel + '\'' +
+                    ", seriesSum=" + seriesSum +
+                    ", enName='" + enName + '\'' +
+                    ", audiences='" + audiences + '\'' +
+                    ", definition='" + definition + '\'' +
+                    ", vipProductId='" + vipProductId + '\'' +
+                    ", issueDate='" + issueDate + '\'' +
+                    ", screenwriter='" + screenwriter + '\'' +
+                    ", rSubScript=" + rSubScript +
+                    ", reporter='" + reporter + '\'' +
+                    ", classPeriod='" + classPeriod + '\'' +
+                    ", airtime='" + airtime + '\'' +
+                    ", rSupersctipt=" + rSupersctipt +
+                    ", sortType='" + sortType + '\'' +
+                    ", contentUUID='" + contentUUID + '\'' +
+                    ", premiereTime='" + premiereTime + '\'' +
+                    ", hImage='" + hImage + '\'' +
+                    ", programs=" + programs +
+                    '}';
+        }
+
         public static class ProgramsBean {
             /**
              * lSuperscript : null
@@ -892,6 +952,31 @@ public class SpecialBean {
             public int hashCode() {
 
                 return Objects.hash(lSuperscript, rSubScript, actionUri, title, seriesSubUUID, MAMID, actionType, subTitle, rSupersctipt, movieLevel, vImage, grade, periods, contentUUID, hImage, contentType, lSubScript, drm, isPlay);
+            }
+
+            @Override
+            public String toString() {
+                return "ProgramsBean{" +
+                        "lSuperscript=" + lSuperscript +
+                        ", rSubScript=" + rSubScript +
+                        ", actionUri='" + actionUri + '\'' +
+                        ", title='" + title + '\'' +
+                        ", seriesSubUUID='" + seriesSubUUID + '\'' +
+                        ", MAMID='" + MAMID + '\'' +
+                        ", actionType='" + actionType + '\'' +
+                        ", subTitle='" + subTitle + '\'' +
+                        ", rSupersctipt=" + rSupersctipt +
+                        ", movieLevel='" + movieLevel + '\'' +
+                        ", vImage='" + vImage + '\'' +
+                        ", grade=" + grade +
+                        ", periods='" + periods + '\'' +
+                        ", contentUUID='" + contentUUID + '\'' +
+                        ", hImage='" + hImage + '\'' +
+                        ", contentType='" + contentType + '\'' +
+                        ", lSubScript=" + lSubScript +
+                        ", drm=" + drm +
+                        ", isPlay=" + isPlay +
+                        '}';
             }
         }
     }

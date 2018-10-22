@@ -69,7 +69,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     private List<ProgramInfo> mLeftFocusedData = new ArrayList<>();
     private List<SpecialBean.DataBean.ProgramsBean> mCenterData = new ArrayList<>();
     private List<SpecialBean.DataBean.ProgramsBean> mCenterFocusedData = new ArrayList<>();
-    private boolean isFristPlay = true,isRightToLeft = false;
+    private boolean isFristPlay = true, isRightToLeft = false;
     private int leftPosition = 0, oldLeftPosition = -1, centerPosition = 0;
     private View focusView;
     //数据
@@ -109,6 +109,13 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         break;
                     case CENTER_REFRESH_DATA:
                         printLogAndToast("Handler", "case CENTER_REFRESH_DATA", false);
+                        mSpecialBean = (SpecialBean) msg.obj;
+                        if(null != mSpecialBean){
+                            printLogAndToast("Handler", "case msg.obj Center_Refresh_data : " + mSpecialBean.getData().toString(), false);
+                            printLogAndToast("Handler", "case msg.obj Center_Refresh_data : " + mSpecialBean.getData().getPrograms(), false);
+                        }else{
+                            printLogAndToast("Handler", "case msg.obj Center_Refresh_data is null ", false);
+                        }
                         if (mSpecialBean.getData() != null) {
                             if (mSpecialBean.getData().getPrograms() != null) {
                                 mCenterData = mSpecialBean.getData().getPrograms();
@@ -135,16 +142,16 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         }
                         break;
                     case SELECT_DEFAULT_ITEM:
-                        setSelectBg(0);
+                        setSelectBg(0, false);
                         break;
                     case VIDEO_NEXT_PLAY:
                         if (mLeftFocusedData != null && mLeftFocusedData.size() > 0) {
                             mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
                             mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
                         } else {
-                            if(mLeftData != null){
+                            if (mLeftData != null) {
                                 printLogAndToast("Handler", "video next play data: " + mLeftData.toString(), false);
-                            }else{
+                            } else {
                                 printLogAndToast("Handler", "video next play data is null ", false);
                             }
                         }
@@ -178,16 +185,16 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     public void setModuleInfo(ModuleInfoResult infoResult) {
         mModuleInfoResult = infoResult;
         String uuid = getArguments().getString(Constant.DEFAULT_UUID);
-        if(null != mModuleInfoResult){
+        if (null != mModuleInfoResult) {
             printLogAndToast("setModuleInfo", "ywy Modulenfo 1 : " + mModuleInfoResult.toString() + "  uuid : " + uuid, false);
-        }else{
+        } else {
             printLogAndToast("setModuleInfo", "ywy Modulenfo 1 is null :   uuid : " + uuid, false);
         }
         Log.d(TAG, "ywy Modulenfo 1 : " + mModuleInfoResult.toString() + "  uuid : " + uuid);
         mLeftData = mModuleInfoResult.getDatas().get(0).getDatas();
-        if(null != mLeftData){
+        if (null != mLeftData) {
             printLogAndToast("setModuleInfo", "ywy Modulenfo 2 : " + mLeftData.toString(), false);
-        }else{
+        } else {
             printLogAndToast("setModuleInfo", "ywy Modulenfo 2 : is null", false);
         }
     }
@@ -315,9 +322,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             public void onFoucesDataChangeListener(String contentId, int position) {
                 mLeftContentId = contentId;
                 printLogAndToast("initLeftList", "position : " + position, false);
-                if(!isRightToLeft){
+                if (!isRightToLeft) {
                     getCenterData(position, mLeftContentId);
-                }else{
+                } else {
                     isRightToLeft = false;
                 }
             }
@@ -407,7 +414,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     printLogAndToast("initCenterList", "mCenter position view is null", false);
                 }
                 setVideoFocus(true);
-                setSelectBg(position);
+                setSelectBg(position, true);
                 setVideoFocusedPlay(mCenterFocusedData.get(position));
                 setLeftRecyclerFocused(false);
                 setCenterRecyclerFocused(false);
@@ -435,8 +442,8 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         });
     }
 
-    private void setSelectBg(int position) {
-        mNewSpecialCenterAdapter.reFreshSecleted(position);
+    private void setSelectBg(int position, boolean isClick) {
+        mNewSpecialCenterAdapter.reFreshSecleted(position, isClick);
         //mNewSpecialCenterAdapter.refreshData(leftPosition,mCenterData);
         mNewSpecialCenterAdapter.notifyDataSetChanged();
         if (oldLeftPosition != -1 && mLeftMenu.getChildAt(oldLeftPosition) != null) {
@@ -475,10 +482,10 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     private void getCenterData(final int position, String contentId) {
-        if(contentId.length()>2){
+        if (contentId.length() > 2) {
             printLogAndToast("getCenterData", "left : " + contentId.substring(0, 2) + "  right : " + contentId.substring(contentId.length() - 2, contentId.length()) + "  all : " + contentId, false);
-        }else{
-            printLogAndToast("getCenterData", "contentId length < 2 " , false);
+        } else {
+            printLogAndToast("getCenterData", "contentId length < 2 ", false);
         }
         // 从服务端去数据
         NetClient.INSTANCE.getSpecialApi().getDoublePageData(Constant.APP_KEY, Constant.CHANNEL_ID, contentId.substring(0, 2), contentId.substring(contentId.length() - 2, contentId.length()),
@@ -495,9 +502,11 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         try {
                             mSpecialBean = ModuleUtils.getInstance()
                                     .parseJsonForNewSpecialSecondData(value.string());
+                            printLogAndToast("getCenterData", "bean : " + mSpecialBean.toString() + " value : " + value.string(), false);
                             Message msg = Message.obtain();
                             msg.what = CENTER_REFRESH_DATA;
                             msg.arg1 = position;
+                            msg.obj = mSpecialBean;
                             mSpecialHandler.sendMessage(msg);
                         } catch (IOException e) {
                             e.printStackTrace();

@@ -47,7 +47,7 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
     @Override
     public void onBindViewHolder(final CenterHolder holder, final int position) {
         mCenterHolder = holder;
-        reFreshSecleted(position);
+        reFreshSecleted(position, false);
         holder.topicContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +78,7 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
         return mSpecialData.size();
     }
 
-    public void reFreshSecleted(int selectedId) {
+    public void reFreshSecleted(int selectedId, boolean isClick) {
         Log.d(TAG, "ywy  id : " + selectedId + "  isContains : " + mSelectIdList.contains(selectedId));
         if (isFirstInit) {
             oldSpecialData = mSpecialData;
@@ -87,7 +87,12 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
             isFirstInit = false;
             //isFirstClick = true;
         }
-
+        if (isClick) {
+            mSpecialData = mOldData.get(mLeftId);
+            mOldData.clear();
+            notifyDataSetChanged();
+            mOldData.put(mLeftId, mSpecialData);
+        }
         if (mSelectIdList.contains(selectedId) && mSpecialData.get(selectedId).isPlay()) {
             mCenterHolder.mPlayerIcon.setVisibility(View.VISIBLE);
             mCenterHolder.topicContainer.setBackgroundResource(R.drawable.xuanhong);
@@ -99,7 +104,7 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
 
     public void setSelected(int selectid) {
         reSetSelect(selectid);
-        reFreshSecleted(selectid);
+        reFreshSecleted(selectid, false);
         notifyDataSetChanged();
     }
 
@@ -136,7 +141,7 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
         }*/
         if (!mOldData.containsKey(leftId)) {
             //mLeftSelectList.add(leftId);
-            mOldData.clear();
+            //mOldData.clear();
             mOldData.put(leftId, mData);
             mSpecialData = mData;
         } else {
