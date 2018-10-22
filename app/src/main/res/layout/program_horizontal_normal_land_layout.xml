@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/width_33px"
+                android:clipToPadding="false">
+
+    <tv.newtv.cboxtv.views.detail.FocusRelativeLayout
+        android:id="@+id/id_module_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:tag="tag_focus_layout"
+        android:visibility="visible">
+
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:id="@+id/iv_player"
+            android:layout_width="@dimen/width_390px"
+            android:layout_height="@dimen/height_214px"
+            android:scaleType="fitXY"
+            android:tag="tag_poster_image"/>
+    </tv.newtv.cboxtv.views.detail.FocusRelativeLayout>
+
+    <TextView
+        android:layout_marginTop="@dimen/height_43px"
+        style="@style/ModulePosterBottomTitleStyle"
+        android:layout_width="@dimen/width_390px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_module_view"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:tag="tag_poster_title"/>
+</RelativeLayout>

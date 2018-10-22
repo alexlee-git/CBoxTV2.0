@@ -9,6 +9,7 @@ import com.newtv.cms.Request
 import com.newtv.cms.api.IPerson
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
+import java.util.ArrayList
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -22,7 +23,7 @@ internal class PersonModel : BaseModel(), IPerson {
         return Model.MODEL_PERSON
     }
 
-    override fun getPersonTvList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<List<SubContent>>>) {
+    override fun getPersonTvList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<ArrayList<SubContent>>>) {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -33,13 +34,13 @@ internal class PersonModel : BaseModel(), IPerson {
         }
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.person.getPersonTvList(appkey, channelId,
+        BuildExecuter<ModelResult<ArrayList<SubContent>>>(Request.person.getPersonTvList(appkey, channelId,
                 left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }
 
-    override fun getPersonProgramList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<List<SubContent>>>) {
+    override fun getPersonProgramList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<ArrayList<SubContent>>>) {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -50,13 +51,13 @@ internal class PersonModel : BaseModel(), IPerson {
         }
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.person.getPersonProgramList(appkey, channelId,
+        BuildExecuter<ModelResult<ArrayList<SubContent>>>(Request.person.getPersonProgramList(appkey, channelId,
                 left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()
     }
 
-    override fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<List<SubContent>>>) {
+    override fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<ArrayList<SubContent>>>) {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
             return
@@ -67,7 +68,7 @@ internal class PersonModel : BaseModel(), IPerson {
         }
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.person.getPersonFigureList(appkey, channelId,
+        BuildExecuter<ModelResult<ArrayList<SubContent>>>(Request.person.getPersonFigureList(appkey, channelId,
                 left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
                 .observer(observer)
                 .execute()

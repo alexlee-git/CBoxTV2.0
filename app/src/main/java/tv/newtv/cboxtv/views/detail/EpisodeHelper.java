@@ -25,6 +25,7 @@ public class EpisodeHelper {
     public static final int TYPE_PROGRAME_STAR = 7;       //名人堂
     public static final int TYPE_PROGRAME_SAMETYPE = 8;       //通分类\
     public static final int TYPE_SEARCH = 9; //节目集的相关推荐
+    public static final int TYPE_PERSON_DETAIL_RELATION = 10; // 人物详情页　TA 相关的名人
 
     public static String getTitleByType(int type) {
         switch (type) {
@@ -34,6 +35,8 @@ public class EpisodeHelper {
             case TYPE_PROGRAME_XG:
             case TYPE_PROGRAME_SAMETYPE:
                 return "相关推荐";
+            case TYPE_PERSON_DETAIL_RELATION:
+                return "TA 相关的名人";
             default:
                 return "内容列表";
         }
@@ -48,6 +51,10 @@ public class EpisodeHelper {
 
     static Observable<ResponseBody> GetInterface(int type, Object... params) {
         switch (type) {
+            case TYPE_PERSON_DETAIL_RELATION:
+                return NetClient.INSTANCE.getDetailsPageApi().getCharacterlist(BuildConfig.APP_KEY,
+                        BuildConfig.CHANNEL_ID, (String) params[0], (String)
+                                params[1], (String) params[2]);
             case TYPE_COLUMN_DETAIL:
                 return NetClient.INSTANCE.getDetailsPageApi().getHistoryColmn(BuildConfig
                         .APP_KEY, BuildConfig.CHANNEL_ID, (String) params[0], (String)

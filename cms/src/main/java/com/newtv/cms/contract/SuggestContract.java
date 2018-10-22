@@ -1,19 +1,25 @@
 package com.newtv.cms.contract;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
 import com.newtv.cms.ICmsView;
+import com.newtv.cms.api.IPerson;
 import com.newtv.cms.api.ITvProgram;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Libs;
+import com.newtv.libs.util.LogUtils;
+
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +34,7 @@ public class SuggestContract {
     public interface View extends ICmsView {
         void columnSuggestResult(List<SubContent> result);
         void columnFiguresResult(List<SubContent> result);
+        void columnPersonFiguresResult(List<SubContent> result);
     }
 
     public interface Presenter extends ICmsPresenter {
@@ -41,6 +48,10 @@ public class SuggestContract {
          */
         void getColumnSuggest(String contentUUID);
 
+        /**
+         * 主持人相关主持人
+         */
+        void getPersonFigureList(String contentUUID);
 
     }
 
@@ -95,6 +106,31 @@ public class SuggestContract {
                             @Override
                             public void onError(@Nullable String desc) {
                                 getView().onError(getContext(), desc);
+                            }
+                        });
+            }
+        }
+
+        @Override
+        public void getPersonFigureList(String contentUUID) {
+            IPerson content = getService(SERVICE_PERSON_DETAIL);
+            if (content != null) {
+
+                content.getPersonFigureList(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentUUID, new
+                        DataObserver<ModelResult<ArrayList<SubContent>>>() {
+
+                            @Override
+                            public void onResult(ModelResult<ArrayList<SubContent>> result) {
+                                if (result != null && result.isOk()) {
+                                    getView().columnPersonFiguresResult(result.getData());
+                                }else{
+                                    getView().onError(getContext(),"Error");
+                                }
+                            }
+
+                            @Override
+                            public void onError(@Nullable String desc) {
+                                getView().onError(getContext(),desc);
                             }
                         });
             }

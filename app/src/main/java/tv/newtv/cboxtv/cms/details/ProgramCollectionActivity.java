@@ -15,6 +15,7 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.DeviceUtil;
@@ -117,7 +118,7 @@ public class ProgramCollectionActivity extends BaseActivity {
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
         mListView = findViewById(R.id.episode_horizontal_list_view);
-        mListView.setTitle("合集节目");
+//        mListView.setTitle("合集节目");
         headPlayerView.Build(
                 HeadPlayerView.Builder.build(R.layout.video_program_collect_layout)
                         .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView
@@ -163,7 +164,8 @@ public class ProgramCollectionActivity extends BaseActivity {
                             @Override
                             public void onResult(Content info) {
                                 headPlayerView.setProgramSeriesInfo(info);
-                                mListView.setContentUUID(contentUUID, info);
+                                mListView.setContentUUID(EpisodeHorizontalListView.TYPE_PROGRAM_SERICE_LV,contentUUID, mListView);
+//                                mListView.setContentUUID(contentUUID, info.getData());
                                 suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH,
                                         info,null);
 //                                headPlayerView.Play(0, 0, false);
@@ -174,7 +176,7 @@ public class ProgramCollectionActivity extends BaseActivity {
 
         mListView.setOnItemClick(new onEpisodeItemClick() {
             @Override
-            public void onItemClick(int position) {
+            public void onItemClick(int position, SubContent data) {
                 headPlayerView.Play(position, 0, true);
             }
         });

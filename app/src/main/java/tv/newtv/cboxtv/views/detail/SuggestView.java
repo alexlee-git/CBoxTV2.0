@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.SearchContract;
+import com.newtv.cms.contract.SuggestContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -32,8 +34,6 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import com.newtv.cms.contract.SearchContract;
-import com.newtv.cms.contract.SuggestContract;
 
 /**
  * 项目名称:         CBoxTV
@@ -47,7 +47,8 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
 
     public static final int TYPE_COLUMN_SEARCH = 0;     //搜索
     public static final int TYPE_COLUMN_SUGGEST = 1;    //相关栏目
-    public static final int TYPE_COLUMN_FIGURES = 2;    //相关主持人
+    public static final int TYPE_COLUMN_FIGURES = 2;    //栏目相关主持人
+    public static final int TYPE_PERSON_FIGURES = 3;    //人物详情（主持人）相关主持人
 
     private static final String INFO_TEXT_TAG = "info_text";
     private String contentUUID;
@@ -135,6 +136,8 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                         .setVideoType(content.getVideoType());
                 mSearchPresenter.search(searchCondition);
                 break;
+            case TYPE_PERSON_FIGURES:
+                mSuggestPresenter.getPersonFigureList(contentUUID);
             default:
 
                 break;
@@ -150,6 +153,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             case TYPE_COLUMN_SEARCH:
             case TYPE_COLUMN_SUGGEST:
             case TYPE_COLUMN_FIGURES:
+            case TYPE_PERSON_FIGURES:
                 buildListView(infos,type);
                 break;
         }
@@ -184,6 +188,8 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             case TYPE_COLUMN_SEARCH:
             case TYPE_COLUMN_SUGGEST:
                 return "相关推荐";
+            case TYPE_PERSON_FIGURES:
+                return "TA 相关的名人";
             default:
                 return "内容列表";
         }
@@ -321,6 +327,16 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
         }
 
         buildUI(result,TYPE_COLUMN_FIGURES);
+    }
+
+    @Override
+    public void columnPersonFiguresResult(List<SubContent> result) {
+        if (result == null || result.size() <= 0) {
+            onLoadError("获取结果为空");
+            return;
+        }
+
+        buildUI(result,TYPE_PERSON_FIGURES);
     }
 
     @Override
@@ -487,9 +503,9 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                         public void onClick(View view) {
                             //TODO 界面跳转
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL_SUGGESt, itemInfo
-                                    .getContentUUID());
+                                    .getContentID());
                             JumpUtil.detailsJumpActivity(view.getContext(),
-                                    itemInfo.getContentType(), itemInfo.getContentUUID());
+                                    itemInfo.getContentType(), itemInfo.getContentID());
                         }
                     });
 
