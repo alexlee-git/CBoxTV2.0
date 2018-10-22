@@ -23,6 +23,10 @@ public class BuyGoodsLog {
      * 用户绑定
      */
     private static final String TYPE_BIND = "3";
+    /**
+     * 二维码类型
+     */
+    private static final String QR_CODE_TYPE_AUTH = "1";
 
     private long startShowGoodsTime = 0;
     private long startShowQrCodeTime = 0;
@@ -50,7 +54,7 @@ public class BuyGoodsLog {
 
         long duration = System.currentTimeMillis() - startShowQrCodeTime;
         startShowQrCodeTime = 0;
-        uploadLog(buildContent(TYPE_SHOW_QR_CODE,skuId,x,y,defaultShowTime*1000+"",duration+"",productName));
+        uploadLog(buildContent(TYPE_SHOW_QR_CODE,skuId,x,y,defaultShowTime*1000+"",duration+"",productName,QR_CODE_TYPE_AUTH));
     }
 
     public void bind(String skuId,String mac,String userId,String productName){
