@@ -140,9 +140,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/width_10px"
-        android:layout_marginTop="@dimen/height_72px"
+        android:paddingTop="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_52px"
         android:clipChildren="false"
-        android:clipToPadding="false"></tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView>
+        android:clipToPadding="false">
+
+    </tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView>
 
 
 </LinearLayout>

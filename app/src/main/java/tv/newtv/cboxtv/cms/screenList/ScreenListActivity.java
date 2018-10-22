@@ -7,11 +7,9 @@ import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,8 +67,6 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     private int moveFlag = 0;
     private List<LabelDataBean.DataBean> list;
     private TvTabLayout tab;
-    private boolean mShouldScroll;
-    private int mToPosition;
     private long mTimeDelay;
     private long mTimeLast;
     private long mTimeSpace;
@@ -137,16 +133,6 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
             }
         });
 
-        tvRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (mShouldScroll && RecyclerView.SCROLL_STATE_IDLE == newState) {//
-                    mShouldScroll = false;
-                    smoothMoveToPosition(tvRecyclerView, mToPosition);
-                }
-            }
-        });
     }
 
     private void initPresenter() {
@@ -203,26 +189,19 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
 
     @Override
     public void showData(LabelDataBean dataBean) {
-
-
         if (!loadMore) {
             list.clear();
             if (dataBean != null) {
                 list.addAll(dataBean.getData());
                 labelDataAdapter.notifyDataSetChanged();
             }
-
         } else {
             if (dataBean != null) {
                 list.addAll(dataBean.getData());
                 labelDataAdapter.notifyDataSetChanged();
             }
-
         }
-
-
     }
-
 
     @Override
     protected void onDestroy() {
@@ -291,9 +270,6 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         presenter.getLabelData();
     }
 
-    // 两次点击按钮之间的点击间隔不能少于1000毫秒
-    private static final int MIN_CLICK_DELAY_TIME = 900;
-    private static long lastClickTime;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -413,7 +389,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
             case KeyEvent.KEYCODE_BACK:
                 num = 1;
                 loadMore = false;
-                smoothMoveToPosition(tvRecyclerView, 0);
+                tvRecyclerView.smoothScrollToPosition(0);
                 if (moveFlag == 1) {
                     title_label.setVisibility(View.GONE);
                     tab.setFocusable(true);
@@ -493,39 +469,13 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     }
 
 
-    private void smoothMoveToPosition(RecyclerView mRecyclerView, final int position) {
-        int firstItemPosition = -1;
-        int lastItemPosition = -1;
-
-        // 第一个可见位置
-        firstItemPosition = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0));
-        // 最后一个可见位置
-        lastItemPosition = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(mRecyclerView.getChildCount() - 1));
-        if (position < firstItemPosition) {
-            // 第一种可能:跳转位置在第一个可见位置之前
-            mRecyclerView.smoothScrollToPosition(position);
-        } else if (position <= lastItemPosition) {
-            // 第二种可能:跳转位置在第一个可见位置之后,在最后一个可见项之前
-            int movePosition = position - firstItemPosition;
-            if (movePosition >= 0 && movePosition < mRecyclerView.getChildCount()) {
-                int top = mRecyclerView.getChildAt(movePosition).getTop();
-                mRecyclerView.smoothScrollBy(0, top);//dx>0===>向左  dy>0====>向上
-            }
-        } else {
-            // 第三种可能:跳转位置在最后可见项之后
-            mRecyclerView.smoothScrollToPosition(position);
-            mToPosition = position;
-            mShouldScroll = true;
-        }
-    }
-
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == 0) {
             long nowTime = SystemClock.elapsedRealtime();
             this.mTimeDelay = nowTime - this.mTimeLast;
             this.mTimeLast = nowTime;
-            if(this.mTimeSpace <= 100L&&
-            this.mTimeDelay <= 100L){
+            if (this.mTimeSpace <= 100L &&
+                    this.mTimeDelay <= 100L) {
                 this.mTimeSpace += this.mTimeDelay;
                 return true;
             }
