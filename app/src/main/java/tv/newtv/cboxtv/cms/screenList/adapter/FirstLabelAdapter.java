@@ -74,7 +74,7 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
         public FirstLabelViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setFocusable(true);
-            textView = itemView.findViewById(R.id.text);
+            textView = itemView.findViewById(R.id.label_title);
         }
     }
 }

@@ -19,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import tv.newtv.cboxtv.cms.screenList.api.LabelApi;
 import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
 import tv.newtv.cboxtv.cms.screenList.common.Common;
+import tv.newtv.cboxtv.cms.screenList.manager.RetrofitManager;
 
 /**
  * Created by 冯凯 on 2018/9/30.
@@ -27,29 +28,10 @@ import tv.newtv.cboxtv.cms.screenList.common.Common;
 public class SecondLabelModelImpl implements SecondLabelModel {
     @Override
     public void requestSecondLabel(final SecondLabelCompleteListener completeListener) {
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override
-            public void log(String message) {
-                Log.i("RetrofitLog222222222", "retrofitBack = " + message);
-            }
-        });
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .addInterceptor(loggingInterceptor)// 在此处添加拦截器即可，默认日志级别为BASIC
-                .build();
 
 
-        Retrofit builder = new Retrofit.Builder()
-                .baseUrl(Common.BASE_URL)
-                .client(client)
-
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        Observable<ResponseBody> observable = builder.create(LabelApi.class).getSecondMenu();
+        RetrofitManager retrofitManager = RetrofitManager.getRetrofitManager();
+        Observable<ResponseBody> observable = retrofitManager.create(LabelApi.class).getSecondMenu();
 
 
         observable.subscribeOn(Schedulers.io())

@@ -11,7 +11,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/label_title"
         android:textColor="#ffffffff"
         android:background="@drawable/search_title_bg"
         android:gravity="center"

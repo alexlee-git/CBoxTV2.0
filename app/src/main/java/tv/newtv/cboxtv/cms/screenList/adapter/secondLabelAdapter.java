@@ -76,14 +76,12 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
 
     class FirstMenuViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView textView;
-        private final View imageView;
+        private  TextView textView;
 
         public FirstMenuViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setFocusable(true);
-            textView = itemView.findViewById(R.id.text);
-            imageView = itemView.findViewById(R.id.image);
+            textView = itemView.findViewById(R.id.label_title);
 
         }
     }
