@@ -24,6 +24,7 @@ import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.Row;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.GlideUtil;
 import com.newtv.libs.util.ImageUtils;
@@ -42,7 +43,6 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
-import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.views.custom.AutoSizeTextView;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -546,6 +546,9 @@ public class BlockBuilder {
             return;
         }
         if (info instanceof Program) {
+            Program pInfo = (Program) info;
+//            JumpUtil.activityJump(mContext,pInfo.getL_actionType(),pInfo.getContentType(),pInfo
+//                    .getL_id(),pInfo.getL_actionUri());
             JumpUtil.activityJump(mContext, (Program) info);
         } else if (info instanceof Row) {
             Row row = (Row) info;

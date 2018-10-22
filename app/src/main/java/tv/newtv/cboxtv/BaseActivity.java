@@ -26,6 +26,7 @@ import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import java.util.HashMap;
 
+import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -39,7 +40,7 @@ import tv.newtv.cboxtv.views.AdPopupWindow;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/7
  */
-public abstract class BaseActivity extends RxFragmentActivity {
+public abstract class BaseActivity extends RxFragmentActivity implements IPlayerActivity {
 
     protected boolean FrontStage = false;//是否已经进入前台
     private boolean fromOuter = false;//是否是外部跳转进入的
@@ -65,9 +66,20 @@ public abstract class BaseActivity extends RxFragmentActivity {
                 fromOuter = intent.getBooleanExtra(Constant.ACTION_FROM, false);
             }
         }
+
+        if(hasPlayer()){
+            Player.get().setCurrentPlayerActivity(this);
+        }
+
+
     }
 
     public boolean hasPlayer() {
+        return false;
+    }
+
+    @Override
+    public boolean isFullScreenActivity() {
         return false;
     }
 
@@ -150,7 +162,8 @@ public abstract class BaseActivity extends RxFragmentActivity {
     }
 
     public boolean isFullScreen() {
-        return NewTVLauncherPlayerViewManager.getInstance().isFullScreen();
+        return isFullScreenActivity() || NewTVLauncherPlayerViewManager.getInstance()
+                .isFullScreen();
     }
 
     protected void checkIsTop(KeyEvent event) {

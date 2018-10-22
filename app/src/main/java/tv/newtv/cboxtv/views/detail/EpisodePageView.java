@@ -73,6 +73,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private List<SubContent> mContentList;
 
     private AdContract.Presenter adPresenter;
+    private ContentContract.Presenter mContentPresenter;
     private int pageSize = DEFAULT_SIZE;
 
     public EpisodePageView(Context context) {
@@ -98,6 +99,14 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     @Override
     public void destroy() {
+        if(adPresenter != null){
+            adPresenter.destroy();
+            adPresenter = null;
+        }
+        if(mContentPresenter != null){
+            mContentPresenter.destroy();
+            mContentPresenter = null;
+        }
         if (mDisposable != null) {
             mDisposable.dispose();
             mDisposable = null;
@@ -347,7 +356,9 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mContentUUID = uuid;
         mControlView = controlView;
 
-        new ContentContract.ContentPresenter(getContext(), this).getSubContent(mContentUUID);
+        mContentPresenter = new ContentContract.ContentPresenter
+                (getContext(), this);
+        mContentPresenter.getSubContent(mContentUUID);
     }
 
     private void onLoadError(String message) {

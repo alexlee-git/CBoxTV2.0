@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import com.newtv.cms.bean.Content;
 
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            tv.newtv.cboxtv.player
@@ -16,6 +18,16 @@ public class Player implements PlayerObserver {
 
     private static Player instance = null;
     private PlayerObserver mObserver;
+    private IPlayerActivity mPlayerActivity;
+
+    public void setCurrentPlayerActivity(IPlayerActivity activity){
+        mPlayerActivity = activity;
+    }
+
+    public boolean isFullScreen(){
+        return mPlayerActivity.isFullScreenActivity() || NewTVLauncherPlayerViewManager
+                .getInstance().isFullScreen();
+    }
 
     private Player() {
 

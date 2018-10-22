@@ -35,7 +35,6 @@ public final class DBConfig {
     public static final String SUBSCRIBE_TABLE_NAME = "user_subscribe_info";//我的订阅
     public static final String HISTORY_TABLE_NAME = "user_history_info";//历史记录
 
-
     /* VideoDetail db fields */
 
     public static final String CONTENTUUID = "_contentuuid"; //内容id
@@ -51,6 +50,8 @@ public final class DBConfig {
     public static final String PLAYID = "_play_id";//更新时间
 
     public static final String ORDER_BY_TIME =  UPDATE_TIME+" desc";//排序条件
+
+
 
 
 
@@ -97,4 +98,5 @@ public final class DBConfig {
                     USERID + " varchar2(1000)," +
                     UPDATE_TIME + " long" +
                     ")";
+
 }

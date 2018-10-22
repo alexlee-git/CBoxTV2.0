@@ -38,7 +38,6 @@ import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
-import tv.newtv.cboxtv.cms.util.NetworkManager;
 
 import com.newtv.cms.contract.AppMainContract;
 import com.newtv.cms.contract.VersionUpdateContract;
@@ -164,7 +163,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
      * 2.初始化内容区模块
      */
     private void initModules() {
-        NetworkManager.getInstance().init(getApplicationContext());
 
         Map<String, View> mainPageWidgets = new HashMap<>(Constant.BUFFER_SIZE_8);
 

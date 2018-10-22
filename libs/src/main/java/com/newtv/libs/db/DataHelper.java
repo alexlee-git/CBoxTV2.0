@@ -34,6 +34,8 @@ class DataHelper extends SQLiteOpenHelper {
         db.execSQL(DBConfig.CREATE_ATTENTION_TABLE_NAME);
         db.execSQL(DBConfig.CREATE_HISTORY_TABLE_SQL);
         db.execSQL(DBConfig.CREATE_SUBSCRIBE_TABLE_SQL);
+
+
     }
 
     @Override

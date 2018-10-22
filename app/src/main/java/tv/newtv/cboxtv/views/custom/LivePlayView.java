@@ -97,6 +97,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             }
         }
     };
+
     private Runnable playLiveRunnable = new Runnable() {
         @Override
         public void run() {

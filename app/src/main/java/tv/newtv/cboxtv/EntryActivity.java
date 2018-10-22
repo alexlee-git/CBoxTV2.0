@@ -24,6 +24,7 @@ import com.newtv.cms.contract.ActiveAuthContract;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.EntryContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -38,7 +39,6 @@ import java.util.Locale;
 
 import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.player.ad.ADPlayerView;
 
 /**

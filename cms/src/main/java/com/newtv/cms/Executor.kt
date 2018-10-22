@@ -49,7 +49,7 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
     @Suppress("UNCHECKED_CAST")
     fun execute() {
         observable
-                .retryWhen(RetryWithDelay(5, 2, TimeUnit.SECONDS))
+                .retryWhen(RetryWithDelay(3, 2, TimeUnit.SECONDS))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ResponseBody> {

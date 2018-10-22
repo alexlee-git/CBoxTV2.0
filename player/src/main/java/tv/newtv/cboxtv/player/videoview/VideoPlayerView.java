@@ -127,9 +127,14 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void enterFullScreen(final Activity activity, boolean isLive) {
+        if(!playCenter.isReady()){
+            return;
+        }
         Content programSeriesInfo = playCenter.getCurrentProgramSeriesInfo();
 
-        if (isLive && programSeriesInfo != null) {
+        if (programSeriesInfo == null) return;
+
+        if (isLive) {
             NewTVLauncherPlayerViewManager.getInstance().playLive(programSeriesInfo.getLiveUrl(),
                     activity, programSeriesInfo, 0, 0);
         } else {
@@ -148,6 +153,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     @Override
     public void EnterFullScreen(Activity activity, boolean bringFront) {
+        if(!playCenter.isReady()){
+            return;
+        }
         defaultFocusView = activity.getWindow().getDecorView().findFocus();
         super.EnterFullScreen(activity, bringFront);
     }

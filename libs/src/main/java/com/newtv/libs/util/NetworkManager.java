@@ -15,27 +15,24 @@ public class NetworkManager {
 
     private static NetworkManager mInstance;
 
-    private Context mContext;
     private ConnectivityManager mConnectManager;
 
-    private NetworkManager() {
-
+    private NetworkManager(Context context) {
+        mConnectManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     public static NetworkManager getInstance() {
-        if (mInstance == null) {
-            synchronized (NetworkManager.class) {
-                if (mInstance == null) {
-                    mInstance = new NetworkManager();
-                }
-            }
-        }
         return mInstance;
     }
 
-    public void init(Context context) {
-        mContext = context;
-        mConnectManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static void init(Context context) {
+        if (mInstance == null) {
+            synchronized (NetworkManager.class) {
+                if (mInstance == null) {
+                    mInstance = new NetworkManager(context);
+                }
+            }
+        }
     }
 
     public boolean isConnected() {

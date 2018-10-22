@@ -13,7 +13,7 @@ import com.newtv.cms.bean.CdnUrl;
 import com.newtv.cms.bean.ChkRequest;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.NetworkManager;
+import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.Encryptor;
 import com.newtv.libs.util.LogUtils;

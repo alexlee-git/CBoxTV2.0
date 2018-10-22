@@ -3,6 +3,8 @@ package com.newtv.libs;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
+import com.newtv.libs.util.NetworkManager;
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            com.newtv.libs

@@ -1,8 +1,10 @@
 package tv.newtv.cboxtv;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -11,19 +13,26 @@ import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.ToastUtil;
 import com.newtv.libs.util.YSLogUtils;
 
-import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
-import tv.newtv.cboxtv.player.Player;
-import tv.newtv.cboxtv.player.PlayerUrlConfig;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuGroup;
 import tv.newtv.cboxtv.menu.MenuGroupPresenter;
 import tv.newtv.cboxtv.menu.model.Program;
+import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.Player;
+import tv.newtv.cboxtv.player.PlayerUrlConfig;
 import tv.newtv.cboxtv.player.model.VideoPlayInfo;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -33,25 +42,38 @@ import tv.newtv.player.R;
  * Created by wangkun on 2018/1/15.
  */
 
-public class NewTVLauncherPlayerActivity extends BaseActivity {
+public class NewTVLauncherPlayerActivity extends BaseActivity implements ContentContract
+        .LoadingView {
 
+    private static final int PLAY_TYPE_SINGLE = 0;
+    private static final int PLAY_TYPE_SERIES = 1;
     private static String TAG = "NewTVLauncherPlayerActivity";
-
-
-    public static void play(String uuid){
-
-    }
-
+    NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
+    int playPostion = 0;
+    Content mProgramSeriesInfo;
     private FrameLayout mPlayerFrameLayoutContainer;
     private int mIndexPlay;
     private int mPositionPlay = 0;
-    private Content programSeriesInfo;
-
+    private ContentContract.ContentPresenter mPresenter;
     private FrameLayout rootView;
     private IMenuGroupPresenter menuGroupPresenter;
     private int abNormalExit = 0x002;//非正常退出
     private int normalExit = 0x001;//正常退出
     private int isContinue = normalExit;
+    private int mPlayType = PLAY_TYPE_SINGLE;
+
+    public static void play(Context context, String uuid, String suuid) {
+        Intent intent = new Intent(context, NewTVLauncherPlayerActivity.class);
+        intent.putExtra(Constant.CONTENT_UUID, uuid);
+        intent.putExtra("seriesUUID", suuid);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public boolean isFullScreenActivity() {
+        return true;
+    }
 
     @Override
     public boolean hasPlayer() {
@@ -63,7 +85,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
         Log.i(TAG, "onDestroy: ");
         super.onDestroy();
 
-        if (PlayerUrlConfig.getInstance().isFromDetailPage()) {//如果是从小屏切到大屏的，关闭播放器时恢复DetailPage值false
+        if (PlayerUrlConfig.getInstance().isFromDetailPage())
+        {//如果是从小屏切到大屏的，关闭播放器时恢复DetailPage值false
             PlayerUrlConfig.getInstance().setFromDetailPage(false);
         } else {//由推荐位直接到大屏播放器的，关闭播放器时清空保存的值
             PlayerUrlConfig.getInstance().setPlayingContentId("");
@@ -78,7 +101,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
 
         rootView = null;
         mPlayerFrameLayoutContainer = null;
-        programSeriesInfo = null;
+//        programSeriesInfo = null;
     }
 
     @Override
@@ -95,6 +118,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
             return;
         }
 
+        mPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
+
         rootView = findViewById(R.id.root_view);
         mPlayerFrameLayoutContainer = (FrameLayout) findViewById(R.id.player_view_container);
         menuGroupPresenter = new MenuGroupPresenter(this.getApplicationContext());
@@ -102,12 +127,21 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            programSeriesInfo = (Content) extras.getSerializable("programSeriesInfo");
+            String contentUUID = (String) extras.getString(Constant.CONTENT_UUID);
+            String seriesUUID = (String) extras.getString("seriesUUID");
+            if (TextUtils.isEmpty(contentUUID)) {
+                ToastUtil.showToast(getApplicationContext(), "节目ID为空");
+                finish();
+                return;
+            }
+            if (!TextUtils.isEmpty(seriesUUID)) {
+                mPlayType = PLAY_TYPE_SERIES;
+                mPresenter.getContent(seriesUUID, true);
+            } else {
+                mPlayType = PLAY_TYPE_SINGLE;
+                mPresenter.getContent(contentUUID, true);
+            }
         }
-        NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer(mPlayerFrameLayoutContainer, this);
-
-        mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-        initListener();
     }
 
     private void initListener() {
@@ -126,7 +160,9 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
             public void onNext(SubContent info, int index, boolean isNext) {
                 mIndexPlay = index;
                 mPositionPlay = 0;
-                RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay, mPositionPlay, NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo().getContentUUID()));
+                RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay,
+                        mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
+                        .getProgramSeriesInfo().getContentUUID()));
             }
         });
     }
@@ -144,7 +180,6 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
                     updateAndSave();
                     break;
             }
-
         }
         return super.dispatchKeyEvent(event);
     }
@@ -177,7 +212,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
         if (isContinue == abNormalExit)
             NewTVLauncherPlayerViewManager.getInstance().setContinuePlay(Libs.get().getContext(),
                     mProgramSeriesInfo,
-                    defaultConfig,playPostion);
+                    defaultConfig, playPostion);
         isContinue = normalExit;
     }
 
@@ -186,11 +221,6 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
         super.onPause();
         Log.i(TAG, "onPause: ");
     }
-
-    NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
-    int playPostion = 0;
-    Content mProgramSeriesInfo;
-
 
     @Override
     protected void onStop() {
@@ -202,12 +232,6 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
         playPostion = NewTVLauncherPlayerViewManager.getInstance().getPlayPostion();
         defaultConfig = NewTVLauncherPlayerViewManager.getInstance().getDefaultConfig();
         NewTVLauncherPlayerViewManager.getInstance().releasePlayer();
-
-//        if (isContinue == normalExit) {
-//            NewTVLauncherPlayerViewManager.getInstance().release();
-//        } else if (isContinue == abNormalExit) {
-//            NewTVLauncherPlayerViewManager.getInstance().setAbNormalExitPause();
-//        }
     }
 
     @Override
@@ -228,35 +252,74 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
         mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
         mPositionPlay = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
         if (NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo() != null) {
-            RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay, mPositionPlay, NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo().getContentUUID()));
+            RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay,
+                    mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
+                    .getProgramSeriesInfo().getContentUUID()));
             addHistory();
         }
     }
 
     private void addHistory() {
-        programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
-        if (!NewTVLauncherPlayerViewManager.getInstance().isLiving() && mPositionPlay > 0 && programSeriesInfo != null) {
+        Content content = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+        if (content != null) {
             mPositionPlay = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
-            if (NewTVLauncherPlayerViewManager.getInstance().isLive()) {
-                return;
-            }
-
-            Player.get().onFinish(programSeriesInfo,mIndexPlay,mPositionPlay);
-
-//            DBUtil.addHistory(programSeriesInfo, mIndexPlay, mPositionPlay, new DBCallback<String>() {
-//                @Override
-//                public void onResult(int code, String result) {
-//                    if (code == 0) {
-//                        if (programSeriesInfo != null && programSeriesInfo.getData() != null
-//                                && mIndexPlay < programSeriesInfo.getData().size() && mIndexPlay >= 0) {
-//                            LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + programSeriesInfo.getData().get(mIndexPlay).getContentUUID());//添加历史记录
-//                        }
-//                        RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-//                    }
-//                }
-//            });
+            mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+            Player.get().onFinish(content, mIndexPlay, mPositionPlay);
         }
     }
 
 
+    @Override
+    public void onContentResult(@Nullable Content content) {
+        doPlay(content);
+    }
+
+    private void doPlay(Content content) {
+        boolean ready = false;
+        switch (mPlayType) {
+            case PLAY_TYPE_SINGLE:
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle
+                        (getApplicationContext(), content, 0, false);
+                ready = true;
+                break;
+            case PLAY_TYPE_SERIES:
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries
+                        (getApplicationContext(), content, mIndexPlay, mPositionPlay);
+                ready = true;
+                break;
+            default:
+                break;
+        }
+        if (ready) {
+            NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
+                    (mPlayerFrameLayoutContainer, this);
+            mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+            initListener();
+        }
+    }
+
+    @Override
+    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
+        Toast.makeText(getApplicationContext(), desc, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoading() {
+
+    }
+
+    @Override
+    public void loadComplete() {
+
+    }
 }

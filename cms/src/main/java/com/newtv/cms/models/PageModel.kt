@@ -32,6 +32,7 @@ internal class PageModel : BaseModel(), IPage {
             observer.onError("PageId is Empty")
             return
         }
+
         BuildExecuter<ModelResult<List<Page>>>(Request.page.getPageData(appkey, channelId, pageId),
                 object : TypeToken<ModelResult<List<Page>>>() {}.type)
                 .observer(observer)

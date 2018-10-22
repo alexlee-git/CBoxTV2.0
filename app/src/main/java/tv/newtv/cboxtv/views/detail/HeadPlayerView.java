@@ -761,6 +761,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             mDisposable = null;
         }
 
+        if(mPresenter != null){
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+
         if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(playerView)) {
             NewTVLauncherPlayerViewManager.getInstance().release();
         }
@@ -807,11 +812,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
-
+        mBuilder.infoResult.onResult(null);
     }
 
     @Override
-    public void onContentResult(@org.jetbrains.annotations.Nullable Content content) {
+    public void onContentResult(@Nullable Content content) {
         mInfo = content;
         mBuilder.infoResult.onResult(content);
         parseResult();
@@ -824,7 +829,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
 
     public interface InfoResult {
-        void onResult(Content info);
+        void onResult(@Nullable Content info);
     }
 
     private static class PlayInfo {

@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Page;
+import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUtils;
@@ -32,7 +33,6 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
-import com.newtv.cms.contract.PageContract;
 
 /**
  * Created by lixin on 2018/1/23.
@@ -52,7 +52,6 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
 
     private AiyaRecyclerView mRecyclerView; // 推荐位容器
     private TextView mEmptyView;
-    private List<Page> mDatas; // 数据源--即组件列表
     private SharedPreferences mSharedPreferences;
 
     private View contentView;
@@ -84,7 +83,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
             mRecyclerView.setAdapter(null);
             mRecyclerView = null;
         }
-        if(mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.destroy();
             mPresenter = null;
         }
@@ -96,7 +95,6 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         loadingView = null;
         contentView = null;
         mSharedPreferences = null;
-        mDatas = null;
     }
 
     public boolean isNoTopView() {
@@ -319,8 +317,6 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
                 layoutParams.topMargin = DisplayUtils.translate(pxSize, 1);
             }
 
-            updateRecycleView();
-
             mPresenter = new PageContract.ContentPresenter(getContext(), this);
         }
 
@@ -332,13 +328,8 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     protected void lazyLoad() {
         super.lazyLoad();
 
-        if (mDatas != null && mDatas.size() > 0 && mRecyclerView != null && mRecyclerView.getAdapter
-                () != null && mRecyclerView.getAdapter().getItemCount() > 0) {
-            return;
-        } else {
-            if (loadingView != null)
-                loadingView.setVisibility(View.VISIBLE);
-        }
+        if (loadingView != null)
+            loadingView.setVisibility(View.VISIBLE);
 
         if (TextUtils.isEmpty(contentId)) {
             onError(LauncherApplication.AppContext, "暂无数据内容。");
@@ -391,21 +382,14 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
 
     public void inflateContentPage(List<Page> pageList, String dataFrom) {
         setTipVisibility(View.GONE);
-
-        if (mDatas == null) {
-            mDatas = pageList;
-        } else {
-            mDatas.clear();
-            mDatas.addAll(pageList);
-        }
         // 设置背景图片
 
-        updateRecycleView();
+        updateRecycleView(pageList);
     }
 
 
-    private void updateRecycleView() {
-        if (contentView == null || mRecyclerView == null || mDatas == null) return;
+    private void updateRecycleView(final List<Page> pageList) {
+        if (contentView == null || mRecyclerView == null || pageList == null) return;
 
         adapter = (UniversalAdapter) mRecyclerView.getAdapter();
         if (adapter == null) {
@@ -415,10 +399,10 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
             layoutManager.setSmoothScrollbarEnabled(true);
             mRecyclerView.setLayoutManager(layoutManager);
 
-            adapter = new UniversalAdapter(LauncherApplication.AppContext, mDatas);
+            adapter = new UniversalAdapter(LauncherApplication.AppContext, pageList);
             adapter.setPicassoTag(contentId);
             adapter.setPlayerUUID(contentId);
-            Log.d("contentFragment", "setAdapter param=" + param + " data=" + mDatas);
+            Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
             mRecyclerView.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
@@ -432,7 +416,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
                 if (loadingView != null)
                     loadingView.setVisibility(View.GONE);
 
-                if (mDatas == null || mDatas.size() == 0) {
+                if (pageList == null || pageList.size() == 0) {
                     onError(LauncherApplication.AppContext, "数据为空");
                 }
 

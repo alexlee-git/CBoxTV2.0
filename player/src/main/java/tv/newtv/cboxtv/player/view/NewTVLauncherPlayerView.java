@@ -29,7 +29,6 @@ import com.newtv.libs.util.KeyEventUtils;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
-import com.newtv.libs.util.ScreenUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -89,10 +88,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private static final int PLAY_TYPE_SERIES = 1;
     private static final int PLAY_TYPE_LIVE = 2;
 
-
     private static int defaultWidth;
     private static int defaultHeight;
-    private static boolean enterFullScreen = false;
+    private static boolean isFullScreen = false;
     protected PlayerViewConfig defaultConfig;
     protected boolean startIsFullScreen = true;
     protected boolean ProgramIsChange = false;
@@ -320,6 +318,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public void updateDefaultConfig(PlayerViewConfig config) {
         defaultConfig = config;
         if (config != null) {
+            isFullScreen = config.isFullScreen;
             startIsFullScreen = config.startIsFullScreen;
             setLayoutParams(config.layoutParams);
             ((ViewGroup) config.parentViewGroup).addView(this, config.layoutParams);
@@ -355,8 +354,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void ExitFullScreen() {
-        if (!enterFullScreen) return;
-        enterFullScreen = false;
+        if (!isFullScreen) return;
+        isFullScreen = false;
 
         if (mPlayerLocation != null) {
             mPlayerLocation.destroy();
@@ -423,7 +422,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (!enterFullScreen) {
+        if (!isFullScreen) {
             defaultWidth = getLayoutParams().width;
             defaultHeight = getLayoutParams().height;
         }
@@ -458,20 +457,23 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void delayEnterFullScreen(final Activity activity, final boolean bringFront, int delay) {
-        if (enterFullScreen) return;
-        enterFullScreen = true;
+        if (isFullScreen) return;
+        isFullScreen = true;
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                enterFullScreen = false;
+                isFullScreen = false;
                 EnterFullScreen(activity, bringFront);
             }
         }, delay);
     }
 
     public void EnterFullScreen(Activity activity, final boolean bringFront) {
-        if (enterFullScreen) return;
-        enterFullScreen = true;
+        if (isFullScreen) return;
+        isFullScreen = true;
+
+        defaultWidth = getMeasuredWidth();
+        defaultHeight = getMeasuredHeight();
 
         if (mPlayerLocation != null) {
             mPlayerLocation.destroy();
@@ -532,8 +534,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public boolean isFullScreen() {
-        return this.getWidth() == ScreenUtils.getScreenW() && this.getHeight() == ScreenUtils
-                .getScreenH();
+        return isFullScreen;
     }
 
     public void destroy() {
@@ -668,12 +669,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
             String seriesUUID = programSeriesInfo.getContentUUID();
 
-//            if (programsInfos.get(index).isMenuGroupHistory()) {
-//                seriesUUID = programsInfos.get(index).getSeriesSubUUID();
-//            } else {
-//                seriesUUID = programSeriesInfo.getContentUUID();
-//            }
-
             mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
 
             startLoading();
@@ -781,7 +776,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             addHistory();
             PlayerConfig.getInstance().setJumpAD(NeedJumpAd);
             NeedJumpAd = false;
-            if (enterFullScreen) {
+            if (isFullScreen) {
                 createMenuGroup();
             }
         }

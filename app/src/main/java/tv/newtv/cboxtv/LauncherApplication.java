@@ -31,7 +31,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
-import tv.newtv.cboxtv.cms.util.NetworkManager;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
 import tv.newtv.cboxtv.utils.DBUtil;
@@ -123,7 +122,6 @@ public class LauncherApplication extends MultiDexApplication {
 
         Log.e(Constant.TAG, "Application onCreate : ");
         DisplayUtils.init(this);
-        NetworkManager.getInstance().init(getApplicationContext());
 
         YSLogUtils.getInstance(getApplicationContext()).initTracker();//央视网日志初始化
     }

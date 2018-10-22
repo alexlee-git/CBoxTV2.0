@@ -36,9 +36,6 @@ public class DataSupport {
      * @return
      */
     public static SqlBuilder update(String tableName) {
-//        if(dataSupport == null) {
-//            DataSupport.init(LauncherApplication.AppContext);
-//        }
         return SqlBuilder.create()
                 .withTable(tableName)
                 .withSqlAction(SqlExcuters.ACTION_UPDATE)
@@ -51,9 +48,6 @@ public class DataSupport {
      * @return
      */
     public static SqlBuilder delete(String tableName) {
-//        if(dataSupport == null) {
-//            DataSupport.init(LauncherApplication.AppContext);
-//        }
         return SqlBuilder.create()
                 .withSqlAction(SqlExcuters.ACTION_DEL)
                 .withTable(tableName)
@@ -67,9 +61,6 @@ public class DataSupport {
      * @return
      */
     public static SqlBuilder insert(String tableName) {
-//        if(dataSupport == null) {
-//            DataSupport.init(LauncherApplication.AppContext);
-//        }
         return SqlBuilder.create()
                 .withSqlAction(SqlExcuters.ACTION_INSERT)
                 .withTable(tableName)
@@ -82,9 +73,6 @@ public class DataSupport {
      * @return
      */
     public static SqlBuilder search(String tableName) {
-//        if(dataSupport == null) {
-//            DataSupport.init(LauncherApplication.AppContext);
-//        }
         return SqlBuilder.create()
                 .withSqlAction(SqlExcuters.ACTION_SELECT)
                 .withTable(tableName)
@@ -98,9 +86,6 @@ public class DataSupport {
      * @return
      */
     public static SqlBuilder insertAll(String tableName) {
-//        if(dataSupport == null) {
-//            DataSupport.init(LauncherApplication.AppContext);
-//        }
         return SqlBuilder.create()
                 .withSqlAction(SqlExcuters.ACTION_INSERT_ALL)
                 .withTable(tableName)
@@ -113,9 +98,6 @@ public class DataSupport {
      * @return
      */
     public static SqlBuilder insertOrUpdate(String tableName) {
-//        if(dataSupport == null) {
-//            DataSupport.init(LauncherApplication.AppContext);
-//        }
         return SqlBuilder.create()
                 .withSqlAction(SqlExcuters.ACTION_INSERT_OR_UPDATE)
                 .withTable(tableName)
@@ -128,9 +110,6 @@ public class DataSupport {
      * @return
      */
     public static SqlBuilder insertOrReplace(String tableName) {
-//        if(dataSupport == null) {
-//            DataSupport.init(LauncherApplication.AppContext);
-//        }
         return SqlBuilder.create()
                 .withSqlAction(SqlExcuters.ACTION_INSERT_OR_REPLACE)
                 .withTable(tableName)

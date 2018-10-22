@@ -20,9 +20,16 @@ import java.util.*
  * 创建日期:          2018/10/17
  */
 class ContentContract {
+
+
     interface View : ICmsView {
         fun onContentResult(content: Content?)
         fun onSubContentResult(result: ArrayList<SubContent>?)
+    }
+
+    interface LoadingView : View{
+        fun onLoading()
+        fun loadComplete()
     }
 
     interface Presenter : ICmsPresenter {
@@ -40,7 +47,8 @@ class ContentContract {
         : CmsServicePresenter<View>(context, view), Presenter {
 
         override fun getSubContent(uuid: String) {
-            val content: IContent? = getService<IContent>(SERVICE_CONTENT)
+            val content: IContent? = getService(SERVICE_CONTENT)
+
             content?.getSubContent(Libs.get().appKey, Libs.get().channelId, uuid, object
                 : DataObserver<ModelResult<List<SubContent>>> {
                 override fun onResult(result: ModelResult<List<SubContent>>) {
@@ -59,13 +67,16 @@ class ContentContract {
 
         fun getSubContentsWithCallback(contentResult: Content?, uuid: String) {
             if (contentResult != null) {
-                val content: IContent? = getService<IContent>(SERVICE_CONTENT)
+                val content: IContent? = getService(SERVICE_CONTENT)
                 content?.getSubContent(Libs.get().appKey, Libs.get().channelId, uuid, object
                     : DataObserver<ModelResult<List<SubContent>>> {
                     override fun onResult(result: ModelResult<List<SubContent>>) {
                         if (result.isOk()) {
                             contentResult.data = (ArrayList(result.data))
                             view?.onContentResult(contentResult)
+                            view?.let {
+                                if(it is LoadingView) it.loadComplete()
+                            }
                         } else {
                             view?.onError(context, result.errorMessage)
                         }
@@ -79,7 +90,10 @@ class ContentContract {
         }
 
         override fun getContent(uuid: String, autoSub: Boolean) {
-            val content: IContent? = getService<IContent>(SERVICE_CONTENT)
+            val content: IContent? = getService(SERVICE_CONTENT)
+            view?.let {
+                if(it is LoadingView) it.onLoading()
+            }
             content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, object
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>) {

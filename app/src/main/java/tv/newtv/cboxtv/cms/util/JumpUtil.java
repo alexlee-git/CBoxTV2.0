@@ -12,6 +12,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.LogUtils;
 
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
@@ -70,11 +71,11 @@ public class JumpUtil {
         }
 
         Intent jumpIntent = getIntent(context, info.getL_actionType(), info.getL_contentType(), info
-                .getL_uuid(), info.getSeriesSubUUID());
+                .getL_id(), info.getSeriesSubUUID());
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, info.getL_contentType());
             jumpIntent.putExtra(Constant.CONTENT_UUID, info.getL_id());
-            jumpIntent.putExtra(Constant.PAGE_UUID, info.getContentId());
+            jumpIntent.putExtra(Constant.PAGE_UUID, info.getL_id());
             jumpIntent.putExtra(Constant.ACTION_TYPE, info.getL_actionType());
             jumpIntent.putExtra(Constant.ACTION_URI, info.getL_actionUri());
             jumpIntent.putExtra(Constant.DEFAULT_UUID, info.getL_focusId());
@@ -185,11 +186,7 @@ public class JumpUtil {
                 } else if (Constant.CONTENTTYPE_PG.equals(contentType)) {  //单节目
                     jumpIntent = new Intent(context, SingleDetailPageActivity.class);
                 } else if (Constant.CONTENTTYPE_CP.equals(contentType)) {  // 子节目
-                    if (TextUtils.isEmpty(seriesSubUUID)) {
-                        openCPVideo(context, contentUUID);
-                    } else {
-                        openCPVideo(context, contentUUID, seriesSubUUID);
-                    }
+                    NewTVLauncherPlayerActivity.play(context,contentUUID,seriesSubUUID);
                 } else if (Constant.CONTENTTYPE_CG.equals(contentType)) {
 //                    jumpIntent = new Intent(context, ProgramListDetailActiviy.class);
                     jumpIntent = new Intent(context, ProgramCollectionActivity.class);
@@ -221,23 +218,25 @@ public class JumpUtil {
             } else if (Constant.OPEN_VIDEO.equals(actionType)) { //打开视频
                 // TODO 后面需要直接播放视频
 
-                jumpIntent = new Intent(context,NewTVLauncherPlayerActivity.class);
+                NewTVLauncherPlayerActivity.play(context,contentUUID,null);
 
-                PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
-                    @Override
-                    public void onResult(Content info) {
-                        if (info == null) {
-                            return;
-                        }
-                        Context tmpContext = context;
-                        if (MainNavManager.getInstance().getCurrentFragment() != null) {
-                            tmpContext = MainNavManager.getInstance().getCurrentFragment()
-                                    .getActivity();
-                        }
-                        NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(tmpContext,
-                                info, 0, true);
-                    }
-                });
+//                jumpIntent = new Intent(context,NewTVLauncherPlayerActivity.class);
+//
+//                PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
+//                    @Override
+//                    public void onResult(Content info) {
+//                        if (info == null) {
+//                            return;
+//                        }
+//                        Context tmpContext = context;
+//                        if (MainNavManager.getInstance().getCurrentFragment() != null) {
+//                            tmpContext = MainNavManager.getInstance().getCurrentFragment()
+//                                    .getActivity();
+//                        }
+//                        NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(tmpContext,
+//                                info, 0, true);
+//                    }
+//                });
 
             }
         } catch (Exception e) {
@@ -278,17 +277,19 @@ public class JumpUtil {
         } else if (Constant.CONTENTTYPE_PG.equals(contentType)) {  //单节目
             jumpIntent = new Intent(context, SingleDetailPageActivity.class);
         } else if (Constant.CONTENTTYPE_CP.equals(contentType)) {  // 子节目
-            if (TextUtils.isEmpty(seriesSubUUID)) {
-                openCPVideo(context, contentUUID);
-            } else {
-                openCPVideo(context, contentUUID, seriesSubUUID);
-            }
+//            if (TextUtils.isEmpty(seriesSubUUID)) {
+//                openCPVideo(context, contentUUID);
+//            } else {
+//                openCPVideo(context, contentUUID, seriesSubUUID);
+//            }
+            NewTVLauncherPlayerActivity.play(context,contentUUID,seriesSubUUID);
         } else if (Constant.CONTENTTYPE_CG.equals(contentType)) {
 //            jumpIntent = new Intent(context, ProgramListDetailActiviy.class);
             jumpIntent = new Intent(context, ProgramCollectionActivity.class);
         } else if (Constant.CONTENTTYPE_CS.equals(contentType)) {  //节目集合集
             Toast.makeText(context, "节目集合集正在开发中", Toast.LENGTH_SHORT).show();
         } else {
+
         }
 
         if (jumpIntent != null) {
@@ -305,52 +306,55 @@ public class JumpUtil {
      * @param context
      * @param contentUUID
      */
-    private static void openCPVideo(final Context context, final String contentUUID) {
-        PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
-            @Override
-            public void onResult(Content info) {
-//                if (info == null || TextUtils.isEmpty(info.getProgramSeriesUUIDs())) {
-//                    Toast.makeText(LauncherApplication.AppContext, "子节目缺少节目集ID",
-//                            Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-                Context tmpContext = getMainContext(context);
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(
-                        tmpContext, info, 0, true);
-            }
-        });
-    }
+//    private static void openCPVideo(final Context context, final String contentUUID) {
+//        PlayInfoUtil.getPlayInfo(contentUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
+//            @Override
+//            public void onResult(Content info) {
+////                if (info == null || TextUtils.isEmpty(info.getProgramSeriesUUIDs())) {
+////                    Toast.makeText(LauncherApplication.AppContext, "子节目缺少节目集ID",
+////                            Toast.LENGTH_SHORT).show();
+////                    return;
+////                }
+//                Context tmpContext = getMainContext(context);
+//
+//
+//                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(
+//                        tmpContext, info, 0, true);
+//            }
+//        });
+
+//    }
 
     /**
      * 如果推荐位上是子节目，那么就获取子节目属于的节目集信息
      * 并播放节目集中对应的集数
      */
-    private static void openCPVideo(final Context context, final String contentUUID, String
-            seriesSubUUID) {
-        PlayInfoUtil.getPlayInfo(seriesSubUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
-            @Override
-            public void onResult(Content info) {
-                if (info != null && info.getData() != null && info.getData().size() > 0) {
-                    //获取在节目集中的集数
-                    int index = 0;
-                    for (int i = 0; i < info.getData().size(); i++) {
-                        SubContent programsInfo = info.getData().get(i);
-                        if (contentUUID.equals(programsInfo.getContentUUID())) {
-                            index = i;
-                            break;
-                        }
-                    }
-
-                    //播放
-                    Context tmpContext = getMainContext(context);
-                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(
-                            tmpContext, info, true, index, 0);
-                } else {
-                    Toast.makeText(context, "获取节目集信息有误", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+//    private static void openCPVideo(final Context context, final String contentUUID, String
+//            seriesSubUUID) {
+//        PlayInfoUtil.getPlayInfo(seriesSubUUID, new PlayInfoUtil.ProgramSeriesInfoCallback() {
+//            @Override
+//            public void onResult(Content info) {
+//                if (info != null && info.getData() != null && info.getData().size() > 0) {
+//                    //获取在节目集中的集数
+//                    int index = 0;
+//                    for (int i = 0; i < info.getData().size(); i++) {
+//                        SubContent programsInfo = info.getData().get(i);
+//                        if (contentUUID.equals(programsInfo.getContentUUID())) {
+//                            index = i;
+//                            break;
+//                        }
+//                    }
+//
+//                    //播放
+//                    Context tmpContext = getMainContext(context);
+//                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(
+//                            tmpContext, info, true, index, 0);
+//                } else {
+//                    Toast.makeText(context, "获取节目集信息有误", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
 
     private static Context getMainContext(Context context) {
         Context tmpContext = context;
