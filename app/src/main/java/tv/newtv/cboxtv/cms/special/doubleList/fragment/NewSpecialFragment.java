@@ -110,10 +110,10 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     case CENTER_REFRESH_DATA:
                         printLogAndToast("Handler", "case CENTER_REFRESH_DATA", false);
                         mSpecialBean = (SpecialBean) msg.obj;
-                        if(null != mSpecialBean){
+                        if (null != mSpecialBean) {
                             printLogAndToast("Handler", "case msg.obj Center_Refresh_data : " + mSpecialBean.getData().toString(), false);
                             printLogAndToast("Handler", "case msg.obj Center_Refresh_data : " + mSpecialBean.getData().getPrograms(), false);
-                        }else{
+                        } else {
                             printLogAndToast("Handler", "case msg.obj Center_Refresh_data is null ", false);
                         }
                         if (mSpecialBean.getData() != null) {
@@ -503,11 +503,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                             mSpecialBean = ModuleUtils.getInstance()
                                     .parseJsonForNewSpecialSecondData(value.string());
                             printLogAndToast("getCenterData", "bean : " + mSpecialBean.toString() + " value : " + value.string(), false);
-                            Message msg = Message.obtain();
-                            msg.what = CENTER_REFRESH_DATA;
-                            msg.arg1 = position;
-                            msg.obj = mSpecialBean;
-                            mSpecialHandler.sendMessage(msg);
+
+                            refreshCenterData(position, mSpecialBean);
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -523,6 +521,35 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     public void onComplete() {
                     }
                 });
+    }
+
+    private void refreshCenterData(int position, SpecialBean mSpecialBean) {
+        printLogAndToast("refreshCenterData", "case CENTER_REFRESH_DATA", false);
+        if (null != mSpecialBean) {
+            printLogAndToast("refreshCenterData  1  ",mSpecialBean.getData() + "",false);
+            if(mSpecialBean.getData()!= null){
+                printLogAndToast("refreshCenterData  2  ", "case msg.obj Center_Refresh_data : " + mSpecialBean.getData().toString(), false);
+                printLogAndToast("refreshCenterData  3  ", "case msg.obj Center_Refresh_data : " + mSpecialBean.getData().getPrograms(), false);
+            }
+        } else {
+            printLogAndToast("refreshCenterData  4  ", "case msg.obj Center_Refresh_data is null ", false);
+        }
+        if (mSpecialBean.getData() != null) {
+            if (mSpecialBean.getData().getPrograms() != null) {
+                mCenterData = mSpecialBean.getData().getPrograms();
+                mNewSpecialCenterAdapter.refreshData(position, mCenterData);
+                if (isFristPlay) {
+                    mLeftFocusedData = mLeftData;
+                    mCenterFocusedData = mCenterData;
+                    mSpecialHandler.sendEmptyMessageDelayed(VIDEO_PLAY, 400);
+                    isFristPlay = false;
+                }
+            } else {
+                printLogAndToast("refreshCenterData  5  ", "ywy center_refresh_data Programs is null", false);
+            }
+        } else {
+            printLogAndToast("refreshCenterData  6  ", "ywy center_refresh_data is null", false);
+        }
     }
 
     private void setLeftRecyclerFocused(boolean isFocus) {

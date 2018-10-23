@@ -55,6 +55,15 @@ public class SpecialBean {
         return Objects.hash(data, errorMessage, errorCode);
     }
 
+    @Override
+    public String toString() {
+        return "SpecialBean{" +
+                "data=" + data +
+                ", errorMessage='" + errorMessage + '\'' +
+                ", errorCode='" + errorCode + '\'' +
+                '}';
+    }
+
     public static class DataBean {
         /**
          * subject :
