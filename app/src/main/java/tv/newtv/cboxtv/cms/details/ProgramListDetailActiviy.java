@@ -402,7 +402,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                         public void run() {
                             isCollect = true;
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "1," + entity
-                                    .getContentUUID());//取消收藏
+                                    .getContentID());//取消收藏
                             //mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
 
                             mCollectBtn.setSelect(true);

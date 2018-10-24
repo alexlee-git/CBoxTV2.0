@@ -88,7 +88,7 @@ public class LiveContract {
                     }
 
                     @Override
-                    public void onResult(String result) {
+                    public void onResult(String result, long requestCode) {
                         if (TextUtils.isEmpty(result)) {
                             LogUtils.i(TAG, "onResponse: responseBody==null");
                             if (!NetworkManager.getInstance().isConnected()) {

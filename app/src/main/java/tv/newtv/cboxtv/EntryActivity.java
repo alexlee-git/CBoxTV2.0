@@ -129,7 +129,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         if (!DeviceUtil.isSelfDevice()) {
             String displayMessage = getResources().getString(R.string
                     .tip_text_auth_error) + "\n\n";
-            displayMessage += getErrorMsg(ActiveAuthContract.ActiveAuthPresenter.NOT_SELF_DEVICE);
+            displayMessage += getErrorMsg(ActiveAuthContract.ActiveAuthPresenter.Constract.NOT_SELF_DEVICE);
             mAlertDialog = getDialog(displayMessage, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -213,7 +213,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     @Override
     public void failed(int type, int status) {
         switch (type) {
-            case ActiveAuthContract.ActiveAuthPresenter.AUTH:
+            case ActiveAuthContract.ActiveAuthPresenter.Constract.AUTH:
 
                 //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
                 RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
@@ -234,7 +234,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                     mAlertDialog.show();
                 }
                 break;
-            case ActiveAuthContract.ActiveAuthPresenter.ACTIVATE:
+            case ActiveAuthContract.ActiveAuthPresenter.Constract.ACTIVATE:
                 mAlertDialog = getDialog(new StringBuilder().append(getResources().getString(R
                                 .string.tip_text_active_error)).append(getErrorMsg(status))
                                 .toString(),

@@ -162,7 +162,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                 mPositionPlay = 0;
                 RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay,
                         mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
-                        .getProgramSeriesInfo().getContentUUID()));
+                        .getProgramSeriesInfo().getContentID()));
             }
         });
     }
@@ -254,7 +254,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         if (NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo() != null) {
             RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay,
                     mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
-                    .getProgramSeriesInfo().getContentUUID()));
+                    .getProgramSeriesInfo().getContentID()));
             addHistory();
         }
     }
@@ -264,7 +264,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         if (content != null) {
             mPositionPlay = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
             mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-            Player.get().onFinish(content, mIndexPlay, mPositionPlay);
+            //Player.get().onFinish(content, mIndexPlay, mPositionPlay);
         }
     }
 

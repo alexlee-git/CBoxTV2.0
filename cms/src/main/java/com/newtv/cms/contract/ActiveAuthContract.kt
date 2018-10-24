@@ -81,7 +81,7 @@ class ActiveAuthContract {
                         System.currentTimeMillis().toString() + "")
                 var number = 0
                 activeAuth.auth(authBean, object : DataObserver<String> {
-                    override fun onResult(result: String) {
+                    override fun onResult(result: String, requestCode: Long) {
                         try {
                             val response = JSONObject(result)
                             val statusCode = response.getInt("statusCode")
@@ -136,7 +136,7 @@ class ActiveAuthContract {
                             Libs.get().channelId,
                             System.currentTimeMillis().toString() + "")
                     activeAuth.active(activateBean, object : DataObserver<String> {
-                        override fun onResult(result: String) {
+                        override fun onResult(result: String, requestCode: Long) {
                             try {
                                 val response = JSONObject(result)
                                 val statusCode = response.getInt("statusCode")

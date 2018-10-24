@@ -5,12 +5,10 @@ import android.text.TextUtils;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
-
-import tv.newtv.cboxtv.cms.util.Utils;
-
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.LogUtils;
 
 /**
  * 项目名称:         CBoxTV
@@ -44,8 +42,8 @@ public class DBUtil {
     public static void AddSubcribe(Content entity, DBCallback<String> callback) {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
-        if (entity.getContentUUID() != null) {
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+        if (entity.getContentID() != null) {
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
         }
         if (entity.getContentType() != null) {
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
@@ -58,7 +56,6 @@ public class DBUtil {
                 .withValue(contentValues)
                 .withCallback(callback).excute();
     }
-
 
 
     /**
@@ -94,6 +91,7 @@ public class DBUtil {
 
     /**
      * 移除收藏
+     *
      * @param contentUuId
      * @param callback
      */
@@ -106,6 +104,7 @@ public class DBUtil {
 
     /**
      * 更新收藏
+     *
      * @param entity
      * @param callback
      */
@@ -113,7 +112,7 @@ public class DBUtil {
         if (entity != null) {
             //TODO 写入本地数据库 历史记录
             ContentValues contentValues = new ContentValues();
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
@@ -132,7 +131,7 @@ public class DBUtil {
             return;
         }
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentUUID());
+        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentID());
         if (mInfo.getContentType() != null) {
             contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
         }
@@ -147,22 +146,24 @@ public class DBUtil {
 
         String seriesUUID = "";
         if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
-            if (mInfo.getData()!=null&&mInfo.getData().size()!=0){
-                contentValues.put(DBConfig.PLAYID,mInfo.getData().get(index).getContentUUID());
-//                seriesUUID = mInfo.getData().get(index).getSeriesSubUUID();
+            if (mInfo.getData() != null && mInfo.getData().size() != 0) {
+                contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentID());
             }
         }
 
         contentValues.put(DBConfig.PLAYPOSITION, Position);
         contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
-        if(TextUtils.isEmpty(mInfo.getContentUUID())){
-            if(TextUtils.isEmpty(seriesUUID)){
+        if (TextUtils.isEmpty(mInfo.getContentID())) {
+            if (TextUtils.isEmpty(seriesUUID)) {
                 return;
             }
-            contentValues.put(DBConfig.CONTENTUUID,seriesUUID);
+            contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
         } else {
-          seriesUUID = mInfo.getContentUUID();
+            seriesUUID = mInfo.getContentID();
         }
+
+
+        LogUtils.d("insert",contentValues.toString());
         DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
                 .condition()
                 .eq(DBConfig.CONTENTUUID, seriesUUID)
@@ -171,16 +172,16 @@ public class DBUtil {
                 .withCallback(callback).excute();
     }
 
-    public static void addAttention(Content entity,DBCallback<String> callback){
+    public static void addAttention(Content entity, DBCallback<String> callback) {
         //TODO 写入本地数据库 历史记录
-        if (entity==null){
+        if (entity == null) {
             return;
         }
         ContentValues contentValues = new ContentValues();
-        if (!TextUtils.isEmpty(entity.getContentUUID())){
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+        if (!TextUtils.isEmpty(entity.getContentID())) {
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
         }
-        if (!TextUtils.isEmpty(entity.getContentType())){
+        if (!TextUtils.isEmpty(entity.getContentType())) {
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
         }
         contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
@@ -194,7 +195,7 @@ public class DBUtil {
 
     }
 
-    public static void delAttention(String contentUuId,DBCallback<String> callback){
+    public static void delAttention(String contentUuId, DBCallback<String> callback) {
 
         DataSupport.delete(DBConfig.ATTENTION_TABLE_NAME).condition()
                 .eq(DBConfig.CONTENTUUID, contentUuId)

@@ -35,7 +35,7 @@ class NavContract {
                     Libs.get().appKey,
                     Libs.get().channelId,
                     object : DataObserver<ModelResult<List<Nav>>> {
-                        override fun onResult(result: ModelResult<List<Nav>>) {
+                        override fun onResult(result: ModelResult<List<Nav>>, requestCode: Long) {
                             if (result.isOk()) {
                                 view?.onNavResult(context, result.data)
                             } else {

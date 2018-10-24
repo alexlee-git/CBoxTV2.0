@@ -35,7 +35,7 @@ class PageContract {
                     Libs.get().appKey,
                     Libs.get().channelId,
                     contentId, object : DataObserver<ModelResult<List<Page>>> {
-                override fun onResult(result: ModelResult<List<Page>>) {
+                override fun onResult(result: ModelResult<List<Page>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.onPageResult(result.data)
                     } else {

@@ -1,6 +1,7 @@
 package com.newtv.cms
 
 import android.content.Context
+import com.newtv.cms.api.IContent
 import com.newtv.cms.api.IService
 
 /**

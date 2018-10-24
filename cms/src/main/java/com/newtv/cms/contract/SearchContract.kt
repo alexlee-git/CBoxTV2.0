@@ -20,7 +20,7 @@ import java.util.*
  */
 class SearchContract {
     interface View : ICmsView {
-        fun searchResult(result: ArrayList<SubContent>?)
+        fun searchResult(requestID: Long, result: ArrayList<SubContent>?)
     }
 
     interface Presenter : ICmsPresenter {
@@ -109,15 +109,15 @@ class SearchContract {
         override fun search(condition: SearchCondition): Long {
             val search = getService<ISearch>(CmsServicePresenter.SERVICE_SEARCH)
             search?.let {
-                val id: Long = it.search(
+                val requestID: Long = it.search(
                         Libs.get().appKey,
                         Libs.get().channelId, condition.categoryId,
                         condition.contentType, condition.videoType, condition.videoClass, condition
                         .area, condition.year, condition.keyword, condition.page, condition
                         .rows, condition.keywordType, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
-                    override fun onResult(result: ModelResult<ArrayList<SubContent>>) {
+                    override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                         if (result.isOk()) {
-                            view?.searchResult(result.data)
+                            view?.searchResult(requestCode, result.data)
                         } else {
                             view?.onError(context, result
                                     .errorMessage)
@@ -128,7 +128,7 @@ class SearchContract {
                         view?.onError(context, desc)
                     }
                 })
-                return id
+                return requestID
             }
             return 0
         }

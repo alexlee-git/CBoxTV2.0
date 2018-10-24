@@ -39,7 +39,7 @@ class VersionUpdateContract {
             if (upVersion != null) {
                 val params = createOrientedParam(context)
                 upVersion.getIsOriented(params, object : DataObserver<Oriented> {
-                    override fun onResult(result: Oriented) {
+                    override fun onResult(result: Oriented, requestCode: Long) {
                         val hardwareCode: String? = if ("enable".equals(result.oriented))
                             params["hardwareCode"] else ""
                         checkUpVersion(context, Integer.parseInt(params["versionCode"]), hardwareCode)
@@ -56,7 +56,7 @@ class VersionUpdateContract {
                 val params = createUpVersionParam(context, versionCode,
                         hardwareCode)
                 upVersion.getUpVersion(params, object : DataObserver<UpVersion> {
-                    override fun onResult(result: UpVersion) {
+                    override fun onResult(result: UpVersion, requestCode: Long) {
                         if (TextUtils.isEmpty(result.versionCode) || "null" == result
                                         .versionCode) {
                             return

@@ -479,7 +479,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
     private void updateCollect(final Content entity) {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+        contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
         contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
         contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
@@ -495,7 +495,8 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                                 @Override
                                 public void run() {
                                     isCollect = true;
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0,"+entity.getContentUUID());
+                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0," +
+                                            ""+entity.getContentID());
                                     mCollectIv.setImageResource(R.drawable
                                             .icon_details_collect_btn);
                                     Toast.makeText(getActivity(), R.string.collect_success, Toast.LENGTH_SHORT)
@@ -621,7 +622,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
         }
         if (mVideoView.getCurrentPosition() > 0) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put(DBConfig.CONTENTUUID, dataInfo.getContentUUID());
+            contentValues.put(DBConfig.CONTENTUUID, dataInfo.getContentID());
             contentValues.put(DBConfig.CONTENTTYPE, dataInfo.getContentType());
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             contentValues.put(DBConfig.IMAGEURL, dataInfo.getVImage());
@@ -631,7 +632,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
             contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
             DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
                     .condition()
-                    .eq(DBConfig.CONTENTUUID, dataInfo.getContentUUID())
+                    .eq(DBConfig.CONTENTUUID, dataInfo.getContentID())
                     .build()
                     .withValue(contentValues)
                     .withCallback(new DBCallback<String>() {
@@ -639,7 +640,7 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
                         public void onResult(int code, String result) {
 
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + dataInfo
-                                    .getContentUUID());//添加历史记录
+                                    .getContentID());//添加历史记录
                             if (code == 0) {
                                 RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                             }

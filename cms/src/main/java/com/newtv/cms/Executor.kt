@@ -21,14 +21,14 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                            val type: Type?,
                            val callback: IExecutor<T>?
 ) {
-    private var mID:Long = 0;
+    private var mID: Long = 0;
     var isCancel: Boolean = false //是否已经退出请求
 
     init {
         mID = System.currentTimeMillis()
     }
 
-    internal fun getID():Long{
+    internal fun getID(): Long {
         return mID
     }
 
@@ -80,9 +80,9 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                         try {
                             if (type != null) {
                                 val result = Gson().fromJson<T>(t.string(), type)
-                                mObserver?.onResult(result)
+                                mObserver?.onResult(result, mID)
                             } else {
-                                mObserver?.onResult(t.string() as T)
+                                mObserver?.onResult(t.string() as T, mID)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()

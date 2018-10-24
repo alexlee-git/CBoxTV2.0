@@ -1,7 +1,6 @@
 package com.newtv.cms.contract
 
 import android.content.Context
-import android.util.Log
 
 import com.newtv.cms.BuildConfig
 import com.newtv.cms.CmsServicePresenter
@@ -13,7 +12,6 @@ import com.newtv.cms.api.ITvProgram
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
 import com.newtv.libs.Libs
-import com.newtv.libs.util.LogUtils
 
 import java.util.ArrayList
 
@@ -58,7 +56,7 @@ class SuggestContract {
                     Libs.get().appKey,
                     Libs.get().channelId,
                     contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
-                override fun onResult(result: ModelResult<ArrayList<SubContent>>) {
+                override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.columnFiguresResult(result.data)
                     } else {
@@ -78,7 +76,7 @@ class SuggestContract {
                     Libs.get().appKey,
                     Libs.get().channelId,
                     contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
-                override fun onResult(result: ModelResult<ArrayList<SubContent>>) {
+                override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.columnSuggestResult(result.data)
                     } else {
@@ -95,7 +93,7 @@ class SuggestContract {
         override fun getPersonFigureList(contentUUID: String) {
             val content = getService<IPerson>(CmsServicePresenter.SERVICE_PERSON_DETAIL)
             content?.getPersonFigureList(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
-                override fun onResult(result: ModelResult<ArrayList<SubContent>>) {
+                override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.columnPersonFiguresResult(result.data)
                     } else {

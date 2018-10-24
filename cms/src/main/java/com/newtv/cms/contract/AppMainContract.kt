@@ -4,18 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageInfo
 import android.os.Build
 
-import com.newtv.cms.BuildConfig
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
 import com.newtv.cms.ICmsView
 import com.newtv.cms.api.IClock
-import com.newtv.cms.api.INav
-import com.newtv.cms.bean.ModelResult
-import com.newtv.cms.bean.Nav
 import com.newtv.cms.bean.Time
 import com.newtv.libs.Constant
 import com.newtv.libs.util.LogUploadUtils
@@ -65,7 +60,7 @@ class AppMainContract {
         override fun syncServiceTime() {
             val clock = getService<IClock>(CmsServicePresenter.SERVICE_CLOCK)
             clock?.sync(object : DataObserver<Time> {
-                override fun onResult(result: Time) {
+                override fun onResult(result: Time, requestCode: Long) {
                     if ("1" == result.statusCode) {
                         view!!.syncServerTime(result)
                     } else {
