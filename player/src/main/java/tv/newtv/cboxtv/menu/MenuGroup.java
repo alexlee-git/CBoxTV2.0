@@ -20,6 +20,10 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.newtv.cms.Request;
+import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
+import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScreenUtils;
 
@@ -28,9 +32,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.menu.model.CategoryContent;
 import tv.newtv.cboxtv.menu.model.LastMenuBean;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
+import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.player.R;
 
 /**
@@ -81,7 +91,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     private Node currentNode;
     private int recyclerViewWidth;
     //动画队列
-    private List<AnimEntity> animList = new ArrayList<>();
+    private List<MenuGroup.AnimEntity> animList = new ArrayList<>();
     private boolean isFinshAnim = true;
     private float currentX;
     private float MIN_X;
@@ -196,10 +206,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                         for (int j = i + 1; j < allNodes.size(); j++) {
                             Node m = allNodes.get(j);
                             if (n.getId().equals(m.getPid())) {
-                                n.getChildrens().add(m);
+                                n.getChild().add(m);
                                 m.setParent(n);
                             } else if (m.getId().equals(n.getPid())) {
-                                m.getChildrens().add(n);
+                                m.getChild().add(n);
                                 n.setParent(m);
                             }
                         }
@@ -212,6 +222,13 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }).start();
     }
 
+    public void addRootNodes(List<Node> nodes){
+        this.rootNodes.addAll(nodes);
+        for(Node node : nodes){
+            allNodes.addAll(node.getNodes());
+        }
+    }
+
     public void addNodeToRoot(Node node) {
         rootNodes.add(node);
     }
@@ -220,7 +237,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         if (lastMenuBean == null || lastMenuBean.getData() == null || lastMenuBean.getData()
                 .getPrograms() == null) {
             Log.e(TAG, "lastMenuBean or lastMenuBean.getData() or lastMenuBean.getData()" +
-                    ".getProgramList() is null , MenuGroup initView fail");
+                    ".getPrograms() is null , MenuGroup initView fail");
             return false;
         }
 
@@ -233,7 +250,33 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 currentNode = node;
                 for (Program p : lastProgram) {
                     p.setParent(node);
-                    if (p.getContentUUID().equals(detailcontentUUID)) {
+                    if (p.getContentID().equals(detailcontentUUID)) {
+                        playProgram = p;
+                    }
+                }
+                break;
+            }
+        }
+        if (currentNode == null) {
+            Log.e(TAG, "currentNode can not null");
+            return false;
+        }
+        initView();
+        return true;
+    }
+
+    public boolean setLastProgram(List<Program> lastProgram, String pId, String detailcontentUUID) {
+
+        this.lastProgram = lastProgram;
+        this.detailcontentUUID = detailcontentUUID;
+        for (Node node : allNodes) {
+            if (node.getId().equals(pId)) {
+                node.setPrograms(lastProgram);
+//                node.setLastMenuBean(lastMenuBean);
+                currentNode = node;
+                for (Program p : lastProgram) {
+                    p.setParent(node);
+                    if (p.getContentID().equals(detailcontentUUID)) {
                         playProgram = p;
                     }
                 }
@@ -258,7 +301,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode.getId());
             } else {
                 adapter = new MenuRecyclerAdapter(getContext(), currentNode.getParent()
-                        .getChildrens(), currentNode.getId());
+                        .getChild(), currentNode.getId());
             }
             lv.setAdapter(adapter);
 
@@ -418,23 +461,26 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         Node item = adapter.getItem(position);
         int playIdPosition = 0;
         if (!item.isLeaf()) {
+            if(item.getChild().size() == 0){
+                return;
+            }
             adapter.setSelectView(focusView);
             MenuRecyclerView menuRecyclerViewByLevel = getMenuRecyclerViewByLevel(level + 1);
 
             playIdPosition = ((MenuRecyclerAdapter) menuRecyclerViewByLevel.getAdapter())
                     .calculatePlayIdPosition(-1);
 
-            if (playIdPosition != -1 && playIdPosition < item.getChildrens().size()) {
+            if (playIdPosition != -1 && playIdPosition < item.getChild().size()) {
                 if (!isPositionShow(menuRecyclerViewByLevel, playIdPosition)) {
                     menuRecyclerViewByLevel.scrollToPosition(playIdPosition);
                 }
                 sendDelayToFocusHandler(menuRecyclerViewByLevel.getAdapter(), REQUEST_MENU_PATH_VIEW_FOCUS);
-                refreshRecyclerViewDataBylevel(item.getChildrens().get(playIdPosition), level + 2);
+                refreshRecyclerViewDataBylevel(item.getChild().get(playIdPosition), level + 2);
             } else {
                 menuRecyclerViewByLevel.scrollToPosition(0);
                 sendDelayToFocusHandler(menuRecyclerViewByLevel.getAdapter(),
                         REQUEST_MENU_FIRST_FOCUS);
-                refreshRecyclerViewDataBylevel(item.getChildrens().get(0), level + 2);
+                refreshRecyclerViewDataBylevel(item.getChild().get(0), level + 2);
             }
 
 
@@ -493,7 +539,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             msg.what = REQUEST_MENU_FIRST_FOCUS;
             focusHandler.sendMessageDelayed(msg, 60);
 
-            refreshRecyclerViewDataBylevel(item.getChildrens().get(0), level + 2);
+            refreshRecyclerViewDataBylevel(item.getChild().get(0), level + 2);
 
             float current = currentX;
             currentX = currentX - recyclerViewWidth;
@@ -535,9 +581,14 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             MenuRecyclerView menuRecyclerViewByLevel = getMenuRecyclerViewByLevel(level);
             MenuRecyclerAdapter nextAdapter = (MenuRecyclerAdapter) menuRecyclerViewByLevel
                     .getAdapter();
-            nextAdapter.setData(node.getChildrens());
-            menuRecyclerViewByLevel.scrollToPosition(0);
-            resetLastRecyclerView();
+            nextAdapter.setData(node.getChild());
+            if(node.getChild().size() == 0 && !node.isRequest()){
+                //请求数据
+                getNodeData(node,menuRecyclerViewByLevel);
+            }else {
+                menuRecyclerViewByLevel.scrollToPosition(0);
+                resetLastRecyclerView();
+            }
 
         } else if (node.getPrograms() != null && node.getPrograms().size() > 0) {
             lastListView.setVisibility(View.VISIBLE);
@@ -562,6 +613,35 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             getLastData(node);
             setRecyclerViewsGoneByLevel(level - 1);
         }
+    }
+
+    private void getNodeData(final Node node, final MenuRecyclerView recyclerView) {
+        recyclerView.setTag(node.getId());
+
+        String contentUUID = node.getId();
+        String leftString = contentUUID.substring(0, 2);
+        String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
+        Request.INSTANCE.getCategory()
+                .getCategoryContent(Libs.get().getAppKey(), Libs.get().getChannelId(),leftString,rightString,contentUUID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        CategoryContent categoryContent = GsonUtil.fromjson(responseBody.string(),CategoryContent.class);
+                        if(categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0){
+                            node.addChild(categoryContent.data);
+                            node.setRequest(true);
+                            node.initParent();
+                            if(recyclerView.getTag().equals(node.getId()) && View.VISIBLE == recyclerView.getVisibility()){
+                                MenuRecyclerAdapter nextAdapter = (MenuRecyclerAdapter) recyclerView.getAdapter();
+                                nextAdapter.setData(node.getChild());
+                                recyclerView.scrollToPosition(0);
+                                resetLastRecyclerView();
+                            }
+                        }
+                    }
+                });
     }
 
     private void resetLastRecyclerView() {
@@ -615,8 +695,47 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     private void getLastData(Node node){
-        getLastData(node,null);
+        getLastData2(node,null);
     }
+
+    private void getLastData2(final Node node,final RecreateListener l){
+        lastListView.setTag(node.getId());
+        final String programSeries = node.getId();
+        String leftString = programSeries.substring(0, 2);
+        String rightString = programSeries.substring(programSeries.length() - 2, programSeries.length());
+        Request.INSTANCE.getContent()
+                .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,programSeries)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        String result = responseBody.string();
+                        Log.i(TAG, "seriesContent: "+result);
+                        SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
+                        if(seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0){
+                            node.setPrograms(seriesContent.data);
+                            for(Program p : seriesContent.data){
+                                p.setParent(node);
+                            }
+
+                            if (lastListView!=null&&lastListView.getTag().equals(node.getId())) {
+                                lastProgram = seriesContent.data;
+                                LastMenuRecyclerAdapter adapter =
+                                        (LastMenuRecyclerAdapter) lastListView.getAdapter();
+                                adapter.setData(lastProgram);
+                            }
+                            node.setRequest(true);
+
+                            if(l != null){
+                                l.success(null);
+                            }
+
+                        }
+                    }
+                });
+    }
+
 
     private void getLastData(final Node node, final RecreateListener l){
         lastListView.setTag(node.getId());
@@ -719,7 +838,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         });
     }
 
-    private void startAnim(AnimEntity entity) {
+    private void startAnim(MenuGroup.AnimEntity entity) {
         animList.add(entity);
         startAnim();
     }
@@ -733,7 +852,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
     }
 
-    private void startAnimator(final AnimEntity values) {
+    private void startAnimator(final MenuGroup.AnimEntity values) {
         ObjectAnimator translationX = new ObjectAnimator().ofFloat(this, "translationX", values
                 .x, values.toX);
         translationX.setDuration(400);
@@ -789,7 +908,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         for (int i = level; i > 0; i--) {
             MenuRecyclerView menuRecyclerView = getMenuRecyclerViewByLevel(i);
             MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerView.getAdapter();
-            adapter.setData(currentNode.getParent().getChildrens(), currentNode.getId());
+            adapter.setData(currentNode.getParent().getChild(), currentNode.getId());
             currentNode = currentNode.getParent();
         }
         MenuRecyclerView firstMenu = getMenuRecyclerViewByLevel(0);
@@ -877,7 +996,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     private ImageView createImageView(int resId) {
         ImageView image = new ImageView(getContext());
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout
+                .LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER_VERTICAL;
         image.setLayoutParams(layoutParams);
         image.setBackgroundResource(resId);

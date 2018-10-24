@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.menu.model;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +26,15 @@ public class Node {
 
 
     private Node parent;
-    private List<Node> childrens = new ArrayList<>();
+    private List<Node> child = new ArrayList<>();
     private List<Program> programs = new ArrayList<>();
     private LastMenuBean lastMenuBean;
     private boolean request = false;
 
     public boolean isLeaf(){
-        if(childrens != null && childrens.size() > 0)
+//        if(child != null && child.size() > 0)
             return false;
-        return true;
+//        return true;
     }
 
     public String getContentType() {
@@ -79,15 +81,22 @@ public class Node {
         this.parent = parent;
     }
 
-    public List<Node> getChildrens() {
-        if(childrens == null){
-            childrens = new ArrayList<>();
+    public List<Node> getChild() {
+        if(child == null){
+            child = new ArrayList<>();
         }
-        return childrens;
+        return child;
     }
 
-    public void setChildrens(List<Node> childrens) {
-        this.childrens = childrens;
+    public void setChild(List<Node> child) {
+        this.child = child;
+    }
+
+    public void addChild(List<LastNode> child){
+        for(LastNode lastNode : child){
+            lastNode.setParent(this);
+            this.child.add(lastNode);
+        }
     }
 
     public String getId() {
@@ -136,5 +145,36 @@ public class Node {
 
     public void setActionUri(String actionUri) {
         this.actionUri = actionUri;
+    }
+
+    public List<Node> getNodes(){
+        List<Node> result = new ArrayList<>();
+        result.add(this);
+        for(Node node : child){
+            result.addAll(node.getNodes());
+        }
+        return result;
+    }
+
+    public Node searchNode(String id){
+        Node result = null;
+        if(TextUtils.equals(getId(),id)){
+            return this;
+        }
+        for(Node node : child){
+            result = node.searchNode(id);
+            if(result != null){
+                return result;
+            }
+        }
+        return null;
+    }
+
+    public void initParent(){
+        for(Node node : child){
+            node.initParent();
+            node.setParent(this);
+            node.setPid(getId());
+        }
     }
 }

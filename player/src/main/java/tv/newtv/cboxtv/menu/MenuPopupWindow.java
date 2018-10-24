@@ -33,7 +33,7 @@ public class MenuPopupWindow extends PopupWindow{
         setBackgroundDrawable(new BitmapDrawable());
         showAtLocation(parent, Gravity.NO_GRAVITY,0,0);
 
-        menuGroupPresenter = new MenuGroupPresenter(context.getApplicationContext());
+        menuGroupPresenter = new MenuGroupPresenter2(context.getApplicationContext());
         rootView.addView(menuGroupPresenter.getRootView());
         return menuGroupPresenter;
     }

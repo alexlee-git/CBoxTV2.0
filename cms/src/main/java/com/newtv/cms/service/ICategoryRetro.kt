@@ -29,7 +29,7 @@ internal interface ICategoryRetro{
      * @param channelCode
      * @param categoryId
      */
-    @GET("api/v31/{appkey}/{channelCode}/categorytree/categorytree.json")
+    @GET("api/v31/{appkey}/{channelCode}/categorycontents/{left}/{right}/{contentID}.json")
     fun getCategoryContent(@Path("appkey") appkey: String,
                         @Path("channelCode") channelId: String,
                         @Path("left") left: String,
