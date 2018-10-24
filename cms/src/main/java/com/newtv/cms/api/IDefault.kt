@@ -10,5 +10,5 @@ import com.newtv.cms.DataObserver
  * 创建日期:          2018/10/18
  */
 interface IDefault : IService {
-    fun getJson(url: String,observer: DataObserver<String>)
+    fun getJson(url: String,observer: DataObserver<String>):Long
 }

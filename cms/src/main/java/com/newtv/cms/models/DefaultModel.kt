@@ -1,9 +1,6 @@
 package com.newtv.cms.models
 
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IDefault
 
 /**
@@ -19,9 +16,10 @@ internal class DefaultModel : BaseModel(), IDefault {
         return Model.MODEL_SEARCH
     }
 
-    override fun getJson(url: String, observer: DataObserver<String>) {
-        BuildExecuter<String>(Request.default.getJson(url), null)
-                .observer(observer)
+    override fun getJson(url: String, observer: DataObserver<String>): Long {
+        val executor: Executor<String> = buildExecutor<String>(Request.default.getJson(url), null)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 }

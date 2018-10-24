@@ -18,11 +18,11 @@ interface IContent : IService {
      * 获取内容详情
      */
     fun getContentInfo(appkey: String, channelId: String, contentId: String,
-                       observer: DataObserver<ModelResult<Content>>)
+                       observer: DataObserver<ModelResult<Content>>):Long
 
     /**
      * 获取节目集，节目合集，电视栏目，节目集合集等子集列表
      */
     fun getSubContent(appkey: String, channelId: String, contentId: String,
-                      observer: DataObserver<ModelResult<List<SubContent>>>)
+                      observer: DataObserver<ModelResult<List<SubContent>>>):Long
 }

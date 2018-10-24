@@ -21,6 +21,6 @@ interface INav : IService {
      * @param observer 回调
      */
     fun getNav(appkey: String, channelId: String, observer:
-    DataObserver<ModelResult<List<Nav>>>)
+    DataObserver<ModelResult<List<Nav>>>):Long
 
 }

@@ -2,10 +2,7 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IPage
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.Page
@@ -23,19 +20,22 @@ internal class PageModel : BaseModel(), IPage {
     }
 
     override fun getPage(appkey: String, channelId: String, pageId: String,
-                         observer: DataObserver<ModelResult<List<Page>>>) {
-        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+                         observer: DataObserver<ModelResult<List<Page>>>): Long {
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
-        if(TextUtils.isEmpty(pageId) ){
+        if (TextUtils.isEmpty(pageId)) {
             observer.onError("PageId is Empty")
-            return
+            return 0
         }
 
-        BuildExecuter<ModelResult<List<Page>>>(Request.page.getPageData(appkey, channelId, pageId),
-                object : TypeToken<ModelResult<List<Page>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<List<Page>>> =
+                buildExecutor<ModelResult<List<Page>>>(Request.page.getPageData(appkey,
+                        channelId, pageId),
+                        object : TypeToken<ModelResult<List<Page>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 }

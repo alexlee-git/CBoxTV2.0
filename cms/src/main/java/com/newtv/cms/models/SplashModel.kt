@@ -2,10 +2,7 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.ISplash
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.Splash
@@ -22,15 +19,19 @@ internal class SplashModel : BaseModel(), ISplash {
         return Model.MODEL_SPLASH
     }
 
-    override fun getList(appkey: String, channelId: String, observer: DataObserver<ModelResult<List<Splash>>>) {
-        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+    override fun getList(appkey: String, channelId: String, observer:
+    DataObserver<ModelResult<List<Splash>>>): Long {
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
 
-        BuildExecuter<ModelResult<List<Splash>>>(Request.splash.getList(appkey, channelId),
-                object : TypeToken<ModelResult<List<Splash>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<List<Splash>>> =
+                buildExecutor<ModelResult<List<Splash>>>(Request.splash.getList(appkey,
+                        channelId),
+                        object : TypeToken<ModelResult<List<Splash>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 }

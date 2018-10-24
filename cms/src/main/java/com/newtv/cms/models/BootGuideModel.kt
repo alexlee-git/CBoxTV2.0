@@ -1,9 +1,6 @@
 package com.newtv.cms.models
 
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IBootGuide
 
 /**
@@ -19,10 +16,12 @@ internal class BootGuideModel : BaseModel(), IBootGuide {
         return Model.MODEL_BOOTGUIDE;
     }
 
-    override fun getBootGuide(platform: String, observer: DataObserver<String>) {
-        BuildExecuter<String>(Request.bootGuide.getServerAddresses(platform), null)
-                .observer(observer)
+    override fun getBootGuide(platform: String, observer: DataObserver<String>): Long {
+        val executor: Executor<String> = buildExecutor<String>(Request.bootGuide.getServerAddresses
+        (platform), null)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
 }

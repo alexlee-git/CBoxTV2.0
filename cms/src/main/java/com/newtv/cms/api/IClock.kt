@@ -11,5 +11,5 @@ import com.newtv.cms.bean.Time
  * 创建日期:          2018/10/11
  */
 interface IClock : IService {
-    fun sync(observer: DataObserver<Time>)
+    fun sync(observer: DataObserver<Time>):Long
 }

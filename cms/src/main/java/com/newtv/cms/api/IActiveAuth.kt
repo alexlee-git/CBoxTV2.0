@@ -12,6 +12,6 @@ import com.newtv.libs.bean.AuthBean
  * 创建日期:          2018/10/11
  */
 interface IActiveAuth : IService {
-    fun active(bean: ActivateBean, observer: DataObserver<String>)
-    fun auth(bean: AuthBean, observer: DataObserver<String>)
+    fun active(bean: ActivateBean, observer: DataObserver<String>):Long
+    fun auth(bean: AuthBean, observer: DataObserver<String>):Long
 }

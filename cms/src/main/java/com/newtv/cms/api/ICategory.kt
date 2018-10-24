@@ -18,11 +18,11 @@ interface ICategory : IService {
      * 获取指定EPG下栏目树，包含一级栏目和二级栏目
      */
     fun getCategoryTree(appkey: String, channelCode: String,
-                        observer: DataObserver<ModelResult<List<CategoryTreeNode>>>)
+                        observer: DataObserver<ModelResult<List<CategoryTreeNode>>>):Long
 
     /**
      * 获取栏目下内容列表
      */
     fun getCategoryContent(appkey: String, channelCode: String, contentId: String,
-                           observer: DataObserver<ModelResult<List<SubContent>>>)
+                           observer: DataObserver<ModelResult<List<SubContent>>>):Long
 }

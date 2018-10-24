@@ -10,4 +10,5 @@ package com.newtv.cms.api
 interface IService {
     fun stop()
     fun destroy()
+    fun cancel(id:Long)
 }

@@ -2,10 +2,7 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IContent
 import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.ModelResult
@@ -24,43 +21,51 @@ internal class ContentModel : BaseModel(), IContent {
             appkey: String,
             channelId: String,
             contentId: String,
-            observer: DataObserver<ModelResult<List<SubContent>>>) {
+            observer: DataObserver<ModelResult<List<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
 
         if (TextUtils.isEmpty(contentId) || contentId.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.content.getSubInfo(appkey, channelId, left, right,
-                contentId), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<List<SubContent>>> =
+                buildExecutor<ModelResult<List<SubContent>>>(Request.content.getSubInfo
+                (appkey,
+                        channelId, left, right,
+                        contentId), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
 
     override fun getContentInfo(appkey: String,
                                 channelId: String,
                                 contentId: String,
-                                observer: DataObserver<ModelResult<Content>>) {
+                                observer: DataObserver<ModelResult<Content>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
         if (TextUtils.isEmpty(contentId) || contentId.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
-        BuildExecuter<ModelResult<Content>>(Request.content.getInfo(appkey, channelId, left, right,
+        val executor: Executor<ModelResult<Content>> = buildExecutor<ModelResult<Content>>(Request
+                .content.getInfo(appkey,
+                channelId, left,
+                right,
                 contentId), object : TypeToken<ModelResult<Content>>() {}.type)
-                .observer(observer)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
 

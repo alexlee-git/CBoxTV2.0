@@ -18,16 +18,19 @@ internal
  */
 class NavModel : BaseModel(), INav {
     override fun getNav(appkey: String, channelId: String,
-                        observer: DataObserver<ModelResult<List<Nav>>>) {
-        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+                        observer: DataObserver<ModelResult<List<Nav>>>): Long {
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
 
-        BuildExecuter<ModelResult<List<Nav>>>(Request.nav.getNavInfo(appkey, channelId),
-                object : TypeToken<ModelResult<List<Nav>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<List<Nav>>> =
+                buildExecutor<ModelResult<List<Nav>>>(Request.nav.getNavInfo(appkey,
+                        channelId),
+                        object : TypeToken<ModelResult<List<Nav>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getType(): String {

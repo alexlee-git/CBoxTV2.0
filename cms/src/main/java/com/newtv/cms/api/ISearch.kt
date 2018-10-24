@@ -1,8 +1,10 @@
 package com.newtv.cms.api
 
 import com.newtv.cms.DataObserver
+import com.newtv.cms.Executor
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
+import java.util.ArrayList
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -25,6 +27,6 @@ interface ISearch : IService {
             page: String? = "",
             rows: String? = "",
             keywordType: String? = "",
-            observer: DataObserver<ModelResult<List<SubContent>>>
-    )
+            observer: DataObserver<ModelResult<ArrayList<SubContent>>>
+    ):Long
 }

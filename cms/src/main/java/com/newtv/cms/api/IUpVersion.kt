@@ -12,6 +12,6 @@ import com.newtv.cms.bean.UpVersion
  * 创建日期:          2018/10/11
  */
 interface IUpVersion : IService {
-    fun getUpVersion(map: Map<String, String>, observer: DataObserver<UpVersion>)
-    fun getIsOriented(map: Map<String, String>, observer: DataObserver<Oriented>)
+    fun getUpVersion(map: Map<String, String>, observer: DataObserver<UpVersion>):Long
+    fun getIsOriented(map: Map<String, String>, observer: DataObserver<Oriented>):Long
 }

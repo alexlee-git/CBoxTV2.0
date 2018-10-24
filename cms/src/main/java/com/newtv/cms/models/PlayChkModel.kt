@@ -1,10 +1,7 @@
 package com.newtv.cms.models
 
 import com.google.gson.Gson
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IPlayChk
 import com.newtv.cms.bean.ChkRequest
 import okhttp3.MediaType
@@ -19,14 +16,16 @@ import okhttp3.RequestBody
  */
 internal class PlayChkModel : BaseModel(), IPlayChk {
 
-    override fun check(request: ChkRequest, observer: DataObserver<String>) {
+    override fun check(request: ChkRequest, observer: DataObserver<String>): Long {
         val gson = Gson()
         val requestJson = gson.toJson(request)
         val requestBody = RequestBody.create(MediaType.parse("Content-Type, application/json"),
                 requestJson)
-        BuildExecuter<String>(Request.playChk.getCheckResult(requestBody), null)
-                .observer(observer)
+        val executor: Executor<String> = buildExecutor<String>(Request.playChk.getCheckResult
+        (requestBody), null)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
 
     }
 

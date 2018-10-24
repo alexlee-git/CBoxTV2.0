@@ -1,10 +1,7 @@
 package com.newtv.cms.models
 
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IUpVersion
 import com.newtv.cms.bean.Oriented
 import com.newtv.cms.bean.UpVersion
@@ -17,16 +14,22 @@ import com.newtv.cms.bean.UpVersion
  * 创建日期:          2018/10/11
  */
 internal class UpVersionModel : BaseModel(), IUpVersion {
-    override fun getUpVersion(map: Map<String, String>, observer: DataObserver<UpVersion>) {
-        BuildExecuter<UpVersion>(Request.upVersion.getUpVersion(map), object : TypeToken<UpVersion>() {}.type)
-                .observer(observer)
+    override fun getUpVersion(map: Map<String, String>, observer: DataObserver<UpVersion>): Long {
+        val executor: Executor<UpVersion> = buildExecutor<UpVersion>(Request.upVersion.getUpVersion
+        (map), object :
+                TypeToken<UpVersion>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
-    override fun getIsOriented(map: Map<String, String>, observer: DataObserver<Oriented>) {
-        BuildExecuter<Oriented>(Request.upVersion.getIsOriented(map), object : TypeToken<Oriented>() {}.type)
-                .observer(observer)
+    override fun getIsOriented(map: Map<String, String>, observer: DataObserver<Oriented>): Long {
+        val executor: Executor<Oriented> =
+                buildExecutor<Oriented>(Request.upVersion.getIsOriented(map),
+                        object : TypeToken<Oriented>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getType(): String {

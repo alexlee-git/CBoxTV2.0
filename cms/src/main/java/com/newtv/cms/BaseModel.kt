@@ -3,7 +3,8 @@ package com.newtv.cms
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import java.lang.reflect.Type
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -14,11 +15,21 @@ import java.util.concurrent.ConcurrentLinkedQueue
  */
 internal abstract class BaseModel {
 
-    private val executors: ConcurrentLinkedQueue<Executor<*>> = ConcurrentLinkedQueue()
+    private val executors: ConcurrentMap<Long, Executor<*>> = ConcurrentHashMap()
 
     fun stop() {
-        for (iterator: Executor<*> in executors.iterator()) {
-            iterator.cancel()
+        synchronized(executors){
+            for (iterator: MutableMap.MutableEntry<Long, Executor<*>> in executors.iterator()) {
+                iterator.value.cancel()
+            }
+        }
+    }
+
+    fun cancel(id: Long) {
+        synchronized(executors) {
+            if (executors.containsKey(id)) {
+                executors[id]?.cancel()
+            }
         }
     }
 
@@ -33,13 +44,13 @@ internal abstract class BaseModel {
 
     abstract fun getType(): String
 
-    fun <T> BuildExecuter(observable: Observable<ResponseBody>, type: Type?): Executor<T> {
+    fun <T> buildExecutor(observable: Observable<ResponseBody>, type: Type?): Executor<T> {
         val executor: Executor<T> = Executor(observable, type, object : Executor.IExecutor<T> {
             override fun onCancel(executor: Executor<T>) {
-                executors.remove(executor)
+                executors.remove(executor.getID())
             }
         })
-        executors.add(executor)
+        executors[executor.getID()] = executor
         return executor
     }
 
