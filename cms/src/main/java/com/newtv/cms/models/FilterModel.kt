@@ -2,10 +2,7 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IFilter
 import com.newtv.cms.bean.FilterItem
 import com.newtv.cms.bean.ModelResult
@@ -23,19 +20,22 @@ internal class FilterModel : BaseModel(), IFilter {
     }
 
     override fun getFilterKeyWords(appkey: String, channelId: String, categoryId: String,
-                                   observer: DataObserver<ModelResult<List<FilterItem>>>) {
-        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)){
+                                   observer: DataObserver<ModelResult<List<FilterItem>>>): Long {
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
-        if(TextUtils.isEmpty(categoryId)){
+        if (TextUtils.isEmpty(categoryId)) {
             observer.onError("CategoryId is Empty")
-            return
+            return 0
         }
-        BuildExecuter<ModelResult<List<FilterItem>>>(Request.filter.getFilterKeyWords(appkey, channelId,
-                categoryId), object : TypeToken<ModelResult<List<FilterItem>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<List<FilterItem>>> =
+                buildExecutor(Request.filter.getFilterKeyWords
+                (appkey, channelId,
+                        categoryId), object : TypeToken<ModelResult<List<FilterItem>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
 }

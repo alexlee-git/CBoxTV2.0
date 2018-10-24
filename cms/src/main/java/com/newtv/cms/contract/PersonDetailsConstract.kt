@@ -5,7 +5,6 @@ import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
 import com.newtv.cms.ICmsView
-import com.newtv.cms.api.IContent
 import com.newtv.cms.api.IPerson
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
@@ -38,7 +37,7 @@ class PersonDetailsConstract {
 
             content?.getPersonTvList(Libs.get().appKey, Libs.get().channelId, uuid, object
                 : DataObserver<ModelResult<ArrayList<SubContent>>> {
-                override fun onResult(result: ModelResult<ArrayList<SubContent>>) {
+                override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.setPersonProgramList(result.data)
                     } else {
@@ -57,7 +56,7 @@ class PersonDetailsConstract {
 
             content?.getPersonProgramList(Libs.get().appKey, Libs.get().channelId, uuid, object
                 : DataObserver<ModelResult<ArrayList<SubContent>>> {
-                override fun onResult(result: ModelResult<ArrayList<SubContent>>) {
+                override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.setPersonTvList(result.data)
                     } else {

@@ -1,6 +1,7 @@
 package com.newtv.cms
 
 import com.google.gson.Gson
+import com.newtv.libs.util.LogUtils
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,10 +20,20 @@ import java.util.concurrent.TimeUnit
  */
 internal class Executor<T>(val observable: Observable<ResponseBody>,
                            val type: Type?,
-                           val callback: IExecutor<T>?
-) {
+                           val model: String,
+                           val callback: IExecutor<T>?) {
 
+    private var mID: Long = 0;
     var isCancel: Boolean = false //是否已经退出请求
+
+    init {
+        mID = System.currentTimeMillis()
+        LogUtils.d(Companion.TAG, "build $TAG from $model id=$mID")
+    }
+
+    internal fun getID(): Long {
+        return mID
+    }
 
     interface IExecutor<T> {
         fun onCancel(executor: Executor<T>)
@@ -31,7 +42,7 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
     var mObserver: DataObserver<T>? = null
     var mDisposable: Disposable? = null
 
-    fun observer(observer: DataObserver<T>): Executor<T> {
+    internal fun observer(observer: DataObserver<T>): Executor<T> {
         mObserver = observer
         return this
     }
@@ -44,10 +55,12 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
         }
         mObserver = null
         callback?.onCancel(this)
+
+        LogUtils.d(Companion.TAG, "cancel $TAG from=$model id=$mID")
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun execute() {
+    internal fun execute() {
         observable
                 .retryWhen(RetryWithDelay(3, 2, TimeUnit.SECONDS))
                 .subscribeOn(Schedulers.io())
@@ -72,9 +85,9 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                         try {
                             if (type != null) {
                                 val result = Gson().fromJson<T>(t.string(), type)
-                                mObserver?.onResult(result)
+                                mObserver?.onResult(result, mID)
                             } else {
-                                mObserver?.onResult(t.string() as T)
+                                mObserver?.onResult(t.string() as T, mID)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -82,5 +95,9 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                         }
                     }
                 })
+    }
+
+    companion object {
+        const val TAG = "Executor"
     }
 }

@@ -27,7 +27,9 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
@@ -68,6 +70,20 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
     public SuggestView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initalize();
+    }
+
+    public static String getTitleByType(int type) {
+        switch (type) {
+            case TYPE_COLUMN_FIGURES:
+                return "名人堂";
+            case TYPE_COLUMN_SEARCH:
+            case TYPE_COLUMN_SUGGEST:
+                return "相关推荐";
+            case TYPE_PERSON_FIGURES:
+                return "TA 相关的名人";
+            default:
+                return "内容列表";
+        }
     }
 
     @Override
@@ -131,7 +147,9 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                 break;
             case TYPE_COLUMN_SEARCH:
                 SearchContract.SearchCondition searchCondition = SearchContract.SearchCondition
+                        .Companion
                         .Builder()
+                        .setRows("6")
                         .setContentType(content.getContentType())
                         .setVideoType(content.getVideoType());
                 mSearchPresenter.search(searchCondition);
@@ -145,7 +163,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
 
     }
 
-    private void buildUI(List<SubContent> infos,int type) {
+    private void buildUI(List<SubContent> infos, int type) {
         switch (type) {
             case EpisodeHelper.TYPE_PROGRAME_XG:
                 buildRecycleView(infos);
@@ -154,7 +172,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             case TYPE_COLUMN_SUGGEST:
             case TYPE_COLUMN_FIGURES:
             case TYPE_PERSON_FIGURES:
-                buildListView(infos,type);
+                buildListView(infos, type);
                 break;
         }
 
@@ -181,21 +199,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
         return infos.get(index);
     }
 
-    public static String getTitleByType(int type) {
-        switch (type) {
-            case TYPE_COLUMN_FIGURES:
-                return "名人堂";
-            case TYPE_COLUMN_SEARCH:
-            case TYPE_COLUMN_SUGGEST:
-                return "相关推荐";
-            case TYPE_PERSON_FIGURES:
-                return "TA 相关的名人";
-            default:
-                return "内容列表";
-        }
-    }
-
-    private void buildListView(List<SubContent> infos,int type) {
+    private void buildListView(List<SubContent> infos, int type) {
         if (infos.size() > 0) {
             removeAllViews();
 
@@ -310,33 +314,33 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
     }
 
     @Override
-    public void columnSuggestResult(List<SubContent> result) {
+    public void columnSuggestResult(ArrayList<SubContent> result) {
         if (result == null || result.size() <= 0) {
             onLoadError("获取结果为空");
             return;
         }
 
-        buildUI(result,TYPE_COLUMN_SUGGEST);
+        buildUI(result, TYPE_COLUMN_SUGGEST);
     }
 
     @Override
-    public void columnFiguresResult(List<SubContent> result) {
+    public void columnFiguresResult(ArrayList<SubContent> result) {
         if (result == null || result.size() <= 0) {
             onLoadError("获取结果为空");
             return;
         }
 
-        buildUI(result,TYPE_COLUMN_FIGURES);
+        buildUI(result, TYPE_COLUMN_FIGURES);
     }
 
     @Override
-    public void columnPersonFiguresResult(List<SubContent> result) {
+    public void columnPersonFiguresResult(ArrayList<SubContent> result) {
         if (result == null || result.size() <= 0) {
             onLoadError("获取结果为空");
             return;
         }
 
-        buildUI(result,TYPE_PERSON_FIGURES);
+        buildUI(result, TYPE_PERSON_FIGURES);
     }
 
     @Override
@@ -350,13 +354,13 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
     }
 
     @Override
-    public void searchResult(List<SubContent> result) {
+    public void searchResult(long requestID, @Nullable ArrayList<SubContent> result) {
         if (result == null || result.size() <= 0) {
             onLoadError("获取结果为空");
             return;
         }
 
-        buildUI(result,TYPE_COLUMN_SEARCH);
+        buildUI(result, TYPE_COLUMN_SEARCH);
     }
 
     private static class AiyaAdapter extends RecyclerView.Adapter<AiyaViewHolder> {

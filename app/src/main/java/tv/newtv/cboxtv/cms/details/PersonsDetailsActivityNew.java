@@ -31,13 +31,12 @@ import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
 
 /**
  * Created by linzy on 2018/4/2.
- *
  */
 
 /**
  * 人物详情页(新开发)
  */
-public class PersonsDetailsActivityNew extends BaseActivity implements View.OnFocusChangeListener {
+public class PersonsDetailsActivityNew extends BaseActivity {
 
     @BindView(R.id.person_head)
     PersonDetailHeadView personDetailHeadView;
@@ -68,14 +67,17 @@ public class PersonsDetailsActivityNew extends BaseActivity implements View.OnFo
 
     private void requestData() {
         hostProgramView.setHorizontalItemLayout(R.layout.program_horizontal_normal_land_layout);
-        hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,contentUUID,hostProgramView);// 获取主持列表
+        hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
+                contentUUID, hostProgramView);// 获取主持列表
 
         taProgramView.setHorizontalItemLayout(R.layout.program_horizontal_normal_land_layout);
-        taProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_RELATION_LV,contentUUID,taProgramView);// 获取相关节目列表
+        taProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_RELATION_LV,
+                contentUUID, taProgramView);// 获取相关节目列表
 
         Content content = new Content();
         content.setContentID(contentUUID);
-        taRelationPerson.setContentUUID(SuggestView.TYPE_PERSON_FIGURES,content,taRelationPerson); //获取TA相关的名人数据
+        taRelationPerson.setContentUUID(SuggestView.TYPE_PERSON_FIGURES, content,
+                taRelationPerson); //获取TA相关的名人数据
     }
 
     private void init() {
@@ -92,14 +94,16 @@ public class PersonsDetailsActivityNew extends BaseActivity implements View.OnFo
         hostProgramView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {
-                JumpUtil.detailsJumpActivity(PersonsDetailsActivityNew.this, data.getContentType(), data.getContentID());
+                JumpUtil.detailsJumpActivity(PersonsDetailsActivityNew.this, data.getContentType
+                        (), data.getContentID());
             }
         });
 
         taProgramView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {
-                JumpUtil.detailsJumpActivity(getApplicationContext(), data.getContentType(), data.getContentID());
+                JumpUtil.detailsJumpActivity(getApplicationContext(), data.getContentType(), data
+                        .getContentID());
             }
         });
 
@@ -108,6 +112,7 @@ public class PersonsDetailsActivityNew extends BaseActivity implements View.OnFo
 
     @Override
     protected void onDestroy() {
+
         ViewGroup viewGroup = findViewById(R.id.id_scroll_view);
         if (viewGroup != null) {
             int size = viewGroup.getChildCount();
@@ -130,19 +135,7 @@ public class PersonsDetailsActivityNew extends BaseActivity implements View.OnFo
         super.onDestroy();
     }
 
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-        switch (v.getId()) {
-            case R.id.person_detail_ad_fl:
-                if (hasFocus) {
-                    ScaleUtils.getInstance().onItemGetFocus(v);
-                } else {
-                    ScaleUtils.getInstance().onItemLoseFocus(v);
-                }
-                break;
-        }
-    }
-
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (interruptKeyEvent(event)) {

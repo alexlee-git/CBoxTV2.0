@@ -2,14 +2,11 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IPerson
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
-import java.util.ArrayList
+import java.util.*
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -23,54 +20,69 @@ internal class PersonModel : BaseModel(), IPerson {
         return Model.MODEL_PERSON
     }
 
-    override fun getPersonTvList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<ArrayList<SubContent>>>) {
+    override fun getPersonTvList(appkey: String, channelId: String, UUID: String, observer:
+    DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
         if (TextUtils.isEmpty(UUID) || UUID.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
-        BuildExecuter<ModelResult<ArrayList<SubContent>>>(Request.person.getPersonTvList(appkey, channelId,
-                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> =
+                buildExecutor(Request.person
+                        .getPersonTvList
+                        (appkey, channelId,
+                                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
-    override fun getPersonProgramList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<ArrayList<SubContent>>>) {
+    override fun getPersonProgramList(appkey: String, channelId: String, UUID: String, observer:
+    DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
         if (TextUtils.isEmpty(UUID) || UUID.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
-        BuildExecuter<ModelResult<ArrayList<SubContent>>>(Request.person.getPersonProgramList(appkey, channelId,
-                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> =
+                buildExecutor(Request.person
+                        .getPersonProgramList
+                        (appkey, channelId,
+                                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
-    override fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer: DataObserver<ModelResult<ArrayList<SubContent>>>) {
+    override fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer:
+    DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
         if (TextUtils.isEmpty(UUID) || UUID.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
-        BuildExecuter<ModelResult<ArrayList<SubContent>>>(Request.person.getPersonFigureList(appkey, channelId,
-                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> =
+                buildExecutor(Request.person
+                        .getPersonFigureList
+                        (appkey, channelId,
+                                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 }

@@ -1,13 +1,11 @@
 package com.newtv.cms.models
 
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.ISearch
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
+import java.util.*
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -17,7 +15,7 @@ import com.newtv.cms.bean.SubContent
  * 创建日期:          2018/10/16
  */
 internal class SearchModel : BaseModel(), ISearch {
-    
+
     override fun search(
             appKey: String,
             channelid: String,
@@ -31,12 +29,14 @@ internal class SearchModel : BaseModel(), ISearch {
             page: String?,
             rows: String?,
             keywordType: String?,
-            observer: DataObserver<ModelResult<List<SubContent>>>) {
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.search.search(appKey, channelid,
-                categoryId, contentType, videoType, videoClass, area, year, keyword, page, rows,
-                keywordType), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+            observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> = buildExecutor(Request.search
+                .search(appKey, channelid,
+                        categoryId, contentType, videoType, videoClass, area, year, keyword, page, rows,
+                        keywordType), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getType(): String {

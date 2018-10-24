@@ -208,7 +208,7 @@ public class VodContract {
                 ChkRequest request = createVodRequestBean(seriesID, albumId);
                 playChk.check(request, new DataObserver<String>() {
                     @Override
-                    public void onResult(String result) {
+                    public void onResult(String result, long requestCode) {
                         if (TextUtils.isEmpty(result)) {
                             LogUtils.i(TAG, "onResponse: responseBody==null");
                             if (!NetworkManager.getInstance().isConnected()) {

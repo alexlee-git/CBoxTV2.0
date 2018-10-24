@@ -18,18 +18,18 @@ interface IPerson : IService {
      * 获取主持人主持的电视栏目列表
      */
     fun getPersonTvList(appkey: String, channelId: String, UUID: String, observer:
-    DataObserver<ModelResult<ArrayList<SubContent>>>)
+    DataObserver<ModelResult<ArrayList<SubContent>>>):Long
 
 
     /**
      * 获取主持人相关的节目
      */
     fun getPersonProgramList(appkey: String, channelId: String, UUID: String, observer:
-    DataObserver<ModelResult<ArrayList<SubContent>>>)
+    DataObserver<ModelResult<ArrayList<SubContent>>>):Long
 
     /**
      * 获取主持人相关的主持人
      */
     fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer:
-    DataObserver<ModelResult<ArrayList<SubContent>>>)
+    DataObserver<ModelResult<ArrayList<SubContent>>>):Long
 }

@@ -28,7 +28,7 @@ class DefaultConstract {
         override fun request(url: String, extends: HashMap<*, *>) {
             val default: IDefault? = getService<IDefault>(SERVICE_DEFAULT);
             default?.getJson(url, object : DataObserver<String> {
-                override fun onResult(result: String) {
+                override fun onResult(result: String, requestCode: Long) {
                     view?.onResult(result,extends)
                 }
 

@@ -441,7 +441,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                         if (code == 0) {
                                                             LogUploadUtils.uploadLog(Constant
                                                                     .LOG_NODE_COLLECT, "0," +
-                                                                    mInfo.getContentUUID());
+                                                                    mInfo.getContentID());
                                                             Toast.makeText(getContext()
                                                                             .getApplicationContext(),
                                                                     R.string.collect_success,
@@ -684,7 +684,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             LiveParam param = CmsUtil.isLiveTime(mInfo.getLiveLoopParam());
             if (param != null) {
                 //需要直播
-                playerView.playLiveVideo(mInfo.getContentUUID(), param.getLiveParam(), mInfo
+                playerView.playLiveVideo(mInfo.getContentID(), param.getLiveParam(), mInfo
                         .getTitle(), 0, 0);
                 timer();
                 isPlayLive = true;

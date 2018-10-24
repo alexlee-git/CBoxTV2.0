@@ -1,10 +1,7 @@
 package com.newtv.cms.models
 
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.IClock
 import com.newtv.cms.bean.Time
 
@@ -17,10 +14,13 @@ import com.newtv.cms.bean.Time
  */
 internal class ClockModel : BaseModel(), IClock {
 
-    override fun sync(observer: DataObserver<Time>) {
-        BuildExecuter<Time>(Request.clock.getClockData(), object : TypeToken<Time>() {}.type)
-                .observer(observer)
+    override fun sync(observer: DataObserver<Time>): Long {
+        val executor: Executor<Time> = buildExecutor(Request.clock.getClockData(), object :
+                TypeToken<Time>() {}
+                .type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getType(): String {

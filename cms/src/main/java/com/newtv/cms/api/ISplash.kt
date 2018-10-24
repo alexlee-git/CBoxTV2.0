@@ -15,5 +15,5 @@ interface ISplash : IService {
     /**
      * 获取开机图片列表
      */
-    fun getList(appkey:String,channelId:String,observer: DataObserver<ModelResult<List<Splash>>>)
+    fun getList(appkey:String,channelId:String,observer: DataObserver<ModelResult<List<Splash>>>):Long
 }

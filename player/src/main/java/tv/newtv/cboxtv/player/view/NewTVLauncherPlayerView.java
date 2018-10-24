@@ -1272,29 +1272,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * 保存播放记录  在播放单节目和节目集的时候调用
      */
     private void addHistory() {
+        if (isLiving()) return;
+
         if (mProgramSeriesInfo == null) {
             return;
         }
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(getIndex(),
                 getCurrentPosition(), mProgramSeriesInfo.getContentUUID()));
 
+        Player.get().onFinish(mProgramSeriesInfo, getIndex(), getCurrentPosition());
 
-        Player.get().onFinish(mProgramSeriesInfo, getCurrentPosition(), getDuration());
-
-//        Log.i(TAG, "addHistory: " + getIndex() + ",position:" + getCurrentPosition());
-//        DBUtil.addHistory(mProgramSeriesInfo, getIndex(), getCurrentPosition(), new
-//                DBCallback<String>() {
-//                    @Override
-//                    public void onResult(int code, String result) {
-//                        if (code == 0) {
-//                            if (mProgramSeriesInfo != null) {
-//                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
-//                                        mProgramSeriesInfo.getContentUUID());//添加历史记录
-//                            }
-//                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-//                        }
-//                    }
-//                });
     }
 
     public boolean isADPlaying() {

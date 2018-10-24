@@ -301,7 +301,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
                     if (playInfo == null) {
                         playInfo = new PlayInfo();
                     }
-                    playInfo.ContentUUID = info.getContentUUID();
+                    playInfo.ContentUUID = info.getContentID();
                 } else {
                     videoPlayerView.showProgramError();
                 }

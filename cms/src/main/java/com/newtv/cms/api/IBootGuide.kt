@@ -10,5 +10,5 @@ import com.newtv.cms.DataObserver
  * 创建日期:          2018/10/11
  */
 interface IBootGuide : IService {
-    fun getBootGuide(platform: String, observer: DataObserver<String>);
+    fun getBootGuide(platform: String, observer: DataObserver<String>):Long
 }

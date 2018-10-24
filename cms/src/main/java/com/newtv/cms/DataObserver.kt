@@ -8,6 +8,6 @@ package com.newtv.cms
  * 创建日期:          2018/9/26
  */
 interface DataObserver<T> {
-    fun onResult(result: T)
+    fun onResult(result: T, requestCode: Long)
     fun onError(desc: String?)
 }

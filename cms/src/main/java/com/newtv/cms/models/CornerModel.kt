@@ -2,10 +2,7 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.ICorner
 import com.newtv.cms.bean.Corner
 import com.newtv.cms.bean.ModelResult
@@ -21,15 +18,17 @@ internal class CornerModel : BaseModel(), ICorner {
     override fun getCorner(
             appkey: String,
             channelCode: String,
-            observer: DataObserver<ModelResult<List<Corner>>>) {
-        if(TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)){
+            observer: DataObserver<ModelResult<List<Corner>>>): Long {
+        if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
-        BuildExecuter<ModelResult<List<Corner>>>(Request.corner.getCorner(appkey, channelCode),
-                object : TypeToken<ModelResult<List<Corner>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<List<Corner>>> =
+                buildExecutor(Request.corner.getCorner(appkey, channelCode),
+                        object : TypeToken<ModelResult<List<Corner>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getType(): String {

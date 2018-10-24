@@ -109,7 +109,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
         if (mProgramInfo != null) {
             textTitle.setText(mProgramInfo.getSubTitle());
             LiveInfo liveInfo = new LiveInfo();
-            liveInfo.setContentUUID(mProgramInfo.getContentUUID());
+            liveInfo.setContentUUID(mProgramInfo.getContentID());
             liveInfo.setLiveUrl(mProgramInfo.getLiveUrl());
             liveInfo.setPlayTimeInfo(CmsLiveUtil.formatToSeconds(mProgramInfo.getPlayStartTime())
                     , CmsLiveUtil.formatToSeconds(mProgramInfo.getPlayEndTime()));
@@ -203,11 +203,11 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     }
 
     private void preData() {
-        if (mProgramInfo == null || TextUtils.isEmpty(mProgramInfo.getContentUUID()) || info !=
+        if (mProgramInfo == null || TextUtils.isEmpty(mProgramInfo.getContentID()) || info !=
                 null)
             return;
 
-        PlayInfoUtil.getPageInfo(mProgramInfo.getContentUUID(), new PlayInfoUtil
+        PlayInfoUtil.getPageInfo(mProgramInfo.getContentID(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
             @Override
             public void onResult(Content info) {

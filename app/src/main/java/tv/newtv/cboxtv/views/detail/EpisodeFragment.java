@@ -53,6 +53,8 @@ public class EpisodeFragment extends Fragment {
     private boolean hasAD = false;
     private ADHelper.AD.ADItem adItem;
     private int pageSize = DEFAULT_SIZE;
+    private int mLayoutId = R.layout.episode_page_item;
+    private String mItemTag = "id_module_8_view";
 
     public void destroy() {
         mData = null;
@@ -71,7 +73,12 @@ public class EpisodeFragment extends Fragment {
         viewHolders = null;
     }
 
-    public void clear(){
+    public void setLayout(int layout, String itemTag) {
+        mLayoutId = layout;
+        mItemTag = itemTag;
+    }
+
+    public void clear() {
         currentIndex = -1;
     }
 
@@ -105,7 +112,7 @@ public class EpisodeFragment extends Fragment {
     }
 
     public void setSelectIndex(final int index) {
-        Log.d(TAG,"setSelectIndex index="+index);
+        Log.d(TAG, "setSelectIndex index=" + index);
         currentIndex = index;
         if (contentView != null && currentIndex >= 0 && viewHolders != null && !viewHolders
                 .isEmpty()) {
@@ -136,47 +143,47 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
-    private void updateUI(){
-        if(mData != null && contentView != null){
+    private void updateUI() {
+        if (mData != null && contentView != null) {
             Resources resources = getContext().getResources();
-            for(int index = 0;index < DEFAULT_SIZE;index++){
-                String model = "id_module_8_view" + (index + 1);
-                int id = resources.getIdentifier(model,"id",getContext().getPackageName());
+            for (int index = 0; index < DEFAULT_SIZE; index++) {
+                String model = mItemTag + (index + 1);
+                int id = resources.getIdentifier(model, "id", getContext().getPackageName());
                 View view = contentView.findViewById(id);
-                if(index == 0){
+                if (index == 0) {
                     firstView = view;
-                }else if(index == DEFAULT_SIZE - 1){
+                } else if (index == DEFAULT_SIZE - 1) {
                     lastView = view;
                 }
 
-                if(hasAD){
-                    if(index == 0){
-                        if(view != null){
-                            updateHolder(view,adItem);
+                if (hasAD) {
+                    if (index == 0) {
+                        if (view != null) {
+                            updateHolder(view, adItem);
                             view.setVisibility(View.VISIBLE);
                         }
-                    }else {
-                        updateItem(view,index-1);
+                    } else {
+                        updateItem(view, index - 1);
                     }
-                }else {
-                    updateItem(view,index);
+                } else {
+                    updateItem(view, index);
                 }
             }
         }
     }
 
-    private<T> void updateHolder(View view,T t){
+    private <T> void updateHolder(View view, T t) {
         BaseHolder holder = null;
-        if(view.getTag(R.id.id_view_tag) ==  null){
+        if (view.getTag(R.id.id_view_tag) == null) {
             holder = new ADHolder(view);
             view.setTag(R.id.id_view_tag, holder);
-        }else {
+        } else {
             holder = (ADHolder) view.getTag(R.id.id_view_tag);
         }
         holder.update(t);
     }
 
-    private void updateItem(View view, int index){
+    private void updateItem(View view, int index) {
         SubContent item = getData(index);
         if (item != null) {
             if (view != null) {
@@ -201,7 +208,7 @@ public class EpisodeFragment extends Fragment {
     }
 
     public void setAdItem(ADHelper.AD.ADItem adItem) {
-        if(adItem != null && !TextUtils.isEmpty(adItem.AdUrl)){
+        if (adItem != null && !TextUtils.isEmpty(adItem.AdUrl)) {
             this.pageSize = HAS_AD_SIZE;
             setHasAD(true);
             this.adItem = adItem;
@@ -217,7 +224,7 @@ public class EpisodeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
         if (contentView == null) {
-            contentView = inflater.inflate(R.layout.episode_page_item, null, false);
+            contentView = inflater.inflate(mLayoutId, null, false);
         }
         return contentView;
     }
@@ -229,7 +236,7 @@ public class EpisodeFragment extends Fragment {
         updateUI();
     }
 
-    private class ViewHolder extends BaseHolder<SubContent>{
+    private class ViewHolder extends BaseHolder<SubContent> {
         int mIndex;
 
         ViewHolder(View view, int postion) {
@@ -245,8 +252,8 @@ public class EpisodeFragment extends Fragment {
 
         @Override
         protected void onFocusChange(View view, boolean b) {
-            View viewMove  = view.findViewWithTag("tag_poster_title");
-            if (viewMove!=null){
+            View viewMove = view.findViewWithTag("tag_poster_title");
+            if (viewMove != null) {
                 viewMove.setSelected(b);
             }
         }
@@ -272,7 +279,8 @@ public class EpisodeFragment extends Fragment {
                     if (!TextUtils.isEmpty(programsInfo.getHImage())) {
                         Picasso.get()
                                 .load(programsInfo.getHImage())
-                                .transform(new PosterCircleTransform(LauncherApplication.AppContext, 4))
+                                .transform(new PosterCircleTransform(LauncherApplication
+                                        .AppContext, 4))
                                 .placeholder(R.drawable.focus_384_216)
                                 .error(R.drawable.focus_384_216)
                                 .resize(384, 216)
@@ -281,7 +289,8 @@ public class EpisodeFragment extends Fragment {
                         Picasso.get()
                                 .load(R.drawable.focus_384_216)
                                 .resize(384, 216)
-                                .transform(new PosterCircleTransform(LauncherApplication.AppContext, 4))
+                                .transform(new PosterCircleTransform(LauncherApplication
+                                        .AppContext, 4))
                                 .into(PosterView);
                     }
                 }
@@ -296,16 +305,18 @@ public class EpisodeFragment extends Fragment {
     }
 
 
-    private class ADHolder extends BaseHolder<ADHelper.AD.ADItem>{
+    private class ADHolder extends BaseHolder<ADHelper.AD.ADItem> {
 
-        public ADHolder(View view) {
+        ADHolder(View view) {
             super(view);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(mData != null && !TextUtils.isEmpty(mData.eventContent)){
-                        AdEventContent adEventContent = GsonUtil.fromjson(mData.eventContent, AdEventContent.class);
-                        JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
+                    if (mData != null && !TextUtils.isEmpty(mData.eventContent)) {
+                        AdEventContent adEventContent = GsonUtil.fromjson(mData.eventContent,
+                                AdEventContent.class);
+                        JumpUtil.activityJump(getContext(), adEventContent.actionType,
+                                adEventContent.contentType,
                                 adEventContent.contentUUID, adEventContent.actionURI);
                     }
                 }
@@ -313,8 +324,8 @@ public class EpisodeFragment extends Fragment {
         }
 
         @Override
-        public void update(ADHelper.AD.ADItem adItem){
-            if(!TextUtils.isEmpty(adItem.AdUrl)){
+        public void update(ADHelper.AD.ADItem adItem) {
+            if (!TextUtils.isEmpty(adItem.AdUrl)) {
                 Picasso.get()
                         .load(adItem.AdUrl)
                         .resize(384, 216)
@@ -324,19 +335,19 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
-    private class BaseHolder<T>{
-        protected CurrentPlayImageView PosterView;
-        protected ImageView FocusView;
+    private class BaseHolder<T> {
+        CurrentPlayImageView PosterView;
+        ImageView FocusView;
         protected View itemView;
-        protected TextView TitleView;
-        protected T mData;
+        TextView TitleView;
+        T mData;
 
-        BaseHolder(View view){
+        BaseHolder(View view) {
             this.itemView = view;
             view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
-                    BaseHolder.this.onFocusChange(view,b);
+                    BaseHolder.this.onFocusChange(view, b);
                     FocusView.setVisibility(b ? View.VISIBLE : View.GONE);
                     if (b) {
                         ScaleUtils.getInstance().onItemGetFocus(itemView);
@@ -364,9 +375,10 @@ public class EpisodeFragment extends Fragment {
             TitleView = view.findViewWithTag("tag_poster_title");
         }
 
-        protected void onFocusChange(View view, boolean b){}
+        protected void onFocusChange(View view, boolean b) {
+        }
 
-        public void update(T item){
+        public void update(T item) {
             this.mData = item;
         }
     }

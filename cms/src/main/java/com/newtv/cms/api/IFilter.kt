@@ -17,7 +17,7 @@ interface IFilter : IService {
      * 获取筛选选项列表
      */
     fun getFilterKeyWords(appkey: String, channelId: String, categoryId: String,
-                          observer: DataObserver<ModelResult<List<FilterItem>>>)
+                          observer: DataObserver<ModelResult<List<FilterItem>>>):Long
 
 
 }

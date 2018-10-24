@@ -2,13 +2,11 @@ package com.newtv.cms.models
 
 import android.text.TextUtils
 import com.google.gson.reflect.TypeToken
-import com.newtv.cms.BaseModel
-import com.newtv.cms.DataObserver
-import com.newtv.cms.Model
-import com.newtv.cms.Request
+import com.newtv.cms.*
 import com.newtv.cms.api.ITvProgram
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
+import java.util.*
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -19,75 +17,91 @@ import com.newtv.cms.bean.SubContent
  */
 internal class TvProgramModel : BaseModel(), ITvProgram {
     override fun getCurrentList(appKey: String, channelid: String, pageuuid: String,
-                                observer: DataObserver<ModelResult<List<SubContent>>>) {
-        if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
+                                observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
+        if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
-        if(TextUtils.isEmpty(pageuuid) || pageuuid.length < 2){
+        if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getCurrentList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> =
+                buildExecutor(Request.program
+                        .getCurrentList
+                        (appKey, channelid,
+                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getHistoryList(appKey: String, channelid: String, pageuuid: String,
-                                observer: DataObserver<ModelResult<List<SubContent>>>) {
-        if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
+                                observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
+        if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
-        if(TextUtils.isEmpty(pageuuid) || pageuuid.length < 2){
+        if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getHistoryList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> =
+                buildExecutor(Request.program
+                        .getHistoryList
+                        (appKey, channelid,
+                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getTvFigureList(appKey: String, channelid: String, pageuuid: String,
-                                 observer: DataObserver<ModelResult<List<SubContent>>>) {
-        if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
+                                 observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
+        if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
-        if(TextUtils.isEmpty(pageuuid) || pageuuid.length < 2){
+        if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getTvFigureList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> =
+                buildExecutor(Request.program
+                        .getTvFigureList
+                        (appKey, channelid,
+                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getTvFigureTvList(appKey: String, channelid: String, pageuuid: String,
-                                   observer: DataObserver<ModelResult<List<SubContent>>>) {
-        if(TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)){
+                                   observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
+        if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
             observer.onError("AppKey or ChannelCode is Empty")
-            return
+            return 0
         }
-        if(TextUtils.isEmpty(pageuuid) || pageuuid.length < 2){
+        if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
             observer.onError("ContentId size is to short")
-            return
+            return 0
         }
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
-        BuildExecuter<ModelResult<List<SubContent>>>(Request.program.getTvFigureTvList(appKey, channelid,
-                left, right, pageuuid), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
-                .observer(observer)
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> =
+                buildExecutor(Request.program
+                        .getTvFigureTvList
+                        (appKey, channelid,
+                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+        executor.observer(observer)
                 .execute()
+        return executor.getID()
     }
 
     override fun getType(): String {
