@@ -15,7 +15,7 @@ import com.newtv.cms.bean.UpVersion
  */
 internal class UpVersionModel : BaseModel(), IUpVersion {
     override fun getUpVersion(map: Map<String, String>, observer: DataObserver<UpVersion>): Long {
-        val executor: Executor<UpVersion> = buildExecutor<UpVersion>(Request.upVersion.getUpVersion
+        val executor: Executor<UpVersion> = buildExecutor(Request.upVersion.getUpVersion
         (map), object :
                 TypeToken<UpVersion>() {}.type)
         executor.observer(observer)
@@ -25,7 +25,7 @@ internal class UpVersionModel : BaseModel(), IUpVersion {
 
     override fun getIsOriented(map: Map<String, String>, observer: DataObserver<Oriented>): Long {
         val executor: Executor<Oriented> =
-                buildExecutor<Oriented>(Request.upVersion.getIsOriented(map),
+                buildExecutor(Request.upVersion.getIsOriented(map),
                         object : TypeToken<Oriented>() {}.type)
         executor.observer(observer)
                 .execute()

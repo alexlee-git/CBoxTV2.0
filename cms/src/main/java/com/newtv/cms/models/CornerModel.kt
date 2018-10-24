@@ -24,7 +24,7 @@ internal class CornerModel : BaseModel(), ICorner {
             return 0
         }
         val executor: Executor<ModelResult<List<Corner>>> =
-                buildExecutor<ModelResult<List<Corner>>>(Request.corner.getCorner(appkey, channelCode),
+                buildExecutor(Request.corner.getCorner(appkey, channelCode),
                         object : TypeToken<ModelResult<List<Corner>>>() {}.type)
         executor.observer(observer)
                 .execute()

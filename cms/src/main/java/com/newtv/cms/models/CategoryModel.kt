@@ -28,7 +28,7 @@ internal class CategoryModel : BaseModel(), ICategory {
             return 0
         }
         val executor: Executor<ModelResult<List<CategoryTreeNode>>> =
-                buildExecutor<ModelResult<List<CategoryTreeNode>>>(
+                buildExecutor(
                         Request.category.getCategoryTree(appkey, channelCode),
                         object : TypeToken<ModelResult<List<CategoryTreeNode>>>() {}.type)
         executor.observer(observer)
@@ -49,7 +49,7 @@ internal class CategoryModel : BaseModel(), ICategory {
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
         val executor: Executor<ModelResult<List<SubContent>>> =
-                buildExecutor<ModelResult<List<SubContent>>>(Request.category.getCategoryContent(appkey,
+                buildExecutor(Request.category.getCategoryContent(appkey,
                         channelCode, left, right, contentId),
                         object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
         executor.observer(observer)

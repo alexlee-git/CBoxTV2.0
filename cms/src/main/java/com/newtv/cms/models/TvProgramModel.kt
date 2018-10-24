@@ -29,7 +29,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
-                buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.program
+                buildExecutor(Request.program
                         .getCurrentList
                         (appKey, channelid,
                                 left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
@@ -51,7 +51,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
-                buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.program
+                buildExecutor(Request.program
                         .getHistoryList
                         (appKey, channelid,
                                 left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
@@ -73,7 +73,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
-                buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.program
+                buildExecutor(Request.program
                         .getTvFigureList
                         (appKey, channelid,
                                 left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
@@ -95,7 +95,7 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
         val left: String = getLeft(pageuuid)
         val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
-                buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.program
+                buildExecutor(Request.program
                         .getTvFigureTvList
                         (appKey, channelid,
                                 left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)

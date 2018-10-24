@@ -17,7 +17,7 @@ internal class BootGuideModel : BaseModel(), IBootGuide {
     }
 
     override fun getBootGuide(platform: String, observer: DataObserver<String>): Long {
-        val executor: Executor<String> = buildExecutor<String>(Request.bootGuide.getServerAddresses
+        val executor: Executor<String> = buildExecutor(Request.bootGuide.getServerAddresses
         (platform), null)
         executor.observer(observer)
                 .execute()

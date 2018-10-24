@@ -1,6 +1,7 @@
 package com.newtv.cms
 
 import com.google.gson.Gson
+import com.newtv.libs.util.LogUtils
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,13 +20,15 @@ import java.util.concurrent.TimeUnit
  */
 internal class Executor<T>(val observable: Observable<ResponseBody>,
                            val type: Type?,
-                           val callback: IExecutor<T>?
-) {
+                           val model: String,
+                           val callback: IExecutor<T>?) {
+
     private var mID: Long = 0;
     var isCancel: Boolean = false //是否已经退出请求
 
     init {
         mID = System.currentTimeMillis()
+        LogUtils.d(Companion.TAG, "build $TAG from $model id=$mID")
     }
 
     internal fun getID(): Long {
@@ -52,6 +55,8 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
         }
         mObserver = null
         callback?.onCancel(this)
+
+        LogUtils.d(Companion.TAG, "cancel $TAG from=$model id=$mID")
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -90,5 +95,9 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                         }
                     }
                 })
+    }
+
+    companion object {
+        const val TAG = "Executor"
     }
 }

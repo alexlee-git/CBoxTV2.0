@@ -21,7 +21,7 @@ internal class PlayChkModel : BaseModel(), IPlayChk {
         val requestJson = gson.toJson(request)
         val requestBody = RequestBody.create(MediaType.parse("Content-Type, application/json"),
                 requestJson)
-        val executor: Executor<String> = buildExecutor<String>(Request.playChk.getCheckResult
+        val executor: Executor<String> = buildExecutor(Request.playChk.getCheckResult
         (requestBody), null)
         executor.observer(observer)
                 .execute()

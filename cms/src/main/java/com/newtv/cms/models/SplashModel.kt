@@ -27,7 +27,7 @@ internal class SplashModel : BaseModel(), ISplash {
         }
 
         val executor: Executor<ModelResult<List<Splash>>> =
-                buildExecutor<ModelResult<List<Splash>>>(Request.splash.getList(appkey,
+                buildExecutor(Request.splash.getList(appkey,
                         channelId),
                         object : TypeToken<ModelResult<List<Splash>>>() {}.type)
         executor.observer(observer)

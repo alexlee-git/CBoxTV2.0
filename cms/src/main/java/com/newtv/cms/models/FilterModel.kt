@@ -30,7 +30,7 @@ internal class FilterModel : BaseModel(), IFilter {
             return 0
         }
         val executor: Executor<ModelResult<List<FilterItem>>> =
-                buildExecutor<ModelResult<List<FilterItem>>>(Request.filter.getFilterKeyWords
+                buildExecutor(Request.filter.getFilterKeyWords
                 (appkey, channelId,
                         categoryId), object : TypeToken<ModelResult<List<FilterItem>>>() {}.type)
         executor.observer(observer)

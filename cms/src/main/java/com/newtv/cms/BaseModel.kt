@@ -18,7 +18,7 @@ internal abstract class BaseModel {
     private val executors: ConcurrentMap<Long, Executor<*>> = ConcurrentHashMap()
 
     fun stop() {
-        synchronized(executors){
+        synchronized(executors) {
             for (iterator: MutableMap.MutableEntry<Long, Executor<*>> in executors.iterator()) {
                 iterator.value.cancel()
             }
@@ -26,6 +26,7 @@ internal abstract class BaseModel {
     }
 
     fun cancel(id: Long) {
+        if (id == 0L) return
         synchronized(executors) {
             if (executors.containsKey(id)) {
                 executors[id]?.cancel()
@@ -45,13 +46,16 @@ internal abstract class BaseModel {
     abstract fun getType(): String
 
     fun <T> buildExecutor(observable: Observable<ResponseBody>, type: Type?): Executor<T> {
-        val executor: Executor<T> = Executor(observable, type, object : Executor.IExecutor<T> {
-            override fun onCancel(executor: Executor<T>) {
-                executors.remove(executor.getID())
-            }
-        })
-        executors[executor.getID()] = executor
-        return executor
+        synchronized(executors) {
+            val executor: Executor<T> = Executor(observable, type, getType(), object : Executor
+            .IExecutor<T> {
+                override fun onCancel(executor: Executor<T>) {
+                    executors.remove(executor.getID())
+                }
+            })
+            executors[executor.getID()] = executor
+            return executor
+        }
     }
 
     fun getLeft(contentId: String): String {

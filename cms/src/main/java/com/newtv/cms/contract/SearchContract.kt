@@ -11,6 +11,7 @@ import com.newtv.cms.bean.SubContent
 import com.newtv.libs.Libs
 import java.util.*
 
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            tv.newtv.contract
@@ -21,6 +22,11 @@ import java.util.*
 class SearchContract {
     interface View : ICmsView {
         fun searchResult(requestID: Long, result: ArrayList<SubContent>?)
+    }
+
+    interface LoadingView : View {
+        fun onLoading()
+        fun loadingFinish()
     }
 
     interface Presenter : ICmsPresenter {
@@ -104,12 +110,18 @@ class SearchContract {
         }
     }
 
-    class SearchPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
+    class SearchPresenter(context: Context, view: View)
+        : CmsServicePresenter<View>(context, view), Presenter {
 
         override fun search(condition: SearchCondition): Long {
             val search = getService<ISearch>(CmsServicePresenter.SERVICE_SEARCH)
-            search?.let {
-                val requestID: Long = it.search(
+            search?.let { iSearch ->
+                view?.let {
+                    if (it is LoadingView) {
+                        it.onLoading()
+                    }
+                }
+                val requestID: Long = iSearch.search(
                         Libs.get().appKey,
                         Libs.get().channelId, condition.categoryId,
                         condition.contentType, condition.videoType, condition.videoClass, condition
@@ -117,15 +129,24 @@ class SearchContract {
                         .rows, condition.keywordType, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
                     override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                         if (result.isOk()) {
-                            view?.searchResult(requestCode, result.data)
+                            view?.let {
+                                it.searchResult(requestCode, result.data)
+                                if (it is LoadingView) {
+                                    it.loadingFinish()
+                                }
+                            }
                         } else {
-                            view?.onError(context, result
-                                    .errorMessage)
+                            view?.onError(context, result.errorMessage)
                         }
                     }
 
                     override fun onError(desc: String?) {
-                        view?.onError(context, desc)
+                        view?.let { callback ->
+                            callback.onError(context, desc)
+                            if (callback is LoadingView) {
+                                callback.loadingFinish()
+                            }
+                        }
                     }
                 })
                 return requestID

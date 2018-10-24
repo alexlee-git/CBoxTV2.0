@@ -25,7 +25,7 @@ class NavModel : BaseModel(), INav {
         }
 
         val executor: Executor<ModelResult<List<Nav>>> =
-                buildExecutor<ModelResult<List<Nav>>>(Request.nav.getNavInfo(appkey,
+                buildExecutor(Request.nav.getNavInfo(appkey,
                         channelId),
                         object : TypeToken<ModelResult<List<Nav>>>() {}.type)
         executor.observer(observer)

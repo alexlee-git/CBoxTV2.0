@@ -30,7 +30,7 @@ internal class SearchModel : BaseModel(), ISearch {
             rows: String?,
             keywordType: String?,
             observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
-        val executor: Executor<ModelResult<ArrayList<SubContent>>> = buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.search
+        val executor: Executor<ModelResult<ArrayList<SubContent>>> = buildExecutor(Request.search
                 .search(appKey, channelid,
                         categoryId, contentType, videoType, videoClass, area, year, keyword, page, rows,
                         keywordType), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)

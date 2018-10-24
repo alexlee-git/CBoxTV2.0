@@ -31,7 +31,7 @@ internal class PageModel : BaseModel(), IPage {
         }
 
         val executor: Executor<ModelResult<List<Page>>> =
-                buildExecutor<ModelResult<List<Page>>>(Request.page.getPageData(appkey,
+                buildExecutor(Request.page.getPageData(appkey,
                         channelId, pageId),
                         object : TypeToken<ModelResult<List<Page>>>() {}.type)
         executor.observer(observer)

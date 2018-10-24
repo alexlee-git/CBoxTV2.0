@@ -34,7 +34,7 @@ internal class ContentModel : BaseModel(), IContent {
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
         val executor: Executor<ModelResult<List<SubContent>>> =
-                buildExecutor<ModelResult<List<SubContent>>>(Request.content.getSubInfo
+                buildExecutor(Request.content.getSubInfo
                 (appkey,
                         channelId, left, right,
                         contentId), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
@@ -58,7 +58,7 @@ internal class ContentModel : BaseModel(), IContent {
         }
         val left: String = getLeft(contentId)
         val right: String = getRight(contentId)
-        val executor: Executor<ModelResult<Content>> = buildExecutor<ModelResult<Content>>(Request
+        val executor: Executor<ModelResult<Content>> = buildExecutor(Request
                 .content.getInfo(appkey,
                 channelId, left,
                 right,

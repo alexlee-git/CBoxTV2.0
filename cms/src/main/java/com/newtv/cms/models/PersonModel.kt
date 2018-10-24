@@ -33,7 +33,7 @@ internal class PersonModel : BaseModel(), IPerson {
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
-                buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.person
+                buildExecutor(Request.person
                         .getPersonTvList
                         (appkey, channelId,
                                 left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
@@ -55,7 +55,7 @@ internal class PersonModel : BaseModel(), IPerson {
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
-                buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.person
+                buildExecutor(Request.person
                         .getPersonProgramList
                         (appkey, channelId,
                                 left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
@@ -77,7 +77,7 @@ internal class PersonModel : BaseModel(), IPerson {
         val left: String = getLeft(UUID)
         val right: String = getRight(UUID)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
-                buildExecutor<ModelResult<ArrayList<SubContent>>>(Request.person
+                buildExecutor(Request.person
                         .getPersonFigureList
                         (appkey, channelId,
                                 left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)

@@ -17,7 +17,7 @@ internal class DefaultModel : BaseModel(), IDefault {
     }
 
     override fun getJson(url: String, observer: DataObserver<String>): Long {
-        val executor: Executor<String> = buildExecutor<String>(Request.default.getJson(url), null)
+        val executor: Executor<String> = buildExecutor(Request.default.getJson(url), null)
         executor.observer(observer)
                 .execute()
         return executor.getID()
