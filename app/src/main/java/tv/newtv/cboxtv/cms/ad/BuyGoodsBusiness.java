@@ -443,6 +443,17 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     break;
             }
         }
+
+        switch (event.getKeyCode()){
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_MENU:
+            case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+                return true;
+        }
         return false;
     }
 
