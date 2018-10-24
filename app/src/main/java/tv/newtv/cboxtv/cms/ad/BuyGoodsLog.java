@@ -27,6 +27,10 @@ public class BuyGoodsLog {
      * 二维码类型
      */
     private static final String QR_CODE_TYPE_AUTH = "1";
+    /**
+     * 产品类型
+     */
+    private static final String PRODUCT_TYPE = "1";
 
     private long startShowGoodsTime = 0;
     private long startShowQrCodeTime = 0;
@@ -39,11 +43,11 @@ public class BuyGoodsLog {
 
         long duration = System.currentTimeMillis() - startShowGoodsTime;
         startShowGoodsTime = 0;
-        uploadLog(buildContent(TYPE_SHOW_GOODS,skuId,x,y,defaultShowTime*1000+"",duration+"",productName));
+        uploadLog(buildContent(TYPE_SHOW_GOODS,skuId,x,y,defaultShowTime*1000+"",duration+"",productName,PRODUCT_TYPE));
     }
 
     public void addToCart(String skuId,String productName){
-        uploadLog(buildContent(TYPE_ADD_TO_CART,skuId,productName));
+        uploadLog(buildContent(TYPE_ADD_TO_CART,skuId,productName,PRODUCT_TYPE));
     }
 
     public void showQrCode(String skuId,String x,String y,int defaultShowTime,String productName){
@@ -54,11 +58,11 @@ public class BuyGoodsLog {
 
         long duration = System.currentTimeMillis() - startShowQrCodeTime;
         startShowQrCodeTime = 0;
-        uploadLog(buildContent(TYPE_SHOW_QR_CODE,skuId,x,y,defaultShowTime*1000+"",duration+"",productName,QR_CODE_TYPE_AUTH));
+        uploadLog(buildContent(TYPE_SHOW_QR_CODE,skuId,x,y,defaultShowTime*1000+"",duration+"",productName,QR_CODE_TYPE_AUTH,PRODUCT_TYPE));
     }
 
     public void bind(String skuId,String mac,String userId,String productName){
-        uploadLog(buildContent(TYPE_BIND,skuId,mac,userId,productName));
+        uploadLog(buildContent(TYPE_BIND,skuId,mac,userId,productName,PRODUCT_TYPE));
     }
 
     public void startShowQrCode(){
