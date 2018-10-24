@@ -13,6 +13,7 @@ import com.jd.smartcloudmobilesdk.init.JDSmartSDK;
 import com.jd.smartcloudmobilesdk.shopping.SmartBuyManager;
 import com.jd.smartcloudmobilesdk.shopping.bean.ActivateAndBindDeviceRecv;
 import com.jd.smartcloudmobilesdk.shopping.bean.ActivateAndBindDeviceSend;
+import com.jd.smartcloudmobilesdk.shopping.bean.AddToCartRecv;
 import com.jd.smartcloudmobilesdk.shopping.bean.AddToCartSend;
 import com.jd.smartcloudmobilesdk.shopping.bean.AuthQrcodeRecv;
 import com.jd.smartcloudmobilesdk.shopping.bean.AuthQrcodeSend;
@@ -279,11 +280,17 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         send.setFeedId(feedId);
         SmartBuyManager.addToCart(send, new NetDataHandler() {
             @Override
-            public void netDataCallback(int code, Object inParam, Object outParam) {
+            public void netDataCallback(int code, Object inParam, final Object outParam) {
                 if(code == 0 && outParam != null){
                     MainLooper.get().post(new Runnable() {
                         @Override
                         public void run() {
+                            AddToCartRecv addToCartRecv = (AddToCartRecv) outParam;
+                            if(TextUtils.equals(addToCartRecv.getCode(),"2003")){
+                                dismiss();
+                                showToast("3分钟内不允许重复添加商品");
+                                return;
+                            }
                             addToCartSuccess();
                         }
                     });
