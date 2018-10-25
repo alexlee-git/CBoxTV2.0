@@ -102,8 +102,7 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
             LinearLayoutManager manager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
             if (manager != null) {
                 if (manager.findFirstVisibleItemPosition() == 0 && mRecyclerView.getScrollState()
-                        == RecyclerView
-                        .SCROLL_STATE_IDLE) {
+                        == RecyclerView.SCROLL_STATE_IDLE) {
                     View view = FocusFinder.getInstance().findNextFocus((ViewGroup) mRecyclerView
                                     .getChildAt(0),
                             mRecyclerView.getChildAt(0).findFocus(), View.FOCUS_UP);
@@ -172,11 +171,11 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
     @Override
     public View getFirstFocusView() {
         if (mRecyclerView != null && mRecyclerView.getAdapter() != null && mRecyclerView
-                .getChildAt(0)
-                != null) {
+                .getChildAt(0) != null) {
             String tag = ((UniversalAdapter) mRecyclerView.getAdapter()).getFirstViewId();
+            LogUtils.d("ContentFragment", "getFirstFocusView  tag=" + tag);
             if (TextUtils.isEmpty(tag)) return null;
-            return mRecyclerView.getChildAt(0).findViewWithTag(tag);
+            return mRecyclerView.findViewWithTag(tag);
         }
         return null;
     }

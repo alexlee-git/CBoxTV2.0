@@ -193,7 +193,7 @@ public class BlockBuilder {
                 // 拿1号组件的1号推荐位为例, 其子海报控件的id为 : cell_001_1_poster
                 final String cellCode;
                 if (isPeople) {
-                    cellCode = String.format(Locale.getDefault(), "cell_code_%d", i + 1);
+                    cellCode = String.format(Locale.getDefault(), "cell_%s_%d", layoutId, i + 1);
                 } else {
                     cellCode = info.getCellCode();
                 }
