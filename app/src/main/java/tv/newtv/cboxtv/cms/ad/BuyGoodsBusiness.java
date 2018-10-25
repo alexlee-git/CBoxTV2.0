@@ -148,7 +148,17 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         buyGoodsView.setParamsMap(extMap);
         buyGoodsView.init(context,view);
 
+        showGoods();
+    }
 
+    private void showGoods(){
+        buyGoodsView.setImageUrl(item.materials.get(0).filePath);
+        log.startShowGoods();
+        sendCloseMessage(duration);
+        isShowQrCode = false;
+    }
+
+    private void checkTvBindStatus(){
         //查询设备是否被绑定
         SmartBuyManager.checkTvBindStatus(PRODUCT_UUID,new NetDataHandler(){
             @Override
@@ -164,9 +174,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         if(TextUtils.isEmpty(feedId)){
                             getQrcode(false);
                         }else {
-                            buyGoodsView.setImageUrl(item.materials.get(0).filePath);
-                            log.startShowGoods();
-                            sendCloseMessage(duration);
+                            addToCart(skuId);
                         }
                     }
 
@@ -195,6 +203,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     isShowQrCode = true;
                     getResult(authCode,expiresIn);
                     if(!refresh){
+                        logShowGoods();
                         log.startShowQrCode();
                         sendCloseMessage(duration);
                     }
@@ -267,13 +276,14 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         showToast("请在手机上解除绑定后，重新绑定");
                     }else {
                         SPrefUtils.setValue(context,SPrefUtils.FEED_ID,feedId);
-                        buyGoodsView.setImageUrl(item.materials.get(0).filePath);
-                        isShowQrCode = false;
+                        addToCart(skuId);
+//                        buyGoodsView.setImageUrl(item.materials.get(0).filePath);
+//                        isShowQrCode = false;
 
-                        log.startShowGoods();
+//                        log.startShowGoods();
                         log.bind(skuId,SystemUtils.getDeviceMac(context),uid,item.materials.get(0).name);
-                        logShowQrCode();
-                        sendCloseMessage(duration);
+//                        logShowQrCode();
+//                        sendCloseMessage(duration);
                     }
                 }
             }
@@ -450,11 +460,15 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             switch (event.getKeyCode()){
                 case KeyEvent.KEYCODE_ENTER:
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                    if(!isShowQrCode() && !TextUtils.isEmpty(feedId) && !TextUtils.isEmpty(skuId)){
-                        addToCart(skuId);
-                        return true;
+                    if(!SystemUtils.isFastDoubleClick(3* 1000)){
+                        checkTvBindStatus();
                     }
-                    break;
+                    return true;
+//                    if(!isShowQrCode() && !TextUtils.isEmpty(feedId) && !TextUtils.isEmpty(skuId)){
+//                        addToCart(skuId);
+//                        return true;
+//                    }
+//                    break;
                 case KeyEvent.KEYCODE_BACK:
                     if(dismiss()){
                         return true;

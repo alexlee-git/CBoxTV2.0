@@ -95,6 +95,7 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
         MainLooper.get().post(new Runnable() {
             @Override
             public void run() {
+                qrCodeImage.setVisibility(View.VISIBLE);
                 imageView.setImageResource(R.drawable.qrcode_bg);
                 QrcodeUtil qrcodeUtil = new QrcodeUtil();
                 qrcodeUtil.createQRImage(authCode,qrCodeImage,217,217);
