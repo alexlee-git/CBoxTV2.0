@@ -11,7 +11,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -19,7 +18,6 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
 
@@ -46,7 +44,7 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
  */
 
 public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity implements
-        ContentContract.View {
+        ContentContract.LoadingView {
 
     Content pageContent;
     private HeadPlayerView headPlayerView;
@@ -84,8 +82,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        contentUUID = "4329022";
-
         String contentUUID = getContentUUID();
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
@@ -97,7 +93,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         }
     }
 
-    private void initView() {
+    private void initView(final Content content) {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
@@ -113,14 +109,16 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
-                        if(info != null) {
+                        if (info != null) {
                             pageContent = info;
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
-                            playListView.setContentUUID(EpisodeHelper.TYPE_VARIETY_SHOW,
+                            playListView.setContentUUID(mContentPresenter.isTvSeries(content)
+                                            ? EpisodeHelper.TYPE_PROGRAME_SERIES : EpisodeHelper
+                                            .TYPE_VARIETY_SHOW,
                                     getSupportFragmentManager(),
                                     getContentUUID(), null);
-                        }else{
-                            ToastUtil.showToast(getApplicationContext(),"内容信息错误");
+                        } else {
+                            ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ProgrameSeriesAndVarietyDetailActivity.this.finish();
                         }
                     }
@@ -135,7 +133,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
                     @Override
                     public void ProgramChange() {
-
                         if (playListView != null) {
                             playListView.resetProgramInfo();
                         }
@@ -319,6 +316,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
     @Override
     public void onContentResult(@Nullable Content content) {
+
         if (content != null) {
             videoType = content.getVideoType();
         }
@@ -333,7 +331,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         } else {
             setContentView(R.layout.fragment_new_variety_show);
             ADConfig.getInstance().setSeriesID(getContentUUID());
-            initView();
+            initView(content);
         }
     }
 
@@ -352,5 +350,15 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         Toast.makeText(context.getApplicationContext(), desc, Toast
                 .LENGTH_SHORT).show();
         ProgrameSeriesAndVarietyDetailActivity.this.finish();
+    }
+
+    @Override
+    public void onLoading() {
+
+    }
+
+    @Override
+    public void loadComplete() {
+
     }
 }

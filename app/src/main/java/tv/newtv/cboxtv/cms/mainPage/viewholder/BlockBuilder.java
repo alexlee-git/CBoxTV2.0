@@ -24,18 +24,19 @@ import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.Row;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.GlideUtil;
 import com.newtv.libs.util.ImageUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.NetworkManager;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
@@ -142,9 +143,12 @@ public class BlockBuilder {
             return;
         }
 
-        if (TextUtils.equals("0", moduleItem.getBlockType())) {
-            //TODO 默认区块类型
+        if (TextUtils.equals("0", moduleItem.getBlockType())
+                || TextUtils.equals("1", moduleItem.getBlockType())) {
+            //是否为人工推荐
+            boolean isPeople = "1".equals(moduleItem.getBlockType());
 
+            //TODO 默认区块类型
             final String layoutCode = moduleItem.getLayoutCode(); // 形如"layout_002"
             final String layoutId = layoutCode.substring(layoutCode.indexOf("_") + 1); //
             // 形如"002"
@@ -187,7 +191,12 @@ public class BlockBuilder {
                 final Program info = moduleItem.getPrograms().get(i);
 
                 // 拿1号组件的1号推荐位为例, 其子海报控件的id为 : cell_001_1_poster
-                final String cellCode = info.getCellCode();
+                final String cellCode;
+                if (isPeople) {
+                    cellCode = String.format(Locale.getDefault(), "cell_code_%d", i + 1);
+                } else {
+                    cellCode = info.getCellCode();
+                }
                 if (TextUtils.isEmpty(cellCode)) {
                     continue;
                 }
@@ -269,20 +278,6 @@ public class BlockBuilder {
                         frameLayout.setTag(R.id.tag_imageview, focusView);
                     }
 
-//                    processFirstRowRecommendUpKeyEvent(frameLayout, position, layoutCode, info);
-
-                    // 让默认获取焦点的推荐位获取焦点
-                    /*
-                    if (Constant.isInitStatus && position == 0 && cellCode.substring(cellCode
-                            .lastIndexOf("_") + 1).equals("1")) {
-                        frameLayout.setFocusableInTouchMode(true);
-                        frameLayout.requestFocus();
-                        Constant.isInitStatus = false;
-                    }
-                    */
-
-//                    CmsLiveUtil.isInPlay(info.getLiveLoopType(), info.getLiveParam(), info
-//                            .getPlayStartTime(), info.getPlayEndTime(), frameLayout);
 
                 }
 

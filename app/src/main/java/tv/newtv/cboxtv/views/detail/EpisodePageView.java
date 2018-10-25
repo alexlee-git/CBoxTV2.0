@@ -70,6 +70,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private Disposable mDisposable;
     private SmallWindowView smallWindowView;
 
+    private int mEpisodeType;
+
     private List<SubContent> mContentList;
 
     private AdContract.Presenter adPresenter;
@@ -350,11 +352,12 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         aiyaRecyclerView.setAdapter(pageItemAdapter);
     }
 
-    public void setContentUUID(int EpisodeType, FragmentManager manager, String uuid, View
+    public void setContentUUID(int episodeType, FragmentManager manager, String uuid, View
             controlView) {
         mFragmentManager = manager;
         mContentUUID = uuid;
         mControlView = controlView;
+        mEpisodeType = episodeType;
 
         mContentPresenter = new ContentContract.ContentPresenter
                 (getContext(), this);
@@ -387,6 +390,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 if (mContentList.size() > 0) {
                     rightDir.setVisibility(View.VISIBLE);
                 }
+
                 initFragment();
             } else {
                 onLoadError("暂时没有数据");
@@ -397,6 +401,9 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         }
     }
 
+    /**
+     *
+     */
     private void initFragment() {
         int size = mContentList.size();
         fragments = new ArrayList<>();
@@ -418,7 +425,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         ListPager.setAdapter(episodeAdapter);
         pageItemAdapter.setPageData(pageItems, aiyaRecyclerView).notifyDataSetChanged();
         requestLayout();
-        //ListPager.resetHeight(0);
     }
 
     @Override
@@ -480,7 +486,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public boolean interuptKeyEvent(KeyEvent event) {
+    public boolean interruptKeyEvent(KeyEvent event) {
         if (ListPager.getChildCount() == 0) return false;
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
@@ -543,7 +549,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     focusView = ListPager.findFocus();
                     parentView = ListPager;
                 } else if (smallWindowView.hasFocus()) {
-                    return smallWindowView.interuptKeyEvent(event);
+                    return smallWindowView.interruptKeyEvent(event);
                 }
 
                 View target = FocusFinder.getInstance().findNextFocus(parentView, focusView, View
@@ -569,7 +575,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     focusView = ListPager.findFocus();
                     parentView = ListPager;
                 } else if (smallWindowView.hasFocus()) {
-                    return smallWindowView.interuptKeyEvent(event);
+                    return smallWindowView.interruptKeyEvent(event);
                 }
 
                 View target = FocusFinder.getInstance().findNextFocus(parentView, focusView, View

@@ -71,7 +71,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
             mPresenter.destroy();
             mPresenter = null;
         }
-        if(mHolder != null){
+        if (mHolder != null) {
             mHolder.destroy();
             mHolder = null;
         }
@@ -91,7 +91,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
         if (mPresenter == null) {
             mPresenter = new DefaultConstract.DefaultPresenter(getContext(), this);
         }
-        if(blockBuilder == null) {
+        if (blockBuilder == null) {
             blockBuilder = new BlockBuilder(getContext());
         }
         List<Program> programs = page.getPrograms();
@@ -137,7 +137,6 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                 TextView moduleTitleTextView = ((TextView) holder.itemView.findViewWithTag
                         (titleId));
                 if (moduleTitleTextView != null) {
-
                     TextPaint paint = moduleTitleTextView.getPaint();
                     paint.setFakeBoldText(true);//字体加粗
 
@@ -161,102 +160,111 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
 
         int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
         Log.i(TAG, "layoutCode=" + layoutCode);
-        for (int i = 0; i < posSize; i++) {
+        if (blockData.getRows() != null && blockData.getRows().size() > 0) {
 
-            final Row info = blockData.getRows().get(i);
+            for (int i = 0; i < posSize; i++) {
 
-            // viewId是形如 "1", "2"这样的字符串
-            String viewId = Integer.toString(i + 1);
+                final Row info = blockData.getRows().get(i);
 
-            // 拿1号组件的1号推荐位为例, 其海报控件的id为 : cell_001_1_poster
-            String posterWidgetId = blockBuilder.generateViewId(layoutId, viewId, "cell",
-                    "poster", "_");
-            // 拿8号组件的1号推荐位为例, 其海报控件的id为 : cell_008_1_focus
-            String focusWidgetId = blockBuilder.generateViewId(layoutId, viewId, "cell", "focus",
-                    "_");
-            // 拿1号组件的1号推荐位为例, 其推荐位标题控件的id为 : cell_001_1_title
-            String titleWidgetId = blockBuilder.generateViewId(layoutId, viewId, "cell", "title",
-                    "_");
+                // viewId是形如 "1", "2"这样的字符串
+                String viewId = Integer.toString(i + 1);
 
-            // 拿1号组件的1号推荐位为例, 其推荐位的根控件id为 : cell_001_1
-            final String frameLayoutId = posterWidgetId.substring(0, posterWidgetId.indexOf
-                    ("poster") - 1);
+                // 拿1号组件的1号推荐位为例, 其海报控件的id为 : cell_001_1_poster
+                String posterWidgetId = blockBuilder.generateViewId(layoutId, viewId, "cell",
+                        "poster", "_");
+                // 拿8号组件的1号推荐位为例, 其海报控件的id为 : cell_008_1_focus
+                String focusWidgetId = blockBuilder.generateViewId(layoutId, viewId, "cell",
+                        "focus",
 
-            // 给推荐位设置监听器
-            final FrameLayout frameLayout = (FrameLayout) holder.itemView.findViewWithTag
-                    (frameLayoutId);
-            if (frameLayout != null) {
-                //屏幕适配
-                if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
-                    ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
-                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    frameLayout.setLayoutParams(params);
-                }
+                        "_");
+                // 拿1号组件的1号推荐位为例, 其推荐位标题控件的id为 : cell_001_1_title
+                String titleWidgetId = blockBuilder.generateViewId(layoutId, viewId, "cell",
+                        "title",
+                        "_");
 
-                // 按需添加角标控件
+                // 拿1号组件的1号推荐位为例, 其推荐位的根控件id为 : cell_001_1
+                final String frameLayoutId = posterWidgetId.substring(0, posterWidgetId.indexOf
+                        ("poster") - 1);
+
+                // 给推荐位设置监听器
+                final FrameLayout frameLayout = (FrameLayout) holder.itemView.findViewWithTag
+                        (frameLayoutId);
+                if (frameLayout != null) {
+                    //屏幕适配
+                    if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
+                        ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
+                        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        frameLayout.setLayoutParams(params);
+                    }
+
+                    // 按需添加角标控件
 //                blockBuilder.processSuperscript(layoutCode, info, frameLayout);
 
-                // 按需添加标题控件
-                blockBuilder.processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
-                        frameLayout);
+                    // 按需添加标题控件
+                    blockBuilder.processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
+                            frameLayout);
 
-                // onFocusChangeListener
-                frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                    @Override
-                    public void onFocusChange(View view, boolean hasFocus) {
-                        if (hasFocus) {
-                            blockBuilder.onItemGetFocus(layoutId, view);
+                    // onFocusChangeListener
+                    frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View view, boolean hasFocus) {
+                            if (hasFocus) {
+                                blockBuilder.onItemGetFocus(layoutId, view);
 
-                            TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
-                            if (title != null) {
-                                title.setVisibility(View.VISIBLE);
-                                title.setSelected(true);
-                            }
-                        } else {
-                            blockBuilder.onItemLoseFocus(layoutId, view);
-                            TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
-                            if (title != null) {
-                                title.setSelected(false);
+                                TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
+                                if (title != null) {
+                                    title.setVisibility(View.VISIBLE);
+                                    title.setSelected(true);
+                                }
+                            } else {
+                                blockBuilder.onItemLoseFocus(layoutId, view);
+                                TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
+                                if (title != null) {
+                                    title.setSelected(false);
+                                }
                             }
                         }
-                    }
-                });
+                    });
 
-                // onClickListener
-                frameLayout.setOnClickListener(new MultipleClickListener() {
-                    @Override
-                    protected void onMultipleClick(View view) {
-                        blockBuilder.processOpenCell(view, info, mPage.getBlockId(), layoutCode);
-                    }
-                });
+                    // onClickListener
+                    frameLayout.setOnClickListener(new MultipleClickListener() {
+                        @Override
+                        protected void onMultipleClick(View view) {
+                            blockBuilder.processOpenCell(view, info, mPage.getBlockId(),
+                                    layoutCode);
 
-                // 如果是第5和第8号组件,则设置推荐位标题.因为按照约定只有第5和第8套组件留有推荐位标题控件
-                if (TextUtils.equals("005", layoutId) || TextUtils.equals("008",
-                        layoutId)) {
-                    TextView textView = (TextView) holder.itemView.findViewWithTag(titleWidgetId);
-                    View focusView = (View) holder.itemView.findViewWithTag(focusWidgetId);
+                        }
+                    });
 
-                    if (textView != null && !TextUtils.isEmpty(info.getTitle())) {
-                        textView.setText(info.getTitle());
+                    // 如果是第5和第8号组件,则设置推荐位标题.因为按照约定只有第5和第8套组件留有推荐位标题控件
+                    if (TextUtils.equals("005", layoutId) || TextUtils.equals("008",
+                            layoutId)) {
+                        TextView textView = (TextView) holder.itemView.findViewWithTag
+                                (titleWidgetId);
+                        View focusView = (View) holder.itemView.findViewWithTag(focusWidgetId);
+
+                        if (textView != null && !TextUtils.isEmpty(info.getTitle())) {
+                            textView.setText(info.getTitle());
+                        }
+                        frameLayout.setTag(R.id.tag_textview, textView);
+                        frameLayout.setTag(R.id.tag_imageview, focusView);
                     }
-                    frameLayout.setTag(R.id.tag_textview, textView);
-                    frameLayout.setTag(R.id.tag_imageview, focusView);
                 }
-            }
 
-            // 是否圆角
-            boolean hasCorner = blockBuilder.hasCorner4Cup(layoutId, viewId);
-            // 加载海报图
-            final View posterView = holder.itemView.findViewWithTag(posterWidgetId);
-            RecycleImageView recycleImageView = null;
-            if (posterView instanceof RecycleImageView) {
-                recycleImageView = (RecycleImageView) posterView;
-            }
+                // 是否圆角
+                boolean hasCorner = blockBuilder.hasCorner4Cup(layoutId, viewId);
+                // 加载海报图
+                final View posterView = holder.itemView.findViewWithTag(posterWidgetId);
+                RecycleImageView recycleImageView = null;
+                if (posterView instanceof RecycleImageView) {
+                    recycleImageView = (RecycleImageView) posterView;
+                }
 
-            if (recycleImageView != null) {
-                blockBuilder.showPosterByCMS(posterWidgetId, recycleImageView, info.getVImage(),
-                        hasCorner);
+                if (recycleImageView != null) {
+                    blockBuilder.showPosterByCMS(posterWidgetId, recycleImageView, info.getVImage(),
+                            hasCorner);
+                }
             }
         }
     }

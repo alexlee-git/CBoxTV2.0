@@ -40,7 +40,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 
@@ -271,7 +270,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
 
     private void setHeadData(Content dataInfo) {
         String img = dataInfo.getVImage();
-        detailTypeTv.setText(dataInfo.getDistrict() + " | " + dataInfo.getCountry());
+        detailTypeTv.setText(String.format("%s | %s", dataInfo.getDistrict(), dataInfo.getCountry()));
         if (isAttention) {
             mAttentionIv.setImageResource(R.drawable.icon_details_attention_btn);
         } else {
@@ -319,17 +318,10 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         }
     }
 
-
     @Override
-    public boolean interuptKeyEvent(KeyEvent event) {
+    public boolean interruptKeyEvent(KeyEvent event) {
         View focusView = findFocus();
 
-        if (focusView != null && focusView instanceof VideoPlayerView) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_LEFT) {
-                return true;
-            }
-        }
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 View view = FocusFinder.getInstance().findNextFocus(this, focusView, View

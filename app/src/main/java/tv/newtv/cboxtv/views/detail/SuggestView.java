@@ -267,7 +267,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
     }
 
     @Override
-    public boolean interuptKeyEvent(KeyEvent event) {
+    public boolean interruptKeyEvent(KeyEvent event) {
         if (getChildAt(0) == null
                 || !(getChildAt(0) instanceof ViewGroup) || ((ViewGroup) getChildAt
                 (0)).getChildCount() == 0) {

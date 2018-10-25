@@ -25,10 +25,11 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUploadUtils;
-
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
@@ -36,21 +37,18 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import com.newtv.libs.db.DBCallback;
-import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 
@@ -65,17 +63,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         ContentContract.View {
 
     private static final String TAG = "HeadPlayerView";
-
-    private ContentContract.Presenter mPresenter;
-
     Content mInfo;
+    private ContentContract.Presenter mPresenter;
     private VideoPlayerView playerView;
     private int currentPlayIndex = 0;
     private int currentPosition = 0;
     private NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
-//    private boolean isFullScreen = false;
 
-    private Content currentProgramSeriesInfo;
     private Builder mBuilder;
     private View contentView;
 
@@ -300,23 +294,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (isPlayLive && mInfo != null) {
-//            Log.e(TAG, "player view is builded, play live video....");
-//            playerView.playLiveVideo(mInfo.getContentUUID(), mInfo.getPlayUrl(), mInfo
-//                    .getTitle(), 0, 0);
-//            timer();
             return;
         }
-        if (playerView != null && currentProgramSeriesInfo != null) {
+        if (playerView != null && mInfo != null) {
             currentPosition = (defaultConfig != null ? defaultConfig.playPosition :
                     currentPosition);
             Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
-            playerView.setSeriesInfo(currentProgramSeriesInfo);
-            if (currentPlayIndex >= 0 && currentPosition >= 0) {
-                playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
-            } else {
-                playerView.playSingleOrSeries(0, 0);
-            }
+            playerView.setSeriesInfo(mInfo);
+            playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
         }
     }
 
@@ -370,8 +356,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
-
-        mPresenter.getContent(mBuilder.contentUUid, true);
+        mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
     }
 
     private void checkDataFromDB() {
@@ -546,11 +531,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public void setProgramSeriesInfo(Content programSeriesInfo) {
+        if (programSeriesInfo == null) return;
         if (TextUtils.isEmpty(programSeriesInfo.getTitle())) {
             if (mInfo != null) {
                 programSeriesInfo.setTitle(mInfo.getTitle());
             }
-
         }
         if (TextUtils.isEmpty(programSeriesInfo.getVImage())) {
             if (mInfo != null) {
@@ -563,8 +548,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 programSeriesInfo.setContentType(mInfo.getContentType());
             }
         }
-        currentProgramSeriesInfo = programSeriesInfo;
-        if (playerView != null && !isPlayLive && mInfo != null) {
+        mInfo = programSeriesInfo;
+        if (playerView != null && !isPlayLive) {
             playerView.setSeriesInfo(programSeriesInfo);
             playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
         } else {
@@ -592,7 +577,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (playerView != null) {
             playerView.beginChange();
 
-            playerView.setSeriesInfo(currentProgramSeriesInfo);
+            playerView.setSeriesInfo(mInfo);
             playerView.playSingleOrSeries(index, postion);
 
             if (requestFocus) {
@@ -690,8 +675,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 isPlayLive = true;
             }
         } else {
-            if (currentProgramSeriesInfo != null && mPlayInfo != null) {
-                playerView.setSeriesInfo(currentProgramSeriesInfo);
+            if (mInfo != null && mPlayInfo != null) {
+                playerView.setSeriesInfo(mInfo);
                 playerView.playSingleOrSeries(mPlayInfo.index, mPlayInfo.position);
             }
         }
@@ -703,7 +688,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     @Override
-    public boolean interuptKeyEvent(KeyEvent event) {
+    public boolean interruptKeyEvent(KeyEvent event) {
         View focusView = findFocus();
 
         if (focusView != null && focusView instanceof VideoPlayerView) {
@@ -761,7 +746,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             mDisposable = null;
         }
 
-        if(mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.destroy();
             mPresenter = null;
         }
@@ -817,8 +802,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onContentResult(@Nullable Content content) {
-        mInfo = content;
         mBuilder.infoResult.onResult(content);
+        setProgramSeriesInfo(content);
         parseResult();
     }
 
@@ -870,6 +855,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private InfoResult infoResult;
         private String contentUUid;
         private int ProgramType;
+        private boolean autoGetSub = false;
         private List<CustomFrame> dbTypes;
         private int defaultFocusID = 0;
 
@@ -893,6 +879,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         public Builder CheckFromDB(CustomFrame... types) {
             dbTypes = Arrays.asList(types);
+            return this;
+        }
+
+        public Builder autoGetSubContents() {
+            autoGetSub = true;
             return this;
         }
 

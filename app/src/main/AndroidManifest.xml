@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="tv.newtv.cboxtv"
-          android:installLocation="auto">
+          xmlns:tools="http://schemas.android.com/tools" package="tv.newtv.cboxtv"
+          android:installLocation="auto" tools:ignore="MissingLeanbackLauncher">
 
     <uses-feature
         android:name="android.software.leanback"
@@ -32,7 +32,7 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".SplashActivity"
                   android:exported="true"
                   android:launchMode="singleTask"

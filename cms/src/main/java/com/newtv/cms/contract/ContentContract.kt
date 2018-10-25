@@ -1,6 +1,7 @@
 package com.newtv.cms.contract
 
 import android.content.Context
+import android.text.TextUtils
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
@@ -40,12 +41,27 @@ class ContentContract {
          */
         fun getContent(uuid: String, autoSub: Boolean)
 
+        /**
+         * 是不是电视剧
+         */
+        fun isTvSeries(content: Content?): Boolean
+
         fun cancel(id: Long)
         fun getSubContent(uuid: String): Long
     }
 
     class ContentPresenter(context: Context, view: View)
         : CmsServicePresenter<View>(context, view), Presenter {
+
+        var mContent: Content? = null
+
+        override fun isTvSeries(content: Content?): Boolean {
+            content?.let {
+                val videoType = content.videoType
+                return !(!TextUtils.isEmpty(videoType) && (TextUtils.equals(videoType, "电视剧") || TextUtils.equals(videoType, "动漫")))
+            }
+            return false
+        }
 
         override fun cancel(id: Long) {
             val content: IContent? = getService(SERVICE_CONTENT)
@@ -109,7 +125,11 @@ class ContentContract {
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
-                        getSubContentsWithCallback(result.data, uuid)
+                        if(!autoSub){
+                            view?.onContentResult(result.data);
+                        }else {
+                            getSubContentsWithCallback(result.data, uuid)
+                        }
                     } else {
                         view?.onError(context, result.errorMessage)
                     }

@@ -23,21 +23,37 @@ class PageContract {
         fun onPageResult(page: List<Page>?)
     }
 
+    interface LoadingView : View {
+        fun startLoading()
+        fun loadingComplete()
+    }
+
     interface Presenter : ICmsPresenter {
         fun getPageContent(contentId: String)
     }
 
-    class ContentPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
+    class ContentPresenter(context: Context, view: View)
+        : CmsServicePresenter<View>(context, view), Presenter {
 
         override fun getPageContent(contentId: String) {
             val page = getService<IPage>(CmsServicePresenter.SERVICE_PAGE)
+            view?.let {
+                if (it is LoadingView) {
+                    it.startLoading()
+                }
+            }
             page?.getPage(
                     Libs.get().appKey,
                     Libs.get().channelId,
                     contentId, object : DataObserver<ModelResult<List<Page>>> {
                 override fun onResult(result: ModelResult<List<Page>>, requestCode: Long) {
                     if (result.isOk()) {
-                        view?.onPageResult(result.data)
+                        view?.let {
+                            it.onPageResult(result.data)
+                            if (it is LoadingView) {
+                                it.loadingComplete()
+                            }
+                        }
                     } else {
                         onError(result.errorMessage)
                     }

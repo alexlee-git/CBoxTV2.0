@@ -53,6 +53,7 @@ public class EpisodeFragment extends Fragment {
     private boolean hasAD = false;
     private ADHelper.AD.ADItem adItem;
     private int pageSize = DEFAULT_SIZE;
+
     private int mLayoutId = R.layout.episode_page_item;
     private String mItemTag = "id_module_8_view";
 

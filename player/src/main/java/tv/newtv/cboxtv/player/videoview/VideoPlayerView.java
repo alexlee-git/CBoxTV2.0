@@ -130,7 +130,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if(!playCenter.isReady()){
             return;
         }
-        Content programSeriesInfo = playCenter.getCurrentProgramSeriesInfo();
+        Content programSeriesInfo = playCenter.getCurrentSeriesInfo();
 
         if (programSeriesInfo == null) return;
 
@@ -255,7 +255,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void setSeriesInfo(Content seriesInfo) {
         if (playCenter != null) {
-            playCenter.addSeriesInfo(seriesInfo);
+            playCenter.setSeriesInfo(seriesInfo);
         }
     }
 

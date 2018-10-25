@@ -11,6 +11,6 @@ import android.view.KeyEvent;
  */
 public interface IEpisode {
     String getContentUUID();
-    boolean interuptKeyEvent(KeyEvent event);
+    boolean interruptKeyEvent(KeyEvent event);
     void destroy();
 }

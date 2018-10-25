@@ -31,7 +31,6 @@ import com.newtv.libs.util.LogUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;

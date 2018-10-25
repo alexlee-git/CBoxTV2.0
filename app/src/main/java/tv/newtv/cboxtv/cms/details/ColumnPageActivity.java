@@ -93,8 +93,6 @@ public class ColumnPageActivity extends DetailPageActivity {
             return;
         }
 
-//        contentUUID = "4598904";
-
         final SuggestView sameType = findViewById(R.id.same_type);
         headPlayerView = findViewById(R.id.header_video);
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.video_layout)
@@ -109,14 +107,12 @@ public class ColumnPageActivity extends DetailPageActivity {
                     public void onResult(Content info) {
                         if (info != null) {
                             pageContent = info;
-//                        pageContent.setContentUUID(info.getContentID());
                             playListView.setContentUUID(EpisodeHelper.TYPE_COLUMN_DETAIL,
                                     getSupportFragmentManager(),
                                     getContentUUID(), null);
                             if (sameType != null) {
                                 sameType.setContentUUID(SuggestView.TYPE_COLUMN_SUGGEST, info,
                                         null);
-
                             }
 
                             SuggestView starView = findViewById(R.id.star);

@@ -38,7 +38,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * Created by lixin on 2018/1/23.
  */
 
-public class ContentFragment extends BaseFragment implements PageContract.View {
+public class ContentFragment extends BaseFragment implements PageContract.LoadingView {
 
     private String param;
     private String contentId;
@@ -328,9 +328,6 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     protected void lazyLoad() {
         super.lazyLoad();
 
-        if (loadingView != null)
-            loadingView.setVisibility(View.VISIBLE);
-
         if (TextUtils.isEmpty(contentId)) {
             onError(LauncherApplication.AppContext, "暂无数据内容。");
         } else {
@@ -380,7 +377,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         }
     }
 
-    public void inflateContentPage(List<Page> pageList, String dataFrom) {
+    public void inflateContentPage(@Nullable List<Page> pageList, String dataFrom) {
         setTipVisibility(View.GONE);
         // 设置背景图片
 
@@ -388,7 +385,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     }
 
 
-    private void updateRecycleView(final List<Page> pageList) {
+    private void updateRecycleView(@Nullable final List<Page> pageList) {
         if (contentView == null || mRecyclerView == null || pageList == null) return;
 
         adapter = (UniversalAdapter) mRecyclerView.getAdapter();
@@ -413,9 +410,6 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
         contentView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (loadingView != null)
-                    loadingView.setVisibility(View.GONE);
-
                 if (pageList == null || pageList.size() == 0) {
                     onError(LauncherApplication.AppContext, "数据为空");
                 }
@@ -436,7 +430,7 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     }
 
     @Override
-    public void onPageResult(List<Page> page) {
+    public void onPageResult(@Nullable List<Page> page) {
         inflateContentPage(page, "server");
     }
 
@@ -449,5 +443,17 @@ public class ContentFragment extends BaseFragment implements PageContract.View {
     @Override
     public void tip(@NotNull Context context, @NotNull String message) {
 
+    }
+
+    @Override
+    public void startLoading() {
+        if (loadingView != null)
+            loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void loadingComplete() {
+        if (loadingView != null)
+            loadingView.setVisibility(View.GONE);
     }
 }

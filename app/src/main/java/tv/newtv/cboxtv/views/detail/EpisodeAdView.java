@@ -82,7 +82,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
     }
 
     @Override
-    public boolean interuptKeyEvent(KeyEvent event) {
+    public boolean interruptKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent
                     .KEYCODE_DPAD_RIGHT) {

@@ -28,7 +28,7 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
 
     init {
         mID = System.currentTimeMillis()
-        LogUtils.d(Companion.TAG, "build $TAG from $model id=$mID")
+        LogUtils.d(Companion.TAG, "[ $TAG create from=$model id=$mID ]")
     }
 
     internal fun getID(): Long {
@@ -56,13 +56,13 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
         mObserver = null
         callback?.onCancel(this)
 
-        LogUtils.d(Companion.TAG, "cancel $TAG from=$model id=$mID")
+        LogUtils.d(Companion.TAG, "[ $TAG cancel from=$model id=$mID ]")
     }
 
     @Suppress("UNCHECKED_CAST")
     internal fun execute() {
         observable
-                .retryWhen(RetryWithDelay(3, 2, TimeUnit.SECONDS))
+                .retryWhen(RetryWithDelay(5, 5, TimeUnit.SECONDS))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ResponseBody> {

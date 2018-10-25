@@ -113,7 +113,7 @@ public abstract class DetailPageActivity extends BaseActivity {
                     if (!view.hasFocus()) {
                         continue;
                     }
-                    if (view instanceof IEpisode && ((IEpisode) view).interuptKeyEvent
+                    if (view instanceof IEpisode && ((IEpisode) view).interruptKeyEvent
                             (event)) {
                         return true;
                     } else {
@@ -136,7 +136,7 @@ public abstract class DetailPageActivity extends BaseActivity {
                             toView = viewGroup.getChildAt(pos);
                             if (toView != null) {
                                 if (toView instanceof IEpisode && ((IEpisode) toView)
-                                        .interuptKeyEvent
+                                        .interruptKeyEvent
                                                 (event)) {
                                     return true;
                                 }

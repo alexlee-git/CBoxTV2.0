@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tv.newtv.cboxtv.views.detail.SmoothScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/id_scroll_view"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,29 +9,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-
-        <!--<FrameLayout-->
-        <!--android:id="@+id/person_detail_ad_fl"-->
-        <!--android:layout_width="@dimen/width_1746px"-->
-        <!--android:layout_height="@dimen/height_386px"-->
-        <!--android:layout_below="@id/id_usercenter_fragment_root"-->
-        <!--android:layout_marginLeft="@dimen/width_87px"-->
-        <!--android:layout_marginTop="@dimen/height_15px"-->
-        <!--android:background="@drawable/selector_pos_background"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--&gt;-->
-
-        <!--<tv.newtv.cboxtv.views.RecycleImageView-->
-        <!--android:id="@+id/person_detail_ad_img"-->
-        <!--android:layout_width="@dimen/width_1680px"-->
-        <!--android:layout_height="@dimen/height_320px"-->
-        <!--android:tag="cell_001_1_poster" />-->
-
-        <!--</FrameLayout>-->
-
-
-        <!--EpisodeHorizontalListView-->
 
         <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
             android:id="@+id/hostProgramView"

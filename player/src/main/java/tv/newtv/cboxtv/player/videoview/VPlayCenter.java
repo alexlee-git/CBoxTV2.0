@@ -1,14 +1,12 @@
 package tv.newtv.cboxtv.player.videoview;
 
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -23,20 +21,19 @@ public class VPlayCenter {
     public static final int PLAY_SINGLE = 0;
     public static final int PLAY_SERIES = 1;
 
-    private List<Content> programSeriesInfo;
+    private Content programSeriesInfo;
     private int currentIndex = 0;
     private int currentType;
 
-    VPlayCenter() {
-    }
+    VPlayCenter() { }
 
     public int getCurrentType() {
         return currentType;
     }
 
     public boolean isReady() {
-        if (programSeriesInfo == null) return false;
-        return programSeriesInfo.size() > 0;
+        return programSeriesInfo != null && programSeriesInfo.getData() != null &&
+                programSeriesInfo.getData().size() > 0;
     }
 
     /**
@@ -76,17 +73,14 @@ public class VPlayCenter {
     }
 
     public DataStruct getDataStruct() {
+        if (!isReady()) return null;
         if (currentIndex < 0) {
             currentIndex = 0;
         }
+        if (currentIndex >= programSeriesInfo.getData().size()) {
+            currentIndex = programSeriesInfo.getData().size();
+        }
         return getDataStruct(currentIndex);
-    }
-
-    /**
-     *
-     */
-    public void playComplete() {
-        currentIndex += 1;
     }
 
     /**
@@ -107,11 +101,7 @@ public class VPlayCenter {
      */
     public boolean hasNext() {
         if (currentType == PLAY_SINGLE) return false;
-        DataStruct dataStruct = getDataStruct(currentIndex);
-        if (dataStruct == null) {
-            return false;
-        }
-        return true;
+        return hasNext(currentIndex + 1);
     }
 
     boolean hasNext(int index) {
@@ -128,11 +118,9 @@ public class VPlayCenter {
      *
      * @return
      */
-    public Content getCurrentSeriesInfo() {
-        if (programSeriesInfo != null && programSeriesInfo.size() > 0) {
-            return programSeriesInfo.get(0);
-        }
-        return null;
+    public @Nullable
+    Content getCurrentSeriesInfo() {
+        return programSeriesInfo;
     }
 
     /**
@@ -140,23 +128,13 @@ public class VPlayCenter {
      *
      * @param seriesInfo
      */
-    public void addSeriesInfo(Content seriesInfo) {
+    public void setSeriesInfo(Content seriesInfo) {
         if (seriesInfo == null) {
             return;
         }
 
-        if (programSeriesInfo == null) {
-            programSeriesInfo = new ArrayList<>();
-        }
         currentIndex = 0;
-        programSeriesInfo.clear();
-        programSeriesInfo.add(seriesInfo);
-    }
-
-    public Content getCurrentProgramSeriesInfo() {
-        if (programSeriesInfo == null) return null;
-        if (programSeriesInfo.size() <= currentIndex) return null;
-        return programSeriesInfo.get(currentIndex);
+        programSeriesInfo = seriesInfo;
     }
 
     /**
