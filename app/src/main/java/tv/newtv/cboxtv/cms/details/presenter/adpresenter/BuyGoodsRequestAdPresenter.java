@@ -2,11 +2,15 @@ package tv.newtv.cboxtv.cms.details.presenter.adpresenter;
 
 import android.text.TextUtils;
 
+import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.cms.ad.ADConfig;
 import tv.newtv.cboxtv.cms.ad.model.AdBean;
 import tv.newtv.cboxtv.cms.util.GsonUtil;
 
 public class BuyGoodsRequestAdPresenter extends BaseRequestAdPresenter{
+    private static final String TAG = "BuyGoodsRequestAdPresen";
     private IAdConstract.AdCommonConstractView adCallback;
+    private ADConfig.ColumnListener myColumnListener = new MyColumnListener();
 
     public BuyGoodsRequestAdPresenter(IAdConstract.AdCommonConstractView adTextConstractView){
         this.adCallback = adTextConstractView;
@@ -14,6 +18,7 @@ public class BuyGoodsRequestAdPresenter extends BaseRequestAdPresenter{
 
     @Override
     public void dealResult(String result) {
+        ADConfig.getInstance().setListener(myColumnListener);
         if(adCallback == null){
             return;
         }
@@ -32,5 +37,19 @@ public class BuyGoodsRequestAdPresenter extends BaseRequestAdPresenter{
         }
 
         adCallback.fail();
+    }
+
+    private class MyColumnListener implements ADConfig.ColumnListener{
+
+        @Override
+        public void receive() {
+            getAD(Constant.AD_BUY_GOODS,"");
+        }
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        ADConfig.getInstance().removeListener(myColumnListener);
     }
 }

@@ -136,14 +136,20 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             duration = playTime;
         }
 
-        myScreenListener = new MyScreenListener();
-        if(!NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener)){
-            handler.sendEmptyMessageDelayed(1,5 * 1000);
+        if(myScreenListener != null && NewTVLauncherPlayerViewManager.getInstance().isFullScreen()){
+            myScreenListener.enterFullScreen();
+        }else{
+            myScreenListener = new MyScreenListener();
+            NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener);
+//            if(!NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener)){
+//                handler.sendEmptyMessageDelayed(1,5 * 1000);
+//            }
         }
 //        getSkuInfo("1016913617");
     }
 
     private void show(){
+        dismiss();
         buyGoodsView = new BuyGoodsPopupWindow();
         buyGoodsView.setParamsMap(extMap);
         buyGoodsView.init(context,view);
@@ -364,6 +370,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         handler.removeCallbacksAndMessages(null);
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;
+        adPresenter.destroy();
     }
 
     private Map<String,String> analyzeExt(String ext){
