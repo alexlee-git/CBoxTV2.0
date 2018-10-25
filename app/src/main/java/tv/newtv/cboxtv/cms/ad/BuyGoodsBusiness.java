@@ -157,12 +157,12 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     BindStatusRecv recv = (BindStatusRecv) outParam;
                     if(0 == recv.getIsBind()){
                         //未绑定
-                        getQrcode();
+                        getQrcode(false);
                     }else if(1 == recv.getIsBind()){
                         //已绑定
                         feedId = (String) SPrefUtils.getValue(context, SPrefUtils.FEED_ID,"");
                         if(TextUtils.isEmpty(feedId)){
-                            getQrcode();
+                            getQrcode(false);
                         }else {
                             buyGoodsView.setImageUrl(item.materials.get(0).filePath);
                             log.startShowGoods();
@@ -180,7 +180,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     /**
      * 获取授权临时二维码
      */
-    private void getQrcode(){
+    private void getQrcode(final boolean refresh){
         AuthQrcodeSend authQrcodeSend = new AuthQrcodeSend();
         SmartBuyManager.getQrcode(authQrcodeSend, new NetDataHandler() {
             @Override
@@ -194,8 +194,10 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     buyGoodsView.showQrCode(authCode);
                     isShowQrCode = true;
                     getResult(authCode,expiresIn);
-                    log.startShowQrCode();
-                    sendCloseMessage(duration);
+                    if(!refresh){
+                        log.startShowQrCode();
+                        sendCloseMessage(duration);
+                    }
                 }
             }
         });
@@ -214,19 +216,29 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             public void netDataCallback(int code, Object inParam, Object outParam) {
                 if(code == 0 &&outParam != null){
                     AuthResultRecv recv = (AuthResultRecv) outParam;
-                    //用户accessToken超时时间
-                    String expiresIn = recv.getExpiresIn();
-                    //时间
-                    String time = recv.getTime();
-                    //京东唯一的用户ID
-                    String uid = recv.getUid();
-                    //用户的昵称
-                    String userNick = recv.getUserNick();
-                    //用户头像
-                    String avatar = recv.getAvatar();
-                    Log.i(TAG, "expiresIn: "+expiresIn+",time:"+time+",uid:"+uid+",userNick:"+userNick+",avatar:"+avatar);
-                    if(!TextUtils.isEmpty(uid)){
-                        activateAndBindDevice(uid);
+                    if (TextUtils.equals(recv.getCode(), "200")) {
+                        //用户accessToken超时时间
+                        String expiresIn = recv.getExpiresIn();
+                        //时间
+                        String time = recv.getTime();
+                        //京东唯一的用户ID
+                        String uid = recv.getUid();
+                        //用户的昵称
+                        String userNick = recv.getUserNick();
+                        //用户头像
+                        String avatar = recv.getAvatar();
+                        Log.i(TAG, "expiresIn: "+expiresIn+",time:"+time+",uid:"+uid+",userNick:"+userNick+",avatar:"+avatar);
+                        if(!TextUtils.isEmpty(uid)){
+                            activateAndBindDevice(uid);
+                        }
+                    } else {
+                        switch (recv.getCode()){
+                            case "30010":
+                            case "30012":
+                            case "30015":
+                                getQrcode(true);
+                            break;
+                        }
                     }
                 }
             }
