@@ -141,7 +141,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                     .HORIZONTAL, false));
             mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
-                    .getDimensionPixelOffset(R.dimen.width_40px)));
+                    .getDimensionPixelOffset(R.dimen.width_48px)));
             mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id.dir_right));
 
             mTitleText = findViewById(R.id.id_title);
@@ -266,6 +266,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+
+
 
         if (mAdapter != null && mRecycleView != null) {
             setCurrentPlay(mAdapter.getSelectedIndex());

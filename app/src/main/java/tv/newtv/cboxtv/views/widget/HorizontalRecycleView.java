@@ -159,15 +159,15 @@ public class HorizontalRecycleView extends RecyclerView {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 nextFocus = FocusFinder.getInstance().findNextFocus(this, focusView, View
                         .FOCUS_LEFT);
-                if (nextFocus == null) {
-                    smoothScrollBy(-getChildAt(0).getWidth(), 0);
+                if (nextFocus == null && getScrollState() == SCROLL_STATE_IDLE) {
+                    smoothScrollBy(-getChildAt(0).getMeasuredWidth(), 0);
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 nextFocus = FocusFinder.getInstance().findNextFocus(this, focusView, View
                         .FOCUS_RIGHT);
-                if (nextFocus == null) {
-                    smoothScrollBy(getChildAt(0).getWidth(), 0);
+                if (nextFocus == null && getScrollState() == SCROLL_STATE_IDLE) {
+                    smoothScrollBy(getChildAt(0).getMeasuredWidth(), 0);
                 }
                 break;
             default:
