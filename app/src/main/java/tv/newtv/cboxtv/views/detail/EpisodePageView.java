@@ -60,7 +60,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private EpisodePageAdapter pageItemAdapter;
     private OnEpisodeChange mOnEpisodeChange;
     private int currentIndex = 0;
-    private List<EpisodeFragment> fragments;
+    private List<AbsEpisodeFragment> fragments;
     private TextView leftDir, rightDir;
     private CurrentPlayImageView mCurrentPlayImage;
     private View mControlView;
@@ -77,6 +77,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private AdContract.Presenter adPresenter;
     private ContentContract.Presenter mContentPresenter;
     private int pageSize = DEFAULT_SIZE;
+    private String mVideoType;
 
     public EpisodePageView(Context context) {
         this(context, null);
@@ -88,24 +89,26 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     public EpisodePageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initalize(context);
+        initialize(context);
         getAD();
     }
 
     private void getAD() {
-        adPresenter = new AdContract.AdPresenter(getContext(),this);
-        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_CONTENTLIST, "",PlayerConfig
-                .getInstance().getFirstChannelId(),PlayerConfig.getInstance().getSecondChannelId
-                (),PlayerConfig.getInstance().getTopicId(),null);
+        adPresenter = new AdContract.AdPresenter(getContext(), this);
+        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_CONTENTLIST, "",
+                PlayerConfig
+                        .getInstance().getFirstChannelId(), PlayerConfig.getInstance()
+                        .getSecondChannelId
+                        (), PlayerConfig.getInstance().getTopicId(), null);
     }
 
     @Override
     public void destroy() {
-        if(adPresenter != null){
+        if (adPresenter != null) {
             adPresenter.destroy();
             adPresenter = null;
         }
-        if(mContentPresenter != null){
+        if (mContentPresenter != null) {
             mContentPresenter.destroy();
             mContentPresenter = null;
         }
@@ -126,7 +129,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         }
         pageItemAdapter = null;
         if (fragments != null && fragments.size() > 0) {
-            for (EpisodeFragment episodeFragment : fragments) {
+            for (AbsEpisodeFragment episodeFragment : fragments) {
                 episodeFragment.destroy();
             }
             fragments.clear();
@@ -207,7 +210,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     }
 
-    private void initalize(Context context) {
+    private void initialize(Context context) {
         ShowInfoTextView("正在加载...");
 
         TitleView = LayoutInflater.from(context).inflate(R.layout.episode_header_ad_layout, this,
@@ -352,12 +355,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         aiyaRecyclerView.setAdapter(pageItemAdapter);
     }
 
-    public void setContentUUID(int episodeType, FragmentManager manager, String uuid, View
-            controlView) {
+    public void setContentUUID(int episodeType, String videoType, FragmentManager manager, String
+            uuid, View controlView) {
         mFragmentManager = manager;
         mContentUUID = uuid;
         mControlView = controlView;
         mEpisodeType = episodeType;
+        mVideoType = videoType;
 
         mContentPresenter = new ContentContract.ContentPresenter
                 (getContext(), this);
@@ -413,7 +417,12 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             if (endIndex > size) {
                 endIndex = size;
             }
-            EpisodeFragment episodeFragment = new EpisodeFragment();
+            AbsEpisodeFragment episodeFragment;
+            if (!videoType(mVideoType)) {
+                episodeFragment = new TvEpisodeFragment();
+            } else {
+                episodeFragment = new SeriesEpisodeFragment();
+            }
             episodeFragment.setAdItem(adPresenter.getAdItem());
             episodeFragment.setData(mContentList.subList(index, endIndex));
             episodeFragment.setViewPager(ListPager, fragments.size(), this);
@@ -426,6 +435,15 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         pageItemAdapter.setPageData(pageItems, aiyaRecyclerView).notifyDataSetChanged();
         requestLayout();
     }
+
+    private boolean videoType(String videoType) {
+        if (!TextUtils.isEmpty(videoType) && (TextUtils.equals(videoType, "电视剧")
+                || TextUtils.equals(videoType, "动漫"))) {
+            return false;
+        }
+        return true;
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -650,7 +668,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
         parseResult(result);
     }
-
 
     public interface OnEpisodeChange {
         void onGetProgramSeriesInfo(List<SubContent> seriesInfo);

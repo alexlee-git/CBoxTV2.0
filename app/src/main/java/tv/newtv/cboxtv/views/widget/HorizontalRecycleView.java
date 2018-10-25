@@ -21,24 +21,8 @@ public class HorizontalRecycleView extends RecyclerView {
 
     private boolean isHorizontal;
     private boolean hasMutipleFocus = false;
-
+    private int mShowCount = 4;
     private View mDirStartView, mDirEndView;
-
-    public int getFirstVisiblePosition(){
-        LayoutManager layoutManager = getLayoutManager();
-        if (layoutManager != null && layoutManager instanceof LinearLayoutManager) {
-            return ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
-        }
-        return 0;
-    }
-
-    public int getLastVisiblePosition(){
-        LayoutManager layoutManager = getLayoutManager();
-        if (layoutManager != null && layoutManager instanceof LinearLayoutManager) {
-            return ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-        }
-        return 0;
-    }
 
     public HorizontalRecycleView(Context context) {
         this(context, null);
@@ -53,6 +37,29 @@ public class HorizontalRecycleView extends RecyclerView {
         initialize(context, attrs);
     }
 
+    @SuppressWarnings("PointlessNullCheck")
+    public int getFirstVisiblePosition() {
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager != null && layoutManager instanceof LinearLayoutManager) {
+            return ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+        }
+        return 0;
+    }
+
+    @SuppressWarnings("PointlessNullCheck")
+    public int getLastVisiblePosition() {
+        LayoutManager layoutManager = getLayoutManager();
+        if (layoutManager != null && layoutManager instanceof LinearLayoutManager) {
+            return ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+        }
+        return 0;
+    }
+
+    public void setShowCounts(int count) {
+        mShowCount = count;
+    }
+
+    @SuppressWarnings("PointlessNullCheck")
     public boolean requestDefaultFocus(int index) {
         LayoutManager layoutManager = getLayoutManager();
         if (layoutManager != null && layoutManager instanceof LinearLayoutManager) {
@@ -72,6 +79,7 @@ public class HorizontalRecycleView extends RecyclerView {
         return false;
     }
 
+    @SuppressWarnings({"unused", "SpellCheckingInspection"})
     public void setItemHasMutipleFocus() {
         hasMutipleFocus = true;
     }
@@ -96,6 +104,11 @@ public class HorizontalRecycleView extends RecyclerView {
     }
 
     private void checkIndirection() {
+        if (getAdapter() != null && getAdapter().getItemCount() < mShowCount) {
+            mDirEndView.setVisibility(View.INVISIBLE);
+            mDirStartView.setVisibility(View.INVISIBLE);
+            return;
+        }
         if (mDirEndView != null) {
             if (canScroll(1)) {
                 //可以向下或者向右滚动
@@ -149,6 +162,7 @@ public class HorizontalRecycleView extends RecyclerView {
         }
     }
 
+    @SuppressWarnings("unused")
     private void initialize(Context context, AttributeSet attrs) {
 
     }

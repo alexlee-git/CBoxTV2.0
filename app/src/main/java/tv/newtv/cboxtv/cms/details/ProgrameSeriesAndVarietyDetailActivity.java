@@ -115,6 +115,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             playListView.setContentUUID(mContentPresenter.isTvSeries(content)
                                             ? EpisodeHelper.TYPE_PROGRAME_SERIES : EpisodeHelper
                                             .TYPE_VARIETY_SHOW,
+                                    content.getVideoType(),
                                     getSupportFragmentManager(),
                                     getContentUUID(), null);
                         } else {

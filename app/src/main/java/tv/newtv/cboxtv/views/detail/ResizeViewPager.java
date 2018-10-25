@@ -51,7 +51,7 @@ public class ResizeViewPager extends ViewPager {
         mOnPageChange = change;
     }
 
-    private @Nullable EpisodeFragment getFragment(int index) {
+    private @Nullable AbsEpisodeFragment getFragment(int index) {
         if (getAdapter() != null && getAdapter().getCount() > index && index >= 0) {
             return ((EpisodeAdapter) getAdapter()).getItem(index);
         }
@@ -75,7 +75,7 @@ public class ResizeViewPager extends ViewPager {
     }
 
     public void requestDefaultFocus() {
-        EpisodeFragment fragment = getFragment(getCurrentItem());
+        AbsEpisodeFragment fragment = getFragment(getCurrentItem());
         if (fragment == null) return;
         fragment.requestDefaultFocus();
     }
@@ -85,13 +85,13 @@ public class ResizeViewPager extends ViewPager {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                EpisodeFragment before = getFragment(currentPage);
+                AbsEpisodeFragment before = getFragment(currentPage);
                 if(before != null){
                     before.clear();
                 }
 
                 Log.d(TAG, "setCurrentItem item=" + item + " selectIndex=" + selectIndex);
-                EpisodeFragment fragment = getFragment(item);
+                AbsEpisodeFragment fragment = getFragment(item);
                 Log.d(TAG, "fragment size=" + getFragmentSize() + " item=" + item + " " +
                         "fragment=" + fragment);
                 if (getFragmentSize() < item || fragment == null) return;
@@ -126,7 +126,7 @@ public class ResizeViewPager extends ViewPager {
                     mOnPageChange.onChange(beforeIndex, getCurrentItem(), getAdapter().getCount());
                 }
 
-                EpisodeFragment episodeFragment = (EpisodeFragment) ((FragmentStatePagerAdapter)
+                AbsEpisodeFragment episodeFragment = (AbsEpisodeFragment) ((FragmentStatePagerAdapter)
                         getAdapter())
                         .getItem(getCurrentItem());
 

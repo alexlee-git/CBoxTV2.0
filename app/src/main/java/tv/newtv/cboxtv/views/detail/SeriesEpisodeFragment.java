@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.views.detail;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,11 +35,12 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/3
  */
-public class EpisodeFragment extends Fragment {
+public class SeriesEpisodeFragment extends AbsEpisodeFragment {
     private static final int DEFAULT_SIZE = 8;
     private static final int HAS_AD_SIZE = 7;
-
-    private static final String TAG = EpisodeFragment.class.getSimpleName();
+    private static final String TAG = SeriesEpisodeFragment.class.getSimpleName();
+    private boolean hasAD = false;
+    private ADHelper.AD.ADItem adItem;
     private List<SubContent> mData;
     private View contentView;
     private View firstView;
@@ -50,13 +50,16 @@ public class EpisodeFragment extends Fragment {
     private EpisodeChange mChange;
     private int currentIndex = -1;
     private List<ViewHolder> viewHolders = new ArrayList<>();
-    private boolean hasAD = false;
-    private ADHelper.AD.ADItem adItem;
-    private int pageSize = DEFAULT_SIZE;
 
     private int mLayoutId = R.layout.episode_page_item;
     private String mItemTag = "id_module_8_view";
 
+    @Override
+    public int getPageSize() {
+        return DEFAULT_SIZE;
+    }
+
+    @Override
     public void destroy() {
         mData = null;
         contentView = null;
@@ -79,25 +82,24 @@ public class EpisodeFragment extends Fragment {
         mItemTag = itemTag;
     }
 
+    @Override
     public void clear() {
         currentIndex = -1;
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
     public void setViewPager(ResizeViewPager viewPager, int position, EpisodeChange change) {
         mWeakViewPager = new WeakReference<>(viewPager);
         mChange = change;
         mPosition = position;
     }
 
+    @Override
     public int getCurrentIndex() {
         return currentIndex;
     }
 
+    @Override
     public void requestDefaultFocus() {
         if (currentIndex == -1) {
             if (firstView != null) {
@@ -112,6 +114,7 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
+    @Override
     public void setSelectIndex(final int index) {
         Log.d(TAG, "setSelectIndex index=" + index);
         currentIndex = index;
@@ -128,16 +131,19 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
+    @Override
     public void setData(List<SubContent> data) {
         mData = data;
         updateUI();
     }
 
+    @Override
     public void requestFirst() {
         if (firstView != null)
             firstView.requestFocus();
     }
 
+    @Override
     public void requestLast() {
         if (lastView != null) {
             lastView.requestFocus();
@@ -173,6 +179,18 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
+    @Override
+    public void setAdItem(ADHelper.AD.ADItem adItem) {
+        if (adItem != null && !TextUtils.isEmpty(adItem.AdUrl)) {
+            setHasAD(true);
+            this.adItem = adItem;
+        }
+    }
+
+    public void setHasAD(boolean hasAD) {
+        this.hasAD = hasAD;
+    }
+
     private <T> void updateHolder(View view, T t) {
         BaseHolder holder = null;
         if (view.getTag(R.id.id_view_tag) == null) {
@@ -201,18 +219,6 @@ public class EpisodeFragment extends Fragment {
             }
         } else {
             view.setVisibility(View.GONE);
-        }
-    }
-
-    public void setHasAD(boolean hasAD) {
-        this.hasAD = hasAD;
-    }
-
-    public void setAdItem(ADHelper.AD.ADItem adItem) {
-        if (adItem != null && !TextUtils.isEmpty(adItem.AdUrl)) {
-            this.pageSize = HAS_AD_SIZE;
-            setHasAD(true);
-            this.adItem = adItem;
         }
     }
 
@@ -268,7 +274,7 @@ public class EpisodeFragment extends Fragment {
 
         void performClick(boolean fromClick) {
             if (mChange != null) {
-                mChange.onChange(PosterView, mPosition * pageSize + mIndex, fromClick);
+                mChange.onChange(PosterView, mPosition * getPageSize() + mIndex, fromClick);
             }
         }
 
@@ -337,9 +343,9 @@ public class EpisodeFragment extends Fragment {
     }
 
     private class BaseHolder<T> {
+        protected View itemView;
         CurrentPlayImageView PosterView;
         ImageView FocusView;
-        protected View itemView;
         TextView TitleView;
         T mData;
 

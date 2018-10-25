@@ -140,6 +140,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             mRecycleView = findViewById(R.id.list_view);
             mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                     .HORIZONTAL, false));
+            mRecycleView.setShowCounts(4);
             mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
                     .getDimensionPixelOffset(R.dimen.width_48px)));
             mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id.dir_right));

@@ -14,15 +14,15 @@ import java.util.List;
  */
 public class EpisodeAdapter extends FragmentStatePagerAdapter {
 
-    private List<EpisodeFragment> mParams;
+    private List<AbsEpisodeFragment> mParams;
 
-    EpisodeAdapter(FragmentManager fm, List<EpisodeFragment> params) {
+    EpisodeAdapter(FragmentManager fm, List<AbsEpisodeFragment> params) {
         super(fm);
         mParams = params;
     }
 
     @Override
-    public EpisodeFragment getItem(int position) {
+    public AbsEpisodeFragment getItem(int position) {
         return mParams.get(position);
     }
 
