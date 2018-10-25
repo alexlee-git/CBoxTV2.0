@@ -812,9 +812,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         mLoading = (NewTVLauncherPlayerLoading) view.findViewById(R.id.player_loading);
         mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
 
-        updateUIPropertys(defaultConfig != null ? defaultConfig.isFullScreen : startIsFullScreen);
 
         PLAYER_ID = NewTVLauncherPlayerViewManager.getInstance().setPlayerView(this);
+        updateUIPropertys(defaultConfig != null ? defaultConfig.isFullScreen : startIsFullScreen);
         hintVip = view.findViewById(R.id.hint_vip);
     }
 

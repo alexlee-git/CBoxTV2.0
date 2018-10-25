@@ -7,6 +7,9 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.PlayerConfig;
@@ -29,6 +32,7 @@ public class NewTVLauncherPlayerViewManager {
     private long currentPlayer = 0;
 
     private boolean isLive = false;// 是否是直播？
+    private List<ScreenListener> pendingListener = new ArrayList<>();
 
     private NewTVLauncherPlayerViewManager() {
     }
@@ -87,12 +91,14 @@ public class NewTVLauncherPlayerViewManager {
 
         currentPlayer = System.currentTimeMillis();
         mNewTVLauncherPlayerView = playerView;
+        setPendingListener();
         return currentPlayer;
     }
 
     public void init(Context context) {
         if (mNewTVLauncherPlayerView == null) {
             mNewTVLauncherPlayerView = new NewTVLauncherPlayerView(null, context);
+            setPendingListener();
         }
     }
 
@@ -330,6 +336,7 @@ public class NewTVLauncherPlayerViewManager {
         Log.i(TAG, "setContinuePlay: ");
         if (mNewTVLauncherPlayerView == null) {
             mNewTVLauncherPlayerView = new NewTVLauncherPlayerView(config, context);
+            setPendingListener();
         }
         if (typeIndex == -1) {
             playProgramSingle(context, mProgramSeriesInfo, position, false);
@@ -346,14 +353,26 @@ public class NewTVLauncherPlayerViewManager {
     public boolean registerScreenListener(ScreenListener listener){
         if (mNewTVLauncherPlayerView != null) {
             mNewTVLauncherPlayerView.registerScreenListener(listener);
-            return true;
+        }else {
+            pendingListener.add(listener);
         }
-        return false;
+        return true;
     }
 
     public void unregisterScreenListener(ScreenListener listener){
         if(mNewTVLauncherPlayerView != null){
             mNewTVLauncherPlayerView.unregisterScreenListener(listener);
+        }else {
+            pendingListener.remove(listener);
+        }
+    }
+
+    private void setPendingListener(){
+        if(mNewTVLauncherPlayerView != null){
+            for(ScreenListener listener : pendingListener) {
+                mNewTVLauncherPlayerView.registerScreenListener(listener);
+            }
+            pendingListener.clear();
         }
     }
 }
