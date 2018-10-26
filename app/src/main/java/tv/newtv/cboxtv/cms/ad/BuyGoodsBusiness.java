@@ -406,6 +406,9 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
 
         @Override
         public void enterFullScreen() {
+            if(disposable != null ){
+                disposable.dispose();
+            }
             Observable.interval(0,1,TimeUnit.SECONDS)
                     .take(Integer.MAX_VALUE)
                     .subscribeOn(Schedulers.io())
