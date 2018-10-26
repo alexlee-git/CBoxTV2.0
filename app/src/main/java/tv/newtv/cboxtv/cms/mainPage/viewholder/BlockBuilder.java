@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.Row;
@@ -649,7 +650,7 @@ public class BlockBuilder {
             String superType = info.getCornerType();
             if ("IMG".equals(superType)) {
                 String superUrl = info.getCornerImg();
-                if (superUrl != null) {
+                if (!TextUtils.isEmpty(superUrl)) {
                     Picasso.get().load(superUrl).tag(PicassoTag).into(target);
                 }
             }

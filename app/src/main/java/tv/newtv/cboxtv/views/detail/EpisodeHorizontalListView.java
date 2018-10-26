@@ -269,7 +269,6 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         super.onLayout(changed, l, t, r, b);
 
 
-
         if (mAdapter != null && mRecycleView != null) {
             setCurrentPlay(mAdapter.getSelectedIndex());
         }

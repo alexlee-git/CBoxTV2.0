@@ -10,8 +10,8 @@ import com.newtv.cms.api.IContent
 import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
+import com.newtv.libs.Constant
 import com.newtv.libs.Libs
-import java.util.*
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -53,8 +53,6 @@ class ContentContract {
     class ContentPresenter(context: Context, view: View)
         : CmsServicePresenter<View>(context, view), Presenter {
 
-        var mContent: Content? = null
-
         override fun isTvSeries(content: Content?): Boolean {
             content?.let {
                 val videoType = content.videoType
@@ -89,30 +87,50 @@ class ContentContract {
                 return id
             }
             return 0L
-
         }
 
         fun getSubContentsWithCallback(contentResult: Content?, uuid: String) {
             if (contentResult != null) {
                 val content: IContent? = getService(SERVICE_CONTENT)
-                content?.getSubContent(Libs.get().appKey, Libs.get().channelId, uuid, object
-                    : DataObserver<ModelResult<List<SubContent>>> {
-                    override fun onResult(result: ModelResult<List<SubContent>>, requestCode: Long) {
-                        if (result.isOk()) {
-                            contentResult.data = (ArrayList(result.data))
-                            view?.onContentResult(contentResult)
-                            view?.let {
-                                if (it is LoadingView) it.loadComplete()
-                            }
-                        } else {
-                            view?.onError(context, result.errorMessage)
-                        }
+                content?.let { iContent ->
+                    var single = false
+                    var suuid: String? = uuid
+                    if (Constant.CONTENTTYPE_PG.equals(contentResult.contentType)
+                            || Constant.CONTENTTYPE_CP.equals(contentResult.contentType)) {
+                        single = true
+                        suuid = contentResult.csContentIDs
                     }
+                    iContent.getSubContent(Libs.get().appKey, Libs.get().channelId,
+                            suuid!!,
+                            object : DataObserver<ModelResult<List<SubContent>>> {
+                                override fun onResult(result: ModelResult<List<SubContent>>, requestCode: Long) {
+                                    if (result.isOk()) {
+                                        if (!single) {
+                                            contentResult.data = (ArrayList(result.data))
+                                        } else {
+                                            result.data?.let {
+                                                for (sub: SubContent in it) {
+                                                    if (TextUtils.equals(sub.contentID, uuid)) {
+                                                        contentResult.data = arrayListOf(sub)
+                                                        break
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        view?.onContentResult(contentResult)
+                                        view?.let {
+                                            if (it is LoadingView) it.loadComplete()
+                                        }
+                                    } else {
+                                        view?.onError(context, result.errorMessage)
+                                    }
+                                }
 
-                    override fun onError(desc: String?) {
-                        view?.onError(context, desc)
-                    }
-                })
+                                override fun onError(desc: String?) {
+                                    view?.onError(context, desc)
+                                }
+                            })
+                }
             }
         }
 
@@ -125,9 +143,9 @@ class ContentContract {
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
-                        if(!autoSub){
+                        if (!autoSub) {
                             view?.onContentResult(result.data);
-                        }else {
+                        } else {
                             getSubContentsWithCallback(result.data, uuid)
                         }
                     } else {

@@ -16,6 +16,5 @@ interface ICorner : IService {
     /**
      * 获取角标列表
      */
-    fun getCorner(appkey:String,channelCode:String,observer:
-    DataObserver<ModelResult<List<Corner>>>):Long
+    fun getCorner(appkey:String,channelCode:String,observer: DataObserver<String>):Long
 }
