@@ -48,7 +48,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     private ADPresenter adPresenter;
     private AdPopupWindow adPopupWindow;
     @BuyGoodsInject
-    private BuyGoodsBusiness buyGoodsBusiness;
+    protected BuyGoodsBusiness buyGoodsBusiness;
 
 
     public boolean isFrontStage() {

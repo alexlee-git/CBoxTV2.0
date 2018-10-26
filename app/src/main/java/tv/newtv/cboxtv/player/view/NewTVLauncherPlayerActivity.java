@@ -128,6 +128,10 @@ public class NewTVLauncherPlayerActivity extends BaseActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         Log.e(TAG, "action:" + event.getAction() + ",keyCode=" + event.getKeyCode());
+        if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                && buyGoodsBusiness.dispatchKeyEvent(event)){
+            return true;
+        }
         if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
             return true;
         }
