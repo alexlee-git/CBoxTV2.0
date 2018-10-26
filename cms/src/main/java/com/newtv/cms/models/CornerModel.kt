@@ -18,14 +18,13 @@ internal class CornerModel : BaseModel(), ICorner {
     override fun getCorner(
             appkey: String,
             channelCode: String,
-            observer: DataObserver<ModelResult<List<Corner>>>): Long {
+            observer: DataObserver<String>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)) {
             observer.onError("AppKey or ChannelCode is Empty")
             return 0
         }
-        val executor: Executor<ModelResult<List<Corner>>> =
-                buildExecutor(Request.corner.getCorner(appkey, channelCode),
-                        object : TypeToken<ModelResult<List<Corner>>>() {}.type)
+        val executor: Executor<String> =
+                buildExecutor(Request.corner.getCorner(appkey, channelCode), null)
         executor.observer(observer)
                 .execute()
         return executor.getID()

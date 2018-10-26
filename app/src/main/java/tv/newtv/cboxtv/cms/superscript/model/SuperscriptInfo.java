@@ -12,6 +12,18 @@ public class SuperscriptInfo {
     private String cornerDesc;
     private String cornerImg;
 
+    @Override
+    public String toString() {
+        return "[ SuperscriptInfo{" +
+                "id='" + cornerId + '\'' +
+                ", name='" + cornerName + '\'' +
+                ", type='" + cornerType + '\'' +
+                ", title='" + cornerTitle + '\'' +
+                ", desc='" + cornerDesc + '\'' +
+                ", img='" + cornerImg + '\'' +
+                '}' + " ]";
+    }
+
     public String getCornerId() {
         return cornerId;
     }

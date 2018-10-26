@@ -1,5 +1,6 @@
 package com.newtv.cms.bean
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 /**
@@ -29,6 +30,8 @@ open class Content  : Serializable {
     var priceNum: String? = null //最新付费节目数量 设置最后几集收费
     var videoType: String? = null //一级分类
     var director: String? = null //导演
+
+    @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
     var contentID: String? = null //内容Id
     var csContentIDs: String? = null //所属节目集ID	 节目所属节目集contentID   |  分隔
     var tags: String? = null //标签

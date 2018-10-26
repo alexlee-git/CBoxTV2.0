@@ -3,9 +3,12 @@ package tv.newtv.cboxtv.cms.superscript;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.newtv.cms.contract.CornerContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,33 +20,27 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
 import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfoResult;
 
 /**
  * Created by lixin on 2018/3/9.
- *
+ * <p>
  * 角标数据存放地址:/data/data/{packagename}/cache/super.json
  */
 
-public class SuperScriptManager {
-
-    private String mLocalUpdateTime; // 本地缓存的角标对应的时间戳信息
-    private Context mContext;
-    private Map<String, SuperscriptInfo> mSuperscriptMap;
-
-    private final String CACHE_FILE_NAME = "super.json";
-    private final String TAG = "superscript";
-
-    private SuperScriptManager() {}
+public class SuperScriptManager implements CornerContract.View {
 
     private volatile static SuperScriptManager mInstance;
+    private final String CACHE_FILE_NAME = "super.json";
+    private final String TAG = "superscript";
+    private String mLocalUpdateTime; // 本地缓存的角标对应的时间戳信息
+    private Map<String, SuperscriptInfo> mSuperscriptMap;
+    private CornerContract.Presenter mPresenter;
+
+    private SuperScriptManager() {
+    }
 
     public static SuperScriptManager getInstance() {
         if (mInstance == null) {
@@ -57,19 +54,18 @@ public class SuperScriptManager {
     }
 
     public void init(Context context) {
-        mContext = context;
-
-        initSuperscriptRepository();
+        mPresenter = new CornerContract.CornerPresenter(context, this);
+        initSuperscriptRepository(context);
     }
 
     /**
      * 加载本地角标库数据
      */
-    private void loadLocalSuperscriptRepository() {
-        FileReader fileReader =  null;
+    private void loadLocalSuperscriptRepository(Context context) {
+        FileReader fileReader = null;
         BufferedReader reader = null;
         try {
-            File file = new File(mContext.getCacheDir(), CACHE_FILE_NAME);
+            File file = new File(context.getCacheDir(), CACHE_FILE_NAME);
             if (!file.exists()) {
                 LogUtils.e(TAG, "角标信息的缓存文件尚不存在");
                 return;
@@ -105,52 +101,13 @@ public class SuperScriptManager {
     /**
      * 初始化角标库
      */
-    private void initSuperscriptRepository() {
-        loadLocalSuperscriptRepository();
-
-        NetClient.INSTANCE.getSuperScriptApi()
-                .getSuperscriptInfos()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {}
-
-                    @Override
-                    public void onNext(ResponseBody value) {
-                        try {
-                            String data = value.string();
-                            JSONObject json = new JSONObject(data);
-
-                            String updateTime = json.optString("updateTime");
-
-                            if (!TextUtils.isEmpty(mLocalUpdateTime)
-                                    && !TextUtils.isEmpty(updateTime)
-                                    && Long.parseLong(mLocalUpdateTime) >= Long.parseLong(updateTime)) {
-                                LogUtils.e(TAG, "本地角标时间大于等于服务端的时间, 无需更新");
-                                return;
-                            }
-
-                            // 解析网络数据
-                            LogUtils.e(TAG, "解析服务端角标数据");
-                            parseSuperscriptInfo("server", json);
-
-                            // 更新本地角标数据
-                            updateLocalInfo(data);
-                        } catch (Exception e) {
-                            LogUtils.e(e);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {}
-
-                    @Override
-                    public void onComplete() {}
-                });
+    private void initSuperscriptRepository(Context context) {
+        loadLocalSuperscriptRepository(context);
+        mPresenter.getCorner(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
     }
 
-    private SuperscriptInfoResult<SuperscriptInfo> parseSuperscriptInfo(String from, JSONObject json) {
+    private SuperscriptInfoResult<SuperscriptInfo> parseSuperscriptInfo(String from, JSONObject
+            json) {
         try {
             SuperscriptInfoResult<SuperscriptInfo> superscript = new SuperscriptInfoResult<>();
             superscript.setErrMsg(json.optString("errorMessage"));
@@ -179,7 +136,7 @@ public class SuperScriptManager {
                     mSuperscriptMap = new HashMap<>(Constant.BUFFER_SIZE_8);
                 }
                 mSuperscriptMap.put(info.getCornerId(), info);
-                LogUtils.i("解析到角标信息 id : " + info.getCornerId() + ", img : " + info.getCornerImg());
+                LogUtils.i(TAG,"解析到角标信息 " + info.toString());
             }
             return superscript;
         } catch (Exception e) {
@@ -190,12 +147,13 @@ public class SuperScriptManager {
 
     /**
      * 更新本地角标数据
+     *
      * @param data
      */
-    private void updateLocalInfo(String data) {
+    private void updateLocalInfo(Context context, String data) {
         FileWriter fileWriter = null;
         try {
-            File file = new File(mContext.getCacheDir(), CACHE_FILE_NAME);
+            File file = new File(context.getCacheDir(), CACHE_FILE_NAME);
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -235,6 +193,41 @@ public class SuperScriptManager {
             mSuperscriptMap = null;
         }
 
-         mInstance = null;
+        mInstance = null;
+    }
+
+    @Override
+    public void onCornerResult(@NotNull Context context, @Nullable String data) {
+        try {
+            JSONObject json = new JSONObject(data);
+
+            String updateTime = json.optString("updateTime");
+
+            if (!TextUtils.isEmpty(mLocalUpdateTime)
+                    && !TextUtils.isEmpty(updateTime)
+                    && Long.parseLong(mLocalUpdateTime) >= Long.parseLong(updateTime)) {
+                LogUtils.e(TAG, "本地角标时间大于等于服务端的时间, 无需更新");
+                return;
+            }
+
+            // 解析网络数据
+            LogUtils.e(TAG, "解析服务端角标数据");
+            parseSuperscriptInfo("server", json);
+
+            // 更新本地角标数据
+            updateLocalInfo(context, data);
+        } catch (Exception e) {
+            LogUtils.e(e);
+        }
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
+
     }
 }

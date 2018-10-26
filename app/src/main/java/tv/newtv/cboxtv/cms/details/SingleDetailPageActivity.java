@@ -25,6 +25,7 @@ import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.LogUploadUtils;
 
+import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.IEpisode;
@@ -39,9 +40,8 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
  * 创建日期:          2018/8/6
  */
 @SuppressWarnings("FieldCanBeLocal")
-public class SingleDetailPageActivity extends BaseActivity {
+public class SingleDetailPageActivity extends DetailPageActivity {
     private HeadPlayerView headPlayerView;
-    private String leftUUID, rightUUID;
     private String contentUUID;
     private SmoothScrollView scrollView;
 
@@ -85,23 +85,22 @@ public class SingleDetailPageActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ViewGroup viewGroup = findViewById(R.id.root_view);
-        if (viewGroup != null) {
-            int size = viewGroup.getChildCount();
-            for (int index = 0; index < size; index++) {
-                View view = viewGroup.getChildAt(index);
-                if (view instanceof IEpisode) {
-                    ((IEpisode) view).destroy();
-                }
-            }
-            if (viewGroup instanceof SmoothScrollView) {
-                ((SmoothScrollView) viewGroup).destroy();
-            }
-        }
-        BitmapUtil.recycleImageBitmap(viewGroup);
         headPlayerView = null;
     }
 
+
+    @Override
+    protected boolean interruptDetailPageKeyEvent(KeyEvent event) {
+        //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
+        if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
+                headPlayerView.hasFocus()) {
+            if (event.getKeyCode() == KeyEvent
+                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -113,16 +112,6 @@ public class SingleDetailPageActivity extends BaseActivity {
         } else {
             contentUUID = savedInstanceState.getString("content_uuid");
         }
-        if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
-            leftUUID = contentUUID.substring(0, 2);
-            rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-        } else {
-            Toast.makeText(getApplicationContext(), "节目集信息有误", Toast
-                    .LENGTH_SHORT).show();
-            SingleDetailPageActivity.this.finish();
-            return;
-        }
 
         scrollView = findViewById(R.id.root_view);
         headPlayerView = findViewById(R.id.header_video);
@@ -131,14 +120,14 @@ public class SingleDetailPageActivity extends BaseActivity {
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
                         .DB_TYPE_COLLECT))
                 .SetPlayerId(R.id.video_container)
+                .autoGetSubContents()
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add)
                 .SetContentUUID(contentUUID)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
-                        headPlayerView.setProgramSeriesInfo(info);
-                        suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info, null);
+                        suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
                     }
                 })
                 .SetPlayerCallback(new PlayerCallback() {
@@ -200,74 +189,5 @@ public class SingleDetailPageActivity extends BaseActivity {
                 }));
     }
 
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (interruptKeyEvent(event)) {
-            return super.dispatchKeyEvent(event);
-        }
 
-
-        //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
-        if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
-                headPlayerView.hasFocus()) {
-            if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                return true;
-            }
-        }
-
-        if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
-                .ACTION_UP) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_ESCAPE:
-                    finish();
-                    return super.dispatchKeyEvent(event);
-            }
-        }
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                return super.dispatchKeyEvent(event);
-            }
-            ViewGroup viewGroup = findViewById(R.id.root_view);
-            int size = viewGroup.getChildCount();
-            for (int index = 0; index < size; index++) {
-                View view = viewGroup.getChildAt(index);
-                if (view != null) {
-                    if (!view.hasFocus()) {
-                        continue;
-                    }
-                    if (view instanceof IEpisode && ((IEpisode) view).interruptKeyEvent
-                            (event)) {
-                        return true;
-                    } else {
-                        @SuppressWarnings("UnusedAssignment") View toView = null;
-                        int pos = index;
-                        int dir = 0;
-                        boolean condition = false;
-                        if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                            dir = -1;
-                            condition = true;
-                        } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                            dir = 1;
-                            condition = true;
-                        }
-                        while (condition) {
-                            pos += dir;
-                            if (pos < 0 || pos > viewGroup.getChildCount()) break;
-                            toView = viewGroup.getChildAt(pos);
-                            if (toView != null) {
-                                if (toView instanceof IEpisode && ((IEpisode) toView)
-                                        .interruptKeyEvent
-                                                (event)) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return super.dispatchKeyEvent(event);
-    }
 }

@@ -105,20 +105,19 @@ public class VodContract {
 
         /**
          * 创建鉴权数据
+         * @param contentId
          * @param seriesID
-         * @param albumId
          * @return
          */
-        ChkRequest createVodRequestBean(String seriesID, String
-                albumId) {
+        ChkRequest createVodRequestBean(String contentId, String seriesID) {
             ChkRequest playCheckRequestBean = new ChkRequest();
 
             playCheckRequestBean.setAppKey(Libs.get().getAppKey());
             playCheckRequestBean.setChannelId(Libs.get().getChannelId());
             playCheckRequestBean.setSource("NEWTV");
-            playCheckRequestBean.setId(seriesID);
-            if (!TextUtils.isEmpty(albumId)) {
-                playCheckRequestBean.setAlbumId(albumId);
+            playCheckRequestBean.setId(contentId);
+            if (!TextUtils.isEmpty(seriesID)) {
+                playCheckRequestBean.setAlbumId(seriesID);
             }
             ChkRequest.Product productInfo = new ChkRequest.Product();
             productInfo.setId(1);
