@@ -17,7 +17,7 @@
             android:id="@+id/line"
             android:layout_width="@dimen/width_3dp"
             android:layout_height="@dimen/height_110px"
-            android:layout_marginLeft="@dimen/width_30px"
+            android:layout_marginLeft="@dimen/width_96px"
             android:background="#ffffff"></View>
 
         <TextView
@@ -100,14 +100,13 @@
         android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="@dimen/width_50px"
-        android:layout_marginLeft="@dimen/width_24px"
+        android:layout_marginLeft="@dimen/width_96px"
         android:layout_marginTop="@dimen/height_36px"
         app:tabGravity="center"
-        app:tabIndicatorBackgroundColor="@color/colorAccent"
         app:tabIndicatorHeight="@dimen/height_4px"
-        app:tabIndicatorResId="@color/color_0F3285"
-        app:tabIndicatorWidth="@dimen/width_80px"
-        app:tabPaddingBottom="@dimen/height_10px"
+        app:tabIndicatorResId="@color/color_tabIndicator"
+        app:tabIndicatorWidth="@dimen/width_100px"
+        app:tabPaddingBottom="@dimen/height_1px"
         app:tabScrollMode="scrollable"
         app:tabTexSize="@dimen/width_36px"
         app:tabTextColor="#ffffff">
@@ -118,9 +117,10 @@
         android:id="@+id/labelRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_50px"
-        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginLeft="@dimen/width_96px"
         android:layout_marginTop="@dimen/height_48px"
-        android:layout_marginRight="@dimen/width_32px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:focusable="false">
 
     </android.support.v17.leanback.widget.HorizontalGridView>
@@ -129,7 +129,8 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/width_24px"
+        android:layout_marginLeft="@dimen/width_96px"
+
         android:orientation="vertical">
 
     </LinearLayout>
@@ -139,9 +140,11 @@
         android:id="@+id/tvRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/width_10px"
+        android:layout_marginLeft="@dimen/width_96px"
         android:paddingTop="@dimen/height_20px"
         android:layout_marginTop="@dimen/height_52px"
+        android:paddingLeft="@dimen/width_10px"
+        android:paddingRight="@dimen/width_100px"
         android:clipChildren="false"
         android:clipToPadding="false">
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
@@ -30,6 +31,7 @@ import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.ad.model.AdBean;
 import tv.newtv.cboxtv.cms.details.view.ADSdkCallback;
+import tv.newtv.cboxtv.cms.screenList.presenter.LabelPresenterImpl;
 import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
 import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
@@ -38,11 +40,14 @@ import tv.newtv.cboxtv.cms.util.ADsdkUtils;
 import tv.newtv.cboxtv.cms.util.GsonUtil;
 
 import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.exit.bean.RecommendBean;
+import tv.newtv.cboxtv.exit.presenter.RecommendPresenterImpl;
+import tv.newtv.cboxtv.exit.view.RecommendView;
 import tv.newtv.views.SpacesItemDecoration;
 import tv.newtv.cboxtv.views.RecycleImageView;
 
 
-public class WarningExitActivity extends BaseActivity implements View.OnClickListener, ISearchPageView ,View.OnFocusChangeListener{
+public class WarningExitActivity extends BaseActivity implements View.OnClickListener, ISearchPageView, View.OnFocusChangeListener, RecommendView {
 
     private RecycleImageView exit_image;
     private SearchResultInfos.ResultListBean mResultListBeanInfo;
@@ -52,12 +57,15 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private SearchPagePresenter mSearchPagePresenter;
     private AnimatorSet mScaleAnimator;
     private Interpolator mSpringInterpolator;
+    private RecommendPresenterImpl presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrontStage = true;
-
+        presenter = new RecommendPresenterImpl();
+        presenter.attachView(this);
+        presenter.getRecommendData();
         setContentView(R.layout.activity_warning_exit);
         mSpringInterpolator = new OvershootInterpolator(2.2f);
 
@@ -67,25 +75,25 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         exit_image = findViewById(R.id.exit_image);
         mSearchPagePresenter = new SearchPagePresenter(this, this);
 
-        cancelButton.requestFocus();
-
+        okButton.requestFocus();
         okButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         okButton.setOnFocusChangeListener(this);
         cancelButton.setOnFocusChangeListener(this);
 
-//        getAD();//获取广告
+
         initView();
+
     }
 
 
-    private void initView(){
+    private void initView() {
 
 
         mRecyclerView = findViewById(R.id.guess_like_recyclerview);
         mAdapter = new ExitPromptLikeAdapter(this);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) );
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(getResources().getDimensionPixelSize(R.dimen.width_10px)));
         mRecyclerView.setAdapter(mAdapter);
 //        mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);//获取服务器数据
@@ -95,8 +103,9 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     //加载热搜数据，进行分类填充
     @Override
     public void inflatePageRecommendData(SearchHotInfo searchHotInfo) {
+        Log.d("WarningExitActivity", searchHotInfo.getData().toString());
         try {
-            if (searchHotInfo==null){
+            if (searchHotInfo == null) {
                 return;
             }
             mResultListBeanList = new ArrayList<>();
@@ -121,7 +130,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                         mResultListBeanInfo.setType(moduleItemList.get(j).getActionType());
                         mResultListBeanInfo.setHpicurl(moduleItemList.get(j).getImg());
                         mResultListBeanInfo.setName(moduleItemList.get(j).getTitle());
-                        if (moduleItemList.get(j).getActionUri()!=null){
+                        if (moduleItemList.get(j).getActionUri() != null) {
                             mResultListBeanInfo.setActionUri(moduleItemList.get(j).getActionUri().toString());
                         }
 
@@ -138,6 +147,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
 
     }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -155,7 +165,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
 
-        if (hasFocus){
+        if (hasFocus) {
 
 
             ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
@@ -164,7 +174,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
             sa.setDuration(400);
             sa.setInterpolator(mSpringInterpolator);
             v.startAnimation(sa);
-        }else{
+        } else {
             ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
                     .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             sa.setFillAfter(true);
@@ -201,7 +211,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void showAd(String type, String url) {
                 super.showAd(type, url);
-                if (!TextUtils.isEmpty(url)){
+                if (!TextUtils.isEmpty(url)) {
                     exit_image.setVisibility(View.VISIBLE);
                     Picasso.get().load(url).into(exit_image);
                 }
@@ -222,17 +232,17 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                             LogUtils.i("mm", "getAD:" + sb.toString());
                             AdBean bean = GsonUtil.fromjson(sb.toString(), AdBean.class);
 
-                            if (bean==null||bean.adspaces==null||bean.adspaces.quit==null||bean.adspaces.quit.size()<1){
+                            if (bean == null || bean.adspaces == null || bean.adspaces.quit == null || bean.adspaces.quit.size() < 1) {
                                 return;
                             }
 
                             final AdBean.AdspacesItem item = bean.adspaces.quit.get(0);
 
 
-                            if (bean.adspaces.quit.get(0)==null||bean.adspaces.quit.get(0).materials==null){
+                            if (bean.adspaces.quit.get(0) == null || bean.adspaces.quit.get(0).materials == null) {
                                 return;
                             }
-                             final AdBean.Material material =bean.adspaces.quit.get(0).materials.get(0);
+                            final AdBean.Material material = bean.adspaces.quit.get(0).materials.get(0);
 
                             String url = material.filePath;
                             LogUtils.i("mm", "url:" + url);
@@ -240,7 +250,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                             Picasso.get().load(url).into(exit_image, new Callback() {
                                 @Override
                                 public void onSuccess() {
-                                    if (material!=null&&item!=null) {
+                                    if (material != null && item != null) {
                                         AdSDK.getInstance().report((item.mid + ""), item.aid + "", material.id + "", "",
                                                 null, material.playTime + "", null);
                                     }
@@ -255,5 +265,27 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                         }
                     }
                 });
+    }
+
+    @Override
+    public void showData(RecommendBean recommendBean) {
+
+        if (recommendBean.getIsAd().equals("1")) {
+            getAD();//获取广告
+        } else {
+            if (recommendBean.getBackground() != null) {
+                Picasso.get().load(recommendBean.getBackground()).into(exit_image);
+            }
+
+        }
+
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

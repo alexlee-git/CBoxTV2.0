@@ -93,7 +93,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         place_text = findViewById(R.id.place_text);
         labelRecyclerView.setNumRows(1);
         tab.setScaleValue(1.2f);
-        tab.setTabTextColors(Color.parseColor("#ffffff"), Color.BLUE, Color.parseColor("#ff00b7fd"));
+        tab.setTabTextColors(Color.parseColor("#ffffff"),Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
         adapter = new FirstLabelAdapter(this, childData);
         labelRecyclerView.setAdapter(adapter);
 
