@@ -5,6 +5,18 @@
     android:layout_height="wrap_content"
     android:focusable="true">
 
+    <TextView
+        android:id="@+id/topic_center_item"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_100px"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:paddingLeft="@dimen/height_48px"
+        android:singleLine="true"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/height_30px" />
+
     <ImageView
         android:id="@+id/topic_center_item_player"
         android:layout_width="wrap_content"
@@ -12,18 +24,6 @@
         android:layout_gravity="left|center"
         android:src="@drawable/seek_play"
         android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/topic_center_item"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_100px"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="2"
-        android:maxLength="30"
-        android:paddingLeft="@dimen/height_48px"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/height_30px" />
 
 </FrameLayout>
 
