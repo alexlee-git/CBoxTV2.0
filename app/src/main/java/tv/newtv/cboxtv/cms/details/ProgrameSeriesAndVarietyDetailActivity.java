@@ -321,19 +321,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         if (content != null) {
             videoType = content.getVideoType();
         }
-        //这里节目详情页 要换成电视剧
-        if (!videoType()) {
-            setContentView(R.layout.activity_details_programe_series);
-            fragment = new ProgrameSeriesFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(Constant.CONTENT_UUID, getContentUUID());
-            fragment.setArguments(bundle);
-            initFragment();
-        } else {
-            setContentView(R.layout.fragment_new_variety_show);
-            ADConfig.getInstance().setSeriesID(getContentUUID());
-            initView(content);
-        }
+        //这里跳转不同详情页 综艺、电视剧
+        setContentView(R.layout.fragment_new_variety_show);
+        ADConfig.getInstance().setSeriesID(getContentUUID());
+        initView(content);
     }
 
     @Override

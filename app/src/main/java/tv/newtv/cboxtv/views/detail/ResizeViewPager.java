@@ -28,6 +28,7 @@ public class ResizeViewPager extends ViewPager {
     int height = 0;
     int lastHeight = 0;
     int currentPage = 0;
+    boolean userResize = true;
     /**
      * 保存position与对于的View
      */
@@ -51,7 +52,8 @@ public class ResizeViewPager extends ViewPager {
         mOnPageChange = change;
     }
 
-    private @Nullable AbsEpisodeFragment getFragment(int index) {
+    private @Nullable
+    AbsEpisodeFragment getFragment(int index) {
         if (getAdapter() != null && getAdapter().getCount() > index && index >= 0) {
             return ((EpisodeAdapter) getAdapter()).getItem(index);
         }
@@ -86,20 +88,14 @@ public class ResizeViewPager extends ViewPager {
             @Override
             public void run() {
                 AbsEpisodeFragment before = getFragment(currentPage);
-                if(before != null){
+                if (before != null) {
                     before.clear();
                 }
 
-                Log.d(TAG, "setCurrentItem item=" + item + " selectIndex=" + selectIndex);
                 AbsEpisodeFragment fragment = getFragment(item);
-                Log.d(TAG, "fragment size=" + getFragmentSize() + " item=" + item + " " +
-                        "fragment=" + fragment);
                 if (getFragmentSize() < item || fragment == null) return;
-                Log.d(TAG, "fragment index=" + fragment.getCurrentIndex() + " selectIndex=" +
-                        selectIndex);
                 currentPage = item;
                 if (fragment.getCurrentIndex() != selectIndex) {
-                    Log.d(TAG, "fragment set selectIndex=" + selectIndex);
                     fragment.setSelectIndex(selectIndex);
                 }
             }
@@ -116,6 +112,10 @@ public class ResizeViewPager extends ViewPager {
             }
         }
         return -1;
+    }
+
+    public void setUseResize(boolean value) {
+        userResize = value;
     }
 
     @Override
@@ -171,7 +171,7 @@ public class ResizeViewPager extends ViewPager {
             }
 
             if (getCurrentItem() == getAdapter().getCount() - 1) {
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(lastHeight,
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(userResize ? lastHeight : height,
                         MeasureSpec.EXACTLY);
             } else {
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec(height,
