@@ -7,6 +7,8 @@ import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -37,6 +39,9 @@ import tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout;
 import tv.newtv.cboxtv.cms.screenList.view.LabelView;
 import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
+
+import static android.view.View.OVER_SCROLL_IF_CONTENT_SCROLLS;
+import static android.view.View.OVER_SCROLL_NEVER;
 
 /**
  * Created by 冯凯 on 2018/9/28.
@@ -92,6 +97,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         year_text = findViewById(R.id.year_text);
         place_text = findViewById(R.id.place_text);
         labelRecyclerView.setNumRows(1);
+
         tab.setScaleValue(1.2f);
         tab.setTabTextColors(Color.parseColor("#ffffff"),Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
         adapter = new FirstLabelAdapter(this, childData);
@@ -182,7 +188,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     public Map<String, Object> getMap() {
 
         map.put("page", String.valueOf(num));
-        map.put("rows", "50");
+        map.put("rows", "48");
         Log.d("MainActivityMap", map.toString());
         return map;
     }

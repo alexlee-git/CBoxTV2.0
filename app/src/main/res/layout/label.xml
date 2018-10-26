@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/width_192px"
     android:layout_height="@dimen/height_50px"
-    android:layout_marginLeft="@dimen/width_20px"
+    android:layout_marginRight="@dimen/width_20px"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:focusable="true"
