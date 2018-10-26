@@ -279,6 +279,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                     Log.i(TAG, "serverTime："+serverTime+",feedId:"+feedId+",accessKey:"+accessKey);
                     if(TextUtils.isEmpty(feedId)){
                         showToast("请在手机上解除绑定后，重新绑定");
+                        getQrcode(true);
                     }else {
                         SPrefUtils.setValue(context,SPrefUtils.FEED_ID,feedId);
                         addToCart(skuId);
