@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.menu.model;
 
 import android.text.TextUtils;
 
+import com.newtv.cms.bean.Content;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,15 +28,24 @@ public class Node {
 
 
     private Node parent;
-    private List<Node> child = new ArrayList<>();
+    protected List<Node> child = new ArrayList<>();
     private List<Program> programs = new ArrayList<>();
     private LastMenuBean lastMenuBean;
+    private Content content;
     private boolean request = false;
 
     public boolean isLeaf(){
 //        if(child != null && child.size() > 0)
             return false;
 //        return true;
+    }
+
+    public Content getContent() {
+        return content;
+    }
+
+    public void setContent(Content content) {
+        this.content = content;
     }
 
     public String getContentType() {

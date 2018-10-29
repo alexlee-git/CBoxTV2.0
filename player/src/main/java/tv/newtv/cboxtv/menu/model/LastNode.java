@@ -1,7 +1,7 @@
 package tv.newtv.cboxtv.menu.model;
 
 public class LastNode extends Node {
-    public String contentID;
+    public String contentId;
 
     @Override
     public boolean isLeaf() {
@@ -10,6 +10,6 @@ public class LastNode extends Node {
 
     @Override
     public String getId() {
-        return contentID;
+        return contentId;
     }
 }

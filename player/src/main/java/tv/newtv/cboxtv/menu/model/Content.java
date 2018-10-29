@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.player.menu.model;
+package tv.newtv.cboxtv.menu.model;
 
 public class Content {
     public Data data;

@@ -10,7 +10,7 @@ import com.newtv.cms.bean.SubContent;
 
 public class Program {
     private String contentUUID;
-    private String contentID;
+    private String contentId;
     private String contentType;
     private String hImage;
     private String vImage;
@@ -48,11 +48,11 @@ public class Program {
     }
 
     public String getContentID() {
-        return contentID;
+        return contentId;
     }
 
     public void setContentID(String contentID) {
-        this.contentID = contentID;
+        this.contentId = contentID;
     }
 
     public void setParent(Node parent) {
@@ -208,6 +208,7 @@ public class Program {
     public SubContent convertProgramsInfo(){
         SubContent info = new SubContent();
         info.setContentUUID(contentUUID);
+        info.setContentID(contentId);
         info.setContentType(contentType);
         info.setHImage(hImage);
         info.setVImage(vImage);

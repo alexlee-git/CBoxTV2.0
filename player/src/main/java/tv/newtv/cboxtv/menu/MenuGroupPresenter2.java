@@ -27,24 +27,28 @@ import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUtils;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.menu.model.CategoryContent;
 import tv.newtv.cboxtv.menu.model.CategoryTree;
+import tv.newtv.cboxtv.menu.model.Content;
 import tv.newtv.cboxtv.menu.model.DBProgram;
 import tv.newtv.cboxtv.menu.model.LastMenuBean;
+import tv.newtv.cboxtv.menu.model.LocalNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import tv.newtv.cboxtv.player.menu.model.Content;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.BuildConfig;
@@ -154,6 +158,12 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         hintView = rootView.findViewById(R.id.hint_text);
         menuGroup = rootView.findViewById(R.id.menu_group);
         init();
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Log.i(TAG, "accept: "+throwable);
+            }
+        });
     }
 
     public void init() {
@@ -167,15 +177,19 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             @Override
             public void select(Program program) {
                 playProgram = program;
-                LastMenuBean.DataBean data = program.getParent().getLastMenuBean().getData();
-                int index = data.getPrograms().indexOf(program);
-                com.newtv.cms.bean.Content programSeriesInfo = program.getParent().getLastMenuBean().getData().convertProgramSeriesInfo();
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context, programSeriesInfo, false, index, 0);
-                menuGroup.gone();
-                setPlayerInfo(program);
-//                //如果不是我的观看记录节点，就保存数据
-//                if(!program.checkNode(HISTORY)){
-//                    DBUtil.addHistory(programSeriesInfo,index,0, Utils.getSysTime(),null);
+//                List<Program> programs = program.getParent().getPrograms();
+//                int index = programs.indexOf(program);
+//                com.newtv.cms.bean.Content programSeriesInfo = program.getParent().getLastMenuBean().getData().convertProgramSeriesInfo();
+//                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context, programSeriesInfo, false, index, 0);
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(context,program.convertProgramInfo(),0,false);
+//                com.newtv.cms.bean.Content content = program.getParent().getContent();
+//                if(content != null){
+//                    int index = program.getParent().getPrograms().indexOf(program);
+//                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,index,0);
+//                    menuGroup.gone();
+//                    setPlayerInfo(program);
+//                }else {
+//                    getSeries(program);
 //                }
             }
         });
@@ -382,18 +396,21 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         collect.setPid("root");
         collect.setTitle("我的收藏");
         collect.setId("collect");
+        collect.setRequest(true);
         collect.setParent(root);
 
         Node history = new Node();
         history.setPid("root");
         history.setTitle("我的观看记录");
         history.setId("attention");
+        history.setRequest(true);
         history.setParent(root);
 
         Node subscribe = new Node();
         subscribe.setPid("root");
         subscribe.setTitle("我的订阅");
         subscribe.setId("subscribe");
+        subscribe.setRequest(true);
         subscribe.setParent(root);
 
         List<Node> list = new ArrayList<>();
@@ -454,7 +471,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 if (TextUtils.isEmpty(program._title_name) || TextUtils.isEmpty(program._contentuuid))
                     continue;
 
-                Node node = new Node();
+                Node node = new LocalNode();
                 node.setId(program._contentuuid);
                 node.setPid(parent.getId());
                 node.setTitle(program._title_name);
@@ -728,5 +745,37 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
         }
         return false;
+    }
+
+    private void getSeries(final Program program){
+        String contentId = program.getParent().getId();
+        String leftString = contentId.substring(0, 2);
+        String rightString = contentId.substring(contentId.length() - 2, contentId.length());
+        Request.INSTANCE.getContent()
+                .getInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,contentId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        String result = responseBody.string();
+                        Log.i(TAG, "accept: "+result);
+                        JSONObject jsonObject = new JSONObject(result);
+                        String data = jsonObject.getString("data");
+                        com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
+                        program.getParent().setContent(content);
+                        List<Program> programs = program.getParent().getPrograms();
+                        List<SubContent> subContents = new ArrayList<>();
+                        for(Program p : programs){
+                            subContents.add(p.convertProgramsInfo());
+                        }
+                        content.setData(subContents);
+
+                        int index = programs.indexOf(program);
+                        NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,index,0);
+                        menuGroup.gone();
+                        setPlayerInfo(program);
+                    }
+                });
     }
 }
