@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tv.newtv.cboxtv.views.detail.SmoothScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
+    app:topSpace="@dimen/height_83px"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+    <tv.newtv.cboxtv.views.detail.HeadPlayerView
+        android:id="@+id/header_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <tv.newtv.cboxtv.views.detail.SuggestView
+        android:id="@+id/suggest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/play_list"
+        android:tag="suggest"
+        android:visibility="gone">
+
+    </tv.newtv.cboxtv.views.detail.SuggestView>
+
+    <tv.newtv.cboxtv.views.detail.EpisodeAdView
+        android:layout_width="@dimen/width_1746px"
+        android:layout_height="@dimen/height_386px"
+        android:layout_below="@id/suggest"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginRight="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:background="@drawable/selector_pos_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:visibility="gone">
+
+    </tv.newtv.cboxtv.views.detail.EpisodeAdView>
+
+</tv.newtv.cboxtv.views.detail.SmoothScrollView>

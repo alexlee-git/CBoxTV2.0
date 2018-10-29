@@ -228,7 +228,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+    public View createView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
         if (contentView == null) {
             contentView = inflater.inflate(mLayoutId, null, false);
@@ -243,7 +243,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
         updateUI();
     }
 
-    private class ViewHolder extends BaseHolder<SubContent> {
+    private class ViewHolder extends BaseHolder<SubContent> implements IEpisodePlayChange {
         int mIndex;
 
         ViewHolder(View view, int postion) {
@@ -274,7 +274,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
 
         void performClick(boolean fromClick) {
             if (mChange != null) {
-                mChange.onChange(PosterView, mPosition * getPageSize() + mIndex, fromClick);
+                mChange.onChange(this, mPosition * getPageSize() + mIndex, fromClick);
             }
         }
 
@@ -308,6 +308,11 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             } else {
                 itemView.setVisibility(View.GONE);
             }
+        }
+
+        @Override
+        public void setIsPlay(boolean value) {
+            PosterView.setIsPlaying(value);
         }
     }
 

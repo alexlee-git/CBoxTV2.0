@@ -26,13 +26,24 @@ public abstract class AbsEpisodeFragment extends Fragment {
     private boolean hasAD = false;
     private ADHelper.AD.ADItem adItem;
 
+    private View contentView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        if(contentView == null){
+            contentView = createView(inflater, container, savedInstanceState);
+        }
+        if(contentView.getParent() != null){
+            ViewGroup viewGroup = (ViewGroup) contentView.getParent();
+            viewGroup.removeView(contentView);
+        }
+        return contentView;
     }
 
+    protected abstract View createView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                                  @Nullable Bundle savedInstanceState);
     public abstract void setAdItem(ADHelper.AD.ADItem adItem);
     public abstract int getPageSize();
     public abstract void destroy();

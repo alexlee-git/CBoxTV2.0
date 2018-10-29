@@ -50,6 +50,7 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
 public class EpisodePageView extends RelativeLayout implements IEpisode, EpisodeChange,
         AdContract.View, ContentContract.View {
     private static final int DEFAULT_SIZE = 8;
+    private static final int DEFAULT_LIST_SIZE = 30;
     private static final int HAS_AD_SIZE = 7;
 
     private static final String INFO_TEXT_TAG = "info_text";
@@ -62,7 +63,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private int currentIndex = 0;
     private List<AbsEpisodeFragment> fragments;
     private TextView leftDir, rightDir;
-    private CurrentPlayImageView mCurrentPlayImage;
+    private IEpisodePlayChange mCurrentPlayImage;
     private View mControlView;
     private boolean move = true;
     private LinearLayoutManager mLinearLayoutManager;
@@ -76,8 +77,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     private AdContract.Presenter adPresenter;
     private ContentContract.Presenter mContentPresenter;
-    private int pageSize = DEFAULT_SIZE;
+    private int mPageSize;
+    private int pageSize = DEFAULT_LIST_SIZE;
     private String mVideoType;
+    private TextView mTitleView;
 
     public EpisodePageView(Context context) {
         this(context, null);
@@ -99,7 +102,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 PlayerConfig
                         .getInstance().getFirstChannelId(), PlayerConfig.getInstance()
                         .getSecondChannelId
-                        (), PlayerConfig.getInstance().getTopicId(), null);
+                                (), PlayerConfig.getInstance().getTopicId(), null);
     }
 
     @Override
@@ -139,6 +142,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         removeAllViews();
     }
 
+    //设置播放index
     public void setCurrentPlayIndex(final int index) {
         currentIndex = index;
         postDelayed(new Runnable() {
@@ -223,10 +227,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         addView(TitleView, title_layoutParams);
 
         TitleView.findViewById(R.id.id_title_icon).setVisibility(View.VISIBLE);
-        TextView titleView = TitleView.findViewById(R.id.id_title);
-        if (titleView != null) {
-            titleView.setVisibility(View.VISIBLE);
-            titleView.setText("播放列表");
+        mTitleView = TitleView.findViewById(R.id.id_title);
+        if (mTitleView != null) {
+                mTitleView.setVisibility(View.VISIBLE);
+                mTitleView.setText("播放列表");
         }
 
         ListPager = new ResizeViewPager(context);
@@ -395,7 +399,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     rightDir.setVisibility(View.VISIBLE);
                 }
 
-                initFragment();
+                if (!videoType(mVideoType)) {
+                    mPageSize = DEFAULT_LIST_SIZE;
+                } else {
+                    mPageSize = DEFAULT_SIZE;
+                }
+
+                initFragment(mPageSize);
             } else {
                 onLoadError("暂时没有数据");
             }
@@ -408,18 +418,21 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     /**
      *
      */
-    private void initFragment() {
+    private void initFragment(int mPageSize) {
         int size = mContentList.size();
         fragments = new ArrayList<>();
         List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
-        for (int index = 0; index < size; index += pageSize) {
-            int endIndex = index + pageSize;
+        for (int index = 0; index < size; index += mPageSize) {
+            int endIndex = index + mPageSize;
             if (endIndex > size) {
                 endIndex = size;
             }
             AbsEpisodeFragment episodeFragment;
             if (!videoType(mVideoType)) {
+                mPageSize = DEFAULT_LIST_SIZE;
                 episodeFragment = new TvEpisodeFragment();
+                leftDir.setVisibility(GONE);
+                rightDir.setVisibility(GONE);
             } else {
                 episodeFragment = new SeriesEpisodeFragment();
             }
@@ -450,13 +463,16 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         int height = 0;
 
         if (TitleView != null) {
+            if (!videoType(mVideoType)){
+                mTitleView.setText("剧集列表");
+                mTitleView.setVisibility(VISIBLE);
+            }
             LayoutParams layoutParams = (LayoutParams) TitleView.getLayoutParams();
             TitleView.measure(widthMeasureSpec,
                     MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
             height += TitleView.getMeasuredHeight() + layoutParams.topMargin + layoutParams
                     .bottomMargin;
         }
-
         if (ListPager != null) {
             LayoutParams layoutParams = (LayoutParams) ListPager.getLayoutParams();
             ListPager.measure(widthMeasureSpec,
@@ -464,19 +480,24 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             height += ListPager.getMeasuredHeight() + layoutParams.topMargin + layoutParams
                     .bottomMargin;
 
-            if (leftDir != null) {
-                LayoutParams leftParams = (LayoutParams) leftDir.getLayoutParams();
-                leftParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() - leftDir
-                        .getMeasuredHeight()) / 2;
-                leftDir.setLayoutParams(leftParams);
-            }
+            if (!videoType(mVideoType)) {
+                leftDir.setVisibility(GONE);
+                rightDir.setVisibility(GONE);
+            } else {
+                if (leftDir != null) {
+                    LayoutParams leftParams = (LayoutParams) leftDir.getLayoutParams();
+                    leftParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() - leftDir
+                            .getMeasuredHeight()) / 2;
+                    leftDir.setLayoutParams(leftParams);
+                }
 
-            if (rightDir != null) {
-                LayoutParams rightParams = (LayoutParams) rightDir.getLayoutParams();
-                rightParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() -
-                        rightDir
-                                .getMeasuredHeight()) / 2;
-                rightDir.setLayoutParams(rightParams);
+                if (rightDir != null) {
+                    LayoutParams rightParams = (LayoutParams) rightDir.getLayoutParams();
+                    rightParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() -
+                            rightDir
+                                    .getMeasuredHeight()) / 2;
+                    rightDir.setLayoutParams(rightParams);
+                }
             }
         }
         if (aiyaRecyclerView != null) {
@@ -615,13 +636,15 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public void onChange(CurrentPlayImageView imageView, int index, boolean fromClick) {
+    public void onChange(IEpisodePlayChange playChange, int index, boolean fromClick) {
         if (mCurrentPlayImage != null) {
-            mCurrentPlayImage.setIsPlaying(false);
+            mCurrentPlayImage.setIsPlay(false);
         }
         currentIndex = index;
-        mCurrentPlayImage = imageView;
-        imageView.setIsPlaying(true);
+        mCurrentPlayImage = playChange;
+        if (playChange != null) {
+            playChange.setIsPlay(true);
+        }
         if (mOnEpisodeChange != null) {
             mOnEpisodeChange.onChange(index, fromClick);
         }
@@ -644,7 +667,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             pageSize = HAS_AD_SIZE;
             if (mContentList != null
                     && mContentList.size() > 0) {
-                initFragment();
+                initFragment(mPageSize);
             }
         }
     }

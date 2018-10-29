@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.views.detail;
 
+
 import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
 
 /**
@@ -10,5 +11,5 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
  * 创建日期:          2018/5/5
  */
 public interface EpisodeChange {
-    void onChange(CurrentPlayImageView imageView,int index,boolean fromClick);
+    void onChange(IEpisodePlayChange playChange, int index, boolean fromClick);
 }
