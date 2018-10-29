@@ -49,7 +49,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     private int currentIndex = -1;
     private List<ViewHolder> viewHolders = new ArrayList<>();
 
-    private int mListLayout = R.layout.episode_programe_page_item;
+    private int mListLayout = R.layout.episode_programe_page_item_;
     private String mItemTag = "rl_focus_30_";
 
     @Override

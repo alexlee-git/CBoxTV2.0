@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    android:layout_gravity="center_vertical"
+    android:clipToPadding="false"
+    android:orientation="horizontal"
+    >
+    <RelativeLayout
+        android:id="@+id/rl_series"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <ImageView
+            android:id="@+id/id_series_title_icon"
+            android:layout_width="@dimen/width_17px"
+            android:layout_height="@dimen/height_17px"
+            android:layout_marginLeft="@dimen/width_120px"
+            android:layout_marginTop="@dimen/height_56px"
+            android:background="@drawable/tuoyuan"
+            android:tag="module_008_title_icon"/>
+
+        <TextView
+            android:id="@+id/id_series_title"
+            style="@style/ModuleTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginLeft="@dimen/width_6px"
+            android:layout_marginTop="@dimen/height_47px"
+            android:layout_toRightOf="@id/id_series_title_icon"
+            android:includeFontPadding="false"
+            android:tag="module_008_title"
+            android:text="剧集列表"/>
+
+        <!--<TextView-->
+            <!--android:id="@+id/id_series_subtitle"-->
+            <!--style="@style/ModuleSubTitleStyle"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="@dimen/height_34px"-->
+            <!--android:layout_alignBottom="@+id/id_series_title"-->
+            <!--android:layout_marginLeft="@dimen/width_48px"-->
+            <!--android:layout_toRightOf="@id/id_series_title"-->
+            <!--android:includeFontPadding="false"-->
+            <!--android:visibility="gone"/>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/id_series_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/id_series_title_icon"
+            android:layout_marginLeft="@dimen/width_120px"
+            android:layout_marginRight="@dimen/width_120px"
+            android:layout_marginTop="@dimen/height_24px"
+            android:focusable="false"/>
+
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/id_series_list_menu"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/id_series_list"-->
+            <!--android:layout_marginLeft="@dimen/width_120px"-->
+            <!--android:layout_marginRight="@dimen/width_120px"-->
+            <!--android:layout_marginTop="@dimen/height_15px"-->
+            <!--android:focusable="false"/>-->
+
+    </RelativeLayout>
+</RelativeLayout>

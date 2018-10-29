@@ -57,6 +57,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private long lastClickTime;
     private FragmentTransaction transaction;
     private ContentContract.Presenter mContentPresenter;
+    private int layoutId;
 
     @Override
     protected void FocusToTop() {
@@ -98,8 +99,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
 
+        if (!videoType()) {
+            layoutId = R.layout.variety_item_head_programe;
+        } else {
+            layoutId = R.layout.variety_item_head;
+        }
+
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
-        headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
+        headPlayerView.Build(HeadPlayerView.Builder.build(layoutId)
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
                         .DB_TYPE_COLLECT))
                 .SetPlayerId(R.id.video_container)
@@ -182,8 +189,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
 
                             case R.id.full_screen:
-                                if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                {//判断距离上次点击小于2秒
+                                if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);
