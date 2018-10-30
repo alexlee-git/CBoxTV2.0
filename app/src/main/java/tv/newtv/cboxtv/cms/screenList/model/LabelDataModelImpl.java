@@ -14,6 +14,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.screenList.api.LabelApi;
 import tv.newtv.cboxtv.cms.screenList.bean.LabelDataBean;
+import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
 import tv.newtv.cboxtv.cms.screenList.common.Common;
 import tv.newtv.cboxtv.cms.screenList.manager.RetrofitManager;
 
@@ -28,6 +29,8 @@ public class LabelDataModelImpl implements LabelDataModel {
     public void requestLabelData(Map<String, Object> map, final DataCompleteListener listener) {
 
 
+
+
         RetrofitManager manager = RetrofitManager.getRetrofitManager(Common.BASE_DATA_URL);
         Observable<ResponseBody> observable = manager.create(LabelApi.class).getData(map);
 
@@ -37,13 +40,10 @@ public class LabelDataModelImpl implements LabelDataModel {
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
-
                         Gson gson = new Gson();
                         if (responseBody!=null){
                             LabelDataBean dataBean = gson.fromJson(responseBody.string(), LabelDataBean.class);
-                            Log.d("DataModelImpl2", "pageDataBean:" + dataBean);
-                            if (dataBean != null)
-                                listener.sendLabelData(dataBean);
+                            listener.sendLabelData(dataBean);
                         }
 
 

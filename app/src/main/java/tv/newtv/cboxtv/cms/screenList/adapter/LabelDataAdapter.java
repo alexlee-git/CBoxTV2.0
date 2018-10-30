@@ -72,12 +72,18 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
                     myHolder.focus.setVisibility(View.INVISIBLE);
                     myHolder.label_title.setSelected(false);
 
-
-
                 }
-
             }
         });
+
+        myHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int myHolderLayoutPosition = myHolder.getLayoutPosition();
+                mOnItemClickListener.onItemClick(v, myHolderLayoutPosition);
+            }
+        });
+
 
     }
 
@@ -100,7 +106,7 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setFocusable(true);
-            frameLayout =itemView.findViewById(R.id.focusLayout);
+            frameLayout = itemView.findViewById(R.id.focusLayout);
             label_title = itemView.findViewById(R.id.label_title);
             label_img = itemView.findViewById(R.id.label_img);
             focus = itemView.findViewById(R.id.focus);
@@ -123,5 +129,15 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
         sa.setFillAfter(true);
         sa.setDuration(150);
         view.startAnimation(sa);
+    }
+
+    private OnItemClickListener mOnItemClickListener;//声明接口
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

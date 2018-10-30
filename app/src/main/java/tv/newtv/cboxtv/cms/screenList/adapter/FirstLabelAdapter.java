@@ -77,6 +77,8 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
             textView = itemView.findViewById(R.id.label_title);
         }
     }
+
+
 }
 
 

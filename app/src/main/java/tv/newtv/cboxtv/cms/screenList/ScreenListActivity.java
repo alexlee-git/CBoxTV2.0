@@ -40,6 +40,7 @@ import tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout;
 import tv.newtv.cboxtv.cms.screenList.view.LabelView;
 import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.RxBus;
 
 
@@ -67,6 +68,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     private TextView type_text;
     private TextView year_text;
     private TextView place_text;
+    private TextView  resault_total;
     private boolean loadMore;
     private int num = 1;
     private int moveFlag = 0;
@@ -187,6 +189,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         title_label = findViewById(R.id.title);
         type_text = findViewById(R.id.type_text);
         year_text = findViewById(R.id.year_text);
+        resault_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
         labelRecyclerView.setNumRows(1);
 
@@ -204,6 +207,15 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         tvRecyclerView.setAdapter(labelDataAdapter);
         tvRecyclerView.setFocusFrontAble(true);
         tvRecyclerView.setFocusOutAble(true);
+        labelDataAdapter.setOnItemClickListener(new LabelDataAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                LabelDataBean.DataBean dataBean = list.get(position);
+
+
+//                JumpUtil.activityJump(this, );
+            }
+        });
 
 
         tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -288,6 +300,8 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
 
     @Override
     public void showData(LabelDataBean dataBean) {
+        resault_total.setText( dataBean.getTotal()+"个结果");
+
         if (!loadMore) {
             list.clear();
             if (dataBean != null) {
