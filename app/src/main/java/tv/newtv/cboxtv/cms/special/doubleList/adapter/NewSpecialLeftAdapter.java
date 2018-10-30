@@ -22,6 +22,7 @@ public class NewSpecialLeftAdapter extends RecyclerView.Adapter<NewSpecialLeftAd
     private LeftHolder mLeftHolder;
     private List<ProgramInfo> mNewSpecialDatas;
     private String mDefaultFocus;
+    private int mDefaultFocusP;
 
     public NewSpecialLeftAdapter(Context context) {
         this.context = context;
@@ -30,6 +31,12 @@ public class NewSpecialLeftAdapter extends RecyclerView.Adapter<NewSpecialLeftAd
     public NewSpecialLeftAdapter(Context context, List<ProgramInfo> objectList) {
         this.mNewSpecialDatas = objectList;
         this.context = context;
+    }
+
+    public NewSpecialLeftAdapter(Context context, List<ProgramInfo> objectList, int mDefaultP) {
+        this.mNewSpecialDatas = objectList;
+        this.context = context;
+        this.mDefaultFocusP = mDefaultP;
     }
 
     @Override
@@ -41,7 +48,7 @@ public class NewSpecialLeftAdapter extends RecyclerView.Adapter<NewSpecialLeftAd
     @Override
     public void onBindViewHolder(final LeftHolder holder, final int position) {
         mLeftHolder = holder;
-        holder.topicItem.setText(mNewSpecialDatas.get(position).getTitle());
+        holder.topicItem.setText(position+ "  --  "+mNewSpecialDatas.get(position).getSubTitle());
         holder.topicContainer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

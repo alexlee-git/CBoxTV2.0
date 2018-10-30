@@ -65,8 +65,12 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
+                    setItemStatus(position);
+                    holder.topicItem.setSelected(true);
                     holder.topicItem.setBackgroundResource(R.drawable.special_list_focus);
                 } else {
+                    setItemStatus(position);
+                    holder.topicItem.setSelected(false);
                     holder.topicItem.setBackgroundColor(Color.parseColor("#00000000"));
                 }
             }
@@ -93,7 +97,11 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
             notifyDataSetChanged();
             mOldData.put(mLeftId, mSpecialData);
         }
-        if (mSelectIdList.contains(selectedId) && mSpecialData.get(selectedId).isPlay()) {
+        setItemStatus(selectedId);
+    }
+
+    private void setItemStatus(int position) {
+        if (mSelectIdList.contains(position) && mSpecialData.get(position).isPlay()) {
             mCenterHolder.mPlayerIcon.setVisibility(View.VISIBLE);
             mCenterHolder.topicContainer.setBackgroundResource(R.drawable.xuanhong);
         } else {
@@ -120,28 +128,7 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
     }
 
     public void refreshData(int leftId, List<SpecialBean.DataBean.ProgramsBean> mData) {
-        //mData.clear();
-        //if (leftId > 0) {
-        //mSpecialData.get(0).setPlay(false);
-            /*oldSpecialData = mOldData.get(mLeftId);
-            mOldData.remove(mLeftId);
-            oldSpecialData.get(0).setPlay(false);
-            mOldData.put(mLeftId, oldSpecialData);*/
-        /*if (mOldData.size() > 0 && mLeftSelectList.size() > 0) {
-            Log.d(TAG, "NewSpecialFragment selectlist id : " + mLeftSelectList.get(0) + " mLeftId: " + mLeftId);
-            oldSpecialData = mOldData.get(mLeftSelectList.get(0));
-            mOldData.remove(mLeftId);
-            oldSpecialData.get(mLeftId).setPlay(false);
-            mOldData.put(mLeftId, oldSpecialData);
-        }*/
-        //isFirstClick = false;
-        //}
-        /*if (mLeftSelectList.size() > 0) {
-            mLeftSelectList.clear();
-        }*/
         if (!mOldData.containsKey(leftId)) {
-            //mLeftSelectList.add(leftId);
-            //mOldData.clear();
             mOldData.put(leftId, mData);
             mSpecialData = mData;
         } else {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_newspecial_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/new_special_bg"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="horizontal">
@@ -13,8 +13,8 @@
         android:layout_width="@dimen/height_322px"
         android:layout_height="match_parent"
         android:background="@drawable/special_left_bg"
-        android:paddingBottom="@dimen/height_56px"
-        android:paddingTop="@dimen/height_56px"
+        android:paddingTop="@dimen/height_50px"
+        android:paddingBottom="@dimen/height_50px"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -23,8 +23,8 @@
         android:layout_width="@dimen/height_512px"
         android:layout_height="match_parent"
         android:background="@drawable/special_center_bg"
-        android:paddingBottom="@dimen/height_56px"
-        android:paddingTop="@dimen/height_56px"
+        android:paddingTop="@dimen/height_70px"
+        android:paddingBottom="@dimen/height_70px"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/fragment_newspecial_video_name"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/width_700px"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/width_25px"
             android:layout_marginTop="@dimen/height_190px"
@@ -48,14 +48,14 @@
 
         <TextView
             android:id="@+id/fragment_newspecial_video_title"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/width_880px"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/height_50px"
             android:layout_marginLeft="@dimen/width_25px"
             android:layout_marginTop="@dimen/height_16px"
             android:ellipsize="end"
             android:focusable="false"
-            android:maxLength="30"
+            android:maxLines="2"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/height_28px" />
 
@@ -63,9 +63,9 @@
             android:id="@+id/fragment_newspecial_video_focus"
             android:layout_width="@dimen/width_1012px"
             android:layout_height="@dimen/height_568px"
-            android:focusable="false"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/selector_pos_background">
+            android:background="@drawable/selector_pos_background"
+            android:focusable="false">
 
             <tv.newtv.cboxtv.player.videoview.VideoPlayerView
                 android:id="@+id/fragment_newspecial_video_player"
