@@ -78,8 +78,9 @@ public class ADConfig {
         setColumnId(column.toString());
         setSecondColumnId(secondColumn.toString());
 
-        for(ColumnListener listener : listenerList){
-            listener.receive();
+        int size = listenerList.size();
+        for(int i=0;i<size;i++){
+            listenerList.get(i).receive();
         }
         listenerList.clear();
     }
