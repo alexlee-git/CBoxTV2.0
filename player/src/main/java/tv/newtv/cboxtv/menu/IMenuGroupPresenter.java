@@ -7,7 +7,7 @@ import android.view.View;
  * Created by TCP on 2018/5/15.
  */
 
-public interface IMenuGroupPresenter {
+public interface IMenuGroupPresenter extends ScreenInterface{
 
     View getRootView();
 
@@ -22,4 +22,6 @@ public interface IMenuGroupPresenter {
     boolean isShow();
 
     void gone();
+
+    void showHinter();
 }

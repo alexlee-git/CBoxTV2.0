@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuGroup;
-import tv.newtv.cboxtv.menu.MenuGroupPresenter;
+import tv.newtv.cboxtv.menu.MenuGroupPresenter2;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.Player;
@@ -122,7 +122,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
         rootView = findViewById(R.id.root_view);
         mPlayerFrameLayoutContainer = (FrameLayout) findViewById(R.id.player_view_container);
-        menuGroupPresenter = new MenuGroupPresenter(this.getApplicationContext());
+        menuGroupPresenter = new MenuGroupPresenter2(this.getApplicationContext());
         rootView.addView(menuGroupPresenter.getRootView());
 
         Bundle extras = getIntent().getExtras();

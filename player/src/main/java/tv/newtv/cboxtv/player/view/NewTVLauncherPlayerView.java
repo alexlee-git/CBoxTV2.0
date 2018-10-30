@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
-import tv.newtv.cboxtv.menu.MenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuPopupWindow;
 import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.FocusWidget;
@@ -386,8 +385,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         frameLayout.setLayoutParams(layoutParams);
 
         updateUIPropertys(false);
-        if (menuGroupPresenter != null && menuGroupPresenter instanceof MenuGroupPresenter) {
-            ((MenuGroupPresenter) menuGroupPresenter).exitFullScreen();
+        if (menuGroupPresenter != null) {
+            menuGroupPresenter.exitFullScreen();
         }
 
         NeedJumpAd = ProgramIsChange;
@@ -502,8 +501,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         createMenuGroup();
 
         if (mNewTVLauncherPlayer != null && !mNewTVLauncherPlayer.isADPlaying()) {
-            if (menuGroupPresenter != null && menuGroupPresenter instanceof MenuGroupPresenter) {
-                ((MenuGroupPresenter) menuGroupPresenter).showHinter();
+            if (menuGroupPresenter != null ) {
+                menuGroupPresenter.showHinter();
             }
             showSeekBar(mIsPause);
         }
@@ -519,9 +518,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void updateUIPropertys(boolean isFullScreen) {
-        if (isFullScreen && menuGroupPresenter != null && menuGroupPresenter instanceof
-                MenuGroupPresenter) {
-            ((MenuGroupPresenter) menuGroupPresenter).enterFullScreen();
+        if (isFullScreen && menuGroupPresenter != null ) {
+            menuGroupPresenter.enterFullScreen();
         }
         if (mPlayerFrameLayout != null) {
             mPlayerFrameLayout.updateTimeTextView(getResources().getDimensionPixelSize
@@ -902,8 +900,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     }
                     break;
                 case SHOWING_PROGRAM_TREE:
-                    if (menuGroupPresenter != null && menuGroupPresenter.isShow() &&
-                            menuGroupPresenter instanceof MenuGroupPresenter) {
+                    if (menuGroupPresenter != null && menuGroupPresenter.isShow()) {
                         menuGroupPresenter.gone();
                     }
                     break;

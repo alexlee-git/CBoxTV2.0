@@ -59,7 +59,7 @@ import tv.newtv.player.R;
  */
 
 public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresenter, ScreenInterface {
-    private static final String TAG = "MenuGroupPresenter";
+    private static final String TAG = "MenuGroupPresenter2";
     private static final String COLLECT = "我的收藏";
     private static final String HISTORY = "我的观看记录";
     private static final String SUBSCRIBE = "我的订阅";
@@ -95,7 +95,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     private String programSeries = "";
     private String contentUUID = "";
-    private String actionType = "";
+    private String categoryId;
+    private List<Node> rootNode;
 
     private boolean menuGroupIsInit = false;
     /**
@@ -158,12 +159,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         hintView = rootView.findViewById(R.id.hint_text);
         menuGroup = rootView.findViewById(R.id.menu_group);
         init();
-        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                Log.i(TAG, "accept: "+throwable);
-            }
-        });
     }
 
     public void init() {
@@ -177,20 +172,15 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             @Override
             public void select(Program program) {
                 playProgram = program;
-//                List<Program> programs = program.getParent().getPrograms();
-//                int index = programs.indexOf(program);
-//                com.newtv.cms.bean.Content programSeriesInfo = program.getParent().getLastMenuBean().getData().convertProgramSeriesInfo();
-//                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context, programSeriesInfo, false, index, 0);
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(context,program.convertProgramInfo(),0,false);
-//                com.newtv.cms.bean.Content content = program.getParent().getContent();
-//                if(content != null){
-//                    int index = program.getParent().getPrograms().indexOf(program);
-//                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,index,0);
-//                    menuGroup.gone();
-//                    setPlayerInfo(program);
-//                }else {
-//                    getSeries(program);
-//                }
+                com.newtv.cms.bean.Content content = program.getParent().getContent();
+                if(content != null){
+                    int index = program.getParent().getPrograms().indexOf(program);
+                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+                    menuGroup.gone();
+                    setPlayerInfo(program);
+                }else {
+                    getSeries(program);
+                }
             }
         });
 
@@ -239,45 +229,44 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private boolean getProgramSeriesAndContentUUID() {
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
+        int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
 
         if (programSeriesInfo == null) {
             Log.e(TAG, "programSeriesInfo == null");
             return false;
         }
 
-        if (typeIndex == -1) {
-            //单节目
-            programSeries = programSeriesInfo.getCgContentIDs();
-            contentUUID = programSeriesInfo.getContentUUID();
-        } else {
-            //节目集
-            programSeries = programSeriesInfo.getContentUUID();
-            int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-            if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > index && index >= 0) {
-                contentUUID = programSeriesInfo.getData().get(index).getContentUUID();
-//                actionType = programSeriesInfo.getData().get(index).getActionType();
-//                if(TextUtils.isEmpty(programSeries)){
-//                    programSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
-//                }
-            }
+        switch (programSeriesInfo.getContentType()){
+            case Constant.CONTENTTYPE_CP:
+            case Constant.CONTENTTYPE_PG:
+                programSeries = mySplit(programSeriesInfo.getTvContentIDs());
+                contentUUID = programSeriesInfo.getContentID();
+                categoryId = mySplit(programSeriesInfo.getCategoryIDs());
+                break;
+//            case Constant.CONTENTTYPE_PS:
+//            case Constant.CONTENTTYPE_CG:
+            default:
+                if(index != -1 && programSeriesInfo.getData() != null && index < programSeriesInfo.getData().size()){
+                    programSeries = programSeriesInfo.getContentID();
+                    contentUUID = programSeriesInfo.getData().get(index).getContentID();
+                    categoryId = mySplit(programSeriesInfo.getCategoryIDs());
+                }
+                break;
         }
 
         if (TextUtils.isEmpty(programSeries) || TextUtils.isEmpty(contentUUID)) {
             Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" + programSeries + ",contentUUID=" + contentUUID
-                    + ",typeIndex=" + typeIndex);
+                    + ",typeIndex=" + typeIndex+","+programSeriesInfo);
             return false;
         }
 
-        programSeries = "11422478";
-        contentUUID = "11456764";
+//        programSeries = "11422478";
+//        contentUUID = "11456764";
 
         Log.i(TAG, "detailColumnUUID=" + programSeries);
         Log.i(TAG, "contentUUID=" + contentUUID);
         return true;
     }
-
-    private String categoryIds;
-    private List<Node> rootNode;
 
     @SuppressLint("CheckResult")
     private void initData() {
@@ -299,7 +288,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         Log.i(TAG, "content: ");
                         Content content = GsonUtil.fromjson(responseBody.string(),Content.class);
                         if(content != null && content.data != null){
-                            categoryIds = content.data.categoryIDs;
+                            categoryId = mySplit(content.data.categoryIDs);
                             getCategoryTree();
                         }
                     }
@@ -330,7 +319,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void getCategoryContent() {
-        String contentUUID = categoryIds;
+        String contentUUID = categoryId;
         String leftString = contentUUID.substring(0, 2);
         String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
         Request.INSTANCE.getCategory()
@@ -343,7 +332,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         Log.i(TAG, "CategoryContent: ");
                         CategoryContent categoryContent = GsonUtil.fromjson(responseBody.string(),CategoryContent.class);
                         if(categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0){
-                            Node node = searchNodeById(categoryIds);
+                            Node node = searchNodeById(categoryId);
                             node.addChild(categoryContent.data);
                             getSeriesContent();
                         }
@@ -772,10 +761,18 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         content.setData(subContents);
 
                         int index = programs.indexOf(program);
-                        NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,index,0);
+                        NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
                         menuGroup.gone();
                         setPlayerInfo(program);
                     }
                 });
+    }
+
+    private String mySplit(String str){
+        if(TextUtils.isEmpty(str)){
+           return "";
+        }
+        String[] split = str.split("\\|");
+        return split[0];
     }
 }

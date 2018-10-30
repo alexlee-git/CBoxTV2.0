@@ -29,6 +29,7 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.player.Player;
@@ -124,6 +125,12 @@ public class LauncherApplication extends MultiDexApplication {
         DisplayUtils.init(this);
 
         YSLogUtils.getInstance(getApplicationContext()).initTracker();//央视网日志初始化
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Log.i(Constant.TAG, "accept: "+throwable);
+            }
+        });
     }
 
     /**
