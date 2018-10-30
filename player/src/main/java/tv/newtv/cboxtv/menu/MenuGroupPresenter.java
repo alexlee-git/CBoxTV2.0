@@ -433,7 +433,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             String pid = lastBean.getData().getContentUUID();
 
             menuGroupIsInit = menuGroup.setLastProgram(lastBean, pid, contentUUID);
-            menuGroup.setAppKeyAndChanelId(Libs.get().getAppKey(), Libs.get().getChannelId());
             playProgram = menuGroup.getPlayProgram();
             checkShowHinter();
         } catch (Exception e) {

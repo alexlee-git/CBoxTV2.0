@@ -61,8 +61,6 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     private static final int VISIBLE_COLUMN = 2;
     private static String TAG = "MenuGroup";
     private String detailcontentUUID;
-    private String appKey;
-    private String channelId;
     /**
      * 树中所有节点集合
      */
@@ -233,7 +231,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         rootNodes.add(node);
     }
 
-    public boolean setLastProgram(LastMenuBean lastMenuBean, String pId, String detailcontentUUID) {
+    public boolean setLastProgram(LastMenuBean lastMenuBean, String pId, String detailContentUUID) {
         if (lastMenuBean == null || lastMenuBean.getData() == null || lastMenuBean.getData()
                 .getPrograms() == null) {
             Log.e(TAG, "lastMenuBean or lastMenuBean.getData() or lastMenuBean.getData()" +
@@ -242,7 +240,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
 
         this.lastProgram = lastMenuBean.getData().getPrograms();
-        this.detailcontentUUID = detailcontentUUID;
+        this.detailcontentUUID = detailContentUUID;
         for (Node node : allNodes) {
             if (node.getActionUri().equals(pId)) {
                 node.setPrograms(lastProgram);
@@ -250,7 +248,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 currentNode = node;
                 for (Program p : lastProgram) {
                     p.setParent(node);
-                    if (p.getContentID().equals(detailcontentUUID)) {
+                    if (p.getContentID().equals(detailContentUUID)) {
                         playProgram = p;
                     }
                 }
@@ -265,18 +263,16 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         return true;
     }
 
-    public boolean setLastProgram(List<Program> lastProgram, String pId, String detailcontentUUID) {
-
+    public boolean setLastProgram(List<Program> lastProgram, String pId, String detailContentUUID) {
         this.lastProgram = lastProgram;
-        this.detailcontentUUID = detailcontentUUID;
+        this.detailcontentUUID = detailContentUUID;
         for (Node node : allNodes) {
             if (node.getId().equals(pId)) {
                 node.setPrograms(lastProgram);
-//                node.setLastMenuBean(lastMenuBean);
                 currentNode = node;
                 for (Program p : lastProgram) {
                     p.setParent(node);
-                    if (p.getContentID().equals(detailcontentUUID)) {
+                    if (p.getContentID().equals(detailContentUUID)) {
                         playProgram = p;
                     }
                 }
@@ -350,10 +346,6 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
     }
 
-    public void setAppKeyAndChanelId(String appKey, String channelId) {
-        this.appKey = appKey;
-        this.channelId = channelId;
-    }
 
     @Override
     public void keyEvent(int level, int keyCode, int position, View focusView) {
