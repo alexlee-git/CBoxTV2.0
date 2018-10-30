@@ -14,6 +14,7 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
+import tv.newtv.cboxtv.cms.util.RxBus;
 
 /**
  * Created by 冯凯 on 2018/9/30.
@@ -53,6 +54,10 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
 
                     EventBus.getDefault().post(dataBean);
                     EventBus.getDefault().post(list.get(i));
+                    RxBus.get().post("labelKey",dataBean);
+                    RxBus.get().post("labelValue",list.get(i));
+
+
                     firstMenuViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg_focus);
 
 

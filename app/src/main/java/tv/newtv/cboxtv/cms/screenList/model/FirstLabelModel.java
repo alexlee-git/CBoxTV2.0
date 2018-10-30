@@ -12,6 +12,7 @@ public interface FirstLabelModel {
 
     interface FirstLabelCompleteListener {
         void sendFirstLabel(TabBean tabBean);
+
     }
 
 

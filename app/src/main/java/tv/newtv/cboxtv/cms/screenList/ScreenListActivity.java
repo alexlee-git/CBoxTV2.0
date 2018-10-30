@@ -7,8 +7,6 @@ import android.support.v17.leanback.widget.HorizontalGridView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
-import android.support.v7.widget.PagerSnapHelper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -26,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.screenList.adapter.FirstLabelAdapter;
 import tv.newtv.cboxtv.cms.screenList.adapter.LabelDataAdapter;
@@ -39,9 +40,8 @@ import tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout;
 import tv.newtv.cboxtv.cms.screenList.view.LabelView;
 import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
+import tv.newtv.cboxtv.cms.util.RxBus;
 
-import static android.view.View.OVER_SCROLL_IF_CONTENT_SCROLLS;
-import static android.view.View.OVER_SCROLL_NEVER;
 
 /**
  * Created by 冯凯 on 2018/9/28.
@@ -75,6 +75,10 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     private long mTimeDelay;
     private long mTimeLast;
     private long mTimeSpace;
+    private Observable<TabBean.DataBean.ChildBean> childBeanObservable;
+    private Observable<LabelBean.DataBean> dataBeanObservable;
+    private Observable<LabelBean.DataBean.FilterValueBean> filterValueBeanObservable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +87,95 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         initPresenter();
         initView();
         EventBus.getDefault().register(this);
+//        initEvent();
 
+    }
+
+    private void initEvent() {
+
+        childBeanObservable = RxBus.get().register("labelId");
+        childBeanObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<TabBean.DataBean.ChildBean>() {
+                    @Override
+                    public void accept(TabBean.DataBean.ChildBean childBean) throws Exception {
+                        if (childBean != null) {
+                            map.put("categoryId", childBean.getId());
+                            presenter.getLabelData();
+
+                            title_label.setText(childBean.getTitle());
+                            title_label.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+
+        dataBeanObservable = RxBus.get().register("labelKey");
+        dataBeanObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<LabelBean.DataBean>() {
+                    @Override
+                    public void accept(LabelBean.DataBean dataBean) throws Exception {
+
+                        if (dataBean != null) {
+                            key = dataBean.getFilterKey();
+                        }
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
+        filterValueBeanObservable = RxBus.get().register("labelValue");
+        filterValueBeanObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<LabelBean.DataBean.FilterValueBean>() {
+                    @Override
+                    public void accept(LabelBean.DataBean.FilterValueBean filterValueBean) throws Exception {
+
+                        if (filterValueBean != null) {
+                            map.put(key, URLEncoder.encode(filterValueBean.getTitle()));
+                        }
+                        int childCount = container.getChildCount();
+                        for (int i = 0; i < childCount; i++) {
+                            if (container.getChildAt(i).hasFocus()) {
+                                if (i == 0) {
+                                    type_key = key;
+                                    if (filterValueBean != null) {
+                                        type_text.setText(filterValueBean.getTitle());
+                                        type_text.setVisibility(View.VISIBLE);
+                                    }
+
+                                } else if (i == 1) {
+                                    year_key = key;
+                                    if (filterValueBean != null) {
+                                        year_text.setText(filterValueBean.getTitle());
+                                        year_text.setVisibility(View.VISIBLE);
+                                    }
+
+                                } else if (i == 2) {
+                                    place_key = key;
+                                    if (filterValueBean != null) {
+                                        place_text.setText(filterValueBean.getTitle());
+                                        place_text.setVisibility(View.VISIBLE);
+                                    }
+
+                                }
+                            }
+                        }
+                        presenter.getLabelData();
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                });
 
     }
 
@@ -148,7 +240,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         presenter.attachView(this);
         presenter.getFirstLabel();
         presenter.getSecondLabel();
-        presenter.getLabelData();
+//        presenter.getLabelData();
 
     }
 
@@ -189,6 +281,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
 
         map.put("page", String.valueOf(num));
         map.put("rows", "48");
+
         Log.d("MainActivityMap", map.toString());
         return map;
     }
@@ -214,6 +307,10 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         super.onDestroy();
         presenter.detachView();
         EventBus.getDefault().unregister(this);
+//        RxBus.get().unregister("labelId",childBeanObservable);
+//        RxBus.get().unregister("labelKey",dataBeanObservable);
+//        RxBus.get().unregister("labelValue",filterValueBeanObservable);
+
 
     }
 

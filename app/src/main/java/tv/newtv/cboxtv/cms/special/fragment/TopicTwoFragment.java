@@ -463,12 +463,12 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout
                     .news_item_layout, parent, false);
-            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view
-                    .getLayoutParams();
-            int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen
-                    .height_18px) * -1;
-            layoutParams.topMargin = space;
-            view.setLayoutParams(layoutParams);
+//            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view
+//                    .getLayoutParams();
+//            int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen
+//                    .height_18px) * -1;
+//            layoutParams.topMargin = space;
+//            view.setLayoutParams(layoutParams);
             return new NewsViewHolder(view);
         }
 

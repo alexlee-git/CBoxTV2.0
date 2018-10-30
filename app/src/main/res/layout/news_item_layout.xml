@@ -24,7 +24,7 @@
         android:ellipsize="marquee"
         android:gravity="center"
         android:textColor="#ffffff"
-        android:textSize="@dimen/height_28px" />
+        android:textSize="@dimen/width_28px" />
 
 
 

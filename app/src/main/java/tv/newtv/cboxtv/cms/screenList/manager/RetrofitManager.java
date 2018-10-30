@@ -47,9 +47,9 @@ public class RetrofitManager {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(15, TimeUnit.SECONDS)
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+//                .readTimeout(15, TimeUnit.SECONDS)
+//                .writeTimeout(15, TimeUnit.SECONDS)
                 .addInterceptor(loggingInterceptor)// 在此处添加拦截器即可，默认日志级别为BASIC
                 .build();
 

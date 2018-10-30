@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.cms.screenList.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
+import tv.newtv.cboxtv.cms.util.RxBus;
 
 
 /**
@@ -49,8 +49,8 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    Log.d("FirstLabelAdapter", "我到这里了");
                     EventBus.getDefault().post(childBeans.get(i));
+                    RxBus.get().post("labelId",childBeans.get(i));
 
                     labelViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg_focus);
 
