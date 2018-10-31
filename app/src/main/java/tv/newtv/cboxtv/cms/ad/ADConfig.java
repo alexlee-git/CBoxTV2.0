@@ -34,6 +34,8 @@ public class ADConfig {
 
     public void setSeriesID(String seriesID) {
         this.seriesID = seriesID;
+        columnId = "";
+        secondColumnId = "";
     }
 
     public String getCategoryIds() {
