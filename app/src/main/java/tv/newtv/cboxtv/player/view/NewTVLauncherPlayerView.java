@@ -339,6 +339,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 videoDataStruct.setDataSource(Constants.DATASOURCE_ICNTV);
                 videoDataStruct.setDeviceID(Constant.UUID);
                 videoDataStruct.setCategoryIds(mProgramDetailInfo.getCategoryIds());
+                ADConfig.getInstance().setProgramId(mProgramDetailInfo.getContentUUID());
                 ADConfig.getInstance().setCategoryIds(mProgramDetailInfo.getCategoryIds());
 
                 if (mNewTVLauncherPlayer == null) {

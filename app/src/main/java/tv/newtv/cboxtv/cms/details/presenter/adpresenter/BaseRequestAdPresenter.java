@@ -62,6 +62,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
                 addExtend(stringBuilder,"secondpanel",playerConfig.getSecondChannelId());
                 addExtend(stringBuilder,"topic",playerConfig.getTopicId());
                 addExtend(stringBuilder,"secondcolumn",config.getSecondColumnId());
+                addExtend(stringBuilder,"program",config.getProgramId());
                 e.onNext(AdSDK.getInstance().getAD(adType, config.getColumnId(), config.getSeriesID(), adLoc, null, stringBuilder.toString(), sb));
             }
         }).subscribeOn(Schedulers.newThread())

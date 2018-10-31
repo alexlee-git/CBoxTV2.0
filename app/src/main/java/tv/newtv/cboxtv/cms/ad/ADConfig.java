@@ -11,12 +11,21 @@ public class ADConfig {
     private String secondColumnId; //二级栏目
     private String categoryIds;
     private String seriesID;
+    private String programId;
     private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
 
     public static ADConfig getInstance(){
         return Holder.instance;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(String programId) {
+        this.programId = programId;
     }
 
     public String getSeriesID() {
