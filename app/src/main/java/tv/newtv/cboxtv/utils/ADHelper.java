@@ -343,6 +343,9 @@ public class ADHelper {
                         });
             }
 
+            if(adItems.size() == 1){
+                return;
+            }
 
             CountDown countDown = new CountDown(adItem.PlayTime);
             countDown.listen(new CountDown.Listen() {
