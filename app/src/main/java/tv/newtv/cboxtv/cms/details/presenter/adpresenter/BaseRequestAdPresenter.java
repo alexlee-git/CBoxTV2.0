@@ -25,6 +25,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
     private boolean columnIsGet = false;
     protected String adType;
     protected String adLoc;
+    private boolean isDestory;
     protected Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
@@ -70,7 +71,9 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer result) throws Exception {
-                        dealResult(sb.toString());
+                        if(!isDestory){
+                            dealResult(sb.toString());
+                        }
                     }
                 });
     }
@@ -89,6 +92,8 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
     }
 
     public void destroy(){
+        isDestory = true;
+        handler.removeCallbacksAndMessages(null);
         ADConfig.getInstance().setColumnId("");
         ADConfig.getInstance().setSecondColumnId("");
         ADConfig.getInstance().removeListener(this);

@@ -220,6 +220,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
+                if(isReleased){
+                    return;
+                }
                 if (response == null) {
                     LogUtils.i(TAG, "onResponse: response==null");
                     if (!NetworkManager.getInstance().isConnected()) {
