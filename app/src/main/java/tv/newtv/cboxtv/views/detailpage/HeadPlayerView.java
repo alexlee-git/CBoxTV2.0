@@ -377,11 +377,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     //显示全屏
     public void EnterFullScreen(Activity activity) {
         Log.i("Collection","isPlayLive-->"+isPlayLive);
-        if (isPlayLive && playerView != null) {
-            playerView.enterFullScreen(activity, isPlayLive);
-        } else if (playerView != null) {
-            playerView.EnterFullScreen(activity, false);
-        }
+        playerView.EnterFullScreen(activity, false);
+
+//        if (isPlayLive && playerView != null) {
+//            playerView.enterFullScreen(activity, isPlayLive);
+//        } else if (playerView != null) {
+//            playerView.EnterFullScreen(activity, false);
+//        }
     }
 
     public void Build(Builder builder) {
