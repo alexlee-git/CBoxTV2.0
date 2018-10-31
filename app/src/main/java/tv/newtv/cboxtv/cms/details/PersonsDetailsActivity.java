@@ -48,6 +48,7 @@ import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
+import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
@@ -57,6 +58,8 @@ import tv.newtv.cboxtv.cms.details.view.myRecycleView.NewSmoothVorizontalScrollV
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.search.view.SearchActivity;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
@@ -716,10 +719,20 @@ public class PersonsDetailsActivity extends BaseActivity implements OnRecycleIte
     }
 
     @Override
-    public void showAd(ADHelper.AD.ADItem result) {
+    public void showAd(final ADHelper.AD.ADItem result) {
         if (!TextUtils.isEmpty(result.AdUrl)) {
             if (program_detail_ad_fl != null) {
                 program_detail_ad_fl.setVisibility(View.VISIBLE);
+                program_detail_ad_fl.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(result != null && !TextUtils.isEmpty(result.eventContent)){
+                            AdEventContent adEventContent = GsonUtil.fromjson(result.eventContent, AdEventContent.class);
+                            JumpUtil.activityJump(PersonsDetailsActivity.this, adEventContent.actionType, adEventContent.contentType,
+                                    adEventContent.contentUUID, adEventContent.actionURI);
+                        }
+                    }
+                });
             }
             if (program_detail_ad_img != null) {
                 program_detail_ad_img.hasCorner(true).load(result.AdUrl);
