@@ -306,7 +306,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                     processSuperscript(layoutCode, info, frameLayout);
 
                     // 按需添加标题控件
-                    processTitle(layoutCode, info, frameLayout, recycleImageView);
+                    processTitle(layoutCode, info.getTitle(), info.getSubTitle(), frameLayout);
                 }
             }
         } catch (Exception e) {
@@ -700,13 +700,9 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
      * 1.如果是5和8号组件, 只在海报上面添加一个标题, 展示subtitle
      * 2.对于其余组件, 在海报上添加两个TextView,负责展示Title和SubTitles
      */
-    private void processTitle(String layoutCode, ProgramInfo info, ViewGroup framelayout,
-                              RecycleImageView recycleImageView) {
+    void processTitle(String layoutCode, String title, String subTitle, ViewGroup
+            framelayout) {
         if (TextUtils.isEmpty(layoutCode)) {
-            return;
-        }
-
-        if (info == null) {
             return;
         }
 
@@ -716,77 +712,75 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         int pxSize = mContext.getResources().getDimensionPixelSize(R.dimen.width_70px);
         int pxSize2 = mContext.getResources().getDimensionPixelSize(R.dimen.height_40px);
 
-        String title = info.getTitle();
         if (!TextUtils.isEmpty(title) && !TextUtils.equals(title, "null")) {
-
             if (!TextUtils.equals(layoutCode, "layout_005") && !TextUtils.equals(layoutCode,
-                    "layout_008") && framelayout.getTag(R.id.tag_title) == null) {
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup
-                        .LayoutParams.MATCH_PARENT, DisplayUtils.translate(pxSize, DisplayUtils
-                        .SCALE_TYPE_HEIGHT));
-                layoutParams.gravity = Gravity.BOTTOM;
-                layoutParams.bottomMargin = pxheight_1px;
-                background = new ImageView(mContext);
-                background.setBackgroundResource(R.drawable.gradient_white_to_black);
-                background.setLayoutParams(layoutParams);
-                framelayout.addView(background);
+                    "layout_008")) {
+                AutoSizeTextView titleWidget = (AutoSizeTextView) framelayout.getTag(R.id
+                        .tag_title);
+                if (titleWidget == null) {
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup
+                            .LayoutParams.MATCH_PARENT, DisplayUtils.translate(pxSize, DisplayUtils
+                            .SCALE_TYPE_HEIGHT));
+                    layoutParams.gravity = Gravity.BOTTOM;
+                    layoutParams.bottomMargin = pxheight_1px;
+                    background = new ImageView(mContext);
+                    background.setBackgroundResource(R.drawable.gradient_white_to_black);
+                    background.setLayoutParams(layoutParams);
+                    framelayout.addView(background);
 
-//                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-//                        .MATCH_PARENT, DisplayUtils.translate(pxSize2, DisplayUtils
-//                        .SCALE_TYPE_HEIGHT));
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout
-                        .LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-                lp.gravity = Gravity.BOTTOM;
-                lp.bottomMargin = 0;
-                lp.leftMargin = 0;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    lp.setMarginStart(0);
+                    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout
+                            .LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                    lp.gravity = Gravity.BOTTOM;
+                    lp.bottomMargin = 0;
+                    lp.leftMargin = 0;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        lp.setMarginStart(0);
+                    }
+                    titleWidget = new AutoSizeTextView(mContext);
+                    titleWidget.setLayoutParams(lp);
+                    framelayout.setTag(R.id.tag_title, titleWidget);
+                    framelayout.addView(titleWidget, lp);
                 }
-                AutoSizeTextView titleWidget = new AutoSizeTextView(mContext);
                 titleWidget.setText(title);
-                titleWidget.setLayoutParams(lp);
-                framelayout.setTag(R.id.tag_title, titleWidget);
-                framelayout.addView(titleWidget, lp);
             }
         }
 
-        String subTitle = info.getSubTitle();
-        if (!TextUtils.isEmpty(subTitle) && !TextUtils.equals(subTitle, "null") && framelayout
-                .getTag(R.id.tag_sub_title) == null) {
+        if (!TextUtils.isEmpty(subTitle) && !TextUtils.equals(subTitle, "null")) {
+            TextView subTitleWidget = (TextView) framelayout.getTag(R.id.tag_sub_title);
             if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
                     "layout_008")) {
-
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(DisplayUtils.translate
-                        (225, DisplayUtils.SCALE_TYPE_WIDTH),
-                        DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_HEIGHT));
-                lp.gravity = Gravity.BOTTOM;
-                lp.leftMargin = DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_WIDTH);
-                ;
-                lp.bottomMargin = DisplayUtils.translate(96, DisplayUtils.SCALE_TYPE_HEIGHT);
-                ;
-                TextView subTitleWidget = new TextView(mContext);
-                subTitleWidget.setLayoutParams(lp);
-                subTitleWidget.setText(subTitle);
-                subTitleWidget.setSingleLine();
-                subTitleWidget.setGravity(Gravity.BOTTOM);
-                subTitleWidget.setIncludeFontPadding(false);
-                subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
-                subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
-                        .SCALE_TYPE_HEIGHT));
-                subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
-                        .SCALE_TYPE_WIDTH), 0, 0, 0);
-                framelayout.setTag(R.id.tag_sub_title, subTitleWidget);
-                framelayout.addView(subTitleWidget, lp);
+                if (subTitleWidget == null) {
+                    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(DisplayUtils
+                            .translate
+                                    (225, DisplayUtils.SCALE_TYPE_WIDTH),
+                            DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_HEIGHT));
+                    lp.gravity = Gravity.BOTTOM;
+                    lp.leftMargin = DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_WIDTH);
+                    ;
+                    lp.bottomMargin = DisplayUtils.translate(96, DisplayUtils.SCALE_TYPE_HEIGHT);
+                    ;
+                    subTitleWidget = new TextView(mContext);
+                    subTitleWidget.setLayoutParams(lp);
+                    subTitleWidget.setSingleLine();
+                    subTitleWidget.setGravity(Gravity.BOTTOM);
+                    subTitleWidget.setIncludeFontPadding(false);
+                    subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
+                    subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
+                            .SCALE_TYPE_HEIGHT));
+                    subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
+                            .SCALE_TYPE_WIDTH), 0, 0, 0);
+                    framelayout.setTag(R.id.tag_sub_title, subTitleWidget);
+                    framelayout.addView(subTitleWidget, lp);
+                }
             } else {
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                         .MATCH_PARENT, DisplayUtils.translate(33, DisplayUtils
                         .SCALE_TYPE_HEIGHT));
                 lp.gravity = Gravity.BOTTOM;
                 lp.bottomMargin = DisplayUtils.translate(34, DisplayUtils.SCALE_TYPE_HEIGHT);
-                ;
-                TextView subTitleWidget = new TextView(mContext);
+
+                subTitleWidget = new TextView(mContext);
                 subTitleWidget.setLayoutParams(lp);
-                subTitleWidget.setText(subTitle);
                 subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                         .SCALE_TYPE_WIDTH), 0, 0, 0);
                 subTitleWidget.setSingleLine();
@@ -798,6 +792,8 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                 framelayout.setTag(R.id.tag_sub_title, subTitleWidget);
                 framelayout.addView(subTitleWidget, lp);
             }
+
+            subTitleWidget.setText(subTitle);
         }
     }
 
