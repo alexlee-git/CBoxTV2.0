@@ -80,7 +80,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
     protected void onStop() {
         super.onStop();
         ActivityStacks.get().onStop(this);
-
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onStop();
+        }
         FrontStage = false;
     }
 
@@ -110,6 +112,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IAdCons
         }
 
         setBackgroundAD();
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onResume();
+        }
     }
 
     @Override

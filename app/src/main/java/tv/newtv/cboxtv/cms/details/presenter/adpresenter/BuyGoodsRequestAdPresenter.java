@@ -18,7 +18,7 @@ public class BuyGoodsRequestAdPresenter extends BaseRequestAdPresenter{
 
     @Override
     public void dealResult(String result) {
-        ADConfig.getInstance().setListener(myColumnListener);
+        ADConfig.getInstance().registerListener(myColumnListener);
         if(adCallback == null){
             return;
         }
@@ -45,6 +45,18 @@ public class BuyGoodsRequestAdPresenter extends BaseRequestAdPresenter{
         public void receive() {
             getAD(Constant.AD_BUY_GOODS,"");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ADConfig.getInstance().registerListener(myColumnListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ADConfig.getInstance().removeListener(myColumnListener);
     }
 
     @Override

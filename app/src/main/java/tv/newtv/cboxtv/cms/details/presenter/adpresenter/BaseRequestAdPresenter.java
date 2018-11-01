@@ -38,7 +38,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
         this.adType = adType;
         this.adLoc = adLoc;
 
-        ADConfig.getInstance().setListener(this);
+        ADConfig.getInstance().registerListener(this);
         if(columnIsGet || !TextUtils.isEmpty(ADConfig.getInstance().getColumnId())){
             excute();
         }else {
@@ -90,6 +90,10 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
             result.append("&"+key+"="+value);
         }
     }
+
+    public void onResume(){}
+
+    public void onStop(){}
 
     public void destroy(){
         isDestory = true;

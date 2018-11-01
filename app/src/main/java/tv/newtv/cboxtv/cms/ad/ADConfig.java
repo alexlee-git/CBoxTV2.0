@@ -96,8 +96,10 @@ public class ADConfig {
         listenerList.clear();
     }
 
-    public void setListener(ColumnListener listener) {
-        listenerList.add(listener);
+    public void registerListener(ColumnListener listener) {
+        if(listener != null && !listenerList.contains(listener)){
+            listenerList.add(listener);
+        }
     }
 
     public void removeListener(ColumnListener listener){
