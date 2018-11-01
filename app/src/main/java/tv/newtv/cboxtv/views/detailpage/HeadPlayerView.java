@@ -57,6 +57,7 @@ import tv.newtv.cboxtv.utils.LiveTimingUtil;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
 import tv.newtv.cboxtv.views.FocusToggleSelect;
 import tv.newtv.cboxtv.views.FocusToggleView;
+import tv.newtv.cboxtv.views.TimeDialog;
 
 /**
  * 项目名称:         CBoxTV
@@ -925,10 +926,27 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             @Override
             public void end() {
                 if (playerView != null) {
+                    playerView.ExitFullScreen();
                     playerView.setHintText("播放已结束");
                     playerView.setHintTextVisible(View.VISIBLE);
                     playerView.release();
                 }
+                TimeDialog.showBuilder(getContext(), "播放时间已结束，您可以观看其它视频.",
+                        new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (playerView != null && playerView.isReleased()) {
+                            Log.e(TAG, "player view is released, rebuild it....");
+                            playerView.destory();
+                            playerView = null;
+                            prepareMediaPlayer();
+                        }
+                        if (playerView != null && currentProgramSeriesInfo != null) {
+                            playerView.setSeriesInfo(currentProgramSeriesInfo);
+                            playerView.playSingleOrSeries(0, 0);
+                        }
+                    }
+                });
             }
         });
     }
