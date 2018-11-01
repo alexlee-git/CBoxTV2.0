@@ -92,7 +92,7 @@
             android:layout_marginTop="@dimen/height_60px"
             android:layout_marginRight="@dimen/width_120px"
             android:gravity="center"
-            android:text="我是多少个结果"
+            android:text=""
             android:textColor="#ffffffff" />
     </RelativeLayout>
 

@@ -131,7 +131,7 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
         view.startAnimation(sa);
     }
 
-    private OnItemClickListener mOnItemClickListener;//声明接口
+    private OnItemClickListener mOnItemClickListener;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         mOnItemClickListener = onItemClickListener;
