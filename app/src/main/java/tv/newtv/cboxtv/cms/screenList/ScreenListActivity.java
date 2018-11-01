@@ -15,9 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -88,7 +86,6 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         setContentView(R.layout.screen_list);
         initPresenter();
         initView();
-        EventBus.getDefault().register(this);
         initEvent();
 
     }
@@ -324,7 +321,6 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     protected void onDestroy() {
         super.onDestroy();
         presenter.detachView();
-        EventBus.getDefault().unregister(this);
         RxBus.get().unregister("labelId",childBeanObservable);
         RxBus.get().unregister("labelKey",dataBeanObservable);
         RxBus.get().unregister("labelValue",filterValueBeanObservable);
@@ -333,63 +329,6 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getFirstLabel(TabBean.DataBean.ChildBean childBean) {
-
-//        if (childBean != null) {
-//            map.put("categoryId", childBean.getId());
-//            presenter.getLabelData();
-//
-//            title_label.setText(childBean.getTitle());
-//            title_label.setVisibility(View.VISIBLE);
-//        }
-
-    }
-
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getgetFilterKey(LabelBean.DataBean dataBean) {
-//        if (dataBean != null) {
-//            key = dataBean.getFilterKey();
-//        }
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getgetFilterTitle(LabelBean.DataBean.FilterValueBean valueBean) {
-
-//        if (valueBean != null) {
-//            map.put(key, URLEncoder.encode(valueBean.getTitle()));
-//        }
-//        int childCount = container.getChildCount();
-//        for (int i = 0; i < childCount; i++) {
-//            if (container.getChildAt(i).hasFocus()) {
-//                if (i == 0) {
-//                    type_key = key;
-//                    if (valueBean != null) {
-//                        type_text.setText(valueBean.getTitle());
-//                        type_text.setVisibility(View.VISIBLE);
-//                    }
-//
-//                } else if (i == 1) {
-//                    year_key = key;
-//                    if (valueBean != null) {
-//                        year_text.setText(valueBean.getTitle());
-//                        year_text.setVisibility(View.VISIBLE);
-//                    }
-//
-//                } else if (i == 2) {
-//                    place_key = key;
-//                    if (valueBean != null) {
-//                        place_text.setText(valueBean.getTitle());
-//                        place_text.setVisibility(View.VISIBLE);
-//                    }
-//
-//                }
-//            }
-//        }
-//        presenter.getLabelData();
-    }
 
 
     @Override

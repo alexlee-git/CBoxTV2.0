@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -49,9 +48,7 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    EventBus.getDefault().post(childBeans.get(i));
-                    RxBus.get().post("labelId",childBeans.get(i));
-
+                    RxBus.get().post("labelId", childBeans.get(i));
                     labelViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg_focus);
 
                 } else {

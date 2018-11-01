@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
     public secondLabelAdapter(List<LabelBean.DataBean.FilterValueBean> list, Context context, LabelBean.DataBean dataBean) {
         this.context = context;
         this.list = list;
-        this.dataBean =dataBean;
+        this.dataBean = dataBean;
     }
 
     @NonNull
@@ -50,22 +49,12 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-
-
-                    EventBus.getDefault().post(dataBean);
-                    EventBus.getDefault().post(list.get(i));
-                    RxBus.get().post("labelKey",dataBean);
-                    RxBus.get().post("labelValue",list.get(i));
-
-
+                    RxBus.get().post("labelKey", dataBean);
+                    RxBus.get().post("labelValue", list.get(i));
                     firstMenuViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg_focus);
 
-
                 } else {
-//                    EventBus.getDefault().post(dataBean);
                     firstMenuViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg);
-
-
 
                 }
             }
@@ -81,7 +70,7 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
 
     class FirstMenuViewHolder extends RecyclerView.ViewHolder {
 
-        private  TextView textView;
+        private TextView textView;
 
         public FirstMenuViewHolder(@NonNull View itemView) {
             super(itemView);
