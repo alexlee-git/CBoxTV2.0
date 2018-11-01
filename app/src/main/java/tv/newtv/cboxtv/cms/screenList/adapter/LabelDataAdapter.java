@@ -21,9 +21,7 @@ import tv.newtv.cboxtv.cms.details.model.CircleTransform;
 import tv.newtv.cboxtv.cms.screenList.bean.LabelDataBean;
 import tv.newtv.cboxtv.cms.util.DisplayUtils;
 
-/**
- * Created by 冯凯 on 2018/10/1.
- */
+
 public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHolder> {
 
     private Context context;
