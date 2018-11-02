@@ -155,6 +155,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
             if (mShowingChildView == SHOWING_PROGRAM_TREE) {
                 menuGroupPresenter.gone();
+
             }
 
             if (!(isLiving() && mLiveInfo != null && !mLiveInfo.isTimeShift())) {
@@ -276,6 +277,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
                 mProgramDetailInfo = PlayerNetworkRequestUtils.getInstance()
                         .parsePlayPermissionCheckResult(responseStr);
+
                 if (mProgramDetailInfo == null) {
                     LogUtils.i(TAG, "onResponse: programDetailInfo==null");
                     String errorCode = PlayerNetworkRequestUtils.getErrorCode(responseStr);
@@ -329,7 +331,13 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 videoDataStruct.setProgramId(mProgramDetailInfo.getContentUUID());
 
                 String duration = mProgramDetailInfo.getDuration();
+
+
+
+
                 if (!TextUtils.isEmpty(duration)) {
+
+                    RxBus.get().post("duration",duration);
                     videoDataStruct.setDuration(Integer.parseInt(mProgramDetailInfo.getDuration()));
                 }
 
@@ -712,6 +720,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (menuGroupPresenter == null) {
             menuPopupWindow = new MenuPopupWindow();
             menuGroupPresenter = menuPopupWindow.show(getContext(), this);
+            Log.d(TAG, mProgramDetailInfo.getDuration());
         }
     }
 
@@ -1690,6 +1699,8 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     }
 
     public int getCurrentPosition() {
+
+
         if (mNewTVLauncherPlayer != null)
             return mNewTVLauncherPlayer.getCurrentPosition();
 

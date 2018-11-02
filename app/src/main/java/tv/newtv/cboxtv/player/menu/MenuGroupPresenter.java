@@ -21,16 +21,23 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.ad.ADConfig;
+import tv.newtv.cboxtv.cms.details.model.ProgramDetailInfo;
 import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
+import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.menu.model.DBProgram;
@@ -87,6 +94,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
     private String programSeries = "";
     private String contentUUID = "";
     private String actionType = "";
+    private String duration;
 
     private boolean menuGroupIsInit = false;
     /**
@@ -102,6 +110,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
      * 当前获取节目集ID和节目ID重试次数
      */
     private int retry = 0;
+    private int posotion;
+    private Observable<String> durationObservable;
 
     @Override
     public void release() {
@@ -113,6 +123,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             menuGroup.release();
             menuGroup = null;
         }
+        RxBus.get().unregister("duration",durationObservable);
 
     }
 
@@ -154,6 +165,27 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
     public void init() {
         initData();
         initListener();
+
+        durationObservable = RxBus.get().register("duration");
+        durationObservable.observeOn(AndroidSchedulers.mainThread())
+           .subscribe(new Consumer<String>() {
+
+
+
+               @Override
+               public void accept(String s) throws Exception {
+                   duration = s;
+
+
+               }
+           }, new Consumer<Throwable>() {
+               @Override
+               public void accept(Throwable throwable) throws Exception {
+
+               }
+           });
+
+
     }
 
     private void initListener() {
@@ -168,6 +200,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context, programSeriesInfo, false, index, 0);
                 menuGroup.gone();
                 setPlayerInfo(program);
+//                switch () {
+//                }
 //                //如果不是我的观看记录节点，就保存数据
 //                if(!program.checkNode(HISTORY)){
 //                    DBUtil.addHistory(programSeriesInfo,index,0, Utils.getSysTime(),null);
@@ -523,7 +557,19 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                             menuGroup.show(playProgram);
                         } else {
                             menuGroup.show();
+
                         }
+                        Log.d(TAG, Constants.vodPlayId);
+//                        if (duration!=null){
+//
+//                        }
+//                        int i = Integer.parseInt(duration);
+
+                        if (duration!=null)
+                        LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+
+
                         NewTVLauncherPlayerViewManager.getInstance().setShowingView
                                 (NewTVLauncherPlayerView.SHOWING_PROGRAM_TREE);
                         setHintGone();
@@ -580,6 +626,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
         handler.removeMessages(MESSAGE_GONE);
         menuGroup.gone();
+        if (duration!=null)
+        LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+         Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
     }
 
     private void hintAnimator(final View view) {
