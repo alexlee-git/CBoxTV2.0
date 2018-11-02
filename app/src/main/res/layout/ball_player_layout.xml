@@ -41,17 +41,17 @@
                 android:layout_height="match_parent"
                 android:visibility="gone"
                 />
+            <TextView
+                android:id="@+id/tv_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=""
+                android:textSize="@dimen/height_39px"
+                android:textColor="@color/detail_tvcolor"
+                />
         </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
 
-        <TextView
-            android:id="@+id/tv_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text=""
-            android:textSize="@dimen/height_39px"
-            android:textColor="@color/detail_tvcolor"
-            />
     </FrameLayout>
 
 
