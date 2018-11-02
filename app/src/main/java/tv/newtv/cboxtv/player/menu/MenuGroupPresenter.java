@@ -553,7 +553,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
                         if (playProgram != null) {
                             searchDataInDB();
-                            playProgram = menuGroup.getPlayProgram();
+                            //playProgram = menuGroup.getPlayProgram();
                             menuGroup.show(playProgram);
                         } else {
                             menuGroup.show();

@@ -8,25 +8,74 @@
     android:clipToPadding="false"
     android:orientation="horizontal">
 
-    <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
-        android:id="@+id/fragment_newspecial_left_list"
+    <LinearLayout
         android:layout_width="@dimen/height_322px"
         android:layout_height="match_parent"
         android:background="@drawable/special_left_bg"
-        android:paddingTop="@dimen/height_50px"
-        android:paddingBottom="@dimen/height_50px"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="1.0" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
-        android:id="@+id/fragment_newspecial_center_list"
-        android:layout_width="@dimen/height_512px"
+        <ImageView
+            android:id="@+id/fragment_newspecial_left_up"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:visibility="invisible"
+            android:src="@drawable/ic_fragment_newspecial_up" />
+
+        <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
+            android:id="@+id/fragment_newspecial_left_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_900px"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"
+            android:focusable="true"/>
+
+        <ImageView
+            android:id="@+id/fragment_newspecial_left_down"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:visibility="invisible"
+            android:src="@drawable/ic_fragment_newspecial_down" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/width_512px"
         android:layout_height="match_parent"
         android:background="@drawable/special_center_bg"
-        android:paddingTop="@dimen/height_70px"
-        android:paddingBottom="@dimen/height_70px"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="1.0" />
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/fragment_newspecial_center_up"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:visibility="invisible"
+            android:src="@drawable/ic_fragment_newspecial_up" />
+
+        <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
+            android:id="@+id/fragment_newspecial_center_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_900px"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"
+            android:focusable="true"/>
+
+        <ImageView
+            android:id="@+id/fragment_newspecial_center_down"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:src="@drawable/ic_fragment_newspecial_down" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/video_linear"
@@ -70,7 +119,8 @@
             <tv.newtv.cboxtv.player.videoview.VideoPlayerView
                 android:id="@+id/fragment_newspecial_video_player"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                />
 
             <TextView
                 android:id="@+id/fragment_newspecial_video_player_title"
