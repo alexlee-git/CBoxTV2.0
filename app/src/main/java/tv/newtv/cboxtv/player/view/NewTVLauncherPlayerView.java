@@ -108,7 +108,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     private static final int PLAY_SERIES = 1;
     private static int defaultWidth;
     private static int defaultHeight;
-    private static boolean enterFullScreen = false;
+    private boolean enterFullScreen = false;
     protected PlayerViewConfig defaultConfig;
     protected boolean startIsFullScreen = true;
     protected boolean ProgramIsChange = false;
