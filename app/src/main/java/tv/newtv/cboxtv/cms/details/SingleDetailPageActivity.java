@@ -23,6 +23,7 @@ import tv.newtv.cboxtv.cms.details.model.ProgramSeriesInfo;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.player.videoview.DivergeView;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.utils.BitmapUtil;
 import tv.newtv.cboxtv.utils.DeviceUtil;
@@ -170,6 +171,12 @@ public class SingleDetailPageActivity extends BaseActivity {
                         if (!isError) {
                             videoPlayerView.onComplete();
                         }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+
                     }
                 })
                 .SetClickListener(new View.OnClickListener() {
