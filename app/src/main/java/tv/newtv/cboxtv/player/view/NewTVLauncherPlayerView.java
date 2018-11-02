@@ -720,7 +720,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (menuGroupPresenter == null) {
             menuPopupWindow = new MenuPopupWindow();
             menuGroupPresenter = menuPopupWindow.show(getContext(), this);
-            Log.d(TAG, mProgramDetailInfo.getDuration());
+            //Log.d(TAG, mProgramDetailInfo.getDuration());
         }
     }
 

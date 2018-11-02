@@ -48,7 +48,7 @@ public class NewSpecialLeftAdapter extends RecyclerView.Adapter<NewSpecialLeftAd
     @Override
     public void onBindViewHolder(final LeftHolder holder, final int position) {
         mLeftHolder = holder;
-        holder.topicItem.setText(position+ "  --  "+mNewSpecialDatas.get(position).getSubTitle());
+        holder.topicItem.setText(mNewSpecialDatas.get(position).getSubTitle());
         holder.topicContainer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
