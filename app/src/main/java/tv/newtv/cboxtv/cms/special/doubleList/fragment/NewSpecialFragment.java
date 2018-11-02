@@ -288,17 +288,18 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             }
             printLogAndToast("dispatchKeyEvent", "isInstanceof : " + (focusView instanceof VideoPlayerView) + " code : " + event.getKeyCode(), false);
             if (focusView instanceof VideoPlayerView) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
-                    printLogAndToast("initVideo", "onKeyListener left", false);
-                    mVideoPlayerTitle.setVisibility(View.GONE);
-                    mFullScreenImage.setVisibility(View.GONE);
-                    setCenterRecyclerFocused(true);
-                    setLeftRecyclerFocused(false);
-                    mCenterMenu.smoothScrollToPosition(centerPosition);
-                    mSpecialHandler.sendEmptyMessageDelayed(VIDEO_TO_CENTER_POSITION, 300);
-                    setVideoFocus(false);
-                    return true;
+                switch (event.getKeyCode()){
+                    case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                        break;
+                    case KeyEvent.KEYCODE_DPAD_LEFT:
+                        mVideoPlayerTitle.setVisibility(View.GONE);
+                        mFullScreenImage.setVisibility(View.GONE);
+                        mCenterMenu.smoothScrollToPosition(centerPosition);
+                        mSpecialHandler.sendEmptyMessageDelayed(VIDEO_TO_CENTER_POSITION, 50);
                 }
+                return true;
             }
         }
         return super.dispatchKeyEvent(event);
