@@ -71,6 +71,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private boolean isPrepared = false;
     private boolean isFullScreen = false;
 
+    private NewTVLauncherPlayerView.PlayerViewConfig mPlayerViewConfig;
     private String mUUID;
 
     private int mIndex = 0;
@@ -156,7 +157,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                                         }
                                     }
                                 });
-
                             }
                         });
             }
@@ -184,16 +184,20 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     private void prepareVideoPlayer() {
         if (mVideoPlayerView == null) {
-            mVideoPlayerView = new VideoPlayerView(getContext());
-            mVideoPlayerView.setSingleRepeat(true);
-            mVideoPlayerView.setTag("videoPlayer");
-            FrameLayout.LayoutParams layoutParams = null;
-            layoutParams = new FrameLayout.LayoutParams
-                    (FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams
-                            .MATCH_PARENT);
-            mVideoPlayerView.setLayoutParams(layoutParams);
-            mVideoPlayer.addView(mVideoPlayerView, layoutParams);
-            mVideoPlayerView.registerScreenListener(new MyScreenListener());
+            if (mPlayerViewConfig != null){
+                mVideoPlayerView=new VideoPlayerView(mPlayerViewConfig,getContext());
+            }else {
+                mVideoPlayerView = new VideoPlayerView(getContext());
+                mVideoPlayerView.setSingleRepeat(true);
+                mVideoPlayerView.setTag("videoPlayer");
+                FrameLayout.LayoutParams layoutParams = null;
+                layoutParams = new FrameLayout.LayoutParams
+                        (FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams
+                                .MATCH_PARENT);
+                mVideoPlayerView.setLayoutParams(layoutParams);
+                mVideoPlayer.addView(mVideoPlayerView, layoutParams);
+                mVideoPlayerView.registerScreenListener(new MyScreenListener());
+            }
         }
     }
 
@@ -215,6 +219,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
             if (mVideoPlayerView != null && mVideoPlayer.findViewWithTag("videoPlayer") !=
                     null) {
+                mPlayerViewConfig=mVideoPlayerView.getDefaultConfig();
                 isFullScreen = mVideoPlayerView.isFullScreen();
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
