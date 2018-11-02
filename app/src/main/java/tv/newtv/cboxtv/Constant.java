@@ -169,6 +169,7 @@ public class Constant {
     public static final int LOG_NODE_DEVICE_INFO = 86;          // 终端设备信息
     public static final int LOG_NODE_AUTH_INFO = 10;          // 认证
     public static final int LOG_BUY_GOODS = 47;              //边看边买日志
+    public static final int FLOATING_LAYER=4;
     public static final String BACK_FIRST_NAV = "back_first_nav"; // 返回一级导航
     public static final String BG_EVENT = "bg_event";
     public static final String UPDATE_UC_DATA = "update_uc_data";
@@ -182,6 +183,7 @@ public class Constant {
     public static final String INIT_ADSDK = "init_sdk";//adsdk初始化
     public static final String INIT_LOGSDK = "init_logsdk";//logsdk初始化
     public static final String CHECK_ERROR = "播控鉴权失败：";
+
     private static final Map<String, String> mServerAddressMap = new HashMap<>();
     public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH) : "http://search.cloud.ottcn" +
