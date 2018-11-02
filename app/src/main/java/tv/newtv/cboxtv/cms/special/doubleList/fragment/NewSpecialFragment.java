@@ -1,21 +1,20 @@
 package tv.newtv.cboxtv.cms.special.doubleList.fragment;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -39,12 +38,12 @@ import tv.newtv.cboxtv.cms.special.doubleList.adapter.NewSpecialLeftAdapter;
 import tv.newtv.cboxtv.cms.special.doubleList.bean.SpecialBean;
 import tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
 
 /**
  * 双列表专题界面
@@ -116,7 +115,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         break;
                     case VIDEO_PLAY:
                         if (mCenterData.size() > 0) {
-                            setVideoFocusedPlay(mCenterData.get(0));
+                            setVideoFocusedPlay(0);
                             sendEmptyMessageDelayed(SELECT_DEFAULT_ITEM, 400);
                         } else {
                             printLogAndToast("Handler", "ywy video playurl is null", false);
@@ -139,7 +138,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         if (mCenterFocusedData != null && mCenterFocusedData.size() > 0) {
                             mVideoPlayerTitle.setText(mCenterFocusedData.get(centerPosition).getTitle());
                         }
-                        setVideoFocusedPlay(mCenterFocusedData.get(centerPosition));
+                        setVideoFocusedPlay(centerPosition);
                         mNewSpecialCenterAdapter.setSelected(centerPosition);
                         break;
                     case LEFT_SCROLL_POSITION:
@@ -440,7 +439,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 }
                 setVideoFocus(true);
                 setSelectBg(position, true);
-                setVideoFocusedPlay(mCenterFocusedData.get(position));
+                setVideoFocusedPlay(position);
                 setLeftRecyclerFocused(false);
                 setCenterRecyclerFocused(false);
             }
@@ -481,28 +480,20 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         oldLeftPosition = leftPosition;
     }
 
-    private void setVideoFocusedPlay(SpecialBean.DataBean.ProgramsBean mProgramsBean) {
+    private void setVideoFocusedPlay(int index) {
         if (videoPlayerView != null) {
             videoPlayerView.beginChange();
         }
-        PlayInfoUtil.getPlayInfo(mProgramsBean.getContentUUID(), new PlayInfoUtil
-                .ProgramSeriesInfoCallback() {
-            @Override
-            public void onResult(ProgramSeriesInfo info) {
-                if (info != null) {
-                    mProgramSeriesInfo = info;
-                    printLogAndToast("setVideoFocusedPlay", "info :" + info, false);
-                    if (videoPlayerView != null) {
-                        videoPlayerView.setSeriesInfo(info);
-                        videoPlayerView.playSingleOrSeries(0, 0);
-                    }
-                } else {
-                    if (videoPlayerView != null) {
-                        videoPlayerView.showProgramError();
-                    }
-                }
+        if (mProgramSeriesInfo != null) {
+            if (videoPlayerView != null) {
+                videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+                videoPlayerView.playSingleOrSeries(index, 0);
             }
-        });
+        } else {
+            if (videoPlayerView != null) {
+                videoPlayerView.showProgramError();
+            }
+        }
     }
 
     private void getCenterData(final int position, String contentUUID) {
@@ -526,8 +517,16 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     @Override
                     public void onNext(ResponseBody value) {
                         try {
+                            String result = value.string();
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                String data = jsonObject.getString("data");
+                                mProgramSeriesInfo = GsonUtil.fromjson(data,ProgramSeriesInfo.class);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             mSpecialBean = ModuleUtils.getInstance()
-                                    .parseJsonForNewSpecialSecondData(value.string());
+                                    .parseJsonForNewSpecialSecondData(result);
                             printLogAndToast("getCenterData", "bean : " + mSpecialBean.toString() + " value : " + value.string(), false);
 
                             refreshCenterData(position, mSpecialBean);
