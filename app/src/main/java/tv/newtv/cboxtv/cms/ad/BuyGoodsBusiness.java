@@ -138,8 +138,8 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
 
         if(myScreenListener == null){
             myScreenListener = new MyScreenListener();
-            NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener);
         }
+        NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener);
         if(NewTVLauncherPlayerViewManager.getInstance().isFullScreen()){
             myScreenListener.enterFullScreen();
         }
@@ -363,6 +363,14 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
 //                showAd(new AdBean.AdspacesItem());
 //            }
 //        },3000);
+    }
+
+    public void onResume(){
+        adPresenter.onResume();
+    }
+
+    public void onStop(){
+        adPresenter.onStop();
     }
 
     public void onDestroy(){

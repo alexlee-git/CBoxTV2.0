@@ -11,8 +11,11 @@ import com.squareup.picasso.Callback;
 
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.cms.util.GsonUtil;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.utils.ADHelper;
 import tv.newtv.cboxtv.utils.ScaleUtils;
 import tv.newtv.cboxtv.views.RecycleImageView;
@@ -25,11 +28,12 @@ import tv.newtv.cboxtv.views.RecycleImageView;
  * 创建日期:          2018/5/8
  */
 public class EpisodeAdView extends RecycleImageView implements IEpisode, IAdConstract
-        .IADConstractView, View.OnFocusChangeListener {
+        .IADConstractView, View.OnFocusChangeListener, View.OnClickListener {
 
     private ADPresenter mADPresenter;
     private int measuredWidth, measuredHeight;
     private boolean isSuccess = false;
+    private ADHelper.AD.ADItem adItem;
 
     public EpisodeAdView(Context context) {
         this(context, null);
@@ -42,6 +46,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, IAdCons
     public EpisodeAdView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOnFocusChangeListener(this);
+        setOnClickListener(this);
 
         measuredHeight = (int) getResources().getDimension(R.dimen.height_386px);
         measuredWidth = (int) getResources().getDimension(R.dimen.width_1746px);
@@ -111,6 +116,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, IAdCons
 
     @Override
     public void showAd(ADHelper.AD.ADItem result) {
+        adItem = result;
         if (!TextUtils.isEmpty(result.AdUrl)) {
             setVisibility(VISIBLE);
             getParent().requestLayout();
@@ -154,6 +160,15 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, IAdCons
             ScaleUtils.getInstance().onItemGetFocus(this);
         } else {
             ScaleUtils.getInstance().onItemLoseFocus(this);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(adItem != null && !TextUtils.isEmpty(adItem.eventContent)){
+            AdEventContent adEventContent = GsonUtil.fromjson(adItem.eventContent, AdEventContent.class);
+            JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
+                    adEventContent.contentUUID, adEventContent.actionURI);
         }
     }
 }

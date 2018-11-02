@@ -25,6 +25,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
     private boolean columnIsGet = false;
     protected String adType;
     protected String adLoc;
+    private boolean isDestory;
     protected Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
@@ -37,7 +38,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
         this.adType = adType;
         this.adLoc = adLoc;
 
-        ADConfig.getInstance().setListener(this);
+        ADConfig.getInstance().registerListener(this);
         if(columnIsGet || !TextUtils.isEmpty(ADConfig.getInstance().getColumnId())){
             excute();
         }else {
@@ -62,6 +63,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
                 addExtend(stringBuilder,"secondpanel",playerConfig.getSecondChannelId());
                 addExtend(stringBuilder,"topic",playerConfig.getTopicId());
                 addExtend(stringBuilder,"secondcolumn",config.getSecondColumnId());
+                addExtend(stringBuilder,"program",config.getProgramId());
                 e.onNext(AdSDK.getInstance().getAD(adType, config.getColumnId(), config.getSeriesID(), adLoc, null, stringBuilder.toString(), sb));
             }
         }).subscribeOn(Schedulers.newThread())
@@ -69,7 +71,9 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer result) throws Exception {
-                        dealResult(sb.toString());
+                        if(!isDestory){
+                            dealResult(sb.toString());
+                        }
                     }
                 });
     }
@@ -87,7 +91,13 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
         }
     }
 
+    public void onResume(){}
+
+    public void onStop(){}
+
     public void destroy(){
+        isDestory = true;
+        handler.removeCallbacksAndMessages(null);
         ADConfig.getInstance().setColumnId("");
         ADConfig.getInstance().setSecondColumnId("");
         ADConfig.getInstance().removeListener(this);

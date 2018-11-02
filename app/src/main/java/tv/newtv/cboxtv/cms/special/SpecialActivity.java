@@ -9,6 +9,7 @@ import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.cms.special.util.ActivityUtils;
 import tv.newtv.cboxtv.cms.special.util.Injection;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
@@ -18,6 +19,7 @@ import tv.newtv.cboxtv.utils.KeyEventUtils;
 /**
  * 专题页
  */
+@BuyGoodsAD
 public class SpecialActivity extends BaseActivity {
     private String mPageUUid;
     private String mActionType;

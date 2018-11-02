@@ -220,6 +220,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         @Override
         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
             try {
+                if(isReleased){
+                    return;
+                }
                 if (response == null) {
                     LogUtils.i(TAG, "onResponse: response==null");
                     if (!NetworkManager.getInstance().isConnected()) {
@@ -339,6 +342,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                 videoDataStruct.setDataSource(Constants.DATASOURCE_ICNTV);
                 videoDataStruct.setDeviceID(Constant.UUID);
                 videoDataStruct.setCategoryIds(mProgramDetailInfo.getCategoryIds());
+                ADConfig.getInstance().setProgramId(mProgramDetailInfo.getContentUUID());
                 ADConfig.getInstance().setCategoryIds(mProgramDetailInfo.getCategoryIds());
 
                 if (mNewTVLauncherPlayer == null) {
@@ -1816,7 +1820,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if(screenListeners == null){
             screenListeners = new ArrayList<>();
         }
-        screenListeners.add(listener);
+        if(!screenListeners.contains(listener)){
+            screenListeners.add(listener);
+        }
     }
 
     public void unregisterScreenListener(ScreenListener listener) {

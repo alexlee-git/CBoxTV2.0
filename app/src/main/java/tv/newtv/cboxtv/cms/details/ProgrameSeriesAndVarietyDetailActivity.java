@@ -103,6 +103,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
             leftUUID = contentUUID.substring(0, 2);
             rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
             LogUploadUtils.uploadLog(Constant.LOG_COLUMN_INTO, "0," + contentUUID);
+            ADConfig.getInstance().setSeriesID(contentUUID);
             requestData();
         } else {
             Toast.makeText(ProgrameSeriesAndVarietyDetailActivity.this, "节目集信息有误", Toast
@@ -149,7 +150,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends BaseActivity {
                                     initFragment();
                                 } else {
                                     setContentView(R.layout.fragment_new_variety_show);
-                                    ADConfig.getInstance().setSeriesID(contentUUID);
                                     //初始化View
                                     initView();
                                     // fragment = NewVarietyShowFragment.newInstance(contentUUID);

@@ -19,6 +19,7 @@ public class TimeDialog {
     private static int time = 5;
     private static TextView textView = null;
     private static TextView ensure = null;
+    private static TextView notificationView = null;
     private static Handler handler = null;
 
     private static void initHandler(){
@@ -44,7 +45,11 @@ public class TimeDialog {
         }
     }
 
-    public static void showBuilder(Context context) {
+    public static void showBuilder(Context context){
+        showBuilder(context,"",null);
+    }
+
+    public static void showBuilder(Context context, String notification, final View.OnClickListener listener) {
         if (context == null) {
             return;
         }
@@ -62,12 +67,17 @@ public class TimeDialog {
         window.setContentView(R.layout.layout_time_dialog);
         textView = (TextView) window.findViewById(R.id.text_view);
         ensure = window.findViewById(R.id.ensure);
+        notificationView = window.findViewById(R.id.notification_view);
+        notificationView.setText(notification);
 
         ensure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (time <= 0) {
                     TimeDialog.dismiss();
+                    if(listener != null){
+                        listener.onClick(v);
+                    }
                 }
             }
         });

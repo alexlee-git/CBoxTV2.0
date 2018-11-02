@@ -20,6 +20,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.ad.model.BuyGoodsView;
 import tv.newtv.cboxtv.cms.details.model.QrcodeUtil;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.ScreenUtils;
 
 public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
@@ -59,7 +60,9 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
                     Picasso.get().load(url).into(imageView, new Callback() {
                         @Override
                         public void onSuccess() {
-                            show();
+                            if(NewTVLauncherPlayerViewManager.getInstance().isFullScreen()){
+                                show();
+                            }
                         }
 
                         @Override

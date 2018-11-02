@@ -62,6 +62,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.ActivityStacks;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.bean.TimeBean;
 import tv.newtv.cboxtv.cms.ad.model.AdEventContent;
@@ -87,6 +88,7 @@ import tv.newtv.cboxtv.utils.ServiceTimeUtils;
 import tv.newtv.cboxtv.views.MenuRecycleView;
 
 @PopupAD
+@BuyGoodsAD
 public class MainActivity extends BaseActivity implements BgChangManager.BGCallback {
     private static final String TAG = MainActivity.class.getSimpleName();
 
