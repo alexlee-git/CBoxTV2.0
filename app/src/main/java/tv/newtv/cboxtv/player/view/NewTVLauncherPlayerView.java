@@ -1205,6 +1205,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
                     return true;
                 }
@@ -1219,6 +1220,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
                     return true;
                 }
@@ -1269,9 +1271,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mNewTVLauncherPlayerSeekbar != null) {
             if (isPause) {
                 Log.e(TAG, "showSeekBar: "+isPause );
-                mNewTVLauncherPlayerSeekbar.showPauseIcon();
-            } else {
                 mNewTVLauncherPlayerSeekbar.show();
+            } else {
+                mNewTVLauncherPlayerSeekbar.showPauseIcon();
             }
         }
     }
