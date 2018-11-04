@@ -16,9 +16,8 @@ import android.view.View;
 
 import java.lang.reflect.Field;
 
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
-
 public class FocusRecyclerView extends RecyclerView {
+    private static final String TAG = FocusRecyclerView.class.getSimpleName();
     private boolean needGetDownView;
     private boolean needGetUpView;
     private boolean needGetLeftView;
@@ -71,7 +70,7 @@ public class FocusRecyclerView extends RecyclerView {
         if (focusView != null) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_DPAD_DOWN:
-                    Log.d("ywy", "down");
+                    Log.d(TAG, "ywy down");
                     View downView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_DOWN);
                     if (layoutDirection == OrientationHelper.HORIZONTAL || (isFocusOutAble && downView == null && isRecyclerViewToBottom())) {
                         break;
@@ -88,7 +87,7 @@ public class FocusRecyclerView extends RecyclerView {
                         return true;
                     }
                 case KeyEvent.KEYCODE_DPAD_UP:
-                    Log.d("ywy", " up ");
+                    Log.d(TAG, "ywy up ");
                     View upView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_UP);
                     if (layoutDirection == OrientationHelper.HORIZONTAL || (upView == null && isRecyclerViewToTop())) {
                         break;
@@ -105,16 +104,17 @@ public class FocusRecyclerView extends RecyclerView {
                         return true;
                     }
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    Log.d("ywy", "right");
+                    Log.d(TAG, "ywy right");
                     View rightView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_RIGHT);
                     int rightPosition = getChildLayoutPosition(focusView);
-                    Log.d("ywy", "right  position : " + rightPosition + " isNull : " + (mOnGetPositionListener != null));
+                    Log.d(TAG, "ywy right  position : " + rightPosition + " isNull : " + (mOnGetPositionListener != null));
                     if (mOnGetPositionListener != null) {
                         mOnGetPositionListener.GetRightPositionListener(rightPosition);
                     }
-                    if (layoutDirection == OrientationHelper.VERTICAL || (isFocusOutAble && rightView == null && isRecyclerViewToRight())) {
+                    /*if (layoutDirection == OrientationHelper.VERTICAL || (isFocusOutAble && rightView == null && isRecyclerViewToRight())) {
                         break;
-                    }
+                    }*/
+                    Log.d(TAG,"ywy rightView is null : "+(rightView != null));
                     if (rightView != null) {
                         rightView.requestFocusFromTouch();
                         rightView.requestFocus();
@@ -127,10 +127,10 @@ public class FocusRecyclerView extends RecyclerView {
                         return true;
                     }
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    Log.d("ywy", "left");
+                    Log.d(TAG, "ywy left");
                     View leftView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_LEFT);
                     int leftPosition = getChildLayoutPosition(focusView);
-                    Log.d("ywy", "left  position : " + leftPosition);
+                    Log.d(TAG, "ywy left  position : " + leftPosition);
                     if (mOnGetPositionListener != null) {
                         mOnGetPositionListener.GetLeftPositionListener(leftPosition);
                     }

@@ -61,19 +61,20 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
                 }
             }
         });
+        setItemStatus(position);
         holder.topicItem.setText(mSpecialData.get(position).getTitle());
         holder.topicContainer.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    setItemStatus(position);
+                    //setItemStatus(position);
                     holder.topicItem.setSelected(true);
                     holder.topicItem.setBackgroundResource(R.drawable.special_list_focus);
                     if (null != mOnFocusedDataChangeListener) {
                         mOnFocusedDataChangeListener.onFocusedDataChangeListener(mSpecialData.get(position).getContentUUID(), position);
                     }
                 } else {
-                    setItemStatus(position);
+                    //setItemStatus(position);
                     holder.topicItem.setSelected(false);
                     holder.topicItem.setBackgroundColor(Color.parseColor("#00000000"));
                 }

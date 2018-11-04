@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/page_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_154px"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxEms="18"
+        android:singleLine="true"
+        android:text="111111111111111111111111111111"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_50px"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/page_desc"
+        android:layout_width="@dimen/width_1160px"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/page_title"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_18px"
+        android:gravity="left"
+        android:lineSpacingMultiplier="1.2"
+        android:maxLines="3"
+        android:text="222222222222222222222222"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_30px" />
+    <!--<Button-->
+    <!--android:id="@+id/page_pay"-->
+    <!--android:layout_width="@dimen/width_152px"-->
+    <!--android:layout_height="@dimen/height_76px"-->
+    <!--android:layout_below="@id/page_desc"-->
+    <!--android:layout_marginTop="@dimen/height_48px"/>-->
+
+    <Button
+        android:id="@+id/page_favorite"
+        android:layout_width="@dimen/width_200px"
+        android:layout_height="@dimen/height_123px"
+        android:layout_below="@id/page_desc"
+        android:layout_marginLeft="@dimen/width_100px"
+        android:layout_marginTop="@dimen/height_48px"
+        android:background="@drawable/special_favorite_btn_selector"
+        android:focusable="true"
+        android:visibility="gone" />
+
+    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:id="@+id/id_content_fragment_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/page_desc"
+        android:layout_marginTop="@dimen/height_116px"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
+</RelativeLayout>

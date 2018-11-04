@@ -19,13 +19,11 @@
 
     <ImageView
         android:id="@+id/topic_center_item_player"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/width_18px"
+        android:layout_height="@dimen/height_20px"
+        android:layout_marginLeft="@dimen/width_20px"
         android:layout_gravity="left|center"
         android:src="@drawable/seek_play"
         android:visibility="gone" />
 
 </FrameLayout>
-
-
-
