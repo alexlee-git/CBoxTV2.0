@@ -506,6 +506,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         LiveTimingUtil.endTime(mProgramInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
             @Override
             public void end() {
+                if(!NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+                    Log.i(TAG, "非直播时间，不结束播放");
+                    return;
+                }
                 if (centerTextView != null) {
                     centerTextView.setVisibility(View.VISIBLE);
                     centerTextView.setText("暂无播放");

@@ -925,6 +925,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         LiveTimingUtil.endTime(mInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
             @Override
             public void end() {
+                if(!NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+                    Log.i(TAG, "非直播时间，不结束播放");
+                    return;
+                }
                 if (playerView != null) {
                     playerView.ExitFullScreen();
                     playerView.setHintText("播放已结束");

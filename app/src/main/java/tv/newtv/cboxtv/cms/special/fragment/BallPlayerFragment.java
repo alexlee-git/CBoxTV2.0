@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.special.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,6 +20,7 @@ import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.CmsLiveUtil;
 import tv.newtv.cboxtv.utils.LivePermissionCheckUtil;
 import tv.newtv.cboxtv.utils.LiveTimingUtil;
@@ -226,6 +228,11 @@ public class BallPlayerFragment extends BaseSpecialContentFragment {
 //                    videoPlayerView.setHintText("播放已结束");
 //                    videoPlayerView.setHintTextVisible(View.VISIBLE);
 //                }
+
+                if(!NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+                    Log.e(BallPlayerFragment.class.getSimpleName(), "非直播时间，不结束播放");
+                    return;
+                }
                 if(!TextUtils.isEmpty(mProgramInfo.getImg())){
                     mImageView.setVisibility(View.VISIBLE);
                     Picasso.get()
