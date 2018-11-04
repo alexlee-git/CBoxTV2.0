@@ -165,6 +165,14 @@ public class BgChangManager {
      * @param uuid
      */
     public void setCurrent(Context context, String uuid) {
+        for(BGEvent bgEvent : firstLevel){
+            if(TextUtils.equals(bgEvent.contentUUID,mCurrentId)){
+                if(bgEvent.childSet == null || !bgEvent.childSet.contains(uuid)){
+                    return;
+                }
+            }
+        }
+
         mCurrentId = uuid;
         handler.removeCallbacksAndMessages(null);
         if(secondLevelMap.get(uuid) == null){
@@ -182,7 +190,7 @@ public class BgChangManager {
      * @param uuid
      * @param url
      */
-    private void loadImage(final Context context, final String uuid, final String url) {
+    private void loadImage(Context context, String uuid, String url) {
         if (!bgHashmap.containsKey(uuid) || bgHashmap.get(uuid).drawable == null) {
             bgHashmap.put(uuid, new BGDrawable(url));
             requestImage(bgHashmap.get(uuid), context, uuid, url,true);
