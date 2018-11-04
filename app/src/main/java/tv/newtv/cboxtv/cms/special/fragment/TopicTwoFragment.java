@@ -630,7 +630,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
         int state = recyclerView.getScrollState();
-        View childAt = recyclerView.getChildAt(lastVisibleItemPosition - firstVisibleItemPosition);
+        View childAt = recyclerView.getChildAt(lastVisibleItemPosition);
         if (visibleItemCount > 0 && lastVisibleItemPosition == totalItemCount - 1  &&childAt!=null&&childAt.hasFocus()) {
             return true;
         } else {

@@ -13,8 +13,9 @@
         android:gravity="center_vertical"
         android:maxEms="18"
         android:singleLine="true"
-        android:textColor="#ededed"
-        android:textSize="@dimen/height_40px" />
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_50px"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/page_desc"
@@ -27,8 +28,8 @@
         android:lineSpacingMultiplier="1.2"
         android:maxLines="3"
         android:text=""
-        android:textColor="#ededed"
-        android:textSize="@dimen/height_26px" />
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/height_30px" />
     <!--<Button-->
     <!--android:id="@+id/page_pay"-->
     <!--android:layout_width="@dimen/width_152px"-->

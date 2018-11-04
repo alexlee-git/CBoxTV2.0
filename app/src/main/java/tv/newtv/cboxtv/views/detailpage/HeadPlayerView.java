@@ -391,7 +391,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         mBuilder = builder;
         initData();
         if (mBuilder.playerCallback == null) return;
-        if (mBuilder.videoExitFullScreenCallBack == null) return;
+        //if (mBuilder.videoExitFullScreenCallBack == null) return;
         if (mBuilder.contentUUid == null) return;
         if (mBuilder.mPlayerId == -1) return;
         if (mBuilder.mLayout == -1) return;

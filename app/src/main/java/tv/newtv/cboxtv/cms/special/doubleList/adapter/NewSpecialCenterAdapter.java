@@ -31,7 +31,8 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
     private boolean isFirstInit = true, isFirstClick = false;
     private int mSelectedId = -1;
     private int mLeftId = -1;
-    private OnFocusedVideoChangeListener mOnFocusedVideoChangeListener;
+    private OnVideoChangeListener mOnVideoChangeListener;
+    private OnFocusedDataChangeListener mOnFocusedDataChangeListener;
 
     public NewSpecialCenterAdapter(Context context, List<SpecialBean.DataBean.ProgramsBean> objectList) {
         this.mSpecialData = objectList;
@@ -55,8 +56,8 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
                 Log.d(TAG, "you just touched me : " + mSpecialData.get(position));
                 mSelectedId = position;
                 reSetSelect(position);
-                if (mOnFocusedVideoChangeListener != null) {
-                    mOnFocusedVideoChangeListener.onFocusedVideoChangeListener(mSpecialData.get(position).getTitle(), position);
+                if (mOnVideoChangeListener != null) {
+                    mOnVideoChangeListener.onVideoChangeListener(mSpecialData.get(position).getTitle(), position);
                 }
             }
         });
@@ -68,6 +69,9 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
                     setItemStatus(position);
                     holder.topicItem.setSelected(true);
                     holder.topicItem.setBackgroundResource(R.drawable.special_list_focus);
+                    if (null != mOnFocusedDataChangeListener) {
+                        mOnFocusedDataChangeListener.onFocusedDataChangeListener(mSpecialData.get(position).getContentUUID(), position);
+                    }
                 } else {
                     setItemStatus(position);
                     holder.topicItem.setSelected(false);
@@ -164,11 +168,20 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
         }
     }
 
-    public void setOnFocusedVideoChangeListener(OnFocusedVideoChangeListener onFocusedVideoChangeListener) {
-        mOnFocusedVideoChangeListener = onFocusedVideoChangeListener;
+    public void setOnVideoChangeListener(OnVideoChangeListener onVideoChangeListener) {
+        mOnVideoChangeListener = onVideoChangeListener;
     }
 
-    public interface OnFocusedVideoChangeListener {
-        void onFocusedVideoChangeListener(String title, int position);
+    public interface OnVideoChangeListener {
+        void onVideoChangeListener(String title, int position);
     }
+
+    public void setOnFocusedDataChangeListener(OnFocusedDataChangeListener onFoucesDataChangeListener) {
+        this.mOnFocusedDataChangeListener = onFoucesDataChangeListener;
+    }
+
+    public interface OnFocusedDataChangeListener {
+        void onFocusedDataChangeListener(String contentId, int position);
+    }
+
 }

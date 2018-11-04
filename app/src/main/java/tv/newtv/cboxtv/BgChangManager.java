@@ -43,6 +43,8 @@ public class BgChangManager {
 
     private Context applicationContext;
     private int retry = 0;
+    private List<Target> targetList = new ArrayList<>();
+
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -183,7 +185,7 @@ public class BgChangManager {
     private void loadImage(final Context context, final String uuid, final String url) {
         if (!bgHashmap.containsKey(uuid) || bgHashmap.get(uuid).drawable == null) {
             bgHashmap.put(uuid, new BGDrawable(url));
-            requestImage(bgHashmap.get(uuid), context, uuid, url);
+            requestImage(bgHashmap.get(uuid), context, uuid, url,true);
         } else {
             if (uuid.equals(mCurrentId) && mCallback != null) {
                 mCallback.getTargetView().setBackground(bgHashmap.get(uuid).drawable);
@@ -199,26 +201,35 @@ public class BgChangManager {
      * @param url
      */
     private void requestImage(final BGDrawable bgDrawable, final Context context, final String uuid,
-                              final String url) {
-        Picasso.get().load(url).into(new Target() {
+                              final String url, final boolean isRetry) {
+        Log.i(TAG, "requestImage: "+url);
+        Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 bgDrawable.drawable = new BitmapDrawable(context.getResources(), bitmap);
                 if (uuid.equals(mCurrentId) && mCallback != null) {
                     mCallback.getTargetView().setBackground(bgHashmap.get(uuid).drawable);
                 }
+                targetList.remove(this);
             }
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                mCallback.getTargetView().setBackground(null);
+                if(isRetry){
+                    requestImage(bgDrawable,context,uuid,url,false);
+                }else {
+                    mCallback.getTargetView().setBackground(null);
+                }
+                targetList.remove(this);
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
                 mCallback.getTargetView().setBackground(placeHolderDrawable);
             }
-        });
+        };
+        targetList.add(target);
+        Picasso.get().load(url).into(target);
     }
 
     public void add(String parentUUID,String uuid){
