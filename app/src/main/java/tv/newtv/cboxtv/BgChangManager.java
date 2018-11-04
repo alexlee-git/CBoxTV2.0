@@ -218,14 +218,18 @@ public class BgChangManager {
                 if(isRetry){
                     requestImage(bgDrawable,context,uuid,url,false);
                 }else {
-                    mCallback.getTargetView().setBackground(null);
+                    if(uuid.equals(mCurrentId) && mCallback != null){
+                        mCallback.getTargetView().setBackground(null);
+                    }
                 }
                 targetList.remove(this);
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-                mCallback.getTargetView().setBackground(placeHolderDrawable);
+                if(uuid.equals(mCurrentId) && mCallback != null){
+                    mCallback.getTargetView().setBackground(placeHolderDrawable);
+                }
             }
         };
         targetList.add(target);
