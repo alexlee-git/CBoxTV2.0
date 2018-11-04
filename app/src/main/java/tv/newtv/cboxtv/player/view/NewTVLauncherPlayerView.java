@@ -385,7 +385,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
             LogUtils.i(TAG, "onPrepared: ");
             mIsPrepared = true;
-            stopLoading();
+//            if (mHistoryPostion == 0){
+//                stopLoading();
+//            }
             mNewTVLauncherPlayerSeekbar.setDuration();
             if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
                     * 1000) {
@@ -411,7 +413,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         @Override
         public void onVideoBufferStart(String typeString) {
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
-            startLoading();
+            if (!mIsLoading){
+                startLoading();
+            }
+
 
             if (SPrefUtils.getValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"").equals("unsave")){
 
@@ -1636,6 +1641,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
     private void stopLoading() {
         if (mLoading != null) {
+            Log.i(TAG, "onVideoBufferStart.stopLoading()");
             mLoading.dismiss();
             mIsLoading = false;
         }
