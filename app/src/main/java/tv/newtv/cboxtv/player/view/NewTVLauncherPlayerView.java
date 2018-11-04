@@ -560,7 +560,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     }
 
     public void ExitFullScreen() {
-        if (!enterFullScreen) return;
+        if (!isFullScreen()) return;
         enterFullScreen = false;
 
         if (mPlayerLocation != null) {
@@ -634,7 +634,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
             e.printStackTrace();
         }
 
-        if (!enterFullScreen) {
+        if (!isFullScreen()) {
             defaultWidth = getLayoutParams().width;
             defaultHeight = getLayoutParams().height;
         }
@@ -669,7 +669,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     }
 
     public void delayEnterFullScreen(final Activity activity, final boolean bringFront, int delay) {
-        if (enterFullScreen) return;
+        if (isFullScreen()) return;
         enterFullScreen = true;
         postDelayed(new Runnable() {
             @Override
@@ -681,7 +681,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
     }
 
     public void EnterFullScreen(Activity activity, final boolean bringFront) {
-        if (enterFullScreen) return;
+        if (isFullScreen()) return;
         enterFullScreen = true;
 
         if (mPlayerLocation != null) {
@@ -1096,7 +1096,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
             addHistory();
             PlayerConfig.getInstance().setJumpAD(NeedJumpAd);
             NeedJumpAd = false;
-            if (enterFullScreen) {
+            if (isFullScreen()) {
                 createMenuGroup();
             }
         }
