@@ -37,6 +37,7 @@ import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.ad.model.AdBean;
 import tv.newtv.cboxtv.cms.ad.model.BuyGoodsView;
 import tv.newtv.cboxtv.cms.ad.model.GoodsBean;
+import tv.newtv.cboxtv.cms.ad.model.RequestAdParameter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BaseRequestAdPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BuyGoodsRequestAdPresenter;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
@@ -86,6 +87,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     private int duration = DEFAULT_TIME;
     private int start;
     private BuyGoodsLog log;
+    private RequestAdParameter requestAdParameter;
 
     private Handler handler = new Handler(){
         @Override
@@ -125,6 +127,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             Log.i(TAG, "数据不合法");
             return;
         }
+        requestAdParameter = adPresenter.getRequestAdParameter();
         this.item = item;
         extMap = analyzeExt(item.ext);
         GoodsBean goodsBean = GsonUtil.fromjson(item.materials.get(0).eventContent, GoodsBean.class);
@@ -357,6 +360,12 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     @Override
     public void fail() {
         Log.i(TAG, "fail: ");
+        if(myScreenListener != null){
+            NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
+        }
+        if(disposable != null){
+            disposable.dispose();
+        }
 //        MainLooper.get().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
@@ -522,6 +531,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             }else {
                 logShowGoods();
             }
+            log.uploadAdLog(item.mid+"",item.aid+"",item.materials.get(0).id+"",requestAdParameter);
 
             return true;
         }

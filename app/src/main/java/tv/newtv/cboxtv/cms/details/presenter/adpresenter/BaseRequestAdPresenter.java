@@ -16,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.cms.ad.ADConfig;
+import tv.newtv.cboxtv.cms.ad.model.RequestAdParameter;
 import tv.newtv.cboxtv.cms.util.RxBus;
 import tv.newtv.cboxtv.player.PlayerConfig;
 
@@ -26,6 +27,8 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
     protected String adType;
     protected String adLoc;
     private boolean isDestory;
+    private RequestAdParameter requestAdParameter;
+
     protected Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
@@ -64,6 +67,10 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
                 addExtend(stringBuilder,"topic",playerConfig.getTopicId());
                 addExtend(stringBuilder,"secondcolumn",config.getSecondColumnId());
                 addExtend(stringBuilder,"program",config.getProgramId());
+                requestAdParameter = new RequestAdParameter();
+                requestAdParameter.setExtend(stringBuilder.toString());
+                requestAdParameter.setProgram(config.getProgramId());
+                requestAdParameter.setSeriesId(config.getSeriesID());
                 e.onNext(AdSDK.getInstance().getAD(adType, config.getColumnId(), config.getSeriesID(), adLoc, null, stringBuilder.toString(), sb));
             }
         }).subscribeOn(Schedulers.newThread())
@@ -106,5 +113,9 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
     @Override
     public void receive() {
         columnIsGet = true;
+    }
+
+    public RequestAdParameter getRequestAdParameter() {
+        return requestAdParameter;
     }
 }

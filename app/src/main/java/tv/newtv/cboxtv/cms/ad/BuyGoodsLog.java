@@ -2,7 +2,9 @@ package tv.newtv.cboxtv.cms.ad;
 
 import android.util.Log;
 
+import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.Constant;
+import tv.newtv.cboxtv.cms.ad.model.RequestAdParameter;
 import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 
 public class BuyGoodsLog {
@@ -34,6 +36,7 @@ public class BuyGoodsLog {
 
     private long startShowGoodsTime = 0;
     private long startShowQrCodeTime = 0;
+    private long startTime = 0;
 
     public void showGoodsLog(String skuId,String x,String y,int defaultShowTime,String productName){
         if(startShowGoodsTime == 0){
@@ -71,6 +74,7 @@ public class BuyGoodsLog {
 
     public void startShowGoods(){
         startShowGoodsTime = System.currentTimeMillis();
+        startTime = startShowGoodsTime;
     }
 
     private static String buildContent(String... params){
@@ -87,5 +91,14 @@ public class BuyGoodsLog {
 
     private void uploadLog(String content){
         LogUploadUtils.uploadLog(Constant.LOG_BUY_GOODS,content);
+    }
+
+    public void uploadAdLog(String mid, String aid, String mtid, RequestAdParameter requestAdParameter){
+        if(startTime != 0){
+            long duration = System.currentTimeMillis() - startTime;
+            startTime = 0;
+            AdSDK.getInstance().report(mid,aid,mtid,requestAdParameter.getSeriesId(),requestAdParameter.getProgram(),
+                    (duration/1000)+"",requestAdParameter.getExtend());
+        }
     }
 }
