@@ -431,6 +431,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
                         @Override
                         public void onNext(Long aLong) {
                             if(NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+                                disposable.dispose();
                                 return;
                             }
                             int currentPosition = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() / 1000;
