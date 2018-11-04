@@ -337,7 +337,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
                 if (!TextUtils.isEmpty(duration)) {
 
-                    RxBus.get().post("duration",duration);
+                    getContext().getSharedPreferences("durationConfig",Context.MODE_PRIVATE).edit().putString("duration",duration).commit();
                     videoDataStruct.setDuration(Integer.parseInt(mProgramDetailInfo.getDuration()));
                 }
 
@@ -720,7 +720,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (menuGroupPresenter == null) {
             menuPopupWindow = new MenuPopupWindow();
             menuGroupPresenter = menuPopupWindow.show(getContext(), this);
-            Log.d(TAG, mProgramDetailInfo.getDuration());
+
         }
     }
 

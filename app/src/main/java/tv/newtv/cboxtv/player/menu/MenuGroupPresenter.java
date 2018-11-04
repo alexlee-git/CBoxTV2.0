@@ -94,7 +94,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
     private String programSeries = "";
     private String contentUUID = "";
     private String actionType = "";
-    private String duration;
 
     private boolean menuGroupIsInit = false;
     /**
@@ -111,7 +110,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
      */
     private int retry = 0;
     private int posotion;
-    private Observable<String> durationObservable;
 
     @Override
     public void release() {
@@ -123,7 +121,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             menuGroup.release();
             menuGroup = null;
         }
-        RxBus.get().unregister("duration",durationObservable);
 
     }
 
@@ -148,7 +145,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         }
     }
 
-    public MenuGroupPresenter(Context context) {
+    public MenuGroupPresenter(final Context context) {
         this.context = context;
         rootView = LayoutInflater.from(context).inflate(R.layout.menu_group_presenter, null);
         hintArrowheadBigLeft = rootView.findViewById(R.id.hint_arrowhead_big_left);
@@ -159,6 +156,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         takePlace2 = rootView.findViewById(R.id.take_place2);
         hintView = rootView.findViewById(R.id.hint_text);
         menuGroup = rootView.findViewById(R.id.menu_group);
+
         init();
     }
 
@@ -166,24 +164,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         initData();
         initListener();
 
-        durationObservable = RxBus.get().register("duration");
-        durationObservable.observeOn(AndroidSchedulers.mainThread())
-           .subscribe(new Consumer<String>() {
-
-
-
-               @Override
-               public void accept(String s) throws Exception {
-                   duration = s;
-
-
-               }
-           }, new Consumer<Throwable>() {
-               @Override
-               public void accept(Throwable throwable) throws Exception {
-
-               }
-           });
 
 
     }
@@ -517,7 +497,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.VISIBLE) {
+
                         gone();
+
                         return true;
                     }
                     break;
@@ -531,6 +513,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_ESCAPE:
+
                         if (menuGroupIsInit && menuGroup.getVisibility() == View.VISIBLE) {
                             menuGroup.gone();
                             return true;
@@ -564,8 +547,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
 //
 //                        }
 //                        int i = Integer.parseInt(duration);
-
-                        if (duration!=null)
+                    String    duration = context.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
+                        if (duration !=null)
                         LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
 
 
@@ -626,9 +609,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
         handler.removeMessages(MESSAGE_GONE);
         menuGroup.gone();
-        if (duration!=null)
-        LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+         Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
     }
+
 
     private void hintAnimator(final View view) {
         ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0);

@@ -25,7 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import tv.icntv.icntvplayersdk.Constants;
+import tv.newtv.cboxtv.Constant;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.util.LogUploadUtils;
 import tv.newtv.cboxtv.cms.util.LogUtils;
 import tv.newtv.cboxtv.player.menu.model.LastMenuBean;
 import tv.newtv.cboxtv.player.menu.model.Node;
@@ -109,18 +112,22 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
      * AllNode初始化是否完成
      */
     private boolean allNodeInit = false;
+    private Context mcontext;
 
     public MenuGroup(Context context) {
         this(context, null);
+        mcontext =context;
     }
 
     public MenuGroup(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
+        mcontext =context;
     }
 
     @SuppressLint("ResourceAsColor")
     public MenuGroup(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mcontext =context;
         setOrientation(HORIZONTAL);
         recyclerViewWidth = DEFAULT_WIDTH = getResources().getDimensionPixelOffset(R.dimen.width_430px);
     }
@@ -822,6 +829,12 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         addGoneAnimator = true;
         //播放消失动画
         goneAnimator();
+
+
+    String    duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
+        if (duration !=null)
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
     }
 
     private int getVisibleNumber() {
