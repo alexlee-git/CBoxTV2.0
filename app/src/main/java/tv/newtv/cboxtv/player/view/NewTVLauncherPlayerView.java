@@ -393,7 +393,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
             LogUtils.i(TAG, "onPrepared: ");
             mIsPrepared = true;
-            stopLoading();
+//            if (mHistoryPostion == 0){
+//                stopLoading();
+//            }
             mNewTVLauncherPlayerSeekbar.setDuration();
             if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
                     * 1000) {
@@ -419,7 +421,10 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         @Override
         public void onVideoBufferStart(String typeString) {
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
-            startLoading();
+            if (!mIsLoading){
+                startLoading();
+            }
+
 
             if (SPrefUtils.getValue(LauncherApplication.AppContext,Constant.ALREADY_SAVE,"").equals("unsave")){
 
@@ -1214,6 +1219,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
                     return true;
                 }
@@ -1228,6 +1234,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
                     return true;
                 }
                 if (mShowingChildView == SHOWING_NO_VIEW) {
+                    mIsPause = true;
                     showSeekBar(mIsPause);
                     return true;
                 }
@@ -1278,9 +1285,9 @@ public class NewTVLauncherPlayerView extends FrameLayout {
         if (mNewTVLauncherPlayerSeekbar != null) {
             if (isPause) {
                 Log.e(TAG, "showSeekBar: "+isPause );
-                mNewTVLauncherPlayerSeekbar.showPauseIcon();
-            } else {
                 mNewTVLauncherPlayerSeekbar.show();
+            } else {
+                mNewTVLauncherPlayerSeekbar.showPauseIcon();
             }
         }
     }
@@ -1643,6 +1650,7 @@ public class NewTVLauncherPlayerView extends FrameLayout {
 
     private void stopLoading() {
         if (mLoading != null) {
+            Log.i(TAG, "onVideoBufferStart.stopLoading()");
             mLoading.dismiss();
             mIsLoading = false;
         }
