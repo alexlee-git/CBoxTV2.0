@@ -430,6 +430,9 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
 
                         @Override
                         public void onNext(Long aLong) {
+                            if(NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+                                return;
+                            }
                             int currentPosition = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() / 1000;
                             Log.i(TAG, "onNext: "+currentPosition+","+start+","+duration);
                             if(currentPosition >= start && currentPosition <= (start + duration)){
