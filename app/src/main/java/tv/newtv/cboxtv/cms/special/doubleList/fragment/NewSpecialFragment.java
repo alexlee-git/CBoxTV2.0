@@ -108,8 +108,8 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         }
                         break;
                     case VIDEO_TO_CENTER_POSITION:
-                        if (mCenterMenu.getChildAt(centerPosition) != null) {
-                            mCenterMenu.getChildAt(centerPosition).requestFocus();
+                        if (mCenterManager.findViewByPosition(centerPosition)!= null) {
+                            mCenterManager.findViewByPosition(centerPosition).requestFocus();
                         } else {
                             printLogAndToast("Handler", "ywy initVideo key left is null", false);
                         }
