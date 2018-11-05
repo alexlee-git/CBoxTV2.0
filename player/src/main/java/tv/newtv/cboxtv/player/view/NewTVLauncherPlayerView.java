@@ -402,6 +402,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     public void setFromFullScreen() {
         startIsFullScreen = true;
+        isFullScreen = true;
         ViewGroup.LayoutParams layoutParams = getLayoutParams();
         if (layoutParams != null) {
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
