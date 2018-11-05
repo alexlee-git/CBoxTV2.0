@@ -78,6 +78,11 @@ public interface IUserCenterLoginApi {
     @POST("/goldenpheasant/api/orders/order")
     Observable<ResponseBody> getPayResponse(@Header("Authorization") String Authorization, @Body RequestBody requestBody);
 
+    //获取订单
+    @Headers("host_type: " + HeadersInterceptor.PAY)
+    @POST("/goldenpheasant/service/orders/scanQrOrder")
+    Observable<ResponseBody> getPayResponse_new(@Header("Authorization") String Authorization, @Body RequestBody requestBody);
+
     //渠道
     @Headers("host_type: " + HeadersInterceptor.PAY)
     @GET("/goldenpheasant/api/channels")

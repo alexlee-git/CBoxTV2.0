@@ -96,6 +96,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     private final int MSG_RESULT_OK_TIME = 5;
     private final int MSG_RESULT_OK = 6;
     private final int MSG_SETMESSAGE = 7;
+    private final int MSG_REFRESHORDER = 8;
     private boolean isFirstQrCode = true;
     private String mFlagAction;
     private PopupWindow mPopupWindow;
@@ -366,7 +367,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         String Authorization = "Bearer " + mToken;
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getPayResponse(Authorization, requestBody)
+                    .getPayResponse_new(Authorization, requestBody)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -427,7 +428,10 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                             getResources().getDimensionPixelOffset(R.dimen.width_607px),
                             getResources().getDimensionPixelOffset(R.dimen.height_607px));
                     if (mHandler != null) {
+                        mHandler.removeMessages(MSG_RESULT);
+                        mHandler.removeMessages(MSG_REFRESHORDER);
                         mHandler.sendEmptyMessage(MSG_RESULT);
+                        mHandler.sendEmptyMessageDelayed(MSG_REFRESHORDER, 2 * 60 * 60 * 1000);
                     }
                     uploadUnPayLog(0);
                     break;
@@ -507,6 +511,9 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                     }
                     break;
                 }
+                case MSG_REFRESHORDER:
+                    getReFreshOrder(String.valueOf(orderId));
+                    break;
             }
             return false;
         }
@@ -678,6 +685,62 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(Constant.TAG, "get pay  result error");
+        }
+    }
+
+
+    private void getReFreshOrder(String order) {
+
+        String Authorization = "Bearer " + mToken;
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .getRefreshOrder(Authorization, order)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            mDisposable_order = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody value) {
+
+                            try {
+                                String data = value.string();
+                                JSONObject object = new JSONObject(data);
+                                orderId = object.getLong("id");
+                                code = object.getString("code");
+                                qrCodeUrl = object.getString("qrCodeUrl");
+                                if (mHandler != null) {
+                                    mHandler.sendEmptyMessage(MSG_QRCODE);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+//                                mHandler.sendEmptyMessage(3);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            if (mDisposable_order != null) {
+                                mDisposable_order.dispose();
+                                mDisposable_order = null;
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mDisposable_order != null) {
+                                mDisposable_order.dispose();
+                                mDisposable_order = null;
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "git payurl error");
         }
     }
 
