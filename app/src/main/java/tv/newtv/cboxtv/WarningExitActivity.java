@@ -42,24 +42,25 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrontStage = true;
-
+        presenter = new RecommendPresenterImpl();
+        presenter.attachView(this);
+        presenter.getRecommendData();
         setContentView(R.layout.activity_warning_exit);
+        mSpringInterpolator = new OvershootInterpolator(2.2f);
 
         final Button okButton = (Button) findViewById(R.id.okButton);
         final Button cancelButton = (Button) findViewById(R.id.cancelButton);
 
         exit_image = findViewById(R.id.exit_image);
+        mSearchPagePresenter = new SearchPagePresenter(this, this);
 
-        cancelButton.requestFocus();
-
+        okButton.requestFocus();
         okButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         okButton.setOnFocusChangeListener(this);
         cancelButton.setOnFocusChangeListener(this);
 
-        mAdPresenter = new AdContract.AdPresenter(getApplicationContext(), null);
-
-        getAD();//获取广告
+//        getAD();//获取广告
         initView();
     }
 
@@ -75,7 +76,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(getResources()
                 .getDimensionPixelSize(R.dimen.width_10px)));
         mRecyclerView.setAdapter(mAdapter);
-// 获取服务器数据
+//        mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);//获取服务器数据
 
     }
 
@@ -179,5 +180,27 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                 }
             }
         });
+    }
+
+    @Override
+    public void showData(RecommendBean recommendBean) {
+
+        if (recommendBean.getIsAd().equals("1")) {
+            getAD();//获取广告
+        } else {
+            if (recommendBean.getBackground() != null) {
+                Picasso.get().load(recommendBean.getBackground()).into(exit_image);
+            }
+
+        }
+
+
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
