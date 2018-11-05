@@ -12,14 +12,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.libs.util.DisplayUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.model.CircleTransform;
 import tv.newtv.cboxtv.cms.screenList.bean.LabelDataBean;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
+import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
 
 public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHolder> {
@@ -55,7 +55,7 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
 //                        .resize(240, 360)
 //                        .centerInside()
                 .fit()      //智能展示图片，对于图片的大小和imageview的尺寸进行了测量，计算出最佳的大小和最佳的质量显示出来
-                .transform(new CircleTransform(context))
+                .transform(new PosterCircleTransform(context))
                 .into(myHolder.label_img);
 
         myHolder.frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {

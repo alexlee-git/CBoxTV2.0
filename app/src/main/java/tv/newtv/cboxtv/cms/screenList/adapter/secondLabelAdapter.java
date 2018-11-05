@@ -9,11 +9,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.newtv.libs.util.RxBus;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
-import tv.newtv.cboxtv.cms.util.RxBus;
 
 /**
  * Created by 冯凯 on 2018/9/30.

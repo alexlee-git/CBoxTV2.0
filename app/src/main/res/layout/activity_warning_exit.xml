@@ -47,18 +47,19 @@
         android:textColor="@color/detail_tvcolor"
         android:textSize="@dimen/height_36px" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="@dimen/width_976px"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/height_49px"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="horizontal">
+        >
 
         <Button
             android:id="@+id/okButton"
             android:layout_width="@dimen/width_388px"
             android:layout_height="@dimen/height_100px"
+            android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/height_20px"
             android:background="@drawable/exit_button_status"
             android:focusable="true" />
@@ -75,10 +76,11 @@
             android:id="@+id/cancelButton"
             android:layout_width="@dimen/width_388px"
             android:layout_height="@dimen/height_100px"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/height_20px"
             android:background="@drawable/exit_see_status"
             android:focusable="true" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

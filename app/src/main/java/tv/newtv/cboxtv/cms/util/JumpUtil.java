@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
+import tv.newtv.cboxtv.cms.screenList.ScreenListActivity;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
@@ -238,7 +239,7 @@ public class JumpUtil {
                             .show();
                 }
             } else if (Constant.OPEN_LISTPAGE.equals(actionType)) { // 打开列表页
-                jumpIntent = new Intent(context, ListPageActivity.class);
+                jumpIntent = new Intent(context, ScreenListActivity.class);
             } else if (Constant.OPEN_LINK.equals(actionType)) { // 打开链接
                 Toast.makeText(context, R.string.no_link, Toast.LENGTH_LONG)
                         .show();
