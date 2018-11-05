@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
@@ -559,26 +560,26 @@ class BlockBuilder {
 
         String leftTopUrl = info.getLSuperScript();
         if (!TextUtils.isEmpty(leftTopUrl)) {
-            addLeftTopSuperscript(leftTopUrl, parent);
+            addLeftTopSuperscript(leftTopUrl,info, parent);
         }
 
         String rightTopUrl = info.getRSuperScript();
         if (!TextUtils.isEmpty(rightTopUrl)) {
-            addRightTopSuperscript(rightTopUrl, parent);
+            addRightTopSuperscript(rightTopUrl,info, parent);
         }
 
         String leftBottomUrl = info.getLSubScript();
         if (!TextUtils.isEmpty(leftBottomUrl)) {
-            addLeftBottomSuperscript(layoutCode, leftBottomUrl, parent);
+            addLeftBottomSuperscript(layoutCode, leftBottomUrl,info, parent);
         }
 
         String rightBottomUrl = info.getRSubScript();
         if (!TextUtils.isEmpty(rightBottomUrl)) {
-            addRightBottomSuperscript(layoutCode, rightBottomUrl, parent);
+            addRightBottomSuperscript(layoutCode, rightBottomUrl,info, parent);
         }
     }
 
-    private void addLeftTopSuperscript(String superId, ViewGroup parent) {
+    private void addLeftTopSuperscript(String superId,Program program, ViewGroup parent) {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
@@ -587,12 +588,12 @@ class BlockBuilder {
 
         ImageView imageView = new ImageView(mContext);
         imageView.setLayoutParams(lp);
-        parent.addView(imageView);
+        parent.addView(imageView,lp);
 
-        loadSuperscript(imageView, superId);
+        loadSuperscript(imageView,program, superId);
     }
 
-    private void addLeftBottomSuperscript(String layoutCode, String superId, ViewGroup parent) {
+    private void addLeftBottomSuperscript(String layoutCode, String superId,Program program, ViewGroup parent) {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
@@ -606,12 +607,12 @@ class BlockBuilder {
         lp.gravity = Gravity.BOTTOM;
         ImageView imageView = new ImageView(mContext);
         imageView.setLayoutParams(lp);
-        parent.addView(imageView);
+        parent.addView(imageView,lp);
 
-        loadSuperscript(imageView, superId);
+        loadSuperscript(imageView,program, superId);
     }
 
-    private void addRightTopSuperscript(String superId, ViewGroup parent) {
+    private void addRightTopSuperscript(String superId,Program program, ViewGroup parent) {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
@@ -619,11 +620,11 @@ class BlockBuilder {
         lp.gravity = Gravity.RIGHT | Gravity.END;
         ImageView imageView = new ImageView(mContext);
         imageView.setLayoutParams(lp);
-        parent.addView(imageView);
-        loadSuperscript(imageView, superId);
+        parent.addView(imageView,lp);
+        loadSuperscript(imageView, program,superId);
     }
 
-    private void addRightBottomSuperscript(String layoutCode, String superId, ViewGroup parent) {
+    private void addRightBottomSuperscript(String layoutCode, String superId,Program program, ViewGroup parent) {
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                 .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
@@ -636,21 +637,21 @@ class BlockBuilder {
         lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
         ImageView imageView = new ImageView(mContext);
         imageView.setLayoutParams(lp);
-        parent.addView(imageView);
+        parent.addView(imageView,lp);
 
         // 加载角标
-        loadSuperscript(imageView, superId);
+        loadSuperscript(imageView, program,superId);
     }
 
-    private void loadSuperscript(ImageView target, String superscriptId) {
+    private void loadSuperscript(ImageView target,Program program, String superscriptId) {
         Corner info = SuperScriptManager.getInstance().getSuperscriptInfoById
                 (superscriptId);
-        if (info != null) {
+        if (info != null && info.suitForItem(program)) {
             String superType = info.getCornerType();
             if ("IMG".equals(superType)) {
                 String superUrl = info.getCornerImg();
                 if (!TextUtils.isEmpty(superUrl)) {
-                    Picasso.get().load(superUrl).tag(PicassoTag).into(target);
+                    GlideUtil.loadImage(mContext,target,superUrl,-1,-1,false);
                 }
             }
         }

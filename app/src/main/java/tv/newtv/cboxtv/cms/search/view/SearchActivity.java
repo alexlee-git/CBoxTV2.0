@@ -122,6 +122,7 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
         this.onGetKeyListener = onGetKeyListener;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent.ACTION_UP) {

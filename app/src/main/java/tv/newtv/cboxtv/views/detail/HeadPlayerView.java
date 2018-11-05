@@ -295,6 +295,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
+
+            playerView.release();
+            playerView.destory();
+            playerView = null;
         }
     }
 

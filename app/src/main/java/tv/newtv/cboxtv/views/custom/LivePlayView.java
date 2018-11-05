@@ -159,9 +159,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             removeCallbacks(playLiveRunnable);
             removeCallbacks(playRunnable);
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
-            if (mVideoPlayerView != null && mVideoPlayer.findViewWithTag("videoPlayer") !=
-                    null) {
-
+            if (mVideoPlayerView != null) {
                 mPlayerViewConfig = mVideoPlayerView.getDefaultConfig();
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
