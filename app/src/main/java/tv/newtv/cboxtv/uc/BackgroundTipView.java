@@ -23,7 +23,6 @@ public class BackgroundTipView extends FrameLayout {
 
     private Rect mRect = new Rect();
     private Rect visibleRect;
-    private Rect DrawRect;
     private Paint mPaint;
     private Paint mLinePaint;
 
@@ -76,10 +75,6 @@ public class BackgroundTipView extends FrameLayout {
     public void setVisibleRect(Bitmap bitmap, Rect rect) {
         mBitmap = bitmap;
         visibleRect = rect;
-//        int space = (int) (getContext().getResources().getDimensionPixelSize(R.dimen
-//                .height_426px) * 1.1);
-//        DrawRect = new Rect(rect.left, rect.top, rect.right, rect.top + space);
-//        visibleRect = new Rect(0, 0, rect.width(), space);
         postInvalidate();
     }
 
@@ -87,7 +82,6 @@ public class BackgroundTipView extends FrameLayout {
     protected void onDraw(Canvas canvas) {
         canvas.drawRect(0, 0, getWidth(), getHeight(), mPaint);
         canvas.drawBitmap(mBitmap, visibleRect.left, visibleRect.top, mLinePaint);
-//        canvas.drawBitmap(mBitmap, visibleRect, DrawRect, mLinePaint);
         super.onDraw(canvas);
     }
 }

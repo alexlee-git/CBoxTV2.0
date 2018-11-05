@@ -37,9 +37,6 @@ public class SearchRecyclerView extends RecyclerView {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-//        if (mInterceptLister != null && mInterceptLister.onIntercept(event)) {
-//            return true;
-//        }
 
         boolean result = super.dispatchKeyEvent(event);
         View focusView = this.findFocus();

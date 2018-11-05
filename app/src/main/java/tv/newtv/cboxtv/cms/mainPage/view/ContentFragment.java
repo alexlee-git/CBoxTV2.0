@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,10 +64,6 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
     private boolean isPrepared = false;
 
     private boolean isFromNav = false;
-
-
-    private boolean BodyScrolling = false;
-    private boolean ImScrolling = false;
 
     private UniversalAdapter adapter;
 
@@ -125,53 +122,13 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
         return true;
     }
 
-    private void onScrollStateChange() {
-        Log.d("contentFragment", "onScrollStateChange() param=" + param + " BodyScrolling=" +
-                BodyScrolling +
-                " " +
-                "ImScrolling=" + ImScrolling + " isVisible=" + isVisible);
-//        if (!BodyScrolling && !ImScrolling && isVisible) {
-//            Picasso.with(getContext()).resumeTag(contentId);
-//        } else {
-//            Picasso.with(getContext()).pauseTag(contentId);
-//        }
-    }
-
-    @Override
-    public void setViewPager(NewTVViewPager viewPager) {
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int
-                    positionOffsetPixels) {
-                if (positionOffset == 0f) {
-                    BodyScrolling = false;
-                } else {
-                    BodyScrolling = true;
-                }
-                onScrollStateChange();
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                LogUtils.d("select page index");
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-                    BodyScrolling = false;
-                } else {
-                    BodyScrolling = true;
-                }
-                onScrollStateChange();
-            }
-        });
-    }
-
     @Override
     public View getFirstFocusView() {
+        LogUtils.d("ContentFragment", "mRecycleView =" + mRecyclerView);
+        LogUtils.d("ContentFragment", "mRecycleView.getAdapter =" + mRecyclerView.getAdapter());
+        LogUtils.d("ContentFragment", "loadingView visible =" + loadingView.getVisibility());
         if (mRecyclerView != null && mRecyclerView.getAdapter() != null && mRecyclerView
-                .getChildAt(0) != null) {
+                .getChildAt(0) != null && loadingView.getVisibility() == View.GONE) {
             String tag = ((UniversalAdapter) mRecyclerView.getAdapter()).getFirstViewId();
             LogUtils.d("ContentFragment", "getFirstFocusView  tag=" + tag);
             if (TextUtils.isEmpty(tag)) return null;
@@ -201,20 +158,12 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
         super.onVisible();
         Navigation.get().setCurrentUUID(contentId);
         LogUtils.e(ContentFragment.class.getSimpleName(), "onVisible : " + param);
-
-//        if (mPresenter != null) {
-//            ModuleInfoResult moduleInfoResult = mPresenter.getModuleInfoResult();
-//            if (moduleInfoResult != null) {
-//                changeBG(moduleInfoResult);
-//            }
-//        }
     }
 
     @Override
     public void onEnterComplete() {
         super.onEnterComplete();
 
-//        Picasso.with(LauncherApplication.AppContext).resumeTag(contentId);
     }
 
     @Override
@@ -285,18 +234,6 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
             mRecyclerView.setCanReversMove(false);
             mRecyclerView.setHasFixedSize(true);
             mRecyclerView.setAlign(AiyaRecyclerView.ALIGN_START);
-            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        ImScrolling = false;
-                    } else {
-                        ImScrolling = true;
-                    }
-                    onScrollStateChange();
-                }
-            });
             loadingView = contentView.findViewById(R.id.id_loading_view);
 
             mRecyclerView.setItemAnimator(null);
@@ -316,7 +253,7 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
                 layoutParams.topMargin = DisplayUtils.translate(pxSize, 1);
             }
 
-            mPresenter = new PageContract.ContentPresenter(getContext(), this);
+            mPresenter = new PageContract.ContentPresenter(view.getContext(), this);
         }
 
 

@@ -14,19 +14,20 @@ import com.newtv.libs.util.NetworkManager;
  */
 public class Libs {
 
-    @SuppressLint("StaticFieldLeak")
     private static Libs instance;
     private Context mContext;
 
     private String mAppKey;
     private String mChannelId;
     private String mFlavor;
+    private boolean mDebug;
 
-    private Libs(Context context, String appkey, String channelId, String flavor) {
+    private Libs(Context context, String appkey, String channelId, String flavor, boolean isDebug) {
         mContext = context.getApplicationContext();
         mAppKey = appkey;
         mChannelId = channelId;
         mFlavor = flavor;
+        mDebug = isDebug;
 
         NetworkManager.init(context);
     }
@@ -35,12 +36,14 @@ public class Libs {
         return instance;
     }
 
-    public static void init(Context context, String appkey, String channelId, String flavor) {
-        synchronized (Libs.class) {
-            if (instance == null) {
-                instance = new Libs(context, appkey, channelId, flavor);
+    public static void init(Context context, String appkey, String channelId, String flavor,
+                            boolean isDebug) {
+        if (instance == null)
+            synchronized (Libs.class) {
+                if (instance == null) {
+                    instance = new Libs(context, appkey, channelId, flavor, isDebug);
+                }
             }
-        }
     }
 
     public String getFlavor() {
@@ -57,5 +60,9 @@ public class Libs {
 
     public Context getContext() {
         return mContext;
+    }
+
+    public boolean isDebug() {
+         return mDebug;
     }
 }

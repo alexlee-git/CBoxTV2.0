@@ -11,18 +11,20 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 
@@ -35,13 +37,18 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
  */
 public class ScoreFragment extends BaseSpecialContentFragment {
     AiyaRecyclerView recyclerView;
-    private ModuleInfoResult moduleInfoResult;
+    private ModelResult<ArrayList<Page>> moduleInfoResult;
     private int currentIndex = 0;
 
 
     @Override
     protected int getLayoutId() {
         return R.layout.score_layout;
+    }
+
+    @Override
+    protected void onItemContentResult(Content content) {
+
     }
 
     @Override
@@ -54,21 +61,22 @@ public class ScoreFragment extends BaseSpecialContentFragment {
 
         recyclerView.setAdapter(scoreAdapter);
         if (moduleInfoResult != null) {
-            scoreAdapter.refreshData(moduleInfoResult.getDatas(),getView()!=null?getView().findFocus():null).notifyDataSetChanged();
+            scoreAdapter.refreshData(moduleInfoResult.getData(),getView()!=null?getView().findFocus()
+                    :null).notifyDataSetChanged();
         }
 //        view.requestFocus();
 //        recyclerView.getDefaultFocusView();
 //        recyclerView.scrollToPosition(0);
 //        recyclerView.setFocusView(view.findViewById(R.id.));
 //        scoreAdapter.setItemPosition(0);
-        scoreAdapter.setOnItemAction(new OnItemAction<ModuleItem>() {
+        scoreAdapter.setOnItemAction(new OnItemAction<Page>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(ModuleItem item, int index) {
+            public void onItemClick(Page item, int index) {
 
             }
 
@@ -81,10 +89,11 @@ public class ScoreFragment extends BaseSpecialContentFragment {
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         moduleInfoResult = infoResult;
         if (recyclerView != null && recyclerView.getAdapter() != null) {
-            ((ScoreAdapter) recyclerView.getAdapter()).refreshData(infoResult.getDatas(),getView()!=null?getView().findFocus():null)
+            ((ScoreAdapter) recyclerView.getAdapter()).refreshData(infoResult.getData(),getView()
+                    !=null?getView().findFocus():null)
                     .notifyDataSetChanged();
             recyclerView.requestFocus();
         }
@@ -94,15 +103,15 @@ public class ScoreFragment extends BaseSpecialContentFragment {
 
 
     private static class ScoreAdapter extends RecyclerView.Adapter<ScoreViewHolder> {
-        private List<ModuleItem> mModuleItems;
-        private OnItemAction<ModuleItem> mOnItemAction;
+        private List<Page> mModuleItems;
+        private OnItemAction<Page> mOnItemAction;
         private boolean hasFocus;
 
-        void setOnItemAction(OnItemAction<ModuleItem> onItemAction) {
+        void setOnItemAction(OnItemAction<Page> onItemAction) {
             mOnItemAction = onItemAction;
         }
 
-        public ScoreAdapter refreshData(List<ModuleItem> moduleItems,View focusItem) {
+        public ScoreAdapter refreshData(List<Page> moduleItems,View focusItem) {
             mModuleItems = moduleItems;
             hasFocus = focusItem != null;
             return this;
@@ -116,7 +125,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
             return new ScoreViewHolder(view, this);
         }
 
-        private ModuleItem getItem(int pos) {
+        private Page getItem(int pos) {
             if (mModuleItems != null && pos < mModuleItems.size() && pos >= 0) {
                 return mModuleItems.get(pos);
             }
@@ -125,7 +134,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
 
         @Override
         public void onBindViewHolder(final ScoreViewHolder holder, int position) {
-            ModuleItem moduleItem = getItem(position);
+            Page moduleItem = getItem(position);
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -141,7 +150,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
             });
 
             if (moduleItem != null) {
-                holder.setData(moduleItem.getBlockTitle(), moduleItem.getDatas());
+                holder.setData(moduleItem.getBlockTitle(), moduleItem.getPrograms());
             }
 
             if(!hasFocus && position == 0){
@@ -214,7 +223,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                     .getPackageName());
         }
 
-        public void setData(String title, List<SubContent> data) {
+        public void setData(String title, List<Program> data) {
             ((TextView) itemView.findViewById(R.id.match_title)).setText(title);
             for (int index = 1; index < 5; index++) {
                 String boxName = "data_" + index;
@@ -227,7 +236,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                     continue;
                 }
 
-                SubContent programInfo = data.get(index - 1);
+                Program programInfo = data.get(index - 1);
                 for (int t = 0; t < ids.length; t++) {
                     String targetname = boxName + "_" + ids[t];
                     int cell_id = getId(targetname);
@@ -236,7 +245,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
                         if (cell_target instanceof TextView) {
                             ((TextView) cell_target).setText(getValue(programInfo, t));
                         } else if (cell_target instanceof ImageView) {
-                            if (programInfo != null && !TextUtils.isEmpty(programInfo.getVImage())) {
+                            if (programInfo != null && !TextUtils.isEmpty(programInfo.getImg())) {
                                 Picasso.get()
                                         .load(getValue(programInfo, t))
                                         .into((ImageView) cell_target);
@@ -247,7 +256,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
             }
         }
 
-        private String getValue(SubContent info, int index) {
+        private String getValue(Program info, int index) {
             if (info == null)
                 return "N/A";
 

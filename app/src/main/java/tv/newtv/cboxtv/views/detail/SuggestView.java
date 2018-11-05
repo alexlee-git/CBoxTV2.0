@@ -22,6 +22,7 @@ import com.newtv.cms.contract.SuggestContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -134,7 +135,12 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
         }
     }
 
-    public void setContentUUID(int type, Content content, View controllView) {
+    public void setContentUUID(int type, @Nullable Content content, View controllView) {
+        if(content == null || TextUtils.isEmpty(content.getContentID())){
+            onError(getContext(),"数据ID不正确");
+            return;
+        }
+
         controlView = controllView;
         contentUUID = content.getContentID();
 
@@ -147,7 +153,6 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                 break;
             case TYPE_COLUMN_SEARCH:
                 SearchContract.SearchCondition searchCondition = SearchContract.SearchCondition
-                        .Companion
                         .Builder()
                         .setRows("6")
                         .setContentType(content.getContentType())
@@ -350,7 +355,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
-
+        LogUtils.e("SuggestView",desc);
     }
 
     @Override

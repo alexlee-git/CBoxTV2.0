@@ -20,7 +20,7 @@ internal class PageModel : BaseModel(), IPage {
     }
 
     override fun getPage(appkey: String, channelId: String, pageId: String,
-                         observer: DataObserver<ModelResult<List<Page>>>): Long {
+                         observer: DataObserver<ModelResult<ArrayList<Page>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
             return 0
@@ -30,10 +30,10 @@ internal class PageModel : BaseModel(), IPage {
             return 0
         }
 
-        val executor: Executor<ModelResult<List<Page>>> =
+        val executor: Executor<ModelResult<ArrayList<Page>>> =
                 buildExecutor(Request.page.getPageData(appkey,
                         channelId, pageId),
-                        object : TypeToken<ModelResult<List<Page>>>() {}.type)
+                        object : TypeToken<ModelResult<ArrayList<Page>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()

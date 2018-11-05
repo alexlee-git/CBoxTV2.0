@@ -48,6 +48,7 @@ public class Player implements PlayerObserver {
 
     @Override
     public void onFinish(Content playInfo, int index, int position) {
+
         mObserver.onFinish(playInfo, index, position);
     }
 

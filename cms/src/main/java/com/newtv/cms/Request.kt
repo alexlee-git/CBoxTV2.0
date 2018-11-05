@@ -1,10 +1,10 @@
 package com.newtv.cms
 
-import com.newtv.cms.api.IPlayChk
-import com.newtv.cms.api.IUpVersion
 import com.newtv.cms.service.*
 import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.Libs
 import com.newtv.libs.util.HttpsUtils
+import okhttp3.Call
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -43,7 +43,8 @@ internal object Request {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl("http://111.32.138.57:81")
+            .baseUrl(if (!Libs.get().isDebug) "http://api31.cloud.ottcn.com"
+                        else "http://testcms31.ottcn.com:30012")
             .build()
 
     val nav: INavRetro by lazy { retrofit.create(INavRetro::class.java) }

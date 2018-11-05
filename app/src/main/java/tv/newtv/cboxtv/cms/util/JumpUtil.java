@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,8 +47,8 @@ public class JumpUtil {
         return hashMap.get(key);
     }
 
-    public static boolean parseExternalJump(Context context,String action,String params){
-        if(TextUtils.isEmpty(action)) return false;
+    public static boolean parseExternalJump(Context context, String action, String params) {
+        if (TextUtils.isEmpty(action)) return false;
         int index = action.indexOf("|");
         String actionType = action.substring(0, index);
         String contentType = action.substring(index + 1, action.length());
@@ -90,7 +91,7 @@ public class JumpUtil {
                                     HashMap<String, String> params, boolean fromOuter) {
         Intent jumpIntent = getIntent(context, actionType, contentType, getParamValue
                 (params,
-                Constant.EXTERNAL_PARAM_CONTENT_UUID), getParamValue(params, Constant
+                        Constant.EXTERNAL_PARAM_CONTENT_UUID), getParamValue(params, Constant
                 .EXTERNAL_PARAM_SERIES_SUB_UUID));
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
@@ -182,7 +183,10 @@ public class JumpUtil {
                 } else if (Constant.CONTENTTYPE_PG.equals(contentType)) {  //单节目
                     jumpIntent = new Intent(context, SingleDetailPageActivity.class);
                 } else if (Constant.CONTENTTYPE_CP.equals(contentType)) {  // 子节目
-                    NewTVLauncherPlayerActivity.play(context,contentUUID,seriesSubUUID);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constant.CONTENT_TYPE, contentType);
+                    bundle.putString(Constant.CONTENT_UUID, contentUUID);
+                    NewTVLauncherPlayerActivity.play(context, bundle);
                 } else if (Constant.CONTENTTYPE_CG.equals(contentType)) {
 //                    jumpIntent = new Intent(context, ProgramListDetailActiviy.class);
                     jumpIntent = new Intent(context, ProgramCollectionActivity.class);
@@ -213,7 +217,10 @@ public class JumpUtil {
                         .show();
             } else if (Constant.OPEN_VIDEO.equals(actionType)) { //打开视频
                 // TODO 后面需要直接播放视频
-                NewTVLauncherPlayerActivity.play(context,contentUUID,null);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constant.CONTENT_TYPE, contentType);
+                bundle.putString(Constant.CONTENT_UUID, contentUUID);
+                NewTVLauncherPlayerActivity.play(context, bundle);
 
             }
         } catch (Exception e) {
@@ -255,7 +262,10 @@ public class JumpUtil {
         } else if (Constant.CONTENTTYPE_PG.equals(contentType)) {  //单节目
             jumpIntent = new Intent(context, SingleDetailPageActivity.class);
         } else if (Constant.CONTENTTYPE_CP.equals(contentType)) {  // 子节目
-            NewTVLauncherPlayerActivity.play(context,contentUUID,seriesSubUUID);
+            Bundle bundle = new Bundle();
+            bundle.putString(Constant.CONTENT_TYPE, contentType);
+            bundle.putString(Constant.CONTENT_UUID, contentUUID);
+            NewTVLauncherPlayerActivity.play(context, bundle);
         } else if (Constant.CONTENTTYPE_CG.equals(contentType)) {
 //            jumpIntent = new Intent(context, ProgramListDetailActiviy.class);
             jumpIntent = new Intent(context, ProgramCollectionActivity.class);

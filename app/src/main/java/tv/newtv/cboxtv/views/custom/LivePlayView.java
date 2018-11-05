@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Content;
-import com.newtv.cms.bean.LiveParam;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.bean.Video;
@@ -37,9 +36,9 @@ import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.player.view.VideoFrameLayout;
 
@@ -51,7 +50,7 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  * 创建日期:          2018/4/29
  */
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
-        ContentContract.View, LiveContract.View {
+        ContentContract.View {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -69,9 +68,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private LiveInfo mLiveInfo;
     private int currentMode = MODE_IMAGE;
     private Program mProgramInfo;
+    private NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig;
 
     private ContentContract.Presenter mContentPresenter;
-    private LiveContract.Presenter mLivePresenter;
 
     private String mUUID;
 
@@ -92,7 +91,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 } else {
                     mContentPresenter.getContent(mPlayInfo.ContentUUID, true);
                 }
-
             }
         }
     };
@@ -101,13 +99,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         @Override
         public void run() {
             prepareVideoPlayer();
-            if (mProgramSeriesInfo != null) {
-                mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-                mVideoPlayerView.playLiveVideo(mPlayInfo.ContentUUID, mPlayInfo.playUrl, mPlayInfo
-                        .title, 0, 0);
-            } else {
-                mContentPresenter.getContent(mPlayInfo.ContentUUID, true);
-            }
+            mVideoPlayerView.playLive(mLiveInfo, false);
         }
     };
 
@@ -147,6 +139,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         try {
             int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
             int position = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
+
             if (index >= 0 && mProgramSeriesInfo != null && mProgramSeriesInfo.getData() != null &&
                     index < mProgramSeriesInfo.getData().size()) {
                 mIndex = index;
@@ -161,6 +154,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
             if (mVideoPlayerView != null && mVideoPlayer.findViewWithTag("videoPlayer") !=
                     null) {
+                playerViewConfig = mVideoPlayerView.getDefaultConfig();
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
                 removeView(mVideoPlayerView);
@@ -238,9 +232,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         return currentMode != MODE_IMAGE;
     }
 
-    public void enterFullScreen() {
+    public void dispatchClick() {
         Log.d(TAG, "enterFullScreen");
-        if (isLive()) {
+        if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
             Log.d(TAG, "直播中，特殊处理");
             if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
                 JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mPlayInfo.contentType,
@@ -266,8 +260,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             releaseVideoPlayer();
         } else if (visibility == View.VISIBLE) {
             if (currentMode == MODE_LIVE) {
-                if (isLive()) {
-                    playLiveVideo();
+                if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
+                    playLiveVideo(0);
                 } else {
                     if (centerTextView != null) {
                         centerTextView.setVisibility(View.VISIBLE);
@@ -276,7 +270,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                     }
                 }
             } else if (currentMode == MODE_OPEN_VIDEO) {
-                playVideo();
+                playVideo(0);
             }
         }
     }
@@ -344,8 +338,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         mPlayInfo.contentType = programInfo.getContentType();
         mPlayInfo.actionType = programInfo.getL_actionType();
         if (programInfo.getVideo() != null) {
-//            mPlayInfo.ContentUUID = programInfo.getVideo().getContentId();
-            mPlayInfo.ContentUUID = "4598904";
+            mPlayInfo.ContentUUID = programInfo.getVideo().getContentId();
             mPlayInfo.playUrl = programInfo.getVideo().getLiveUrl();
         }
         mPlayInfo.title = programInfo.getTitle();
@@ -355,87 +348,46 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         //2代表视频
         if (mProgramInfo.getRecommendedType().equals("2")) {
             //如果有playurl并且在直播的时间段内，则判断是直播
-            if (isLive()) {
-                if (mProgramInfo.getVideo() == null ||
-                        mProgramInfo.getVideo().getLiveparam() == null) {
-                    currentMode = MODE_IMAGE;
-                    releaseVideoPlayer();
-                    return;
-                }
+            LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
+            if (liveInfo.isLiveTime()) {
+                mLiveInfo = liveInfo;
                 currentMode = MODE_LIVE;
-
-                mLiveInfo = new LiveInfo();
-                mLiveInfo.setLiveUrl(mProgramInfo.getVideo().getLiveUrl());
-                mLiveInfo.setContentUUID(mProgramInfo.getVideo().getContentId());
-
-                if (mLivePresenter == null) {
-                    mLivePresenter = new LiveContract.LivePresenter(getContext(), this);
-                }
-                playLiveVideo();
-            } else if (Constant.OPEN_VIDEO.equals(mProgramInfo.getL_actionType())) {
+                playLiveVideo(2000);
+                return;
+            } else if (isVod()) {
                 currentMode = MODE_OPEN_VIDEO;
-                playVideo();
-            } else {
-                currentMode = MODE_IMAGE;
-                releaseVideoPlayer();
+                playVideo(2000);
+                return;
             }
-        } else {
-            currentMode = MODE_IMAGE;
-            releaseVideoPlayer();
         }
+        currentMode = MODE_IMAGE;
+        releaseVideoPlayer();
     }
 
-    private void playVideo() {
+    private void playVideo(int delay) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playRunnable);
-        postDelayed(playRunnable, 2000);
+        postDelayed(playRunnable, playerViewConfig != null && playerViewConfig.isFullScreen ? 0 :
+                2000);
     }
 
-    private void playLiveVideo() {
+    private void playLiveVideo(int delay) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
-        postDelayed(playLiveRunnable, 2000);
+        postDelayed(playLiveRunnable, playerViewConfig != null && playerViewConfig.isFullScreen ? 0 :
+                2000);
     }
 
-    private LiveParam getLiveParam() {
-        if (mProgramInfo == null) return null;
+
+    private boolean isVod() {
+        if (mProgramInfo == null) return false;
         Video video = mProgramInfo.getVideo();
         if (video != null) {
-            if ("LIVE".equals(video.getVideoType()) && !TextUtils.isEmpty(video.getLiveUrl())) {
-                return CmsUtil.isLiveTime(video.getLiveparam());
+            if ("VIDEO".equals(video.getVideoType())) {
+                return true;
             }
         }
-        return null;
-    }
-
-    private boolean isLive() {
-        LiveParam param = getLiveParam();
-        return param != null && CmsUtil.checkLiveParam(param);
-    }
-
-    private void timer() {
-        if (mProgramInfo.getLiveParam() == null) {
-            if (centerTextView != null) {
-                centerTextView.setVisibility(View.VISIBLE);
-                centerTextView.setText("暂无播放");
-                releaseVideoPlayer();
-            }
-            return;
-        }
-        LiveTimingUtil.endTime(mProgramInfo.getLiveParam().getPlayStartTime(), new LiveTimingUtil
-                .LiveEndListener() {
-            @Override
-            public void end() {
-                if (centerTextView != null) {
-                    centerTextView.setVisibility(View.VISIBLE);
-                    centerTextView.setText("暂无播放");
-                    releaseVideoPlayer();
-                }
-                if (getVisibility() == View.VISIBLE) {
-                    NewTVLauncherPlayerViewManager.getInstance().release();
-                }
-            }
-        });
+        return false;
     }
 
     @Override
@@ -450,15 +402,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     @Override
     public void onContentResult(@Nullable Content content) {
         mProgramSeriesInfo = content;
-        if (currentMode == MODE_OPEN_VIDEO) {
-            if (mVideoPlayerView != null) {
-                mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-                mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
-            }
-        } else if (currentMode == MODE_LIVE) {
-            if (mVideoPlayerView != null) {
-                mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-            }
+        if (mVideoPlayerView != null) {
+            mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+            mVideoPlayerView.playSingleOrSeries(mIndex, mPosition);
         }
     }
 
@@ -474,16 +420,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void onError(@NotNull Context context, @Nullable String desc) {
-
-    }
-
-    @Override
-    public void liveChkResult(LiveInfo checkBean) {
-
-    }
-
-    @Override
-    public void onChkError(String code, String desc) {
 
     }
 

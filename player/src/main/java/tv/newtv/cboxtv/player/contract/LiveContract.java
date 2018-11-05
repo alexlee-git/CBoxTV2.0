@@ -69,7 +69,7 @@ public class LiveContract {
             final IPlayChk playChk = getService(SERVICE_CHK_PLAY);
             if (playChk != null) {
                 ChkRequest request = createLiveRequestBean(liveInfo.getContentUUID(), liveInfo
-                        .getmLiveUrl());
+                        .getLiveUrl());
                 playChk.check(request, new DataObserver<String>() {
                     @Override
                     public void onError(@Nullable String desc) {

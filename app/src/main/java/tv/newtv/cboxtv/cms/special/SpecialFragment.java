@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -14,28 +15,32 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
-
-import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
 
 /**
  * Created by lin on 2018/3/7.
  */
 
-public class SpecialFragment extends Fragment implements SpecialContract.View, Target {
+public class SpecialFragment extends Fragment implements SpecialContract.ModelResultView, Target {
     private static final String TAG = SpecialFragment.class.getSimpleName();
 
     private SpecialContract.Presenter mPresenter;
@@ -66,11 +71,14 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
         mEmptyView = null;
         mRootView = null;
 
-        mPresenter = null;
-
         if (mAdPresenter != null) {
             mAdPresenter.destroy();
             mAdPresenter = null;
+        }
+
+        if(mPresenter != null){
+            mPresenter.destroy();
+            mPresenter = null;
         }
 
 
@@ -112,6 +120,8 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPresenter = new SpecialContract.SpecialPresenter(LauncherApplication.AppContext,this);
+        mAdPresenter = new AdContract.AdPresenter(LauncherApplication.AppContext,null);
     }
 
     @Override
@@ -129,18 +139,12 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     }
 
     @Override
-    public void setPresenter(SpecialContract.Presenter presenter) {
-        mPresenter = checkNotNull(presenter);
-        mAdPresenter = new AdContract.AdPresenter(getContext(), null);
-    }
-
-    @Override
     public void setArguments(Bundle args) {
         super.setArguments(args);
     }
 
     @Override
-    public void showPageContent(ModuleInfoResult moduleInfoResult) {
+    public void showPageContent(ModelResult<ArrayList<Page>> moduleInfoResult) {
         mLoadingView.setVisibility(View.GONE);
 
         if (moduleInfoResult == null) {
@@ -166,11 +170,12 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
         );
     }
 
-    private void initBackground(final ModuleInfoResult moduleInfoResult) {
+    private void initBackground(final ModelResult moduleInfoResult) {
         // 测试数据
-        if (moduleInfoResult.getIsAd() == ModuleInfoResult.IS_AD_PAGE) {
+        if (ModelResult.IS_AD_TYPE.equals(moduleInfoResult.isAd())) {
 
-            mAdPresenter.getAdByType(Constant.AD_TOPIC, mPageUUid, "", null, new AdContract.Callback() {
+            mAdPresenter.getAdByType(Constant.AD_TOPIC, mPageUUid, "", null, new AdContract
+                    .Callback() {
                 @Override
                 public void showAd(@org.jetbrains.annotations.Nullable String type, @org
                         .jetbrains.annotations.Nullable String url, @org.jetbrains.annotations
@@ -189,10 +194,10 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     }
 
     //默认加载cms取得的图片
-    private void showPosterByCMS(ModuleInfoResult moduleInfoResult) {
+    private void showPosterByCMS(ModelResult moduleInfoResult) {
 
-        if (!TextUtils.isEmpty(moduleInfoResult.getPageBackground())) {
-            Picasso.get().load(moduleInfoResult.getPageBackground()).into(this);
+        if (!TextUtils.isEmpty(moduleInfoResult.getBackground())) {
+            Picasso.get().load(moduleInfoResult.getBackground()).into(this);
         }
     }
 
@@ -230,4 +235,14 @@ public class SpecialFragment extends Fragment implements SpecialContract.View, T
     }
 
 
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+        ToastUtil.showToast(context.getApplicationContext(),desc);
+        getActivity().finish();
+    }
 }

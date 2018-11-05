@@ -49,8 +49,8 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     private int currentIndex = -1;
     private List<ViewHolder> viewHolders = new ArrayList<>();
 
-    private int mListLayout = R.layout.episode_programe_page_item_;
-    private String mItemTag = "rl_focus_30_";
+    private static final int mListLayout = R.layout.episode_programe_page_item_layout;
+    private static final String mItemTag = "rl_focus_30_";
 
     @Override
     public void setAdItem(ADHelper.AD.ADItem adItem) {
@@ -147,10 +147,10 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
 
     private void updateUI() {
         if (mData != null && contentView != null) {
-            Resources resources = getContext().getResources();
+            Resources resources = contentView.getContext().getResources();
             for (int index = 0; index < DEFAULT_SIZE; index++) {
                 String model = mItemTag + (index + 1);
-                int id = resources.getIdentifier(model, "id", getContext().getPackageName());
+                int id = resources.getIdentifier(model, "id", contentView.getContext().getPackageName());
                 View view = contentView.findViewById(id);
                 if (index == 0) {
                     firstView = view;

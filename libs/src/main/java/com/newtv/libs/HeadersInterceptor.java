@@ -62,7 +62,11 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                     newBaseUrl = HttpUrl.parse(Constant.DYNAMIC_KEY);
                     break;
                 case PERMISSTION_CHECK:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_PERMISSTION_CHECK);
+                    if(Libs.get().isDebug()){
+                        newBaseUrl = HttpUrl.parse("http://stage-bzo.cloud.ottcn.com/");
+                    }else {
+                        newBaseUrl = HttpUrl.parse(Constant.BASE_PERMISSTION_CHECK);
+                    }
                     break;
                 case IS_ORIENTED:
                     newBaseUrl = HttpUrl.parse(Constant.IS_ORIENTED);

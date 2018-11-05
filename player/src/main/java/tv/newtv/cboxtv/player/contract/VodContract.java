@@ -13,10 +13,10 @@ import com.newtv.cms.bean.CdnUrl;
 import com.newtv.cms.bean.ChkRequest;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.Encryptor;
 import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.NetworkManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +41,7 @@ public class VodContract {
 
     public interface View extends ICmsView {
         void onVodchkResult(VideoDataStruct videoDataStruct, String contentUUID);
+
         void onChkError(String code, String desc);
     }
 
@@ -58,6 +59,7 @@ public class VodContract {
 
         /**
          * 解析CDN播放地址
+         *
          * @param playResult
          * @return
          */
@@ -78,7 +80,8 @@ public class VodContract {
                 Toast.makeText(getContext(), getContext().getResources().getString(R.string
                         .program_info_no_data), Toast.LENGTH_SHORT).show();
                 LogUtils.e("鉴权接口后没有返回视频地址");
-                getView().onChkError("-5", "视频地址为空");
+                if (getView() != null)
+                    getView().onChkError("-5", "视频地址为空");
                 return null;
             }
             for (int j = 0; j < specifiedCDNInfos.size(); j++) {
@@ -89,7 +92,8 @@ public class VodContract {
                         Toast.makeText(getContext(), getContext().getResources().getString(R.string
                                 .program_info_no_data), Toast.LENGTH_SHORT).show();
                         LogUtils.e("鉴权接口后没有返回视频地址");
-                        getView().onChkError("-5", "视频地址为空");
+                        if (getView() != null)
+                            getView().onChkError("-5", "视频地址为空");
                         return null;
                     }
                     break;
@@ -105,6 +109,7 @@ public class VodContract {
 
         /**
          * 创建鉴权数据
+         *
          * @param contentId
          * @param seriesID
          * @return
@@ -130,9 +135,10 @@ public class VodContract {
 
         /**
          * 解析鉴权结果
+         *
          * @param result
          */
-        private void parseResult(String result){
+        private void parseResult(String result) {
             ChkPlayResult playResult = PlayerNetworkRequestUtils.getInstance()
                     .parsePlayPermissionCheckResult(result);
             if (playResult == null) {
@@ -148,9 +154,10 @@ public class VodContract {
                                     .check_error) + errorCode, Toast
                             .LENGTH_SHORT).show();
                 }
-                getView().onChkError(errorCode, getContext().getResources()
-                        .getString(R
-                                .string.check_error));
+                if (getView() != null)
+                    getView().onChkError(errorCode, getContext().getResources()
+                            .getString(R
+                                    .string.check_error));
                 LogUtils.e("调用鉴权接口后没有返回数据");
                 return;
             }
@@ -159,9 +166,10 @@ public class VodContract {
                 Toast.makeText(getContext(), getContext().getResources()
                         .getString(R.string
                                 .program_info_no_data), Toast.LENGTH_SHORT).show();
-                getView().onChkError("-3", getContext().getResources()
-                        .getString(R.string
-                                .program_info_no_data));
+                if (getView() != null)
+                    getView().onChkError("-3", getContext().getResources()
+                            .getString(R.string
+                                    .program_info_no_data));
                 LogUtils.e("暂无节目内容");
                 return;
             }
@@ -196,7 +204,8 @@ public class VodContract {
             videoDataStruct.setCategoryIds(playResult.getCategoryIds());
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
 
-            getView().onVodchkResult(videoDataStruct, playResult.getContentUUID());
+            if (getView() != null)
+                getView().onVodchkResult(videoDataStruct, playResult.getContentUUID());
         }
 
 
@@ -219,8 +228,9 @@ public class VodContract {
                                         .getString(R.string
                                                 .check_error), Toast.LENGTH_SHORT).show();
                             }
-                            getView().onChkError("-2", getContext().getResources()
-                                    .getString(R.string.check_error));
+                            if (getView() != null)
+                                getView().onChkError("-2", getContext().getResources()
+                                        .getString(R.string.check_error));
                             LogUtils.e(TAG, "调用鉴权接口后没有返回数据");
                             return;
                         }
@@ -240,8 +250,10 @@ public class VodContract {
                                     .string
                                     .check_error), Toast.LENGTH_SHORT).show();
                         }
-                        getView().onChkError("-6", getContext().getResources().getString(R.string
-                                .search_fail_agin));
+                        if (getView() != null)
+                            getView().onChkError("-6", getContext().getResources().getString(R
+                                    .string
+                                    .search_fail_agin));
                     }
                 });
             }

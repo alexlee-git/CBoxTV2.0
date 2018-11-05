@@ -48,7 +48,7 @@ open class Content  : Serializable {
 
     var liveUrl:String? = null
     var liveLoopType:String? = null
-    var liveParam:String? = null
+    var liveParam:List<LiveParam>? = null
     var playStartTime:String? = null
     var playEndTime:String? = null
     var IsTimeShift:String? = null

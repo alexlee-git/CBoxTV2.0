@@ -17,5 +17,5 @@ interface IPage : IService {
      * 获取页面数据
      */
     fun getPage(appkey:String,channelId:String,pageId:String,observer:
-    DataObserver<ModelResult<List<Page>>>):Long
+    DataObserver<ModelResult<ArrayList<Page>>>):Long
 }

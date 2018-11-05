@@ -40,6 +40,10 @@ public class MainLooper {
         };
     }
 
+    public void clear(){
+        mHandler.removeCallbacksAndMessages(null);
+    }
+
     public void post(Runnable runnable) {
         mHandler.post(runnable);
     }

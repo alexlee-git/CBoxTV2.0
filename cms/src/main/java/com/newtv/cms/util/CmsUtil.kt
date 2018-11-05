@@ -3,6 +3,7 @@ package com.newtv.cms.util
 import android.annotation.SuppressLint
 import android.text.TextUtils
 import com.newtv.cms.bean.LiveParam
+import com.newtv.cms.bean.Video
 import com.newtv.libs.util.CalendarUtil
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -17,10 +18,27 @@ import java.util.*
  */
 object CmsUtil {
 
+    private fun getLiveParam(video:Video?): LiveParam? {
+        if (video != null) {
+            if ("LIVE" == video.videoType && !TextUtils.isEmpty(video.liveUrl)) {
+                return isLiveTime(video.liveParam)
+            }
+        }
+        return null
+    }
+
+
+    @JvmStatic
+    fun isLive(video: Video?): LiveParam? {
+        val param = getLiveParam(video)
+        return if (param != null && CmsUtil.checkLiveParam(param)) {
+            param
+        } else null
+    }
+
     /**
      *
      */
-    @JvmStatic
     fun isLiveTime(params: List<LiveParam>?): LiveParam? {
         if (params == null || params.size <= 0)
             return null
@@ -35,11 +53,10 @@ object CmsUtil {
     /**
      *
      */
-    @JvmStatic
     fun checkLiveParam(param: LiveParam): Boolean {
-        val week: Int = CalendarUtil.getInstance().week
+        val week: Int = CalendarUtil.getCurrentWeek()
         if (!TextUtils.isEmpty(param.liveParam)) {
-            if (param.liveParam.split(",").contains(Integer.toString(week))) {
+            if (param.liveParam.contains(Integer.toString(week))) {
                 return checkInTime(param.playStartTime, param.playEndTime, false)
             }
         } else {
@@ -55,12 +72,35 @@ object CmsUtil {
         val fmt: DateFormat
         if (hasDate) {
             fmt = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+            val start: Date = fmt.parse(start)
+            val end: Date = fmt.parse(end)
+            return now.after(start) && now.before(end)
         } else {
             fmt = SimpleDateFormat("HH:mm:ss")
+            val current = formatToSeconds(fmt.format(now))
+            return formatToSeconds(start) < current && formatToSeconds(end) > current
         }
-        val start: Date = fmt.parse(start)
-        val end: Date = fmt.parse(end)
-        return now.after(start) && now.before(end);
+    }
+
+    fun formatToSeconds(timeFormat: String?): Int {
+        if (timeFormat == null) {
+            return 0
+        }
+        val times = timeFormat.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        var result = 0
+        for (index in 0..2) {
+            if (times.size >= index + 1) {
+                val value = times[index]
+                if (!TextUtils.isEmpty(value)) {
+                    when (index) {
+                        0 -> result += 3600 * Integer.parseInt(value)
+                        1 -> result += 60 * Integer.parseInt(value)
+                        else -> result += Integer.parseInt(value)
+                    }
+                }
+            }
+        }
+        return result
     }
 
 

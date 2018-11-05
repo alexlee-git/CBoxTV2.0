@@ -30,6 +30,7 @@ import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SystemUtils;
+import com.newtv.libs.util.ToastUtil;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -434,7 +435,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
-
+        ToastUtil.showToast(getApplicationContext(),desc);
     }
 
 

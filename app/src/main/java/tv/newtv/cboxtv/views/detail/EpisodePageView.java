@@ -28,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -37,7 +39,6 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
 
 
 /**
@@ -78,7 +79,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private AdContract.Presenter adPresenter;
     private ContentContract.Presenter mContentPresenter;
     private int mPageSize;
-    private int pageSize = DEFAULT_LIST_SIZE;
     private String mVideoType;
     private TextView mTitleView;
 
@@ -149,10 +149,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             @Override
             public void run() {
                 int page = 0;
-                if (index >= pageSize) {
-                    page = index / pageSize;
+                if (index >= mPageSize) {
+                    page = index / mPageSize;
                 }
-                int selectIndex = index >= pageSize ? index % pageSize : index;
+                int selectIndex = index >= mPageSize ? index % mPageSize : index;
                 if (ListPager != null)
                     ListPager.setCurrentItem(page, selectIndex);
             }
@@ -229,8 +229,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         TitleView.findViewById(R.id.id_title_icon).setVisibility(View.VISIBLE);
         mTitleView = TitleView.findViewById(R.id.id_title);
         if (mTitleView != null) {
-                mTitleView.setVisibility(View.VISIBLE);
-                mTitleView.setText("播放列表");
+            mTitleView.setVisibility(View.VISIBLE);
+            mTitleView.setText("播放列表");
         }
 
         ListPager = new ResizeViewPager(context);
@@ -421,6 +421,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private void initFragment(int mPageSize) {
         int size = mContentList.size();
         fragments = new ArrayList<>();
+        Collections.sort(mContentList, new Comparator<SubContent>() {
+            @Override
+            public int compare(SubContent content, SubContent t1) {
+
+                return 0;
+            }
+        });
         List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
         for (int index = 0; index < size; index += mPageSize) {
             int endIndex = index + mPageSize;
@@ -463,7 +470,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         int height = 0;
 
         if (TitleView != null) {
-            if (!videoType(mVideoType)){
+            if (!videoType(mVideoType)) {
                 mTitleView.setText("剧集列表");
                 mTitleView.setVisibility(VISIBLE);
             }
@@ -486,7 +493,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             } else {
                 if (leftDir != null) {
                     LayoutParams leftParams = (LayoutParams) leftDir.getLayoutParams();
-                    leftParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() - leftDir
+                    leftParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() -
+                            leftDir
                             .getMeasuredHeight()) / 2;
                     leftDir.setLayoutParams(leftParams);
                 }
@@ -664,7 +672,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?>
             hashMap) {
         if (!TextUtils.isEmpty(url)) {
-            pageSize = HAS_AD_SIZE;
+            mPageSize = mPageSize - 1;
             if (mContentList != null
                     && mContentList.size() > 0) {
                 initFragment(mPageSize);

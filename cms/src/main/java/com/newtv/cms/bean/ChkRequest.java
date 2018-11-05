@@ -14,6 +14,7 @@ public class ChkRequest {
     private String albumId;
     private String channelId;
     private List<Product> productDTOList;
+    private TerminalDTO terminalDTO = new TerminalDTO();
 
     private String pid;
 
@@ -83,25 +84,8 @@ public class ChkRequest {
         this.productDTOList = productDTOList;
     }
 
-    public static class User {
-        private long userId;
-        private String userToken;
-
-        public long getUserId() {
-            return userId;
-        }
-
-        public void setUserId(long userId) {
-            this.userId = userId;
-        }
-
-        public String getUserToken() {
-            return userToken;
-        }
-
-        public void setUserToken(String userToken) {
-            this.userToken = userToken;
-        }
+    public static class TerminalDTO{
+        private String versionNo = "3.1";
     }
 
     public static class Product {

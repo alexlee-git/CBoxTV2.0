@@ -8,6 +8,10 @@ package com.newtv.cms.bean
  * 创建日期:          2018/9/25
  */
 class ModelResult<T> {
+
+    companion object {
+        const val IS_AD_TYPE = "1"
+    }
     var errorCode: String? = null
     var errorMessage: String? = null
         get() {
@@ -16,7 +20,7 @@ class ModelResult<T> {
             }
             return field
         }
-    val updateTime: String? = null
+    var updateTime: String? = null
     val isNav: Int? = null
     val subTitle: String? = null
     val pageTitle: String? = null

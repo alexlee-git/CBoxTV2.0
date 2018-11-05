@@ -28,6 +28,19 @@ public abstract class AbsEpisodeFragment extends Fragment {
 
     private View contentView;
 
+    protected View findViewById(int id){
+        if(contentView != null){
+            return contentView.findViewById(id);
+        }
+        return null;
+    }
+
+    protected void postDelayed(Runnable runnable,int delay){
+        if(contentView != null){
+            contentView.postDelayed(runnable,delay);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

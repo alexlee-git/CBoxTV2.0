@@ -42,7 +42,6 @@ import java.util.Locale;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
-import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.views.custom.AutoSizeTextView;
@@ -56,7 +55,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 创建人:           weihaichao
  * 创建日期:          2018/10/18
  */
-public class BlockBuilder {
+class BlockBuilder {
 
     public static final String TAG = BlockBuilder.class.getSimpleName();
     private final String SHOW_BLOCK_TITLE = "1";
@@ -69,7 +68,7 @@ public class BlockBuilder {
     private boolean showFirstTitle = false;
     private AdContract.Presenter mAdPresenter;
 
-    public BlockBuilder(Context context) {
+    BlockBuilder(Context context) {
         mContext = context;
 
         mSpringInterpolator = new OvershootInterpolator(2.2f);
@@ -538,7 +537,7 @@ public class BlockBuilder {
 
         LivePlayView livePlayView = getLivePlayView(view);
         if (livePlayView != null && livePlayView.isVideoType()) {
-            livePlayView.enterFullScreen();
+            livePlayView.dispatchClick();
             return;
         }
         if (info instanceof Program) {
@@ -644,7 +643,7 @@ public class BlockBuilder {
     }
 
     private void loadSuperscript(ImageView target, String superscriptId) {
-        SuperscriptInfo info = SuperScriptManager.getInstance().getSuperscriptInfoById
+        Corner info = SuperScriptManager.getInstance().getSuperscriptInfoById
                 (superscriptId);
         if (info != null) {
             String superType = info.getCornerType();
@@ -740,7 +739,7 @@ public class BlockBuilder {
                         .SCALE_TYPE_HEIGHT));
                 lp.gravity = Gravity.BOTTOM;
                 lp.bottomMargin = DisplayUtils.translate(34, DisplayUtils.SCALE_TYPE_HEIGHT);
-                ;
+
                 subTitleWidget = new TextView(mContext);
                 subTitleWidget.setLayoutParams(lp);
                 subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils

@@ -13,13 +13,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Content;
-import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.DisplayUtils;
 
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
@@ -41,7 +44,7 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
  */
 public class ProgramPageFragment extends BaseSpecialContentFragment implements PlayerCallback {
     private AiyaRecyclerView recyclerView;
-    private ModuleInfoResult moduleInfoResult;
+    private ModelResult<ArrayList<Page>> moduleInfoResult;
     private int currentIndex = 0;
     private TextView tvProgramaTitle;
 
@@ -53,6 +56,11 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_programpage_layout;
+    }
+
+    @Override
+    protected void onItemContentResult(Content content) {
+
     }
 
     @Override
@@ -70,14 +78,14 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
         ShooterAdapter adapter = new ShooterAdapter();
-        adapter.setOnItemAction(new OnItemAction<SubContent>() {
+        adapter.setOnItemAction(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(SubContent item, int index) {
+            public void onItemClick(Program item, int index) {
                 playVideo(item);
                 currentIndex = index;
             }
@@ -98,7 +106,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
 
         if (moduleInfoResult != null) {
-            adapter.refreshData(moduleInfoResult.getDatas().get(0).getDatas())
+            adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
             tvProgramaTitle.setText(moduleInfoResult.getSubTitle());
 
@@ -126,9 +134,9 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         return super.dispatchKeyEvent(event);
     }
 
-    private void playVideo(SubContent programInfo) {
+    private void playVideo(Program programInfo) {
         if (programInfo == null) return;
-        PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
+        PlayInfoUtil.getPlayInfo(programInfo.getContentId(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
 
             @Override
@@ -145,11 +153,11 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         moduleInfoResult = infoResult;
         if (recyclerView != null && recyclerView.getAdapter() != null) {
-            ((ShooterAdapter) recyclerView.getAdapter()).refreshData(infoResult.getDatas().get(0)
-                    .getDatas()).notifyDataSetChanged();
+            ((ShooterAdapter) recyclerView.getAdapter()).refreshData(infoResult.getData().get(0)
+                    .getPrograms()).notifyDataSetChanged();
         }
     }
 
@@ -198,17 +206,17 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<SubContent> ModuleItems;
-        private OnItemAction<SubContent> onItemAction;
+        private List<Program> ModuleItems;
+        private OnItemAction<Program> onItemAction;
         private String currentID;
         private int currentIndex = 0;
 
-        ShooterAdapter refreshData(List<SubContent> datas) {
+        ShooterAdapter refreshData(List<Program> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        public void setOnItemAction(OnItemAction<SubContent> programInfoOnItemAction) {
+        public void setOnItemAction(OnItemAction<Program> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -222,7 +230,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            SubContent moduleItem = getItem(position);
+            Program moduleItem = getItem(position);
             holder.container.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -237,9 +245,9 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SubContent programInfo = getItem(holder.getAdapterPosition());
+                    Program programInfo = getItem(holder.getAdapterPosition());
                     if (programInfo != null) {
-                        currentID = programInfo.getContentUUID();
+                        currentID = programInfo.getContentId();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
 
                         currentIndex = holder.getAdapterPosition();
@@ -253,11 +261,11 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
 
                 Picasso.get()
-                        .load(moduleItem.getVImage())
+                        .load(moduleItem.getImg())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .into(holder.poster);
 
-                if (moduleItem.getContentUUID().equals(currentID) && position == currentIndex) {
+                if (TextUtils.equals(moduleItem.getContentId(),currentID) && position == currentIndex) {
                     holder.poster.setIsPlaying(true, false);
                 } else {
                     holder.poster.setIsPlaying(false, false);
@@ -271,7 +279,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             }
         }
 
-        private SubContent getItem(int position) {
+        private Program getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

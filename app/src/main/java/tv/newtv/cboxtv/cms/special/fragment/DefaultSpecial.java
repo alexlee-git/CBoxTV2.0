@@ -7,12 +7,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 
 /**
@@ -28,14 +31,19 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
     private TextView mPageSubTitle;
     private Button mPageFavoriteButton;
     private AiyaRecyclerView mRecyclerView;
-    private List<ModuleItem> mDatas;
+    private List<Page> mDatas;
     private UniversalAdapter mAdapter;
-    private ModuleInfoResult mModuleInfoResult;
+    private ModelResult<ArrayList<Page>> mModuleInfoResult;
 
 
     @Override
     protected int getLayoutId() {
         return R.layout.special_default_layout;
+    }
+
+    @Override
+    protected void onItemContentResult(Content content) {
+
     }
 
     @Override
@@ -69,7 +77,7 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         mModuleInfoResult = infoResult;
         if(getView() != null) {
             updateUI();
@@ -77,16 +85,16 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
     }
 
     private void updateUI(){
-        if (mModuleInfoResult.getIsCollection() != 0) {
-            mPageFavoriteButton.setVisibility(View.VISIBLE);
-        } else {
-            mPageFavoriteButton.setVisibility(View.GONE);
-        }
+//        if (mModuleInfoResult.get() != 0) {
+//            mPageFavoriteButton.setVisibility(View.VISIBLE);
+//        } else {
+//            mPageFavoriteButton.setVisibility(View.GONE);
+//        }
 
         setTitleText(mModuleInfoResult);
         UniversalAdapter adapter = (UniversalAdapter) mRecyclerView.getAdapter();
         if (adapter == null) {
-            mDatas = mModuleInfoResult.getDatas();
+            mDatas = mModuleInfoResult.getData();
 //            adapter = new SpecialUniversalAdapter(getContext(), mDatas);
 //             Log.e(Constant.TAG, "DefaultSpecial_mDatas : "+mDatas);
 //
@@ -95,13 +103,13 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
 //            mRecyclerView.setAdapter(mAdapter);
         } else {
             mDatas.clear();
-            mDatas.addAll(mModuleInfoResult.getDatas());
+            mDatas.addAll(mModuleInfoResult.getData());
             adapter.notifyDataSetChanged();
         }
 		 adapter.showFirstLineTitle(true);
     }
 
-    private void setTitleText(ModuleInfoResult moduleInfoResult) {
+    private void setTitleText(ModelResult<ArrayList<Page>> moduleInfoResult) {
         //display page title
         if (!TextUtils.isEmpty(moduleInfoResult.getPageTitle())) {
             mPageTitle.setVisibility(View.VISIBLE);

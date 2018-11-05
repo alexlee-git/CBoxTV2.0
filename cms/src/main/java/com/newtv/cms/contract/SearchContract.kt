@@ -100,10 +100,10 @@ class SearchContract {
         }
 
         companion object {
-
             /**
              * @return
              */
+            @JvmStatic
             fun Builder(): SearchCondition {
                 return SearchCondition()
             }

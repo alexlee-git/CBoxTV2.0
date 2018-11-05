@@ -117,7 +117,7 @@ public class LiveVideoPlayerControl implements IVideoPlayerControlInterface {
         if (mLiveInfo != null && mCallback != null && mLiveInfo.isTimeShift()) {
 //            mLiveInfo.setTimeDelay(position);
             Log.e("Live", "seekTo:" + position);
-            mCallback.changePlayWithDelay(position,mLiveInfo.getmLiveUrl());
+            mCallback.changePlayWithDelay(position,mLiveInfo.getLiveUrl());
         }
     }
 

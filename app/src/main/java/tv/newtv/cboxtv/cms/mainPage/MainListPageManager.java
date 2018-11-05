@@ -392,6 +392,14 @@ public class MainListPageManager{
         mSharedPreferences = mContext.getSharedPreferences("config", 0);
     }
 
+    public boolean dispatchKeyEvent(KeyEvent event){
+        ContentFragment fragment = (ContentFragment) mViewPagerAdapter.getCurrentFragment();
+        if(fragment == null || fragment.dispatchKeyEvent(event)){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @param keyEvent
      * @param from

@@ -12,19 +12,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.newtv.cms.bean.Content;
-import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.DisplayUtils;
-
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -39,12 +39,18 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
  * 创建日期:          2018/4/25
  */
 public class QXDFFragment extends BaseSpecialContentFragment implements
-        OnItemAction<SubContent>, PlayerCallback {
+        OnItemAction<Program>, PlayerCallback {
     private AiyaRecyclerView recyclerView;
-    private ModuleInfoResult moduleInfoResult;
+    private ModelResult<ArrayList<Page>> moduleInfoResult;
     private View downView;
     private int videoIndex = 0;
     private Content mProgramSeriesInfo;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MainLooper.get().clear();
+    }
 
     @Override
     protected int getVideoPlayIndex() {
@@ -63,6 +69,18 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_qxdf_layout;
+    }
+
+    @Override
+    protected void onItemContentResult(Content info) {
+        mProgramSeriesInfo = info;
+        if (info != null) {
+            Log.e("info", info.toString());
+            videoPlayerView.setSeriesInfo(info);
+            videoPlayerView.playSingleOrSeries(0, 0);
+        } else {
+            videoPlayerView.showProgramError();
+        }
     }
 
     @Override
@@ -87,20 +105,22 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
         videoPlayerView.setPlayerCallback(this);
 
         if (moduleInfoResult != null) {
-            adapter.refreshData(moduleInfoResult.getDatas().get(0).getDatas())
+            adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
         }
     }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(getContentView() == null) return true;
+        if (getContentView() == null) return true;
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             View focusView = getContentView().findFocus();
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 if (recyclerView.getDefaultFocusView() != null) {
                     if (recyclerView.getDefaultFocusView().hasFocus()) {
-                        View view = FocusFinder.getInstance().findNextFocus(recyclerView, recyclerView
-                                .getDefaultFocusView(), View.FOCUS_LEFT);
+                        View view = FocusFinder.getInstance().findNextFocus(recyclerView,
+                                recyclerView
+                                        .getDefaultFocusView(), View.FOCUS_LEFT);
                         if (view == null) {
                             videoPlayerView.requestFocus();
                             return true;
@@ -120,11 +140,11 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         moduleInfoResult = infoResult;
         if (recyclerView != null && recyclerView.getAdapter() != null) {
-            ((ShooterAdapter) recyclerView.getAdapter()).refreshData(infoResult.getDatas().get(0)
-                    .getDatas()).notifyDataSetChanged();
+            ((ShooterAdapter) recyclerView.getAdapter()).refreshData(infoResult.getData().get(0)
+                    .getPrograms()).notifyDataSetChanged();
 
 
         }
@@ -136,22 +156,10 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     @Override
-    public void onItemClick(SubContent item, final int index) {
-        videoPlayerView.beginChange();
-        PlayInfoUtil.getPlayInfo(item.getContentUUID(), new PlayInfoUtil
-                .ProgramSeriesInfoCallback() {
-            @Override
-            public void onResult(Content info) {
-                mProgramSeriesInfo = info;
-                if (info != null) {
-                    Log.e("info", info.toString());
-                    videoPlayerView.setSeriesInfo(info);
-                    videoPlayerView.playSingleOrSeries(0, 0);
-                } else {
-                    videoPlayerView.showProgramError();
-                }
-            }
-        });
+    public void onItemClick(Program item, final int index) {
+//        videoPlayerView.beginChange();
+
+        getContent(item.getL_id(),item.getL_contentType());
     }
 
     @Override
@@ -159,8 +167,10 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
         MainLooper.get().postDelayed(new Runnable() {
             @Override
             public void run() {
-                recyclerView.getAdapter().notifyItemChanged(before);
-                recyclerView.getAdapter().notifyItemChanged(current);
+                if (recyclerView != null && recyclerView.getAdapter() != null) {
+                    recyclerView.getAdapter().notifyItemChanged(before);
+                    recyclerView.getAdapter().notifyItemChanged(current);
+                }
             }
         }, 300);
     }
@@ -204,25 +214,26 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 
     @Override
     public void ProgramChange() {
-        if(mProgramSeriesInfo != null && videoPlayerView != null){
+        if (mProgramSeriesInfo != null && videoPlayerView != null) {
             videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-            videoPlayerView.playSingleOrSeries(videoIndex,0);
+            videoPlayerView.playSingleOrSeries(videoIndex, 0);
         }
     }
 
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<SubContent> ModuleItems;
+        private List<Program> ModuleItems;
         private String currentUUID;
-        private OnItemAction<SubContent> mOnItemAction;
+        private OnItemAction<Program> mOnItemAction;
         private int currentIndex = 0;
+        private boolean isStart = true;
 
-        ShooterAdapter refreshData(List<SubContent> datas) {
+        ShooterAdapter refreshData(List<Program> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        void setOnItemAction(OnItemAction<SubContent> onItemAction) {
+        void setOnItemAction(OnItemAction<Program> onItemAction) {
             mOnItemAction = onItemAction;
         }
 
@@ -242,7 +253,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            SubContent moduleItem = getItem(position);
+            Program moduleItem = getItem(position);
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -258,9 +269,9 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SubContent moduleItem = getItem(holder.getAdapterPosition());
+                    Program moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
-                        currentUUID = moduleItem.getContentUUID();
+                        currentUUID = moduleItem.getContentId();
                         mOnItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
                         currentIndex = holder.getAdapterPosition();
                         mOnItemAction.onItemClick(moduleItem, holder.getAdapterPosition());
@@ -268,29 +279,38 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
                 }
             });
 
-
             if (moduleItem != null) {
-                holder.poster.setIsPlaying(moduleItem.getContentUUID().equals(currentUUID), false);
-//                holder.poster.setLoadImageUrl(moduleItem.getImg());
-                int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
+
+                int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset
+                        (R.dimen.width_4px);
+
+
                 Picasso.get()
-                        .load(moduleItem.getVImage())
-                        .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
+                        .load(moduleItem.getImg())
+                        .transform(new PosterCircleTransform(holder.itemView.getContext(),
+                                radius))
                         .into(holder.poster);
-                if (moduleItem.getContentUUID().equals(currentUUID) && position == currentIndex) {
+                holder.poster.setTag(R.id.tag_imageview, moduleItem.getImg());
+
+                if (TextUtils.equals(moduleItem.getContentId(), currentUUID) && position ==
+                        currentIndex) {
                     holder.poster.setIsPlaying(true, false);
                 } else {
                     holder.poster.setIsPlaying(false, false);
                 }
-                if (TextUtils.isEmpty(currentUUID)) {
-                    if (position == 0) {
-                        holder.dispatchSelect();
-                    }
+
+                if (!TextUtils.isEmpty(moduleItem.getContentId())) {
+                    holder.poster.setIsPlaying(TextUtils.equals(moduleItem.getContentId(),
+                            currentUUID), false);
+                }
+                if (TextUtils.isEmpty(currentUUID) && position == 0 && isStart) {
+                    holder.dispatchSelect();
+                    isStart = false;
                 }
             }
         }
 
-        private SubContent getItem(int position) {
+        private Program getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }
@@ -304,18 +324,19 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     private static class ShooterViewHolder extends RecyclerView.ViewHolder {
-        public CurrentPlayImageViewWorldCup poster;
-        public ImageView poster_focus;
+        CurrentPlayImageViewWorldCup poster;
+        ImageView poster_focus;
 
         ShooterViewHolder(View itemView) {
             super(itemView);
             poster = itemView.findViewById(R.id.shooter_poster);
             poster_focus = itemView.findViewById(R.id.shooter_poster_focus);
 
-            DisplayUtils.adjustView(itemView.getContext(),poster,poster_focus,R.dimen.width_17dp,R.dimen.width_17dp);
+            DisplayUtils.adjustView(itemView.getContext(), poster, poster_focus, R.dimen
+                    .width_17dp, R.dimen.width_17dp);
         }
 
-        public void dispatchSelect() {
+        void dispatchSelect() {
             itemView.requestFocus();
             itemView.performClick();
         }

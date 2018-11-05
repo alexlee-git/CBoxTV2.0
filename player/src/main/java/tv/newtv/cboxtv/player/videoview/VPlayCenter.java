@@ -25,7 +25,8 @@ public class VPlayCenter {
     private int currentIndex = 0;
     private int currentType;
 
-    VPlayCenter() { }
+    VPlayCenter() {
+    }
 
     public int getCurrentType() {
         return currentType;
@@ -54,7 +55,10 @@ public class VPlayCenter {
                     dataStruct.playType = PLAY_SINGLE;
                     currentType = PLAY_SINGLE;
                 } else {
-                    if (seriesInfo.getData() != null && seriesInfo.getData().size() > index) {
+                    if (seriesInfo.getData() != null) {
+                        if (index >= seriesInfo.getData().size()) {
+                            index = seriesInfo.getData().size() - 1;
+                        }
                         dataStruct = new DataStruct();
                         SubContent programsInfo = seriesInfo.getData().get(index);
                         dataStruct.title = programsInfo.getTitle();
@@ -73,12 +77,9 @@ public class VPlayCenter {
     }
 
     public DataStruct getDataStruct() {
-        if (!isReady()) return null;
+        if (programSeriesInfo == null) return null;
         if (currentIndex < 0) {
             currentIndex = 0;
-        }
-        if (currentIndex >= programSeriesInfo.getData().size()) {
-            currentIndex = programSeriesInfo.getData().size();
         }
         return getDataStruct(currentIndex);
     }

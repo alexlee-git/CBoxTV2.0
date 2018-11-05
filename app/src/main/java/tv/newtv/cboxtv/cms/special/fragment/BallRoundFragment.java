@@ -9,9 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
@@ -32,11 +36,16 @@ import tv.newtv.cboxtv.views.widget.RecycleSpaceDecoration;
 public class BallRoundFragment extends BaseSpecialContentFragment {
 
     private AiyaRecyclerView recyclerView;
-    private ModuleInfoResult mModuleInfoResult;
+    private ModelResult<ArrayList<Page>> mModuleInfoResult;
 
     @Override
     protected int getLayoutId() {
         return R.layout.ball_round_layout;
+    }
+
+    @Override
+    protected void onItemContentResult(Content content) {
+
     }
 
     @Override
@@ -48,14 +57,14 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(LauncherApplication.AppContext,
                 LinearLayoutManager.VERTICAL, false));
         BallRoundAdapter adapter = new BallRoundAdapter();
-        adapter.setOnFocus(new OnItemAction<SubContent>() {
+        adapter.setOnFocus(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(SubContent item,int index) {
+            public void onItemClick(Program item,int index) {
 //                JumpUtil.activityJump(LauncherApplication.AppContext,item);
             }
 
@@ -70,7 +79,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         mModuleInfoResult = infoResult;
         if (UiReady) {
             UpdateUI();
@@ -78,26 +87,26 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
     }
 
     private void UpdateUI() {
-        List<SubContent> infos = mModuleInfoResult.getDatas().get(0).getDatas();
+        List<Program> infos = mModuleInfoResult.getData().get(0).getPrograms();
         ((BallRoundAdapter) recyclerView.getAdapter()).refresh(infos).notifyDataSetChanged();
     }
 
     private static class BallRoundAdapter extends RecyclerView.Adapter<BallRoundViewHolder> {
 
-        private List<SubContent> mValues;
-        private OnItemAction<SubContent> onItemFocus;
+        private List<Program> mValues;
+        private OnItemAction<Program> onItemFocus;
         private String currentUUID;
 
-        void setOnFocus(OnItemAction<SubContent> onFocus) {
+        void setOnFocus(OnItemAction<Program> onFocus) {
             onItemFocus = onFocus;
         }
 
-        BallRoundAdapter refresh(List<SubContent> value) {
+        BallRoundAdapter refresh(List<Program> value) {
             mValues = value;
             return this;
         }
 
-        private SubContent getItem(int pos) {
+        private Program getItem(int pos) {
             if (mValues != null && pos >= 0 && mValues.size() > pos) {
                 return mValues.get(pos);
             }
@@ -113,7 +122,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
 
         @Override
         public void onBindViewHolder(final BallRoundViewHolder holder, int position) {
-            SubContent programInfo = getItem(position);
+            Program programInfo = getItem(position);
             holder.poster.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean b) {
@@ -125,9 +134,9 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
             holder.poster.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    SubContent info = getItem(holder.getAdapterPosition());
+                    Program info = getItem(holder.getAdapterPosition());
                     if(info != null) {
-                        currentUUID = info.getContentUUID();
+                        currentUUID = info.getContentId();
                         onItemFocus.onItemClick(info,holder.getAdapterPosition());
                     }
                 }
@@ -156,10 +165,10 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
             poster = itemView.findViewById(R.id.round_ball_poster);
         }
 
-        public void setData(SubContent programInfo, Context mcontext) {
+        public void setData(Program programInfo, Context mcontext) {
             int radius=mcontext.getResources().getDimensionPixelOffset(R.dimen.width_4px);
             Picasso.get()
-                    .load(programInfo.getVImage())
+                    .load(programInfo.getImg())
                     .transform(new PosterCircleTransform(mcontext, radius))
                     .into(poster);
         }

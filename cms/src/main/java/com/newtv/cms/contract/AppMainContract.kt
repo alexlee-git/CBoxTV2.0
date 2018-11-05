@@ -13,6 +13,7 @@ import com.newtv.cms.ICmsView
 import com.newtv.cms.api.IClock
 import com.newtv.cms.bean.Time
 import com.newtv.libs.Constant
+import com.newtv.libs.util.CalendarUtil
 import com.newtv.libs.util.LogUploadUtils
 import com.newtv.libs.util.LogUtils
 
@@ -62,14 +63,14 @@ class AppMainContract {
             clock?.sync(object : DataObserver<Time> {
                 override fun onResult(result: Time, requestCode: Long) {
                     if ("1" == result.statusCode) {
-                        view!!.syncServerTime(result)
+                        view?.syncServerTime(result)
                     } else {
-                        view!!.syncServerTime(null)
+                        view?.syncServerTime(null)
                     }
                 }
 
                 override fun onError(desc: String?) {
-                    view!!.syncServerTime(null)
+                    view?.syncServerTime(null)
                 }
             })
         }

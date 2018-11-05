@@ -53,7 +53,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private SmoothScrollView scrollView;
     private ProgrameSeriesFragment fragment;
     private String videoType;
-    private Disposable mDisposable;
     private long lastClickTime;
     private FragmentTransaction transaction;
     private ContentContract.Presenter mContentPresenter;
@@ -230,8 +229,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             mContentPresenter = null;
         }
 
-        unSubscribe();
-
         if (fragment != null) {
             if (transaction != null) {
                 transaction.remove(fragment);
@@ -303,16 +300,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         if (fragment != null) {
             transaction.replace(R.id.details_content, fragment);
             transaction.commitAllowingStateLoss();
-        }
-    }
-
-    /**
-     * 解除绑定
-     */
-    private void unSubscribe() {
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
-            mDisposable = null;
         }
     }
 

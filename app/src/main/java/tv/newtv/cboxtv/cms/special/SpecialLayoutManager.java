@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.newtv.cms.bean.ModelResult;
+
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.fragment.BallPlayerFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BallRoundFragment;
@@ -56,7 +58,7 @@ public class SpecialLayoutManager {
             int containerId,
             Bundle bundle,
             FragmentManager fragmentManager,
-            ModuleInfoResult infoResult
+            ModelResult infoResult
     ) {
         if (infoResult == null) return null;
         String type = infoResult.getTemplateZT();

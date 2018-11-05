@@ -4,7 +4,6 @@
     android:layout_height="@dimen/height_470px"
     android:clipChildren="false"
     android:clipToPadding="false">
-    <!--世界杯最下面--> 
 
     <tv.newtv.cboxtv.views.custom.RecycleImageView
 

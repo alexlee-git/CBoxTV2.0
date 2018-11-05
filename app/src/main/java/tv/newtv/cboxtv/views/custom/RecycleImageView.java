@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.views.custom;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
@@ -12,6 +13,9 @@ import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
 import com.newtv.libs.util.PicassoBuilder;
 import com.newtv.libs.util.UsefulBitmapFactory;
 import com.squareup.picasso.Callback;
@@ -228,11 +232,6 @@ public class RecycleImageView extends AppCompatImageView {
                 requestCreator = requestCreator.fit();
             }
 
-//            if (useResize && getLayoutParams() != null && getLayoutParams().width > 0 &&
-//                    getLayoutParams().height > 0) {
-//                requestCreator = requestCreator.resize(getLayoutParams().width, getLayoutParams()
-//                        .height).centerCrop();
-//            }
             if (mCallback != null) {
                 requestCreator.into(this, mCallback);
             } else {

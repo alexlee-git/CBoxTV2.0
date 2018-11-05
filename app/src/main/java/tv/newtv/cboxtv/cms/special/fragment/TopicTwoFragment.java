@@ -14,10 +14,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Content;
-import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
@@ -30,7 +33,7 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.popupMenuWidget;
 
 public class TopicTwoFragment extends BaseSpecialContentFragment implements PlayerCallback {
-    private ModuleInfoResult moduleInfoResult;
+    private ModelResult<ArrayList<Page>> moduleInfoResult;
     private Content mProgramSeriesInfo;
     private int videoIndex = 0;
     private int playIndex = 0;
@@ -70,6 +73,11 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     }
 
     @Override
+    protected void onItemContentResult(Content content) {
+
+    }
+
+    @Override
     protected void setUpUI(View view) {
         news_recycle = view.findViewById(R.id.news_recycle);
         title = view.findViewById(R.id.title);
@@ -91,14 +99,14 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         news_recycle.setItemAnimator(null);
         news_recycle.setAlign(AiyaRecyclerView.ALIGN_START);
         news_recycle.setAdapter(adapter);
-        adapter.setOnItemAction(new OnItemAction<SubContent>() {
+        adapter.setOnItemAction(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick( SubContent item, int index) {
+            public void onItemClick( Program item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
                 adapter.setThisPosition(index);
@@ -129,28 +137,28 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_rl), true);
         if (moduleInfoResult != null) {
             title_direction.setText(moduleInfoResult.getDescription());
-            adapter.refreshData(moduleInfoResult.getDatas().get(0).getDatas())
+            adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
         }
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
 
 
         moduleInfoResult = infoResult;
         Log.d("TopicTwoFragment", moduleInfoResult.toString());
         if (news_recycle != null && news_recycle.getAdapter() != null) {
-            ((NewsAdapter) news_recycle.getAdapter()).refreshData(infoResult.getDatas().get(0)
-                    .getDatas()).notifyDataSetChanged();
+            ((NewsAdapter) news_recycle.getAdapter()).refreshData(infoResult.getData().get(0)
+                    .getPrograms()).notifyDataSetChanged();
 
         }
     }
 
-    private void onItemClickAction(SubContent programInfo) {
+    private void onItemClickAction(Program programInfo) {
 
         videoPlayerView.beginChange();
-        PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
+        PlayInfoUtil.getPlayInfo(programInfo.getContentId(), new PlayInfoUtil
                 .ProgramSeriesInfoCallback() {
             @Override
             public void onResult(Content info) {
@@ -277,8 +285,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
     private class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
 
-        private List<SubContent> ModuleItems;
-        private OnItemAction<SubContent> onItemAction;
+        private List<Program> ModuleItems;
+        private OnItemAction<Program> onItemAction;
         private String currentUUID;
         private int currentIndex = 0;
         private int thisPosition;
@@ -301,12 +309,12 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
 
 
-        NewsAdapter refreshData(List<SubContent> datas) {
+        NewsAdapter refreshData(List<Program> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        public void setOnItemAction(OnItemAction<SubContent> programInfoOnItemAction) {
+        public void setOnItemAction(OnItemAction<Program> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -325,7 +333,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
         @Override
         public void onBindViewHolder(final NewsViewHolder holder,final int position) {
-            SubContent moduleItem = getItem(position);
+            Program moduleItem = getItem(position);
             setImageView(holder.isPlaying);
 
             if (position == getthisPosition()) {
@@ -359,11 +367,11 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    final SubContent moduleItem = getItem(holder.getAdapterPosition());
+                    final Program moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         title.setText(moduleItem.getSubTitle());
                         videoTitle.setText(moduleItem.getSubTitle());
-                        currentUUID = moduleItem.getContentUUID();
+                        currentUUID = moduleItem.getContentId();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
 
                         currentIndex = holder.getAdapterPosition();
@@ -376,7 +384,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             });
             if (moduleItem != null) {
                 holder.news_title.setText(moduleItem.getSubTitle());
-                if (moduleItem.getContentUUID().equals(currentUUID)) {
+                if (TextUtils.equals(moduleItem.getContentId(),currentUUID)) {
                     holder.isPlaying.setVisibility(View.VISIBLE);
                 } else {
                     holder.isPlaying.setVisibility(View.GONE);
@@ -390,7 +398,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
         }
 
-        private SubContent getItem(int position) {
+        private Program getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

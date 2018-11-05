@@ -42,6 +42,11 @@ public abstract class BaseFragment extends RxFragment {
     private RecyclerView animRecyclerView;
     private boolean isFinshAnim = true;
 
+    protected boolean interruptKeyEvent(){
+
+        return false;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -56,10 +61,6 @@ public abstract class BaseFragment extends RxFragment {
 
     public void setUseHint(boolean value) {
         useHint = value;
-    }
-
-    public void setViewPager(NewTVViewPager viewPager) {
-
     }
 
     public boolean isNoTopView() {
@@ -91,12 +92,6 @@ public abstract class BaseFragment extends RxFragment {
     }
 
     @Override
-    public void onDestroyView() {
-//        recycleImageViews((ViewGroup) getView());
-        super.onDestroyView();
-    }
-
-    @Override
     public Context getContext() {
         Context context = super.getContext();
         if (context == null) {
@@ -114,25 +109,6 @@ public abstract class BaseFragment extends RxFragment {
         }
     }
 
-//    private void recycleImageViews(ViewGroup viewGroup) {
-//        if (viewGroup == null) {
-//            return;
-//        }
-//        unbindDrawables(viewGroup);
-//        int count = viewGroup.getChildCount();
-//        for (int i = 0; i < count; i++) {
-//            View view = viewGroup.getChildAt(i);
-//            if (view instanceof ImageView) {
-//                ImageView imageView = (ImageView) view;
-//                imageView.setImageDrawable(null);
-//                imageView.setTag(null);
-//            } else if (view instanceof ViewGroup) {
-//                this.recycleImageViews((ViewGroup) view);
-//            }
-//        }
-//        System.gc();
-//    }
-
     public boolean onBackPressed() {
         return true;
     }
@@ -144,6 +120,10 @@ public abstract class BaseFragment extends RxFragment {
             isVisible = false;
             onInvisible();
         }
+    }
+
+    public boolean isFragmentVisible() {
+        return isVisible;
     }
 
     private void unbindDrawables(View view) {
@@ -193,12 +173,10 @@ public abstract class BaseFragment extends RxFragment {
         clearLazyLoad();
     }
 
-    public void dispatchKeyEvent(KeyEvent event) {
-
+    public boolean dispatchKeyEvent(KeyEvent event) {
 
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_DPAD_DOWN:
-
                 //recyclerView已经滚动到底部 并且当前选中的是最底下的view  执行动画
                 if (animRecyclerView != null && animRecyclerView.hasFocus() && event.getAction()
                         == KeyEvent.ACTION_DOWN) {
@@ -217,6 +195,7 @@ public abstract class BaseFragment extends RxFragment {
                 }
                 break;
         }
+        return false;
     }
 
     private void startAnim() {

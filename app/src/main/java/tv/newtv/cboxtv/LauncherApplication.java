@@ -42,7 +42,7 @@ import tv.newtv.cboxtv.utils.DBUtil;
  * Created by lixin on 2018/1/11.
  */
 
-public class LauncherApplication extends MultiDexApplication {
+public class LauncherApplication extends MultiDexApplication implements PlayerObserver {
 
     public static Context AppContext = null;
 
@@ -65,42 +65,16 @@ public class LauncherApplication extends MultiDexApplication {
         }
 
         AppContext = this.getApplicationContext();
-        Libs.init(this, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, BuildConfig.FLAVOR);
 
-        Player.get().attachObserver(new PlayerObserver() {
-            @Override
-            public void onFinish(Content playInfo, int index, int position) {
-                if(index == 0 && position == 0) return;
-                DBUtil.addHistory(playInfo, index, position, new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if(code == 0){
-                            LogUtils.e("写入历史记录成功");
-                        }
-                    }
-                });
-            }
+        Libs.init(this, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, BuildConfig.FLAVOR,
+                BuildConfig.DEBUG);
 
-            @Override
-            public void onExitApp() {
-
-            }
-
-            @Override
-            public Activity getCurrentActivity() {
-                return ActivityStacks.get().getCurrentActivity();
-            }
-
-            @Override
-            public Intent getPlayerActivityIntent() {
-                return new Intent(LauncherApplication.this,NewTVLauncherPlayerActivity.class);
-            }
-        });
-
+        Player.get().attachObserver(this);
+        DataSupport.init(getApplicationContext());
 
         //KeyHelper.init(getApplicationContext());
         initADsdk();
-        DataSupport.init(getApplicationContext());
+
         initBugly();
         Observable<String> mBackNavObservable = RxBus.get().register(Constant.INIT_SDK);
         mBackNavObservable.observeOn(AndroidSchedulers.mainThread())
@@ -187,5 +161,33 @@ public class LauncherApplication extends MultiDexApplication {
 
         Glide.get(this).clearMemory();
         PicassoBuilder.getBuilder().clear();
+    }
+
+    @Override
+    public void onFinish(Content playInfo, int index, int position) {
+        if (index == 0 && position == 0) return;
+        DBUtil.addHistory(playInfo, index, position, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    LogUtils.e("写入历史记录成功");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onExitApp() {
+        
+    }
+
+    @Override
+    public Activity getCurrentActivity() {
+        return ActivityStacks.get().getCurrentActivity();
+    }
+
+    @Override
+    public Intent getPlayerActivityIntent() {
+        return new Intent(LauncherApplication.this, NewTVLauncherPlayerActivity.class);
     }
 }

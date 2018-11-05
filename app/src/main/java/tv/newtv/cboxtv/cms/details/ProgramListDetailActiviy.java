@@ -449,7 +449,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
 
     @Override
     public void onPlayerClick(VideoPlayerView videoPlayerView) {
-        mVideoPlayer.enterFullScreen(this, false);
+        mVideoPlayer.enterFullScreen(this);
     }
 
     @Override

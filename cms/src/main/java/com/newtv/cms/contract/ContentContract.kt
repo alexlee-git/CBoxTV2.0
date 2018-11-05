@@ -41,6 +41,8 @@ class ContentContract {
          */
         fun getContent(uuid: String, autoSub: Boolean)
 
+        fun getContent(uuid: String, autoSub: Boolean, contentType: String)
+
         /**
          * 是不是电视剧
          */
@@ -89,19 +91,17 @@ class ContentContract {
             return 0L
         }
 
-        fun getSubContentsWithCallback(contentResult: Content?, uuid: String) {
+        fun getSubContentsWithCallback(contentResult: Content?, uuid: String, contentTYpe: String) {
             if (contentResult != null) {
                 val content: IContent? = getService(SERVICE_CONTENT)
                 content?.let { iContent ->
                     var single = false
                     var suuid: String? = uuid
-                    if (Constant.CONTENTTYPE_PG.equals(contentResult.contentType)
-                            || Constant.CONTENTTYPE_CP.equals(contentResult.contentType)) {
-                        single = true
-                        suuid = contentResult.csContentIDs
+                    if(Constant.CONTENTTYPE_PG.equals(contentTYpe) || Constant.CONTENTTYPE_CP.equals(contentTYpe)){
+                        view?.onContentResult(contentResult)
+                        return
                     }
-                    iContent.getSubContent(Libs.get().appKey, Libs.get().channelId,
-                            suuid!!,
+                    iContent.getSubContent(Libs.get().appKey, Libs.get().channelId, suuid!!,
                             object : DataObserver<ModelResult<List<SubContent>>> {
                                 override fun onResult(result: ModelResult<List<SubContent>>, requestCode: Long) {
                                     if (result.isOk()) {
@@ -134,6 +134,32 @@ class ContentContract {
             }
         }
 
+        override fun getContent(uuid: String, autoSub: Boolean, contentType: String) {
+            val content: IContent? = getService(SERVICE_CONTENT)
+            view?.let {
+                if (it is LoadingView) it.onLoading()
+            }
+            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, object
+                : DataObserver<ModelResult<Content>> {
+                override fun onResult(result: ModelResult<Content>, requestCode: Long) {
+                    if (result.isOk()) {
+                        if (!autoSub) {
+                            view?.onContentResult(result.data);
+                        } else {
+                            getSubContentsWithCallback(result.data, uuid, contentType)
+                        }
+                    } else {
+                        view?.onError(context, result.errorMessage)
+                    }
+                }
+
+                override fun onError(desc: String?) {
+                    view?.onError(context, desc)
+                }
+
+            })
+        }
+
         override fun getContent(uuid: String, autoSub: Boolean) {
             val content: IContent? = getService(SERVICE_CONTENT)
             view?.let {
@@ -146,7 +172,7 @@ class ContentContract {
                         if (!autoSub) {
                             view?.onContentResult(result.data);
                         } else {
-                            getSubContentsWithCallback(result.data, uuid)
+                            getSubContentsWithCallback(result.data, uuid, "")
                         }
                     } else {
                         view?.onError(context, result.errorMessage)

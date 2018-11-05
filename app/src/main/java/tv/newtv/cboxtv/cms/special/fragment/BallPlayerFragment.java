@@ -9,20 +9,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Content;
-import com.newtv.cms.bean.SubContent;
-import com.newtv.libs.util.CmsLiveUtil;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
-import tv.newtv.cboxtv.player.util.LivePermissionCheckUtil;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -70,6 +70,11 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     }
 
     @Override
+    protected void onItemContentResult(Content content) {
+
+    }
+
+    @Override
     protected void setUpUI(View view) {
         videoPlayerView = view.findViewById(R.id.video_player);
 
@@ -105,16 +110,14 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
         livePresenter = new LiveContract.LivePresenter(getContext(), this);
 
-
         if (mProgramInfo != null) {
             textTitle.setText(mProgramInfo.getSubTitle());
-            LiveInfo liveInfo = new LiveInfo();
-            liveInfo.setContentUUID(mProgramInfo.getContentID());
-            liveInfo.setLiveUrl(mProgramInfo.getLiveUrl());
-            liveInfo.setPlayTimeInfo(CmsLiveUtil.formatToSeconds(mProgramInfo.getPlayStartTime())
-                    , CmsLiveUtil.formatToSeconds(mProgramInfo.getPlayEndTime()));
-            livePresenter.checkLive(liveInfo);
-            preData();
+            LiveInfo liveInfo = new LiveInfo(mProgramInfo);
+            if (liveInfo.isLiveTime()) {
+                livePresenter.checkLive(liveInfo);
+            }
+        }else{
+
         }
     }
 
@@ -124,7 +127,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
 
     }
 
@@ -188,35 +191,6 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 //                        .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
 
         return false;
-    }
-
-    private void startPlayPermissionsCheck(SubContent programInfo) {
-        LivePermissionCheckUtil.startPlayPermissionsCheck(LivePermissionCheckUtil
-                        .createPlayCheckRequest(programInfo)
-                , new LivePermissionCheckUtil.PermissionCheck() {
-                    @Override
-                    public void onSuccess(LivePermissionCheckBean result) {
-                        livePermissionCheck = result;
-                        startPlay();
-                    }
-                });
-    }
-
-    private void preData() {
-        if (mProgramInfo == null || TextUtils.isEmpty(mProgramInfo.getContentID()) || info !=
-                null)
-            return;
-
-        PlayInfoUtil.getPageInfo(mProgramInfo.getContentID(), new PlayInfoUtil
-                .ProgramSeriesInfoCallback() {
-            @Override
-            public void onResult(Content info) {
-                if (info != null) {
-                    videoPlayerView.setSeriesInfo(info);
-                    BallPlayerFragment.this.info = info;
-                }
-            }
-        });
     }
 
     @Override

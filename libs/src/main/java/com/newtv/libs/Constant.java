@@ -114,6 +114,7 @@ public class Constant {
     public static final String ACTION_URI = "action_uri";
     public static final String ACTION_FROM = "action_from";
     public static final String CONTENT_TYPE = "content_type";
+    public static final String SERIES_UUID = "series_uuid";
     public static final String ACTION_TYPE = "action_type";
     public static final String CONTENT_UUID = "content_uuid";
     public static final String DEFAULT_UUID = "default_uuid";

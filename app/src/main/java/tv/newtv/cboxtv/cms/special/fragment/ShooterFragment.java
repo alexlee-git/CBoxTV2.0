@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,14 +12,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.util.DisplayUtils;
 
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
+import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
@@ -40,7 +49,7 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
  */
 public class ShooterFragment extends BaseSpecialContentFragment implements PlayerCallback {
     private AiyaRecyclerView recyclerView;
-    private ModuleInfoResult moduleInfoResult;
+    private ModelResult<ArrayList<Page>> moduleInfoResult;
     private View topView;
     private View downView;
     private int videoIndex = 0;
@@ -71,6 +80,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
     @Override
     protected void setUpUI(View view) {
+
         recyclerView = view.findViewById(R.id.shooter_recycle);
         topView = view.findViewById(R.id.shooter_up);
         downView = view.findViewById(R.id.shooter_down);
@@ -89,29 +99,30 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         recyclerView.setAlign(AiyaRecyclerView.ALIGN_START);
         recyclerView.setAdapter(adapter);
 //        recyclerView.setDirIndicator(topView,downView);
-        adapter.setOnItemAction(new OnItemAction<SubContent>() {
+        adapter.setOnItemAction(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {
 
             }
 
             @Override
-            public void onItemClick(SubContent item, int index) {
+            public void onItemClick(Program item, int index) {
                 videoIndex = index;
                 onItemClickAction(item);
             }
 
             @Override
             public void onItemChange(final int before, final int current) {
-                if (recyclerView != null) {
                     MainLooper.get().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            recyclerView.getAdapter().notifyItemChanged(before);
-                            recyclerView.getAdapter().notifyItemChanged(current);
+                            if (recyclerView != null) {
+                                recyclerView.getAdapter().notifyItemChanged(before);
+                                recyclerView.getAdapter().notifyItemChanged(current);
+                            }
                         }
                     }, 300);
-                }
+
             }
         });
 
@@ -119,42 +130,24 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         videoPlayerView.setPlayerCallback(this);
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_focus), true);
         if (moduleInfoResult != null) {
-            adapter.refreshData(moduleInfoResult.getDatas().get(0).getDatas())
+            adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
         }
     }
 
-    private void onItemClickAction(SubContent programInfo) {
+    private void onItemClickAction(Program programInfo) {
         videoPlayerView.beginChange();
-        PlayInfoUtil.getPlayInfo(programInfo.getContentUUID(), new PlayInfoUtil
-                .ProgramSeriesInfoCallback() {
-            @Override
-            public void onResult(Content info) {
-                if (info != null) {
-                    mProgramSeriesInfo = info;
-                    Log.e("info", info.toString());
-                    if (videoPlayerView != null) {
-                        videoPlayerView.setSeriesInfo(info);
-                        videoPlayerView.playSingleOrSeries(0, 0);
-                    }
-                } else {
-                    if (videoPlayerView != null) {
-                        videoPlayerView.showProgramError();
-                    }
-                }
-            }
-        });
+        getContent(programInfo.getL_id(),programInfo.getL_contentType());
     }
 
     @Override
-    public void setModuleInfo(ModuleInfoResult infoResult) {
+    public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         moduleInfoResult = infoResult;
         if (recyclerView != null && recyclerView.getAdapter() != null) {
-            ((ShooterAdapter) recyclerView.getAdapter()).refreshData(infoResult.getDatas().get(0)
-                    .getDatas()).notifyDataSetChanged();
+            ((ShooterAdapter) recyclerView.getAdapter()).refreshData(infoResult.getData().get(0)
+                    .getPrograms()).notifyDataSetChanged();
         }
     }
-
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
@@ -229,22 +222,38 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         videoPlayerView.playSingleOrSeries(playIndex,0);
     }
 
+    @Override
+    public void onItemContentResult(@Nullable Content content) {
+        if (content != null) {
+            mProgramSeriesInfo = content;
+            Log.e("info", content.toString());
+            if (videoPlayerView != null) {
+                videoPlayerView.setSeriesInfo(content);
+                videoPlayerView.playSingleOrSeries(0, 0);
+            }
+        } else {
+            if (videoPlayerView != null) {
+                videoPlayerView.showProgramError();
+            }
+        }
+    }
+
     private static class ShooterAdapter extends RecyclerView.Adapter<ShooterViewHolder> {
 
-        private List<SubContent> ModuleItems;
-        private OnItemAction<SubContent> onItemAction;
+        private List<Program> ModuleItems;
+        private OnItemAction<Program> onItemAction;
         private CurrentPlayImageViewWorldCup currentPlayImageView;
         private String currentUUID;
         private int currentIndex = 0;
         private Transformation transformation;
 
 
-        ShooterAdapter refreshData(List<SubContent> datas) {
+        ShooterAdapter refreshData(List<Program> datas) {
             ModuleItems = datas;
             return this;
         }
 
-        void setOnItemAction(OnItemAction<SubContent> programInfoOnItemAction) {
+        void setOnItemAction(OnItemAction<Program> programInfoOnItemAction) {
             onItemAction = programInfoOnItemAction;
         }
 
@@ -263,7 +272,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
         @Override
         public void onBindViewHolder(final ShooterViewHolder holder, int position) {
-            SubContent moduleItem = getItem(position);
+            Program moduleItem = getItem(position);
 
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -283,9 +292,9 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                     }
                     currentPlayImageView = holder.poster;
                     holder.poster.setIsPlaying(true, false);
-                    final SubContent moduleItem = getItem(holder.getAdapterPosition());
+                    final Program moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
-                        currentUUID = moduleItem.getContentUUID();
+                        currentUUID = moduleItem.getL_id();
                         onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
 
                         currentIndex = holder.getAdapterPosition();
@@ -294,20 +303,21 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                 }
             });
             if (moduleItem != null) {
-                holder.poster.setIsPlaying(moduleItem.getContentUUID().equals(currentUUID), false);
+                holder.poster.setIsPlaying(TextUtils.equals(moduleItem.getL_id(),currentUUID),
+                false);
 
                 int targetWidth =holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.height_518px);
                 int targetHeiht = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.height_200px);
                 int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
                 Picasso.get()
-                        .load(moduleItem.getVImage())
+                        .load(moduleItem.getImg())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .resize(targetWidth,targetHeiht)
                         .into(holder.poster);
 
 
 
-                if (moduleItem.getContentUUID().equals(currentUUID) && position == currentIndex) {
+                if (TextUtils.equals(moduleItem.getL_id(),currentUUID) && position == currentIndex) {
                     holder.poster.setIsPlaying(true, false);
                 } else {
                     holder.poster.setIsPlaying(false, false);
@@ -320,7 +330,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
             }
         }
 
-        private SubContent getItem(int position) {
+        private Program getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
             }

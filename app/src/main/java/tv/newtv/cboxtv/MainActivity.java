@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.util.TimeUtils;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
@@ -15,17 +16,20 @@ import android.widget.TextView;
 
 import com.newtv.cms.bean.Time;
 import com.newtv.cms.bean.UpVersion;
+import com.newtv.cms.contract.AppMainContract;
+import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.AdEventContent;
-import com.newtv.libs.bean.TimeBean;
+import com.newtv.libs.util.CalendarUtil;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
-import com.newtv.libs.util.ServiceTimeUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,10 +42,6 @@ import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
-
-import com.newtv.cms.contract.AppMainContract;
-import com.newtv.cms.contract.VersionUpdateContract;
-
 import tv.newtv.cboxtv.views.UpdateDialog;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
@@ -109,8 +109,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
                 }
             }
         }
-
-        showServiceTime();
 
         mPresenter = new AppMainContract.MainPresenter(getApplicationContext(), this);
 
@@ -271,6 +269,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -278,25 +277,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             LogUploadUtils.uploadLog(Constant.LOG_NODE_SWITCH, "1");//退出应用
             ActivityStacks.get().ExitApp();
         }
-    }
-
-    private void showServiceTime() {
-        ServiceTimeUtils.getServiceTime(new ServiceTimeUtils.TimeListener() {
-            @Override
-            public void success(TimeBean timeBean) {
-                CharSequence sysTimeStr = DateFormat.format("HH:mm", timeBean.getResponse());
-                //时间显示格式
-                timeTV.setText(sysTimeStr); //更新时间
-            }
-
-            @Override
-            public void fail() {
-                long sysTime = System.currentTimeMillis();//获取系统时间
-                CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
-                timeTV.setText(sysTimeStr); //更新时间
-            }
-        });
-
     }
 
     @Override
@@ -334,10 +314,10 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
     @Override
     public void syncServerTime(Time result) {
-        if(result != null) {
-            CharSequence sysTimeStr = DateFormat.format("HH:mm", result.getResponse());
+        if (result != null) {
+            CharSequence sysTimeStr = DateFormat.format("HH:mm", new Date(result.getResponse()));
             timeTV.setText(sysTimeStr); //更新时间
-        }else{
+        } else {
             long sysTime = System.currentTimeMillis();//获取系统时间
             CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
             timeTV.setText(sysTimeStr); //更新时间

@@ -1,5 +1,7 @@
 package com.newtv.cms.bean
 
+import android.text.TextUtils
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            com.newtv.cms.bean
@@ -11,12 +13,12 @@ package com.newtv.cms.bean
  * 2：当liveParam不为空时，按照循环的星期数和开始结束时间的时间进行循环
  */
 data class LiveParam(
-        val liveParam: String,  //直播循环参数，配置星期几，中间用竖线分割
-        val playStartTime: String,//直播开始时间
-        val playEndTime: String //直播结束时间
+        val liveParam: String,          //直播循环参数，配置星期几，中间用竖线分割
+        val playStartTime: String,      //直播开始时间
+        val playEndTime: String,        //直播结束时间
+        var isShowDate: Boolean          //是否包含日期
 ) {
-    fun getLiveLoopType(): String {
-
-        return ""
+    init {
+        isShowDate = TextUtils.isEmpty(liveParam)
     }
 }

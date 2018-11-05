@@ -115,7 +115,7 @@ class ActiveAuthContract {
                     }
 
                     override fun onError(desc: String?) {
-
+                        onFailed(Constract.AUTH,Constract.NET_ERROR);
                     }
                 })
             }
@@ -161,7 +161,7 @@ class ActiveAuthContract {
                         }
 
                         override fun onError(desc: String?) {
-
+                            onFailed(Constract.ACTIVATE,Constract.NET_ERROR);
                         }
                     })
                 }

@@ -126,20 +126,13 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         mFocusView = view;
     }
 
-    public void enterFullScreen(final Activity activity, boolean isLive) {
+    public void enterFullScreen(final Activity activity) {
         if(!playCenter.isReady()){
             return;
         }
         Content programSeriesInfo = playCenter.getCurrentSeriesInfo();
-
         if (programSeriesInfo == null) return;
-
-        if (isLive) {
-            NewTVLauncherPlayerViewManager.getInstance().playLive(programSeriesInfo.getLiveUrl(),
-                    activity, programSeriesInfo, 0, 0);
-        } else {
-            EnterFullScreen(activity, false);
-        }
+        EnterFullScreen(activity,false);
     }
 
     @Override
@@ -153,9 +146,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     @Override
     public void EnterFullScreen(Activity activity, boolean bringFront) {
-        if(!playCenter.isReady()){
-            return;
-        }
         defaultFocusView = activity.getWindow().getDecorView().findFocus();
         super.EnterFullScreen(activity, bringFront);
     }
@@ -198,7 +188,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         setFocusable(true);
 
         HintTextView = new TextView(getContext());
-        HintTextView.setBackgroundResource(R.drawable.normalplayer_bg);
         HintTextView.setTextSize(getResources().getDimensionPixelSize(R.dimen.height_18px));
         HintTextView.setTextColor(Color.WHITE);
         HintTextView.setGravity(Gravity.CENTER);
@@ -271,7 +260,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
                         playCenter.getCurrentSeriesInfo(), position, false);
             }
-
         }
     }
 
@@ -288,23 +276,15 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         }
     }
 
-    public void playLiveVideo(String contentUUID, final String playUrl, final String title, final
-    int index, final int position) {
-        setHintTextVisible(GONE);
-//        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl, getContext(),
-//                getProgramSeriesInfo(), index, position);
-//        playLive(playUrl,playCenter.getCurrentSeriesInfo(),false,index,position);
-        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl, getContext(), playCenter
-                .getCurrentSeriesInfo(), false, index, position);
-    }
-
     public void showProgramError() {
 
     }
 
     public void beginChange() {
 //        setPlayerMessage("正在切换视频...", 0);
-        stopPlay();
+        if(isPlaying()) {
+            stopPlay();
+        }
     }
 
     public boolean isReady() {
@@ -369,6 +349,17 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         if (mPlayerCallback != null) {
             mPlayerCallback.AllPlayComplete(isError, info, this);
+        }
+    }
+
+    @Override
+    public void onChange(String current, String start, String end, boolean isComplete) {
+        super.onChange(current, start, end, isComplete);
+
+        if(isComplete){
+            setHintText("直播已结束");
+        }else{
+            setHintText(String.format("%s/%s",current,end));
         }
     }
 

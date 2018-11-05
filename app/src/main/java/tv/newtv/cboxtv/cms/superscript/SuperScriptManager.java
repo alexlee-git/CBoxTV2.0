@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.cms.superscript;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.newtv.cms.bean.Corner;
+import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.contract.CornerContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
@@ -18,11 +20,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfo;
-import tv.newtv.cboxtv.cms.superscript.model.SuperscriptInfoResult;
 
 /**
  * Created by lixin on 2018/3/9.
@@ -36,7 +37,7 @@ public class SuperScriptManager implements CornerContract.View {
     private final String CACHE_FILE_NAME = "super.json";
     private final String TAG = "superscript";
     private String mLocalUpdateTime; // 本地缓存的角标对应的时间戳信息
-    private Map<String, SuperscriptInfo> mSuperscriptMap;
+    private Map<String, Corner> mSuperscriptMap;
     private CornerContract.Presenter mPresenter;
 
     private SuperScriptManager() {
@@ -106,12 +107,12 @@ public class SuperScriptManager implements CornerContract.View {
         mPresenter.getCorner(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
     }
 
-    private SuperscriptInfoResult<SuperscriptInfo> parseSuperscriptInfo(String from, JSONObject
+    private ModelResult<List<Corner>> parseSuperscriptInfo(String from, JSONObject
             json) {
         try {
-            SuperscriptInfoResult<SuperscriptInfo> superscript = new SuperscriptInfoResult<>();
-            superscript.setErrMsg(json.optString("errorMessage"));
-            superscript.setErrCode(json.optString("errorCode"));
+            ModelResult<List<Corner>> superscript = new ModelResult<>();
+            superscript.setErrorMessage(json.optString("errorMessage"));
+            superscript.setErrorCode(json.optString("errorCode"));
 
             String updateTime = json.optString("updateTime");
             if ("local".equals(from)) {
@@ -122,10 +123,10 @@ public class SuperScriptManager implements CornerContract.View {
 
             JSONArray array = json.optJSONArray("data");
             JSONObject item;
-            SuperscriptInfo info;
+            Corner info;
             for (int i = 0; i < array.length(); i++) {
                 item = array.optJSONObject(i);
-                info = new SuperscriptInfo();
+                info = new Corner();
                 info.setCornerId(item.optString("cornerId"));
                 info.setCornerDesc(item.optString("cornerDesc"));
                 info.setCornerName(item.optString("cornerName"));
@@ -150,6 +151,7 @@ public class SuperScriptManager implements CornerContract.View {
      *
      * @param data
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void updateLocalInfo(Context context, String data) {
         FileWriter fileWriter = null;
         try {
@@ -180,7 +182,7 @@ public class SuperScriptManager implements CornerContract.View {
         }
     }
 
-    public synchronized SuperscriptInfo getSuperscriptInfoById(String id) {
+    public synchronized Corner getSuperscriptInfoById(String id) {
         if (mSuperscriptMap == null) {
             return null;
         }

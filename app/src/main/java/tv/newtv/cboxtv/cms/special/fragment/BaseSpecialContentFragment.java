@@ -1,24 +1,36 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import com.newtv.libs.bean.VideoPlayInfo;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.ToastUtil;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 /**
  * 项目名称:         CBoxTV
@@ -27,16 +39,26 @@ import com.newtv.libs.util.RxBus;
  * 创建人:           weihaichao
  * 创建日期:          2018/4/25
  */
-public abstract class BaseSpecialContentFragment extends Fragment {
+public abstract class BaseSpecialContentFragment extends Fragment implements ContentContract.View {
     protected boolean UiReady = false;
     protected View contentView;
     protected VideoPlayerView videoPlayerView;
     private Observable<VideoPlayInfo> mUpdateVideoInfoObservable;
     private int mPlayPosition = 0;
     private int mPlayIndex = 0;
+    private ContentContract.Presenter mPresenter;
     private NewTVLauncherPlayerView.PlayerViewConfig defaultPlayerConfig;
+    protected boolean activityReady = false;
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        activityReady = true;
+    }
 
     protected abstract int getLayoutId();
+
+    protected abstract void onItemContentResult(Content content);
 
     protected abstract void setUpUI(View view);
 
@@ -46,6 +68,34 @@ public abstract class BaseSpecialContentFragment extends Fragment {
 
     protected int getVideoPlayIndex() {
         return mPlayIndex;
+    }
+
+    protected void getContent(String uuid,String contentType){
+        if(TextUtils.isEmpty(uuid)){
+            onError(getContext(),"播放ID不能为空");
+            return;
+        }
+        mPresenter.getContent(uuid,true,contentType);
+    }
+
+    @Override
+    public void onContentResult(@org.jetbrains.annotations.Nullable Content content) {
+        onItemContentResult(content);
+    }
+
+    @Override
+    public void onSubContentResult(@org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+        ToastUtil.showToast(context.getApplicationContext(),desc);
     }
 
     @Override
@@ -110,7 +160,11 @@ public abstract class BaseSpecialContentFragment extends Fragment {
     }
 
     public void enterFullScreen() {
+    }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @SuppressLint("CheckResult")
@@ -134,12 +188,13 @@ public abstract class BaseSpecialContentFragment extends Fragment {
 
                         }
                     });
+            mPresenter = new ContentContract.ContentPresenter(contentView.getContext(),this);
             setUpUI(contentView);
         }
         return contentView;
     }
 
-    public abstract void setModuleInfo(ModuleInfoResult infoResult);
+    public abstract void setModuleInfo(ModelResult<ArrayList<Page>> infoResult);
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

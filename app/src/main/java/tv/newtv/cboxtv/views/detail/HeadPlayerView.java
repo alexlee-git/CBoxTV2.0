@@ -20,10 +20,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Content;
-import com.newtv.cms.bean.LiveParam;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
-import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
@@ -43,6 +41,7 @@ import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
+import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -307,11 +306,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public void EnterFullScreen(Activity activity) {
-        if (isPlayLive && playerView != null) {
-            playerView.enterFullScreen(activity, isPlayLive);
-        } else if (playerView != null) {
-            playerView.EnterFullScreen(activity, false);
-        }
+        playerView.enterFullScreen(activity);
     }
 
     public void Build(Builder builder) {
@@ -665,13 +660,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
+        //TODO 栏目化直播 直播判断
         if (mInfo.getLiveLoopParam() != null) {
-            LiveParam param = CmsUtil.isLiveTime(mInfo.getLiveLoopParam());
-            if (param != null) {
+            LiveInfo liveInfo = new LiveInfo(mInfo);
+            if (liveInfo.isLiveTime()) {
                 //需要直播
-                playerView.playLiveVideo(mInfo.getContentID(), param.getLiveParam(), mInfo
-                        .getTitle(), 0, 0);
-                timer();
+                playerView.playLive(liveInfo, false);
                 isPlayLive = true;
             }
         } else {

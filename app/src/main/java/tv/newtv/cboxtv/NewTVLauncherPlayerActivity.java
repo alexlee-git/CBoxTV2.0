@@ -45,8 +45,6 @@ import tv.newtv.player.R;
 public class NewTVLauncherPlayerActivity extends BaseActivity implements ContentContract
         .LoadingView {
 
-    private static final int PLAY_TYPE_SINGLE = 0;
-    private static final int PLAY_TYPE_SERIES = 1;
     private static String TAG = "NewTVLauncherPlayerActivity";
     NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
     int playPostion = 0;
@@ -60,12 +58,10 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     private int abNormalExit = 0x002;//非正常退出
     private int normalExit = 0x001;//正常退出
     private int isContinue = normalExit;
-    private int mPlayType = PLAY_TYPE_SINGLE;
 
-    public static void play(Context context, String uuid, String suuid) {
+    public static void play(Context context, Bundle bundle) {
         Intent intent = new Intent(context, NewTVLauncherPlayerActivity.class);
-        intent.putExtra(Constant.CONTENT_UUID, uuid);
-        intent.putExtra("seriesUUID", suuid);
+        intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -84,6 +80,11 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     protected void onDestroy() {
         Log.i(TAG, "onDestroy: ");
         super.onDestroy();
+
+        if (mPresenter != null) {
+            mPresenter.destroy();
+            mPresenter = null;
+        }
 
         if (PlayerUrlConfig.getInstance().isFromDetailPage())
         {//如果是从小屏切到大屏的，关闭播放器时恢复DetailPage值false
@@ -128,19 +129,17 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String contentUUID = (String) extras.getString(Constant.CONTENT_UUID);
-            String seriesUUID = (String) extras.getString("seriesUUID");
+            String contentType = (String) extras.getString(Constant.CONTENT_TYPE);
             if (TextUtils.isEmpty(contentUUID)) {
                 ToastUtil.showToast(getApplicationContext(), "节目ID为空");
                 finish();
                 return;
             }
-            if (!TextUtils.isEmpty(seriesUUID)) {
-                mPlayType = PLAY_TYPE_SERIES;
-                mPresenter.getContent(seriesUUID, true);
-            } else {
-                mPlayType = PLAY_TYPE_SINGLE;
-                mPresenter.getContent(contentUUID, true);
-            }
+
+            NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
+                    (mPlayerFrameLayoutContainer, this);
+
+            mPresenter.getContent(contentUUID, true, contentType);
         }
     }
 
@@ -256,6 +255,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                     mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
                     .getProgramSeriesInfo().getContentID()));
             addHistory();
+        } else {
+            finish();
         }
     }
 
@@ -264,8 +265,9 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         if (content != null) {
             mPositionPlay = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
             mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-            //Player.get().onFinish(content, mIndexPlay, mPositionPlay);
+            Player.get().onFinish(content, mIndexPlay, mPositionPlay);
         }
+        finish();
     }
 
 
@@ -275,27 +277,10 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     }
 
     private void doPlay(Content content) {
-        boolean ready = false;
-        switch (mPlayType) {
-            case PLAY_TYPE_SINGLE:
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle
-                        (getApplicationContext(), content, 0, false);
-                ready = true;
-                break;
-            case PLAY_TYPE_SERIES:
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries
-                        (getApplicationContext(), content, mIndexPlay, mPositionPlay);
-                ready = true;
-                break;
-            default:
-                break;
-        }
-        if (ready) {
-            NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
-                    (mPlayerFrameLayoutContainer, this);
-            mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-            initListener();
-        }
+        initListener();
+        NewTVLauncherPlayerViewManager.getInstance().play
+                (this, content, 0, 0, false);
+        mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
     }
 
     @Override

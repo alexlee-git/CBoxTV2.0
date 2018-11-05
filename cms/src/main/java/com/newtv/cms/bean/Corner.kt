@@ -9,10 +9,10 @@ package com.newtv.cms.bean
  */
 
 data class Corner(
-    val cornerDesc: String,
-    val cornerType: String,
-    val cornerTitle: String,
-    val cornerImg: String,
-    val cornerName: String,
-    val cornerId: String
+    var cornerDesc: String? = null,
+    var cornerType: String? = null,
+    var cornerTitle: String? = null,
+    var cornerImg: String? = null,
+    var cornerName: String? = null,
+    var cornerId: String? = null
 )

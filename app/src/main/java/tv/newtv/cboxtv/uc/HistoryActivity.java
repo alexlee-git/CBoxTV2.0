@@ -50,6 +50,7 @@ import com.newtv.libs.util.XunMaKeyUtils;
 public class HistoryActivity extends FragmentActivity implements
         OnRecycleItemClickListener<UserCenterPageBean.Bean>, View.OnFocusChangeListener, View
         .OnKeyListener {
+
     private static final int UPDATE = 1001;
     public int action_type;
     public String title;
@@ -64,25 +65,24 @@ public class HistoryActivity extends FragmentActivity implements
 
     private int selectPostion;
 
-    private boolean NeedRefresh = true;
     private static boolean eatKeyEvent = false;
 
-    private Interpolator mSpringInterpolator;
     private List<UserCenterPageBean.Bean> mCollectBean;
-    private Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler(new Handler.Callback() {
+        @SuppressWarnings("unchecked")
         @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (msg.what == UPDATE) {
+        public boolean handleMessage(Message message) {
+            if (message.what == UPDATE) {
                 mAdapter.clear();
-                mCollectBean = (List<UserCenterPageBean.Bean>) msg.obj;
+                mCollectBean = (List<UserCenterPageBean.Bean>) message.obj;
                 if (mCollectBean != null && mCollectBean.size() != 0) {
                     mAdapter.appendToList(mCollectBean);
                 }
                 mAdapter.notifyDataSetChanged();
             }
+            return false;
         }
-    };
+    });
     private String tableName;
     private View defaultFocusView;
 
@@ -91,7 +91,6 @@ public class HistoryActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         ButterKnife.bind(this);
-        mSpringInterpolator = new OvershootInterpolator(2.2f);
         init();
         initView();
         initData();
@@ -198,7 +197,6 @@ public class HistoryActivity extends FragmentActivity implements
         if (mCollectBean == null || mCollectBean.size() < 0) return;
         if (mAdapter.getSelectPostion() < 0) return;
         mAdapter.setAllowLostFocus(false);
-        NeedRefresh = false;
 
         View focusView = mRecyclerView.findFocus();
         if (focusView == null) return;

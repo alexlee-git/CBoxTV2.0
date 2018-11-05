@@ -41,7 +41,6 @@ data class Program(
         val video: Video?
 ) {
     fun getLiveParam(): LiveParam? {
-        
         return null
     }
 }

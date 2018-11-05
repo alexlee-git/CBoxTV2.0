@@ -120,6 +120,15 @@ public class NewTVLauncherPlayerViewManager {
         playLive(liveUrl, context, programSeriesInfo, true, index, position);
     }
 
+    public void play(Context context,Content content, int index, int position, boolean
+            newActivity) {
+        if (mNewTVLauncherPlayerView == null) {
+            init(context);
+        }
+
+        mNewTVLauncherPlayerView.play(content, index, position, newActivity);
+    }
+
 
     // add by lxf for living streaming
     public void playLive(String liveUrl, Context context, Content programSeriesInfo,

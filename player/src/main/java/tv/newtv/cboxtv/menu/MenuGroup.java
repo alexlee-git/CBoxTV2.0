@@ -267,7 +267,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         this.lastProgram = lastProgram;
         this.detailcontentUUID = detailContentUUID;
         for (Node node : allNodes) {
-            if (node.getId().equals(pId)) {
+            if (TextUtils.equals(node.getId(),pId)) {
                 node.setPrograms(lastProgram);
                 currentNode = node;
                 for (Program p : lastProgram) {

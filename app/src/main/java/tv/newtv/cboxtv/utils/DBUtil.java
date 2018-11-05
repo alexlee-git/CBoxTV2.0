@@ -131,39 +131,48 @@ public class DBUtil {
             return;
         }
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentID());
-        if (mInfo.getContentType() != null) {
+
+        /* 添加视频相关信息 */
+        if (mInfo.getContentType() != null) {//视频类型
             contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
         }
-        contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-        if (!TextUtils.isEmpty(mInfo.getVImage())) {
+        contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);//打开事件
+
+        if (!TextUtils.isEmpty(mInfo.getVImage())) {//视频竖图
             contentValues.put(DBConfig.IMAGEURL, mInfo.getVImage());
         }
-        if (!TextUtils.isEmpty(mInfo.getTitle())) {
+        if (!TextUtils.isEmpty(mInfo.getTitle())) {//视频标题
             contentValues.put(DBConfig.TITLE_NAME, mInfo.getTitle());
         }
-        contentValues.put(DBConfig.PLAYINDEX, index + "");
+        contentValues.put(DBConfig.PLAYINDEX, index);//播放索引
+        contentValues.put(DBConfig.PLAYPOSITION, Position);//播放到的位置
+        contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());//更新日期
 
-        String seriesUUID = "";
-        if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
-            if (mInfo.getData() != null && mInfo.getData().size() != 0) {
-                contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentID());
+        /* 添加ID相关记录 */
+        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentID());
+
+        if (Constant.CONTENTTYPE_PG.equals(mInfo.getContentType()) || Constant.CONTENTTYPE_CP
+                .equals(mInfo.getContentType())) {
+            contentValues.put(DBConfig.PLAYID, mInfo.getContentUUID());
+        } else {
+            if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
+                if (mInfo.getData() != null && mInfo.getData().size() != 0) {
+                    contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentID());
+                }
             }
         }
 
-        contentValues.put(DBConfig.PLAYPOSITION, Position);
-        contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
+        String seriesUUID = "";
         if (TextUtils.isEmpty(mInfo.getContentID())) {
             if (TextUtils.isEmpty(seriesUUID)) {
                 return;
             }
             contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
         } else {
-            seriesUUID = mInfo.getContentID();
+            seriesUUID = mInfo.getCsContentIDs();
         }
 
-
-        LogUtils.d("insert",contentValues.toString());
+        LogUtils.d("insert", contentValues.toString());
         DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
                 .condition()
                 .eq(DBConfig.CONTENTUUID, seriesUUID)

@@ -14,8 +14,7 @@ import com.newtv.libs.bean.AuthBean
  */
 internal class AutiveAuthModel : BaseModel(), IActiveAuth {
     override fun active(bean: ActivateBean, observer: DataObserver<String>): Long {
-        val executor: Executor<String> = buildExecutor(Request.activeAuth.activate(bean),
-                null)
+        val executor: Executor<String> = buildExecutor(Request.activeAuth.activate(bean), null)
         executor.observer(observer)
                 .execute()
         return executor.getID()

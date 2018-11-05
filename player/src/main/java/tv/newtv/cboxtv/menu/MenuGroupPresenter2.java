@@ -688,7 +688,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     public void enterFullScreen() {
         if (menuGroupIsInit) {
             getProgramSeriesAndContentUUID();
-
+            if(lastMenuBean == null){
+                return;
+            }
             if(!updatePlayProgram(lastMenuBean)){
                 /**
                  *  更新playProgram失败，说明当前播放的视频不在lastMenuBean中，需要重新请求数据

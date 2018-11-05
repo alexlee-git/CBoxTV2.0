@@ -79,7 +79,6 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                         cancel()
                     }
 
-
                     override fun onNext(t: ResponseBody) {
                         if (isCancel) return
                         try {
