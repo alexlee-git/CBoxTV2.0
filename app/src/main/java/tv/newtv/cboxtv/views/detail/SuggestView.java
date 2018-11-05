@@ -359,7 +359,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
     }
 
     @Override
-    public void searchResult(long requestID, @Nullable ArrayList<SubContent> result) {
+    public void searchResult(long requestID, @Nullable ArrayList<SubContent> result, @Nullable Integer total) {
         if (result == null || result.size() <= 0) {
             onLoadError("获取结果为空");
             return;

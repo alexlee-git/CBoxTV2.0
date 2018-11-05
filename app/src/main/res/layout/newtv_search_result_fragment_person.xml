@@ -11,7 +11,8 @@
         android:layout_height="@dimen/height_30px"
         android:layout_marginLeft="@dimen/width_24px"
         android:gravity="left"
-        android:includeFontPadding="false" />
+        android:includeFontPadding="false"
+        />
 
     <tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView
         android:id="@+id/id_search_result_person_recyclerView"

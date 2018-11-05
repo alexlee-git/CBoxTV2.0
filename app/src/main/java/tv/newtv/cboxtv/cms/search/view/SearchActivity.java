@@ -1,39 +1,36 @@
 package tv.newtv.cboxtv.cms.search.view;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 
-import java.util.ArrayList;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
-import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommend;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchResult;
 import tv.newtv.cboxtv.cms.search.custom.SearchViewKeyboard;
-import tv.newtv.cboxtv.cms.search.listener.INotifySearchHotRecommendData;
-import tv.newtv.cboxtv.cms.search.listener.INotifySearchResultData;
 import tv.newtv.cboxtv.cms.search.listener.OnGetKeyListener;
-import tv.newtv.cboxtv.cms.search.listener.OnGetSearchHotRecommendFocus;
-import tv.newtv.cboxtv.cms.search.listener.OnGetSearchResultFocus;
 import tv.newtv.cboxtv.cms.search.listener.OnReturnInputString;
-import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
 
 
 /**
@@ -44,143 +41,50 @@ import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
  * 修改时间：
  * 修改备注：
  */
-public class SearchActivity extends FragmentActivity implements ISearchPageView {
+
+public class SearchActivity extends FragmentActivity implements PageContract.View {
+
     private final String TAG = this.getClass().getSimpleName();
+    private float SearchViewKeyboardWidth = 655;
+    private boolean keyWordChange = false;
+    private boolean isOKToRight = false;
+
     private SearchViewKeyboard mSearchViewKeyboard;
-    private SearchPagePresenter mSearchPagePresenter;
+    private PageContract.ContentPresenter mContentPresenter;
     private NewTVSearchResult mSearchResult;
     private NewTVSearchHotRecommend mHotRecommend;
-    private View mSearchLine1;
     private RelativeLayout mRelativeLayout;
-    public boolean isFirstFocus = true;
-    private Intent mIntent;
-    private boolean mExternalStatus = false;
-    private boolean mExternalSlide = false;
-    private float SearchViewKeyboardWidth = 655;
-    private String mInputString = "";//输入框的值
-    private String mSearchType;
-    private String type, year, area, classType;
-    private StringBuilder mScreenDataBuff;
-    private static boolean eatKeyEvent = false;
-    private boolean mRightKey = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         initView();
         init();
-        whetherExternalParams();
+        mContentPresenter = new PageContract.ContentPresenter(this,this);
+        mContentPresenter.getPageContent("420");
     }
-
-
-    //判断是否有外部跳转参数传值
-    private void whetherExternalParams() {
-        try {
-            mScreenDataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
-            mIntent = getIntent();
-            Bundle bundle = mIntent.getBundleExtra("person");
-            if (bundle != null) {
-                mSearchType = bundle.getString("SearchType");
-                if (TextUtils.isEmpty(mSearchType)) {
-                    mSearchPagePresenter.requestPageRecommendData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
-                } else {
-                    if (!TextUtils.isEmpty(mSearchType) && mSearchType.equals("SearchListByKeyword")) {
-                        mInputString = bundle.getString("keyword");
-                    }
-                    mExternalStatus = true;
-                    isFirstFocus = false;
-                    mExternalSlide = true;
-                    mSearchViewKeyboard.setVisibility(View.GONE);
-                    mSearchLine1.setVisibility(View.GONE);
-                    mHotRecommend.setVisibility(View.GONE);
-                    mSearchResult.setVisibility(View.VISIBLE);
-                    mSearchResult.setExternalParams(bundle);
-                }
-            } else {
-                mSearchPagePresenter.requestPageRecommendData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
-            }
-
-//            Bundle bundle = mIntent.getBundleExtra("bundle");
-//            if (bundle != null) {
-//                mSearchType = bundle.getString("SearchType");
-//                if (TextUtils.isEmpty(mSearchType)) {
-//                    mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);
-//                } else {
-//                    if (!TextUtils.isEmpty(mSearchType) && mSearchType.equals("SearchListByKeyword")) {
-//                        mInputString = bundle.getString("keyword");
-//                    } else if (!TextUtils.isEmpty(mSearchType) && mSearchType.equals("RetrievalProgramSerialList")) {
-//                        type = bundle.getString("type");
-//                        if (TextUtils.isEmpty(type)) {
-//                            type = "-1";
-//                        }
-//                        year = bundle.getString("year");
-//                        if (TextUtils.isEmpty(year)) {
-//                            year = "-1";
-//                        }
-//                        area = bundle.getString("area");
-//                        if (TextUtils.isEmpty(area)) {
-//                            area = "-1";
-//                        }
-//                        classType = bundle.getString("classType");
-//                        if (TextUtils.isEmpty(classType)) {
-//                            classType = "-1";
-//                        }
-//                        mScreenDataBuff.append(type + ",")
-//                                .append(classType + ",")
-//                                .append(year + ",").append(area + ",").append("")
-//                                .trimToSize();
-//                    }
-//                    mExternalStatus = true;
-//                    isFirstFocus = false;
-//                    mExternalSlide = true;
-//                    mSearchViewKeyboard.setVisibility(View.GONE);
-//                    mSearchLine1.setVisibility(View.GONE);
-//                    mHotRecommend.setVisibility(View.GONE);
-//                    mSearchResult.setVisibility(View.VISIBLE);
-//                    mSearchResult.setExternalParams(bundle);
-//                }
-//            } else {
-//                mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);
-//            }
-        } catch (Exception e) {
-            Log.e(TAG, "---whetherExternalParams:Exception--" + e.toString());
-        }
-    }
-
 
     //对象的初始化
     private void init() {
         SearchViewKeyboardWidth = DisplayUtils.translate((int) SearchViewKeyboardWidth, 0);
-        mSearchPagePresenter = new SearchPagePresenter(this, this);
         mSearchViewKeyboard.setOnReturnInputString(onReturnInputString);
-        mSearchResult.setOnGetSearchResultFocus(mOnGetSearchResultFocus);
-        mHotRecommend.setINotifySearchHotRecommendData(mINotifySearchHotRecommendData);
-        mHotRecommend.setOnGetSearchHotRecommendFocus(mOnGetSearchHotRecommendFocus);
         setOnKeyListener(onGetKeyListener);
-
+        mSearchResult.setOnKeyCodeRightListener(new NewTVSearchResult.OnKeyCodeRightListener() {
+            @Override
+            public void setOnKeyCodeRightListener(boolean isCanRight) {
+                isOKToRight = isCanRight;
+            }
+        });
     }
 
     //控件初始化
     private void initView() {
-        mSearchViewKeyboard = (SearchViewKeyboard) findViewById(R.id.search_view_keyboard);
-        mSearchLine1 = findViewById(R.id.search_line1);
-        mSearchResult = (NewTVSearchResult) findViewById(R.id.search_result);
-        mHotRecommend = (NewTVSearchHotRecommend) findViewById(R.id.search_hot_recommend);
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.RelativeLayout);
-    }
-
-    private void preventBtnRightMove() {
-        mSearchViewKeyboard.getDelBtn().setNextFocusRightId(R.id.frameLayout_btn_11);
-        mSearchViewKeyboard.getThreeBtn().setNextFocusRightId(R.id.frameLayout_btn_3);
-        mSearchViewKeyboard.getSixBtn().setNextFocusRightId(R.id.frameLayout_btn_6);
-        mSearchViewKeyboard.getNineButton().setNextFocusRightId(R.id.frameLayout_btn_9);
-    }
-
-    private void notPreventBtnRightMoveoOfResultList(int id) {
-        mSearchViewKeyboard.getDelBtn().setNextFocusRightId(id);
-        mSearchViewKeyboard.getThreeBtn().setNextFocusRightId(id);
-        mSearchViewKeyboard.getSixBtn().setNextFocusRightId(id);
-        mSearchViewKeyboard.getNineButton().setNextFocusRightId(id);
+        mSearchViewKeyboard = findViewById(R.id.search_view_keyboard);
+        mSearchResult = findViewById(R.id.search_result);
+        mHotRecommend = findViewById(R.id.search_hot_recommend);
+        mRelativeLayout = findViewById(R.id.RelativeLayout);
     }
 
     private OnReturnInputString onReturnInputString = new OnReturnInputString() {
@@ -188,127 +92,29 @@ public class SearchActivity extends FragmentActivity implements ISearchPageView 
         public void onReturnInputString(String inputStr) {
             if (onGetKeyListener != null) {
                 onGetKeyListener.notifyKeywords(inputStr);
+                keyWordChange = true;
             }
-
         }
     };
+
     //监听输入框值变化
     private OnGetKeyListener onGetKeyListener = new OnGetKeyListener() {
         @Override
         public void notifyKeywords(String key) {
-            if (TextUtils.isEmpty(key)){
-
-            }
             try {
-                Log.e(TAG, "---搜索关键字变化：" + key);
-                mExternalStatus = false;//令外部跳转状态为false
-                mExternalSlide = false;//令外部跳转移动状态为false
-                mSearchType = "";
-                mInputString = key;
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_SEARCH, key);
-                mSearchResultItemView = null;
                 if (!TextUtils.isEmpty(key)) {
-                    mSearchResultDataStatus = false;
                     mSearchResult.setKey(key);
                     mSearchResult.setVisibility(View.VISIBLE);
                     mHotRecommend.setVisibility(View.GONE);
                 } else {
-
-                    if (!mSearchHotRecommendDataStatus) {
-                        mSearchPagePresenter.requestPageRecommendData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID);
-                    }
-                    mSearchResult.setEmptyViewVisiable(View.GONE);
                     mSearchResult.setKey(key);
                     mSearchResult.setVisibility(View.GONE);
                     mHotRecommend.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
-                LogUtils.e(e.toString());
                 Log.e(TAG, "---notifyKeywords:Exception--" + e.toString());
             }
-        }
-    };
-    private int mSearchResultPosition;//搜索结果item焦点索引值
-    private View mSearchResultItemView;//搜索结果最后一个获得焦点的item
-    private boolean mSearchResultFocusStatus = false;
-    //监听搜索结果页焦点变化
-    private OnGetSearchResultFocus mOnGetSearchResultFocus = new OnGetSearchResultFocus() {
-        @Override
-        public void notifySearchResultFocus(boolean focus, int position, View view) {
-            try {
-                mSearchResultPosition = position;
-                if (view != null) {
-                    mSearchResultItemView = view;
-                }
-                mSearchResultFocusStatus = focus;
-                if (focus) {
-                    mSearchResult.setResultFocus(true);
-                    if (mSearchViewKeyboard.getLastFocusView() != null) {
-                        mSearchResult.setKeyboardLastFocusView(mSearchViewKeyboard.getLastFocusView());
-                    } else {
-                        mSearchResult.setKeyboardLastFocusView(mSearchViewKeyboard.getDelBtn());
-                    }                    if (isFirstFocus) {
-                        slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth);
-                    }
-                    isFirstFocus = false;
-                } else {
-                    mSearchResult.setResultFocus(false);
-                    if (view == null) {
-                        if (mExternalSlide) {
-                            mSearchViewKeyboard.setVisibility(View.VISIBLE);
-                        }
-                        slideView(mRelativeLayout, -SearchViewKeyboardWidth, 0);
-                        isFirstFocus = true;
-                        mExternalSlide = false;
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "---notifySearchResultFocus:Exception--" + e.toString());
-            }
-        }
-    };
-    private boolean mSearchResultDataStatus = false;
-    private INotifySearchResultData mINotifySearchResultData = new INotifySearchResultData() {
-        @Override
-        public void INotifySearchResultData(boolean searchResultDataStatus) {
-            mSearchResultDataStatus = searchResultDataStatus;
-        }
-    };
-    private int mSearchHotRecommendPosition;//热搜item焦点索引值
-    private View mSearchHotRecommendItemView;//热搜最后一个获得焦点的item
-    private boolean mSearchHotRecommendFocusStatus = false;
-    //监听热搜页焦点变化
-    private OnGetSearchHotRecommendFocus mOnGetSearchHotRecommendFocus = new OnGetSearchHotRecommendFocus() {
-        @Override
-        public void notifySearchHotRecommendFocus(boolean focus, int position, View view) {
-            try {
-                mSearchHotRecommendPosition = position;
-                if (view != null) {
-                    mSearchHotRecommendItemView = view;
-                }
-                mSearchHotRecommendFocusStatus = focus;
-                if (focus) {
-                    if (isFirstFocus) {
-                        slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth);
-                    }
-                    isFirstFocus = false;
-                    mHotRecommend.setKeyboardLastFocusView(mSearchViewKeyboard.getLastFocusView());
-                } else {
-                    if (view == null) {
-                        slideView(mRelativeLayout, -SearchViewKeyboardWidth, 0);
-                        isFirstFocus = true;
-                    }
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "---notifySearchHotRecommendFocus:Exception--" + e.toString());
-            }
-        }
-    };
-    private boolean mSearchHotRecommendDataStatus = false;
-    private INotifySearchHotRecommendData mINotifySearchHotRecommendData = new INotifySearchHotRecommendData() {
-        @Override
-        public void INotifySearchHotRecommendData(boolean searchHotRecommendDataStatus) {
-            mSearchHotRecommendDataStatus = searchHotRecommendDataStatus;
         }
     };
 
@@ -329,169 +135,117 @@ public class SearchActivity extends FragmentActivity implements ISearchPageView 
                 .KEYCODE_DPAD_CENTER) {
             return super.dispatchKeyEvent(event);
         }
-        if (event.getRepeatCount() % 8 == 0) {
-            eatKeyEvent = false;
+
+        if(event.getAction() == KeyEvent.ACTION_DOWN){
+            View focusView = getWindow().getDecorView().findFocus();
+            View nextFocus =  null;
+            String mode = "keyboard";
+            boolean check = false;
+            if(mHotRecommend.hasFocus()){
+                if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT){
+                    nextFocus = FocusFinder.getInstance().findNextFocus(mHotRecommend,focusView,View.FOCUS_LEFT);
+                    check = true;
+                    mode = "search";
+                }
+            }else if(mSearchResult.hasFocus()){
+                if(event.getKeyCode()  == KeyEvent.KEYCODE_DPAD_LEFT){
+                    nextFocus = FocusFinder.getInstance().findNextFocus(mSearchResult,focusView,View.FOCUS_LEFT);
+                    check = true;
+                    mode = "search";
+                }
+            }else if(mSearchViewKeyboard.hasFocus()){
+                if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT){
+                    nextFocus = FocusFinder.getInstance().findNextFocus(mSearchViewKeyboard,focusView,View.FOCUS_RIGHT);
+                    check = true;
+                    mode = "keyboard";
+                }
+            }
+            if(nextFocus == null && check){
+                if("keyboard".equals(mode)){
+                    if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
+                        slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
+                    }
+                }else if("search".equals(mode)){
+                    slideView(mRelativeLayout, -SearchViewKeyboardWidth, 0, true);
+                }
+                return true;
+            }
         }
-        if (eatKeyEvent) {
-            return true;
-        }
-        if (event.getRepeatCount() % 4 == 0) {
-            eatKeyEvent = true;
-        }
+
         return super.dispatchKeyEvent(event);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (TextUtils.isEmpty(mInputString)) {
-                    if (!mSearchHotRecommendFocusStatus) {
-                        if (mSearchViewKeyboard.getBtnTag() == 11 || mSearchViewKeyboard.getBtnTag() == 3 || mSearchViewKeyboard.getBtnTag() == 6 || mSearchViewKeyboard.getBtnTag() == 9) {
-                            if (mSearchHotRecommendDataStatus) {
-                                if (mSearchHotRecommendItemView != null) {
-                                    mSearchHotRecommendItemView.requestFocus();
-                                    return true;
-                                } else {
-                                    if (mHotRecommend.getRecyclerView().getChildAt(0) != null) {
-                                        mHotRecommend.getRecyclerView().getChildAt(0).requestFocus();
-                                        return true;
-                                    }
-                                }
-                            } else if (mExternalStatus) {
-                                if (!mSearchResultFocusStatus) {
-                                    if (mSearchViewKeyboard.getBtnTag() == 11 || mSearchViewKeyboard.getBtnTag() == 3 || mSearchViewKeyboard.getBtnTag() == 6 || mSearchViewKeyboard.getBtnTag() == 9) {
-                                        if (mSearchResultItemView != null) {
-                                            mSearchResultItemView.requestFocus();
-                                            return true;
-                                        } else {
-                                            int id = mSearchResult.getNextFocusRightId();
-                                            if (id == 0) {
-                                                return true;
-                                            } else {
-                                                notPreventBtnRightMoveoOfResultList(id);
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                preventBtnRightMove();
-                            }
-                        }
-                    }
-
-                } else {
-                    if (!mSearchResultFocusStatus) {
-                        if (mSearchViewKeyboard.getBtnTag() == 11 || mSearchViewKeyboard.getBtnTag() == 3 || mSearchViewKeyboard.getBtnTag() == 6 || mSearchViewKeyboard.getBtnTag() == 9) {
-                            mSearchResult.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                @Override
-                                public void onGlobalLayout() {
-                                    mRightKey = true;
-                                }
-                            });
-                            mSearchResult.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-                                @Override
-                                public void onDraw() {
-                                    mRightKey = true;
-                                }
-                            });
-                            if (mRightKey){
-                                mRightKey = false;
-                                return true;
-                            }
-
-                            if (mSearchResultItemView != null) {
-                                mSearchResultItemView.requestFocus();
-                                return true;
-                            } else {
-                                int id = mSearchResult.getNextFocusRightId();
-                                if (id == 0) {
-                                    return true;
-                                } else {
-                                    notPreventBtnRightMoveoOfResultList(id);
-                                }
-                            }
-                        }
-
-                    }
-                }
-                break;
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                break;
-        }
-        return super.onKeyDown(keyCode, event);
-
-    }
-
-
-    private SearchResultInfos mSearchResultInfos;
-    private SearchResultInfos.ResultListBean mResultListBeanInfo;
-    private List<SearchResultInfos.ResultListBean> mResultListBeanList;
-
-    //加载热搜数据，进行分类填充
-    @Override
-    public void inflatePageRecommendData(SearchHotInfo searchHotInfo) {
-        try {
-            mSearchResultInfos = new SearchResultInfos();
-            mResultListBeanList = new ArrayList<>();
-            List<SearchHotInfo.DataBean.ProgramsBean> moduleItemList = new ArrayList<>();
-            SearchHotInfo.DataBean.ProgramsBean programInfo;
-            if (searchHotInfo.getData() != null && searchHotInfo.getData().size() > 0) {
-                for (int i = 0; i < searchHotInfo.getData().size(); i++) {
-                    if (searchHotInfo.getData().get(i).getBlockType().equals("recommendOnCell")) {
-                        if (searchHotInfo.getData().get(i).getPrograms() != null && searchHotInfo.getData().get(i).getPrograms().size() > 0) {
-                            for (int j = 0; j < searchHotInfo.getData().get(i).getPrograms().size(); j++) {
-                                programInfo = searchHotInfo.getData().get(i).getPrograms().get(j);
-                                moduleItemList.add(programInfo);
-                            }
-                        }
-                    }
-                }
-                if (moduleItemList != null && moduleItemList.size() > 0) {
-                    for (int j = 0; j < moduleItemList.size(); j++) {
-                        mResultListBeanInfo = new SearchResultInfos.ResultListBean();
-                        mResultListBeanInfo.setUUID(moduleItemList.get(j).getContentUUID());
-                        mResultListBeanInfo.setContentType(moduleItemList.get(j).getContentType());
-                        mResultListBeanInfo.setType(moduleItemList.get(j).getActionType());
-                        mResultListBeanInfo.setActionUri(moduleItemList.get(j).getActionUri() == null ? "" : moduleItemList.get(j).getActionUri().toString());
-                        mResultListBeanInfo.setHpicurl(moduleItemList.get(j).getImg());
-                        mResultListBeanInfo.setName(moduleItemList.get(j).getTitle());
-                        mResultListBeanList.add(mResultListBeanInfo);
-                    }
-                    mSearchResultInfos.setTotal(mResultListBeanList.size());
-                    mSearchResultInfos.setResultList(mResultListBeanList);
-                }
-            }
-            mHotRecommend.setData(mSearchResultInfos);
-        } catch (Exception e) {
-            Log.e(TAG, "---inflatePageRecommendData：Exception：" + e.toString());
-        }
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (!TextUtils.isEmpty(mSearchType)) {
-            if (!TextUtils.isEmpty(mSearchType) && mSearchType.equals("SearchListByKeyword")) {
-                LogUploadUtils.uploadLog(Constant.LOG_NODE_SEARCH, mInputString);
-            } else if (!TextUtils.isEmpty(mSearchType) && mSearchType.equals("RetrievalProgramSerialList")) {
-                LogUploadUtils.uploadLog(Constant.LOG_NODE_SCREEN, mScreenDataBuff.toString());
-            }
-        } else {
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_SEARCH, mInputString);
-        }
-
-    }
-
     //键盘移动的位移动画，动画类型为属性动画
-    public void slideView(View view, final float p1, final float p2) {
+    public void slideView(View view, final float p1, final float p2,final boolean isOpen) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationX", p1, p2);
         objectAnimator.setDuration(500);
+        objectAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+                if(isOpen){
+                    //TODO keyboard request focus
+                    mSearchViewKeyboard.getLastFocusView().requestFocus();
+                    mSearchResult.showLeftBackView(false);
+                }else {
+                    //TODO search result view request focus
+                    if (isOKToRight){
+                        mSearchResult.showLeftBackView(true);
+                        if (mSearchResult.getVisibility() == View.VISIBLE) {
+                            if (!keyWordChange) {
+                                mSearchResult.requestDefaultFocus();
+                            } else {
+                                mSearchResult.requestFirstTab();
+                                keyWordChange = false;
+                            }
+                        } else if (mHotRecommend.getVisibility() == View.VISIBLE) {
+                            mHotRecommend.requestFocus();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
         objectAnimator.start();
     }
 
+    @Override
+    public void onPageResult(@Nullable List<Page> page) {
+        if (page != null && page.size()>0){
+            mHotRecommend.setData(page.get(0).getPrograms());
+        }
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mContentPresenter != null){
+            mContentPresenter.destroy();
+            mContentPresenter = null;
+        }
+    }
 }
