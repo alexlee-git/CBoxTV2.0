@@ -178,7 +178,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         @Override
         public void onTimeout(int i) {
-            LogUtils.i(TAG, "onTimeout: "+i);
+            LogUtils.i(TAG, "onTimeout: " + i);
         }
 
         @Override
@@ -238,7 +238,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         @Override
         public void onTimeout(int i) {
-            LogUtils.i(TAG, "live onTimeout: "+i);
+            LogUtils.i(TAG, "live onTimeout: " + i);
         }
 
         @Override
@@ -870,6 +870,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
                 if (!mIsPrepared || mPlayType == PLAY_TYPE_LIVE) {
                     LogUtils.i(TAG, "onKeyDown: mIsPrepared is false");
                     return true;
@@ -982,6 +983,15 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             }
             return true;
+        }
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            if (mPlayType == PLAY_TYPE_LIVE) {
+                return true;
+            }
         }
 
         if (widgetMap != null) {
@@ -1354,8 +1364,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     @Override
-    public void onChange(String current,String start, String end,boolean isComplete) {
-        if(isComplete) {
+    public void onChange(String current, String start, String end, boolean isComplete) {
+        if (isComplete) {
             release();
         }
     }
