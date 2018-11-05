@@ -28,7 +28,7 @@ import tv.newtv.cboxtv.cms.special.fragment.ShooterFragment;
  * 创建人:           weihaichao
  * 创建日期:          2018/4/25
  */
-public class SpecialLayoutManager {
+class SpecialLayoutManager {
     /**
      * special_002 赛程表
      * special_003 足球是圆的
@@ -56,7 +56,7 @@ public class SpecialLayoutManager {
         return layoutManager;
     }
 
-    public BaseSpecialContentFragment GenerateFragment(
+    BaseSpecialContentFragment GenerateFragment(
             int containerId,
             Bundle bundle,
             FragmentManager fragmentManager,

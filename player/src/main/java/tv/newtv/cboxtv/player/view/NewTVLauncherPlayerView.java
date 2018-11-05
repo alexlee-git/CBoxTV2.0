@@ -515,10 +515,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     private void createMenuGroup() {
-        if (menuGroupPresenter == null) {
-            menuPopupWindow = new MenuPopupWindow();
-            menuGroupPresenter = menuPopupWindow.show(getContext(), this);
-        }
+//        if (menuGroupPresenter == null) {
+//            menuPopupWindow = new MenuPopupWindow();
+//            menuGroupPresenter = menuPopupWindow.show(getContext(), this);
+//        }
     }
 
     public void updateUIPropertys(boolean isFullScreen) {
