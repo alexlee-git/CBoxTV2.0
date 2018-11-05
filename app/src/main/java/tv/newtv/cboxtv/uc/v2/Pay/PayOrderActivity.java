@@ -58,6 +58,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
@@ -115,6 +116,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     private boolean isBuyOnly = false;  //true 单点 ，false显示
     private boolean isVip = false;
     private ExterPayBean mExterPayBean;
+    private String message_error;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -437,7 +439,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                     break;
                 }
                 case MSG_ERROR: {
-                    Toast.makeText(PayOrderActivity.this, "获取失败,请重试", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PayOrderActivity.this, message_error, Toast.LENGTH_LONG).show();
                     finish();
                     break;
                 }
@@ -724,6 +726,20 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    message_error = jsonObject.getString("message");
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(MSG_ERROR);
+                                    }
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
                             if (mDisposable_order != null) {
                                 mDisposable_order.dispose();
                                 mDisposable_order = null;

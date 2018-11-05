@@ -120,7 +120,7 @@ public interface IUserCenterLoginApi {
 
     //刷新二维码
     @Headers("host_type: " + HeadersInterceptor.PAY)
-    @GET("/goldenpheasant/api/orders/refreshQrUrl")
+    @GET("/goldenpheasant/service/orders/refreshQrUrl")
     Observable<ResponseBody> getRefreshOrder(@Header("Authorization") String Authorization,
                                              @Query("orderId") String order);
 
