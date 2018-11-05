@@ -22,6 +22,10 @@ public class SearchViewPagerAdapter extends FragmentStatePagerAdapter {
         this.mDatas = datas;
     }
 
+    public BaseFragment getFragmentByIndex(int index){
+        return this.mDatas.get(index);
+    }
+
     public void  upData(List<BaseFragment> datas){
         if (this.mDatas!=null){
             this.mDatas.clear();

@@ -29,6 +29,7 @@ class ModelResult<T> {
     val isAd: String? = null
     val templateZT: String? = null
     var data: T? = null
+    var total:Int?=0
 
     fun isOk(): Boolean {
         return "0".equals(errorCode)

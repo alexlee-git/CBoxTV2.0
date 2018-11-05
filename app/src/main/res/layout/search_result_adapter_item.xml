@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_result_fl"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="true"
+    >
+
+    <ImageView
+        android:id="@+id/result_image_default"
+        android:layout_width="@dimen/width_240px"
+        android:layout_height="@dimen/height_360px"
+        android:focusable="false"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/result_image_focus"
+        android:layout_width="@dimen/width_248px"
+        android:layout_height="@dimen/height_368px"
+        android:background="@drawable/pos_zui"
+        android:focusable="false"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/result_title"
+        style="@style/StyleSearchResultListItemTitle"
+        android:layout_width="@dimen/width_226px"
+        android:layout_height="@dimen/height_33px"
+        android:layout_marginBottom="@dimen/height_21px"
+        android:layout_marginLeft="@dimen/width_39px"
+        android:layout_marginRight="@dimen/width_24px"
+        android:layout_marginTop="@dimen/height_401px"
+        android:ellipsize="marquee"
+        android:focusable="false"
+        android:gravity="left"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        />
+
+    <TextView
+        android:id="@+id/result_poster_title"
+        style="@style/StyleSearchResultPosterTitle"
+        android:layout_width="@dimen/width_228px"
+        android:layout_height="@dimen/height_28px"
+        android:layout_marginLeft="@dimen/width_35px"
+        android:layout_marginTop="@dimen/height_342px"
+        android:focusable="false"
+        android:gravity="left" />
+
+
+    <!--阴影-->
+    <!--<ImageView-->
+    <!--android:layout_width="@dimen/width_240px"-->
+    <!--android:layout_height="@dimen/height_144px"-->
+    <!--android:layout_marginLeft="@dimen/width_17dp"-->
+    <!--android:layout_marginTop="@dimen/height_250px"-->
+    <!--android:background="@drawable/search_result_vertical_poster_txt_bg" />-->
+</FrameLayout>
