@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 
 import com.newtv.cms.contract.AdContract;
@@ -23,13 +24,17 @@ import java.util.List;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
+import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
 import tv.newtv.cboxtv.cms.search.view.ISearchPageView;
+import tv.newtv.cboxtv.exit.bean.RecommendBean;
+import tv.newtv.cboxtv.exit.presenter.RecommendPresenterImpl;
+import tv.newtv.cboxtv.exit.view.RecommendView;
 import tv.newtv.cboxtv.views.SpacesItemDecoration;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 
 public class WarningExitActivity extends BaseActivity implements View.OnClickListener,
-        ISearchPageView, View.OnFocusChangeListener {
+        ISearchPageView, View.OnFocusChangeListener,RecommendView {
 
     private RecycleImageView exit_image;
     private SearchResultInfos.ResultListBean mResultListBeanInfo;
@@ -37,6 +42,9 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private RecyclerView mRecyclerView;
     private ExitPromptLikeAdapter mAdapter;
     private AdContract.Presenter mAdPresenter;
+    RecommendPresenterImpl presenter;
+    OvershootInterpolator mSpringInterpolator;
+    SearchPagePresenter mSearchPagePresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

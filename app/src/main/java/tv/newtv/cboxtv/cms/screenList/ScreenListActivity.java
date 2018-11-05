@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.RxBus;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -38,8 +40,6 @@ import tv.newtv.cboxtv.cms.screenList.tablayout.TabLayout;
 import tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout;
 import tv.newtv.cboxtv.cms.screenList.view.LabelView;
 import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
-import tv.newtv.cboxtv.cms.util.DisplayUtils;
-import tv.newtv.cboxtv.cms.util.RxBus;
 
 
 /**
