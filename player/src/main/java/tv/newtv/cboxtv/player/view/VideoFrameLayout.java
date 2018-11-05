@@ -43,7 +43,8 @@ public class VideoFrameLayout extends FrameLayout {
         if (LeftTime != null) {
             Log.e(VideoFrameLayout.class.getSimpleName(), "获取到了TextView");
             LayoutParams layoutParams = (LayoutParams) params;
-            layoutParams.rightMargin = getMeasuredWidth() / 50;
+            layoutParams.rightMargin = getContext().getResources().getDimensionPixelOffset(com
+                    .newtv.libs.R.dimen.width_30px);
             LeftTime.setLayoutParams(layoutParams);
             if (mTextSize != 0) {
                 LeftTime.setTextSize(mTextSize);

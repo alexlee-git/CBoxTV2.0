@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.newtv.cms.contract.AdContract;
@@ -47,6 +48,9 @@ public class BgChangManager {
 
     private Context applicationContext;
     private int retry = 0;
+
+    private List<Target> targetList = new ArrayList<>();
+
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -173,6 +177,14 @@ public class BgChangManager {
      * @param uuid
      */
     public void setCurrent(Context context, String uuid) {
+        for(BGEvent bgEvent : firstLevel){
+            if(TextUtils.equals(bgEvent.contentUUID,mCurrentId)){
+                if(bgEvent.childSet == null || !bgEvent.childSet.contains(uuid)){
+                    return;
+                }
+            }
+        }
+
         mCurrentId = uuid;
         handler.removeCallbacksAndMessages(null);
         if(secondLevelMap.get(uuid) == null){
@@ -190,10 +202,10 @@ public class BgChangManager {
      * @param uuid
      * @param url
      */
-    private void loadImage(final Context context, final String uuid, final String url) {
+    private void loadImage(Context context, String uuid, String url) {
         if (!bgHashmap.containsKey(uuid) || bgHashmap.get(uuid).drawable == null) {
             bgHashmap.put(uuid, new BGDrawable(url));
-            requestImage(bgHashmap.get(uuid), context, uuid, url);
+            requestImage(bgHashmap.get(uuid), context, uuid, url,true);
         } else {
             if (uuid.equals(mCurrentId) && mCallback != null) {
                 mCallback.getTargetView().setBackground(bgHashmap.get(uuid).drawable);
@@ -209,26 +221,39 @@ public class BgChangManager {
      * @param url
      */
     private void requestImage(final BGDrawable bgDrawable, final Context context, final String uuid,
-                              final String url) {
-        Picasso.get().load(url).into(new Target() {
+                              final String url, final boolean isRetry) {
+        Log.i(TAG, "requestImage: "+url);
+        Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 bgDrawable.drawable = new BitmapDrawable(context.getResources(), bitmap);
                 if (uuid.equals(mCurrentId) && mCallback != null) {
                     mCallback.getTargetView().setBackground(bgHashmap.get(uuid).drawable);
                 }
+                targetList.remove(this);
             }
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                mCallback.getTargetView().setBackground(null);
+                if(isRetry){
+                    requestImage(bgDrawable,context,uuid,url,false);
+                }else {
+                    if(uuid.equals(mCurrentId) && mCallback != null){
+                        mCallback.getTargetView().setBackground(null);
+                    }
+                }
+                targetList.remove(this);
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-
+                if(uuid.equals(mCurrentId) && mCallback != null){
+                    mCallback.getTargetView().setBackground(placeHolderDrawable);
+                }
             }
-        });
+        };
+        targetList.add(target);
+        Picasso.get().load(url).into(target);
     }
 
     public void add(String parentUUID,String uuid){

@@ -11,6 +11,7 @@ public class ADConfig {
     private String secondColumnId; //二级栏目
     private String categoryIds;
     private String seriesID;
+    private String programId;
     private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
@@ -19,12 +20,22 @@ public class ADConfig {
         return Holder.instance;
     }
 
+    public String getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(String programId) {
+        this.programId = programId;
+    }
+
     public String getSeriesID() {
         return seriesID;
     }
 
     public void setSeriesID(String seriesID) {
         this.seriesID = seriesID;
+        columnId = "";
+        secondColumnId = "";
     }
 
     public String getCategoryIds() {
@@ -78,14 +89,17 @@ public class ADConfig {
         setColumnId(column.toString());
         setSecondColumnId(secondColumn.toString());
 
-        for(ColumnListener listener : listenerList){
-            listener.receive();
+        int size = listenerList.size();
+        for(int i=0;i<size;i++){
+            listenerList.get(i).receive();
         }
         listenerList.clear();
     }
 
-    public void setListener(ColumnListener listener) {
-        listenerList.add(listener);
+    public void registerListener(ColumnListener listener) {
+        if(listener != null && !listenerList.contains(listener)){
+            listenerList.add(listener);
+        }
     }
 
     public void removeListener(ColumnListener listener){

@@ -1,10 +1,10 @@
 package tv.newtv.cboxtv.cms.net
 
+import com.newtv.libs.BuildConfig
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import tv.newtv.cboxtv.BuildConfig
 import com.newtv.libs.Constant
 import com.newtv.libs.util.HttpsUtils
 import java.util.concurrent.TimeUnit
@@ -31,6 +31,7 @@ object NetClient {
             .connectTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(headersInterceptor)
             .addInterceptor(logInterceptor)
+            .retryOnConnectionFailure(true)
             .build()!!
 
     private val retrofit = retrofit2.Retrofit.Builder()

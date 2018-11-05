@@ -7,6 +7,17 @@
     >
 
     <TextView
+        android:id="@+id/notification_view"
+        android:layout_width="@dimen/width_900px"
+        android:layout_height="@dimen/height_45px"
+        android:layout_marginTop="@dimen/height_70px"
+        android:text=""
+        android:textColor="@color/colorWhite"
+        android:gravity="center"
+        android:textSize="@dimen/height_36px"
+        />
+
+    <TextView
         android:id="@+id/text_view"
         android:layout_width="@dimen/width_900px"
         android:layout_height="@dimen/height_45px"

@@ -19,7 +19,6 @@ import com.newtv.libs.util.ScaleUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;

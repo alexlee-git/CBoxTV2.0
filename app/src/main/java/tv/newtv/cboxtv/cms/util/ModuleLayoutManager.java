@@ -15,7 +15,7 @@ import tv.newtv.cboxtv.R;
 /**
  * Created by lixin on 2018/1/31.
  */
-
+    //布局模块管理
 public class ModuleLayoutManager {
 
     private static ModuleLayoutManager mInstance;

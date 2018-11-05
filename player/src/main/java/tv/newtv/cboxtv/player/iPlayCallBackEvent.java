@@ -8,7 +8,7 @@ public interface iPlayCallBackEvent {
 	public void onCompletion();//
 	public void onVideoBufferStart(String typeString);//
 	public void onVideoBufferEnd(String typeString);
-	public void onTimeout();
+	public void onTimeout(int i);
 	public void changePlayWithDelay(int delay, String url);
 	public void onError(int what, int extra, String msg);
 }

@@ -24,10 +24,12 @@ import com.newtv.cms.contract.ActiveAuthContract;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.EntryContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.util.NetworkManager;
+import com.newtv.libs.ad.AdEventContent;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.ToastUtil;
@@ -130,7 +132,8 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         if (!DeviceUtil.isSelfDevice()) {
             String displayMessage = getResources().getString(R.string
                     .tip_text_auth_error) + "\n\n";
-            displayMessage += getErrorMsg(ActiveAuthContract.ActiveAuthPresenter.Constract.NOT_SELF_DEVICE);
+            displayMessage += getErrorMsg(ActiveAuthContract.ActiveAuthPresenter.Constract
+                    .NOT_SELF_DEVICE);
             mAlertDialog = getDialog(displayMessage, new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -219,6 +222,14 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
                 RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
                 authLogFailed(status);//认证失败
+//=======
+//                LogUploadUtils.uploadLog(Constant.LOG_NODE_ADVERT, "0");
+//                getAD();
+//                mAuthingView.setVisibility(View.GONE);
+//                break;
+//        }
+//    }
+//>>>>>>> 1.4
 
                 mAlertDialog = getDialog(new StringBuilder().append(getResources().getString(R
                         .string.tip_text_auth_error)).append("\n\n").append(getErrorMsg(status))
@@ -317,10 +328,12 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 intent = new Intent(EntryActivity.this, MainActivity.class);
                 intent.putExtra("action", mExternalAction);
                 intent.putExtra("params", mExternalParams);
+                //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
+                startActivity(intent);
             } else if (Constant.EXTERNAL_OPEN_URI.equals(mExternalAction)) {//点击广告进入详情页
-                intent = new Intent(EntryActivity.this, MainActivity.class);
-                intent.putExtra("action", mExternalAction);
-                intent.putExtra("params", mAdPresenter.getAdItem().eventContent);
+                if (mAdPresenter.getAdItem() != null) {
+                    toSecondPageFromAd(mAdPresenter.getAdItem().eventContent);
+                }
             } else {
                 boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),
                         mExternalAction,
@@ -332,13 +345,14 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                     finish();
                     return;
                 }
+                //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
+                startActivity(intent);
             }
         } else {
             intent = new Intent(EntryActivity.this, MainActivity.class);
+            //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
+            startActivity(intent);
         }
-        //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
-        startActivity(intent);
-
         finish();
     }
 
@@ -419,7 +433,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     @Override
     public void authResult() {
         RxBus.get().post(Constant.INIT_SDK, Constant.INIT_LOGSDK);
-        mAdPresenter.getAdByType("open", "", "",null);
+        mAdPresenter.getAdByType("open", "", "", null);
         mAuthingView.setVisibility(View.GONE);
     }
 
@@ -435,7 +449,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
-        ToastUtil.showToast(getApplicationContext(),desc);
+        ToastUtil.showToast(getApplicationContext(), desc);
     }
 
 
@@ -455,7 +469,8 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     }
 
     @Override
-    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?> hashMap) {
+    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?>
+            hashMap) {
         if (TextUtils.isEmpty(url)) {
             enterMain();
         } else {
@@ -471,6 +486,20 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 videoView.setDataSource(url);
                 videoView.play();
             }
+        }
+    }
+
+    //开屏广告点击跳转详情页
+    private void toSecondPageFromAd(String eventContentString) {
+        Log.i(TAG, "toSecondPageFromAd");
+        try {
+            AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent
+                    .class);
+            JumpUtil.activityJump(this, true, adEventContent.actionType, adEventContent.contentType,
+                    adEventContent.contentUUID, adEventContent.actionURI);
+
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
         }
     }
 }

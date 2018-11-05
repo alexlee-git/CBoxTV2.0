@@ -35,6 +35,7 @@ import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 import com.newtv.cms.contract.NavContract;
+import static android.content.Context.MODE_PRIVATE;
 
 public class MainNavManager implements NavContract.View {
 
@@ -67,7 +68,7 @@ public class MainNavManager implements NavContract.View {
     }
 
 
-    private void inflateNavigationBar(final List<Nav> navInfos, Context context, String dataFrom) {
+    private void inflateNavigationBar(final List<Nav> navInfos, final Context context, String dataFrom) {
 
         ScreenUtils.initScreen(context);
 
@@ -145,6 +146,16 @@ public class MainNavManager implements NavContract.View {
 
                     if (hasFocus) {
                         navLogUpload(position);
+                        SharedPreferences sp = context.getSharedPreferences("secondConfig",
+                                MODE_PRIVATE);
+                        String menu = sp.getString("secondMenu", "");
+                        if (TextUtils.isEmpty(menu)){
+                            return;
+                        }else{
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
+                                    menu);
+                        }
+
 
                     }
 

@@ -160,7 +160,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             focusImageView.setVisibility(View.INVISIBLE);
         }
 
-        TextView titleView = (TextView) view.findViewById(R.id.tv_title);
+       // TextView titleView = (TextView) view.findViewById(R.id.tv_title);
+        TextView titleView = (TextView) view.findViewWithTag("tag_poster_title");
         if (titleView != null) {
             titleView.setSelected(false);
         }
@@ -179,7 +180,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             focusImageView.setVisibility(View.VISIBLE);
         }
 
-        TextView titleView = (TextView) view.findViewById(R.id.tv_title);
+        //TextView titleView = (TextView) view.findViewById(R.id.tv_title);
+        TextView titleView = (TextView) view.findViewWithTag("tag_poster_title");
         if (titleView != null) {
             titleView.setSelected(true);
         }
@@ -227,12 +229,12 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             if (hasFocus) {
                 currentFocusView = mModuleView;
                 onItemGetFocus(v, mFocusIv, getAdapterPosition());
-                mTitleTv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+               // mTitleTv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
             } else {
                 if (mAllowLost) {
                     onItemLoseFocus(v, mFocusIv);
                 }
-                mTitleTv.setEllipsize(null);
+                //mTitleTv.setEllipsize(null);
             }
         }
 

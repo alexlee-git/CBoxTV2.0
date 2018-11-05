@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.listPage;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.cms.BuildConfig;
 import com.newtv.libs.AnimationBuilder;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
@@ -47,8 +49,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.adapter.UniversalAdapter;
@@ -79,7 +81,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private RelativeLayout rel_screen;//筛选
     private TextView tv_name;
     private ListMenuView mListMenuView;
-    private UniversalAdapter<NavListPageInfoResult.NavInfo> mMenuAdapter;
+    private UniversalAdapter<NavListPageInfoResult.NavInfo> mMenuAdapter;//左边导航栏进度条
     private RelativeLayout mRelativeLayout_error, mRelativeLayout_success, listpage_rel_loading;
     private RecyclerView mRecyclerView;
     private RecyclerView mRecyclerView_MarkData;
@@ -88,7 +90,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private ListHandler mHandler = new ListHandler();
     private IListPagePresenter mIListPagePresenter;
     private NavListPageInfoResult mNavListPageInfoResult;
-    private List<NavListPageInfoResult.NavInfo> mNavInfos;
+    private List<NavListPageInfoResult.NavInfo> mNavInfos;//左边导航栏数据
     private int MenuPostion = 0;
     private int MenuFousedPostion = 0;
     private TextView oldView;
@@ -135,6 +137,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private ScreenInfo mBlockTypeScreen;
     private View lastFoucsScreenDataView;
     private long mLastKeyTime = 0;
+    private boolean isADEntry = false;
 
     private final String ITEM_COUNT = "5000";
 
@@ -142,11 +145,14 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activty_listpage);
+
+
         parent = ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
 
         mPageUUID = getIntent().getStringExtra("page_uuid");
         mActionType = getIntent().getStringExtra("action_type");
         mActionUri = getIntent().getStringExtra("action_uri");
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         nav_id = getIntent().getStringExtra(Constant.DEFAULT_UUID);//导航id
         Log.e("list---pageuuid", mPageUUID + "-----------");
         if (mPageUUID == null) {
@@ -162,6 +168,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         //        Constant.CHANNEL_ID + "/" + mPageUUID + ".json");
         mIListPagePresenter.requestListPageNav(mPageUUID);
         showPopwindow();
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + mPageUUID);
         uploadEnterLog();
     }
 
@@ -181,6 +188,7 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
                     }
                     if (nav_id.equals(uuid)) {
                         MenuPostion = i;
+                       // Toast.makeText(ListPageActivity.this,"首次MenuPostion-->"+MenuPostion,Toast.LENGTH_SHORT).show();
                         requestMarkData(uuid);
                         break;
                     }
@@ -250,6 +258,15 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
                 MarkPosition = 0;
                 mProgramsBeanList.clear();
                 markDataAdapter.notifyDataSetChanged();
+//                if(i==0||i==mNavInfos.size()-1)
+//                {
+//                    Toast.makeText(ListPageActivity.this,i+"",Toast.LENGTH_SHORT).show();
+//                }else {
+//                    Toast.makeText(ListPageActivity.this,i+"",Toast.LENGTH_SHORT).show();
+//                    markDataAdapter.notifyDataSetChanged();
+//                }
+
+
                 if (Constant.OPEN_CHANNEL.equals(mNavInfos.get(i).getActionType())) {
                     mMarkDataUrl_pageUUid = mNavInfos.get(i).getActionURI();
                 } else {
@@ -263,22 +280,45 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             }
         });
         mListMenuView.setOnKeyListener(new ListView.OnKeyListener() {
+            int indexFirst = 0;//第一个
+            int indexLast = 0;//最后一个
+
+
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // TODO Auto-generated method stub
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
+                        //遥控器向上点击
                         case KeyEvent.KEYCODE_DPAD_UP:
                             Log.i("onKey-------", "KEYCODE_DPAD_UP");
+                            Log.i("onKey-------", "KEYCODE_DPAD_UP-->MenuPostion-->"+MenuPostion);
+
+                            //当向上点击时，最后一项又可以重新加载
+                            if(MenuPostion<=mMenuSize - 1)
+                            {
+                                indexLast=0;
+                            }
+
                             if (MenuPostion == 0) {
+
+                                indexFirst++;//如果首次就向上点击，则不能再加载
+
                                 rel_screen.setFocusable(true);
                                 rel_screen.requestFocus();
                                 oldView.setTextColor(Color.parseColor("#ededed"));
                                 return true;
                             }
                             break;
+                        //遥控器向下点击
                         case KeyEvent.KEYCODE_DPAD_DOWN:
                             Log.i("onKey-------", "KEYCODE_DPAD_DOWN");
+                            Log.i("onKey-------", "KEYCODE_DPAD_DOWN--->MenuPostion-->"+MenuPostion);
+                            //当向下点击时，第一项又可以重新加载
+                            if(MenuPostion>=0)
+                            {
+                                indexFirst=0;
+                            }
                             if (mMenuSize - 1 == MenuPostion) {
                                 return true;
                             }
@@ -316,9 +356,12 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
                     }
                 }
                 if (event.getAction() == KeyEvent.ACTION_UP) {
+
                     switch (event.getKeyCode()) {
                         case KeyEvent.KEYCODE_DPAD_DOWN:
+                            //按键弹起时的选择项
                         case KeyEvent.KEYCODE_DPAD_UP:
+
                             int selectedItemPosition = mListMenuView.getSelectedItemPosition();
                             Log.e("gao", "selectedItemPosition:" + selectedItemPosition);
                             if (Constant.OPEN_CHANNEL.equals(mNavInfos.get(selectedItemPosition)
@@ -330,11 +373,48 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
                                         .getContentID();
                             }
                             Log.e("gao", "mMarkDataUrl_pageUUid:" + mMarkDataUrl_pageUUid);
-                            mHandler.postDelayed(new Runnable() {
-                                public void run() {
-                                    requestMarkData(mMarkDataUrl_pageUUid);
+//                            mHandler.postDelayed(new Runnable() {
+//                                public void run() {
+//                                    requestMarkData(mMarkDataUrl_pageUUid);a
+//                                }
+//                            }, 200);
+
+                            Log.e("gao", "indexFirst:" + indexFirst+"\tindexLast-->"+indexLast);
+
+                            if (selectedItemPosition == 0) {
+
+                                if (indexFirst == 0) {
+                                    mHandler.postDelayed(new Runnable() {
+                                        public void run() {
+                                            requestMarkData(mMarkDataUrl_pageUUid);
+                                        }
+                                    }, 200);
+                                }else {
+                                   // Toast.makeText(ListPageActivity.this, "不在加载更新", Toast.LENGTH_SHORT).show();
                                 }
-                            }, 200);
+                                indexFirst++;
+                            }else if (selectedItemPosition == mNavInfos.size() - 1) {
+
+                                if(indexLast==0)
+                                {
+                                    mHandler.postDelayed(new Runnable() {
+                                        public void run() {
+                                            requestMarkData(mMarkDataUrl_pageUUid);
+                                        }
+                                    }, 200);
+                                }else {
+                                    //Toast.makeText(ListPageActivity.this, "不在加载更新", Toast.LENGTH_SHORT).show();
+                                }
+                                indexLast++;
+
+                            }else {
+                                mHandler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        requestMarkData(mMarkDataUrl_pageUUid);
+                                    }
+                                }, 200);
+                            }
+
                             break;
                     }
                 }
@@ -597,6 +677,16 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     @Override
     public void onFailed(String desc) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isADEntry) {
+            startActivity(new Intent(ListPageActivity.this, MainActivity.class));
+            isADEntry = false;
+        }
+        finish();
     }
 
     private void setMarkPageData(int i) {
@@ -1309,6 +1399,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         public void onBindViewHolder(final MyHolder holder, final int position) {
 
             if (dataBeans == null || dataBeans.size() <= 0) {
+                return;
+            }
+            if (mProgramsBeanList == null || mProgramsBeanList.size() <= 0) {
                 return;
             }
             final ListPageInfo.DataBean.ProgramsBean mProgramsBean = mProgramsBeanList.get

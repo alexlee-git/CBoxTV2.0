@@ -26,10 +26,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuGroup;
 import tv.newtv.cboxtv.menu.MenuGroupPresenter2;
 import tv.newtv.cboxtv.menu.model.Program;
+
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerUrlConfig;
@@ -41,7 +43,7 @@ import tv.newtv.player.R;
 /**
  * Created by wangkun on 2018/1/15.
  */
-
+@BuyGoodsAD
 public class NewTVLauncherPlayerActivity extends BaseActivity implements ContentContract
         .LoadingView {
 
@@ -169,6 +171,10 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         Log.e(TAG, "action:" + event.getAction() + ",keyCode=" + event.getKeyCode());
+        if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                && buyGoodsBusiness.dispatchKeyEvent(event)){
+            return true;
+        }
         if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
             return true;
         }

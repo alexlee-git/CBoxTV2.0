@@ -192,7 +192,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         }
     }
 
-    private void moveToPosition(int n) {
+    public void moveToPosition(int n) {
         //先从RecyclerView的LayoutManager中获取第一项和最后一项的Position
         int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
         int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
@@ -396,16 +396,21 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 ShowInfoTextView("");
 
                 if (mContentList.size() > 0) {
-                    rightDir.setVisibility(View.VISIBLE);
-                }
+//                    mSeriesInfo.resolveVip();
+                    if (mControlView != null) {
+                        mControlView.setVisibility(View.VISIBLE);
+                    }
+                    setVisibility(View.VISIBLE);
+                    ShowInfoTextView("");
 
-                if (!videoType(mVideoType)) {
-                    mPageSize = DEFAULT_LIST_SIZE;
-                } else {
-                    mPageSize = DEFAULT_SIZE;
-                }
+                    if (!videoType(mVideoType)) {
+                        mPageSize = DEFAULT_LIST_SIZE;
+                    } else {
+                        mPageSize = DEFAULT_SIZE;
+                    }
 
-                initFragment(mPageSize);
+                    initFragment(mPageSize);
+                }
             } else {
                 onLoadError("暂时没有数据");
             }
@@ -495,7 +500,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     LayoutParams leftParams = (LayoutParams) leftDir.getLayoutParams();
                     leftParams.topMargin = ListPager.getTop() + (ListPager.getMeasuredHeight() -
                             leftDir
-                            .getMeasuredHeight()) / 2;
+                                    .getMeasuredHeight()) / 2;
                     leftDir.setLayoutParams(leftParams);
                 }
 

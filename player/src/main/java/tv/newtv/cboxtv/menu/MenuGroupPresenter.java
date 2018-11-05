@@ -18,17 +18,20 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.Libs;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.menu.model.DBProgram;
@@ -96,6 +99,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
      * 当前获取节目集ID和节目ID重试次数
      */
     private int retry = 0;
+    private int posotion;
 
     @Override
     public void release() {
@@ -131,7 +135,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         }
     }
 
-    public MenuGroupPresenter(Context context) {
+    public MenuGroupPresenter(final Context context) {
         this.context = context;
         rootView = LayoutInflater.from(context).inflate(R.layout.menu_group_presenter, null);
         hintArrowheadBigLeft = rootView.findViewById(R.id.hint_arrowhead_big_left);
@@ -142,12 +146,16 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         takePlace2 = rootView.findViewById(R.id.take_place2);
         hintView = rootView.findViewById(R.id.hint_text);
         menuGroup = rootView.findViewById(R.id.menu_group);
+
         init();
     }
 
     public void init() {
         initData();
         initListener();
+
+
+
     }
 
     private void initListener() {
@@ -163,6 +171,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context, programSeriesInfo, false, index, 0);
                 menuGroup.gone();
                 setPlayerInfo(program);
+//                switch () {
+//                }
 //                //如果不是我的观看记录节点，就保存数据
 //                if(!program.checkNode(HISTORY)){
 //                    DBUtil.addHistory(programSeriesInfo,index,0, Utils.getSysTime(),null);
@@ -232,9 +242,14 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
             if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > index && index >= 0) {
                 contentUUID = programSeriesInfo.getData().get(index).getContentUUID();
+
+
+                //TODO 栏目树类型需要修复
 //                actionType = programSeriesInfo.getData().get(index).getActionType();
-//                if(TextUtils.isEmpty(programSeries)){
-//                    programSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
+//
+//                String proSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
+//                if(TextUtils.isEmpty(programSeries) || (!TextUtils.isEmpty(proSeries) && !proSeries.equals(programSeries))){
+//                    programSeries = proSeries;
 //                }
             }
         }
@@ -330,7 +345,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         searchInDB(DBConfig.SUBSCRIBE_TABLE_NAME, subscribe);
         searchInDB(DBConfig.HISTORY_TABLE_NAME, history);
 
-        menuGroup.addNodeToRoot(root);
+        if (menuGroup != null){
+            menuGroup.addNodeToRoot(root);
+        }
     }
 
     private void searchInDB(String titleName, final Node node) {
@@ -359,6 +376,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                     }
                 }).excute();
     }
+
 
     private List<DBProgram> dataDispose(String result) {
         if (!TextUtils.isEmpty(result)) {
@@ -473,7 +491,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.VISIBLE) {
+
                         gone();
+
                         return true;
                     }
                     break;
@@ -487,6 +507,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             if (Libs.get().getFlavor().equals(DeviceUtil.XUN_MA)) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_ESCAPE:
+
                         if (menuGroupIsInit && menuGroup.getVisibility() == View.VISIBLE) {
                             menuGroup.gone();
                             return true;
@@ -508,10 +529,24 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 case KeyEvent.KEYCODE_DPAD_UP:
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
                         if (playProgram != null) {
+                            searchDataInDB();
+                            //playProgram = menuGroup.getPlayProgram();
                             menuGroup.show(playProgram);
                         } else {
                             menuGroup.show();
+
                         }
+                        Log.d(TAG, Constants.vodPlayId);
+//                        if (duration!=null){
+//
+//                        }
+//                        int i = Integer.parseInt(duration);
+                    String    duration = context.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
+                        if (duration !=null)
+                        LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+
+
                         NewTVLauncherPlayerViewManager.getInstance().setShowingView
                                 (NewTVLauncherPlayerView.SHOWING_PROGRAM_TREE);
                         setHintGone();
@@ -568,7 +603,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
         handler.removeMessages(MESSAGE_GONE);
         menuGroup.gone();
+
     }
+
 
     private void hintAnimator(final View view) {
         ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0);

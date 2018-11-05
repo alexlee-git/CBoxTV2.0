@@ -28,6 +28,7 @@
         android:visibility="visible" />
 
     <LinearLayout
+        android:paddingTop="@dimen/height_24px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/id_module_8_title"

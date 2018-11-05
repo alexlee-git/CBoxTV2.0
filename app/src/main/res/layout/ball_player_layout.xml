@@ -28,29 +28,30 @@
         android:layout_marginTop="@dimen/height_267px"
         android:background="@drawable/selector_pos_background"
         >
+
         <tv.newtv.cboxtv.player.videoview.VideoPlayerView
             android:id="@+id/video_player"
-            android:focusable="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <tv.newtv.cboxtv.views.custom.RecycleImageView
-            android:id="@+id/image"
-            android:scaleType="fitXY"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            />
+            android:focusable="true" >
+            <tv.newtv.cboxtv.views.custom.RecycleImageView
+                android:id="@+id/image"
+                android:scaleType="fitXY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                />
+            <TextView
+                android:id="@+id/tv_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=""
+                android:textSize="@dimen/height_39px"
+                android:textColor="@color/detail_tvcolor"
+                />
+        </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
 
-        <TextView
-            android:id="@+id/tv_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text=""
-            android:textSize="@dimen/height_39px"
-            android:textColor="@color/detail_tvcolor"
-            />
     </FrameLayout>
 
 

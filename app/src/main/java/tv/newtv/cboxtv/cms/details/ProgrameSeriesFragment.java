@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AdContract;
@@ -51,7 +52,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
 import tv.newtv.cboxtv.cms.details.adapter.EpisodeAdapter;
@@ -240,6 +240,9 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
         if (bundle != null) {
             contentUUID = bundle.getString("content_uuid");
+
+            Log.i(TAG,"contentUUID-->"+contentUUID);
+
             ADConfig.getInstance().setSeriesID(contentUUID);
             if (TextUtils.isEmpty(contentUUID)) {
                 Toast.makeText(getContext().getApplicationContext(), "没有此剧集信息", Toast
@@ -264,6 +267,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         return rootView;
     }
 
+    //获取数据
     private void initData() {
         DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
                 .condition()
@@ -324,7 +328,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
             }
         });
     }
-
+    //音频准备
     private boolean prepareMediaPlayer() {
         if (mVideoView != null) {
             if (mVideoView.isReady() || mVideoView.isPlaying() || mVideoView.isADPlaying()) {
@@ -358,6 +362,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         return true;
     }
 
+    //初始化页面
     private void initView() {
         fullScreen.requestFocus();//bug系统31提出的要求，进入页面焦点默认在全屏按钮上
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext().getApplicationContext()
@@ -385,35 +390,51 @@ public class ProgrameSeriesFragment extends BaseFragment implements
             }
         });
 
+        //视频播放
         prepareMediaPlayer();
     }
 
+
+    //按键
     public boolean interruptKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             int keycode = event.getKeyCode();
             View focusView = scrollView.findFocus();
             int dir = View.FOCUS_DOWN;
+            //方向键
             switch (keycode) {
+                //向下
                 case KeyEvent.KEYCODE_DPAD_UP:
                     dir = View.FOCUS_UP;
                     break;
+                //向右
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
                     if (focusView != null && focusView.getId() == (more == null ? R.id.collect : R.id.more)) {
                         return true;
                     }
                     dir = View.FOCUS_RIGHT;
                     break;
+                //向下
                 case KeyEvent.KEYCODE_DPAD_DOWN:
                     dir = View.FOCUS_DOWN;
+                    Log.i(TAG,"KEYCODE_DPAD_DOWN-->向下按键");
                     if (focusView.getId() == R.id.collect
                             || focusView.getId() == R.id.full_screen
                             || focusView.getId() == R.id.id_video_player) {
+
+                        Log.i(TAG,"KEYCODE_DPAD_DOWN-->符合id条件-->"+focusView.getId());
+
                         if (mRecyclerView != null && mRecyclerView.getChildAt(0) != null) {
+                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->跳转第0个");
                             mRecyclerView.getChildAt(0).requestFocus();
                             return true;
+                        }else {
+                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->没有符合的id");
                         }
                     }
+
                     break;
+                //向左
                 case KeyEvent.KEYCODE_DPAD_LEFT:
                     if (focusView == mVideoView) {
                         return true;
@@ -423,6 +444,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
             }
             View targetView = FocusFinder.getInstance().findNextFocus(scrollView, scrollView
                     .findFocus(), dir);
+
             if (targetView != null) {
                 if (dir == View.FOCUS_UP) {
                     switch (targetView.getId()) {
@@ -605,6 +627,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 
     @Override
     public void onItemClick(View view, int position, Object object) {
+        Log.d(TAG, "onItemClick");
         int targetIndex = mPageDaoImpl.getCurrentPosition(position);
 
         if (scrollView.isScrollMode()) return;
@@ -634,6 +657,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         Log.d(TAG, "onItemFocusChange");
     }
 
+    //收藏
     private void doCollect() {
         if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
             lastClickTime = System.currentTimeMillis();//记录这次点击时间
@@ -650,10 +674,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         }
     }
 
+    //全屏
     private void doBigScreen() {
         mVideoView.EnterFullScreen(getActivity(), false);
     }
-
+    //取消收藏
     private void delCollect(String contentUuId) {
         DBUtil.UnCollect(contentUuId, new DBCallback<String>() {
             @Override
@@ -677,6 +702,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     }
 
     private void updateCollect(Content entity) {
+
         DBUtil.PutCollect(entity, new DBCallback<String>() {
             @Override
             public void onResult(final int code, String result) {
@@ -781,6 +807,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
 //        }
     }
 
+    //焦点改变
     @Override
     public void onEpisodeChange(int mIndex, int position) {
         this.historyposition = mIndex;

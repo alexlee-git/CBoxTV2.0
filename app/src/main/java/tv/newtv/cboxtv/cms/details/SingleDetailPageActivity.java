@@ -6,29 +6,20 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.views.custom.DivergeView;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import com.newtv.libs.util.BitmapUtil;
-import com.newtv.libs.util.DeviceUtil;
-import com.newtv.libs.util.LogUploadUtils;
-
+import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
-import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
-import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
 
@@ -40,10 +31,13 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
  * 创建日期:          2018/8/6
  */
 @SuppressWarnings("FieldCanBeLocal")
+@BuyGoodsAD
 public class SingleDetailPageActivity extends DetailPageActivity {
+
     private HeadPlayerView headPlayerView;
     private String contentUUID;
     private SmoothScrollView scrollView;
+    private boolean isADEntry = false;
 
     @Override
     public boolean hasPlayer() {
@@ -109,6 +103,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
 
         if (savedInstanceState == null) {
             contentUUID = getIntent().getStringExtra("content_uuid");
+             isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
         } else {
             contentUUID = savedInstanceState.getString("content_uuid");
         }
@@ -155,6 +150,12 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                         }
                     }
                 })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+
+                    }
+                })
                 .SetClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -188,6 +189,4 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     }
                 }));
     }
-
-
 }

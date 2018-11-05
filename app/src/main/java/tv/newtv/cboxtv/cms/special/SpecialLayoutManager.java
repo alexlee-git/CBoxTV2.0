@@ -7,11 +7,13 @@ import android.support.v4.app.FragmentTransaction;
 import com.newtv.cms.bean.ModelResult;
 
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
+import tv.newtv.cboxtv.cms.special.doubleList.fragment.NewSpecialFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BallPlayerFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BallRoundFragment;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
 import tv.newtv.cboxtv.cms.special.fragment.DefaultSpecial;
 import tv.newtv.cboxtv.cms.special.fragment.MedalFragment;
+import tv.newtv.cboxtv.cms.special.fragment.SpecialThreeFragment;
 import tv.newtv.cboxtv.cms.special.fragment.TopicTwoFragment;
 import tv.newtv.cboxtv.cms.special.fragment.ProgramPageFragment;
 import tv.newtv.cboxtv.cms.special.fragment.QXDFFragment;
@@ -85,6 +87,10 @@ public class SpecialLayoutManager {
                 baseSpecialContentFragment = new MedalFragment();
             }else if("special_012".equals(type)){
                 baseSpecialContentFragment = new TopicTwoFragment();
+            }else if("special_013".equals(type)){
+                baseSpecialContentFragment = new NewSpecialFragment();
+            } else if ("special_014".equals(type)) {
+                baseSpecialContentFragment = new SpecialThreeFragment();
             }
 
         }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -174,20 +173,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
             Bundle savedInstanceState) {
         if (contentView == null) {
             contentView = inflater.inflate(getLayoutId(), container, false);
-            mUpdateVideoInfoObservable = RxBus.get().register(Constant.UPDATE_VIDEO_PLAY_INFO);
-            mUpdateVideoInfoObservable.observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<VideoPlayInfo>() {
-                        @Override
-                        public void accept(VideoPlayInfo data) throws Exception {
-                            mPlayIndex = data.index;
-                            mPlayPosition = data.position;
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
 
-                        }
-                    });
             mPresenter = new ContentContract.ContentPresenter(contentView.getContext(),this);
             setUpUI(contentView);
         }

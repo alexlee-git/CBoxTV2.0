@@ -1,8 +1,9 @@
 package tv.newtv.cboxtv.views.detail;
 
+import com.newtv.cms.BuildConfig;
+
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.cms.net.NetClient;
 
 /**

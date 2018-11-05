@@ -5,6 +5,7 @@ import android.util.Log;
 import com.newtv.libs.util.GsonUtil;
 
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
+import tv.newtv.cboxtv.cms.special.doubleList.bean.SpecialBean;
 
 /**
  * 类描述：解析数据的工具类
@@ -479,5 +480,10 @@ public class ModuleUtils {
 //            Log.e(TAG, "------解析失败-------" + e.toString());
 //        }
 //        return mModuleInfoResult;
+    }
+
+    public SpecialBean parseJsonForNewSpecialSecondData(String dataString) {
+        Log.i(TAG, "parseJsonForNewSpecialSecondData: " + dataString);
+        return GsonUtil.fromjson(dataString, SpecialBean.class);
     }
 }

@@ -57,6 +57,8 @@ public class Constant {
     public static final String AD_GLOBAL_POPUP = "cbox_global_popup";
     //详情页顶部小窗口广告
     public static final String AD_DETAILPAGE_TOPPOS = "cbox_detailpage_toppos";
+    //边看变买广告
+    public static final String AD_BUY_GOODS = "buygoods";
 
     //广告内容类型
     public static final String AD_IMAGE_TYPE = "image";//图片广告
@@ -116,6 +118,7 @@ public class Constant {
     public static final String CONTENT_TYPE = "content_type";
     public static final String SERIES_UUID = "series_uuid";
     public static final String ACTION_TYPE = "action_type";
+    public static final String ACTION_AD_ENTRY = "action_ad_entry";//判断是不是从广告点击进入
     public static final String CONTENT_UUID = "content_uuid";
     public static final String DEFAULT_UUID = "default_uuid";
     public static final String FOCUSPARAM = "focusParam";
@@ -138,6 +141,7 @@ public class Constant {
     public static final String EXTERNAL_PARAM_SERIES_SUB_UUID = "sid";//节目集ID
     // 定义log
     public static final int LOG_NODE_HOME_PAGE = 0;           // 首页日志
+    public static final int LOG_NODE_ADVERT = 6;           // 开屏广告日志
     public static final int LOG_COLUMN_INTO = 1;          // 进入栏目列表
     public static final int LOG_NODE_NAVIGATION_SELECT = 66;    // 导航日志
     public static final int LOG_NODE_SEARCH = 2;              // 搜索页日志
@@ -149,7 +153,7 @@ public class Constant {
     public static final int LOG_NODE_COLLECT = 5;               // 收藏
     public static final int LOG_NODE_USER_CENTER = 8;               //用户中心
     public static final int LOG_NODE_ONE__DETAIL = 3;               // 某个影片的详情页
-    public static final int LOG_NODE_PAGE = 500;                 // 页面日志
+    public static final int LOG_NODE_PAGE = 19;                 // 页面日志
     public static final int LOG_NODE_RECOMMEND_POS = 501;        // 页面数据的推荐位日志
     public static final int LOG_NODE_SPECIAL_PAGE = 17;         // 专题页日志
     public static final int LOG_NODE_SCREEN = 700;               // 筛选页日志
@@ -158,6 +162,8 @@ public class Constant {
     public static final int LOG_NODE_JUMP = 68;            //外部推荐位跳转
     public static final int LOG_NODE_DEVICE_INFO = 86;          // 终端设备信息
     public static final int LOG_NODE_AUTH_INFO = 10;          // 认证
+    public static final int LOG_BUY_GOODS = 47;              //边看边买日志
+    public static final int FLOATING_LAYER=4;
     public static final String BACK_FIRST_NAV = "back_first_nav"; // 返回一级导航
     public static final String BG_EVENT = "bg_event";
     public static final String UPDATE_UC_DATA = "update_uc_data";
@@ -171,6 +177,7 @@ public class Constant {
     public static final String INIT_ADSDK = "init_sdk";//adsdk初始化
     public static final String INIT_LOGSDK = "init_logsdk";//logsdk初始化
     public static final String CHECK_ERROR = "播控鉴权失败：";
+
     private static final Map<String, String> mServerAddressMap = new HashMap<>();
 //    public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
 //            .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH) : "http://search.cloud.ottcn" +
@@ -179,12 +186,15 @@ public static final String BASE_URL_SEARCH = "http://111.32.138.94/";
     public static final String SERVER_TIME_URL = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SERVER_TIME)) ? getBaseUrl(HeadersInterceptor.SERVER_TIME) : "https://bzo.cloud" +
             ".ottcn.com/";
+    public static final String VERSION_UP_BASE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String VERSION_UP = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .VERSION_UP)) ? getBaseUrl(HeadersInterceptor.VERSION_UP) : "https://bzo.cloud.ottcn" +
-            ".com/"; //版本升级
+            .VERSION_UP)) ? getBaseUrl(HeadersInterceptor.VERSION_UP) : VERSION_UP_BASE; //版本升级
+
+    public static final String IS_ORIENTED_BASE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String IS_ORIENTED = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .IS_ORIENTED)) ? getBaseUrl(HeadersInterceptor.IS_ORIENTED) : "https://bzo.cloud" +
-            ".ottcn.com/"; //检查是否是定向升级
+            .IS_ORIENTED)) ? getBaseUrl(HeadersInterceptor.IS_ORIENTED) : IS_ORIENTED_BASE; //检查是否是定向升级
     /**
      * log服务器地址
      */
@@ -218,6 +228,7 @@ public static final String BASE_URL_SEARCH = "http://111.32.138.94/";
     public static boolean isInitStatus = true;
     public static String UUID_KEY = "uuid";
     public static String UUID;
+    public static String ALREADY_SAVE = "alreadySave";
     // 定义一个全局的静态变量   用于在小屏和大屏两种模式下， 确定当前是否符合直播的条件
     // 开启直播时，将该值置为true   到达直播结束时间，关闭直播时，将该值置为false
     // 什么时候会开启直播？

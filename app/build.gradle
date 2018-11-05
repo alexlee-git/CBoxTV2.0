@@ -32,14 +32,14 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'armeabi' , 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi', 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
             }
         }
- 
+
         multiDexEnabled true
         signingConfig signingConfigs.config
         flavorDimensions "versionCode"
@@ -75,18 +75,29 @@ android {
     }
 
     productFlavors {
+        xunmatouyingyi {
 
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"1000701\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "1000701"
+            ]
+        }
         xiaomi {
+
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600001\""
 
             manifestPlaceholders = [
-                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
                     CHANNEL_ID_VALUE: "600001"
             ]
         }
-
+/*
         letv {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
@@ -97,7 +108,7 @@ android {
                     CHANNEL_ID_VALUE: "600002"
             ]
         }
-
+*/
         /*
         xsj {
             buildConfigField "int", "LOG_DEBUG", "5"
@@ -111,6 +122,7 @@ android {
         }
         */
 
+        /*
         panda {
 
             buildConfigField "int", "LOG_DEBUG", "5"
@@ -135,7 +147,7 @@ android {
             ]
         }
 
-        /*
+
         feilierde {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
@@ -146,7 +158,8 @@ android {
                     CHANNEL_ID_VALUE: "500003"
             ]
         }
-
+*/
+        /*
         ailang {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
@@ -165,12 +178,12 @@ android {
             buildConfigField "String", "CHANNEL_ID", "\"600001\""
 
             manifestPlaceholders = [
-                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
                     CHANNEL_ID_VALUE: "600001"
             ]
         }
     }
- 
+
     splits {
         abi {
             enable true
@@ -230,6 +243,8 @@ dependencies {
     implementation project(':cms')
     implementation project(':libs')
     implementation project(':player')
+    compile 'com.github.bumptech.glide:okhttp3-integration:4.7.0@aar'
+    implementation files('libs/SmartTvShoppingSDK_v1.2.jar')
 }
 
 

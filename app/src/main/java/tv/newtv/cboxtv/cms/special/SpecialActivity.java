@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.libs.Constant;
@@ -20,17 +21,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
+import tv.newtv.cboxtv.MainActivity;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.cms.special.util.ActivityUtils;
 import tv.newtv.cboxtv.player.PlayerConfig;
 
 /**
  * 专题页
  */
+@BuyGoodsAD
 public class SpecialActivity extends BaseActivity implements SpecialContract.ModelResultView {
     private String mPageUUid;
+    private String mActionType;
+    private String mActionUri;
+    private boolean isADEntry = false;
 
     private BaseSpecialContentFragment mSpecialFragment;
     private SpecialContract.Presenter mSpecialPresenter;
@@ -57,12 +63,23 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_special);
-
-        if (!getIntent().hasExtra(Constant.CONTENT_UUID)) {
-            ToastUtil.showToast(getApplicationContext(), "UUID为空");
-            finish();
-            return;
-        }
+//
+//<<<<<<< HEAD
+//        if (!getIntent().hasExtra(Constant.CONTENT_UUID)) {
+//            ToastUtil.showToast(getApplicationContext(), "UUID为空");
+//            finish();
+//            return;
+//=======
+//        mSpecialFragment = (SpecialFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.content);
+//        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
+//        if (mSpecialFragment == null) {
+//            mSpecialFragment = SpecialFragment.newInstance();
+//            mSpecialFragment.setArguments(getIntent().getExtras());
+//            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+//                    mSpecialFragment, R.id.content);
+//>>>>>>> 1.4
+//        }
 
         String contentUUID = getIntent().getStringExtra(Constant.CONTENT_UUID);
         if (TextUtils.isEmpty(contentUUID)) {
@@ -91,6 +108,10 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
 
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if(isADEntry){
+                    startActivity(new Intent(SpecialActivity.this, MainActivity.class));
+                    isADEntry = false;
+                }
                 finish();
                 return true;
             }
@@ -124,8 +145,9 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
                     .append(mPageUUid + ",")
                     .append("")//专题模板
                     .trimToSize();
+            Log.e("SpecialActivity", dataBuff.toString());
 
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
+//            LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
         }
     }
 

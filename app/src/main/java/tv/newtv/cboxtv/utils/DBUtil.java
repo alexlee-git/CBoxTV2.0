@@ -9,6 +9,7 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.Utils;
 
 /**
  * 项目名称:         CBoxTV
@@ -130,55 +131,47 @@ public class DBUtil {
         if (mInfo == null) {
             return;
         }
-        ContentValues contentValues = new ContentValues();
 
-        /* 添加视频相关信息 */
-        if (mInfo.getContentType() != null) {//视频类型
-            contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
-        }
-        contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);//打开事件
+        if (Position > 0) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentUUID());
+            if (mInfo.getContentType() != null) {
+                contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
+            }
+            contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+            if (!TextUtils.isEmpty(mInfo.getVImage())) {
+                contentValues.put(DBConfig.IMAGEURL, mInfo.getVImage());
+            }
+            if (!TextUtils.isEmpty(mInfo.getTitle())) {
+                contentValues.put(DBConfig.TITLE_NAME, mInfo.getTitle());
+            }
+            contentValues.put(DBConfig.PLAYINDEX, index + "");
 
-        if (!TextUtils.isEmpty(mInfo.getVImage())) {//视频竖图
-            contentValues.put(DBConfig.IMAGEURL, mInfo.getVImage());
-        }
-        if (!TextUtils.isEmpty(mInfo.getTitle())) {//视频标题
-            contentValues.put(DBConfig.TITLE_NAME, mInfo.getTitle());
-        }
-        contentValues.put(DBConfig.PLAYINDEX, index);//播放索引
-        contentValues.put(DBConfig.PLAYPOSITION, Position);//播放到的位置
-        contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());//更新日期
-
-        /* 添加ID相关记录 */
-        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentID());
-
-        if (Constant.CONTENTTYPE_PG.equals(mInfo.getContentType()) || Constant.CONTENTTYPE_CP
-                .equals(mInfo.getContentType())) {
-            contentValues.put(DBConfig.PLAYID, mInfo.getContentUUID());
-        } else {
+            String seriesUUID = "";
             if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
                 if (mInfo.getData() != null && mInfo.getData().size() != 0) {
-                    contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentID());
+                    contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
+                    seriesUUID = mInfo.getData().get(index).getContentID();
                 }
             }
-        }
 
-        String seriesUUID = "";
-        if (TextUtils.isEmpty(mInfo.getContentID())) {
-            if (TextUtils.isEmpty(seriesUUID)) {
-                return;
+            contentValues.put(DBConfig.PLAYPOSITION, Position);
+            contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+            if (TextUtils.isEmpty(mInfo.getContentUUID())) {
+                if (TextUtils.isEmpty(seriesUUID)) {
+                    return;
+                }
+                contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
+            } else {
+                seriesUUID = mInfo.getContentUUID();
             }
-            contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
-        } else {
-            seriesUUID = mInfo.getCsContentIDs();
+            DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
+                    .condition()
+                    .eq(DBConfig.CONTENTUUID, seriesUUID)
+                    .build()
+                    .withValue(contentValues)
+                    .withCallback(callback).excute();
         }
-
-        LogUtils.d("insert", contentValues.toString());
-        DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, seriesUUID)
-                .build()
-                .withValue(contentValues)
-                .withCallback(callback).excute();
     }
 
     public static void addAttention(Content entity, DBCallback<String> callback) {

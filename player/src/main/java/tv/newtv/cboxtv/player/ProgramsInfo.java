@@ -33,12 +33,29 @@ public class ProgramsInfo implements Serializable {
     private String seriesSubUUID;
     private String playStartTime;
     private String playEndTime;
+    private String columnPoint;
+    private String rowPoint;
+    private String columnLength;
+    private String rowLength;
+    private String cellCode; // 组件内推荐位id
+    private int isAd; // 是否是广告位
+    private String focusPageUUID;
+    private String focusParam;
+    private String isTimeShift;
+    private int defaultFocus;
+
+    public int getDefaultFocus() {
+        return defaultFocus;
+    }
+
+    public void setDefaultFocus(int defaultFocus) {
+        this.defaultFocus = defaultFocus;
+    }
 
     //是否从栏目树观看历史进入的，如果是鉴权的AlbumId传seriesSubUUID
     private boolean isMenuGroupHistory;
     private String liveLoopType;
     private String liveParam;
-    private String isTimeShift;
     private KeyAction recommendedType;
     private List<ExtendAttr> extendAttr;
     private String img;

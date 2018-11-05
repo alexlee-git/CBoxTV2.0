@@ -60,6 +60,16 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //解决Rxjava的onError()异常
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Log.e("TAG","throw test");
+            }
+        });
+
+
         if (BuildConfig.DEBUG) {
 //            LeakCanary.install(this);
         }

@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.player;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -23,7 +25,7 @@ public class ProgramSeriesInfo implements Serializable {
     private String videoClass;
     private String channelId;
     private String tags;
-    private String vipFlag;
+    private String vipFlag;//0 免费；1 VIP免费；2 单点付费
     private String vipProductId;
     private String movieLevel;     //1正片 2预告片 3花絮
     private String definition;     //SD标清  HD高清
@@ -503,6 +505,271 @@ public class ProgramSeriesInfo implements Serializable {
 
     public void setStepSize(String stepSize) {
         this.stepSize = stepSize;
+    }
+
+    public void resolveVip(){
+        if(getData() != null && getData().size() > 0){
+            if(getVipFlag() != null && !getVipFlag().equals("0")){
+
+                if(TextUtils.isEmpty(vipNumber)){
+                    for(ProgramsInfo info : getData()){
+                        info.setVipFlag(getVipFlag());
+                    }
+                } else {
+                    int number = Integer.parseInt(vipNumber);
+                    int min = Math.min(number,getData().size());
+                    int temp = 0;
+                    for(int i=0;i<min;i++){
+                        if("0".equals(sortType)){
+                            temp = getData().size() - i;
+                        } else {
+                            temp = i;
+                        }
+                        getData().get(temp).setVipFlag(vipFlag);
+                    }
+                }
+
+            }
+        }
+    }
+
+    public static class ProgramsInfo implements Serializable {
+
+        private static final long serialVersionUID = 3461360387779387505L;
+        private String contentUUID;
+        private String title;
+        private String contentType;
+        private String hImage;
+        private String vImage;
+        private String subTitle;
+        private String actionType;
+        private String actionUri;        //动作地址
+        private String grade;
+        private String lSuperScript;    //左上角标ID
+        private String rSuperScript;    //右上角标ID
+        private String lSubScript;      //左下角标ID
+        private String rSubScript;      //右下角标ID
+        private String periods;         //集号
+        private String des;         //集号
+        private String liveUrl;
+        private String playUrl;
+        private String seriesSubUUID;
+        private String playStartTime;
+        private String playEndTime;
+        //是否从栏目树观看历史进入的，如果是鉴权的AlbumId传seriesSubUUID
+        private boolean isMenuGroupHistory;
+
+        private String vipFlag;
+
+        public ProgramsInfo() {
+        }
+
+        public ProgramsInfo(String contentUUID, String title, String contentType, String hImage, String vImage, String subTitle, String actionType, String actionUri, String grade, String lSuperScript, String rSuperScript, String lSubScript, String rSubScript, String periods, String des) {
+            this.contentUUID = contentUUID;
+            this.title = title;
+            this.contentType = contentType;
+            this.hImage = hImage;
+            this.vImage = vImage;
+            this.subTitle = subTitle;
+            this.actionType = actionType;
+            this.actionUri = actionUri;
+            this.grade = grade;
+            this.lSuperScript = lSuperScript;
+            this.rSuperScript = rSuperScript;
+            this.lSubScript = lSubScript;
+            this.rSubScript = rSubScript;
+            this.periods = periods;
+            this.des = des;
+        }
+
+        public String getVipFlag() {
+            return vipFlag;
+        }
+
+        public void setVipFlag(String vipFlag) {
+            this.vipFlag = vipFlag;
+        }
+
+        public boolean isMenuGroupHistory() {
+            return isMenuGroupHistory;
+        }
+
+        public void setMenuGroupHistory(boolean menuGroupHistory) {
+            isMenuGroupHistory = menuGroupHistory;
+        }
+
+        public String getPlayStartTime() {
+            return playStartTime;
+        }
+
+        public void setPlayStartTime(String playStartTime) {
+            this.playStartTime = playStartTime;
+        }
+
+        public String getPlayEndTime() {
+            return playEndTime;
+        }
+
+        public void setPlayEndTime(String playEndTime) {
+            this.playEndTime = playEndTime;
+        }
+
+        public String getSeriesSubUUID() {
+            return seriesSubUUID;
+        }
+
+        public void setSeriesSubUUID(String seriesSubUUID) {
+            this.seriesSubUUID = seriesSubUUID;
+        }
+
+        public String getPlayUrl() {
+            return playUrl;
+        }
+
+        public void setPlayUrl(String playUrl) {
+            this.playUrl = playUrl;
+        }
+
+        public String getContentUUID() {
+            return contentUUID;
+        }
+
+        public void setContentUUID(String contentUUID) {
+            this.contentUUID = contentUUID;
+        }
+
+        public String getActionUri() {
+            return actionUri;
+        }
+
+        public void setActionUri(String actionUri) {
+            this.actionUri = actionUri;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public String gethImage() {
+            return hImage;
+        }
+
+        public void sethImage(String hImage) {
+            this.hImage = hImage;
+        }
+
+        public String getvImage() {
+            return vImage;
+        }
+
+        public void setvImage(String vImage) {
+            this.vImage = vImage;
+        }
+
+        public String getSubTitle() {
+            return subTitle;
+        }
+
+        public void setSubTitle(String subTitle) {
+            this.subTitle = subTitle;
+        }
+
+        public String getActionType() {
+            return actionType;
+        }
+
+        public void setActionType(String actionType) {
+            this.actionType = actionType;
+        }
+
+        public String getGrade() {
+            return grade;
+        }
+
+        public void setGrade(String grade) {
+            this.grade = grade;
+        }
+
+        public String getlSuperScript() {
+            return lSuperScript;
+        }
+
+        public void setlSuperScript(String lSuperScript) {
+            this.lSuperScript = lSuperScript;
+        }
+
+        public String getrSuperScript() {
+            return rSuperScript;
+        }
+
+        public void setrSuperScript(String rSuperScript) {
+            this.rSuperScript = rSuperScript;
+        }
+
+        public String getlSubScript() {
+            return lSubScript;
+        }
+
+        public void setlSubScript(String lSubScript) {
+            this.lSubScript = lSubScript;
+        }
+
+        public String getrSubScript() {
+            return rSubScript;
+        }
+
+        public void setrSubScript(String rSubScript) {
+            this.rSubScript = rSubScript;
+        }
+
+        public String getPeriods() {
+            return periods;
+        }
+
+        public String getLiveUrl() {
+            return liveUrl;
+        }
+
+        public void setLiveUrl(String liveUrl) {
+            this.liveUrl = liveUrl;
+        }
+
+        public void setPeriods(String periods) {
+            this.periods = periods;
+        }
+
+        @Override
+        public String toString() {
+            return "ProgramsInfo{" +
+                    "contentUUID='" + contentUUID + '\'' +
+                    ", title='" + title + '\'' +
+                    ", contentType='" + contentType + '\'' +
+                    ", hImage='" + hImage + '\'' +
+                    ", vImage='" + vImage + '\'' +
+                    ", subTitle='" + subTitle + '\'' +
+                    ", actionType='" + actionType + '\'' +
+                    ", actionUri='" + actionUri + '\'' +
+                    ", grade='" + grade + '\'' +
+                    ", lSuperScript='" + lSuperScript + '\'' +
+                    ", rSuperScript='" + rSuperScript + '\'' +
+                    ", lSubScript='" + lSubScript + '\'' +
+                    ", rSubScript='" + rSubScript + '\'' +
+                    ", seriesSubUUID='" + seriesSubUUID + '\'' +
+                    ", periods='" + periods + '\'' +
+                    '}';
+        }
     }
 
     public String getChannelId() {

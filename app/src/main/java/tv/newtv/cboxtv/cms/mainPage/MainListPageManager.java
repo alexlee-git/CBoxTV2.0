@@ -31,6 +31,8 @@ import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class MainListPageManager{
 
@@ -345,6 +347,8 @@ public class MainListPageManager{
                         .append(",")
                         .append(position)
                         .trimToSize();
+                SharedPreferences sp = mContext.getSharedPreferences("secondConfig", MODE_PRIVATE);
+                sp.edit().putString("secondMenu",logBuff.toString()).commit();
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
                         logBuff.toString());
                 PlayerConfig.getInstance().setSecondChannelId(result);

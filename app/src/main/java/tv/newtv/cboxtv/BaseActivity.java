@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.ad.annotation.PopupAD;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.KeyEventUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -29,6 +28,18 @@ import java.util.HashMap;
 import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import java.lang.annotation.Annotation;
+
+import tv.newtv.cboxtv.annotation.BuyGoodsInject;
+import tv.newtv.cboxtv.annotation.PopupAD;
+import tv.newtv.cboxtv.cms.ad.AdInject;
+import tv.newtv.cboxtv.cms.ad.BuyGoodsBusiness;
+import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
+import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
+import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
+import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.AdPopupWindow;
 
@@ -46,6 +57,10 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     private boolean fromOuter = false;//是否是外部跳转进入的
     private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
+
+    @BuyGoodsInject
+    protected BuyGoodsBusiness buyGoodsBusiness;
+
 
     protected void FocusToTop() {
 
@@ -91,7 +106,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onStop() {
         super.onStop();
         ActivityStacks.get().onStop(this);
-
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onStop();
+        }
         FrontStage = false;
     }
 
@@ -121,12 +138,16 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
 
         setBackgroundAD();
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onResume();
+        }
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setPopupAD();
+        AdInject.inject(this);
     }
 
     private void setPopupAD() {
@@ -145,6 +166,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
         if (adPopupWindow != null && adPopupWindow.isShowing()) {
             adPopupWindow.dismiss();
+        }
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onDestroy();
         }
     }
 
@@ -186,6 +210,10 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!FrontStage) return true;
         if (isFullScreen()) {
+            if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                    && buyGoodsBusiness.dispatchKeyEvent(event)){
+                return true;
+            }
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
                 return true;
             }
@@ -300,6 +328,16 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         Class<? extends BaseActivity> clazz = getClass();
         PopupAD annotation = clazz.getAnnotation(PopupAD.class);
         if (annotation != null) {
+//=======
+//    private boolean hasPopoupAD(){
+//        return hasAnnotation(PopupAD.class);
+//    }
+//
+//    private boolean hasAnnotation(Class ann){
+//        Class<? extends BaseActivity> clazz = getClass();
+//        Annotation annotation = clazz.getAnnotation(ann);
+//        if(annotation != null){
+//>>>>>>> 1.4
             return true;
         }
         return false;

@@ -17,4 +17,5 @@ public class AdEventContent {
     public String contentType;
     public String contentUUID;
     public String actionURI;
+    public String defaultUUID;
 }

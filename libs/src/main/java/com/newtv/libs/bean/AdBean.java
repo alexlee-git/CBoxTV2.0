@@ -17,9 +17,10 @@ public class AdBean {
         public List<AdspacesItem> open;
         public List<AdspacesItem> quit;
         public List<AdspacesItem> desk;
+        public List<AdspacesItem> buygoods;
     }
 
-    public class AdspacesItem{
+    public static class AdspacesItem{
         public String ext;
         public String pos;
         public List<Material> materials;
@@ -44,6 +45,33 @@ public class AdBean {
         public long fileSize;
         @SerializedName("play_time")
         public int playTime;
+        @SerializedName("font_content")
+        public String fontContent;
+        @SerializedName("font_color")
+        public String fontColor;
+        @SerializedName("font_size")
+        public String fontSize;
+        @SerializedName("font_style")
+        public String fontStyle;
+
+        @Override
+        public String toString() {
+            return "Material{" +
+                    "filePath='" + filePath + '\'' +
+                    ", eventContent='" + eventContent + '\'' +
+                    ", eventType='" + eventType + '\'' +
+                    ", fileName='" + fileName + '\'' +
+                    ", name='" + name + '\'' +
+                    ", id=" + id +
+                    ", type='" + type + '\'' +
+                    ", fileSize=" + fileSize +
+                    ", playTime=" + playTime +
+                    ", fontContent='" + fontContent + '\'' +
+                    ", fontColor='" + fontColor + '\'' +
+                    ", fontSize='" + fontSize + '\'' +
+                    ", fontStyle='" + fontStyle + '\'' +
+                    '}';
+        }
     }
 
 

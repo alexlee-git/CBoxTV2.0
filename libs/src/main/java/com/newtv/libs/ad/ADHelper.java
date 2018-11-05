@@ -67,57 +67,6 @@ public class ADHelper {
         return instance;
     }
 
-    /**
-     * 解析AD数据
-     *
-     * @param jsonResult
-     * @return
-     */
-    public AD parseAD(Context context, String jsonResult) {
-        if (TextUtils.isEmpty(jsonResult)) return null;
-        AdBean bean = GsonUtil.fromjson(jsonResult, AdBean.class);
-        if (bean == null || bean.adspaces == null || bean.adspaces.open ==
-                null || bean.adspaces.open.size() == 0) {
-            return null;
-        }
-        final AD result = new AD();
-        AdBean.AdspacesItem item = bean.adspaces.open.get(0);
-        List<AdBean.Material> items = item.materials;
-        int adTime = 0;
-        final List<AD.ADItem> paths = new ArrayList<>();
-
-        for (final AdBean.Material materialItem : items) {
-            final int time = (materialItem.playTime == 0 ? 3 : materialItem.playTime);
-            adTime += time;
-            StringBuffer path = new StringBuffer();
-            int isLocal = AdSDK.getInstance().getLocalAd(materialItem
-                    .filePath, path);
-            if (isLocal == 0) {
-                paths.add(new AD.ADItem(path.toString(), materialItem.fileName, materialItem
-                        .type, true, time, Integer.toString(item.mid), Integer.toString(item.aid),
-                        Integer.toString(materialItem.id), materialItem.eventType, materialItem.eventContent));
-                result.time = adTime;
-            } else {
-                File file = new File(AdCache + File.pathSeparator + materialItem.fileName);
-                if (file.exists()) {
-                    paths.add(new AD.ADItem(file.getAbsolutePath(), materialItem.fileName,
-                            materialItem.type, true, time, Integer.toString(item.mid), Integer
-                            .toString(item.aid),
-                            Integer.toString(materialItem.id), materialItem.eventType, materialItem.eventContent));
-                } else {
-                    paths.add(new AD.ADItem(materialItem.filePath, materialItem.fileName,
-                            materialItem.type, false,
-                            time, Integer.toString(item.mid), Integer.toString(item.aid),
-                            Integer.toString(materialItem.id), materialItem.eventType, materialItem.eventContent));
-                }
-            }
-        }
-        result.time = adTime;
-        result.adItems = paths;
-        return result;
-    }
-
-
     public AD parseADString(Context context, String jsonResult) {
 
         AD result = null;
@@ -146,19 +95,19 @@ public class ADHelper {
             if (isLocal == 0) {
                 paths.add(new AD.ADItem(path.toString(), materialItem.m_fileName, materialItem
                         .m_type, true, time, adInfo.m_mid, adInfo.m_aid,
-                        materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent));
+                        materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent,adInfo.m_pos));
                 result.time = adTime;
             } else {
                 File file = new File(AdCache + File.pathSeparator + materialItem.m_fileName);
                 if (file.exists()) {
                     paths.add(new AD.ADItem(file.getAbsolutePath(), materialItem.m_fileName,
                             materialItem.m_type, true, time, adInfo.m_mid, adInfo.m_aid,
-                            materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent));
+                            materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent,adInfo.m_pos));
                 } else {
                     paths.add(new AD.ADItem(materialItem.m_filePath, materialItem.m_fileName,
                             materialItem.m_type, false,
                             time, adInfo.m_mid, adInfo.m_aid,
-                            materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent));
+                            materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent,adInfo.m_pos));
                 }
             }
         }
@@ -342,6 +291,9 @@ public class ADHelper {
                         });
             }
 
+            if(adItems.size() == 1 && TextUtils.equals(adItems.get(0).position,Constant.AD_DETAILPAGE_BANNER)){
+                return;
+            }
 
             CountDown countDown = new CountDown(adItem.PlayTime);
             countDown.listen(new CountDown.Listen() {
@@ -379,13 +331,14 @@ public class ADHelper {
             public String id;
             public String eventType;               //广告互动类型
             public String eventContent;            //广告互动内容
+            public String position;
 
             public ADItem(String type){
                 AdType = type;
             }
 
             public ADItem(String url, String name, String type, boolean local, int time, String
-                    m, String a, String id, String eventType, String eventContent) {
+                    m, String a, String id, String eventType, String eventContent,String position) {
                 AdUrl = url;
                 FileName = name;
                 AdType = type;
@@ -396,6 +349,7 @@ public class ADHelper {
                 this.id = id;
                 this.eventType = eventType;
                 this.eventContent = eventContent;
+                this.position = position;
             }
 
             @Override
@@ -410,8 +364,9 @@ public class ADHelper {
                         ", mid='" + mid + '\'' +
                         ", aid='" + aid + '\'' +
                         ", id='" + id + '\'' +
-                        ", event_type='" + eventType + "\'" +
-                        ", event_content'" + eventContent + "\'" +
+                        ", eventType='" + eventType + '\'' +
+                        ", eventContent='" + eventContent + '\'' +
+                        ", position='" + position + '\'' +
                         '}';
             }
         }

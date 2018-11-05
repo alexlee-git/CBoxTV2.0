@@ -23,7 +23,6 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 
@@ -116,7 +115,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
             if (liveInfo.isLiveTime()) {
                 livePresenter.checkLive(liveInfo);
             }
-        }else{
+        } else {
 
         }
     }
@@ -211,5 +210,31 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
 
+//=======
+//    private void timer(){
+//        LiveTimingUtil.endTime(mProgramInfo.getPlayEndTime(), new LiveTimingUtil
+// .LiveEndListener() {
+//            @Override
+//            public void end() {
+////                if(videoPlayerView != null){
+////                    videoPlayerView.setHintText("播放已结束");
+////                    videoPlayerView.setHintTextVisible(View.VISIBLE);
+////                }
+//
+//                if(!NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+//                    Log.e(BallPlayerFragment.class.getSimpleName(), "非直播时间，不结束播放");
+//                    return;
+//                }
+//                if(!TextUtils.isEmpty(mProgramInfo.getImg())){
+//                    mImageView.setVisibility(View.VISIBLE);
+//                    Picasso.get()
+//                            .load(mProgramInfo.getImg())
+//                            .into(mImageView);
+//                }
+//                TimeDialog.showBuilder(getContext());
+//                stopPlay();
+//            }
+//        });
+//>>>>>>> 1.4
     }
 }

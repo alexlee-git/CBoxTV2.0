@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.superscript;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.contract.CornerContract;
@@ -22,8 +23,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import tv.newtv.cboxtv.BuildConfig;
 
 /**
  * Created by lixin on 2018/3/9.

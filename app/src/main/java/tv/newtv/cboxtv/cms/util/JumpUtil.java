@@ -14,7 +14,12 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.NewTVLauncherPlayerActivity;
@@ -27,8 +32,13 @@ import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
+import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.utils.PlayInfoUtil;
 
 public class JumpUtil {
+
+    private static int mPlayPosition;
 
     private static HashMap<String, String> parseParamMap(String paramStr) {
         HashMap<String, String> paramsMap = new HashMap<>();
@@ -55,7 +65,7 @@ public class JumpUtil {
         JumpUtil.activityJump(context, actionType, contentType,
                 parseParamMap(params), true);
         Log.e("Splash", "SplashActivity---> onCreate 接收到外部应用跳转需求, action : "
-                + action + " param : " + params);
+                + action + " param : " + params+"============="+ action);
         return true;
     }
 
@@ -77,6 +87,7 @@ public class JumpUtil {
             jumpIntent.putExtra(Constant.DEFAULT_UUID, info.getL_focusId());
             jumpIntent.putExtra(Constant.FOCUSPARAM, info.getL_focusParam());
 
+
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
         }
@@ -85,6 +96,35 @@ public class JumpUtil {
     public static void activityJump(Context context, String actionType, String contentType,
                                     String contentUUID, String actionUri) {
         activityJump(context, actionType, contentType, contentUUID, actionUri, "");
+    }
+
+    //bug YSYY130XM-10
+    public static void activityJump(Context context, boolean isADEntry,String actionType, String contentType,
+                                    String contentUUID, String actionUri) {
+        activityJump(context, actionType, contentType, contentUUID, actionUri, "",false,isADEntry);
+    }
+    //bug YSYY130XM-10
+    public static void activityJump(Context context, String actionType, String contentType,
+                                    String contentUUID, String actionUri, String seriesSubUUID,
+                                    boolean fromOuter,boolean isADEntry) {
+        // fix bug LETVYSYY-51
+        if (!NetworkManager.getInstance().isConnected()) {
+            Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID);
+        if (jumpIntent != null) {
+            jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
+            jumpIntent.putExtra(Constant.CONTENT_UUID, contentUUID);
+            jumpIntent.putExtra(Constant.PAGE_UUID, contentUUID);
+            jumpIntent.putExtra(Constant.ACTION_TYPE, actionType);
+            jumpIntent.putExtra(Constant.ACTION_URI, actionUri);
+            jumpIntent.putExtra(Constant.ACTION_FROM, fromOuter);
+            jumpIntent.putExtra(Constant.ACTION_AD_ENTRY,isADEntry);
+            jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ActivityCompat.startActivity(context, jumpIntent, null);
+        }
     }
 
     public static void activityJump(Context context, String actionType, String contentType,
@@ -140,6 +180,7 @@ public class JumpUtil {
             jumpIntent.putExtra(Constant.PAGE_UUID, contentUUID);
             jumpIntent.putExtra(Constant.ACTION_TYPE, actionType);
             jumpIntent.putExtra(Constant.ACTION_URI, actionUri);
+            jumpIntent.putExtra(Constant.DEFAULT_UUID,seriesSubUUID);
             jumpIntent.putExtra(Constant.ACTION_FROM, fromOuter);
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
@@ -282,6 +323,7 @@ public class JumpUtil {
             ActivityCompat.startActivity(context, jumpIntent, null);
         }
     }
+
 
     private static Context getMainContext(Context context) {
         Context tmpContext = context;

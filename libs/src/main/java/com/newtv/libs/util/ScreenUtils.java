@@ -3,6 +3,8 @@ package com.newtv.libs.util;
 import android.content.Context;
 import android.util.DisplayMetrics;
 
+import com.newtv.libs.Libs;
+
 /**
  * 项目名称:         CBoxTV
  * 包名:            tv.newtv
@@ -38,11 +40,22 @@ public class ScreenUtils {
         screenDensity = metric.density;
     }
 
+    private static void checkInit(int size){
+        if(size <= 0){
+            initScreen(Libs.get().getContext());
+        }
+    }
+
     public static int getScreenW(){
+        checkInit(screenW);
         return screenW;
     }
 
-    public static int getScreenH(){
+    public static int getScreenH() {
+        checkInit(screenH);
+        if (screenH == 1024){
+            screenH = 1080;
+        }
         return screenH;
     }
 

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_newspecial_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="@dimen/height_322px"
+        android:layout_height="match_parent"
+        android:background="@drawable/special_left_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/fragment_newspecial_left_up"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:visibility="invisible"
+            android:src="@drawable/ic_fragment_newspecial_up" />
+
+        <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
+            android:id="@+id/fragment_newspecial_left_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_900px"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"
+            android:focusable="true"/>
+
+        <ImageView
+            android:id="@+id/fragment_newspecial_left_down"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:visibility="invisible"
+            android:src="@drawable/ic_fragment_newspecial_down" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="@dimen/width_512px"
+        android:layout_height="match_parent"
+        android:background="@drawable/special_center_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/fragment_newspecial_center_up"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:visibility="invisible"
+            android:src="@drawable/ic_fragment_newspecial_up" />
+
+        <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
+            android:id="@+id/fragment_newspecial_center_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_900px"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_bias="1.0"
+            android:focusable="true"/>
+
+        <ImageView
+            android:id="@+id/fragment_newspecial_center_down"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_16px"
+            android:layout_marginBottom="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_37px"
+            android:src="@drawable/ic_fragment_newspecial_down" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/video_linear"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/fragment_newspecial_video_name"
+            android:layout_width="@dimen/width_700px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_25px"
+            android:layout_marginTop="@dimen/height_190px"
+            android:ellipsize="end"
+            android:focusable="false"
+            android:maxLength="15"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_40px" />
+
+        <TextView
+            android:id="@+id/fragment_newspecial_video_title"
+            android:layout_width="@dimen/width_880px"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/height_50px"
+            android:layout_marginLeft="@dimen/width_25px"
+            android:layout_marginTop="@dimen/height_16px"
+            android:ellipsize="end"
+            android:focusable="false"
+            android:maxLines="2"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_28px" />
+
+        <FrameLayout
+            android:id="@+id/fragment_newspecial_video_focus"
+            android:layout_width="@dimen/width_1012px"
+            android:layout_height="@dimen/height_568px"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/selector_pos_background"
+            android:focusable="false">
+
+            <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+                android:id="@+id/fragment_newspecial_video_player"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <TextView
+                android:id="@+id/fragment_newspecial_video_player_title"
+                android:layout_width="@dimen/width_1021px"
+                android:layout_height="wrap_content"
+                android:background="@drawable/special_video_title_bg"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/height_15px"
+                android:textColor="#FF5500"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/fragment_newspecial_video_player_full_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:layout_marginBottom="@dimen/height_24px"
+                android:layout_marginRight="@dimen/height_24px"
+                android:src="@drawable/full_screen"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

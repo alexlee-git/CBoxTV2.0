@@ -16,8 +16,18 @@ import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
 
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
+import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
@@ -31,6 +41,7 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
     private Context context;
     private Interpolator mSpringInterpolator;
     private RecyclerView mRecyclerView;
+//    private ProgramSeriesInfo.ProgramsInfo programsInfo;
 
     public DetailsHorizontalAdapter(Context context, Interpolator mSpringInterpolator, RecyclerView mRecyclerView) {
         this.context = context;
@@ -70,6 +81,7 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
 
         private TextView subTitleTv;
 
+
         public DetailsHorizontalViewHolder(View itemView) {
             super(itemView);
             itemView.setFocusable(false);
@@ -84,14 +96,14 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
             int space = context.getResources().getDimensionPixelOffset(R.dimen.width_17dp);
             FrameLayout.LayoutParams posterPara = new FrameLayout.LayoutParams(posterIv.getLayoutParams());
 //            posterPara.topMargin = space;
-            posterPara.setMargins(space,space,0,0);
+            posterPara.setMargins(space, space, 0, 0);
             posterIv.setLayoutParams(posterPara);
             posterIv.requestLayout();
 
 
             ViewGroup.LayoutParams focusPara = focusImageView.getLayoutParams();
-            focusPara.width = posterPara.width+2*space;
-            focusPara.height = posterPara.height+2*space;
+            focusPara.width = posterPara.width + 2 * space;
+            focusPara.height = posterPara.height + 2 * space;
             focusImageView.setLayoutParams(focusPara);
             focusImageView.requestLayout();
 
@@ -104,11 +116,11 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
                 onItemGetFocus(v);
 
 
-                if (view!=null){
+                if (view != null) {
                     view.setSelected(true);
                 }
             } else {
-                if (view!=null){
+                if (view != null) {
                     view.setSelected(false);
                 }
                 onItemLoseFocus(v);
@@ -141,9 +153,10 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
 //                                    entity.getContentUUID(), entity.getActionUri(),entity.getSeriesSubUUID());
 //                        }
                     }
+
                     return true;
-                }else if (keyCode==KeyEvent.KEYCODE_DPAD_LEFT){
-                    if (getAdapterPosition() ==0) {
+                } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    if (getAdapterPosition() == 0) {
                         return true;
                     }
 
@@ -157,6 +170,7 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
     }
+
 
 
     private void onItemLoseFocus(View view) {

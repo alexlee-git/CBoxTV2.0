@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.uc.bean;
 
 import android.app.DownloadManager;
+import android.app.IntentService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,17 +39,42 @@ public class DownloadReceiver extends BroadcastReceiver {
     private File file;
     private SharedPreferences pref;
     private Context context;
+    private long downId;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
         Bundle bundle = intent.getExtras();
-        long downId = bundle.getLong(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+        downId = bundle.getLong(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
         //下载完成或点击通知栏
         if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE) ||
                 intent.getAction().equals(DownloadManager.ACTION_NOTIFICATION_CLICKED)) {
-            queryFileUri(context, downId);
+
+            sendMsgByIntentService(context);
+        }
+    }
+    private void sendMsgByIntentService(Context context) {
+        Intent intent = new Intent(context, MyIntentService.class);
+        intent.setAction("startIntentService");
+        context.startService(intent);
+    }
+
+    public class MyIntentService extends IntentService{
+        /**
+         * Creates an IntentService.  Invoked by your subclass's constructor.
+         *
+         * @param name Used to name the worker thread, important only for debugging.
+         */
+        public MyIntentService(String name) {
+            super(name);
         }
 
+        @Override
+        protected void onHandleIntent(@Nullable Intent intent) {
+            if("startIntentService".equals(intent.getAction())){
+                queryFileUri(context, downId);
+            }
+        }
     }
 
     private void queryFileUri(Context context, long downloadApkId) {

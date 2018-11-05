@@ -23,6 +23,7 @@ public class DeviceUtil {
     public static final String CBOXTEST = "cboxtest";
     public static final String FEILIERDE = "feilierde";
     public static final String AILANG = "ailang"; //爱浪
+    public static final String XUNMATOUYINGYI = "xunmatouyingyi"; //迅码投影仪
 
     @SuppressWarnings("ConstantConditions")
     public static boolean isSelfDevice() {
@@ -52,6 +53,12 @@ public class DeviceUtil {
             return !TextUtils.isEmpty(fModel) && fled.equalsIgnoreCase(fModel);
         } else if (BuildConfig.FLAVOR.equals(AILANG)) {
             return true;
+        } else if (BuildConfig.FLAVOR.equals(XUNMATOUYINGYI)) {
+            String fvid = "unknown";
+            String vid = SystemPropertiesProxy.getProperty("hw.yunos.vendorID", "");
+            if (!TextUtils.isEmpty(vid)&&!fvid.equalsIgnoreCase(vid)){
+                return true;
+            }
         }
         return false;
     }

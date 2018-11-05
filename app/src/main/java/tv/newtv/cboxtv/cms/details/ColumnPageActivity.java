@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,14 +14,19 @@ import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -29,6 +35,7 @@ import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
+
 
 /**
  * 栏目详情页
@@ -39,6 +46,7 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/5
  */
+@BuyGoodsAD
 public class ColumnPageActivity extends DetailPageActivity {
 
     private EpisodePageView playListView;
@@ -47,6 +55,8 @@ public class ColumnPageActivity extends DetailPageActivity {
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
     private Content pageContent;
+    private boolean isADEntry = false;
+    private int currentIndex = -1;
 
     @Override
     protected void FocusToTop() {
@@ -86,8 +96,11 @@ public class ColumnPageActivity extends DetailPageActivity {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
 
-        ADConfig.getInstance().setSeriesID(getContentUUID());
-        if (TextUtils.isEmpty(getContentUUID())) {
+        String contentUUID = getIntent().getStringExtra("content_uuid");
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+        ADConfig.getInstance().setSeriesID(contentUUID);
+        if (TextUtils.isEmpty(contentUUID)) {
             Toast.makeText(this, "栏目信息异常", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -96,8 +109,8 @@ public class ColumnPageActivity extends DetailPageActivity {
         final SuggestView sameType = findViewById(R.id.same_type);
         headPlayerView = findViewById(R.id.header_video);
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.video_layout)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView.Builder
-                        .DB_TYPE_SUBSCRIP))
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView
+                        .Builder.DB_TYPE_SUBSCRIP))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add)
@@ -117,7 +130,8 @@ public class ColumnPageActivity extends DetailPageActivity {
                             }
 
                             SuggestView starView = findViewById(R.id.star);
-                            starView.setContentUUID(SuggestView.TYPE_COLUMN_FIGURES, info, null);
+                            starView.setContentUUID(SuggestView.TYPE_COLUMN_FIGURES, info,
+                                    null);
                         } else {
                             ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ColumnPageActivity.this.finish();
@@ -127,6 +141,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .SetPlayerCallback(new PlayerCallback() {
                     @Override
                     public void onEpisodeChange(int index, int position) {
+                        currentIndex = index;
                         if (index >= 0) {
                             playListView.setCurrentPlayIndex(index);
                         }
@@ -156,6 +171,14 @@ public class ColumnPageActivity extends DetailPageActivity {
                         }
                     }
                 })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        if (currentIndex > 8) {
+                            playListView.moveToPosition(currentIndex);
+                        }
+                    }
+                })
                 .SetClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -163,10 +186,12 @@ public class ColumnPageActivity extends DetailPageActivity {
                             case R.id.add:
                                 mPaiseView = ((DivergeView) headPlayerView.findViewUseId(R.id
                                         .view_praise));
-                                mPaiseView.setEndPoint(new PointF(mPaiseView.getMeasuredWidth() /
+                                mPaiseView.setEndPoint(new PointF(mPaiseView.getMeasuredWidth
+                                        () /
                                         2, 0));
-                                mPaiseView.setStartPoint(new PointF(getResources().getDimension(R
-                                        .dimen.width_40px),
+                                mPaiseView.setStartPoint(new PointF(getResources()
+                                        .getDimension(R
+                                                .dimen.width_40px),
                                         getResources().getDimension(R.dimen.height_185px)));
                                 mPaiseView.setDivergeViewProvider(new DivergeView
                                         .DivergeViewProvider() {

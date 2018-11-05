@@ -23,7 +23,9 @@ public class PlayerConfig {
     private String firstChannelId; //一级频道
     private String secondChannelId; // 二级频道
     private String topicId; //专题
-    private String columnId; //一级栏目 用于区分栏目树点击
+    private String columnId; //一级栏目
+
+
     private String secondColumnId; //二级栏目 用于区分栏目树点击
 
     public static PlayerConfig getInstance() {

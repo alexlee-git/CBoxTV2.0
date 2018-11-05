@@ -24,6 +24,7 @@ import com.newtv.cms.Request;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.GsonUtil;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScreenUtils;
 
@@ -42,6 +43,8 @@ import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.player.R;
+import tv.icntv.icntvplayersdk.Constants;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * Created by TCP on 2018/4/17.
@@ -116,18 +119,22 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
      * AllNode初始化是否完成
      */
     private boolean allNodeInit = false;
+    private Context mcontext;
 
     public MenuGroup(Context context) {
         this(context, null);
+        mcontext =context;
     }
 
     public MenuGroup(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
+        mcontext =context;
     }
 
     @SuppressLint("ResourceAsColor")
     public MenuGroup(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mcontext =context;
         setOrientation(HORIZONTAL);
         recyclerViewWidth = DEFAULT_WIDTH = getResources().getDimensionPixelOffset(R.dimen.width_430px);
     }
@@ -228,7 +235,14 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public void addNodeToRoot(Node node) {
-        rootNodes.add(node);
+        for (int i=0;i<rootNodes.size();i++){
+            if (rootNodes.get(i).getTitle().equals(node.getTitle()) && node.getTitle().equals("我的")){
+                rootNodes.remove(rootNodes.get(i));
+            }
+        }
+        if (node.getTitle().equals("我的")){
+            rootNodes.add(0,node);
+        }
     }
 
     public boolean setLastProgram(LastMenuBean lastMenuBean, String pId, String detailContentUUID) {
@@ -925,6 +939,12 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         addGoneAnimator = true;
         //播放消失动画
         goneAnimator();
+
+
+    String    duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
+        if (duration !=null)
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
     }
 
     private int getVisibleNumber() {

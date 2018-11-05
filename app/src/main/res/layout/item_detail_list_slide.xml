@@ -39,6 +39,7 @@
         android:background="@drawable/icon_detail_tips_left" />
 
     <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:paddingTop="@dimen/height_24px"
         android:layout_marginRight="@dimen/width_90px"
         android:layout_marginLeft="@dimen/width_87px"
         android:id="@+id/air_side"

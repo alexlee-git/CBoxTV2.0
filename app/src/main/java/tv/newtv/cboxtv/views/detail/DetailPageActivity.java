@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.DeviceUtil;
 
 import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 
 /**
@@ -85,7 +85,7 @@ public abstract class DetailPageActivity extends BaseActivity {
         if (interruptKeyEvent(event)) {
             return super.dispatchKeyEvent(event);
         }
-        if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
+        if (Libs.get().getFlavor().equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
                 .ACTION_UP) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_ESCAPE:

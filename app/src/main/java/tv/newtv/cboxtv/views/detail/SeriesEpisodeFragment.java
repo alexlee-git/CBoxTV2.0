@@ -305,6 +305,9 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                     TitleView.setText(programsInfo.getTitle());
                 }
 
+                if(("1".equals(programsInfo.getVipFlag()) || "2".equals(programsInfo.getVipFlag())) && vipView != null){
+                    vipView.setVisibility(View.VISIBLE);
+                }
             } else {
                 itemView.setVisibility(View.GONE);
             }
@@ -353,6 +356,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
         ImageView FocusView;
         TextView TitleView;
         T mData;
+        protected ImageView vipView;
 
         BaseHolder(View view) {
             this.itemView = view;
@@ -385,6 +389,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             FocusView.setLayoutParams(layoutParams);
             FocusView.requestLayout();
             TitleView = view.findViewWithTag("tag_poster_title");
+            vipView = view.findViewWithTag("tag_img_vip");
         }
 
         protected void onFocusChange(View view, boolean b) {

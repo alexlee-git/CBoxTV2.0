@@ -20,22 +20,22 @@ import com.newtv.cms.contract.AppMainContract;
 import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.AdEventContent;
-import com.newtv.libs.util.CalendarUtil;
+import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.SystemUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import tv.newtv.cboxtv.annotation.PopupAD;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
@@ -45,9 +45,10 @@ import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.views.UpdateDialog;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
-@PopupAD
-public class MainActivity extends BaseActivity implements BgChangManager.BGCallback, AppMainContract
+@BuyGoodsAD
+public class MainActivity extends BaseActivity implements BgChangManager.BGCallback , AppMainContract
         .View, VersionUpdateContract.View {
+
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -201,7 +202,14 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             currentFragment.dispatchKeyEvent(event);
         }
 
+        
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (!BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
+                if (SystemUtils.isFastDoubleClick()) {
+                    return true;
+                }
+            }
+            Log.e("mFirMenuRv1", "mFirMenuRv.getScrollState()" + mFirMenuRv.getScrollState());
             if (mFirMenuRv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE) {
                 return true;
             }
@@ -290,7 +298,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
             AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent
                     .class);
             JumpUtil.activityJump(this, adEventContent.actionType, adEventContent.contentType,
-                    adEventContent.contentUUID, adEventContent.actionURI);
+                    adEventContent.contentUUID, adEventContent.actionURI,adEventContent.defaultUUID);
 
         } catch (Exception e) {
             Log.e(TAG, e.toString());

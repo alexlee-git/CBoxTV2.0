@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADHelper;
+import com.newtv.libs.ad.AdEventContent;
+import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Callback;
 
@@ -21,6 +23,8 @@ import java.util.HashMap;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 
 /**
  * 项目名称:         CBoxTV
@@ -30,11 +34,12 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 创建日期:          2018/5/8
  */
 public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContract
-        .View, View.OnFocusChangeListener {
+        .View, View.OnFocusChangeListener, View.OnClickListener {
 
     private AdContract.Presenter mADPresenter;
     private int measuredWidth, measuredHeight;
     private boolean isSuccess = false;
+    private ADHelper.AD.ADItem adItem;
 
     public EpisodeAdView(Context context) {
         this(context, null);
@@ -47,6 +52,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
     public EpisodeAdView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOnFocusChangeListener(this);
+        setOnClickListener(this);
 
         measuredHeight = (int) getResources().getDimension(R.dimen.height_386px);
         measuredWidth = (int) getResources().getDimension(R.dimen.width_1746px);
@@ -184,5 +190,14 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
     @Override
     public void onError(@NotNull Context context, @Nullable String desc) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(adItem != null && !TextUtils.isEmpty(adItem.eventContent)){
+            AdEventContent adEventContent = GsonUtil.fromjson(adItem.eventContent, AdEventContent.class);
+            JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
+                    adEventContent.contentUUID, adEventContent.actionURI);
+        }
     }
 }

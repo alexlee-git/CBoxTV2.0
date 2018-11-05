@@ -36,6 +36,7 @@ import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -72,6 +73,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     private ContentContract.Presenter mContentPresenter;
 
+    private NewTVLauncherPlayerView.PlayerViewConfig mPlayerViewConfig;
     private String mUUID;
 
     private int mIndex = 0;
@@ -123,15 +125,20 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     private void prepareVideoPlayer() {
         if (mVideoPlayerView == null) {
-            mVideoPlayerView = new VideoPlayerView(getContext());
-            mVideoPlayerView.setSingleRepeat(true);
-            mVideoPlayerView.setTag("videoPlayer");
-            FrameLayout.LayoutParams layoutParams = null;
-            layoutParams = new FrameLayout.LayoutParams
-                    (FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams
-                            .MATCH_PARENT);
-            mVideoPlayerView.setLayoutParams(layoutParams);
-            mVideoPlayer.addView(mVideoPlayerView, layoutParams);
+            if (mPlayerViewConfig != null) {
+                mVideoPlayerView = new VideoPlayerView(mPlayerViewConfig, getContext());
+            } else {
+                mVideoPlayerView = new VideoPlayerView(getContext());
+                mVideoPlayerView.setSingleRepeat(true);
+                mVideoPlayerView.setTag("videoPlayer");
+                FrameLayout.LayoutParams layoutParams = null;
+                layoutParams = new FrameLayout.LayoutParams
+                        (FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams
+                                .MATCH_PARENT);
+                mVideoPlayerView.setLayoutParams(layoutParams);
+                mVideoPlayer.addView(mVideoPlayerView, layoutParams);
+                mVideoPlayerView.registerScreenListener(new MyScreenListener());
+            }
         }
     }
 
@@ -154,7 +161,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
             if (mVideoPlayerView != null && mVideoPlayer.findViewWithTag("videoPlayer") !=
                     null) {
-                playerViewConfig = mVideoPlayerView.getDefaultConfig();
+
+                mPlayerViewConfig = mVideoPlayerView.getDefaultConfig();
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
                 removeView(mVideoPlayerView);
@@ -374,7 +382,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private void playLiveVideo(int delay) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
-        postDelayed(playLiveRunnable, playerViewConfig != null && playerViewConfig.isFullScreen ? 0 :
+        postDelayed(playLiveRunnable, playerViewConfig != null && playerViewConfig.isFullScreen ?
+                0 :
                 2000);
     }
 
@@ -432,6 +441,28 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         public boolean isCanUse() {
             return !TextUtils.isEmpty(actionType) && !TextUtils.isEmpty(ContentUUID);
+        }
+    }
+
+    private class MyScreenListener implements ScreenListener {
+
+        @Override
+        public void enterFullScreen() {
+
+        }
+
+        @Override
+        public void exitFullScreen() {
+            if (getParent() != null && getParent() instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) getParent();
+                int count = viewGroup.getChildCount();
+                for (int i = 0; i < count; i++) {
+                    View child = viewGroup.getChildAt(i);
+                    if (child instanceof AutoSizeTextView) {
+                        child.bringToFront();
+                    }
+                }
+            }
         }
     }
 }

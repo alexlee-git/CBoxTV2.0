@@ -192,6 +192,7 @@
 -keep class tv.newtv.cboxtv.cms.superscripi.model.**{*;}
 -keep class tv.newtv.cboxtv.player.model.**{*;}
 -keep class tv.newtv.cboxtv.uc.bean.**{*;}
+-keep class tv.newtv.cboxtv.cms.special.doubleList.bean.**{*;}
 
 -keep class tv.newtv.cboxtv.menu.**{*;}
 

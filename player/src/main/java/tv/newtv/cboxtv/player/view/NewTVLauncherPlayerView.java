@@ -51,11 +51,14 @@ import tv.newtv.cboxtv.player.PlayerConstants;
 import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.iPlayCallBackEvent;
+import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.model.VideoPlayInfo;
+import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.player.R;
 
 //import tv.newtv.cboxtv.cms.details.PushManager;
@@ -174,8 +177,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         @Override
-        public void onTimeout() {
-            LogUtils.i(TAG, "onTimeout: ");
+        public void onTimeout(int i) {
+            LogUtils.i(TAG, "onTimeout: "+i);
         }
 
         @Override
@@ -234,8 +237,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         @Override
-        public void onTimeout() {
-            LogUtils.i(TAG, "live onTimeout: ");
+        public void onTimeout(int i) {
+            LogUtils.i(TAG, "live onTimeout: "+i);
         }
 
         @Override
@@ -1356,6 +1359,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
     }
 
+    public void registerScreenListener(ScreenListener listener) {
+
+    }
+
+    public void unregisterScreenListener(ScreenListener listener) {
+
+    }
+
     public static class PlayerViewConfig {
         public boolean prepared = false;
         public ViewGroup.LayoutParams layoutParams;     //布局属性
@@ -1366,5 +1377,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public PlayerCallback playerCallback;
         public int playPosition;
         public VPlayCenter playCenter;
+        public ExitVideoFullCallBack videoFullCallBack;
+        public VideoExitFullScreenCallBack videoExitFullScreenCallBack;
     }
 }
