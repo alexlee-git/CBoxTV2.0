@@ -229,13 +229,10 @@ public abstract class BaseFragment extends RxFragment {
 
     //根据需要更换背景图片
     protected void changeBG(ModuleInfoResult moduleInfoResult, String contentId) {
-//        if (isFromNav && (moduleInfoResult.getIsNav() == ModuleInfoResult.NAV_PAGE
-//                || moduleInfoResult.getIsNav() == ModuleInfoResult.SPECIAL_PAGE)) {
         BGEvent bgEvent = new BGEvent(contentId, moduleInfoResult.getIsAd() ==
                 ModuleInfoResult.IS_AD_PAGE,
                 moduleInfoResult.getPageBackground());
         BgChangManager.getInstance().addEvent(getContext(), bgEvent);
-//        }
     }
 
     public void destroyItem() {

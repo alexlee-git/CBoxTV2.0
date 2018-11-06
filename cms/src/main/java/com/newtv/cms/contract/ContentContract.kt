@@ -41,6 +41,7 @@ class ContentContract {
          */
         fun getContent(uuid: String, autoSub: Boolean)
 
+        fun getContent(uuid: String, callback: View?)
         fun getContent(uuid: String, autoSub: Boolean, contentType: String)
 
         /**
@@ -52,8 +53,28 @@ class ContentContract {
         fun getSubContent(uuid: String): Long
     }
 
-    class ContentPresenter(context: Context, view: View)
+    class ContentPresenter(context: Context, view: View?)
         : CmsServicePresenter<View>(context, view), Presenter {
+
+        override fun getContent(uuid: String, callback: View?) {
+            val content: IContent? = getService(SERVICE_CONTENT)
+
+            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, object
+                : DataObserver<ModelResult<Content>> {
+                override fun onResult(result: ModelResult<Content>, requestCode: Long) {
+                    if (result.isOk()) {
+                        callback?.onContentResult(result.data);
+                    } else {
+                        callback?.onError(context, result.errorMessage)
+                    }
+                }
+
+                override fun onError(desc: String?) {
+                    callback?.onError(context, desc)
+                }
+
+            })
+        }
 
         override fun isTvSeries(content: Content?): Boolean {
             content?.let {
@@ -97,7 +118,7 @@ class ContentContract {
                 content?.let { iContent ->
                     var single = false
                     var suuid: String? = uuid
-                    if(Constant.CONTENTTYPE_PG.equals(contentTYpe) || Constant.CONTENTTYPE_CP.equals(contentTYpe)){
+                    if (Constant.CONTENTTYPE_PG.equals(contentTYpe) || Constant.CONTENTTYPE_CP.equals(contentTYpe)) {
                         view?.onContentResult(contentResult)
                         return
                     }

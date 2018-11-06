@@ -161,7 +161,6 @@ public class DBUtil {
                     }
                 }
             }
-
             contentValues.put(DBConfig.CONTENTUUID,seriesUUID);
 
             contentValues.put(DBConfig.PLAYPOSITION, Position);
