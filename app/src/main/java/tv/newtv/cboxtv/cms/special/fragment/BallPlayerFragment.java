@@ -11,18 +11,18 @@ import android.widget.TextView;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUtils;
-import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.model.LiveInfo;
-import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 
@@ -33,13 +33,13 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
  * 创建人:           weihaichao
  * 创建日期:          2018/4/25
  */
-public class BallPlayerFragment extends BaseSpecialContentFragment implements LiveContract.View {
+public class BallPlayerFragment extends BaseSpecialContentFragment implements LiveContract.View,
+        LiveListener {
     private TextView textTitle;
     private ImageView mImageView;
-    private Content mProgramInfo;
-    private LivePermissionCheckBean livePermissionCheck;
-    private Content info;
     private boolean isDestroyed = false;
+    private LiveInfo mLiveInfo;
+    private ModelResult<ArrayList<Page>> mInfoResult;
 
     private LiveContract.Presenter livePresenter;
 
@@ -47,20 +47,13 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (mProgramInfo != null) {
-            outState.putSerializable("programInfo", mProgramInfo);
-        }
+
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("programInfo")) {
-                mProgramInfo = (Content) savedInstanceState.getSerializable("programInfo");
-            }
-        }
     }
 
     @Override
@@ -88,8 +81,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
             @Override
             public void onPlayerClick(VideoPlayerView videoPlayerView) {
-                if (!videoPlayerView.isReady()) return;
-                videoPlayerView.EnterFullScreen(getActivity(), true);
+                videoPlayerView.EnterFullScreen(getActivity(), false);
             }
 
             @Override
@@ -107,17 +99,15 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
         textTitle = view.findViewById(R.id.id_title);
 
-        livePresenter = new LiveContract.LivePresenter(getContext(), this);
+        parseLive(getContext());
+    }
 
-        if (mProgramInfo != null) {
-            textTitle.setText(mProgramInfo.getSubTitle());
-            LiveInfo liveInfo = new LiveInfo(mProgramInfo);
-            if (liveInfo.isLiveTime()) {
-                livePresenter.checkLive(liveInfo);
-            }
-        } else {
-
+    private boolean checkLivePresenterIsNull(Context context) {
+        if (livePresenter == null && context != null) {
+            livePresenter = new LiveContract.LivePresenter(context, this);
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -127,17 +117,27 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
     @Override
     public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
+        mInfoResult = infoResult;
+        parseLive(getContext());
+    }
 
+    private void parseLive(Context context) {
+        if (mInfoResult != null && mInfoResult.getData() != null && mInfoResult.getData().size() >=
+                1) {
+            Page current = mInfoResult.getData().get(0);
+            if (current.getPrograms() != null && current.getPrograms().size() >= 1) {
+                Program currentProgram = current.getPrograms().get(0);
+                LiveInfo liveInfo = new LiveInfo(currentProgram.getTitle(), currentProgram
+                        .getVideo());
+                startPlay(liveInfo);
+            }
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (livePermissionCheck != null) {
-            startPlay();
-        } else {
-//            startPlayPermissionsCheck(mProgramInfo);
-        }
+        startPlay(mLiveInfo);
     }
 
     private void stopPlay() {
@@ -150,27 +150,17 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
         }
     }
 
-    private void startPlay() {
-//        stopPlay();
-        if (isDestroyed || mProgramInfo == null) return;
-
-        if (!isLive()) {
-            ((TextView) contentView.findViewById(R.id.tv_hint)).setText("暂无播放");
-            mImageView.setVisibility(View.VISIBLE);
-            Picasso.get()
-                    .load(mProgramInfo.getHImage())
-                    .into(mImageView);
-            return;
+    private void startPlay(LiveInfo liveInfo) {
+        if (mLiveInfo != null) {
+            if (!TextUtils.isEmpty(mLiveInfo.getTitle())) {
+                textTitle.setText(mLiveInfo.getTitle());
+            }
+            videoPlayerView.playLive(mLiveInfo, false, this);
+        } else {
+            if (liveInfo != null && liveInfo.isLiveTime() && checkLivePresenterIsNull(getContext())) {
+                livePresenter.checkLive(liveInfo);
+            }
         }
-
-        if (!TextUtils.isEmpty(mProgramInfo.getTitle())) {
-            textTitle.setText(mProgramInfo.getTitle());
-        }
-
-
-//        videoPlayerView.playLiveVideo(mProgramInfo.getContentUUID(),mProgramInfo.getPlayUrl(),
-//                mProgramInfo.getTitle(),0,0);
-
     }
 
     @Override
@@ -184,17 +174,10 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
         return true;
     }
 
-    private boolean isLive() {
-//        return !TextUtils.isEmpty(mProgramInfo.getPlayUrl()) && CmsLiveUtil.isInPlay(
-//                mProgramInfo.getLiveLoopType(), mProgramInfo.getLiveParam(), mProgramInfo
-//                        .getPlayStartTime(), mProgramInfo.getPlayEndTime(), null);
-
-        return false;
-    }
-
     @Override
     public void liveChkResult(LiveInfo liveInfo) {
-        videoPlayerView.playLive(liveInfo, false,null);
+        mLiveInfo = liveInfo;
+        startPlay(mLiveInfo);
     }
 
     @Override
@@ -210,31 +193,15 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
 
-//=======
-//    private void timer(){
-//        LiveTimingUtil.endTime(mProgramInfo.getPlayEndTime(), new LiveTimingUtil
-// .LiveEndListener() {
-//            @Override
-//            public void end() {
-////                if(videoPlayerView != null){
-////                    videoPlayerView.setHintText("播放已结束");
-////                    videoPlayerView.setHintTextVisible(View.VISIBLE);
-////                }
-//
-//                if(!NewTVLauncherPlayerViewManager.getInstance().isLiving()){
-//                    Log.e(BallPlayerFragment.class.getSimpleName(), "非直播时间，不结束播放");
-//                    return;
-//                }
-//                if(!TextUtils.isEmpty(mProgramInfo.getImg())){
-//                    mImageView.setVisibility(View.VISIBLE);
-//                    Picasso.get()
-//                            .load(mProgramInfo.getImg())
-//                            .into(mImageView);
-//                }
-//                TimeDialog.showBuilder(getContext());
-//                stopPlay();
-//            }
-//        });
-//>>>>>>> 1.4
+    }
+
+    @Override
+    public void onTimeChange(String current, String end) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
     }
 }

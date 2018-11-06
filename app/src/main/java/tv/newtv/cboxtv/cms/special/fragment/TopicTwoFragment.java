@@ -505,7 +505,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         } else {
                             down_arrow.setVisibility(View.INVISIBLE);
                         }
-                        if (moduleItem != null && moduleItem.getSubTitle().length() > 10) {
+                        if (moduleItem != null && !TextUtils.isEmpty(moduleItem.getSubTitle()) &&
+                                moduleItem.getSubTitle().length() > 10) {
                             holder.news_title.setSingleLine(true);
                             holder.news_title.setText(moduleItem.getSubTitle());
                             holder.news_title.setSelected(true);
@@ -522,14 +523,16 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         holder.relative_fou.setBackgroundResource(0);
                         holder.news_title.setSelected(false);
                         if (moduleItem != null) {
-                            if (moduleItem.getSubTitle().length() > 30) {
-                                holder.news_title.setText(moduleItem.getSubTitle().substring(0,
-                                        30));
-                                holder.news_title.setSingleLine(false);
-                                holder.news_title.setMaxLines(2);
+                            if(!TextUtils.isEmpty(moduleItem.getSubTitle())) {
+                                if (moduleItem.getSubTitle().length() > 30) {
+                                    holder.news_title.setText(moduleItem.getSubTitle().substring(0,
+                                            30));
+                                    holder.news_title.setSingleLine(false);
+                                    holder.news_title.setMaxLines(2);
 
-                            } else {
-                                holder.news_title.setText(moduleItem.getSubTitle());
+                                } else {
+                                    holder.news_title.setText(moduleItem.getSubTitle());
+                                }
                             }
                         }
 
@@ -542,19 +545,21 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                     if (defaultFocusId != null && defaultFocusIndex != -1) {
                         Program programInfo = getItem(defaultFocusIndex);
                         if (programInfo != null) {
-                            if (programInfo.getSubTitle().length() > 15) {
-                                title.setText(programInfo.getSubTitle().substring(0, 15));
-                                title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                title.getPaint().setFakeBoldText(true);
-                            } else {
-                                title.setText(programInfo.getSubTitle());
-                                title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                title.getPaint().setFakeBoldText(true);
-                            }
-                            if (programInfo.getSubTitle().length() > 30) {
-                                videoTitle.setText(programInfo.getSubTitle().substring(0, 30));
-                            } else {
-                                videoTitle.setText(programInfo.getSubTitle());
+                            if(!TextUtils.isEmpty(moduleItem.getSubTitle())){
+                                if (programInfo.getSubTitle().length() > 15) {
+                                    title.setText(programInfo.getSubTitle().substring(0, 15));
+                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                                    title.getPaint().setFakeBoldText(true);
+                                } else {
+                                    title.setText(programInfo.getSubTitle());
+                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                                    title.getPaint().setFakeBoldText(true);
+                                }
+                                if (programInfo.getSubTitle().length() > 30) {
+                                    videoTitle.setText(programInfo.getSubTitle().substring(0, 30));
+                                } else {
+                                    videoTitle.setText(programInfo.getSubTitle());
+                                }
                             }
                             currentUUID = programInfo.getContentId();
                             onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -572,19 +577,21 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         }
                         final Program moduleItem = getItem(holder.getAdapterPosition());
                         if (moduleItem != null) {
-                            if (moduleItem.getSubTitle().length() > 15) {
-                                title.setText(moduleItem.getSubTitle().substring(0, 15));
-                                title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                title.getPaint().setFakeBoldText(true);
-                            } else {
-                                title.setText(moduleItem.getSubTitle());
-                                title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                title.getPaint().setFakeBoldText(true);
-                            }
-                            if (moduleItem.getSubTitle().length() > 30) {
-                                videoTitle.setText(moduleItem.getSubTitle().substring(0, 30));
-                            } else {
-                                videoTitle.setText(moduleItem.getSubTitle());
+                            if(!TextUtils.isEmpty(moduleItem.getSubTitle())){
+                                if (moduleItem.getSubTitle().length() > 15) {
+                                    title.setText(moduleItem.getSubTitle().substring(0, 15));
+                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                                    title.getPaint().setFakeBoldText(true);
+                                } else {
+                                    title.setText(moduleItem.getSubTitle());
+                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                                    title.getPaint().setFakeBoldText(true);
+                                }
+                                if (moduleItem.getSubTitle().length() > 30) {
+                                    videoTitle.setText(moduleItem.getSubTitle().substring(0, 30));
+                                } else {
+                                    videoTitle.setText(moduleItem.getSubTitle());
+                                }
                             }
                             currentUUID = moduleItem.getContentId();
                             onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
@@ -597,18 +604,22 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
             });
             if (moduleItem != null) {
-                if (holder.itemView.hasFocus()) {
-                    holder.news_title.setSingleLine(true);
-                    holder.news_title.setText(moduleItem.getSubTitle());
-                } else {
-                    if (moduleItem.getSubTitle().length() > 30) {
-                        holder.news_title.setSingleLine(false);
-                        holder.news_title.setMaxLines(2);
-                        holder.news_title.setText(moduleItem.getSubTitle().substring(0, 30));
-                    } else {
+                if(!TextUtils.isEmpty(moduleItem.getSubTitle())){
+                    if (holder.itemView.hasFocus()) {
+                        holder.news_title.setSingleLine(true);
                         holder.news_title.setText(moduleItem.getSubTitle());
-                    }
+                    } else {
+                        if (!TextUtils.isEmpty(moduleItem.getSubTitle())) {
+                            if (moduleItem.getSubTitle().length() > 30) {
+                                holder.news_title.setSingleLine(false);
+                                holder.news_title.setMaxLines(2);
+                                holder.news_title.setText(moduleItem.getSubTitle().substring(0, 30));
 
+                            } else {
+                                holder.news_title.setText(moduleItem.getSubTitle());
+                            }
+                        }
+                    }
                 }
 
                 if (TextUtils.equals(moduleItem.getContentId(), currentUUID)) {

@@ -18,6 +18,7 @@ interface IContent : IService {
      * 获取内容详情
      */
     fun getContentInfo(appkey: String, channelId: String, contentId: String,
+                       lock:Boolean,
                        observer: DataObserver<ModelResult<Content>>):Long
 
     /**
