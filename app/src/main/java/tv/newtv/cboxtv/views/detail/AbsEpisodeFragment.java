@@ -69,6 +69,7 @@ public abstract class AbsEpisodeFragment extends Fragment {
     public abstract void setData(List<SubContent> data);
     public abstract void requestFirst();
     public abstract void requestLast();
+    public abstract String getTabString();
 
 
 }

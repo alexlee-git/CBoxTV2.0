@@ -116,7 +116,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                         if (info != null) {
                             pageContent = info;
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
-                            playListView.setContentUUID(mContentPresenter.isTvSeries(content)
+                            playListView.setContentUUID(info,mContentPresenter.isTvSeries(content)
                                             ? EpisodeHelper.TYPE_PROGRAME_SERIES : EpisodeHelper
                                             .TYPE_VARIETY_SHOW,
                                     content.getVideoType(),

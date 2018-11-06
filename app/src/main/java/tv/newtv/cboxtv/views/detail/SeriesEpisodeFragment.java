@@ -60,6 +60,15 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
     }
 
     @Override
+    public String getTabString() {
+        if (mData.size() == 1) {
+            return mData.get(0).getPeriods();
+        }
+        return String.format("%s-%s", mData.get(0).getPeriods(), mData.get(mData.size() - 1)
+                .getPeriods());
+    }
+
+    @Override
     public void destroy() {
         mData = null;
         contentView = null;

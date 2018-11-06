@@ -58,7 +58,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
     private SearchHolderAction mSearchHolderAction;
 
     public interface SearchHolderAction {
-        void onItemClick(int position);
+        void onItemClick(int position,SubContent content);
 
         void onFocusToTop();
     }
@@ -87,7 +87,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
         if (dataList != null && dataList.size() > 0) {
 
             LogUtils.e("adapter2323onResult","adapter dataList size : " + dataList.size() + " , list : " + dataList);
-
+            final SubContent subContent = dataList.get(position);
             Picasso.get().load(dataList.get(position).getVImage()).transform(new PosterCircleTransform(mContext, 4))
                     .fit()
                     .memoryPolicy(MemoryPolicy.NO_STORE)
@@ -126,7 +126,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
                         }
                         if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER || keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER){
                             if (mSearchHolderAction != null)
-                                mSearchHolderAction.onItemClick(position);
+                                mSearchHolderAction.onItemClick(position,subContent);
                             return true;
                         }
                         if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){

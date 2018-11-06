@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
@@ -646,7 +645,7 @@ class BlockBuilder {
     private void loadSuperscript(ImageView target,Program program, String superscriptId) {
         Corner info = SuperScriptManager.getInstance().getSuperscriptInfoById
                 (superscriptId);
-        if (info != null && info.suitForItem(program)) {
+        if (info != null && info.suitFor(program)) {
             String superType = info.getCornerType();
             if ("IMG".equals(superType)) {
                 String superUrl = info.getCornerImg();

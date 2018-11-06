@@ -47,56 +47,12 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     private final String TAG = this.getClass().getSimpleName();
     private float SearchViewKeyboardWidth = 655;
     private boolean keyWordChange = false;
-    private boolean isOKToRight = false;
 
     private SearchViewKeyboard mSearchViewKeyboard;
     private PageContract.ContentPresenter mContentPresenter;
     private NewTVSearchResult mSearchResult;
     private NewTVSearchHotRecommend mHotRecommend;
     private RelativeLayout mRelativeLayout;
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
-        initView();
-        init();
-        mContentPresenter = new PageContract.ContentPresenter(this,this);
-        mContentPresenter.getPageContent("420");
-    }
-
-    //对象的初始化
-    private void init() {
-        SearchViewKeyboardWidth = DisplayUtils.translate((int) SearchViewKeyboardWidth, 0);
-        mSearchViewKeyboard.setOnReturnInputString(onReturnInputString);
-        setOnKeyListener(onGetKeyListener);
-        mSearchResult.setOnKeyCodeRightListener(new NewTVSearchResult.OnKeyCodeRightListener() {
-            @Override
-            public void setOnKeyCodeRightListener(boolean isCanRight) {
-                isOKToRight = isCanRight;
-            }
-        });
-    }
-
-    //控件初始化
-    private void initView() {
-        mSearchViewKeyboard = findViewById(R.id.search_view_keyboard);
-        mSearchResult = findViewById(R.id.search_result);
-        mHotRecommend = findViewById(R.id.search_hot_recommend);
-        mRelativeLayout = findViewById(R.id.RelativeLayout);
-    }
-
-    private OnReturnInputString onReturnInputString = new OnReturnInputString() {
-        @Override
-        public void onReturnInputString(String inputStr) {
-            if (onGetKeyListener != null) {
-                onGetKeyListener.notifyKeywords(inputStr);
-                keyWordChange = true;
-            }
-        }
-    };
-
     //监听输入框值变化
     private OnGetKeyListener onGetKeyListener = new OnGetKeyListener() {
         @Override
@@ -117,6 +73,40 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
             }
         }
     };
+    private OnReturnInputString onReturnInputString = new OnReturnInputString() {
+        @Override
+        public void onReturnInputString(String inputStr) {
+            if (onGetKeyListener != null) {
+                onGetKeyListener.notifyKeywords(inputStr);
+                keyWordChange = true;
+            }
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
+        initView();
+        init();
+        mContentPresenter = new PageContract.ContentPresenter(this, this);
+        mContentPresenter.getPageContent("420");
+    }
+
+    //对象的初始化
+    private void init() {
+        SearchViewKeyboardWidth = DisplayUtils.translate((int) SearchViewKeyboardWidth, 0);
+        mSearchViewKeyboard.setOnReturnInputString(onReturnInputString);
+        setOnKeyListener(onGetKeyListener);
+    }
+
+    //控件初始化
+    private void initView() {
+        mSearchViewKeyboard = findViewById(R.id.search_view_keyboard);
+        mSearchResult = findViewById(R.id.search_result);
+        mHotRecommend = findViewById(R.id.search_hot_recommend);
+        mRelativeLayout = findViewById(R.id.RelativeLayout);
+    }
 
     public void setOnKeyListener(OnGetKeyListener onGetKeyListener) {
         this.onGetKeyListener = onGetKeyListener;
@@ -125,7 +115,8 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent.ACTION_UP) {
+        if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
+                .ACTION_UP) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_ESCAPE:
                     finish();
@@ -137,36 +128,42 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
             return super.dispatchKeyEvent(event);
         }
 
-        if(event.getAction() == KeyEvent.ACTION_DOWN){
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             View focusView = getWindow().getDecorView().findFocus();
-            View nextFocus =  null;
+            View nextFocus = null;
             String mode = "keyboard";
             boolean check = false;
-            if(mHotRecommend.hasFocus()){
-                if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT){
-                    nextFocus = FocusFinder.getInstance().findNextFocus(mHotRecommend,focusView,View.FOCUS_LEFT);
+            if (mHotRecommend.hasFocus()) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    nextFocus = FocusFinder.getInstance().findNextFocus(mHotRecommend, focusView,
+                            View.FOCUS_LEFT);
                     check = true;
                     mode = "search";
                 }
-            }else if(mSearchResult.hasFocus()){
-                if(event.getKeyCode()  == KeyEvent.KEYCODE_DPAD_LEFT){
-                    nextFocus = FocusFinder.getInstance().findNextFocus(mSearchResult,focusView,View.FOCUS_LEFT);
+            } else if (mSearchResult.hasFocus()) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    nextFocus = FocusFinder.getInstance().findNextFocus(mSearchResult, focusView,
+                            View.FOCUS_LEFT);
                     check = true;
                     mode = "search";
                 }
-            }else if(mSearchViewKeyboard.hasFocus()){
-                if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT){
-                    nextFocus = FocusFinder.getInstance().findNextFocus(mSearchViewKeyboard,focusView,View.FOCUS_RIGHT);
+            } else if (mSearchViewKeyboard.hasFocus()) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    nextFocus = FocusFinder.getInstance().findNextFocus(mSearchViewKeyboard,
+                            focusView, View.FOCUS_RIGHT);
                     check = true;
                     mode = "keyboard";
                 }
             }
-            if(nextFocus == null && check){
-                if("keyboard".equals(mode)){
+            if (nextFocus == null && check) {
+                if ("keyboard".equals(mode)) {
+                    if (!mSearchResult.isLoadComplete()) {
+                        return true;
+                    }
                     if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
                         slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
                     }
-                }else if("search".equals(mode)){
+                } else if ("search".equals(mode)) {
                     slideView(mRelativeLayout, -SearchViewKeyboardWidth, 0, true);
                 }
                 return true;
@@ -177,31 +174,29 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     }
 
     //键盘移动的位移动画，动画类型为属性动画
-    public void slideView(View view, final float p1, final float p2,final boolean isOpen) {
+    public void slideView(View view, final float p1, final float p2, final boolean isOpen) {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationX", p1, p2);
         objectAnimator.setDuration(500);
         objectAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animator) {
 
-                if(isOpen){
+                if (isOpen) {
                     //TODO keyboard request focus
                     mSearchViewKeyboard.getLastFocusView().requestFocus();
                     mSearchResult.showLeftBackView(false);
-                }else {
+                } else {
                     //TODO search result view request focus
-                    if (isOKToRight){
-                        mSearchResult.showLeftBackView(true);
-                        if (mSearchResult.getVisibility() == View.VISIBLE) {
-                            if (!keyWordChange) {
-                                mSearchResult.requestDefaultFocus();
-                            } else {
-                                mSearchResult.requestFirstTab();
-                                keyWordChange = false;
-                            }
-                        } else if (mHotRecommend.getVisibility() == View.VISIBLE) {
-                            mHotRecommend.requestFocus();
+                    mSearchResult.showLeftBackView(true);
+                    if (mSearchResult.getVisibility() == View.VISIBLE) {
+                        if (!keyWordChange) {
+                            mSearchResult.requestDefaultFocus();
+                        } else {
+                            mSearchResult.requestFirstTab();
+                            keyWordChange = false;
                         }
+                    } else if (mHotRecommend.getVisibility() == View.VISIBLE) {
+                        mHotRecommend.requestFocus();
                     }
                 }
             }
@@ -226,7 +221,7 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
 
     @Override
     public void onPageResult(@Nullable List<Page> page) {
-        if (page != null && page.size()>0){
+        if (page != null && page.size() > 0) {
             mHotRecommend.setData(page.get(0).getPrograms());
         }
     }
@@ -244,7 +239,7 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mContentPresenter != null){
+        if (mContentPresenter != null) {
             mContentPresenter.destroy();
             mContentPresenter = null;
         }

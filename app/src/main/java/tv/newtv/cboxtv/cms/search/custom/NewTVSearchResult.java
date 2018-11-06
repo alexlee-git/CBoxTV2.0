@@ -80,7 +80,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     PersonFragment mPersonFragment;
     DramaFragment mDramaFragment;
 
-    private OnKeyCodeRightListener mOnKeyCodeRightListener;
 
     public NewTVSearchResult(Context context) {
         this(context, null);
@@ -150,7 +149,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mColumnFragment.setIndex(0);
         mColumnFragment.attachDataInfoResult(this);
         mColumnFragment.setLabelView(mColumnFrameLayout);
-        mColumnFragment.setLoadingLayout(mLoadingLayout);
         tabs.add(mColumnFrameLayout);
         mColumnFragment.setLabelFocusView(mColumnFocusImageView);
         mFragments.add(mColumnFragment);
@@ -159,7 +157,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mPersonFragment.setIndex(1);
         mPersonFragment.attachDataInfoResult(this);
         mPersonFragment.setLabelView(mPersonFrameLayout);
-        mPersonFragment.setLoadingLayout(mLoadingLayout);
         tabs.add(mPersonFrameLayout);
         mPersonFragment.setLabelFocusView(mPersonFocusImageView);
         mFragments.add(mPersonFragment);
@@ -168,7 +165,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mDramaFragment.setIndex(2);
         mDramaFragment.attachDataInfoResult(this);
         mDramaFragment.setLabelView(mDramaFrameLayout);
-        mDramaFragment.setLoadingLayout(mLoadingLayout);
         tabs.add(mDramaFrameLayout);
         mDramaFragment.setLabelFocusView(mDramaFocusImageView);
         mFragments.add(mDramaFragment);
@@ -216,16 +212,18 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mDramaFragment.setKey(key);
     }
 
+    public boolean isLoadComplete(){
+        return !mPersonFragment.isLoading() && !mDramaFragment.isLoading() && !mColumnFragment
+                .isLoading();
+    }
+
     public void setEmptyViewVisible() {
-        boolean allowToRight;
+        if(!isLoadComplete()) return;
         if(mFragments != null && mFragments.size() > 0){
             mSearchResultEmpty.setVisibility(GONE);
-            allowToRight = true;
         }else {
             mSearchResultEmpty.setVisibility(VISIBLE);
-            allowToRight = false;
         }
-        mOnKeyCodeRightListener.setOnKeyCodeRightListener(allowToRight);
     }
 
     /**
@@ -254,7 +252,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         } else {
             if (!mFragments.contains(fragment)) {
-
                 if(fragment.getIndex() == 0){
                     mFragments.add(0,fragment);
                 }else if(fragment.getIndex() == 2){
@@ -325,14 +322,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         }
         requestFirstTab();
-    }
-
-    public interface OnKeyCodeRightListener {
-        void setOnKeyCodeRightListener(boolean isCanRight);
-    }
-
-    public void setOnKeyCodeRightListener(OnKeyCodeRightListener onKeyCodeRightListener) {
-        this.mOnKeyCodeRightListener = onKeyCodeRightListener;
     }
 
 }

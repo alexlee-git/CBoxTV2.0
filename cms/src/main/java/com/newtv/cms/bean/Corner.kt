@@ -21,7 +21,7 @@ data class Corner(
     /**
      * 是否适配使用
      */
-    fun suitForItem(any: Any): Boolean {
+    fun suitFor(any: Any): Boolean {
         try {
             val clz: Array<Field> = any::class.java.declaredFields
             clz.forEach {
