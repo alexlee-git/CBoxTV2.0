@@ -27,25 +27,28 @@ import retrofit2.http.Query;
 public interface IUserCenterLoginApi {
 
     @Headers("host_type: " + HeadersInterceptor.USER)
+    @FormUrlEncoded
     @POST("/kangaroo/authorization/device_code")
     Observable<ResponseBody> getLoginQRCode(@Header("Authorization") String Authorization,
-                                            @Query("response_type") String response_type,
-                                            @Query("client_id") String client_id);
+                                            @Field("response_type") String response_type,
+                                            @Field("client_id") String client_id);
 
 
     @Headers("host_type: " + HeadersInterceptor.USER)
+    @FormUrlEncoded
     @POST("/kangaroo/token/device_code")
     Observable<ResponseBody> getAccessToken(@Header("Authorization") String Authorization,
-                                            @Query("grant_type") String grant_type,
-                                            @Query("device_code") String device_code,
-                                            @Query("client_id") String client_id);
+                                            @Field("grant_type") String grant_type,
+                                            @Field("device_code") String device_code,
+                                            @Field("client_id") String client_id);
 
     @Headers("host_type: " + HeadersInterceptor.USER)
+    @FormUrlEncoded
     @POST("/kangaroo/token/refresh_token")
     Observable<ResponseBody> refreshToken(@Header("Authorization") String Authorization,
-                                          @Query("refresh_token") String refresh_token,
-                                          @Query("client_id") String client_id,
-                                          @Query("grant_type") String grant_type);
+                                          @Field("refresh_token") String refresh_token,
+                                          @Field("client_id") String client_id,
+                                          @Field("grant_type") String grant_type);
 
     @Headers("host_type: " + HeadersInterceptor.USER)
     @GET("/kangaroo/user/info")
@@ -58,19 +61,21 @@ public interface IUserCenterLoginApi {
                                          @Query("appKey") String appKey);
 
     @Headers("host_type: " + HeadersInterceptor.USER)
+    @FormUrlEncoded
     @POST("/kangaroo/authorization/sms_code")
     Observable<ResponseBody> sendSMSCode(@Header("Authorization") String Authorization,
-                                         @Query("response_type") String response_type,
-                                         @Query("client_id") String client_id,
-                                         @Query("mobile") String mobile);
+                                         @Field("response_type") String response_type,
+                                         @Field("client_id") String client_id,
+                                         @Field("mobile") String mobile);
 
     @Headers("host_type: " + HeadersInterceptor.USER)
+    @FormUrlEncoded
     @POST("/kangaroo/token/sms_code")
     Observable<ResponseBody> verifySMSCode(@Header("Authorization") String Authorization,
-                                           @Query("grant_type") String grant_type,
-                                           @Query("client_id") String client_id,
-                                           @Query("mobile") String mobile,
-                                           @Query("sms_code") String sms_code);
+                                           @Field("grant_type") String grant_type,
+                                           @Field("client_id") String client_id,
+                                           @Field("mobile") String mobile,
+                                           @Field("sms_code") String sms_code);
 
 
     //获取订单
