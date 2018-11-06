@@ -36,6 +36,7 @@ import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -51,7 +52,7 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  * 创建日期:          2018/4/29
  */
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
-        ContentContract.View {
+        ContentContract.View,LiveListener {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -69,6 +70,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private LiveInfo mLiveInfo;
     private int currentMode = MODE_IMAGE;
     private Program mProgramInfo;
+    private TextView hintText;
     private NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig;
 
     private ContentContract.Presenter mContentPresenter;
@@ -101,7 +103,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         @Override
         public void run() {
             prepareVideoPlayer();
-            mVideoPlayerView.playLive(mLiveInfo, false);
+            mVideoPlayerView.playLive(mLiveInfo, false,LivePlayView.this);
         }
     };
 
@@ -159,9 +161,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             removeCallbacks(playLiveRunnable);
             removeCallbacks(playRunnable);
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
-            if (mVideoPlayerView != null && mVideoPlayer.findViewWithTag("videoPlayer") !=
-                    null) {
-
+            if (mVideoPlayerView != null) {
                 mPlayerViewConfig = mVideoPlayerView.getDefaultConfig();
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
@@ -328,6 +328,22 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             addView(centerTextView, layoutParams);
         }
 
+        if(hintText == null){
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams
+                    .WRAP_CONTENT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            hintText = new TextView(getContext());
+            int padding = getContext().getResources().getDimensionPixelOffset(R.dimen
+                    .width_5px);
+            hintText.setPadding(padding, padding, padding, padding);
+            hintText.setTextSize(getContext().getResources().getDimension(R.dimen
+                    .height_12px));
+            hintText.setTextColor(Color.WHITE);
+            hintText.setLayoutParams(layoutParams);
+            addView(hintText, layoutParams);
+        }
+
         mContentPresenter = new ContentContract.ContentPresenter(getContext(), this);
     }
 
@@ -430,6 +446,23 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     @Override
     public void onError(@NotNull Context context, @Nullable String desc) {
 
+    }
+
+    @Override
+    public void onTimeChange(String current, String end) {
+        setHintText(String.format("%s/%s",current,end));
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+
+    public void setHintText(String message){
+        if(hintText != null){
+            hintText.setVisibility(View.VISIBLE);
+            hintText.setText(message);
+        }
     }
 
     private static class PlayInfo {

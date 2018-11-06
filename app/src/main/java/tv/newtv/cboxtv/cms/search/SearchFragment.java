@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.search;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,16 +9,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.newtv.cms.BuildConfig;
-import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
+import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
@@ -25,41 +23,33 @@ import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
-import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.search.view.SearchActivity;
-import tv.newtv.cboxtv.cms.util.ModuleUtils;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.cms.util.Utils;
 
-//import tv.newtv.cboxtv.cms.net.ApiUtil;
+public class SearchFragment extends BaseFragment implements PageContract.View{
 
-
-public class SearchFragment extends BaseFragment {
-    private static final String TAG = SearchFragment.class.getName();
     FrameLayout mSearchView;
     ImageView imgSearch, focusView;
     private String param;
     private String contentId;
     private String actionType;
     private HorizontalRecyclerView hotSearchRecyclerView;
-    private List<SubContent> mPrograms = new ArrayList<>();
+    private List<Page> mPrograms = new ArrayList<>();
 
-    private Interpolator mSpringInterpolator;
-    private Disposable mDisposable;
     private View contentView;
+
+    private PageContract.Presenter mPresenter;
 
     public static SearchFragment newInstance(Bundle paramBundle) {
         SearchFragment fragment = new SearchFragment();
@@ -83,8 +73,13 @@ public class SearchFragment extends BaseFragment {
         if (bundle != null) {
             param = bundle.getString("nav_text");
             contentId = bundle.getString("content_id");
+
+            LogUtils.e("bundleData","searchFragment contentId : " + contentId);
+
             actionType = bundle.getString("actionType");
         }
+        mPresenter = new PageContract.ContentPresenter(getContext(), this);
+        mPresenter.getPageContent(contentId);
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_SEARCH, "");//进入搜索页
     }
@@ -96,8 +91,8 @@ public class SearchFragment extends BaseFragment {
 
         if (contentView == null) {
             contentView = inflater.inflate(R.layout.fragment_search, container, false);
-            hotSearchRecyclerView = (HorizontalRecyclerView) contentView.findViewById(R.id.hot_search_list);
-            mSearchView = (FrameLayout) contentView.findViewById(R.id.search_layout);
+            hotSearchRecyclerView = contentView.findViewById(R.id.hot_search_list);
+            mSearchView = contentView.findViewById(R.id.search_layout);
             imgSearch = contentView.findViewById(R.id.search_view);
             focusView = contentView.findViewById(R.id.focus_view);
 
@@ -128,15 +123,13 @@ public class SearchFragment extends BaseFragment {
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus) {
                         focusView.setVisibility(View.VISIBLE);
-                        onItemGetFocus(v);
+                        ScaleUtils.getInstance().onItemGetFocus(v);
                     } else {
                         focusView.setVisibility(View.INVISIBLE);
-                        onItemLoseFocus(v);
+                        ScaleUtils.getInstance().onItemLoseFocus(v);
                     }
                 }
             });
-
-            mSpringInterpolator = new OvershootInterpolator(2.2f);
         }
 
         return contentView;
@@ -147,13 +140,6 @@ public class SearchFragment extends BaseFragment {
         return mSearchView;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        getData();
-    }
-
     /*
     @Override
     protected void lazyLoad() {
@@ -162,55 +148,50 @@ public class SearchFragment extends BaseFragment {
     }
     */
 
-    private void getData() {
-        NetClient.INSTANCE
-                .getPageDataApi()
-                .getPageData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        mDisposable = d;
-                    }
+//    private void getData() {
+//        NetClient.INSTANCE
+//                .getPageDataApi()
+//                .getPageData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentId)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Observer<ResponseBody>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//                        mDisposable = d;
+//                    }
+//
+//                    @Override
+//                    public void onNext(ResponseBody value) {
+//                        try {
+//
+//                            String result = value.string();
+//                            ModuleInfoResult moduleData = ModuleUtils.getInstance()
+//                                    .parseJsonForModuleInfo(result);
+//                            changeBG(moduleData,contentId);
+//                            bindData(moduleData.getDatas());
+//                        } catch (Exception e) {
+//                            LogUtils.e(e);
+//                        }
+//
+//                        unSubscribe();
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        LogUtils.e(Constant.TAG, "-----requestPageDataFromServer---onError-----");
+//                        unSubscribe();
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//                        unSubscribe();
+//                    }
+//                });
+//    }
 
-                    @Override
-                    public void onNext(ResponseBody value) {
-                        try {
-
-                            String result = value.string();
-                            ModuleInfoResult moduleData = ModuleUtils.getInstance()
-                                    .parseJsonForModuleInfo(result);
-                            changeBG(moduleData,contentId);
-                            bindData(moduleData.getDatas());
-                        } catch (Exception e) {
-                            LogUtils.e(e);
-                        }
-
-                        unSubscribe();
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtils.e(Constant.TAG, "-----requestPageDataFromServer---onError-----");
-                        unSubscribe();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        unSubscribe();
-                    }
-                });
-    }
-
-    private void bindData(List<ModuleItem> moduleItems) {
-        if (moduleItems != null && moduleItems.size() > 0) {
-            mPrograms.clear();
-            for (ModuleItem moduleItem : moduleItems) {
-                mPrograms.addAll(moduleItem.getDatas());
-            }
-        }
+    private void bindData(List<Page> pageList) {
+        mPrograms = pageList;
 
         HotSearchAdapter hotSearchAdapter = (HotSearchAdapter) hotSearchRecyclerView.getAdapter();
         if (hotSearchAdapter == null) {
@@ -221,45 +202,23 @@ public class SearchFragment extends BaseFragment {
         }
     }
 
-    private void onItemGetFocus(View view) {
-//        ImageView focusImageView = (ImageView) view.findViewById(R.id.focus_view);
-//        focusImageView.setVisibility(View.VISIBLE);
-
-        //直接放大view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.bringToFront();
-        view.startAnimation(sa);
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
     }
 
-    private void onItemLoseFocus(View view) {
-//        ImageView focusImageView = (ImageView) view.findViewById(R.id.focus_view);
-//        focusImageView.setVisibility(View.INVISIBLE);
-
-        // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.startAnimation(sa);
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
     }
 
-    /**
-     * 解除绑定
-     */
-    private void unSubscribe() {
-        if (mDisposable != null && !mDisposable.isDisposed()) {
-            mDisposable.dispose();
-            mDisposable = null;
-        }
+    @Override
+    public void onPageResult(List<Page> page) {
+//        LogUtils.e("onPageResult11","onPageResult page : " + page);
+//        changeBG(moduleData,contentId);
+        bindData(page);
+
     }
 
     class HotSearchAdapter extends RecyclerView.Adapter<HotSearchAdapter.MyViewHolder> {
-
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             MyViewHolder holder = new MyViewHolder(LayoutInflater.from
@@ -273,9 +232,10 @@ public class SearchFragment extends BaseFragment {
             if (mPrograms == null || mPrograms.size() <= 0) {
                 return;
             }
-            final SubContent programInfo = mPrograms.get(position);
-            holder.tv_name.setText(programInfo.getTitle());
-            String url = programInfo.getVImage();
+            Program programData = mPrograms.get(0).getPrograms().get(position);
+
+            holder.tv_name.setText(programData.getTitle());
+            String url = programData.getImg();
             if (!TextUtils.isEmpty(url)) {
                 Picasso.get().load(url)
                         .transform(new PosterCircleTransform(getContext(), 4))
@@ -304,12 +264,12 @@ public class SearchFragment extends BaseFragment {
                 public void onClick(View view) {
                     try {
                         // TODO 添加类型判断进行跳转
-                        SubContent program = mPrograms.get(position);
+                        Program program = mPrograms.get(0).getPrograms().get(position);
 //                        Intent intent = new Intent(getActivity(), DetailsPageActivity.class);
 //                        intent.putExtra("content_type", program.getContentType());
 //                        intent.putExtra("content_uuid", program.getContentUUID());
 //                        startActivity(intent);
-//                        JumpUtil.activityJump(LauncherApplication.AppContext, program);
+                        JumpUtil.activityJump(LauncherApplication.AppContext, program);
 
                     } catch (Exception e) {
                         LogUtils.e(e);
@@ -320,7 +280,7 @@ public class SearchFragment extends BaseFragment {
 
         @Override
         public int getItemCount() {
-            return mPrograms != null ? mPrograms.size() : 0;
+            return mPrograms != null ? mPrograms.get(0).getPrograms().size() : 0;
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
@@ -331,9 +291,9 @@ public class SearchFragment extends BaseFragment {
 
             MyViewHolder(View view) {
                 super(view);
-                img = (ImageView) view.findViewById(R.id.item_detail_img);
-                imgfoused = (ImageView) view.findViewById(R.id.item_detail_img_foused);
-                tv_name = (TextView) view.findViewById(R.id.item_detail_tv_name);
+                img = view.findViewById(R.id.item_detail_img);
+                imgfoused =  view.findViewById(R.id.item_detail_img_foused);
+                tv_name = view.findViewById(R.id.item_detail_tv_name);
 
                 //适配
                 DisplayUtils.adjustView(getContext(), img, imgfoused, R.dimen.width_16dp, R.dimen.width_16dp);

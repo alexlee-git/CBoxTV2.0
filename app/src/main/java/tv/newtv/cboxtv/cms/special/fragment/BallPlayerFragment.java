@@ -194,7 +194,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
     @Override
     public void liveChkResult(LiveInfo liveInfo) {
-        videoPlayerView.playLive(liveInfo, false);
+        videoPlayerView.playLive(liveInfo, false,null);
     }
 
     @Override

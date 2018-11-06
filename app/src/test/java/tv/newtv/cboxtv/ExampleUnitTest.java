@@ -1,23 +1,10 @@
 package tv.newtv.cboxtv;
 
-import android.text.TextUtils;
-
 import org.junit.Test;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Example local unit test, which will buildExecutor on the development machine (host).
@@ -29,40 +16,42 @@ public class ExampleUnitTest {
 
     @Test
     public void addition_isCorrect() throws Exception {
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        Date now = new Date();
-        String time = "12:00:00";
-        String current = dateFormat.format(now);
-        System.out.println(formatToSeconds(time));
-        System.out.println(formatToSeconds(current));
+        User user = new User();
+        user.age = "11";
+        user.name = "admin";
 
-    }
+        List<Filter> filters = new ArrayList<>();
+        filters.add(new Filter("age", "11"));
+        filters.add(new Filter("name", "mali"));
 
-    public static int formatToSeconds(String timeFormat) {
-        if (timeFormat == null) {
-            return 0;
-        }
-        String[] times = timeFormat.split(":");
-        int result = 0;
-        for (int index = 0; index < 3; index++) {
-            if (times.length >= index + 1) {
-                String value = times[index];
-                if (!TextUtils.isEmpty(value)) {
-                    switch (index) {
-                        case 0:
-                            result += 3600 * Integer.parseInt(value);
-                            break;
-                        case 1:
-                            result += 60 * Integer.parseInt(value);
-                            break;
-                        default:
-                            result += Integer.parseInt(value);
-                            break;
-                    }
+        check : for (Field field : user.getClass().getDeclaredFields()) {
+            for (Filter filter : filters) {
+                System.out.println("check field=" + field.getName() + " value="+field.get(user));
+                System.out.println("filter field=" + filter.filterName + " value="+filter.filterAge);
+                if (filter.filterName.equals(field.getName()) && filter.filterAge.equals(field.get
+                        (user).toString())) {
+                    System.out.println("the same with user");
+                    break check;
+                } else {
+                    System.out.println("not same with user");
                 }
             }
         }
-        return result;
+    }
+
+    public static class User {
+        public String age;
+        public String name;
+    }
+
+    public static class Filter {
+        public String filterAge;
+        public String filterName;
+
+        public Filter(String field, String value) {
+            filterName = field;
+            filterAge = value;
+        }
     }
 
 

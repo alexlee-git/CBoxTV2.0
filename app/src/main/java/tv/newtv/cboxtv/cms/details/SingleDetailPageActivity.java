@@ -139,7 +139,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     @Override
                     public void onPlayerClick(VideoPlayerView videoPlayerView) {
                         videoPlayerView.EnterFullScreen(SingleDetailPageActivity
-                                .this, false);
+                                .this,false);
                     }
 
                     @Override
@@ -162,8 +162,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                         switch (view.getId()) {
                             case R.id.add:
                                 DivergeView mPaiseView = ((DivergeView) headPlayerView
-                                        .findViewUseId(R.id
-                                                .view_praise));
+                                        .findViewUseId(R.id.view_praise));
                                 mPaiseView.setEndPoint(new PointF(mPaiseView.getMeasuredWidth() /
                                         2, 0));
                                 mPaiseView.setStartPoint(new PointF(getResources().getDimension(R
@@ -181,8 +180,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                 mPaiseView.startDiverges(0);
                                 break;
                             case R.id.full_screen:
-                                headPlayerView.EnterFullScreen
-                                        (SingleDetailPageActivity.this);
+                                headPlayerView.EnterFullScreen(SingleDetailPageActivity.this);
 
                                 break;
                         }

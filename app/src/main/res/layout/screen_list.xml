@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#60000000"
+    android:clipToPadding="false"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_110px"
+        android:layout_marginLeft="@dimen/width_24px">
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="@dimen/width_3dp"
+            android:layout_height="@dimen/height_110px"
+            android:layout_marginLeft="@dimen/width_96px"
+            android:background="#ffffff"></View>
+
+        <TextView
+            android:id="@+id/choose_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/width_24px"
+            android:layout_toRightOf="@id/line"
+            android:gravity="bottom"
+            android:text="筛选"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/width_48px" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="@dimen/width_192px"
+            android:layout_height="@dimen/height_50px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/width_42px"
+            android:layout_toRightOf="@id/choose_title"
+            android:background="@drawable/search_title_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/width_36px"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/type_text"
+            android:layout_width="@dimen/width_192px"
+            android:layout_height="@dimen/height_50px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/width_24px"
+            android:layout_toRightOf="@id/title"
+            android:background="@drawable/search_title_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/width_36px"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/year_text"
+            android:layout_width="@dimen/width_192px"
+            android:layout_height="@dimen/height_50px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/width_24px"
+            android:layout_toRightOf="@id/type_text"
+            android:background="@drawable/search_title_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/width_36px"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/place_text"
+            android:layout_width="@dimen/width_192px"
+            android:layout_height="@dimen/height_50px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/width_24px"
+            android:layout_toRightOf="@id/year_text"
+            android:background="@drawable/search_title_bg"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/width_36px"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/number"
+            android:layout_width="@dimen/width_198px"
+            android:layout_height="@dimen/height_32px"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/height_60px"
+            android:layout_marginRight="@dimen/width_120px"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#ffffffff" />
+    </RelativeLayout>
+
+    <tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout
+        android:id="@+id/tab"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/width_54px"
+        android:layout_marginLeft="@dimen/width_96px"
+        android:layout_marginTop="@dimen/height_36px"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="@dimen/height_4px"
+        app:tabIndicatorResId="@color/color_tabIndicator"
+        app:tabIndicatorWidth="@dimen/width_100px"
+        app:tabPaddingBottom="@dimen/height_0px"
+        app:tabScrollMode="scrollable"
+        app:tabTexSize="@dimen/width_36px"
+        app:tabTextColor="#ffffff">
+
+    </tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout>
+
+    <tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView
+        android:id="@+id/labelRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginLeft="@dimen/width_106px"
+        android:layout_marginTop="@dimen/height_48px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="false">
+
+    </tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView>
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_106px"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+
+    <tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView
+        android:id="@+id/tvRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/width_86px"
+        android:paddingTop="@dimen/height_20px"
+        android:layout_marginTop="@dimen/height_52px"
+        android:paddingRight="@dimen/width_100px"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+    </tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView>
+
+
+</LinearLayout>

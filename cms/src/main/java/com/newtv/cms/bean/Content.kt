@@ -30,6 +30,7 @@ open class Content  : Serializable {
     var priceNum: String? = null //最新付费节目数量 设置最后几集收费
     var videoType: String? = null //一级分类
     var director: String? = null //导演
+    var recentNum:String? = null //已更新集数
 
     @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
     var contentID: String? = null //内容Id

@@ -56,7 +56,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     private int mPositionPlay = 0;
     private ContentContract.ContentPresenter mPresenter;
     private FrameLayout rootView;
-    private IMenuGroupPresenter menuGroupPresenter;
+//    private IMenuGroupPresenter menuGroupPresenter;
     private int abNormalExit = 0x002;//非正常退出
     private int normalExit = 0x001;//正常退出
     private int isContinue = normalExit;
@@ -97,11 +97,6 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
             YSLogUtils.getInstance(NewTVLauncherPlayerActivity.this).clearData();
         }
 
-        if (menuGroupPresenter != null) {
-            menuGroupPresenter.release();
-            menuGroupPresenter = null;
-        }
-
         rootView = null;
         mPlayerFrameLayoutContainer = null;
 //        programSeriesInfo = null;
@@ -125,8 +120,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
         rootView = findViewById(R.id.root_view);
         mPlayerFrameLayoutContainer = (FrameLayout) findViewById(R.id.player_view_container);
-        menuGroupPresenter = new MenuGroupPresenter2(this.getApplicationContext());
-        rootView.addView(menuGroupPresenter.getRootView());
+//        menuGroupPresenter = new MenuGroupPresenter2(this.getApplicationContext());
+//        rootView.addView(menuGroupPresenter.getRootView());
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -138,34 +133,31 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                 return;
             }
 
-            NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
-                    (mPlayerFrameLayoutContainer, this);
-
             mPresenter.getContent(contentUUID, true, contentType);
         }
     }
 
     private void initListener() {
-        menuGroupPresenter.addSelectListener(new MenuGroup.OnSelectListener() {
-            @Override
-            public void select(Program program) {
-                // 什么时候会修改Constant.isLiving的值？
-                // 5. 小屏时 强制点播下一个文件时 将isLiving置为false
-                Constant.isLiving = false;
-            }
-        });
-
-        NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
-
-            @Override
-            public void onNext(SubContent info, int index, boolean isNext) {
-                mIndexPlay = index;
-                mPositionPlay = 0;
-                RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay,
-                        mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
-                        .getProgramSeriesInfo().getContentID()));
-            }
-        });
+//        menuGroupPresenter.addSelectListener(new MenuGroup.OnSelectListener() {
+//            @Override
+//            public void select(Program program) {
+//                // 什么时候会修改Constant.isLiving的值？
+//                // 5. 小屏时 强制点播下一个文件时 将isLiving置为false
+//                Constant.isLiving = false;
+//            }
+//        });
+//
+//        NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
+//
+//            @Override
+//            public void onNext(SubContent info, int index, boolean isNext) {
+//                mIndexPlay = index;
+//                mPositionPlay = 0;
+//                RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay,
+//                        mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
+//                        .getProgramSeriesInfo().getContentID()));
+//            }
+//        });
     }
 
     @Override
@@ -175,9 +167,12 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                 && buyGoodsBusiness.dispatchKeyEvent(event)){
             return true;
         }
-        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
+        if(NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)){
             return true;
         }
+//        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
+//            return true;
+//        }
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
@@ -276,7 +271,6 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         finish();
     }
 
-
     @Override
     public void onContentResult(@Nullable Content content) {
         doPlay(content);
@@ -286,6 +280,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         initListener();
         NewTVLauncherPlayerViewManager.getInstance().play
                 (this, content, 0, 0, false);
+        NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
+                (mPlayerFrameLayoutContainer, this);
         mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
     }
 

@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.DisplayUtils;
-import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
-import tv.newtv.cboxtv.cms.search.listener.INotifySearchHotRecommendData;
-import tv.newtv.cboxtv.cms.search.listener.OnGetSearchHotRecommendFocus;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
@@ -43,18 +40,18 @@ import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
  * 修改备注：
  */
 public class NewTVSearchHotRecommend extends RelativeLayout {
+
     private final String TAG = this.getClass().getSimpleName();
+
     private StaggeredGridLayoutManager mLayoutManager;
     private SearchHotRecommendAdapter mAdapter;
     private SearchRecyclerView mRecyclerView;
-    private Context mContext;
-    private OnGetSearchHotRecommendFocus mOnGetSearchHotRecommendFocus;
-    private SearchResultInfos mSearchResultInfos;
-    private List<SearchResultInfos.ResultListBean> mDatas;
     public TextView mEmptyTextView;
-    private View mLastItemView;
-    public boolean keyBoardFocusStatus = false;
     private ImageView mLeftArrow;
+
+    private Context mContext;
+    private List<Program> mDatas;
+    public boolean keyBoardFocusStatus = false;
 
     public NewTVSearchHotRecommend(Context context) {
         super(context);
@@ -79,79 +76,48 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
     }
 
     private void initView(View view) {
-        mRecyclerView = (SearchRecyclerView) view.findViewById(R.id.id_search_recyclerView_hot_recommend);
-        mLeftArrow = (ImageView) view.findViewById(R.id.id_result_left_arrow);
-        mEmptyTextView = (TextView) view.findViewById(R.id.id_search_hot_recommend_empty);
+        mRecyclerView = view.findViewById(R.id.id_search_recyclerView_hot_recommend);
+        mLeftArrow = view.findViewById(R.id.id_result_left_arrow);
+        mEmptyTextView = view.findViewById(R.id.id_search_hot_recommend_empty);
         mLayoutManager = new StaggeredGridLayoutManager(6, LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mSearchResultInfos = new SearchResultInfos();
         mDatas = new ArrayList<>();
     }
-
 
     public SearchRecyclerView getRecyclerView() {
         return mRecyclerView;
     }
 
-    public void setData(SearchResultInfos result) {
+    public void setData(List<Program> result) {
         try {
-            if (result.getResultList() != null && result.getResultList().size() > 0) {
+            if (result != null && result.size() > 0) {
                 mEmptyTextView.setVisibility(View.GONE);
-                mINotifySearchHotRecommendData.INotifySearchHotRecommendData(true);
             } else {
                 mEmptyTextView.setVisibility(View.VISIBLE);
-                mINotifySearchHotRecommendData.INotifySearchHotRecommendData(false);
             }
             SearchHotRecommendAdapter adapter = (SearchHotRecommendAdapter) mRecyclerView.getAdapter();
             if (adapter == null) {
-                mDatas = result.getResultList();
-                adapter = new SearchHotRecommendAdapter(mContext, result.getResultList());
-//                adapter.setHasStableIds(true);
+                mDatas = result;
+                adapter = new SearchHotRecommendAdapter(mContext);
                 mAdapter = adapter;
                 mRecyclerView.setAdapter(mAdapter);
             } else {
                 mDatas.clear();
-                mDatas.addAll(result.getResultList());
+                mDatas.addAll(result);
                 mAdapter.notifyDataSetChanged();
 
             }
         } catch (Exception e) {
-            //e.printStackTrace();
             Log.e(TAG, "---setData:Exception---" + e.toString());
         }
-    }
-
-    public View setLastItemView() {
-        return mLastItemView;
-    }
-
-    //获得键盘最后一个获得焦点的view
-    private View mKeyboardLastFocusView;
-
-    public void setKeyboardLastFocusView(View view) {
-        mKeyboardLastFocusView = view;
-    }
-
-    public void setOnGetSearchHotRecommendFocus(OnGetSearchHotRecommendFocus onGetSearchHotRecommendFocus) {
-        mOnGetSearchHotRecommendFocus = onGetSearchHotRecommendFocus;
-    }
-
-
-    private INotifySearchHotRecommendData mINotifySearchHotRecommendData;
-
-    public void setINotifySearchHotRecommendData(INotifySearchHotRecommendData iNotifySearchHotRecommendData) {
-        mINotifySearchHotRecommendData = iNotifySearchHotRecommendData;
     }
 
     class SearchHotRecommendAdapter extends RecyclerView.Adapter<SearchResultViewHolder> {
         private Context mContext;
 
-
-        public SearchHotRecommendAdapter(Context context, List<SearchResultInfos.ResultListBean> data) {
+        public SearchHotRecommendAdapter(Context context) {
             mContext = context;
-
         }
-
 
         @Override
         public SearchResultViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -164,12 +130,10 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
         public void onBindViewHolder(final SearchResultViewHolder holder, final int position) {
             try {
                 if (mDatas == null || mDatas.size() <= 0) {
-                    LogUtils.e(TAG, "----热搜结果数据为空");
                     return;
                 } else {
-                    Picasso.get().load(mDatas.get(position).getHpicurl()).transform(new PosterCircleTransform(mContext, 4)).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
-//                    Picasso.with(mContext).load(mDatas.get(position).getHpicurl()).transform(new PosterCircleTransform(mContext, 8)).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
-                    holder.mTxtTitle.setText(mDatas.get(position).getName());
+                    Picasso.get().load(mDatas.get(position).getImg()).transform(new PosterCircleTransform(mContext, 4)).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
+                    holder.mTxtTitle.setText(mDatas.get(position).getTitle());
                     holder.mFrameLayoutHotRecommend.setOnFocusChangeListener(new OnFocusChangeListener() {
                         @Override
                         public void onFocusChange(View view, boolean hasFocus) {
@@ -180,34 +144,23 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
                                 onItemGetFocus(view);
                                 holder.mTxtTitle.setSelected(true);
                                 holder.mFocusImageView.setVisibility(View.VISIBLE);
-                                mOnGetSearchHotRecommendFocus.notifySearchHotRecommendFocus(true, position, holder.mFrameLayoutHotRecommend);
                             } else {
                                 holder.mTxtTitle.setSelected(false);
                                 mLeftArrow.setVisibility(View.INVISIBLE);
-                                mOnGetSearchHotRecommendFocus.notifySearchHotRecommendFocus(false, position, holder.mFrameLayoutHotRecommend);
                                 onItemLoseFocus(view);
-                                mLastItemView = view;
                                 holder.mFocusImageView.setVisibility(View.INVISIBLE);
                             }
                         }
                     });
-                    final String UUID = mDatas.get(position).getUUID();
-                    final String contentType = mDatas.get(position).getContentType();
                     holder.mFrameLayoutHotRecommend.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            String contentUUID = mDatas.get(position).getUUID();
-                            String contentType = mDatas.get(position).getContentType();
-                            String actionType = mDatas.get(position).getType();
-                            String actionUrl = mDatas.get(position).getActionUri();
+                            String contentUUID = mDatas.get(position).getL_id();
+                            String contentType = mDatas.get(position).getL_contentType();
+                            String actionType = mDatas.get(position).getL_actionType();
+                            String actionUrl = mDatas.get(position).getL_actionUri();
 
                             JumpUtil.activityJump(mContext, actionType, contentType, contentUUID, actionUrl);
-
-//                            Intent intent = new Intent(mContext, DetailsPageActivity.class);
-//                            intent.putExtra("content_type", contentType);
-//                            intent.putExtra("content_uuid", UUID);
-//                            Log.e(TAG, "----UUID---" + UUID + "---contentType--" + contentType);
-//                            mContext.startActivity(intent);
                         }
                     });
 
@@ -220,18 +173,9 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
                                         holder.mFrameLayoutHotRecommend.setNextFocusRightId(R.id.id_frameLayout_hot_recommend_list);
                                         return true;
                                     }
-                                } else if (i == KeyEvent.KEYCODE_DPAD_LEFT) {
-                                    if (position % 6 == 0) {
-                                        if (mKeyboardLastFocusView != null) {
-                                            mKeyboardLastFocusView.requestFocus();
-                                            mOnGetSearchHotRecommendFocus.notifySearchHotRecommendFocus(false, position, null);
-                                            return true;
-                                        }
-                                    }
                                 } else if (i == KeyEvent.KEYCODE_DPAD_UP) {
                                     if (position < 6) {
                                         return true;
-                                    } else {
                                     }
                                 }
                                 return false;
@@ -241,12 +185,10 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
                         }
                     });
                 }
-
             } catch (Exception e) {
-                Log.i(TAG, "------SearchResult:onBindViewHolder:Exception" + e.toString());
+                e.getMessage();
             }
         }
-
 
         @Override
         public int getItemCount() {
@@ -277,11 +219,11 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
 
         public SearchResultViewHolder(View itemView) {
             super(itemView);
-            mFrameLayoutHotRecommend = (FrameLayout) itemView.findViewById(R.id.id_frameLayout_hot_recommend_list);
-            mTxtTitle = (TextView) itemView.findViewById(R.id.id_hot_recommend_title);
-            mPosterTitle = (TextView) itemView.findViewById(R.id.id_hot_recommend_poster_title);
-            mPosterImageView = (ImageView) itemView.findViewById(R.id.id_hot_recommend_imageView_poster);
-            mFocusImageView = (ImageView) itemView.findViewById(R.id.id_hot_recommend_imageView_focus);
+            mFrameLayoutHotRecommend = itemView.findViewById(R.id.id_frameLayout_hot_recommend_list);
+            mTxtTitle = itemView.findViewById(R.id.id_hot_recommend_title);
+            mPosterTitle = itemView.findViewById(R.id.id_hot_recommend_poster_title);
+            mPosterImageView = itemView.findViewById(R.id.id_hot_recommend_imageView_poster);
+            mFocusImageView = itemView.findViewById(R.id.id_hot_recommend_imageView_focus);
             //适配
             DisplayUtils.adjustView(getContext(),mPosterImageView,mFocusImageView,R.dimen.width_16dp,R.dimen.width_16dp);
         }

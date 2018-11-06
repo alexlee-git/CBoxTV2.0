@@ -17,8 +17,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:visibility="visible"
-        >
-    </tv.newtv.cboxtv.cms.search.custom.SearchViewKeyboard>
+        />
 
     <View
         android:id="@+id/search_line1"

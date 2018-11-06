@@ -24,4 +24,5 @@
     <color name="color_menu_group">#55000000</color>
     <color name="color_0b104b">#0b1b4b</color>
     <color name="color_authing">#b3ffffff</color>
+    <color name="color_tabIndicator">#ff4a90e2</color>
 </resources>

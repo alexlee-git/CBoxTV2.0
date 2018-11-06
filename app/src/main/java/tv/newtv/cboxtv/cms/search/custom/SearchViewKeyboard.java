@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.listener.OnReturnInputString;
@@ -99,6 +101,12 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
     public SearchViewKeyboard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        return super.dispatchKeyEvent(event);
     }
 
     private void initView(Context context) {
@@ -269,27 +277,27 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     onItemGetFocus(view);
-                    mLastBtnTag = (Integer) btn.getTag();
-                    if ((Integer) btn.getTag() == 10) {
+//                    mLastBtnTag = (Integer) btn.getTag();
+                    if (view.getId() == R.id.frameLayout_btn_10) {
                         mFrameLayoutBtn10.setBackgroundResource(R.drawable.search_keyboard_focus_del);
-                    } else if ((Integer) btn.getTag() == 11) {
+                    } else if (view.getId() == R.id.frameLayout_btn_11) {
                         mFrameLayoutBtn11.setBackgroundResource(R.drawable.search_keyboard_focus_del);
                     } else {
                         btn.setBackgroundResource(R.drawable.search_keyboard_focus_btn);
                     }
                 } else {
                     onItemLoseFocus(view);
-                    if ((Integer) btn.getTag() == 10) {
+                    if (view.getId() == R.id.frameLayout_btn_10) {
                         mFrameLayoutBtn10.setBackgroundResource(R.drawable.search_keyboard_del);
-                    } else if ((Integer) btn.getTag() == 11) {
+                    } else if (view.getId() == R.id.frameLayout_btn_11) {
                         mLastFocusView = mFrameLayoutBtn11;
                         mFrameLayoutBtn11.setBackgroundResource(R.drawable.search_keyboard_del);
                     } else {
-                        if ((Integer) btn.getTag() == 3) {
+                        if (view.getId() == R.id.frameLayout_btn_3) {
                             mLastFocusView = mFrameLayoutBtn3;
-                        } else if ((Integer) btn.getTag() == 6) {
+                        } else if (view.getId() == R.id.frameLayout_btn_6) {
                             mLastFocusView = mFrameLayoutBtn6;
-                        } else if ((Integer) btn.getTag() == 9) {
+                        } else if (view.getId() == R.id.frameLayout_btn_9) {
                             mLastFocusView = mFrameLayoutBtn9;
                         }
                         btn.setBackgroundResource(R.drawable.search_keyboard_btn);
@@ -451,6 +459,7 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+
         if (hasFocus) {
             switch (v.getId()) {
                 case R.id.sub_btn_1:

@@ -21,7 +21,7 @@ import java.util.*
  */
 class SearchContract {
     interface View : ICmsView {
-        fun searchResult(requestID: Long, result: ArrayList<SubContent>?)
+        fun searchResult(requestID: Long, result: ArrayList<SubContent>?, total: Int?)
     }
 
     interface LoadingView : View {
@@ -34,6 +34,8 @@ class SearchContract {
          * 搜索
          */
         fun search(condition: SearchCondition): Long
+
+        fun cancel(id: Long)
     }
 
     class SearchCondition {
@@ -113,6 +115,11 @@ class SearchContract {
     class SearchPresenter(context: Context, view: View)
         : CmsServicePresenter<View>(context, view), Presenter {
 
+        override fun cancel(id: Long) {
+            val search: ISearch? = getService(SERVICE_SEARCH)
+            search?.cancel(id)
+        }
+
         override fun search(condition: SearchCondition): Long {
             val search = getService<ISearch>(CmsServicePresenter.SERVICE_SEARCH)
             search?.let { iSearch ->
@@ -130,10 +137,10 @@ class SearchContract {
                     override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                         if (result.isOk()) {
                             view?.let {
-                                it.searchResult(requestCode, result.data)
                                 if (it is LoadingView) {
                                     it.loadingFinish()
                                 }
+                                it.searchResult(requestCode, result.data, result.total)
                             }
                         } else {
                             view?.onError(context, result.errorMessage)
