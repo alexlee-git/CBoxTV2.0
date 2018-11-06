@@ -183,15 +183,13 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
     @Override
     public void onFinish(final Content playInfo, final int index, final int position) {
-        if (index == 0 && position == 0) return;
-
         if (Constant.CONTENTTYPE_CP.equals(playInfo.getContentType())) {
             if (TextUtils.isEmpty(playInfo.getCsContentIDs())) {
                 addHistory(playInfo, index, position);
                 return;
             }
             String csId = playInfo.getCsContentIDs().split("\\|")[0];
-            mContentPresenter.getContent(csId, new
+            mContentPresenter.getContent(csId, true,new
                     ContentContract.View() {
                         @Override
                         public void onContentResult(@Nullable Content content) {

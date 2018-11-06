@@ -41,7 +41,7 @@ class ContentContract {
          */
         fun getContent(uuid: String, autoSub: Boolean)
 
-        fun getContent(uuid: String, callback: View?)
+        fun getContent(uuid: String,lock:Boolean, callback: View?)
         fun getContent(uuid: String, autoSub: Boolean, contentType: String)
 
         /**
@@ -56,24 +56,26 @@ class ContentContract {
     class ContentPresenter(context: Context, view: View?)
         : CmsServicePresenter<View>(context, view), Presenter {
 
-        override fun getContent(uuid: String, callback: View?) {
+        override fun getContent(uuid: String, lock: Boolean, callback: View?) {
             val content: IContent? = getService(SERVICE_CONTENT)
 
-            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, object
-                : DataObserver<ModelResult<Content>> {
-                override fun onResult(result: ModelResult<Content>, requestCode: Long) {
-                    if (result.isOk()) {
-                        callback?.onContentResult(result.data);
-                    } else {
-                        callback?.onError(context, result.errorMessage)
+            content?.let {
+                it.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, lock, object
+                    : DataObserver<ModelResult<Content>> {
+                    override fun onResult(result: ModelResult<Content>, requestCode: Long) {
+                        if (result.isOk()) {
+                            callback?.onContentResult(result.data);
+                        } else {
+                            callback?.onError(context, result.errorMessage)
+                        }
                     }
-                }
 
-                override fun onError(desc: String?) {
-                    callback?.onError(context, desc)
-                }
-
-            })
+                    override fun onError(desc: String?) {
+                        callback?.onError(context, desc)
+                    }
+                })
+                return
+            }
         }
 
         override fun isTvSeries(content: Content?): Boolean {
@@ -160,7 +162,7 @@ class ContentContract {
             view?.let {
                 if (it is LoadingView) it.onLoading()
             }
-            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, object
+            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid,false, object
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
@@ -186,7 +188,7 @@ class ContentContract {
             view?.let {
                 if (it is LoadingView) it.onLoading()
             }
-            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, object
+            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid,false, object
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
