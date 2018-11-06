@@ -29,6 +29,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
 import tv.newtv.cboxtv.cms.screenList.adapter.FirstLabelAdapter;
 import tv.newtv.cboxtv.cms.screenList.adapter.LabelDataAdapter;
 import tv.newtv.cboxtv.cms.screenList.adapter.secondLabelAdapter;
@@ -40,6 +41,7 @@ import tv.newtv.cboxtv.cms.screenList.tablayout.TabLayout;
 import tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout;
 import tv.newtv.cboxtv.cms.screenList.view.LabelView;
 import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
+import tv.newtv.cboxtv.views.widget.HorizontalRecycleView;
 
 
 /**
@@ -49,7 +51,9 @@ import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
 public class ScreenListActivity extends AppCompatActivity implements LabelView {
 
     private LabelPresenterImpl presenter;
-    private HorizontalGridView labelRecyclerView;
+    HorizontalRecyclerView labelRecyclerView;
+
+//    private HorizontalGridView labelRecyclerView;
     private FocusRecyclerView tvRecyclerView;
     private List<TabBean.DataBean.ChildBean> childData = new ArrayList<>();
     private FirstLabelAdapter adapter;
@@ -189,7 +193,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         year_text = findViewById(R.id.year_text);
         result_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
-        labelRecyclerView.setNumRows(1);
+//        labelRecyclerView.setNumRows(1);
 
         tab.setScaleValue(1.2f);
         tab.setTabTextColors(Color.parseColor("#ffffff"),Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
@@ -209,12 +213,8 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
             @Override
             public void onItemClick(View view, int position) {
                 LabelDataBean.DataBean dataBean = list.get(position);
-
                 Toast.makeText(ScreenListActivity.this, dataBean.getTitle(), Toast.LENGTH_SHORT).show();
-
-
 //                JumpUtil.activityJump(this, );
-
             }
         });
 
@@ -230,17 +230,13 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
                 childData.clear();
                 childData.addAll(data.get(position).getChild());
                 adapter.notifyDataSetChanged();
-
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
             }
         });
 
@@ -273,7 +269,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         if (bean != null) {
             List<LabelBean.DataBean> dataBeans = bean.getData();
             for (int i = 0; i < dataBeans.size(); i++) {
-                HorizontalGridView horizontalGridView = new HorizontalGridView(this);
+                HorizontalRecyclerView horizontalGridView = new HorizontalRecyclerView(this);
                 LabelBean.DataBean dataBean = dataBeans.get(i);
                 List<LabelBean.DataBean.FilterValueBean> filterValue = dataBean.getFilterValue();
                 secondLabelAdapter secondMenuAdapter = new secondLabelAdapter(filterValue, this, dataBean);

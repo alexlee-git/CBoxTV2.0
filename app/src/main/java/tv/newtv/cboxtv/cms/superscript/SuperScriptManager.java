@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.Corner;
+import com.newtv.cms.bean.CornerCondition;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.contract.CornerContract;
 import com.newtv.libs.Constant;
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,17 +128,35 @@ public class SuperScriptManager implements CornerContract.View {
             for (int i = 0; i < array.length(); i++) {
                 item = array.optJSONObject(i);
                 info = new Corner();
-                info.setCornerId(item.optString("cornerId"));
-                info.setCornerDesc(item.optString("cornerDesc"));
-                info.setCornerName(item.optString("cornerName"));
-                info.setCornerImg(item.optString("cornerImg"));
-                info.setCornerTitle(item.optString("cornerTitle"));
-                info.setCornerType(item.optString("cornerType"));
+                if (item.has("cornerId"))
+                    info.setCornerId(item.optString("cornerId"));
+                if (item.has("cornerImg"))
+                    info.setCornerImg(item.optString("cornerImg"));
+                if (item.has("cornerPosition"))
+                    info.setCornerPosition(item.optString("cornerPosition"));
+                if (item.has("cornerType"))
+                    info.setCornerType(item.optString("cornerType"));
+                if (item.has("cornerCondition")) {
+                    JSONArray condition = item.getJSONArray("cornerCondition");
+                    if (condition != null && condition.length() > 0) {
+                        List<CornerCondition> conditionList = new ArrayList<>();
+                        int size = condition.length();
+                        for (int index = 0; index < size; index++) {
+                            JSONObject conditionItem = condition.getJSONObject(index);
+                            conditionList.add(new CornerCondition(
+                                    conditionItem.optString("fieldName"),
+                                    conditionItem.optString("fieldValue")
+                            ));
+                        }
+                        info.setCornerCondition(conditionList);
+                    }
+                }
+
                 if (mSuperscriptMap == null) {
                     mSuperscriptMap = new HashMap<>(Constant.BUFFER_SIZE_8);
                 }
                 mSuperscriptMap.put(info.getCornerId(), info);
-                LogUtils.i(TAG,"解析到角标信息 " + info.toString());
+                LogUtils.i(TAG, "解析到角标信息 " + info.toString());
             }
             return superscript;
         } catch (Exception e) {

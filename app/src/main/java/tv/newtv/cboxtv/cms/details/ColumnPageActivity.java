@@ -120,7 +120,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                     public void onResult(Content info) {
                         if (info != null) {
                             pageContent = info;
-                            playListView.setContentUUID(EpisodeHelper.TYPE_COLUMN_DETAIL,
+                            playListView.setContentUUID(info,EpisodeHelper.TYPE_COLUMN_DETAIL,
                                     info.getVideoType(),
                                     getSupportFragmentManager(),
                                     getContentUUID(), null);

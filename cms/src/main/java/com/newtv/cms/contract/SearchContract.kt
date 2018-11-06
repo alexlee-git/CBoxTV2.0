@@ -137,10 +137,10 @@ class SearchContract {
                     override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                         if (result.isOk()) {
                             view?.let {
-                                it.searchResult(requestCode, result.data, result.total)
                                 if (it is LoadingView) {
                                     it.loadingFinish()
                                 }
+                                it.searchResult(requestCode, result.data, result.total)
                             }
                         } else {
                             view?.onError(context, result.errorMessage)

@@ -10,14 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.ad.ADHelper;
 import com.newtv.libs.ad.AdEventContent;
 import com.newtv.libs.util.GsonUtil;
-
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -35,6 +33,8 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
  * 创建日期:          2018/10/25
  */
 public class TvEpisodeFragment extends AbsEpisodeFragment {
+    private static final int mListLayout = R.layout.episode_programe_page_item_layout;
+    private static final String mItemTag = "rl_focus_30_";
     private int DEFAULT_SIZE = 30;
     private String TAG = "TvEpisodeFragment";
     private boolean hasAD = false;
@@ -48,9 +48,6 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     private EpisodeChange mChange;
     private int currentIndex = -1;
     private List<ViewHolder> viewHolders = new ArrayList<>();
-
-    private static final int mListLayout = R.layout.episode_programe_page_item_layout;
-    private static final String mItemTag = "rl_focus_30_";
 
     @Override
     public void setAdItem(ADHelper.AD.ADItem adItem) {
@@ -150,7 +147,8 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
             Resources resources = contentView.getContext().getResources();
             for (int index = 0; index < DEFAULT_SIZE; index++) {
                 String model = mItemTag + (index + 1);
-                int id = resources.getIdentifier(model, "id", contentView.getContext().getPackageName());
+                int id = resources.getIdentifier(model, "id", contentView.getContext()
+                        .getPackageName());
                 View view = contentView.findViewById(id);
                 if (index == 0) {
                     firstView = view;
@@ -223,9 +221,19 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
         }
     }
 
+    @Override
+    public String getTabString() {
+        if (mData.size() == 1) {
+            return mData.get(0).getPeriods();
+        }
+        return String.format("%s-%s", mData.get(0).getPeriods(), mData.get(mData.size() - 1)
+                .getPeriods());
+    }
+
     @Nullable
     @Override
-    public View createView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View createView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                           @Nullable Bundle savedInstanceState) {
         if (contentView == null) {
             contentView = inflater.inflate(mListLayout, null, false);
         }
@@ -239,7 +247,8 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     }
 
 
-    private class ViewHolder extends TvEpisodeFragment.BaseHolder<SubContent> implements IEpisodePlayChange {
+    private class ViewHolder extends TvEpisodeFragment.BaseHolder<SubContent> implements
+            IEpisodePlayChange {
         int mIndex;
 
         ViewHolder(View view, final int postion) {
@@ -275,7 +284,6 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
         }
 
 
-
         public void update(SubContent programsInfo) {
             if (programsInfo != null) {
                 itemView.setVisibility(View.VISIBLE);
@@ -291,10 +299,11 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
 
         @Override
         public void setIsPlay(boolean value) {
-            if (value){
+            if (value) {
                 mTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.color_62c0eb));
-            }else {
-                mTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.detail_tvcolor));
+            } else {
+                mTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color
+                        .detail_tvcolor));
             }
             mTitleView.postInvalidate();
         }

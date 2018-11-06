@@ -41,6 +41,7 @@ import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
+import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
@@ -62,7 +63,7 @@ import tv.newtv.cboxtv.views.TimeDialog;
  * 创建日期:          2018/5/5
  */
 public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnClickListener,
-        ContentContract.View {
+        ContentContract.View,LiveListener {
 
     private static final String TAG = "HeadPlayerView";
     Content mInfo;
@@ -71,6 +72,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private int currentPlayIndex = 0;
     private int currentPosition = 0;
     private NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
+
+    private UserCenterPageBean.Bean historyBean;
 
     private Builder mBuilder;
     private View contentView;
@@ -245,22 +248,14 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             }.getType();
                             List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
                             if (data.size() > 0) {
-                                UserCenterPageBean.Bean value = data.get(0);
-                                if (value != null) {
-                                    if (!TextUtils.isEmpty(value.playPosition)) {
-                                        currentPosition = Integer.valueOf(value.playPosition);
+                                historyBean = data.get(0);
+                                if (historyBean != null) {
+                                    if (!TextUtils.isEmpty(historyBean.playPosition)) {
+                                        currentPosition = Integer.valueOf(historyBean.playPosition);
                                     } else {
                                         currentPosition = 0;
                                     }
-                                    if (data.get(0).playIndex != null) {
-                                        setCurrentPlayIndex("DataSupport", Integer.valueOf(data
-                                                .get(0).playIndex));
-                                    } else {
-                                        setCurrentPlayIndex("DataSupport", 0);
-                                    }
                                 }
-
-
                             }
 
                         }
@@ -295,6 +290,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
+
+            playerView.release();
+            playerView.destory();
+            playerView = null;
         }
     }
 
@@ -576,6 +575,17 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 programSeriesInfo.setContentType(mInfo.getContentType());
             }
         }
+
+        if(historyBean != null && programSeriesInfo.getData() != null){
+            for(SubContent content : programSeriesInfo.getData()){
+                if(TextUtils.equals(content.getContentUUID(),historyBean.playId)){
+                    int index = programSeriesInfo.getData().indexOf(content);
+                    setCurrentPlayIndex("history",index);
+                    break;
+                }
+            }
+        }
+
         mInfo = programSeriesInfo;
         if (playerView != null && !isPlayLive) {
             playerView.setSeriesInfo(programSeriesInfo);
@@ -718,7 +728,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             LiveInfo liveInfo = new LiveInfo(mInfo);
             if (liveInfo.isLiveTime()) {
                 //需要直播
-                playerView.playLive(liveInfo, false);
+                playerView.playLive(liveInfo, false,this);
                 isPlayLive = true;
             }
         } else {
@@ -875,6 +885,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+
+    }
+
+    @Override
+    public void onTimeChange(String current, String end) {
+
+    }
+
+    @Override
+    public void onComplete() {
 
     }
 

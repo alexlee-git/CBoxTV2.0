@@ -109,10 +109,13 @@ public class NewTVLauncherPlayerViewManager {
             if (viewGroup != null) {
                 viewGroup.removeView(mNewTVLauncherPlayerView);
             }
-            mNewTVLauncherPlayerView.setFromFullScreen();
-            mNewTVLauncherPlayerView.updateUIPropertys(true);
-            frameLayout.addView(mNewTVLauncherPlayerView, -1);
+        } else {
+            mNewTVLauncherPlayerViewManager.init(context);
         }
+        mNewTVLauncherPlayerView.setFromFullScreen();
+        mNewTVLauncherPlayerView.updateUIPropertys(true);
+        frameLayout.addView(mNewTVLauncherPlayerView, -1);
+
 
         mPlayerPageContext = context;
     }
@@ -127,7 +130,7 @@ public class NewTVLauncherPlayerViewManager {
         playLive(liveUrl, context, programSeriesInfo, true, index, position);
     }
 
-    public void play(Context context,Content content, int index, int position, boolean
+    public void play(Context context, Content content, int index, int position, boolean
             newActivity) {
         if (mNewTVLauncherPlayerView == null) {
             init(context);
@@ -359,26 +362,26 @@ public class NewTVLauncherPlayerViewManager {
         return mNewTVLauncherPlayerView != null && mNewTVLauncherPlayerView.isADPlaying();
     }
 
-    public boolean registerScreenListener(ScreenListener listener){
+    public boolean registerScreenListener(ScreenListener listener) {
         if (mNewTVLauncherPlayerView != null) {
             mNewTVLauncherPlayerView.registerScreenListener(listener);
-        }else {
+        } else {
             pendingListener.add(listener);
         }
         return true;
     }
 
-    public void unregisterScreenListener(ScreenListener listener){
-        if(mNewTVLauncherPlayerView != null){
+    public void unregisterScreenListener(ScreenListener listener) {
+        if (mNewTVLauncherPlayerView != null) {
             mNewTVLauncherPlayerView.unregisterScreenListener(listener);
-        }else {
+        } else {
             pendingListener.remove(listener);
         }
     }
 
-    private void setPendingListener(){
-        if(mNewTVLauncherPlayerView != null){
-            for(ScreenListener listener : pendingListener) {
+    private void setPendingListener() {
+        if (mNewTVLauncherPlayerView != null) {
+            for (ScreenListener listener : pendingListener) {
                 mNewTVLauncherPlayerView.registerScreenListener(listener);
             }
             pendingListener.clear();

@@ -26,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -35,7 +34,6 @@ import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
-import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
 
@@ -51,7 +49,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private DivergeView mPaiseView;
     private EpisodePageView playListView;
     private SmoothScrollView scrollView;
-    private ProgrameSeriesFragment fragment;
     private String videoType;
     private long lastClickTime;
     private FragmentTransaction transaction;
@@ -63,6 +60,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         Toast.makeText(getApplicationContext(), "ProgrameSeriesAndVarietyDetailActivity 到顶了",
                 Toast.LENGTH_LONG).show();
     }
+
 
     @Override
     public boolean hasPlayer() {
@@ -118,7 +116,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                         if (info != null) {
                             pageContent = info;
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
-                            playListView.setContentUUID(mContentPresenter.isTvSeries(content)
+                            playListView.setContentUUID(info,mContentPresenter.isTvSeries(content)
                                             ? EpisodeHelper.TYPE_PROGRAME_SERIES : EpisodeHelper
                                             .TYPE_VARIETY_SHOW,
                                     content.getVideoType(),
@@ -188,7 +186,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
 
                             case R.id.full_screen:
-                                if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                {//判断距离上次点击小于2秒
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);
@@ -229,14 +228,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             mContentPresenter = null;
         }
 
-        if (fragment != null) {
-            if (transaction != null) {
-                transaction.remove(fragment);
-                transaction = null;
-            }
-        }
+
         mPaiseView = null;
-        fragment = null;
     }
 
     @Override
@@ -249,30 +242,22 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 return true;
             }
         }
-        if (!videoType()) {
-            if (fragment != null && fragment.interruptKeyEvent(event)) {
-                return true;
-            }
-        }
+
         return false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (videoType()) {
-            if (headPlayerView != null) {
-                headPlayerView.onActivityPause();
-            }
+        if (headPlayerView != null) {
+            headPlayerView.onActivityPause();
         }
     }
 
     @Override
     protected void onStop() {
-        if (videoType()) {
-            if (headPlayerView != null) {
-                headPlayerView.onActivityStop();
-            }
+        if (headPlayerView != null) {
+            headPlayerView.onActivityStop();
         }
         super.onStop();
     }
@@ -280,10 +265,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     @Override
     protected void onResume() {
         super.onResume();
-        if (videoType()) {
-            if (headPlayerView != null) {
-                headPlayerView.onActivityResume();
-            }
+        if (headPlayerView != null) {
+            headPlayerView.onActivityResume();
         }
     }
 
@@ -293,14 +276,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             return false;
         }
         return true;
-    }
-
-    private void initFragment() {
-        transaction = getSupportFragmentManager().beginTransaction();
-        if (fragment != null) {
-            transaction.replace(R.id.details_content, fragment);
-            transaction.commitAllowingStateLoss();
-        }
     }
 
     @Override

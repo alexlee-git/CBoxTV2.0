@@ -236,9 +236,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
 
         switch (programSeriesInfo.getContentType()){
-            case Constant.CONTENTTYPE_CP:
             case Constant.CONTENTTYPE_PG:
-                programSeries = mySplit(programSeriesInfo.getTvContentIDs());
+                Log.i(TAG, "单节目不显示栏目树");
+                break;
+            case Constant.CONTENTTYPE_CP:
+                programSeries = mySplit(getStringByPriority(programSeriesInfo.getTvContentIDs(), programSeriesInfo.getCsContentIDs(),programSeriesInfo.getCgContentIDs()));
                 contentUUID = programSeriesInfo.getContentID();
                 categoryId = mySplit(programSeriesInfo.getCategoryIDs());
                 break;
@@ -775,5 +777,14 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
         String[] split = str.split("\\|");
         return split[0];
+    }
+
+    private String getStringByPriority(String... str){
+        for(String s : str){
+            if(!TextUtils.isEmpty(s)){
+                return s;
+            }
+        }
+        return "";
     }
 }

@@ -8,7 +8,6 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.Utils;
 
 /**
@@ -134,7 +133,7 @@ public class DBUtil {
 
         if (Position > 0) {
             ContentValues contentValues = new ContentValues();
-            contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentUUID());
+
             if (mInfo.getContentType() != null) {
                 contentValues.put(DBConfig.CONTENTTYPE, mInfo.getContentType());
             }
@@ -147,24 +146,27 @@ public class DBUtil {
             }
             contentValues.put(DBConfig.PLAYINDEX, index + "");
 
-            String seriesUUID = "";
-            if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
-                if (mInfo.getData() != null && mInfo.getData().size() != 0) {
-                    contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
-                    seriesUUID = mInfo.getData().get(index).getContentID();
+            String seriesUUID = mInfo.getContentID();
+            if (Constant.CONTENTTYPE_CP.equals(mInfo.getContentType())) {
+                if(!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
+                    seriesUUID = mInfo.getCsContentIDs().split("\\|")[0];
+                }
+                contentValues.put(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
+                contentValues.put(DBConfig.PLAYID,mInfo.getContentUUID());
+            }else{
+                seriesUUID = mInfo.getContentID();
+                if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
+                    if (mInfo.getData() != null && mInfo.getData().size() != 0) {
+                        contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
+                    }
                 }
             }
 
+            contentValues.put(DBConfig.CONTENTUUID,seriesUUID);
+
             contentValues.put(DBConfig.PLAYPOSITION, Position);
             contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-            if (TextUtils.isEmpty(mInfo.getContentUUID())) {
-                if (TextUtils.isEmpty(seriesUUID)) {
-                    return;
-                }
-                contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
-            } else {
-                seriesUUID = mInfo.getContentUUID();
-            }
+
             DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
                     .condition()
                     .eq(DBConfig.CONTENTUUID, seriesUUID)

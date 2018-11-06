@@ -59,7 +59,7 @@ public class GlideUtil {
 
         RequestOptions options = new RequestOptions()
                 .format(DecodeFormat.PREFER_RGB_565)
-                //.dontAnimate()
+                .override(imageView.getWidth(),imageView.getHeight())
                 .placeholder(placeHolderResId)
                 .error(errorResId);
 
