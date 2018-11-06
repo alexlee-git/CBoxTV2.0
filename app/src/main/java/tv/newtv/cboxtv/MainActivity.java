@@ -321,9 +321,9 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     }
 
     @Override
-    public void syncServerTime(Time result) {
+    public void syncServerTime(Long result) {
         if (result != null) {
-            CharSequence sysTimeStr = DateFormat.format("HH:mm", new Date(result.getResponse()));
+            CharSequence sysTimeStr = DateFormat.format("HH:mm", new Date(result));
             timeTV.setText(sysTimeStr); //更新时间
         } else {
             long sysTime = System.currentTimeMillis();//获取系统时间
