@@ -81,6 +81,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private int mPageSize;
     private String mVideoType;
     private TextView mTitleView;
+    private TextView mUpTitle;
+    private Content mContent;
 
     public EpisodePageView(Context context) {
         this(context, null);
@@ -228,6 +230,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
         TitleView.findViewById(R.id.id_title_icon).setVisibility(View.VISIBLE);
         mTitleView = TitleView.findViewById(R.id.id_title);
+        mUpTitle = TitleView.findViewById(R.id.up_title);
         if (mTitleView != null) {
             mTitleView.setVisibility(View.VISIBLE);
             mTitleView.setText("播放列表");
@@ -360,12 +363,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     public void setContentUUID(int episodeType, String videoType, FragmentManager manager, String
-            uuid, View controlView) {
+            uuid, View controlView,Content content) {
         mFragmentManager = manager;
         mContentUUID = uuid;
         mControlView = controlView;
         mEpisodeType = episodeType;
         mVideoType = videoType;
+        mContent = content;
 
         mContentPresenter = new ContentContract.ContentPresenter
                 (getContext(), this);
@@ -478,6 +482,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             if (!videoType(mVideoType)) {
                 mTitleView.setText("剧集列表");
                 mTitleView.setVisibility(VISIBLE);
+                for (int i = 0; i < mContentList.size(); i++) {
+                    if (!TextUtils.isEmpty(mContentList.get(i).getRecentNum())){
+                        mUpTitle.setText("已更新"+mContentList.get(i).getRecentNum()+"集");
+                    }else {
+                        mUpTitle.setText(mContent.getSeriesSum()+"集全");
+                    }
+                }
             }
             LayoutParams layoutParams = (LayoutParams) TitleView.getLayoutParams();
             TitleView.measure(widthMeasureSpec,
