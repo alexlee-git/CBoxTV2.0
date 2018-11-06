@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -127,7 +128,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private VodContract.Presenter mVodPresenter;
 
     private LiveTimer mLiveTimer;
-
+    private TextView hintVip;
+    private boolean isTrySee;
+    private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new FreeDuration();
 
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
@@ -627,6 +630,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mLoading = (NewTVLauncherPlayerLoading) view.findViewById(R.id.player_loading);
         mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
+        hintVip = view.findViewById(R.id.hint_vip);
 
         updateUIPropertys(defaultConfig != null ? defaultConfig.isFullScreen : startIsFullScreen);
 
@@ -789,6 +793,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * type 1为单节目 2为节目集 3为直播
      */
     private void updatePlayStatus(int type, int index, int position) {
+        isTrySee = false;
         setHintTextVisible(GONE);
         mIsPrepared = false;
         dismissChildView();
@@ -1094,6 +1099,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         return true;
                     }
 
+                    if(isFullScreen() && isTrySee){
+                        goToBuy();
+                        return true;
+                    }
+
+
                     if (isLiving() && mLiveInfo != null && !mLiveInfo.isTimeShift()) {
                         return true;
                     }
@@ -1327,6 +1338,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (mNewTVLauncherPlayerSeekbar != null) {
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
+        if(videoDataStruct.isTrySee()){
+            hintVip.setVisibility(View.VISIBLE);
+            this.isTrySee = true;
+            if(!TextUtils.isEmpty(videoDataStruct.getFreeDuration())){
+                int duration = Integer.parseInt(videoDataStruct.getFreeDuration());
+                mNewTVLauncherPlayerSeekbar.setFreeDuration(duration,freeDurationListener);
+            }
+        }else {
+            hintVip.setVisibility(View.GONE);
+        }
         mNewTVLauncherPlayer.play(getContext(), mPlayerFrameLayout, mCallBackEvent,
                 videoDataStruct);
     }
@@ -1379,5 +1400,21 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public VPlayCenter playCenter;
         public ExitVideoFullCallBack videoFullCallBack;
         public VideoExitFullScreenCallBack videoExitFullScreenCallBack;
+    }
+
+    private void goToBuy(){
+//        Intent intent = new Intent();
+//        intent.setClassName(getContext(),"tv.newtv.cboxtv.cms.details.DescriptionActivity");
+//        intent.putExtra("title","跳转到购买页");
+//        intent.putExtra("content","购买");
+//        getContext().startActivity(intent);
+    }
+
+    public class FreeDuration implements NewTVLauncherPlayerSeekbar.FreeDurationListener{
+
+        @Override
+        public void end() {
+            goToBuy();
+        }
     }
 }
