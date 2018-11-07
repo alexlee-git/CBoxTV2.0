@@ -133,7 +133,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
             LogUtils.i(TAG, "onPrepared: ");
             mIsPrepared = true;
-            stopLoading();
+            //stopLoading();
             mNewTVLauncherPlayerSeekbar.setDuration();
             if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
                     * 1000) {
@@ -159,7 +159,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         @Override
         public void onVideoBufferStart(String typeString) {
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
-            startLoading();
+            if (!mIsLoading){
+                startLoading();
+            }
         }
 
         @Override
