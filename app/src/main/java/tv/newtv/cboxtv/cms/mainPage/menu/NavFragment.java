@@ -48,6 +48,11 @@ public class NavFragment extends BaseFragment {
     }
 
     @Override
+    protected String getContentUUID() {
+        return contentId;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mRootLayout = null;

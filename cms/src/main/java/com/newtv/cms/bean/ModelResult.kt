@@ -31,6 +31,10 @@ class ModelResult<T> {
     var data: T? = null
     var total:Int?=0
 
+    fun asAd():Boolean{
+        return "1".equals(isAd)
+    }
+
     fun isOk(): Boolean {
         return "0".equals(errorCode)
     }

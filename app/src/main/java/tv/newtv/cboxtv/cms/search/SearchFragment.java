@@ -58,6 +58,11 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
     }
 
     @Override
+    protected String getContentUUID() {
+        return contentId;
+    }
+
+    @Override
     public boolean isNoTopView() {
         View focus = null;
         if (contentView != null) {
