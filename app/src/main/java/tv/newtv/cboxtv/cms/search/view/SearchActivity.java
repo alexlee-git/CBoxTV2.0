@@ -65,7 +65,6 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
                     mSearchResult.setVisibility(View.VISIBLE);
                     mHotRecommend.setVisibility(View.GONE);
                 } else {
-                    mSearchResult.setKey(key);
                     mSearchResult.setVisibility(View.GONE);
                     mHotRecommend.setVisibility(View.VISIBLE);
                 }
@@ -165,7 +164,11 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
                     if (!mSearchResult.isLoadComplete()) {
                         return true;
                     }
-                    if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
+                    if (mHotRecommend.getVisibility() == View.GONE){
+                        if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
+                            slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
+                        }
+                    }else {
                         slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
                     }
                 } else if ("search".equals(mode)) {
