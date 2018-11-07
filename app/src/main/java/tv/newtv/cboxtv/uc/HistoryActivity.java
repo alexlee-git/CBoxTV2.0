@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.uc;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -77,6 +78,10 @@ public class HistoryActivity extends FragmentActivity implements
                 mCollectBean = (List<UserCenterPageBean.Bean>) message.obj;
                 if (mCollectBean != null && mCollectBean.size() != 0) {
                     mAdapter.appendToList(mCollectBean);
+                    menuTipView.setTextColor(Color.WHITE);
+                }
+                if(mCollectBean==null||mCollectBean.size()==0){
+                    menuTipView.setTextColor(Color.GRAY);
                 }
                 mAdapter.notifyDataSetChanged();
             }
@@ -85,6 +90,7 @@ public class HistoryActivity extends FragmentActivity implements
     });
     private String tableName;
     private View defaultFocusView;
+    private TextView menuTipView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,7 +108,7 @@ public class HistoryActivity extends FragmentActivity implements
         layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        View menuTipView = findViewById(R.id.tv_right_tips);
+        menuTipView = findViewById(R.id.tv_right_tips);
         if (action_type != UserCenterFragment.HISTORY) {
             menuTipView.setVisibility(View.INVISIBLE);
         } else {
