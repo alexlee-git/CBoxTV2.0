@@ -198,7 +198,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         .getLayoutManager();
                 int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                if (defaultFocusIndex <= lastVisibleItemPosition) {
+                if (defaultFocusIndex>=firstVisibleItemPosition && defaultFocusIndex <= lastVisibleItemPosition) {
                     if (news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition) !=
                             null) {
                         news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition)
