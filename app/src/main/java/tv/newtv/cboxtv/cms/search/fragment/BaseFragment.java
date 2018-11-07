@@ -56,6 +56,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     private Long requestId = 0L;
     private SearchContract.Presenter mSearchPresenter;
     private boolean mIsLoading = false;
+    private View mLoadingLayout;
 
     public BaseFragment() {
         mSearchPresenter = new SearchContract.SearchPresenter(LauncherApplication.AppContext, this);
@@ -178,6 +179,10 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         titleText = mLabelView.findViewWithTag("title_text");
     }
 
+    public void setLoadingLayout(View loadingLayout){
+        mLoadingLayout = loadingLayout;
+    }
+
     public void setLabelFocusView(View view) {
         mLabelFocusView = view;
     }
@@ -259,11 +264,13 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     @Override
     public void onLoading() {
         mIsLoading = true;
+        mLoadingLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void loadingFinish() {
         mIsLoading = false;
+        mLoadingLayout.setVisibility(View.GONE);
     }
 
     @Override

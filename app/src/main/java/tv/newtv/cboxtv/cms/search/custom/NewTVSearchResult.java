@@ -150,6 +150,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mColumnFragment.setIndex(0);
         mColumnFragment.attachDataInfoResult(this);
         mColumnFragment.setLabelView(mColumnFrameLayout);
+        mColumnFragment.setLoadingLayout(mLoadingLayout);
         tabs.add(mColumnFrameLayout);
         mColumnFragment.setLabelFocusView(mColumnFocusImageView);
         mFragments.add(mColumnFragment);
@@ -158,6 +159,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mPersonFragment.setIndex(1);
         mPersonFragment.attachDataInfoResult(this);
         mPersonFragment.setLabelView(mPersonFrameLayout);
+        mPersonFragment.setLoadingLayout(mLoadingLayout);
         tabs.add(mPersonFrameLayout);
         mPersonFragment.setLabelFocusView(mPersonFocusImageView);
         mFragments.add(mPersonFragment);
@@ -166,6 +168,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mDramaFragment.setIndex(2);
         mDramaFragment.attachDataInfoResult(this);
         mDramaFragment.setLabelView(mDramaFrameLayout);
+        mDramaFragment.setLoadingLayout(mLoadingLayout);
         tabs.add(mDramaFrameLayout);
         mDramaFragment.setLabelFocusView(mDramaFocusImageView);
         mFragments.add(mDramaFragment);
@@ -225,11 +228,9 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             } else {
                 mSearchResultEmpty.setVisibility(VISIBLE);
             }
-            mLoadingLayout.setVisibility(GONE);
-        }else {
-            mLoadingLayout.setVisibility(VISIBLE);
         }
     }
+
 
     /**
      * 显示指定页面
