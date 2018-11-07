@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
@@ -121,7 +122,18 @@ public class MainNavManager implements NavContract.View {
                     if (TextUtils.isEmpty(value.getFocusIcon())) {
                         ((NavPageMenuViewHolder) holder).setText(value.getTitle());
                     } else {
-                        ((NavPageMenuViewHolder) holder).setImage(value.getFocusIcon());
+                        if (BuildConfig.DEBUG) {
+                            String url = value.getFocusIcon();
+                            if (url.contains("http://172.25.102.19/")) {
+                                url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
+                            }
+                            if (url.contains("http://172.25.101.210/")) {
+                                url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
+                            }
+                            ((NavPageMenuViewHolder) holder).setImage(url);
+                        } else {
+                            ((NavPageMenuViewHolder) holder).setImage(value.getFocusIcon());
+                        }
                     }
                 }
 
