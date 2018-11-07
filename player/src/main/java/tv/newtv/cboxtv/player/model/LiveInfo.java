@@ -51,6 +51,7 @@ public class LiveInfo {
     public LiveInfo(@Nullable Content content) {
         if (content == null) return;
         mTitle = content.getTitle();
+        contentUUID = content.getContentID();
 
     }
 

@@ -44,6 +44,7 @@ import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.FocusWidget;
 import tv.newtv.cboxtv.player.IFocusWidget;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
@@ -79,11 +80,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public static final int SHOWING_PROGRAM_TREE = 7;
     private static final String TAG = NewTVLauncherPlayerView.class.getName();
 
-
     private static final int PROGRAM_SELECTOR_TYPE_NONE = 0; //不显示选集
     private static final int PROGRAM_SELECTOR_TYPE_NUMBER = 1; //显示数字选集
     private static final int PROGRAM_SELECTOR_TYPE_NAME = 2; //显示名称选集
-
 
     private static final int PLAY_TYPE_SINGLE = 0;
     private static final int PLAY_TYPE_SERIES = 1;
@@ -91,7 +90,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     private static int defaultWidth;
     private static int defaultHeight;
-    private static boolean isFullScreen = false;
+    private boolean isFullScreen = false;
     protected PlayerViewConfig defaultConfig;
     protected boolean startIsFullScreen = true;
     protected boolean ProgramIsChange = false;
@@ -178,7 +177,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         @Override
         public void onTimeout(int i) {
-            LogUtils.i(TAG, "onTimeout: "+i);
+            LogUtils.i(TAG, "onTimeout: " + i);
         }
 
         @Override
@@ -238,7 +237,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         @Override
         public void onTimeout(int i) {
-            LogUtils.i(TAG, "live onTimeout: "+i);
+            LogUtils.i(TAG, "live onTimeout: " + i);
         }
 
         @Override
@@ -402,6 +401,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     public void setFromFullScreen() {
         startIsFullScreen = true;
+        isFullScreen = true;
         ViewGroup.LayoutParams layoutParams = getLayoutParams();
         if (layoutParams != null) {
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -715,8 +715,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * index 播放第几集
      * position 从什么位置开始播放
      * */
-    public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity) {
+    private LiveListener mLiveListener;
+    public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity, LiveListener listener) {
         unshowLoadBack = false;
+        mLiveListener = listener;
         mLiveInfo = liveInfo;
         LogUtils.i(TAG, "playlive playVideo");
         updatePlayStatus(3, 0, 0);
@@ -869,6 +871,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
                 if (!mIsPrepared || mPlayType == PLAY_TYPE_LIVE) {
                     LogUtils.i(TAG, "onKeyDown: mIsPrepared is false");
                     return true;
@@ -981,6 +984,15 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             }
             return true;
+        }
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            if (mPlayType == PLAY_TYPE_LIVE) {
+                return true;
+            }
         }
 
         if (widgetMap != null) {
@@ -1353,10 +1365,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     @Override
-    public void onChange(String current,String start, String end,boolean isComplete) {
-        if(isComplete) {
+    public void onChange(String current, String start, String end, boolean isComplete) {
+        if (isComplete) {
             release();
+            if(mLiveListener != null){
+                mLiveListener.onComplete();
+            }
         }
+        if(mLiveListener!=null){
+            mLiveListener.onTimeChange(current,end);
+        }
+
     }
 
     public void registerScreenListener(ScreenListener listener) {

@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     PersonFragment mPersonFragment;
     DramaFragment mDramaFragment;
 
-    private OnKeyCodeRightListener mOnKeyCodeRightListener;
 
     public NewTVSearchResult(Context context) {
         this(context, null);
@@ -216,17 +216,21 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mDramaFragment.setKey(key);
     }
 
-    public void setEmptyViewVisible() {
-        boolean allowToRight;
-        if(mFragments != null && mFragments.size() > 0){
-            mSearchResultEmpty.setVisibility(GONE);
-            allowToRight = true;
-        }else {
-            mSearchResultEmpty.setVisibility(VISIBLE);
-            allowToRight = false;
-        }
-        mOnKeyCodeRightListener.setOnKeyCodeRightListener(allowToRight);
+    public boolean isLoadComplete(){
+        return !mPersonFragment.isLoading() && !mDramaFragment.isLoading() && !mColumnFragment
+                .isLoading();
     }
+
+    public void setEmptyViewVisible() {
+        if (isLoadComplete()) {
+            if (mFragments != null && mFragments.size() > 0) {
+                mSearchResultEmpty.setVisibility(GONE);
+            } else {
+                mSearchResultEmpty.setVisibility(VISIBLE);
+            }
+        }
+    }
+
 
     /**
      * 显示指定页面
@@ -254,7 +258,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         } else {
             if (!mFragments.contains(fragment)) {
-
                 if(fragment.getIndex() == 0){
                     mFragments.add(0,fragment);
                 }else if(fragment.getIndex() == 2){
@@ -325,14 +328,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         }
         requestFirstTab();
-    }
-
-    public interface OnKeyCodeRightListener {
-        void setOnKeyCodeRightListener(boolean isCanRight);
-    }
-
-    public void setOnKeyCodeRightListener(OnKeyCodeRightListener onKeyCodeRightListener) {
-        this.mOnKeyCodeRightListener = onKeyCodeRightListener;
     }
 
 }

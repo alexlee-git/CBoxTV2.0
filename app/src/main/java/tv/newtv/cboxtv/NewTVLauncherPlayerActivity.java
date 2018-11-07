@@ -133,9 +133,6 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                 return;
             }
 
-            NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
-                    (mPlayerFrameLayoutContainer, this);
-
             mPresenter.getContent(contentUUID, true, contentType);
         }
     }
@@ -168,6 +165,9 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         Log.e(TAG, "action:" + event.getAction() + ",keyCode=" + event.getKeyCode());
         if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
                 && buyGoodsBusiness.dispatchKeyEvent(event)){
+            return true;
+        }
+        if(NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)){
             return true;
         }
 //        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
@@ -280,6 +280,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         initListener();
         NewTVLauncherPlayerViewManager.getInstance().play
                 (this, content, 0, 0, false);
+        NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
+                (mPlayerFrameLayoutContainer, this);
         mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
     }
 

@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.R;
@@ -71,6 +70,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private View TitleView;
     private Disposable mDisposable;
     private SmallWindowView smallWindowView;
+    private Content seriesContent;
 
     private int mEpisodeType;
 
@@ -318,14 +318,11 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         leftDir.setVisibility(View.INVISIBLE);
         rightDir = new TextView(getContext());
         LayoutParams right_layoutParam = new LayoutParams(dir_width, dir_height);
-        // right_layoutParam.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
         right_layoutParam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             right_layoutParam.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
         }
         right_layoutParam.rightMargin = dir_width;
-//        right_layoutParam.topMargin = getResources().getDimensionPixelOffset(R.dimen
-// .height_300px);
         rightDir.setBackgroundResource(R.drawable.icon_detail_tips_right);
         rightDir.setLayoutParams(right_layoutParam);
         addView(rightDir, right_layoutParam);
@@ -359,8 +356,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         aiyaRecyclerView.setAdapter(pageItemAdapter);
     }
 
-    public void setContentUUID(int episodeType, String videoType, FragmentManager manager, String
-            uuid, View controlView) {
+    public void setContentUUID(Content content, int episodeType, String videoType, FragmentManager
+            manager, String
+                                       uuid, View controlView) {
+        seriesContent = content;
         mFragmentManager = manager;
         mContentUUID = uuid;
         mControlView = controlView;
@@ -384,6 +383,22 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         try {
             mContentList = results;
 
+            boolean tvSeries = !videoType(mVideoType);
+            if (tvSeries) {
+                final boolean sortDesc = !TextUtils.equals(seriesContent.getSeriesSum(), seriesContent
+                        .getRecentNum());
+                Collections.sort(mContentList, new Comparator<SubContent>() {
+                    @Override
+                    public int compare(SubContent t1, SubContent t2) {
+                        if (sortDesc) {
+                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt(t1.getPeriods
+                                    ());
+                        }
+                        return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods());
+                    }
+                });
+            }
+
             if (mOnEpisodeChange != null) {
                 mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
             }
@@ -396,7 +411,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 ShowInfoTextView("");
 
                 if (mContentList.size() > 0) {
-//                    mSeriesInfo.resolveVip();
                     if (mControlView != null) {
                         mControlView.setVisibility(View.VISIBLE);
                     }
@@ -426,13 +440,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private void initFragment(int mPageSize) {
         int size = mContentList.size();
         fragments = new ArrayList<>();
-        Collections.sort(mContentList, new Comparator<SubContent>() {
-            @Override
-            public int compare(SubContent content, SubContent t1) {
-
-                return 0;
-            }
-        });
+        boolean tvSeries = !videoType(mVideoType);
         List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
         for (int index = 0; index < size; index += mPageSize) {
             int endIndex = index + mPageSize;
@@ -440,7 +448,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 endIndex = size;
             }
             AbsEpisodeFragment episodeFragment;
-            if (!videoType(mVideoType)) {
+            if (tvSeries) {
                 mPageSize = DEFAULT_LIST_SIZE;
                 episodeFragment = new TvEpisodeFragment();
                 leftDir.setVisibility(GONE);
@@ -452,8 +460,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             episodeFragment.setData(mContentList.subList(index, endIndex));
             episodeFragment.setViewPager(ListPager, fragments.size(), this);
             fragments.add(episodeFragment);
-            pageItems.add(new EpisodePageAdapter.PageItem(String
-                    .format(Locale.getDefault(), "%d-%d", index + 1, endIndex)));
+            pageItems.add(new EpisodePageAdapter.PageItem(episodeFragment.getTabString()));
         }
         EpisodeAdapter episodeAdapter = new EpisodeAdapter(mFragmentManager, fragments);
         ListPager.setAdapter(episodeAdapter);

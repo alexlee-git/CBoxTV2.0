@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.os.SystemClock
+import android.util.Log
 
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
@@ -26,7 +28,7 @@ import com.newtv.libs.util.LogUtils
  */
 class AppMainContract {
     interface View : ICmsView {
-        fun syncServerTime(result: Time?)
+        fun syncServerTime(result: Long?)
     }
 
     interface Presenter : ICmsPresenter {
@@ -34,12 +36,24 @@ class AppMainContract {
     }
 
     class MainPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
-
+        var oldSystemTime: Long= 0
+        var newSystemTime: Long = 0
+        var mServiceTime: Long = 0
+        var mCurrentTime: Long = 0
+        var mNowTime: Long = 0
         //广播显示系统时间
         private val mTimeRefreshReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (Intent.ACTION_TIME_TICK == intent.action) {
-                    syncServiceTime()
+                    mCurrentTime = System.currentTimeMillis()
+                    newSystemTime = SystemClock.elapsedRealtime()
+                    mNowTime = newSystemTime-oldSystemTime+mServiceTime
+                    if (Math.abs(mCurrentTime-mNowTime)/1000>1){
+                        syncServiceTime()
+                    }else{
+                        view?.syncServerTime(mNowTime)
+                        Log.d("zhangxianda","1");
+                    }
                 }
             }
         }
@@ -63,7 +77,10 @@ class AppMainContract {
             clock?.sync(object : DataObserver<Time> {
                 override fun onResult(result: Time, requestCode: Long) {
                     if ("1" == result.statusCode) {
-                        view?.syncServerTime(result)
+                        oldSystemTime = SystemClock.elapsedRealtime()
+                        mServiceTime = result.response
+                        view?.syncServerTime(result.response)
+                        Log.d("zhangxianda","synvServiceTime");
                     } else {
                         view?.syncServerTime(null)
                     }

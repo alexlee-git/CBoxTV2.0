@@ -302,16 +302,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         }
     }
 
-    public void playLiveVideo(String contentUUID, final String playUrl, final String title, final
-    int index, final int position) {
-        setHintTextVisible(GONE);
-//        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl, getContext(),
-//                getProgramSeriesInfo(), index, position);
-//        playLive(playUrl,playCenter.getCurrentSeriesInfo(),false,index,position);
-        NewTVLauncherPlayerViewManager.getInstance().playLive(playUrl,contentUUID, getContext(), playCenter
-                .getCurrentSeriesInfo(), false, index, position);
-    }
-
     public void showProgramError() {
 
     }
@@ -407,8 +397,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         if(isComplete){
             setHintText("直播已结束");
-        }else{
-            setHintText(String.format("%s/%s",current,end));
         }
     }
 

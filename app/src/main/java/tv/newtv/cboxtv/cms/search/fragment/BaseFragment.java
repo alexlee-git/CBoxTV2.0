@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
@@ -29,8 +28,8 @@ import java.util.HashMap;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.cms.search.adapter.SearchResultAdapter;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
-import tv.newtv.cboxtv.cms.search.listener.OnGetSearchResultFocus;
 import tv.newtv.cboxtv.cms.search.listener.SearchResultDataInfo;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 
 /**
  * 类描述：
@@ -40,12 +39,29 @@ import tv.newtv.cboxtv.cms.search.listener.SearchResultDataInfo;
  * 修改时间：
  * 修改备注：
  */
-public abstract class BaseFragment extends Fragment implements SearchContract.LoadingView,SearchResultAdapter.SearchHolderAction {
+public abstract class BaseFragment extends Fragment implements SearchContract.LoadingView,
+        SearchResultAdapter.SearchHolderAction {
 
+    public View mLabelFocusView;//line
+    public View mLabelView;
+    public SearchRecyclerView mSearchRecyclerView;
     private int currentPos = -1;
     private int totalSize = -1;
-
     private TextView titleText;
+    private View contentView;
+    private HashMap<String, SearchResult> cacheDatas;
+    private String currentkey;
+    private int mIndex = 0;
+    private SearchResultDataInfo mSearchResultDataInfo;
+    private Long requestId = 0L;
+    private SearchContract.Presenter mSearchPresenter;
+    private boolean mIsLoading = false;
+    private View mLoadingLayout;
+
+    public BaseFragment() {
+        mSearchPresenter = new SearchContract.SearchPresenter(LauncherApplication.AppContext, this);
+    }
+
 
     public abstract String getType();
 
@@ -59,42 +75,33 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
 
     public abstract View findDefaultFocus();
 
-    protected abstract void onResult(long requestID, @Nullable ArrayList<SubContent> result, @Nullable Integer total);
+    protected abstract void onResult(long requestID, @Nullable ArrayList<SubContent> result,
+                                     @Nullable Integer total);
 
     protected abstract void inputKeyChange();
 
     @Override
-    public void onItemClick(int position){
-
-        ToastUtil.showToast(getContext(),"点击第 " + position + " 项");
+    public void onItemClick(int position,SubContent subContent) {
+        JumpUtil.detailsJumpActivity(getContext(),subContent.getContentType(),subContent.getContentID());
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
+        if (isVisibleToUser) {
             titleText.setTextColor(Color.parseColor("#13d6f9"));
-        }else{
+        } else {
             titleText.setTextColor(Color.parseColor("#ededed"));
         }
     }
 
     @Override
-    public void onFocusToTop(){
+    public void onFocusToTop() {
         mLabelView.requestFocus();
     }
 
-    static class SearchResult {
-        private ArrayList<SubContent> contents;
-        private Integer total;
-
-        private SearchResult(ArrayList<SubContent> value, Integer size) {
-            contents = value;
-            total = size;
-        }
-    }
-
-    protected void setRecycleView(final RecyclerView recycleView, final StaggeredGridLayoutManager layoutManager) {
+    protected void setRecycleView(final RecyclerView recycleView, final
+    StaggeredGridLayoutManager layoutManager) {
         recycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -127,12 +134,12 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         });
     }
 
-    private View contentView;
-
-    protected abstract View createView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState);
+    protected abstract View createView(@NonNull LayoutInflater inflater, @Nullable ViewGroup
+            container, @Nullable Bundle savedInstanceState);
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         if (contentView == null) {
             contentView = createView(inflater, container, savedInstanceState);
@@ -146,26 +153,19 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         return contentView;
     }
 
-    private HashMap<String, SearchResult> cacheDatas;
-    public View mLabelFocusView;//line
-    public View mLabelView;
-    public LinearLayout mLoadingLayout;
-    private String currentkey;
-    private int mIndex = 0;
-    private SearchResultDataInfo mSearchResultDataInfo;
-    public SearchRecyclerView mSearchRecyclerView;
-
     public void setKey(String key) {
-        if (!TextUtils.isEmpty(currentkey)) {
+        notifyToDataInfoResult(true);
+        if (!TextUtils.isEmpty(currentkey) && cacheDatas != null) {
             if (key.length() < currentkey.length()) {
-                if(cacheDatas.containsKey(key)) {
+                if (cacheDatas.containsKey(key)) {
                     SearchResult current = cacheDatas.remove(key);
-                    notifyToDataInfoResult(current.contents == null || current.contents.size() <= 0);
+                    notifyToDataInfoResult(current.contents == null || current.contents.size() <=
+                            0);
                     onResult(requestId, current.contents, current.total);
                     return;
                 }
             } else {
-                if(Integer.parseInt(getPageNum()) > 1) {
+                if (Integer.parseInt(getPageNum()) > 1) {
                     cacheDatas.remove(currentkey);
                 }
             }
@@ -179,7 +179,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         titleText = mLabelView.findViewWithTag("title_text");
     }
 
-    public void setLoadingLayout(LinearLayout loadingLayout){
+    public void setLoadingLayout(View loadingLayout){
         mLoadingLayout = loadingLayout;
     }
 
@@ -187,20 +187,20 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         mLabelFocusView = view;
     }
 
-    public void setIndex(int index) {
-        mIndex = index;
-    }
-
     public int getIndex() {
         return mIndex;
     }
 
-    public void setSearchRecyclerView(SearchRecyclerView searchRecyclerView){
-        mSearchRecyclerView = searchRecyclerView;
+    public void setIndex(int index) {
+        mIndex = index;
     }
 
-    public SearchRecyclerView getSearchRecyclerView(){
+    public SearchRecyclerView getSearchRecyclerView() {
         return mSearchRecyclerView;
+    }
+
+    public void setSearchRecyclerView(SearchRecyclerView searchRecyclerView) {
+        mSearchRecyclerView = searchRecyclerView;
     }
 
     public void attachDataInfoResult(SearchResultDataInfo resultDataInfo) {
@@ -214,20 +214,20 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         mSearchResultDataInfo.updateFragmentList(this, isGone);
     }
 
-    private Long requestId = 0L;
-    private SearchContract.Presenter mSearchPresenter;
-
-    public BaseFragment() {
-        mSearchPresenter = new SearchContract.SearchPresenter(LauncherApplication.AppContext, this);
-    }
-
     private void requestData(String key) {
         key = key.trim();
+        if (TextUtils.isEmpty(key)) {
+            if(cacheDatas != null){
+                cacheDatas.clear();
+            }
+            mSearchPresenter.stop();
+            return;
+        }
         if (!TextUtils.equals(currentkey, key)) {
             currentPos = -1;
-
             inputKeyChange();
         }
+
         SearchContract.SearchCondition conditionTV = SearchContract.SearchCondition
                 .Companion
                 .Builder()
@@ -257,18 +257,25 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         requestId = mSearchPresenter.search(conditionTV);
     }
 
+    public boolean isLoading() {
+        return mIsLoading;
+    }
+
     @Override
     public void onLoading() {
+        mIsLoading = true;
         mLoadingLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void loadingFinish() {
+        mIsLoading = false;
         mLoadingLayout.setVisibility(View.GONE);
     }
 
     @Override
-    public void searchResult(long reqId, @Nullable ArrayList<SubContent> result, @Nullable Integer total) {
+    public void searchResult(long reqId, @Nullable ArrayList<SubContent> result, @Nullable
+            Integer total) {
         totalSize = total;
 
         if (requestId != reqId) {
@@ -279,7 +286,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         }
 
         cacheDatas.put(currentkey, new SearchResult(result, total));
-        if (getPageNum().equals("1")) {
+        if ("1".equals(getPageNum())) {
             notifyToDataInfoResult(result == null || result.size() <= 0);
         }
         onResult(reqId, result, total);
@@ -292,6 +299,17 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
 
     @Override
     public void onError(@NotNull Context context, @Nullable String desc) {
+        LogUtils.e("BaseFragment", "onError:" + desc);
+        notifyToDataInfoResult(true);
+    }
 
+    private static class SearchResult {
+        private ArrayList<SubContent> contents;
+        private Integer total;
+
+        private SearchResult(ArrayList<SubContent> value, Integer size) {
+            contents = value;
+            total = size;
+        }
     }
 }

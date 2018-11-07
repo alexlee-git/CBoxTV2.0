@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import tv.newtv.cboxtv.BackGroundManager;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
@@ -276,10 +277,6 @@ public class MainNavManager implements NavContract.View {
             bundle.putParcelableArrayList("child", navInfo.getChild());
         }
 
-//        BGEvent bgEvent = new BGEvent(navInfo.getId(), navInfo.getIsAd() == 1,
-//                navInfo.getLogo());
-//        BgChangManager.getInstance().dispatchFirstLevelEvent(mContext, bgEvent);
-
         willShowFragment = (BaseFragment) mFragmentManager.findFragmentByTag(navInfo.getId());
         if (willShowFragment == null) {
             if (Constant.NAV_SEARCH.equals(navInfo.getTitle())) {
@@ -317,6 +314,7 @@ public class MainNavManager implements NavContract.View {
 
         NavUtil.getNavUtil().navFragment = willShowFragment;
         willShowFragment.setUserVisibleHint(true);
+        BackGroundManager.getInstance().setCurrentNav(navInfo.getId());
         mCurrentShowFragment = (BaseFragment) willShowFragment;
     }
 
@@ -359,6 +357,7 @@ public class MainNavManager implements NavContract.View {
 
     @Override
     public void onNavResult(Context context, List<Nav> result) {
+        BackGroundManager.getInstance().parseNavigation(result);
         inflateNavigationBar(result, context, "server");
     }
 
