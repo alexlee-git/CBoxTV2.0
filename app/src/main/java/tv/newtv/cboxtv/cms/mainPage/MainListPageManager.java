@@ -158,7 +158,7 @@ public class MainListPageManager{
             BgChangManager.getInstance().add(contentId, fragmentUUID);
         }
 
-        if (defaultPageIdx == 0) {
+        if (defaultPageIdx == 0 && mSharedPreferences != null) {
             currentFocus = mSharedPreferences.getString("page-defaultFocus", "");
             int count = mNavInfos.size();
             boolean contain = false;
