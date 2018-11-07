@@ -96,6 +96,8 @@ public class BackGroundManager {
         }
         if(backGroundMaps.containsKey(id)){
             setShowId(context,id);
+        }else{
+            clearBackGround();
         }
     }
 
@@ -206,6 +208,7 @@ public class BackGroundManager {
                 if (isRetry) {
                     requestImage(bgDrawable, context, uuid, url, false);
                 } else {
+                    bgHashmap.remove(uuid);
                     clearBackGround();
                 }
                 targetList.remove(this);

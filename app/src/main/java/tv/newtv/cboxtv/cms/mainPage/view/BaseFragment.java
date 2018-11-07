@@ -35,6 +35,9 @@ public abstract class BaseFragment extends RxFragment {
     private Runnable lazyRunnable = new Runnable() {
         @Override
         public void run() {
+            if(getUserVisibleHint()) {
+                BackGroundManager.getInstance().setCurrentPageId(getContext(), getContentUUID());
+            }
             lazyLoad();
         }
     };
@@ -161,11 +164,12 @@ public abstract class BaseFragment extends RxFragment {
     }
 
     protected void onVisible() {
-        BackGroundManager.getInstance().setCurrentPageId(getContext(),getContentUUID());
+
         invokeLazyLoad();
     }
 
     protected void lazyLoad() {
+
         Log.d(BaseFragment.class.getSimpleName(), "lazyload()");
     }
 
