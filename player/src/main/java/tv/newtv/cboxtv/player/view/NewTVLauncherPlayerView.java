@@ -335,7 +335,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         defaultConfig.layoutParams = getLayoutParams();
         defaultConfig.prepared = mIsPrepared;
         defaultConfig.playPosition = getCurrentPosition();
-        defaultConfig.isFullScreen = isFullScreen();
+        defaultConfig.isFullScreen = isFullScreen;
         defaultConfig.startIsFullScreen = startIsFullScreen;
         defaultConfig.parentViewGroup = getParent();
     }

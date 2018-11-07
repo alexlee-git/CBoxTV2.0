@@ -357,8 +357,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     public void setContentUUID(Content content, int episodeType, String videoType, FragmentManager
-            manager, String
-                                       uuid, View controlView) {
+            manager, String uuid, View controlView) {
         seriesContent = content;
         mFragmentManager = manager;
         mContentUUID = uuid;
@@ -366,9 +365,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mEpisodeType = episodeType;
         mVideoType = videoType;
 
-        mContentPresenter = new ContentContract.ContentPresenter
-                (getContext(), this);
-        mContentPresenter.getSubContent(mContentUUID);
+        if(content.getData() == null) {
+            mContentPresenter = new ContentContract.ContentPresenter
+                    (getContext(), this);
+            mContentPresenter.getSubContent(mContentUUID);
+        }else{
+            parseResult(content.getData());
+        }
     }
 
     private void onLoadError(String message) {

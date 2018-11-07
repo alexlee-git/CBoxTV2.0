@@ -22,6 +22,10 @@ import com.newtv.libs.Libs
  */
 class ContentContract {
 
+    interface contentViewCallack : ICmsView {
+        fun onContentResult(content:Content?)
+    }
+
     interface View : ICmsView {
         fun onContentResult(content: Content?)
         fun onSubContentResult(result: ArrayList<SubContent>?)

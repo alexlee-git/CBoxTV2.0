@@ -115,17 +115,17 @@ class ActiveAuthContract {
                     }
 
                     override fun onError(desc: String?) {
-                        onFailed(Constract.AUTH,Constract.NET_ERROR);
+                        onFailed(Constract.AUTH, Constract.NET_ERROR);
                     }
                 })
             }
         }
 
         override fun active() {
-            if (TextUtils.isEmpty(Constant.UUID))
-                Constant.UUID = SPrefUtils.getValue(context.applicationContext,
+            if (TextUtils.isEmpty(Constant.UUID)) {
+                Constant.UUID = SPrefUtils.getValue(context,
                         Constant.UUID_KEY, "") as String
-
+            }
             if (TextUtils.isEmpty(Constant.UUID)) {
                 val activeAuth = getService<IActiveAuth>(CmsServicePresenter.SERVICE_ACTIVE_AUTH)
                 if (activeAuth != null) {
@@ -161,7 +161,7 @@ class ActiveAuthContract {
                         }
 
                         override fun onError(desc: String?) {
-                            onFailed(Constract.ACTIVATE,Constract.NET_ERROR);
+                            onFailed(Constract.ACTIVATE, Constract.NET_ERROR);
                         }
                     })
                 }
@@ -179,7 +179,7 @@ class ActiveAuthContract {
             val NET_ERROR = 4 // 异常
             internal val JSON_EXCEPTION = 5 //json解析错误
             val IO_EXCEPTION = 6 //io 异常
-            const val  NOT_SELF_DEVICE = 7 //不是合作终端
+            const val NOT_SELF_DEVICE = 7 //不是合作终端
             val LOCAL_EXCEPTION = 10 //10以下是客户端定义的错误类型
 
 
