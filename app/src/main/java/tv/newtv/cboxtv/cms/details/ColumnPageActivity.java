@@ -55,7 +55,6 @@ public class ColumnPageActivity extends DetailPageActivity {
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
     private Content pageContent;
-    private boolean isADEntry = false;
     private int currentIndex = -1;
 
     @Override
@@ -97,7 +96,6 @@ public class ColumnPageActivity extends DetailPageActivity {
         scrollView = findViewById(R.id.root_view);
 
         String contentUUID = getIntent().getStringExtra("content_uuid");
-        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {

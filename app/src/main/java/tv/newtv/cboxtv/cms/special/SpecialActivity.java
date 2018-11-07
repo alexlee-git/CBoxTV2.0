@@ -72,7 +72,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
 //=======
 //        mSpecialFragment = (SpecialFragment) getSupportFragmentManager()
 //                .findFragmentById(R.id.content);
-//        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
+//
 //        if (mSpecialFragment == null) {
 //            mSpecialFragment = SpecialFragment.newInstance();
 //            mSpecialFragment.setArguments(getIntent().getExtras());
@@ -80,7 +80,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
 //                    mSpecialFragment, R.id.content);
 //>>>>>>> 1.4
 //        }
-
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
         String contentUUID = getIntent().getStringExtra(Constant.CONTENT_UUID);
         if (TextUtils.isEmpty(contentUUID)) {
             ToastUtil.showToast(getApplicationContext(), "UUID为空");
