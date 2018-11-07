@@ -673,7 +673,15 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         }
 
     }
-
+    @Override
+    protected void onResume() {
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                requestMarkData(mMarkDataUrl_pageUUid);
+            }
+        }, 200);
+        super.onResume();
+    }
     @Override
     public void onFailed(String desc) {
 
