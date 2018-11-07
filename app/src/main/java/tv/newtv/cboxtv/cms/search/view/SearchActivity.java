@@ -47,6 +47,7 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     private final String TAG = this.getClass().getSimpleName();
     private float SearchViewKeyboardWidth = 655;
     private boolean keyWordChange = false;
+    private String mSearchId = "402";
 
     private SearchViewKeyboard mSearchViewKeyboard;
     private PageContract.ContentPresenter mContentPresenter;
@@ -90,7 +91,11 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
         initView();
         init();
         mContentPresenter = new PageContract.ContentPresenter(this, this);
-        mContentPresenter.getPageContent("420");
+        String hotSearchId = Constant.getBaseUrl("HOTSEARCH_CONTENTID");
+        if (!TextUtils.isEmpty(hotSearchId)){
+            mSearchId = hotSearchId;
+        }
+        mContentPresenter.getPageContent(mSearchId);
     }
 
     //对象的初始化
