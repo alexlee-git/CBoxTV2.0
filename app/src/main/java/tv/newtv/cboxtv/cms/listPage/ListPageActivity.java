@@ -257,7 +257,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 
                 MarkPosition = 0;
                 mProgramsBeanList.clear();
-                markDataAdapter.notifyDataSetChanged();
+                if (mRecyclerView_MarkData.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || !mRecyclerView_MarkData.isComputingLayout()) {
+                    markDataAdapter.notifyDataSetChanged();
+                }
 //                if(i==0||i==mNavInfos.size()-1)
 //                {
 //                    Toast.makeText(ListPageActivity.this,i+"",Toast.LENGTH_SHORT).show();
@@ -572,7 +574,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
     private void setData(int page) {
         if (page == 1) {
             mResultData.clear();
-            mAdapter.notifyDataSetChanged();
+            if (mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || !mRecyclerView.isComputingLayout()) {
+                mAdapter.notifyDataSetChanged();
+            }
         }
         isScreenLoad = true;
         mResultData.addAll(mScreenInfo.getResultList());
@@ -585,7 +589,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             mRelativeLayout_error.setVisibility(View.GONE);
             mRelativeLayout_success.setVisibility(View.VISIBLE);
         }
-        mAdapter.notifyItemRangeInserted((page - 1) * size, size);
+        if (mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || !mRecyclerView.isComputingLayout()) {
+            mAdapter.notifyItemRangeInserted((page - 1) * size, size);
+        }
     }
 
     @Override
@@ -610,7 +616,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
         page = 1;
         startSum = 0;
         mResultData.clear();
-        mAdapter.notifyDataSetChanged();
+        if (mRecyclerView.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || !mRecyclerView.isComputingLayout()) {
+            mAdapter.notifyDataSetChanged();
+        }
         getScreenData(mBlockTitle, mListTypes.get(0), mListTypes.get(1), mListTypes.get(2),
                 startSum + "", size + "");
         uploadScreenLog(getScreenType(mListTypes.get(0)), getScreenType(mListTypes.get(1)),
@@ -710,7 +718,9 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
 //            mRelativeLayout_error.setVisibility(View.GONE);
             mRelativeLayout_success.setVisibility(View.VISIBLE);
         }
-        markDataAdapter.notifyDataSetChanged();
+        if (mRecyclerView_MarkData.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || !mRecyclerView_MarkData.isComputingLayout()) {
+            markDataAdapter.notifyDataSetChanged();
+        }
     }
 
     private void setListIntent(String mActionType, String mContentType, String mContentUUID,
@@ -1241,8 +1251,10 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
                             }
                             int total = mProgramsBeanList.size();
                             mProgramsBeanList.addAll(programs);
-                            markDataAdapter.notifyItemRangeChanged(total - 1, mBlockTypeScreen
-                                    .getResultList().size());
+                            if (mRecyclerView_MarkData.getScrollState() == RecyclerView.SCROLL_STATE_IDLE || !mRecyclerView_MarkData.isComputingLayout()) {
+                                markDataAdapter.notifyItemRangeChanged(total - 1, mBlockTypeScreen
+                                        .getResultList().size());
+                            }
                         } else {
 
                             mRelativeLayout_error.setVisibility(View.VISIBLE);
