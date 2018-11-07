@@ -399,7 +399,10 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     public boolean interruptKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             int keycode = event.getKeyCode();
-            View focusView = scrollView.findFocus();
+            View focusView = null;
+            if (scrollView!=null){
+                focusView = scrollView.findFocus();
+            }
             int dir = View.FOCUS_DOWN;
             //方向键
             switch (keycode) {
@@ -436,7 +439,7 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     break;
                 //向左
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    if (focusView == mVideoView) {
+                    if (focusView != null && focusView == mVideoView) {
                         return true;
                     }
                     dir = View.FOCUS_LEFT;
