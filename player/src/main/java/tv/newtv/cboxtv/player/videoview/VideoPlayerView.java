@@ -375,6 +375,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 isEnd = false;
             }
         } else {
+            //当视频都播放完的时候，就不在去加载首次进入详情页播放的视频
+            ProgramIsChange=false;
             if (isFullScreen()) {
                 ExitFullScreen();
             }
