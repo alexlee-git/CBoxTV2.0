@@ -374,6 +374,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
                     title_label.setVisibility(View.GONE);
                     tab.setFocusable(true);
                     tab.requestFocus();
+                    labelRecyclerView.smoothScrollToPosition(0);
                     moveFlag = 0;
                     map.put("categoryId", categoryId);
                     presenter.getLabelData();
@@ -409,6 +410,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
                     place_text.setVisibility(View.GONE);
                     View view = container.getChildAt(1);
                     if (view != null) {
+                        view.setVisibility(View.VISIBLE);
                         if (second_Record_View != null) {
                             second_Record_View.requestFocus();
                         }
