@@ -31,7 +31,8 @@ public interface IUserCenterLoginApi {
     @POST("/kangaroo/authorization/device_code")
     Observable<ResponseBody> getLoginQRCode(@Header("Authorization") String Authorization,
                                             @Field("response_type") String response_type,
-                                            @Field("client_id") String client_id);
+                                            @Field("client_id") String client_id,
+                                            @Field("channel_code") String channel_code);
 
 
     @Headers("host_type: " + HeadersInterceptor.USER)

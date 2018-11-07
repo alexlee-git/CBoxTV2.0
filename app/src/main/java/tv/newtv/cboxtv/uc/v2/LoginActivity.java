@@ -171,7 +171,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private void getQrcode(String Authorization, String response_type, String client_id) {
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getLoginQRCode(Authorization, response_type, client_id)
+                    .getLoginQRCode(Authorization, response_type, client_id, Constant.CHANNEL_ID)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
