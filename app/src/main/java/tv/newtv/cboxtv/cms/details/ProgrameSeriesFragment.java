@@ -445,9 +445,12 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     dir = View.FOCUS_LEFT;
                     break;
             }
-            View targetView = FocusFinder.getInstance().findNextFocus(scrollView, scrollView
-                    .findFocus(), dir);
 
+            View targetView = null;
+            if (scrollView!=null){
+                targetView = FocusFinder.getInstance().findNextFocus(scrollView, scrollView
+                        .findFocus(), dir);
+            }
             if (targetView != null) {
                 if (dir == View.FOCUS_UP) {
                     switch (targetView.getId()) {
