@@ -20,7 +20,6 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.contract.ContentContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -396,6 +395,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
     @Override
     public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
+        Log.d("TopicTwoFragment", infoResult.getData().toString());
         if (infoResult.getBackground() == null) {
             frame_container.setBackgroundResource(R.drawable.bg);
         }
