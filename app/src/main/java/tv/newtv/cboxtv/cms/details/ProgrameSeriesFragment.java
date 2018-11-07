@@ -423,22 +423,26 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                 case KeyEvent.KEYCODE_DPAD_DOWN:
                     dir = View.FOCUS_DOWN;
                     Log.i(TAG,"KEYCODE_DPAD_DOWN-->向下按键");
-                    if (focusView.getId() == R.id.collect
-                            || focusView.getId() == R.id.full_screen
-                            || focusView.getId() == R.id.id_video_player) {
+                    if(focusView !=null){
+                        if (focusView.getId() == R.id.collect
+                                || focusView.getId() == R.id.full_screen
+                                || focusView.getId() == R.id.id_video_player) {
 
-                        Log.i(TAG,"KEYCODE_DPAD_DOWN-->符合id条件-->"+focusView.getId());
+                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->符合id条件-->"+focusView.getId());
 
-                        if (mRecyclerView != null && mRecyclerView.getChildAt(0) != null) {
-                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->跳转第0个");
-                            mRecyclerView.getChildAt(0).requestFocus();
-                            return true;
-                        }else {
-                            Log.i(TAG,"KEYCODE_DPAD_DOWN-->没有符合的id");
+                            if (mRecyclerView != null && mRecyclerView.getChildAt(0) != null) {
+                                Log.i(TAG,"KEYCODE_DPAD_DOWN-->跳转第0个");
+                                mRecyclerView.getChildAt(0).requestFocus();
+                                return true;
+                            }else {
+                                Log.i(TAG,"KEYCODE_DPAD_DOWN-->没有符合的id");
+                            }
                         }
-                    }
 
+                    }
                     break;
+
+
                 //向左
                 case KeyEvent.KEYCODE_DPAD_LEFT:
                     if (focusView == mVideoView) {
