@@ -141,7 +141,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         if (HintTextView != null) {
             HintTextView.setTextSize(getResources().getDimensionPixelSize(!isFullScreen ? R.dimen
-                    .height_12px : R.dimen.height_18px));
+                    .height_12sp : R.dimen.height_18sp));
         }
     }
 
