@@ -1325,9 +1325,11 @@ public class ListPageActivity extends BaseActivity implements ListPageView, Mark
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ScreenInfo.ResultListBean mResultListBean = mResultData.get(position);
-                    setListIntent("OPEN_DETAILS", mResultListBean.getContentType(),
-                            mResultListBean.getUUID(), "");
+                    if ( mResultData.size()>position){
+                        ScreenInfo.ResultListBean mResultListBean = mResultData.get(position);
+                        setListIntent("OPEN_DETAILS", mResultListBean.getContentType(),
+                                mResultListBean.getUUID(), "");
+                    }
 //                    processOpenCellScreen(mResultData.get(position));
                 }
             });
