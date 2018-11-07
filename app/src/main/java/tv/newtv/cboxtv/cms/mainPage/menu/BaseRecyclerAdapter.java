@@ -118,7 +118,7 @@ public abstract class BaseRecyclerAdapter<T, H extends RecyclerView.ViewHolder> 
      */
     public T getItem(int position) {
         // TODO Auto-generated method stub
-        if (position > mList.size() - 1) {
+        if (position > mList.size() - 1 || position<0) {
             return null;
         }
         return mList.get(position);
