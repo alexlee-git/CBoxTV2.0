@@ -165,6 +165,8 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         }
     };
     private NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
+    private View focusView;
+    private View targetView;
 
     public static ProgrameSeriesFragment newInstance(String uuid) {
         ProgrameSeriesFragment fragment = new ProgrameSeriesFragment();
@@ -399,7 +401,10 @@ public class ProgrameSeriesFragment extends BaseFragment implements
     public boolean interruptKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             int keycode = event.getKeyCode();
-            View focusView = scrollView.findFocus();
+            if(scrollView!=null){
+                focusView = scrollView.findFocus();
+            }
+
             int dir = View.FOCUS_DOWN;
             //方向键
             switch (keycode) {
@@ -442,8 +447,11 @@ public class ProgrameSeriesFragment extends BaseFragment implements
                     dir = View.FOCUS_LEFT;
                     break;
             }
-            View targetView = FocusFinder.getInstance().findNextFocus(scrollView, scrollView
-                    .findFocus(), dir);
+            if(scrollView!=null){
+                targetView = FocusFinder.getInstance().findNextFocus(scrollView, scrollView
+                        .findFocus(), dir);
+            }
+
 
             if (targetView != null) {
                 if (dir == View.FOCUS_UP) {

@@ -309,7 +309,9 @@ public class MainListPageManager{
                 @Override
                 public void onPageScrollStateChanged(int state) {
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
-                        currentFragment = mViewPagerAdapter.getCurrentFragment();
+                        if(mViewPagerAdapter !=null){
+                            currentFragment = mViewPagerAdapter.getCurrentFragment();
+                        }
                         //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager
                         // .getCurrentItem());
                         if (currentFragment != null) {

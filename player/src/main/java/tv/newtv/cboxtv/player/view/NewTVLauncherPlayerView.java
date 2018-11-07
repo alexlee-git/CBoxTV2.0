@@ -698,9 +698,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
             playIndex(index);
 
-            String seriesUUID = programSeriesInfo.getContentUUID();
+            if(programSeriesInfo !=null && program !=null){
+                String seriesUUID = programSeriesInfo.getContentUUID();
+                mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
+            }
 
-            mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
 
             startLoading();
             isNeedStartActivity(isNeedStartActivity, programSeriesInfo, index);
@@ -747,7 +749,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
         videoDataStruct.setDeviceID(Constant.UUID);
         videoDataStruct.setKey(liveInfo.getKey());
-        videoDataStruct.setContentUUID(liveInfo.getContentUUID());
+        if(liveInfo !=null){
+            videoDataStruct.setContentUUID(liveInfo.getContentUUID());
+        }
         mNewTVLauncherPlayer.playAlive(getContext(), mPlayerFrameLayout, liveInfo,
                 mLiveCallBackEvent,
                 videoDataStruct);
