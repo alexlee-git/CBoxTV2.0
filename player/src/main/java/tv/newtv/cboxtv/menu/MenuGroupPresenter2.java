@@ -137,7 +137,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     initData();
                     break;
                 case SET_LAST_DATA:
-                    setLastData();
+//                    setLastData();
                     break;
                 case WAIT_AD_END:
                     checkShowHinter();
@@ -490,38 +490,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
     }
 
-    private void getLastData() {
-        RequestMenuGroupData.getLastData(programSeries, new RequestMenuGroupData.DataListener() {
-            @Override
-            public void success(LastMenuBean lastBean) {
-                if (menuGroup == null) return;
-                MenuGroupPresenter2.this.lastMenuBean = lastBean;
-                if (lastBean == null || lastBean.getData() == null || lastBean.getData().getPrograms() == null) {
-                    return;
-                }
-                setLastData();
-            }
-        });
-    }
-
-    private void setLastData() {
-        if (!menuGroup.isAllNodeInit()) {
-            handler.sendEmptyMessageDelayed(SET_LAST_DATA, 200);
-            return;
-        }
-
-        try {
-            LastMenuBean lastBean = lastMenuBean;
-//            String pid = lastBean.getData().getContentUUID();
-
-            menuGroupIsInit = menuGroup.setLastProgram(lastBean, programSeries, contentUUID);
-//            menuGroup.setAppKeyAndChanelId(Constant.APP_KEY, Constant.CHANNEL_ID);
-            playProgram = menuGroup.getPlayProgram();
-            checkShowHinter();
-        } catch (Exception e) {
-            LogUtils.e(TAG, "exception:" + e.toString());
-        }
-    }
 
     /**
      * 栏目树初始化完成后,如果在播放广告，等待广告播放完毕在显示提示view
