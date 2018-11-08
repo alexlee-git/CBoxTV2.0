@@ -30,6 +30,7 @@ open class Content  : Serializable {
     var priceNum: String? = null //最新付费节目数量 设置最后几集收费
     var videoType: String? = null //一级分类
     var director: String? = null //导演
+    var recentNum:String? = null //已更新集数
 
     @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
     var contentID: String? = null //内容Id
@@ -69,7 +70,10 @@ open class Content  : Serializable {
     var tvContentIDs: String? = null //所属电视栏目ID	多个id之间用 | 分割
     var CDNURL: List<CdnUrl>? = null    //分发任务返回的CDN播放地址
 
-    //LV、TV
+    //LV、
+    var playUrl:String? = null
+
+    // TV
     var liveLoopParam: List<LiveParam>? = null     //直播循环参数	 String
     var lvID: String? = null    //直播id
     var presenter: String? = null     //主持人	 String

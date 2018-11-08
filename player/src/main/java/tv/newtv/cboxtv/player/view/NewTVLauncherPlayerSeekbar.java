@@ -144,7 +144,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         View view = LayoutInflater.from(context).inflate(R.layout.newtv_launcher_player_seekbar,
                 this);
         mSeekBar = (SeekBar) view.findViewById(R.id.player_seekbar);
-        BitmapDrawable newDrawable = getNewDrawable(R.drawable.seekbar_thumb,getResources().getDimensionPixelOffset(R.dimen.width_4px), getResources().getDimensionPixelOffset(R.dimen.height_40px));
+        BitmapDrawable newDrawable = getNewDrawable(R.drawable.seekbar_thumb,getResources().getDimensionPixelOffset(R.dimen.width_4px), getResources().getDimensionPixelOffset(R.dimen.height_40dp));
         mSeekBar.setThumb(newDrawable);
         mSeekBar.setThumbOffset(0);
         mProgramNameTextView = (TextView) view.findViewById(R.id.seekbar_program_name);

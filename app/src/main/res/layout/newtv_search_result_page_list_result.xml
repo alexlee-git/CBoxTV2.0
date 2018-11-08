@@ -133,8 +133,6 @@
         android:id="@+id/search_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/width_409px"
-        android:layout_marginTop="@dimen/height_465px"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 

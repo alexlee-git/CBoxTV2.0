@@ -19,7 +19,7 @@ import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
 /**
  * Created by 冯凯 on 2018/9/30.
  */
-public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.FirstMenuViewHolder> {
+public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.SecondMenuViewHolder> {
     private Context context;
     List<LabelBean.DataBean.FilterValueBean> list;
     LabelBean.DataBean dataBean;
@@ -33,18 +33,18 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
 
     @NonNull
     @Override
-    public FirstMenuViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public SecondMenuViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View view = LayoutInflater.from(context).inflate(R.layout.label, viewGroup, false);
-        FirstMenuViewHolder holder = new FirstMenuViewHolder(view);
+        SecondMenuViewHolder holder = new SecondMenuViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final FirstMenuViewHolder firstMenuViewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final SecondMenuViewHolder menuViewHolder, final int i) {
 
-        firstMenuViewHolder.textView.setText(list.get(i).getTitle());
-        firstMenuViewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        menuViewHolder.textView.setText(list.get(i).getTitle());
+        menuViewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
 
             @Override
@@ -52,10 +52,11 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
                 if (hasFocus) {
                     RxBus.get().post("labelKey", dataBean);
                     RxBus.get().post("labelValue", list.get(i));
-                    firstMenuViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg_focus);
+                    RxBus.get().post("secondLabelPosition",menuViewHolder.itemView);
+                    menuViewHolder.textView.setBackgroundResource(R.drawable.screen_list_select);
 
                 } else {
-                    firstMenuViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg);
+                    menuViewHolder.textView.setBackgroundResource(R.drawable.screen_list_default);
 
                 }
             }
@@ -69,11 +70,11 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
         return list.size();
     }
 
-    class FirstMenuViewHolder extends RecyclerView.ViewHolder {
+    class SecondMenuViewHolder extends RecyclerView.ViewHolder {
 
         private TextView textView;
 
-        public FirstMenuViewHolder(@NonNull View itemView) {
+        public SecondMenuViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setFocusable(true);
             textView = itemView.findViewById(R.id.label_title);

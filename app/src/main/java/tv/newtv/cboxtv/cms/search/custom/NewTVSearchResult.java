@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,8 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     ImageView mLeftArrow;
     @BindView(R.id.search_loading)
     LinearLayout mLoadingLayout;
+    @BindView(R.id.search_loading_image)
+    View mLoadingImg;
 
     @BindView(R.id.tab_container)
     ViewGroup tabContainer;
@@ -80,7 +83,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     PersonFragment mPersonFragment;
     DramaFragment mDramaFragment;
 
-    private OnKeyCodeRightListener mOnKeyCodeRightListener;
 
     public NewTVSearchResult(Context context) {
         this(context, null);
@@ -100,6 +102,32 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         View.inflate(this.getContext(), R.layout.newtv_search_result_page_list_result, this);
         ButterKnife.bind(this);
         init();
+        resetLoadingLayout(false);
+    }
+
+    public void resetLoadingLayout(boolean keyboardIsHidden){
+        int loadingLeftMargin;
+        int loadingTopMargin;
+        if (mLoadingLayout != null) {
+            LayoutParams loadingParams = (LayoutParams) mLoadingLayout.getLayoutParams();
+
+            if (keyboardIsHidden){
+                loadingLeftMargin = (ScreenUtils.getScreenW()
+                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_25px))//leftbtn width
+                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_29px))//leftbtn marginleft
+                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_10px))//recycleview paddingLeft
+                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_100px))//recycleview paddingRight
+                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_90px))//SearchViewPager marginLeft
+                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_100px))//SearchRecyclerView paddingRight
+                )/2;
+            }else {
+                loadingLeftMargin = (ScreenUtils.getScreenW() - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_654px)))/2;
+            }
+            loadingTopMargin = (ScreenUtils.getScreenH() - ScreenUtils.dp2px(getResources().getDimension(R.dimen.height_43px)))/2;
+            loadingParams.leftMargin = loadingLeftMargin;
+            loadingParams.topMargin = loadingTopMargin;
+            mLoadingLayout.setLayoutParams(loadingParams);
+        }
     }
 
     @Override
@@ -150,7 +178,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mColumnFragment.setIndex(0);
         mColumnFragment.attachDataInfoResult(this);
         mColumnFragment.setLabelView(mColumnFrameLayout);
-        mColumnFragment.setLoadingLayout(mLoadingLayout);
+        mColumnFragment.setLoadingLayout(mLoadingLayout,mLoadingImg);
         tabs.add(mColumnFrameLayout);
         mColumnFragment.setLabelFocusView(mColumnFocusImageView);
         mFragments.add(mColumnFragment);
@@ -159,7 +187,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mPersonFragment.setIndex(1);
         mPersonFragment.attachDataInfoResult(this);
         mPersonFragment.setLabelView(mPersonFrameLayout);
-        mPersonFragment.setLoadingLayout(mLoadingLayout);
+        mPersonFragment.setLoadingLayout(mLoadingLayout,mLoadingImg);
         tabs.add(mPersonFrameLayout);
         mPersonFragment.setLabelFocusView(mPersonFocusImageView);
         mFragments.add(mPersonFragment);
@@ -168,7 +196,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mDramaFragment.setIndex(2);
         mDramaFragment.attachDataInfoResult(this);
         mDramaFragment.setLabelView(mDramaFrameLayout);
-        mDramaFragment.setLoadingLayout(mLoadingLayout);
+        mDramaFragment.setLoadingLayout(mLoadingLayout,mLoadingImg);
         tabs.add(mDramaFrameLayout);
         mDramaFragment.setLabelFocusView(mDramaFocusImageView);
         mFragments.add(mDramaFragment);
@@ -216,17 +244,21 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mDramaFragment.setKey(key);
     }
 
-    public void setEmptyViewVisible() {
-        boolean allowToRight;
-        if(mFragments != null && mFragments.size() > 0){
-            mSearchResultEmpty.setVisibility(GONE);
-            allowToRight = true;
-        }else {
-            mSearchResultEmpty.setVisibility(VISIBLE);
-            allowToRight = false;
-        }
-        mOnKeyCodeRightListener.setOnKeyCodeRightListener(allowToRight);
+    public boolean isLoadComplete(){
+        return !mPersonFragment.isLoading() && !mDramaFragment.isLoading() && !mColumnFragment
+                .isLoading();
     }
+
+    public void setEmptyViewVisible() {
+        if (isLoadComplete()) {
+            if (mFragments != null && mFragments.size() > 0) {
+                mSearchResultEmpty.setVisibility(GONE);
+            } else {
+                mSearchResultEmpty.setVisibility(VISIBLE);
+            }
+        }
+    }
+
 
     /**
      * 显示指定页面
@@ -254,7 +286,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         } else {
             if (!mFragments.contains(fragment)) {
-
                 if(fragment.getIndex() == 0){
                     mFragments.add(0,fragment);
                 }else if(fragment.getIndex() == 2){
@@ -325,14 +356,6 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         }
         requestFirstTab();
-    }
-
-    public interface OnKeyCodeRightListener {
-        void setOnKeyCodeRightListener(boolean isCanRight);
-    }
-
-    public void setOnKeyCodeRightListener(OnKeyCodeRightListener onKeyCodeRightListener) {
-        this.mOnKeyCodeRightListener = onKeyCodeRightListener;
     }
 
 }

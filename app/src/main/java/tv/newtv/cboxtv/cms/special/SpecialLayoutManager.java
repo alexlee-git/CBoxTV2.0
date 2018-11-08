@@ -71,7 +71,7 @@ class SpecialLayoutManager {
                 baseSpecialContentFragment = new ShooterFragment();
             } else if ("special_008".equals(type)) {
                 baseSpecialContentFragment = new ScoreFragment();
-            } else if ("special_005".equals(type)) {
+            } else if ("special_005".equals(type) || "special_001".equals(type)) {
                 baseSpecialContentFragment = new DefaultSpecial();
             } else if ("special_002".equals(type)) {
                 baseSpecialContentFragment = new ScheduleFragment();
@@ -92,7 +92,6 @@ class SpecialLayoutManager {
             } else if ("special_014".equals(type)) {
                 baseSpecialContentFragment = new SpecialThreeFragment();
             }
-
         }
 
         if (baseSpecialContentFragment != null) {

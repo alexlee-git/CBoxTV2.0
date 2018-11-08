@@ -941,9 +941,11 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         goneAnimator();
 
 
-    String    duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
-        if (duration !=null)
-            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+        String duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
+        if (!TextUtils.isEmpty(duration)){
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","
+                    +playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+        }
 
     }
 

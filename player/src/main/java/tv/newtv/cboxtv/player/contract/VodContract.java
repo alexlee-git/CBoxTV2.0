@@ -28,6 +28,7 @@ import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.PlayerConstants;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.util.PlayerNetworkRequestUtils;
+import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.player.R;
 
 /**
@@ -183,11 +184,14 @@ public class VodContract {
                 videoDataStruct.setKey(Encryptor.decrypt(Constant.APPSECRET,
                         playResult.getDecryptKey()));
             }
-            LogUtils.i(TAG, "playViewgetEncryptFlag:" + playResult.getEncryptFlag
-                    () +
-                    ",key=" + Encryptor.decrypt(Constant.APPSECRET, playResult
-                    .getDecryptKey()));
+            LogUtils.i(TAG, "playViewgetEncryptFlag:" + playResult.getEncryptFlag()
+                    +",key=" + Encryptor.decrypt(Constant.APPSECRET, playResult.getDecryptKey()));
             videoDataStruct.setPlayType(0);
+
+            if(VipCheck.isTrySee(playResult)){
+                videoDataStruct.setTrySee(true);
+                videoDataStruct.setFreeDuration(playResult.getFreeDuration());
+            }
 
             videoDataStruct.setPlayUrl(playUrl);
             videoDataStruct.setProgramId(playResult.getContentUUID());

@@ -4,19 +4,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
@@ -25,13 +24,14 @@ import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.BackGroundManager;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
@@ -39,7 +39,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * Created by lixin on 2018/1/23.
  */
 
-public class ContentFragment extends BaseFragment implements PageContract.LoadingView {
+public class ContentFragment extends BaseFragment implements PageContract.ModelView {
 
     private String param;
     private String contentId;
@@ -71,6 +71,11 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
         ContentFragment fragment = new ContentFragment();
         fragment.setArguments(paramBundle);
         return fragment;
+    }
+
+    @Override
+    protected String getContentUUID() {
+        return contentId;
     }
 
     @Override
@@ -156,6 +161,7 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
     @Override
     protected void onVisible() {
         super.onVisible();
+
         Navigation.get().setCurrentUUID(contentId);
         LogUtils.e(ContentFragment.class.getSimpleName(), "onVisible : " + param);
     }
@@ -366,11 +372,6 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
     }
 
     @Override
-    public void onPageResult(@Nullable List<Page> page) {
-        inflateContentPage(page, "server");
-    }
-
-    @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
         if (loadingView != null)
             loadingView.setText("暂无数据内容");
@@ -382,14 +383,9 @@ public class ContentFragment extends BaseFragment implements PageContract.Loadin
     }
 
     @Override
-    public void startLoading() {
-        if (loadingView != null)
-            loadingView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void loadingComplete() {
-        if (loadingView != null)
-            loadingView.setVisibility(View.GONE);
+    public void onPageResult(@NotNull ModelResult<ArrayList<Page>> page) {
+        inflateContentPage(page.getData(), "server");
+        BackGroundManager.getInstance().setCurrentPageId(getContext(),contentId,page.asAd(),page
+                .getBackground(),getUserVisibleHint());
     }
 }

@@ -84,8 +84,8 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         recyclerView = view.findViewById(R.id.shooter_recycle);
         topView = view.findViewById(R.id.shooter_up);
         downView = view.findViewById(R.id.shooter_down);
-//        topView.setVisibility(View.GONE);
-//        downView.setVisibility(View.GONE);
+        topView.setVisibility(View.GONE);
+        downView.setVisibility(View.GONE);
 //        int itemSpace = getResources().
 //                getDimensionPixelSize(R.dimen.width_1px);
 //        recyclerView.addItemDecoration(new SpacesItemDecoration(itemSpace));
@@ -98,7 +98,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         recyclerView.setItemAnimator(null);
         recyclerView.setAlign(AiyaRecyclerView.ALIGN_START);
         recyclerView.setAdapter(adapter);
-//        recyclerView.setDirIndicator(topView,downView);
+        recyclerView.setDirIndicator(topView,downView);
         adapter.setOnItemAction(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {

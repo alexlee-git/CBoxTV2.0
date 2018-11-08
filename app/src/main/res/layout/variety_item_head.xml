@@ -11,7 +11,6 @@
     >
 
     <include
-        android:visibility="gone"
         layout="@layout/left_top_logo"/>
 
     <include

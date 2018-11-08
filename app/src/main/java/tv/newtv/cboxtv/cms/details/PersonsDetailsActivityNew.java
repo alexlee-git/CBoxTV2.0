@@ -86,6 +86,8 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             }.start();
         }
         requestData();
+
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + getContentUUID());
     }
 
     private void requestData() {
@@ -109,6 +111,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             Toast.makeText(this, "人物信息有误", Toast.LENGTH_SHORT).show();
             return;
         } else {
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + getContentUUID());
             personDetailHeadView.setContentUUID(getContentUUID());
             ADConfig.getInstance().setSeriesID(getContentUUID());
         }

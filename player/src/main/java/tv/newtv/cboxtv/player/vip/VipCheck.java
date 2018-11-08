@@ -1,6 +1,8 @@
-package tv.newtv.cboxtv.vip;
+package tv.newtv.cboxtv.player.vip;
 
 import android.text.TextUtils;
+
+import tv.newtv.cboxtv.player.ChkPlayResult;
 
 public class VipCheck {
 
@@ -10,6 +12,13 @@ public class VipCheck {
 
     private static boolean isBuy(String id){
         return false;
+    }
+
+    public static boolean isTrySee(ChkPlayResult result){
+        if(result == null){
+            return false;
+        }
+        return isTrySee(result.getVipFlag(),result.getContentUUID());
     }
 
     public static boolean isTrySee(String vipFlag,String programId){

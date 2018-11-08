@@ -44,6 +44,7 @@ import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.FocusWidget;
 import tv.newtv.cboxtv.player.IFocusWidget;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
@@ -79,11 +80,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public static final int SHOWING_PROGRAM_TREE = 7;
     private static final String TAG = NewTVLauncherPlayerView.class.getName();
 
-
     private static final int PROGRAM_SELECTOR_TYPE_NONE = 0; //不显示选集
     private static final int PROGRAM_SELECTOR_TYPE_NUMBER = 1; //显示数字选集
     private static final int PROGRAM_SELECTOR_TYPE_NAME = 2; //显示名称选集
-
 
     private static final int PLAY_TYPE_SINGLE = 0;
     private static final int PLAY_TYPE_SERIES = 1;
@@ -91,7 +90,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     private static int defaultWidth;
     private static int defaultHeight;
-    private static boolean isFullScreen = false;
+    private boolean isFullScreen = false;
     protected PlayerViewConfig defaultConfig;
     protected boolean startIsFullScreen = true;
     protected boolean ProgramIsChange = false;
@@ -134,7 +133,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
             LogUtils.i(TAG, "onPrepared: ");
             mIsPrepared = true;
-            stopLoading();
+            //stopLoading();
             mNewTVLauncherPlayerSeekbar.setDuration();
             if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
                     * 1000) {
@@ -160,7 +159,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         @Override
         public void onVideoBufferStart(String typeString) {
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
-            startLoading();
+            if (!mIsLoading){
+                startLoading();
+            }
         }
 
         @Override
@@ -336,7 +337,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         defaultConfig.layoutParams = getLayoutParams();
         defaultConfig.prepared = mIsPrepared;
         defaultConfig.playPosition = getCurrentPosition();
-        defaultConfig.isFullScreen = isFullScreen();
+        defaultConfig.isFullScreen = isFullScreen;
         defaultConfig.startIsFullScreen = startIsFullScreen;
         defaultConfig.parentViewGroup = getParent();
     }
@@ -528,11 +529,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
         if (mPlayerFrameLayout != null) {
             mPlayerFrameLayout.updateTimeTextView(getResources().getDimensionPixelSize
-                    (isFullScreen ? R.dimen.height_22px : R.dimen.height_12px));
+                    (isFullScreen ? R.dimen.height_20px : R.dimen.height_10px));
         }
         if (mLoading != null) {
             mLoading.updatePropertys(getResources().getDimensionPixelSize(isFullScreen ? R.dimen
-                    .height_22px : R.dimen.height_11px), isFullScreen);
+                    .height_22sp : R.dimen.height_11sp), isFullScreen);
         }
     }
 
@@ -716,8 +717,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * index 播放第几集
      * position 从什么位置开始播放
      * */
-    public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity) {
+    private LiveListener mLiveListener;
+    public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity, LiveListener listener) {
         unshowLoadBack = false;
+        mLiveListener = listener;
         mLiveInfo = liveInfo;
         LogUtils.i(TAG, "playlive playVideo");
         updatePlayStatus(3, 0, 0);
@@ -1367,7 +1370,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public void onChange(String current, String start, String end, boolean isComplete) {
         if (isComplete) {
             release();
+            if(mLiveListener != null){
+                mLiveListener.onComplete();
+            }
         }
+        if(mLiveListener!=null){
+            mLiveListener.onTimeChange(current,end);
+        }
+
     }
 
     public void registerScreenListener(ScreenListener listener) {

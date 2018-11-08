@@ -70,6 +70,9 @@ public class ADHelper {
     public AD parseADString(Context context, String jsonResult) {
 
         AD result = null;
+        if (!TextUtils.isEmpty(jsonResult)){
+         return result;
+        }
         List<AdInfos> adInfosList = JsonParse.parseAdInfo(jsonResult);
 
         if (adInfosList == null || adInfosList.size() == 0 || adInfosList.get(0) == null ||

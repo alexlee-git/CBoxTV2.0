@@ -60,6 +60,15 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
     }
 
     @Override
+    public String getTabString() {
+        if (mData.size() == 1) {
+            return mData.get(0).getPeriods();
+        }
+        return String.format("%s-%s", mData.get(0).getPeriods(), mData.get(mData.size() - 1)
+                .getPeriods());
+    }
+
+    @Override
     public void destroy() {
         mData = null;
         contentView = null;
@@ -305,7 +314,8 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                     TitleView.setText(programsInfo.getTitle());
                 }
 
-                if(("1".equals(programsInfo.getVipFlag()) || "2".equals(programsInfo.getVipFlag())) && vipView != null){
+                if (("1".equals(programsInfo.getVipFlag()) || "2".equals(programsInfo.getVipFlag
+                        ())) && vipView != null) {
                     vipView.setVisibility(View.VISIBLE);
                 }
             } else {
@@ -352,11 +362,11 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
 
     private class BaseHolder<T> {
         protected View itemView;
+        protected ImageView vipView;
         CurrentPlayImageView PosterView;
         ImageView FocusView;
         TextView TitleView;
         T mData;
-        protected ImageView vipView;
 
         BaseHolder(View view) {
             this.itemView = view;

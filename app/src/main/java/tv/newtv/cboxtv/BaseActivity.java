@@ -43,12 +43,6 @@ import tv.newtv.cboxtv.annotation.BuyGoodsInject;
 import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.cms.ad.AdInject;
 import tv.newtv.cboxtv.cms.ad.BuyGoodsBusiness;
-import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
-import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
-import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
-import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.AdPopupWindow;
 
@@ -111,7 +105,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onStop() {
         super.onStop();
         ActivityStacks.get().onStop(this);
-        if (buyGoodsBusiness != null) {
+        if(buyGoodsBusiness != null){
             buyGoodsBusiness.onStop();
         }
         FrontStage = false;
@@ -143,7 +137,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
 
         setBackgroundAD();
-        if (buyGoodsBusiness != null) {
+        if(buyGoodsBusiness != null){
             buyGoodsBusiness.onResume();
         }
     }
@@ -172,7 +166,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         if (adPopupWindow != null && adPopupWindow.isShowing()) {
             adPopupWindow.dismiss();
         }
-        if (buyGoodsBusiness != null) {
+        if(buyGoodsBusiness != null){
             buyGoodsBusiness.onDestroy();
         }
     }
@@ -208,7 +202,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
                     NavPopuView navPopuView = new NavPopuView();
                     navPopuView.showPopup(this, rootView);
                 }
-
             }
         }
     }
@@ -217,8 +210,8 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!FrontStage) return true;
         if (isFullScreen()) {
-            if (buyGoodsBusiness != null && buyGoodsBusiness.isShow()
-                    && buyGoodsBusiness.dispatchKeyEvent(event)) {
+            if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                    && buyGoodsBusiness.dispatchKeyEvent(event)){
                 return true;
             }
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
@@ -296,10 +289,11 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         if (fromOuter && isBackPressed(event)) {
             return true;
         }
+        boolean isFullScreen = isFullScreen();
         if (fromOuter) {
         checkIsTop(event);
         }
-        return isFullScreen();
+        return isFullScreen;
     }
 
     protected void setBackgroundAD() {

@@ -70,6 +70,27 @@ public class VideoDataStruct implements Serializable {
 	private String key;
 
 	private String categoryIds;
+	/**
+	 * 是否是试播类型
+	 */
+	private boolean isTrySee;
+	private String freeDuration;
+
+	public String getFreeDuration() {
+		return freeDuration;
+	}
+
+	public void setFreeDuration(String freeDuration) {
+		this.freeDuration = freeDuration;
+	}
+
+	public boolean isTrySee() {
+		return isTrySee;
+	}
+
+	public void setTrySee(boolean trySee) {
+		isTrySee = trySee;
+	}
 
 	public String getCategoryIds() {
 		return categoryIds;

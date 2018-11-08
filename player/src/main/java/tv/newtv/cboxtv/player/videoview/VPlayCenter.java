@@ -33,8 +33,7 @@ public class VPlayCenter {
     }
 
     public boolean isReady() {
-        return programSeriesInfo != null && programSeriesInfo.getData() != null &&
-                programSeriesInfo.getData().size() > 0;
+        return programSeriesInfo != null;
     }
 
     /**
