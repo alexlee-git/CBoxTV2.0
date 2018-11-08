@@ -45,9 +45,9 @@
 
     <!-- 推荐位海报标题style -->
     <style name="ModulePosterBottomTitleStyle">
-        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorPosterBottomTitleText</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:textSize">@dimen/height_28px</item>
+        <item name="android:textSize">@dimen/height_26px</item>
     </style>
 
     <style name="ModulePosterBottomTitleStyle_005">

@@ -70,7 +70,10 @@ open class Content  : Serializable {
     var tvContentIDs: String? = null //所属电视栏目ID	多个id之间用 | 分割
     var CDNURL: List<CdnUrl>? = null    //分发任务返回的CDN播放地址
 
-    //LV、TV
+    //LV、
+    var playUrl:String? = null
+
+    // TV
     var liveLoopParam: List<LiveParam>? = null     //直播循环参数	 String
     var lvID: String? = null    //直播id
     var presenter: String? = null     //主持人	 String

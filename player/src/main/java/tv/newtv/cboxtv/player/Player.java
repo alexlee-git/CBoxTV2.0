@@ -66,4 +66,9 @@ public class Player implements PlayerObserver {
     public Intent getPlayerActivityIntent() {
         return mObserver.getPlayerActivityIntent();
     }
+
+    @Override
+    public boolean isVip() {
+        return mObserver.isVip();
+    }
 }

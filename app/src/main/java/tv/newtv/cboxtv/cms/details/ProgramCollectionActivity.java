@@ -162,7 +162,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                                 if(info == null) return;
                                 mContent = info;
                                 mListView.setContentUUID(getContentUUID());
-                                mListView.onSubContentResult(new ArrayList<>(info.getData()));
+                                mListView.onSubContentResult("", new ArrayList<>(info.getData()));
                                 suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH,
                                         info,null);
                             }

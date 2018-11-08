@@ -62,7 +62,7 @@ public class TimeDialog {
         ad.setCancelable(false);
         Window window = ad.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        lp.width = 900;
+        lp.width = context.getResources().getDimensionPixelOffset(R.dimen.width_900px);
         window.setAttributes(lp);
         window.setContentView(R.layout.layout_time_dialog);
         textView = (TextView) window.findViewById(R.id.text_view);

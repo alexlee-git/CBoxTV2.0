@@ -18,7 +18,6 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.GsonUtil;
@@ -38,7 +37,6 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.special.doubleList.adapter.NewSpecialCenterAdapter;
 import tv.newtv.cboxtv.cms.special.doubleList.adapter.NewSpecialLeftAdapter;
@@ -173,7 +171,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

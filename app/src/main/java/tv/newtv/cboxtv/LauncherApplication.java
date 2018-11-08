@@ -192,7 +192,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             mContentPresenter.getContent(csId, true,new
                     ContentContract.View() {
                         @Override
-                        public void onContentResult(@Nullable Content content) {
+                        public void onContentResult(@NotNull String uuid, @Nullable Content content) {
                             if (content != null) {
                                 playInfo.setVImage(content.getVImage());
                                 playInfo.setTitle(content.getTitle());
@@ -201,7 +201,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                         }
 
                         @Override
-                        public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+                        public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
 
                         }
 
@@ -244,6 +244,11 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public Intent getPlayerActivityIntent() {
         return new Intent(LauncherApplication.this, NewTVLauncherPlayerActivity.class);
+    }
+
+    @Override
+    public boolean isVip() {
+        return false;
     }
 
 }

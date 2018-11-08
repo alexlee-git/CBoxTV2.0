@@ -101,7 +101,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     }
 
     @Override
-    protected void onItemContentResult(Content info) {
+    protected void onItemContentResult(String uuid, Content info) {
         if (info != null) {
             mProgramSeriesInfo = info;
             Log.e("info", info.toString());
@@ -218,7 +218,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         .getLayoutManager();
                 int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                if (defaultFocusIndex <= lastVisibleItemPosition) {
+                if (defaultFocusIndex>=firstVisibleItemPosition && defaultFocusIndex <= lastVisibleItemPosition) {
                     if (news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition) !=
                             null) {
                         news_recycle.getChildAt(defaultFocusIndex - firstVisibleItemPosition)

@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
-import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,16 +14,12 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.bean.SubContent;
-import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.util.DisplayUtils;
 
 import com.newtv.libs.util.ScaleUtils;
-import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,7 +28,6 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -84,8 +78,8 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         recyclerView = view.findViewById(R.id.shooter_recycle);
         topView = view.findViewById(R.id.shooter_up);
         downView = view.findViewById(R.id.shooter_down);
-//        topView.setVisibility(View.GONE);
-//        downView.setVisibility(View.GONE);
+        topView.setVisibility(View.GONE);
+        downView.setVisibility(View.GONE);
 //        int itemSpace = getResources().
 //                getDimensionPixelSize(R.dimen.width_1px);
 //        recyclerView.addItemDecoration(new SpacesItemDecoration(itemSpace));
@@ -98,7 +92,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         recyclerView.setItemAnimator(null);
         recyclerView.setAlign(AiyaRecyclerView.ALIGN_START);
         recyclerView.setAdapter(adapter);
-//        recyclerView.setDirIndicator(topView,downView);
+        recyclerView.setDirIndicator(topView,downView);
         adapter.setOnItemAction(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {
@@ -223,7 +217,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
     }
 
     @Override
-    public void onItemContentResult(@Nullable Content content) {
+    public void onItemContentResult(String uuid, @Nullable Content content) {
         if (content != null) {
             mProgramSeriesInfo = content;
             Log.e("info", content.toString());

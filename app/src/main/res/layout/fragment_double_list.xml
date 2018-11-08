@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <tv.newtv.cboxtv.views.widget.VerticalRecycleView
+        android:id="@+id/top_list"
+        android:layout_width="@dimen/width_400px"
+        android:layout_height="match_parent">
+
+    </tv.newtv.cboxtv.views.widget.VerticalRecycleView>
+
+    <tv.newtv.cboxtv.views.widget.VerticalRecycleView
+        android:id="@+id/child_list"
+        android:layout_width="@dimen/width_400px"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@+id/top_list">
+
+    </tv.newtv.cboxtv.views.widget.VerticalRecycleView>
+
+    <tv.newtv.cboxtv.player.view.VideoFrameLayout
+        android:layout_width="@dimen/width_800px"
+        android:layout_height="@dimen/height_500px"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/width_150px"
+        android:layout_toEndOf="@+id/child_list">
+        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+            android:id="@+id/videoPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        >
+        </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
+    </tv.newtv.cboxtv.player.view.VideoFrameLayout>
+
+</RelativeLayout>

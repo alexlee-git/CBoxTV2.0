@@ -33,9 +33,10 @@ public class LiveInfo {
     private String mLiveUrl;    //
     private String key;         //
 
-    private SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss");
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale
+            .getDefault());
 
     private SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
     private String contentUUID;
@@ -52,7 +53,9 @@ public class LiveInfo {
         if (content == null) return;
         mTitle = content.getTitle();
         contentUUID = content.getContentID();
-
+        mLiveParam = CmsUtil.isLiveTime(content.getLiveParam());
+        if (mLiveParam == null) return;
+        parseLiveParam();
     }
 
     public LiveInfo(String title, @Nullable Video video) {
@@ -66,11 +69,16 @@ public class LiveInfo {
         mLiveParam = CmsUtil.isLive(video);
         if (mLiveParam == null) return;
 
+        parseLiveParam();
+
+    }
+
+    private void parseLiveParam() {
         try {
             String startTime = mLiveParam.getPlayStartTime();
             String endTime = mLiveParam.getPlayEndTime();
 
-            if (!mLiveParam.isShowDate()) {
+            if (!TextUtils.isEmpty(mLiveParam.getLiveParam())) {
                 /*
                  * 不带日期 如：18:00:00  日期默认为当天
                  *
@@ -190,7 +198,7 @@ public class LiveInfo {
     }
 
     public boolean isComplete() {
-        if(endDate == null) return true;
+        if (endDate == null) return true;
         return Calendar.getInstance().getTime().after(endDate);
     }
 

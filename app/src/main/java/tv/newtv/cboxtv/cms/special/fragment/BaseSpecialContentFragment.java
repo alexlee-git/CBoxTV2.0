@@ -19,8 +19,7 @@ import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
+
 import com.newtv.libs.bean.VideoPlayInfo;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -57,7 +56,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
 
     protected abstract int getLayoutId();
 
-    protected abstract void onItemContentResult(Content content);
+    protected abstract void onItemContentResult(String uuid, Content content);
 
     protected abstract void setUpUI(View view);
 
@@ -77,17 +76,25 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
         mPresenter.getContent(uuid,true,contentType);
     }
 
+    protected void getSubContents(String uuid){
+        if(TextUtils.isEmpty(uuid)){
+            onError(getContext(),"播放ID不能为空");
+            return;
+        }
+        mPresenter.getSubContent(uuid);
+    }
+
     protected void getContent(String uuid){
         mPresenter.getContent(uuid,true);
     }
 
     @Override
-    public void onContentResult(@org.jetbrains.annotations.Nullable Content content) {
-        onItemContentResult(content);
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
+        onItemContentResult(uuid, content);
     }
 
     @Override
-    public void onSubContentResult(@org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
 
     }
 

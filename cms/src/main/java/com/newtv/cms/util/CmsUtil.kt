@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.newtv.cms.bean.LiveParam
 import com.newtv.cms.bean.Video
 import com.newtv.libs.util.CalendarUtil
+import com.newtv.libs.util.LogUtils
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,7 +19,7 @@ import java.util.*
  */
 object CmsUtil {
 
-    private fun getLiveParam(video:Video?): LiveParam? {
+    private fun getLiveParam(video: Video?): LiveParam? {
         if (video != null) {
             if ("LIVE" == video.videoType && !TextUtils.isEmpty(video.liveUrl)) {
                 return isLiveTime(video.liveParam)
@@ -39,6 +40,7 @@ object CmsUtil {
     /**
      *
      */
+    @JvmStatic
     fun isLiveTime(params: List<LiveParam>?): LiveParam? {
         if (params == null || params.size <= 0)
             return null
@@ -54,8 +56,8 @@ object CmsUtil {
      *
      */
     fun checkLiveParam(param: LiveParam): Boolean {
-        val week: Int = CalendarUtil.getCurrentWeek()
         if (!TextUtils.isEmpty(param.liveParam)) {
+            val week: Int = CalendarUtil.getCurrentWeek()
             if (param.liveParam.contains(Integer.toString(week))) {
                 return checkInTime(param.playStartTime, param.playEndTime, false)
             }
@@ -78,7 +80,10 @@ object CmsUtil {
         } else {
             fmt = SimpleDateFormat("HH:mm:ss")
             val current = formatToSeconds(fmt.format(now))
-            return formatToSeconds(start) < current && formatToSeconds(end) > current
+            val startInt = formatToSeconds(start)
+            val endInt = formatToSeconds(end)
+            LogUtils.e("CmsUtil","start=$startInt end=$endInt current=$current")
+            return current in (startInt + 1)..(endInt - 1)
         }
     }
 
@@ -91,7 +96,7 @@ object CmsUtil {
         for (index in 0..2) {
             if (times.size >= index + 1) {
                 val value = times[index]
-                if (!TextUtils.isEmpty(value)) {
+                if (!TextUtils.isEmpty(value) && !"00".equals(value)) {
                     when (index) {
                         0 -> result += 3600 * Integer.parseInt(value)
                         1 -> result += 60 * Integer.parseInt(value)

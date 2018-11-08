@@ -77,7 +77,9 @@ public class MenuRecycleView extends RecyclerView {
                     break;
                 case 0x997:
                     menuSelectPos = -1;
-                    ((MenuAdapter) getAdapter()).requestFocus(message.arg1, (Boolean) message.obj);
+                    if (getAdapter() != null){
+                        ((MenuAdapter) getAdapter()).requestFocus(message.arg1, (Boolean) message.obj);
+                    }
                     break;
 
                 case 0x996:
@@ -409,7 +411,6 @@ public class MenuRecycleView extends RecyclerView {
             mSpringInterpolator = new OvershootInterpolator(2.2f);
             mRecyclerView = new WeakReference<MenuRecycleView>(recyclerView);
             mLayoutRes = layout;
-
 
             linearLayoutManager = new MenuScrollLinearLayoutManager(recyclerView.getContext());
             linearLayoutManager.setAutoResize(autoResize);

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Content;
@@ -25,6 +24,7 @@ import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * 项目名称:         CBoxTV
@@ -36,7 +36,8 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 public class BallPlayerFragment extends BaseSpecialContentFragment implements LiveContract.View,
         LiveListener {
     private TextView textTitle;
-    private ImageView mImageView;
+    private RecycleImageView mImageView;
+    private TextView mHintText;
     private boolean isDestroyed = false;
     private LiveInfo mLiveInfo;
     private ModelResult<ArrayList<Page>> mInfoResult;
@@ -62,7 +63,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 
@@ -72,6 +73,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
         textTitle = view.findViewById(R.id.id_title);
         mImageView = view.findViewById(R.id.image);
+        mHintText = view.findViewById(R.id.tv_hint);
 
         videoPlayerView.setPlayerCallback(new PlayerCallback() {
             @Override
@@ -96,9 +98,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
             }
         });
         videoPlayerView.requestFocus();
-
         textTitle = view.findViewById(R.id.id_title);
-
         parseLive(getContext());
     }
 
@@ -122,14 +122,24 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     }
 
     private void parseLive(Context context) {
-        if (mInfoResult != null && mInfoResult.getData() != null && mInfoResult.getData().size() >=
-                1) {
+        if (mInfoResult != null && mInfoResult.getData() != null
+                && mInfoResult.getData().size() >= 1 && contentView != null) {
             Page current = mInfoResult.getData().get(0);
             if (current.getPrograms() != null && current.getPrograms().size() >= 1) {
                 Program currentProgram = current.getPrograms().get(0);
+                if (mImageView != null) {
+                    mImageView.load(currentProgram.getImg());
+                }
+                if (!TextUtils.isEmpty(currentProgram.getTitle())) {
+                    textTitle.setText(currentProgram.getTitle());
+                }
                 LiveInfo liveInfo = new LiveInfo(currentProgram.getTitle(), currentProgram
                         .getVideo());
-                startPlay(liveInfo);
+                if (liveInfo.isLiveTime()) {
+                    startPlay(liveInfo);
+                } else {
+                    onComplete();
+                }
             }
         }
     }
@@ -152,12 +162,10 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
     private void startPlay(LiveInfo liveInfo) {
         if (mLiveInfo != null) {
-            if (!TextUtils.isEmpty(mLiveInfo.getTitle())) {
-                textTitle.setText(mLiveInfo.getTitle());
-            }
             videoPlayerView.playLive(mLiveInfo, false, this);
         } else {
-            if (liveInfo != null && liveInfo.isLiveTime() && checkLivePresenterIsNull(getContext())) {
+            if (liveInfo != null && liveInfo.isLiveTime() && checkLivePresenterIsNull(getContext
+                    ())) {
                 livePresenter.checkLive(liveInfo);
             }
         }
@@ -166,6 +174,11 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     @Override
     public void onDestroy() {
         super.onDestroy();
+        videoPlayerView = null;
+        if (livePresenter != null) {
+            livePresenter.destroy();
+            livePresenter = null;
+        }
         LiveTimingUtil.clearListener();
     }
 
@@ -197,11 +210,14 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
     @Override
     public void onTimeChange(String current, String end) {
-
+        videoPlayerView.setTipText(String.format("%s/%s", current, end));
     }
 
     @Override
     public void onComplete() {
-
+        mImageView.setVisibility(View.VISIBLE);
+        if (mHintText != null) {
+            mHintText.setText("暂时没有直播信息");
+        }
     }
 }

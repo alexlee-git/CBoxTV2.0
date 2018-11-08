@@ -15,7 +15,6 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.libs.Constant;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
@@ -26,7 +25,6 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
-import tv.newtv.cboxtv.cms.util.JumpUtil;
 
 /**
  * 项目名称:         CBoxTV
@@ -47,7 +45,7 @@ public class ScoreFragment extends BaseSpecialContentFragment {
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

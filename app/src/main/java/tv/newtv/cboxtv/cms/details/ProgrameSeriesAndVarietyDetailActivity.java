@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
@@ -40,7 +41,7 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
 /**
  * Created by weihaichao on 2018/10/19.
  */
-
+@BuyGoodsAD
 public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity implements
         ContentContract.LoadingView {
 
@@ -108,6 +109,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                         .DB_TYPE_COLLECT))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
+                .autoGetSubContents()
                 .SetClickableIds(R.id.full_screen, R.id.add)
                 .SetContentUUID(getContentUUID())
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
@@ -147,8 +149,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                     public void onPlayerClick(VideoPlayerView videoPlayerView) {
                         if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
-                            videoPlayerView.EnterFullScreen(ProgrameSeriesAndVarietyDetailActivity
-                                    .this, false);
+                            if (videoPlayerView != null){
+                                videoPlayerView.EnterFullScreen(ProgrameSeriesAndVarietyDetailActivity
+                                        .this, false);
+                            }
                         }
                     }
 
@@ -203,9 +207,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
                 if (seriesInfo != null) {
-                    ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
-                    pageContent.setData(contents);
-                    headPlayerView.setProgramSeriesInfo(pageContent);
+                    headPlayerView.resetSeriesInfo(pageContent);
                 }
             }
 
@@ -284,7 +286,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
 
         if (content != null) {
             videoType = content.getVideoType();
@@ -296,7 +298,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
 
     }
 
