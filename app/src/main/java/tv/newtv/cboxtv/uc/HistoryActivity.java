@@ -14,8 +14,6 @@ import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +21,14 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.libs.Constant;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.ScaleUtils;
+import com.newtv.libs.util.XunMaKeyUtils;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -34,15 +40,7 @@ import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import com.newtv.libs.db.DBCallback;
-import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
-import com.newtv.libs.util.BitmapUtil;
-import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.RxBus;
-import com.newtv.libs.util.ScaleUtils;
-import com.newtv.libs.util.XunMaKeyUtils;
 
 /**
  * Created by gaoleichao on 2018/3/29.
@@ -53,6 +51,7 @@ public class HistoryActivity extends FragmentActivity implements
         .OnKeyListener {
 
     private static final int UPDATE = 1001;
+    private static boolean eatKeyEvent = false;
     public int action_type;
     public String title;
     @BindView(R.id.id_usercenter_fragment_root)
@@ -63,11 +62,7 @@ public class HistoryActivity extends FragmentActivity implements
     TextView mPageTitle;
     private HistoryAdapter mAdapter;
     private BackgroundTipView deleteView;
-
     private int selectPostion;
-
-    private static boolean eatKeyEvent = false;
-
     private List<UserCenterPageBean.Bean> mCollectBean;
     private Handler mHandler = new Handler(new Handler.Callback() {
         @SuppressWarnings("unchecked")
@@ -205,6 +200,13 @@ public class HistoryActivity extends FragmentActivity implements
         View focusView = mRecyclerView.findFocus();
         if (focusView == null) return;
 
+        Rect visibleRect = new Rect();
+        focusView.getGlobalVisibleRect(visibleRect);
+        int scaleX = (int) (visibleRect.width() * 0.1 / 2);
+        int scaleY = (int) (visibleRect.height() * 0.1 / 2);
+        visibleRect.set(new Rect(visibleRect.left - scaleX, visibleRect.top - scaleY, visibleRect
+                .right + scaleX, visibleRect.right + scaleY));
+
         TextView textView = focusView.findViewWithTag("tag_poster_title");
         if (textView != null) {
             textView.setEllipsize(null);
@@ -216,17 +218,10 @@ public class HistoryActivity extends FragmentActivity implements
         focusView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         focusView.buildDrawingCache(true);
         Bitmap bitmap = focusView.getDrawingCache(true);
-        int w = bitmap.getWidth();
-        int h = bitmap.getHeight();
         Bitmap mBitmap = BitmapUtil.zoomImg(bitmap, 1.1f, 1.1f);
         bitmap.recycle();
 
-        Rect visibleRect = new Rect();
-        focusView.getGlobalVisibleRect(visibleRect);
 
-
-        visibleRect.left -= (mBitmap.getWidth() - w) / 2 + 2;
-        visibleRect.top -= (mBitmap.getHeight() - h) / 2;
         focusView.destroyDrawingCache();
         focusView.setDrawingCacheEnabled(false);
 
@@ -295,7 +290,7 @@ public class HistoryActivity extends FragmentActivity implements
                 public void run() {
                     requestData(tableName);
                 }
-            },400);
+            }, 400);
 
         }
 
