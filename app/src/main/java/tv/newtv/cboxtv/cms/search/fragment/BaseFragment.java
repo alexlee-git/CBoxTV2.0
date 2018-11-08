@@ -225,6 +225,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
                 cacheDatas.clear();
             }
             currentPos = -1;
+            mIsLoading = false;
             mSearchPresenter.stop();
             inputKeyChange();
             return;
@@ -271,7 +272,6 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     @Override
     public void onLoading() {
         startLoadingAni();
-        mLoadingLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -287,7 +287,6 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
 
     private void stopLoadingAni(){
         AnimationDrawable mAni = (AnimationDrawable) mLoadingImg.getBackground();
-
         mLoadingLayout.setVisibility(View.GONE);
         mAni.stop();
     }
