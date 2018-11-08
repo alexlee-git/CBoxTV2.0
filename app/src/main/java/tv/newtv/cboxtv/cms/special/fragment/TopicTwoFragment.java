@@ -507,7 +507,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         } else {
                             down_arrow.setVisibility(View.INVISIBLE);
                         }
-                        if (moduleItem != null  &&TextUtils.isEmpty( moduleItem.getSubTitle())&& moduleItem.getSubTitle().length() > 10) {
+                        if (moduleItem != null  &&!TextUtils.isEmpty( moduleItem.getSubTitle())&& moduleItem.getSubTitle().length() > 10) {
 
                             holder.news_title.setSingleLine(true);
                             holder.news_title.setText(moduleItem.getSubTitle());
