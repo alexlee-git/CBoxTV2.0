@@ -84,6 +84,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private View first_Record_View;
     private View second_Record_View;
     private View third_Record_View;
+    private  int  defaultSelectTab =0;
 
 
     @Override
@@ -253,7 +254,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
             }
         });
 
-
         tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -276,7 +276,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
             }
         });
 
-
     }
 
     private void initPresenter() {
@@ -294,9 +293,14 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     public void showFirstMenuData(TabBean bean) {
         if (bean != null) {
             data = bean.getData();
+            defaultSelectTab =2;
+
             for (int i = 0; i < data.size(); i++) {
+
                 tab.addTab(tab.newTab().setText(data.get(i).getTitle()));
             }
+            tab.selectTab(2);
+
         }
 
     }
@@ -335,9 +339,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     @Override
     public void showData(LabelDataBean dataBean) {
         result_total.setText(dataBean.getTotal() + "个结果");
-//        if (dataBean.getData().size()==0){
-//            Toast.makeText(this, "没有更多数据", Toast.LENGTH_SHORT).show();
-//        }
 
 
         if (!loadMore) {
@@ -372,6 +373,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
+                Log.d("ScreenListActivity", "我到这了");
                 pageNum = 1;
                 loadMore = false;
                 if (moveFlag == 1) {

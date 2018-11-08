@@ -46,7 +46,7 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
 
     @Override
     public void onBindViewHolder(@NonNull final MyHolder myHolder, int i) {
-        if (TextUtils.isEmpty(list.get(i).getTitle()))
+        if (!TextUtils.isEmpty(list.get(i).getTitle()))
         myHolder.label_title.setText(list.get(i).getTitle());
 
         Picasso.get()
