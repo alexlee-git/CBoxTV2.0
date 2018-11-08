@@ -466,6 +466,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
 
         NewsAdapter refreshData(List<Program> datas) {
+            Log.d("NewsAdapter", "datas.size():" + datas.size());
             ModuleItems = datas;
             return this;
         }
@@ -525,6 +526,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         holder.relative_fou.setBackgroundResource(0);
                         holder.news_title.setSelected(false);
                         if (moduleItem != null) {
+
+
+                            if (!TextUtils.isEmpty(moduleItem.getSubTitle())){
                                 if (moduleItem.getSubTitle().length() > 30) {
                                     holder.news_title.setText(moduleItem.getSubTitle().substring(0,
                                             30));
@@ -533,6 +537,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                                 } else {
                                     holder.news_title.setText(moduleItem.getSubTitle());
                                 }
+                            }
+
                             }
 
 
