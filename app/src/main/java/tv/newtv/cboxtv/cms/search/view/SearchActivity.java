@@ -161,10 +161,10 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
             }
             if (nextFocus == null && check) {
                 if ("keyboard".equals(mode)) {
-                    if (!mSearchResult.isLoadComplete()) {
-                        return true;
-                    }
                     if (mHotRecommend.getVisibility() == View.GONE){
+                        if (!mSearchResult.isLoadComplete()) {
+                            return true;
+                        }
                         if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
                             slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
                         }
