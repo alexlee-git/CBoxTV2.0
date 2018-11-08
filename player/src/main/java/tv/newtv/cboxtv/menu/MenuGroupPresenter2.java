@@ -68,10 +68,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      */
     private static final int RETRY_DATA = 2;
     /**
-     * 设置栏目树最后一级数据的标识
-     */
-    private static final int SET_LAST_DATA = 3;
-    /**
      * 等待广告播放完毕
      */
     private static final int WAIT_AD_END = 4;
@@ -134,9 +130,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     break;
                 case RETRY_DATA:
                     initData();
-                    break;
-                case SET_LAST_DATA:
-//                    setLastData();
                     break;
                 case WAIT_AD_END:
                     checkShowHinter();
@@ -481,11 +474,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         if (list == null) {
             list = new ArrayList<>();
         }
-        LastMenuBean lastMenuBean = new LastMenuBean();
-        lastMenuBean.setData(new LastMenuBean.DataBean());
-        lastMenuBean.getData().setPrograms(list);
 
-        node.setLastMenuBean(lastMenuBean);
         node.setPrograms(list);
         node.setRequest(true);
         for (Program p : list) {
@@ -701,22 +690,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     playProgram = program;
                     return true;
                 }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 根据lastMenuBean更新playProgram,从小屏切换大屏的时候需要更新，否则会显示错误
-     * @param lastMenuBean
-     * @return
-     */
-    public boolean updatePlayProgram(LastMenuBean lastMenuBean){
-        List<Program> programs = lastMenuBean.getData().getPrograms();
-        for (Program program : programs) {
-            if (contentUUID.equals(program.getContentUUID())) {
-                playProgram = program;
-                return true;
             }
         }
         return false;
