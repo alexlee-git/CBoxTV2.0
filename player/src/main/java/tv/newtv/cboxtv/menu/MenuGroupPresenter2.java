@@ -25,7 +25,6 @@ import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
-import com.newtv.libs.util.LogUtils;
 
 import org.json.JSONObject;
 
@@ -102,8 +101,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      * 当前正在播放的节目
      */
     private Program playProgram;
+    private SeriesContent seriesContent;
 
-    private LastMenuBean lastMenuBean;
 
     private Handler handler = new MyHandler();
 
@@ -222,7 +221,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     /**
      * 从播放器中获取节目集id和节目id
-     *
      * @return
      */
     private boolean getProgramSeriesAndContentUUID() {
@@ -261,11 +259,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return false;
         }
 
-//        programSeries = "11422478";
-//        contentUUID = "11456764";
-
         Log.i(TAG, "detailColumnUUID=" + programSeries);
         Log.i(TAG, "contentUUID=" + contentUUID);
+        Log.i(TAG, "categoryId=" + categoryId);
         return true;
     }
 
@@ -277,6 +273,16 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
             return;
         }
+
+        if(TextUtils.isEmpty(categoryId)){
+            getCategoryId();
+        }else {
+            getCategoryTree();
+        }
+        searchDataInDB();
+    }
+
+    private void getCategoryId(){
         String leftString = contentUUID.substring(0, 2);
         String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
         Request.INSTANCE.getContent()
@@ -294,8 +300,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         }
                     }
                 });
-
-        searchDataInDB();
     }
 
     private void getCategoryTree() {
@@ -312,7 +316,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                             for(Node node : rootNode){
                                 node.initParent();
                             }
-//                            menuGroup.setRootNodes(categoryTree.data);
                             getCategoryContent();
                         }
                     }
@@ -355,7 +358,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         Log.i(TAG, "seriesContent: "+result);
                         SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
                         if(seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0){
-
+                            MenuGroupPresenter2.this.seriesContent = seriesContent;
                             menuGroup.addRootNodes(rootNode);
                             menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, programSeries, contentUUID);
                             playProgram = menuGroup.getPlayProgram();
@@ -658,37 +661,49 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     public void enterFullScreen() {
         if (menuGroupIsInit) {
             getProgramSeriesAndContentUUID();
-            if(lastMenuBean == null){
-                return;
-            }
-            if(!updatePlayProgram(lastMenuBean)){
-                /**
-                 *  更新playProgram失败，说明当前播放的视频不在lastMenuBean中，需要重新请求数据
-                 * 复用栏目树前N级，重新请求最后一级列表逻辑
-                 */
-                menuGroupIsInit = false;
-                setHintGone();
-                menuGroup.requestLastDataById(programSeries, new MenuGroup.RecreateListener() {
-                    @Override
-                    public void success(LastMenuBean lastMenuBean) {
-                        if(updatePlayProgram(lastMenuBean)){
-                            menuGroupIsInit = true;
-                            menuGroup.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    checkShowHinter();
-                                }
-                            },100);
-                        }
-                    }
-                });
-            }
+            updatePlayProgram();
+
+//            if(!updatePlayProgram(lastMenuBean)){
+//                /**
+//                 *  更新playProgram失败，说明当前播放的视频不在lastMenuBean中，需要重新请求数据
+//                 * 复用栏目树前N级，重新请求最后一级列表逻辑
+//                 */
+//                menuGroupIsInit = false;
+//                setHintGone();
+//                menuGroup.requestLastDataById(programSeries, new MenuGroup.RecreateListener() {
+//                    @Override
+//                    public void success(LastMenuBean lastMenuBean) {
+//                        if(updatePlayProgram(lastMenuBean)){
+//                            menuGroupIsInit = true;
+//                            menuGroup.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    checkShowHinter();
+//                                }
+//                            },100);
+//                        }
+//                    }
+//                });
+//            }
         }
     }
 
     @Override
     public void exitFullScreen() {
         setHintGone();
+    }
+
+    public boolean updatePlayProgram(){
+        if(seriesContent != null && seriesContent.data != null
+                && seriesContent.data.size() > 0){
+            for(Program program : seriesContent.data){
+                if(contentUUID.equals(program.getContentID())){
+                    playProgram = program;
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
