@@ -46,7 +46,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     public View mLabelFocusView;//line
     public View mLabelView;
     public SearchRecyclerView mSearchRecyclerView;
-    private int currentPos = -1;
+    private int currentPos = -1; // 当前加载到第几页的索引（第一个索引值）
     private int totalSize = -1;
     private TextView titleText;
     private View contentView;
@@ -224,7 +224,9 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             if(cacheDatas != null){
                 cacheDatas.clear();
             }
+            currentPos = -1;
             mSearchPresenter.stop();
+            inputKeyChange();
             return;
         }
         if (!TextUtils.equals(currentkey, key)) {
@@ -244,6 +246,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             mSearchPresenter.cancel(requestId);
         }
         currentkey = key;
+        mIsLoading = true;
         requestId = mSearchPresenter.search(conditionTV);
     }
 
@@ -257,7 +260,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
                 .setKeywordType(getKeyType())
                 .setPage(String.valueOf(getPageNum()))//页号
                 .setRows(getPageSize());//每页条数
-
+        mIsLoading = true;
         requestId = mSearchPresenter.search(conditionTV);
     }
 
@@ -267,13 +270,12 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
 
     @Override
     public void onLoading() {
-        mIsLoading = true;
         startLoadingAni();
+        mLoadingLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void loadingFinish() {
-        mIsLoading = false;
         stopLoadingAni();
     }
 
@@ -285,6 +287,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
 
     private void stopLoadingAni(){
         AnimationDrawable mAni = (AnimationDrawable) mLoadingImg.getBackground();
+
         mLoadingLayout.setVisibility(View.GONE);
         mAni.stop();
     }
@@ -301,7 +304,9 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             cacheDatas = new HashMap<>();
         }
 
+
         cacheDatas.put(currentkey, new SearchResult(result, total));
+        mIsLoading = false;
         if ("1".equals(getPageNum())) {
             notifyToDataInfoResult(result == null || result.size() <= 0);
         }

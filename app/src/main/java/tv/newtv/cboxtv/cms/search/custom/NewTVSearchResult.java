@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScreenUtils;
 
 import java.util.ArrayList;
@@ -252,10 +253,14 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     public void setEmptyViewVisible() {
         if (isLoadComplete()) {
             if (mFragments != null && mFragments.size() > 0) {
+                LogUtils.e("NewTVSearchResult","mSearchResultEmpty setVisibility GONE");
                 mSearchResultEmpty.setVisibility(GONE);
             } else {
+                LogUtils.e("NewTVSearchResult","mSearchResultEmpty setVisibility VISIBLE");
                 mSearchResultEmpty.setVisibility(VISIBLE);
             }
+        }else{
+            mSearchResultEmpty.setVisibility(GONE);
         }
     }
 

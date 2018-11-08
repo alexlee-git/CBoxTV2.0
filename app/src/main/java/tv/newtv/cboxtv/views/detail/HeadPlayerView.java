@@ -649,6 +649,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         playerView.setSeriesInfo(mInfo);
                         playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
                     }
+                }else{
+                    playerView.setSeriesInfo(mInfo);
+                    playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
                 }
             } else {
                 playerView.setSeriesInfo(mInfo);
