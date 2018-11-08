@@ -90,10 +90,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     private static int defaultWidth;
     private static int defaultHeight;
-    private boolean isFullScreen = false;
     protected PlayerViewConfig defaultConfig;
     protected boolean startIsFullScreen = true;
-    protected boolean ProgramIsChange = false;
+    protected boolean ProgramIsChange = false;          //是否在栏目树切换节目集
+    private boolean isFullScreen = false;
     private long PLAYER_ID = 0;
     private VideoFrameLayout mPlayerFrameLayout;
     private NewTVLauncherPlayerLoading mLoading;
@@ -219,7 +219,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         @Override
         public void onVideoBufferStart(String typeString) {
-
             LogUtils.i(TAG, "live onVideoBufferStart: typeString=" + typeString);
             startLoading();
         }
@@ -266,14 +265,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     };
     private PlayerLocation mPlayerLocation;
 
+
+    private LiveListener mLiveListener;
+
     public NewTVLauncherPlayerView(PlayerViewConfig config, @NonNull Context context) {
         this(context, null, 0, config);
     }
 
+
     public NewTVLauncherPlayerView(@NonNull Context context) {
         this(context, null);
     }
-
 
     public NewTVLauncherPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
@@ -343,9 +345,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public PlayerViewConfig getDefaultConfig() {
-        if (defaultConfig == null) {
-            buildPlayerViewConfig();
-        }
+        buildPlayerViewConfig();
         return defaultConfig;
     }
 
@@ -517,10 +517,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     private void createMenuGroup() {
-//        if (menuGroupPresenter == null) {
-//            menuPopupWindow = new MenuPopupWindow();
-//            menuGroupPresenter = menuPopupWindow.show(getContext(), this);
-//        }
+        if (menuGroupPresenter == null) {
+            menuPopupWindow = new MenuPopupWindow();
+            menuGroupPresenter = menuPopupWindow.show(getContext(), this);
+        }
     }
 
     public void updateUIPropertys(boolean isFullScreen) {
@@ -672,6 +672,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         LogUtils.i(TAG, "playVideo: index=" + index + " position=" + position);
         updatePlayStatus(2, index, position);
         if (isFullScreen() && !equalsInfo(mProgramSeriesInfo, programSeriesInfo)) {
+
             ProgramIsChange = true;
         }
         mProgramSeriesInfo = programSeriesInfo;
@@ -710,16 +711,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
 
     }
-
-    /*
-     * add by lxf
-     * 播放直播流
-     * programSeriesInfo 节目集信息
-     * isNeedStartActivity 是否需要启动新的activity（播放器内选集，切换清晰度时为false）
-     * index 播放第几集
-     * position 从什么位置开始播放
-     * */
-    private LiveListener mLiveListener;
 
     public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity, LiveListener listener) {
         unshowLoadBack = false;

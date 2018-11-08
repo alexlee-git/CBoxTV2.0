@@ -205,11 +205,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
-//                if (seriesInfo != null) {
-//                    ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
-//                    pageContent.setData(contents);
-//                    headPlayerView.setProgramSeriesInfo(pageContent);
-//                }
+                if (seriesInfo != null) {
+                    headPlayerView.resetSeriesInfo(pageContent);
+                }
             }
 
             @Override

@@ -135,6 +135,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     playerView.setLayoutParams(layoutParams);
                     ((ViewGroup) video).addView(playerView, layoutParams);
                 } else {
+                    currentPosition = defaultConfig.playPosition;
                     playerView = new VideoPlayerView(defaultConfig, getContext());
                     if (defaultConfig.defaultFocusView instanceof VideoPlayerView) {
                         playerView.requestFocus();
@@ -177,7 +178,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             }
 
                         }
-
                     }
                 }).excute();
     }
@@ -205,7 +205,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (playerView != null) {
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
-
 
             playerView.release();
             playerView.destory();
@@ -239,12 +238,20 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (playerView != null && mInfo != null) {
-            currentPosition = (defaultConfig != null ? defaultConfig.playPosition :
-                    currentPosition);
             Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
             startPlayerView();
         }
+    }
+
+    public void resetSeriesInfo(final Content content){
+        initData();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setProgramSeriesInfo(content);
+            }
+        },300);
     }
 
     //显示全屏
@@ -539,7 +546,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void parseResult() {
-        if (mInfo == null) return;
+        if (mInfo == null && contentView == null) return;
 
         TextView title = contentView.findViewById(R.id.id_detail_title);
         TextView type = contentView.findViewById(R.id.id_detail_type);
