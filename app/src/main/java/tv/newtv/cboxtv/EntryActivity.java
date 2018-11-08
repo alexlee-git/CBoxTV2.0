@@ -3,6 +3,8 @@ package tv.newtv.cboxtv;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -380,13 +382,28 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
         return dialog;
     }
-
+    public static String packageName(Context context) {
+        PackageManager manager = context.getPackageManager();
+        String name = "";
+        try {
+            PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
+            CharSequence charSequence = info.applicationInfo.loadLabel(context.getPackageManager());
+            name = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return name;
+    }
     private void authLogSuccess() {
         //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
         StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_16);
+        String packageName = packageName(this);
+
+
+
         logBuff.append(0 + ",")
-                .append("" + ",")
-                .append("")
+                .append( "SOFT"+ ",")
+                .append(packageName+",")
                 .trimToSize();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_AUTH_INFO, logBuff

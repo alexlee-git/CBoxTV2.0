@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.cms.screenList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -27,6 +26,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
 import tv.newtv.cboxtv.cms.screenList.adapter.FirstLabelAdapter;
@@ -46,7 +46,7 @@ import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
  * Created by 冯凯 on 2018/9/28.
  */
 
-public class ScreenListActivity extends AppCompatActivity implements LabelView {
+public class ScreenListActivity extends BaseActivity implements LabelView {
 
     private LabelPresenterImpl presenter;
     HorizontalRecyclerView labelRecyclerView;
@@ -68,7 +68,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     private TextView place_text;
     private TextView result_total;
     private boolean loadMore;
-    private int num = 1;
+    private int pageNum = 1;
     private int moveFlag = 0;
     private List<LabelDataBean.DataBean> list;
     private TvTabLayout tab;
@@ -79,8 +79,8 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     private Observable<LabelBean.DataBean> dataBeanObservable;
     private Observable<LabelBean.DataBean.FilterValueBean> filterValueBeanObservable;
     private View labelRecordView;
-    private Observable<View> firstRecordViewObservable;
-    private Observable<View> secondRecordViewObservable;
+    private Observable<View> RecordViewObservable;
+    private Observable<View> menuRecordViewObservable;
     private View first_Record_View;
     private View second_Record_View;
     private View third_Record_View;
@@ -182,16 +182,16 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
 
                     }
                 });
-        firstRecordViewObservable = RxBus.get().register("firstLabelPosition");
-        firstRecordViewObservable.observeOn(AndroidSchedulers.mainThread())
+        RecordViewObservable = RxBus.get().register("labelRecordView");
+        RecordViewObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<View>() {
                     @Override
                     public void accept(View view) throws Exception {
                         labelRecordView = view;
                     }
                 });
-        secondRecordViewObservable = RxBus.get().register("secondLabelPosition");
-        secondRecordViewObservable.observeOn(AndroidSchedulers.mainThread())
+        menuRecordViewObservable = RxBus.get().register("menuRecordView");
+        menuRecordViewObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<View>() {
 
                     @Override
@@ -231,7 +231,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         place_text = findViewById(R.id.place_text);
 
         tab.setScaleValue(1.2f);
-        tab.setTabTextColors(Color.parseColor("#ffffff"), Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
+        tab.setTabTextColors(Color.parseColor("#80ffffff"), Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
         adapter = new FirstLabelAdapter(this, childData);
         labelRecyclerView.setAdapter(adapter);
 
@@ -325,7 +325,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     @Override
     public Map<String, Object> getMap() {
 
-        map.put("page", String.valueOf(num));
+        map.put("page", String.valueOf(pageNum));
         map.put("rows", "48");
 
         Log.d("MainActivityMap", map.toString());
@@ -335,6 +335,10 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     @Override
     public void showData(LabelDataBean dataBean) {
         result_total.setText(dataBean.getTotal() + "个结果");
+//        if (dataBean.getData().size()==0){
+//            Toast.makeText(this, "没有更多数据", Toast.LENGTH_SHORT).show();
+//        }
+
 
         if (!loadMore) {
             list.clear();
@@ -357,8 +361,8 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         RxBus.get().unregister("labelId", childBeanObservable);
         RxBus.get().unregister("labelKey", dataBeanObservable);
         RxBus.get().unregister("labelValue", filterValueBeanObservable);
-        RxBus.get().unregister("firstLabelPosition", firstRecordViewObservable);
-        RxBus.get().unregister("secondLabelPosition", secondRecordViewObservable);
+        RxBus.get().unregister("labelRecordView", RecordViewObservable);
+        RxBus.get().unregister("menuRecordView", menuRecordViewObservable);
 
 
     }
@@ -368,7 +372,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
-                num = 1;
+                pageNum = 1;
                 loadMore = false;
                 if (moveFlag == 1) {
                     title_label.setVisibility(View.GONE);
@@ -482,7 +486,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
                 }
                 if (isVisBottom(tvRecyclerView)) {
                     moveFlag = 5;
-                    num++;
+                    pageNum++;
                     loadMore = true;
                     presenter.getLabelData();
                     return true;
@@ -490,7 +494,7 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
 
                 break;
             case KeyEvent.KEYCODE_BACK:
-                num = 1;
+                pageNum = 1;
                 loadMore = false;
                 tvRecyclerView.smoothScrollToPosition(0);
                 if (moveFlag == 1) {
