@@ -166,9 +166,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
                 removeView(mVideoPlayerView);
-                mVideoPlayerView = null;
-            } else {
-                mVideoPlayerView = null;
             }
         } catch (Exception e) {
             LogUtils.e(e);
@@ -450,7 +447,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void onTimeChange(String current, String end) {
-        setHintText(String.format("%s/%s",current,end));
+        mVideoPlayerView.setTipText(String.format("%s/%s",current,end));
     }
 
     @Override

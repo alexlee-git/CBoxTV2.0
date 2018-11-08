@@ -70,10 +70,10 @@ class VersionUpdateContract {
                             }
                             if ("1" == result.upgradeType) {
                                 //强制升级
-                                view!!.versionCheckResult(result, true)
+                                view?.versionCheckResult(result, true)
                             } else {
                                 //非强制升级
-                                view!!.versionCheckResult(result, false)
+                                view?.versionCheckResult(result, false)
                             }
                         }
                     }

@@ -246,4 +246,9 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         return new Intent(LauncherApplication.this, NewTVLauncherPlayerActivity.class);
     }
 
+    @Override
+    public boolean isVip() {
+        return false;
+    }
+
 }

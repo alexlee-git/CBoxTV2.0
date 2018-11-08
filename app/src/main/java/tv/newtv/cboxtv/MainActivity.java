@@ -46,7 +46,7 @@ import tv.newtv.cboxtv.views.UpdateDialog;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
 @BuyGoodsAD
-public class MainActivity extends BaseActivity implements BgChangManager.BGCallback , AppMainContract
+public class MainActivity extends BaseActivity implements BackGroundManager.BGCallback , AppMainContract
         .View, VersionUpdateContract.View {
 
 
@@ -80,8 +80,6 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
-        //注册广播，显示系统时间
 
         Intent mIntent = getIntent();
         if (mIntent != null) {
@@ -125,7 +123,7 @@ public class MainActivity extends BaseActivity implements BgChangManager.BGCallb
     protected void onResume() {
         // 上报进入首页日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_HOME_PAGE, "0");
-        BgChangManager.getInstance().registerTargetView(this);
+        BackGroundManager.getInstance().registView(this);
         super.onResume();
     }
 

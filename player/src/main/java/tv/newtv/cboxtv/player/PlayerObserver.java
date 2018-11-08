@@ -18,4 +18,5 @@ public interface PlayerObserver {
     void onExitApp();
     Activity getCurrentActivity();
     Intent getPlayerActivityIntent();
+    boolean isVip();
 }

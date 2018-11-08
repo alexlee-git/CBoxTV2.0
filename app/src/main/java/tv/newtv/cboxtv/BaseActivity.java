@@ -34,12 +34,6 @@ import tv.newtv.cboxtv.annotation.BuyGoodsInject;
 import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.cms.ad.AdInject;
 import tv.newtv.cboxtv.cms.ad.BuyGoodsBusiness;
-import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
-import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
-import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
-import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.AdPopupWindow;
 
@@ -272,8 +266,11 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         if (fromOuter && isBackPressed(event)) {
             return true;
         }
-        checkIsTop(event);
-        return isFullScreen();
+        boolean isFullScreen = isFullScreen();
+        if(!isFullScreen) {
+            checkIsTop(event);
+        }
+        return isFullScreen;
     }
 
     protected void setBackgroundAD() {

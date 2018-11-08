@@ -50,11 +50,13 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     RxBus.get().post("labelId", childBeans.get(i));
-                    labelViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg_focus);
+                    RxBus.get().post("firstLabelPosition",labelViewHolder.itemView);
+
+                    labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_select);
 
                 } else {
                     labelViewHolder.textView.setBackgroundColor(0);
-                    labelViewHolder.textView.setBackgroundResource(R.drawable.search_title_bg);
+                    labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_default);
 
                 }
             }

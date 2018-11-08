@@ -47,6 +47,7 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     private final String TAG = this.getClass().getSimpleName();
     private float SearchViewKeyboardWidth = 655;
     private boolean keyWordChange = false;
+    private String mSearchId = "420";
 
     private SearchViewKeyboard mSearchViewKeyboard;
     private PageContract.ContentPresenter mContentPresenter;
@@ -64,7 +65,6 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
                     mSearchResult.setVisibility(View.VISIBLE);
                     mHotRecommend.setVisibility(View.GONE);
                 } else {
-                    mSearchResult.setKey(key);
                     mSearchResult.setVisibility(View.GONE);
                     mHotRecommend.setVisibility(View.VISIBLE);
                 }
@@ -90,7 +90,11 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
         initView();
         init();
         mContentPresenter = new PageContract.ContentPresenter(this, this);
-        mContentPresenter.getPageContent("420");
+        String hotSearchId = Constant.getBaseUrl("HOTSEARCH_CONTENTID");
+        if (!TextUtils.isEmpty(hotSearchId)){
+            mSearchId = hotSearchId;
+        }
+        mContentPresenter.getPageContent(mSearchId);
     }
 
     //对象的初始化
@@ -160,7 +164,11 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
                     if (!mSearchResult.isLoadComplete()) {
                         return true;
                     }
-                    if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
+                    if (mHotRecommend.getVisibility() == View.GONE){
+                        if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
+                            slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
+                        }
+                    }else {
                         slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
                     }
                 } else if ("search".equals(mode)) {

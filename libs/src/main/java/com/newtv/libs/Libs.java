@@ -2,8 +2,10 @@ package com.newtv.libs;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.newtv.libs.util.NetworkManager;
+import com.newtv.libs.util.SPrefUtils;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -28,6 +30,8 @@ public class Libs {
         mChannelId = channelId;
         mFlavor = flavor;
         mDebug = isDebug;
+
+
 
         NetworkManager.init(context);
     }

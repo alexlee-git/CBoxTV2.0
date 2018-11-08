@@ -65,7 +65,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="@dimen/width_24px"
             android:layout_toRightOf="@id/type_text"
-            android:background="@drawable/search_title_bg"
+            android:background="@drawable/screen_list"
             android:gravity="center"
             android:textColor="#ffffffff"
             android:textSize="@dimen/width_36px"

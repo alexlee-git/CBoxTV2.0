@@ -13,7 +13,7 @@
     <TextView
         android:id="@+id/label_title"
         android:textColor="#ffffffff"
-        android:background="@drawable/search_title_bg"
+        android:background="@drawable/screen_list_default"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

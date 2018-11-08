@@ -16,11 +16,8 @@ import android.widget.AdapterView;
 
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
-import tv.newtv.cboxtv.BgChangManager;
+import tv.newtv.cboxtv.BackGroundManager;
 import tv.newtv.cboxtv.LauncherApplication;
-import tv.newtv.cboxtv.cms.mainPage.NewTVViewPager;
-import tv.newtv.cboxtv.cms.mainPage.menu.BGEvent;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 
 /**
  * Created by lixin on 2018/1/23.
@@ -33,9 +30,14 @@ public abstract class BaseFragment extends RxFragment {
     private boolean useHint = false;
     private View contentView;
 
+    protected abstract String getContentUUID();
+
     private Runnable lazyRunnable = new Runnable() {
         @Override
         public void run() {
+            if(getUserVisibleHint()) {
+                BackGroundManager.getInstance().setCurrentPageId(getContext(), getContentUUID());
+            }
             lazyLoad();
         }
     };
@@ -162,10 +164,12 @@ public abstract class BaseFragment extends RxFragment {
     }
 
     protected void onVisible() {
+
         invokeLazyLoad();
     }
 
     protected void lazyLoad() {
+
         Log.d(BaseFragment.class.getSimpleName(), "lazyload()");
     }
 
@@ -225,14 +229,6 @@ public abstract class BaseFragment extends RxFragment {
 
     public void setAnimRecyclerView(RecyclerView recyclerView) {
         this.animRecyclerView = recyclerView;
-    }
-
-    //根据需要更换背景图片
-    protected void changeBG(ModuleInfoResult moduleInfoResult, String contentId) {
-        BGEvent bgEvent = new BGEvent(contentId, moduleInfoResult.getIsAd() ==
-                ModuleInfoResult.IS_AD_PAGE,
-                moduleInfoResult.getPageBackground());
-        BgChangManager.getInstance().addEvent(getContext(), bgEvent);
     }
 
     public void destroyItem() {

@@ -2,6 +2,7 @@ package com.newtv.libs.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /*
  *  获取当前日期
@@ -10,6 +11,7 @@ public class CalendarUtil {
     private static CalendarUtil instance;
 
     private CalendarUtil() {
+        Locale.setDefault(Locale.CHINESE);
     }
 
     public static CalendarUtil getInstance() {
@@ -32,8 +34,7 @@ public class CalendarUtil {
     }
 
     public static int getCurrentWeek(){
-        int week = CalendarUtil.getInstance().getWeek();
-        return translate(week);
+        return CalendarUtil.getInstance().getWeek();
     }
 
     /*
@@ -60,7 +61,7 @@ public class CalendarUtil {
     }
 
     public int getWeek() {
-        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
     }
 
     public int getYear() {

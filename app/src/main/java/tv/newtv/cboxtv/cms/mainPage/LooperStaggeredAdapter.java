@@ -130,10 +130,7 @@ public class LooperStaggeredAdapter extends FragmentStatePagerAdapter {
         bundle.putString("content_id", navInfo.getId());
 
         ContentFragment fragment = ContentFragment.newInstance(bundle);
-        //fragment.setNotifyNoPageDataListener(this);
         fragment.setUseHint(true);
-        //fragment.setViewPager(this);
-
         return fragment;
     }
 

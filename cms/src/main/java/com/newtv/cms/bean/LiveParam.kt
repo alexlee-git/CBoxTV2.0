@@ -15,10 +15,5 @@ import android.text.TextUtils
 data class LiveParam(
         val liveParam: String,          //直播循环参数，配置星期几，中间用竖线分割
         val playStartTime: String,      //直播开始时间
-        val playEndTime: String,        //直播结束时间
-        var isShowDate: Boolean          //是否包含日期
-) {
-    init {
-        isShowDate = TextUtils.isEmpty(liveParam)
-    }
-}
+        val playEndTime: String        //直播结束时间
+)
