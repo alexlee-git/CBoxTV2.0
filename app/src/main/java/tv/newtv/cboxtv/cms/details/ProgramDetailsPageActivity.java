@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
@@ -35,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,11 +65,11 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
-
-//import tv.newtv.cboxtv.cms.net.ApiUtil;
+import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
+import tv.newtv.cboxtv.uc.v2.listener.ISubscribeStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * Created by gaoleichao on 2018/3/30.
@@ -150,29 +148,22 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
     }
 
     private void initData() {
-        DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, contentUUID)
-                .build()
-                .withCallback(new DBCallback<String>() {
+
+        UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, contentUUID, "", new IHisoryStatusCallback() {
+            @Override
+            public void getHistoryStatus(UserCenterPageBean.Bean bean) {
+                if (null != bean) {
+                    mPlayPosition = Integer.valueOf(bean.playPosition);
+                    sqContentuuid = bean._contentuuid;
+                }
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onResult(int code, String result) {
-                        if (!TextUtils.isEmpty(result)) {
-                            Gson mGson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                            }.getType();
-                            List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
-                            mPlayPosition = Integer.valueOf(data.get(0).playPosition);
-                            sqContentuuid = data.get(0)._contentuuid;
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                requestData();
-                            }
-                        });
+                    public void run() {
+                        requestData();
                     }
-                }).excute();
+                });
+            }
+        });
     }
 
     private void init() {
@@ -190,20 +181,12 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
         rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
         mAdapter = new ColumnDetailsAdapter(getApplicationContext(), this);
         dataList = new ArrayList<>();
-        DataSupport.search(DBConfig.SUBSCRIBE_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, contentUUID)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (TextUtils.isEmpty(result)) {
-                            isCollect = false;
-                        } else {
-                            isCollect = true;
-                        }
-                    }
-                }).excute();
+        UserCenterUtils.getSuncribeState(contentUUID, new ISubscribeStatusCallback() {
+            @Override
+            public void notifySubScribeStatus(boolean status) {
+                isCollect = status;
+            }
+        });
 
         mUpdateVideoInfoObservable = RxBus.get().register(Constant.UPDATE_VIDEO_PLAY_INFO);
         mUpdateVideoInfoObservable.observeOn(AndroidSchedulers.mainThread())
@@ -422,18 +405,36 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
 
 
     private void delCollect(final String contentUuId) {
-        DataSupport.delete(DBConfig.COLLECT_TABLE_NAME).condition()
+        UserCenterUtils.deleteSomeCollect(dataInfo, contentUuId, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    mRecyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            isCollect = false;
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "1," + contentUuId);
+                            mCollectIv.setImageResource(R.drawable.icon_details_uncollect_btn);
+                            Toast.makeText(getApplicationContext(), "取消收藏成功", Toast.LENGTH_SHORT).show();
+                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                        }
+                    });
+                }
+            }
+        });
+        /*DataSupport.delete(DBConfig.COLLECT_TABLE_NAME).condition()
                 .eq(DBConfig.CONTENTUUID, contentUuId)
                 .build()
                 .withCallback(new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {
-                        if (code == 0) {
+                        if (code == 0
+                        ) {
                             mRecyclerView.post(new Runnable() {
                                 @Override
                                 public void run() {
                                     isCollect = false;
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"1,"+contentUuId);
+                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "1," + contentUuId);
                                     mCollectIv.setImageResource(R.drawable.icon_details_uncollect_btn);
                                     Toast.makeText(getApplicationContext(), "取消收藏成功", Toast.LENGTH_SHORT).show();
                                     RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -442,7 +443,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
                         }
 
                     }
-                }).excute();
+                }).excute();*/
     }
 
     private void updateCollect(final Content entity) {
@@ -455,7 +456,24 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
         Log.e("MM", "收藏=" + entity.toString());
         contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-        DataSupport.insertOrReplace(DBConfig.COLLECT_TABLE_NAME)
+        UserCenterUtils.addCollect(dataInfo, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    mRecyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            isCollect = true;
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "0," + entity.getContentUUID());
+                            mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
+                            Toast.makeText(getApplicationContext(), R.string.collect_success, Toast.LENGTH_SHORT).show();
+                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                        }
+                    });
+                }
+            }
+        });
+        /*DataSupport.insertOrReplace(DBConfig.COLLECT_TABLE_NAME)
                 .withValue(contentValues)
                 .withCallback(new DBCallback<String>() {
                     @Override
@@ -465,8 +483,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
                                 @Override
                                 public void run() {
                                     isCollect = true;
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0," +
-                                            ""+entity.getContentID());
+                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "0," + entity.getContentUUID());
                                     mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
                                     Toast.makeText(getApplicationContext(), R.string.collect_success, Toast.LENGTH_SHORT).show();
                                     RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -474,7 +491,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
                             });
                         }
                     }
-                }).excute();
+                }).excute();*/
     }
 
     @Override
@@ -513,7 +530,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
             case R.id.btn_detail_big_screen:
                 mPlayPosition = mVideoView.getCurrentPosition();
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(this, dataInfo,
-                        mPlayPosition,true);
+                        mPlayPosition, true);
                 break;
             case R.id.btn_detail_collect:
                 if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
@@ -534,7 +551,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
             case R.id.iv_detail_video:
                 mPlayPosition = mVideoView.getCurrentPosition();
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(this, dataInfo,
-                        mPlayPosition,true);
+                        mPlayPosition, true);
                 break;
         }
     }
@@ -556,7 +573,17 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
             contentValues.put(DBConfig.TITLE_NAME, dataInfo.getTitle());
             contentValues.put(DBConfig.PLAYPOSITION, mVideoView.getCurrentPosition());
             contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-            DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
+            UserCenterUtils.addHistory(dataInfo, mVideoView.getIndex(), mVideoView.getCurrentPosition(),mVideoView.getDuration() , new DBCallback<String>() {
+                @Override
+                public void onResult(int code, String result) {
+                    if (code == 0) {
+                        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
+                                dataInfo.getContentID());//添加历史记录
+                        RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                    }
+                }
+            });
+            /*DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
                     .condition()
                     .eq(DBConfig.CONTENTUUID, dataInfo.getContentID())
                     .build()
@@ -570,7 +597,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
                                 RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                             }
                         }
-                    }).excute();
+                    }).excute();*/
         }
 
 

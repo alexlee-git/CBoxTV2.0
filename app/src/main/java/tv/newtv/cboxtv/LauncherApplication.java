@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
@@ -12,7 +13,9 @@ import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.FileUtil;
 import com.newtv.libs.util.LogUploadUtils;
@@ -20,6 +23,7 @@ import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.PicassoBuilder;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SystemUtils;
+import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
 
 import java.util.Locale;
@@ -34,6 +38,9 @@ import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
 
 //import com.tencent.bugly.crashreport.CrashReport;
@@ -174,16 +181,42 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     }
 
     @Override
-    public void onFinish(Content playInfo, int index, int position) {
-        if (index == 0 && position == 0) return;
-        DBUtil.addHistory(playInfo, index, position, new DBCallback<String>() {
-            @Override
-            public void onResult(int code, String result) {
-                if (code == 0) {
-                    LogUtils.e("写入历史记录成功");
-                }
+    public void onFinish(final Content playInfo, final int index, final int position) {
+        try {
+            if (index == 0 && position == 0) {
+                return;
             }
-        });
+
+            QueryUserStatusUtil.getInstance().getLoginStatus(this, new INotifyLoginStatusCallback() {
+                @Override
+                public void notifyLoginStatusCallback(boolean login) {
+                    String userId;
+                    String tableName;
+                    if (login) {
+                        userId = Constant.USER_ID;
+                        tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
+                    } else {
+                        userId = SystemUtils.getDeviceMac(getApplicationContext());
+                        tableName = DBConfig.HISTORY_TABLE_NAME;
+                    }
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(DBConfig.PLAYINDEX, String.valueOf(index));
+                    bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(position));
+
+                    DBUtil.addHistory(userId, playInfo, bundle, new DBCallback<String>() {
+                        @Override
+                        public void onResult(int code, String result) {
+                            if (code == 0) {
+                                LogUtils.e("写入历史记录成功");
+                            }
+                        }
+                    }, tableName);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

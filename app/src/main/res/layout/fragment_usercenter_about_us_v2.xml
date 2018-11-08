@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layerType="hardware">
+
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/wechat_container"-->
+    <!--android:layout_width="@dimen/width_448px"-->
+    <!--android:layout_height="@dimen/height_448px"-->
+    <!--android:layout_marginLeft="@dimen/width_268px"-->
+    <!--android:layout_marginTop="@dimen/height_277px"-->
+    <!--android:background="@drawable/uc_about_us_qr_v2">-->
+    <!--</FrameLayout>-->
+
+    <!--<View-->
+    <!--android:id="@+id/wechat_line"-->
+    <!--android:layout_width="@dimen/width_440px"-->
+    <!--android:layout_height="@dimen/height_2px"-->
+    <!--android:layout_marginLeft="@dimen/width_271px"-->
+    <!--android:layout_marginTop="@dimen/height_767px"-->
+    <!--android:background="@drawable/empty_bottom_line"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/wechat_text"-->
+    <!--android:layout_width="@dimen/width_440px"-->
+    <!--android:layout_height="@dimen/height_36px"-->
+    <!--android:layout_alignLeft="@+id/wechat_line"-->
+    <!--android:layout_alignStart="@+id/wechat_line"-->
+    <!--android:layout_below="@+id/wechat_line"-->
+    <!--android:layout_marginTop="@dimen/height_48px"-->
+    <!--android:includeFontPadding="false"-->
+    <!--android:text="@string/newtv_wechat"-->
+    <!--android:textColor="@android:color/white"-->
+    <!--android:textSize="@dimen/height_34px"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/qr_wechat_text"-->
+    <!--android:layout_width="@dimen/width_440px"-->
+    <!--android:layout_height="@dimen/height_36px"-->
+    <!--android:layout_alignLeft="@+id/wechat_text"-->
+    <!--android:layout_alignStart="@+id/wechat_text"-->
+    <!--android:layout_below="@+id/wechat_text"-->
+    <!--android:layout_marginTop="@dimen/height_12px"-->
+    <!--android:gravity="center"-->
+    <!--android:includeFontPadding="false"-->
+    <!--android:text="@string/qr_public"-->
+    <!--android:textColor="#60FFFFFF"-->
+    <!--android:textSize="@dimen/height_24px"/>-->
+
+
+    <!--<ImageView-->
+    <!--android:id="@+id/id_user_about_us_logo"-->
+    <!--android:layout_width="@dimen/width_907px"-->
+    <!--android:layout_height="@dimen/height_183px"-->
+    <!--android:layout_marginLeft="@dimen/width_810px"-->
+    <!--android:layout_marginTop="@dimen/height_426px"-->
+    <!--android:background="@drawable/about_us_logo"/>-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="@dimen/width_754px"-->
+    <!--android:layout_height="@dimen/height_40px"-->
+    <!--android:layout_below="@+id/id_user_about_us_logo"-->
+    <!--android:layout_marginLeft="@dimen/width_859px">-->
+
+    <!--<TextView-->
+    <!--android:layout_width="@dimen/width_396px"-->
+    <!--android:layout_height="@dimen/height_40px"-->
+    <!--android:gravity="center"-->
+    <!--android:text="@string/service_number"-->
+    <!--android:textColor="#50FFFFFF"-->
+    <!--android:textSize="@dimen/height_36px"/>-->
+
+    <!--<android.support.v4.widget.Space-->
+    <!--android:layout_width="@dimen/width_49px"-->
+    <!--android:layout_height="match_parent"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="@dimen/width_358px"-->
+    <!--android:layout_height="@dimen/height_40px"-->
+    <!--android:text="@string/service_qq"-->
+    <!--android:textColor="#50FFFFFF"-->
+    <!--android:textSize="@dimen/height_36px"/>-->
+    <!--</LinearLayout>-->
+    <WebView
+        android:id="@+id/id_webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/height_168px"
+        android:background="@color/color"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layerType="software"
+        android:visibility="invisible"
+        ></WebView>
+</RelativeLayout>

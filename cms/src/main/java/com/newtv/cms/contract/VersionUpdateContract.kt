@@ -75,6 +75,8 @@ class VersionUpdateContract {
                                 //非强制升级
                                 view!!.versionCheckResult(result, false)
                             }
+
+                            Constant.VERSION_UPDATE = true;
                         }
                     }
 

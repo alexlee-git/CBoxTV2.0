@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
+import android.util.Log;
 import com.newtv.libs.util.LogUtils;
 
 
@@ -57,6 +57,7 @@ public class DownloadObserver extends ContentObserver {
             long totalBytes = cursor
                     .getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
             float mProgress = (float) ((curBytes * 100) / totalBytes);
+            Log.e("DownloadObserver", "----onChange: mProgress="+mProgress);
             if (totalBytes != 0) {
 
                 message = mHandler.obtainMessage();

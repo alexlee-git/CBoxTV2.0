@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView-->
+    <!--android:id="@+id/id_user_about_help_scroll"-->
+    <!--android:layout_width="@dimen/width_1680px"-->
+    <!--android:layout_height="@dimen/height_746px"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_marginTop="@dimen/height_168px"-->
+    <!--android:focusable="false"-->
+    <!--android:fadeScrollbars="false"-->
+    <!--android:paddingLeft="@dimen/width_20px"-->
+    <!--android:paddingRight="@dimen/width_20px"-->
+    <!--android:scrollbarSize="@dimen/width_5px"-->
+    <!--android:scrollbarThumbVertical="@color/color_font">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/about_message"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:lineSpacingExtra="@dimen/height_32px"-->
+    <!--android:textColor="@color/color_font"-->
+    <!--android:textSize="@dimen/height_32px"/>-->
+    <!--</tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView>-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/id_user_help_bottom_arrow"-->
+    <!--android:layout_width="@dimen/width_34px"-->
+    <!--android:layout_height="@dimen/height_20px"-->
+    <!--android:layout_marginTop="@dimen/height_930px"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:background="@drawable/uc_about_help_bottom_arrow_v2"-->
+    <!--android:focusable="false"-->
+    <!--android:visibility="visible"/>-->
+    <WebView
+        android:id="@+id/id_webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/height_168px"
+        android:background="@color/color"
+        android:layerType="software"
+        android:visibility="invisible"
+        ></WebView>
+</RelativeLayout>

@@ -20,18 +20,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +61,9 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
+import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
+import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 
 /**
@@ -161,30 +161,18 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
     }
 
     private void initData() {
-        DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, contentUUID)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        try {
-                            if (!TextUtils.isEmpty(result)) {
-                                Gson mGson = new Gson();
-                                Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                                }.getType();
-                                List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
-                                mPlayPosition = Integer.valueOf(data.get(0).playPosition);
-                                if (data.get(0).playIndex != null) {
-                                    mIndex = Integer.valueOf(data.get(0).playIndex);
-                                }
-                            }
-                        } catch (Exception e) {
-                            LogUtils.e(e.toString());
-                        }
-                        requestData();
+        UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, contentUUID, "", new IHisoryStatusCallback() {
+            @Override
+            public void getHistoryStatus(UserCenterPageBean.Bean bean) {
+                if (null != bean) {
+                    mPlayPosition = Integer.valueOf(bean.playPosition);
+                    if (bean.playIndex != null) {
+                        mIndex = Integer.valueOf(bean.playIndex);
                     }
-                }).excute();
+                    requestData();
+                }
+            }
+        });
     }
 
     private void init() {
@@ -192,20 +180,12 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
         rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
         mAdapter = new ColumnDetailsAdapter(getActivity(), this);
         dataList = new ArrayList<>();
-        DataSupport.search(DBConfig.COLLECT_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, contentUUID)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (TextUtils.isEmpty(result)) {
-                            isCollect = false;
-                        } else {
-                            isCollect = true;
-                        }
-                    }
-                }).excute();
+        UserCenterUtils.getCollectState(contentUUID, new ICollectionStatusCallback() {
+            @Override
+            public void notifyCollectionStatus(boolean status) {
+                    isCollect = status;
+            }
+        });
 
         mUpdateVideoInfoObservable = RxBus.get().register(Constant.UPDATE_VIDEO_PLAY_INFO);
         mUpdateVideoInfoObservable.observeOn(AndroidSchedulers.mainThread())
@@ -451,29 +431,27 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
     }
 
     private void delCollect(String contentUuId) {
-        DataSupport.delete(DBConfig.COLLECT_TABLE_NAME).condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (code == 0) {
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    isCollect = false;
-                                    mCollectIv.setImageResource(R.drawable
-                                            .icon_details_uncollect_btn);
-                                    Toast.makeText(getActivity(), "取消收藏成功", Toast.LENGTH_SHORT)
-                                            .show();
-                                    mAdapter.notifyItemChanged(0);
-                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                                }
-                            });
-                        }
-
+        if(null != dataInfo){
+            UserCenterUtils.deleteSomeCollect(dataInfo, contentUuId, new DBCallback<String>() {
+                @Override
+                public void onResult(int code, String result) {
+                    if (code == 0) {
+                        mRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                isCollect = false;
+                                mCollectIv.setImageResource(R.drawable
+                                        .icon_details_uncollect_btn);
+                                Toast.makeText(getActivity(), "取消收藏成功", Toast.LENGTH_SHORT)
+                                        .show();
+                                mAdapter.notifyItemChanged(0);
+                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                            }
+                        });
                     }
-                }).excute();
+                }
+            });
+        }
     }
 
     private void updateCollect(final Content entity) {
@@ -485,29 +463,28 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
         contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-        DataSupport.insertOrReplace(DBConfig.COLLECT_TABLE_NAME)
-                .withValue(contentValues)
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (code == 0) {
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    isCollect = true;
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0," +
-                                            ""+entity.getContentID());
-                                    mCollectIv.setImageResource(R.drawable
-                                            .icon_details_collect_btn);
-                                    Toast.makeText(getActivity(), R.string.collect_success, Toast.LENGTH_SHORT)
-                                            .show();
-                                    mAdapter.notifyItemChanged(0);
-                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                                }
-                            });
-                        }
+        if(null != entity) {
+            UserCenterUtils.addCollect(entity, new DBCallback<String>() {
+                @Override
+                public void onResult(int code, String result) {
+                    if (code == 0) {
+                        mRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                isCollect = true;
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "0," + entity.getContentUUID());
+                                mCollectIv.setImageResource(R.drawable
+                                        .icon_details_collect_btn);
+                                Toast.makeText(getActivity(), R.string.collect_success, Toast.LENGTH_SHORT)
+                                        .show();
+                                mAdapter.notifyItemChanged(0);
+                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                            }
+                        });
                     }
-                }).excute();
+                }
+            });
+        }
     }
 
     @Override
@@ -630,22 +607,19 @@ public class VarietyShowFragment extends BaseFragment implements OnRecycleItemCl
             contentValues.put(DBConfig.PLAYINDEX, mIndex + "");
             contentValues.put(DBConfig.PLAYPOSITION, mVideoView.getCurrentPosition());
             contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
-            DataSupport.insertOrUpdate(DBConfig.HISTORY_TABLE_NAME)
-                    .condition()
-                    .eq(DBConfig.CONTENTUUID, dataInfo.getContentID())
-                    .build()
-                    .withValue(contentValues)
-                    .withCallback(new DBCallback<String>() {
-                        @Override
-                        public void onResult(int code, String result) {
 
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + dataInfo
-                                    .getContentID());//添加历史记录
-                            if (code == 0) {
-                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                            }
-                        }
-                    }).excute();
+            if(null != dataInfo){
+               UserCenterUtils.addHistory(dataInfo, mIndex, mVideoView.getCurrentPosition(), mVideoView.getDuration(), new DBCallback<String>() {
+                   @Override
+                   public void onResult(int code, String result) {
+                       LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + dataInfo
+                               .getContentID());//添加历史记录
+                       if (code == 0) {
+                           RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                       }
+                   }
+               });
+            }
         }
     }
 

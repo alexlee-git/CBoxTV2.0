@@ -5,7 +5,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import com.newtv.libs.Constant
 import com.newtv.libs.util.HttpsUtils
 import java.util.concurrent.TimeUnit
 
@@ -57,5 +56,9 @@ object NetClient {
     val upVersion by lazy { retrofit.create(UpVersionApi::class.java) }
     val MenuApi by lazy { retrofit.create(IMenuApi::class.java)}
     val playPermissionCheckApi by lazy { retrofit.create(IPlayPermissionCheckApi::class.java)}
+    val ordersApi by lazy { retrofit.create(IOrderApi::class.java) }
+    val UserCenterLoginApi by lazy { retrofit.create(IUserCenterLoginApi::class.java) }
+    val UserCenterMemberInfoApi by lazy { retrofit.create(IUserCenterMemberInfoApi::class.java) }
+    val HotSubscribeApi by lazy { retrofit.create(IHotSubscribeApi::class.java) }
 }
 

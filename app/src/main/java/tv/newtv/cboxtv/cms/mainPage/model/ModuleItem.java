@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.mainPage.model;
 
+import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class ModuleItem {
     private String colNum;
     private String BlockType;
     private String layoutCode;
-    private List<SubContent> programs;
+    private List<Program> programs;
 
 
     public String getBlockId() {
@@ -111,11 +112,11 @@ public class ModuleItem {
         this.layoutCode = layoutCode;
     }
 
-    public List<SubContent> getDatas() {
+    public List<Program> getDatas() {
         return programs;
     }
 
-    public void setDatas(List<SubContent> datas) {
+    public void setDatas(List<Program> datas) {
         programs = datas;
     }
 

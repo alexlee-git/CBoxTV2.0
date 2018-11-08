@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
 import tv.newtv.cboxtv.views.detail.IEpisode;

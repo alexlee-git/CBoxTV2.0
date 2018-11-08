@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+    <!--此view是为了占据位置使用 -->
+    <View
+        android:id="@+id/id_user_ad_space"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_1px"
+        android:visibility="visible"/>
+
+    <ImageView
+        android:id="@+id/id_module_8_title_icon"
+        android:layout_width="@dimen/width_17px"
+        android:layout_height="@dimen/height_17px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_56px"
+        android:background="@drawable/tuoyuan"
+        android:tag="tag_title_icon"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/id_module_8_title"
+        style="@style/ModuleTitleStyle"
+        android:layout_width="@dimen/width_374px"
+        android:layout_height="@dimen/height_34px"
+        android:layout_marginLeft="@dimen/width_6px"
+        android:layout_marginTop="@dimen/height_47px"
+        android:layout_toRightOf="@id/id_module_8_title_icon"
+        android:includeFontPadding="false"
+        android:tag="tag_title"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:id="@+id/id_user_ad_banner"
+        android:layout_width="@dimen/width_1734px"
+        android:layout_height="@dimen/height_374px"
+        android:layout_below="@id/id_module_8_title_icon"
+        android:layout_marginLeft="@dimen/width_93px"
+        android:layout_marginRight="@dimen/width_93px"
+        android:clickable="true"
+        android:focusable="true"
+        android:tag="cell_001_1"
+        android:visibility="gone">
+
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:layout_width="@dimen/width_1680px"
+            android:layout_height="@dimen/height_320px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginTop="@dimen/width_27px"
+            android:tag="tag_poster_image"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/focus_usercenter_1680_320"
+            android:tag="tag_poster_focus"
+            android:visibility="invisible"/>
+
+    </FrameLayout>
+
+
+</RelativeLayout>
+
+

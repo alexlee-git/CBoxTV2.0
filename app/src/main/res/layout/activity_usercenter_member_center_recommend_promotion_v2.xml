@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <!--二维码框 -->
+    <FrameLayout
+        android:id="@+id/id_member_center_qr_root"
+        android:layout_width="@dimen/width_390px"
+        android:layout_height="@dimen/height_454px"
+        android:layout_marginLeft="@dimen/width_93px"
+        android:layout_marginTop="@dimen/height_21px"
+        android:clickable="true"
+        android:focusable="true"
+        android:nextFocusLeft="@id/id_member_center_qr_root"
+        >
+
+        <FrameLayout
+            android:layout_width="@dimen/width_337px"
+            android:layout_height="@dimen/height_400px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginRight="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:background="@drawable/usercenter_login_qrcode_bg">
+
+            <ImageView
+                android:layout_width="@dimen/width_307px"
+                android:layout_height="@dimen/height_306px"
+                android:layout_marginLeft="@dimen/width_17px"
+                android:layout_marginRight="@dimen/width_17px"
+                android:layout_marginTop="@dimen/height_18px"
+                android:background="@drawable/activity_login_qr_inside_back"/>
+
+            <ImageView
+                android:id="@+id/id_member_center_qr_code"
+                android:layout_width="@dimen/width_297px"
+                android:layout_height="@dimen/height_296px"
+                android:layout_marginLeft="@dimen/width_22px"
+                android:layout_marginRight="@dimen/width_22px"
+                android:layout_marginTop="@dimen/height_23px"
+                android:background="@drawable/test_member_center_qr_code_v2"
+                android:tag="tag_poster_image"/>
+
+            <ImageView
+                android:id="@+id/id_member_center_qr_scan_icon"
+                android:layout_width="@dimen/width_50px"
+                android:layout_height="@dimen/height_50px"
+                android:layout_marginLeft="@dimen/width_16px"
+                android:layout_marginTop="@dimen/height_338px"
+                android:background="@drawable/member_qr_scan_icon_v2"/>
+            <!-- 会员中心二维码扫描提醒上标题 -->
+            <TextView
+                android:id="@+id/id_member_center_qr_top_title"
+                style="@style/MemberCenterQrTopTitleStyle"
+                android:layout_width="@dimen/width_240px"
+                android:layout_height="@dimen/height_22px"
+                android:layout_marginLeft="@dimen/width_78px"
+                android:layout_marginTop="@dimen/height_338px"
+                android:includeFontPadding="false"
+                android:text="@string/member_qr_top_title"/>
+            <!-- 会员中心二维码扫描提醒下标题 -->
+            <TextView
+                android:id="@+id/id_member_center_qr_bottom_title"
+                style="@style/MemberCenterQrBottomTitleStyle"
+                android:layout_width="@dimen/width_240px"
+                android:layout_height="@dimen/height_20px"
+                android:layout_marginLeft="@dimen/width_78px"
+                android:layout_marginTop="@dimen/height_366px"
+                android:includeFontPadding="false"
+                android:text="@string/member_qr_bottom_title"/>
+        </FrameLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/member_qr_focus_v2"
+            android:tag="tag_poster_focus"
+            android:visibility="invisible"/>
+    </FrameLayout>
+    <!--会员促销推荐位 -->
+    <FrameLayout
+        android:id="@+id/id_member_center_promotion_recommend"
+        android:layout_width="@dimen/width_1350px"
+        android:layout_height="@dimen/height_454px"
+        android:layout_marginLeft="@dimen/width_478px"
+        android:layout_marginTop="@dimen/height_21px"
+        android:clickable="true"
+        android:focusable="true"
+        android:nextFocusRight="@id/id_member_center_promotion_recommend"
+        >
+
+        <ImageView
+            android:layout_width="@dimen/width_1296px"
+            android:layout_height="@dimen/height_400px"
+            android:layout_marginBottom="@dimen/width_27px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginRight="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:tag="tag_poster_image"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/member_center_promotion_recommend_focus_v2"
+            android:tag="tag_poster_focus"
+            android:visibility="invisible"/>
+    </FrameLayout>
+</RelativeLayout>

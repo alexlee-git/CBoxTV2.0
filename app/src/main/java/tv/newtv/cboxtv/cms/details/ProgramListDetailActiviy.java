@@ -20,8 +20,6 @@ import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.db.DBCallback;
-import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
@@ -47,12 +45,14 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -60,6 +60,11 @@ import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
+import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
+import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 节目合集详情页
@@ -67,6 +72,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
 public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleItemClickListener,
         AdContract.View, PlayerCallback, View.OnClickListener {
 
+    private static final String ACTION = "tv.newtv.cboxtv.action.PROGRAMLIST";
     @BindView(R.id.id_usercenter_fragment_root)
     VerticallRecyclerView mRecyclerView;
 
@@ -82,6 +88,11 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     @BindView(R.id.full_screen)
     FocusToggleView mFullBtn;
 
+    @BindView(R.id.btn_detail_vip_pay)
+    FocusToggleView mVipPayBtn;
+
+    @BindView(R.id.vip_pay_tip)
+    TextView vipTip;
 
     @BindView(R.id.video_container)
     FrameLayout video_container;
@@ -102,6 +113,10 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
     private List<Content> dataList;
     private boolean isCollect = false;
     private Content dataInfo;
+    private boolean isLogin = false;
+    private String memberStatus;
+    private String expireTime;
+    //private ProgramSeriesInfo dataInfo;
     private Disposable mDisposable;
     private AdContract.Presenter adPresenter;
 
@@ -163,6 +178,7 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
 
         mCollectBtn.setOnClickListener(this);
         mFullBtn.setOnClickListener(this);
+        mVipPayBtn.setOnClickListener(this);
 
         prepareMediaPlayer();
     }
@@ -188,21 +204,39 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
         }
         mAdapter = new ColumnDetailsAdapter(getApplicationContext(), this);
         dataList = new ArrayList<>();
-        DataSupport.search(DBConfig.COLLECT_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, contentUUID)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (TextUtils.isEmpty(result)) {
-                            isCollect = false;
-                        } else {
-                            isCollect = true;
-                        }
 
-                    }
-                }).excute();
+    }
+
+    //获取登陆状态
+    private void initLoginCollectStatus() {
+        UserCenterUtils.getCollectState(contentUUID, new ICollectionStatusCallback() {
+            @Override
+            public void notifyCollectionStatus(boolean status) {
+                isCollect = status;
+            }
+        });
+
+        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(boolean status) {
+                isLogin = status;
+            }
+        });
+        UserCenterUtils.getMemberStatus(new INotifyMemberStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
+                memberStatus = status;
+                if (memberBundle != null) {
+                    expireTime = (String) memberBundle.get(QueryUserStatusUtil.expireTime);
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initLoginCollectStatus();
     }
 
     @Override
@@ -323,6 +357,19 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
         mCollectBtn.setSelect(isCollect);
         tvContent.setText(dataInfo.getDescription());
         tvtitle.setText(dataInfo.getTitle());
+        if (dataInfo != null && dataInfo.getVipFlag() != null && Integer.parseInt(dataInfo.getVipFlag()) > 0) {
+            mVipPayBtn.setVisibility(View.VISIBLE);
+            mVipPayBtn.setSelect(true);
+        }
+
+
+        if (!TextUtils.isEmpty(memberStatus) && (memberStatus == QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) {
+           /* SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");//设置日期格式
+            //System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
+            String data = df.format(new Date());*/
+            vipTip.setVisibility(View.VISIBLE);
+            vipTip.setText(String.format(vipTip.getText().toString(), expireTime));
+        }
     }
 
     @Override
@@ -362,14 +409,56 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                     }
                 }
                 break;
-
+            case R.id.btn_detail_vip_pay:
+                if (dataInfo != null && dataInfo.getVipFlag() != null) {
+                    final int vipState = Integer.parseInt(dataInfo.getVipFlag());
+                    if (isLogin) {
+                        //1 单点包月  3vip  4单点
+                        if (vipState == 1) {
+                            UserCenterUtils.startVIP1(ProgramListDetailActiviy.this, dataInfo, ACTION);
+                        } else if (vipState == 3) {
+                            UserCenterUtils.startVIP3(ProgramListDetailActiviy.this, dataInfo, ACTION);
+                        } else if (vipState == 4) {
+                            UserCenterUtils.startVIP4(ProgramListDetailActiviy.this, dataInfo, ACTION);
+                        }
+                    } else {
+                        UserCenterUtils.startLoginActivity(ProgramListDetailActiviy.this, dataInfo, ACTION, true);
+                    }
+                }
+                break;
+            default:
+                break;
 
         }
     }
 
 
+    private void updateCollect(final Content entity) {
+        UserCenterUtils.addCollect(dataInfo, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    mRecyclerView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            isCollect = true;
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "0," + entity
+                                    .getContentUUID());//收藏
+                            //mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
+                            mCollectBtn.setSelect(true);
+                            Toast.makeText(getApplicationContext(), R.string.collect_success,
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     private void delCollect(final String contentUuId) {
-        DBUtil.UnCollect(contentUuId, new DBCallback<String>() {
+        UserCenterUtils.deleteSomeCollect(dataInfo, contentUuId, new DBCallback<String>() {
             @Override
             public void onResult(int code, String result) {
                 if (code == 0) {
@@ -389,33 +478,6 @@ public class ProgramListDetailActiviy extends BaseActivity implements OnRecycleI
                 }
             }
         });
-
-    }
-
-    private void updateCollect(final Content entity) {
-        DBUtil.PutCollect(entity, new DBCallback<String>() {
-            @Override
-            public void onResult(int code, String result) {
-                if (code == 0) {
-                    mRecyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            isCollect = true;
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "1," + entity
-                                    .getContentID());//取消收藏
-                            //mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
-
-                            mCollectBtn.setSelect(true);
-                            Toast.makeText(getApplicationContext(), R.string.collect_success,
-                                    Toast.LENGTH_SHORT)
-                                    .show();
-                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                        }
-                    });
-                }
-            }
-        });
-
     }
 
     /**

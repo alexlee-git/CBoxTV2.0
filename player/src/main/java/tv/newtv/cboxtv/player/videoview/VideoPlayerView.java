@@ -81,7 +81,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (config != null) {
             defaultFocusView = config.defaultFocusView;
             mPlayerCallback = config.playerCallback;
-            videoFullCallBack=config.videoFullCallBack;
+            videoFullCallBack = config.videoFullCallBack;
             playCenter = config.playCenter;
             videoExitFullScreenCallBack = config.videoExitFullScreenCallBack;
         }
@@ -124,9 +124,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         ProgramIsChange = false;
 
 
-        Log.i("Collection","退出全屏");
+        Log.i("Collection", "退出全屏");
 
-        if (videoExitFullScreenCallBack != null){
+        if (videoExitFullScreenCallBack != null) {
             videoExitFullScreenCallBack.videoEitFullScreen();
         }
     }
@@ -150,12 +150,12 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void enterFullScreen(final Activity activity) {
-        if(!playCenter.isReady()){
+        if (!playCenter.isReady()) {
             return;
         }
         Content programSeriesInfo = playCenter.getCurrentSeriesInfo();
         if (programSeriesInfo == null) return;
-        EnterFullScreen(activity,false);
+        EnterFullScreen(activity, false);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         PlayerViewConfig playerViewConfig = super.getDefaultConfig();
         playerViewConfig.defaultFocusView = defaultFocusView;
         playerViewConfig.playerCallback = mPlayerCallback;
-        playerViewConfig.videoFullCallBack=videoFullCallBack;
+        playerViewConfig.videoFullCallBack = videoFullCallBack;
         playerViewConfig.playCenter = playCenter;
         playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
         return playerViewConfig;
@@ -308,7 +308,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void beginChange() {
 //        setPlayerMessage("正在切换视频...", 0);
-        if(isPlaying()) {
+        if (isPlaying()) {
             stopPlay();
         }
     }
@@ -337,7 +337,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         mPlayerProgress = null;
         playCenter = null;
         mPlayerCallback = null;
-        videoFullCallBack=null;
+        videoFullCallBack = null;
         mFocusView = null;
 
         if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)) {
@@ -395,7 +395,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     public void onChange(String current, String start, String end, boolean isComplete) {
         super.onChange(current, start, end, isComplete);
 
-        if(isComplete){
+        if (isComplete) {
             setHintText("直播已结束");
         }
     }
@@ -421,7 +421,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         mPlayerCallback = callback;
     }
 
-    public void setVideoExitCallback(VideoExitFullScreenCallBack callback){
+    public void setVideoExitCallback(VideoExitFullScreenCallBack callback) {
         videoExitFullScreenCallBack = callback;
 
     }
@@ -445,5 +445,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void setisEnd(boolean b) {
         this.isEnd = b;
+    }
+
+    @Override
+    public int getDuration() {
+        return super.getDuration();
     }
 }

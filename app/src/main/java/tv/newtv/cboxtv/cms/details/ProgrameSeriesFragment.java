@@ -68,7 +68,12 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.SystemUtils;
+import com.newtv.libs.util.Utils;
+
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -679,50 +684,77 @@ public class ProgrameSeriesFragment extends BaseFragment implements
         mVideoView.EnterFullScreen(getActivity(), false);
     }
     //取消收藏
-    private void delCollect(String contentUuId) {
-        DBUtil.UnCollect(contentUuId, new DBCallback<String>() {
+    private void delCollect(final String contentUuId) {
+        QueryUserStatusUtil.getInstance().getLoginStatus(getContext(), new INotifyLoginStatusCallback() {
             @Override
-            public void onResult(int code, String result) {
-                if (code == 0) {
-                    mRecyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            isCollect = false;
-                            collect.setSelect(isCollect);
-                            Toast.makeText(getContext().getApplicationContext(), "取消收藏成功", Toast
-                                    .LENGTH_SHORT)
-                                    .show();
-                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                        }
-                    });
+            public void notifyLoginStatusCallback(boolean login) {
+                String tableName;
+                String userId;
+
+                if (login) {
+                    tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
+                    userId = Constant.USER_ID;
+                } else {
+                    tableName = DBConfig.COLLECT_TABLE_NAME;
+                    userId = SystemUtils.getDeviceMac(getActivity());
                 }
+
+                DBUtil.UnCollect(userId, contentUuId, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0) {
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    isCollect = false;
+                                    collect.setSelect(isCollect);
+                                    Toast.makeText(getContext().getApplicationContext(), "取消收藏成功", Toast.LENGTH_SHORT).show();
+                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                                }
+                            });
+                        }
+                    }
+                }, tableName);
             }
         });
-
     }
 
-    private void updateCollect(Content entity) {
-
-        DBUtil.PutCollect(entity, new DBCallback<String>() {
+    private void updateCollect(final Content entity) {
+        QueryUserStatusUtil.getInstance().getLoginStatus(getContext(), new INotifyLoginStatusCallback() {
             @Override
-            public void onResult(final int code, String result) {
-                if (code == 0) {
-                    mRecyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            isCollect = true;
-                            collect.setSelect(isCollect);
-                            Toast.makeText(getContext().getApplicationContext(), R.string
-                                    .collect_success, Toast
-                                    .LENGTH_SHORT)
-                                    .show();
-                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                        }
-                    });
+            public void notifyLoginStatusCallback(boolean login) {
+                String tableName;
+                String userId;
+
+                if (login) {
+                    tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
+                    userId = Constant.USER_ID;
+                } else {
+                    tableName = DBConfig.COLLECT_TABLE_NAME;
+                    userId = SystemUtils.getDeviceMac(getActivity());
                 }
+
+                Bundle bundle = new Bundle();
+                bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(Utils.getSysTime()));
+
+                DBUtil.PutCollect(userId, entity, bundle, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0) {
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    isCollect = true;
+                                    collect.setSelect(isCollect);
+                                    Toast.makeText(getContext().getApplicationContext(), R.string.collect_success, Toast.LENGTH_SHORT).show();
+                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                                }
+                            });
+                        }
+                    }
+                }, tableName);
             }
         });
-
     }
 
     @Override

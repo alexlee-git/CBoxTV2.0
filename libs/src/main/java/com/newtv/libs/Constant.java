@@ -32,7 +32,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class Constant {
     public static final boolean isLocalData = false;
-
+    //版本升级状态
+    public static boolean VERSION_UPDATE = false;
     public static final String AdCache = Environment.getExternalStorageDirectory()
             .getAbsolutePath() +
             "/ad_cache";
@@ -151,7 +152,11 @@ public class Constant {
     public static final int LOG_NODE_HISTORY = 15;               // 历史记录
     public static final int LOG_NODE_RECOMMEND = 18;               // 推荐位
     public static final int LOG_NODE_COLLECT = 5;               // 收藏
+    public static final int LOG_NODE_SUBSCRIP = 21;               // 订阅
+    public static final int LOG_NODE_ATTENTION = 22;               // 关注
+    public static final int LOG_NODE_LIKE = 23;               // 点赞 送花
     public static final int LOG_NODE_USER_CENTER = 8;               //用户中心
+    public static final int LOG_NODE_PAY = 7;                      //支付
     public static final int LOG_NODE_ONE__DETAIL = 3;               // 某个影片的详情页
     public static final int LOG_NODE_PAGE = 19;                 // 页面日志
     public static final int LOG_NODE_RECOMMEND_POS = 501;        // 页面数据的推荐位日志
@@ -222,10 +227,53 @@ public class Constant {
             "http://api.adott.ottcn.org/" : "https://api.adott.ottcn.com/";
     public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
     ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
+
+    private static final String USER = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            // "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+
+    public static final String BASE_URL_USER = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.USER)
+    ) ? getBaseUrl(HeadersInterceptor.USER) : USER; //正式地址
+
+    private static final String PAY = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            // "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    public static final String BASE_URL_PAY = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.PAY)
+    ) ? getBaseUrl(HeadersInterceptor.PAY) : PAY; //正式地址
+
+    private static final String PRODUCT = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            // "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    public static final String BASE_URL_PRODUCT = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.USER)
+    ) ? getBaseUrl(HeadersInterceptor.PRODUCT) : PRODUCT; //正式地址
+
+    private static final String USER_BEHAVIOR = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+            // "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    public static final String BASE_URL_USER_BEHAVIOR = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.USER)
+    ) ? getBaseUrl(HeadersInterceptor.USER_BEHAVIOR) : USER_BEHAVIOR; //正式地址
+
     // 激活认证接口地址
     public static String BASE_URL_ACTIVATE = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .ACTIVATE)) ? getBaseUrl(HeadersInterceptor.ACTIVATE) : "https://terminal.cloud.ottcn" +
             ".com/"; //激活接口
+    //会员中心首页推荐位页面ID
+    public static String ID_PAGE_MEMBER = getBaseUrl(HeadersInterceptor.PAGE_MEMBER);
+    //热门收藏页面ID
+    public static String ID_PAGE_COLLECTION = getBaseUrl(HeadersInterceptor.PAGE_COLLECTION);
+    //订阅页面ID
+    public static String ID_PAGE_SUBSCRIPTION = getBaseUrl(HeadersInterceptor.PAGE_SUBSCRIPTION);
+    //猜你喜欢页面ID
+    public static String ID_PAGE_USERCENTER = getBaseUrl(HeadersInterceptor.PAGE_USERCENTER);
+    //使用帮助html地址
+    public static String HTML_PATH_HELPER = getBaseUrl(HeadersInterceptor.HTML_PATH_HELPER);
+    //关于我们html地址
+    public static String HTML_PATH_ABOUT_US = getBaseUrl(HeadersInterceptor.HTML_PATH_ABOUT_US);
+    //会员协议html地址
+    public static String HTML_PATH_MEMBER_PROTOCOL = getBaseUrl(HeadersInterceptor.HTML_PATH_MEMBER_PROTOCOL);
+    //会员中心跳转会员片库params值
+    public static String MEMBER_CENTER_PARAMS = getBaseUrl(HeadersInterceptor.HTML_PATH_MEMBER_PROTOCOL);
+
     public static boolean isInitStatus = true;
     public static String UUID_KEY = "uuid";
     public static String UUID;
@@ -283,4 +331,17 @@ public class Constant {
             LogUtils.e("parse server address IOException" + e);
         }
     }
+
+    //用户中心
+    public static final String RESPONSE_TYPE = "device_code";
+    public static final String GRANT_TYPE_SMS = "sms_code";
+    public static final String GRANT_TYPE_REFRESH = "refresh_code";
+    public static final String CLIENT_ID = "1";
+    public static String Authorization;
+    public static final String USER_ID = "USER_ID";
+
+    public static final String UC_HISTORY = "历史记录";
+    public static final String UC_FOLLOW = "关注";
+    public static final String UC_SUBSCRIBE = "订阅";
+    public static final String UC_COLLECTION = "收藏";
 }

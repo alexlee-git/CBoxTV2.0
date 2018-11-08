@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.mainPage.model;
 
+import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 
 import java.util.ArrayList;
@@ -146,7 +147,7 @@ public class ModuleInfoResult {
         }
 
         for(ModuleItem item : data){
-            List<SubContent> datas = item.getDatas();
+            List<Program> datas = item.getDatas();
             if(datas != null && datas.size() > 0){
 //                List<ExtendAttr> extendAttr = datas.get(0).getExtendAttr();
 //                if(extendAttr != null && extendAttr.size() > 0){
