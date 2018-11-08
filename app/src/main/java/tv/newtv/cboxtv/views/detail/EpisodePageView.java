@@ -82,7 +82,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private String mVideoType;
     private TextView mTitleView;
     private TextView mUpTitle;
-    private Content mContent;
 
     public EpisodePageView(Context context) {
         this(context, null);
@@ -495,7 +494,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     if (!TextUtils.isEmpty(mContentList.get(i).getRecentNum())){
                         mUpTitle.setText("已更新"+mContentList.get(i).getRecentNum()+"集");
                     }else {
-                        mUpTitle.setText(mContent.getSeriesSum()+"集全");
+                        mUpTitle.setText(seriesContent.getSeriesSum()+"集全");
                     }
                 }
             }

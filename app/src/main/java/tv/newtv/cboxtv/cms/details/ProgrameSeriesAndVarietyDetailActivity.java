@@ -117,7 +117,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                             .TYPE_VARIETY_SHOW,
                                     content.getVideoType(),
                                     getSupportFragmentManager(),
-                                    getContentUUID(), null,info);
+                                    getContentUUID(), null);
                         } else {
                             ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ProgrameSeriesAndVarietyDetailActivity.this.finish();

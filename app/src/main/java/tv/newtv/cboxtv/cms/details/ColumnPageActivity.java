@@ -133,7 +133,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                             playListView.setContentUUID(info,EpisodeHelper.TYPE_COLUMN_DETAIL,
                                     info.getVideoType(),
                                     getSupportFragmentManager(),
-                                    getContentUUID(), null, info);
+                                    getContentUUID(), null);
                             if (sameType != null) {
                                 sameType.setContentUUID(SuggestView.TYPE_COLUMN_SUGGEST, info,
                                         null);

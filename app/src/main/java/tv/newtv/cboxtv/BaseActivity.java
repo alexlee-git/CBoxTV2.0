@@ -5,15 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
@@ -28,16 +25,16 @@ import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import java.util.HashMap;
 
+import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
-import tv.newtv.cboxtv.cms.details.ProgramDetailsPageActivity;
-import tv.newtv.cboxtv.cms.details.ProgramListDetailActiviy;
+import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
+import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
+import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
-
-import java.lang.annotation.Annotation;
 
 import tv.newtv.cboxtv.annotation.BuyGoodsInject;
 import tv.newtv.cboxtv.annotation.PopupAD;
@@ -270,9 +267,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
                 || clazz == SingleDetailPageActivity.class
                 || clazz == ProgramCollectionActivity.class
                 || clazz == SpecialActivity.class
-                || clazz == ProgramListDetailActiviy.class
                 || clazz == PersonsDetailsActivityNew.class
-                || clazz == ProgramDetailsPageActivity.class
                 || clazz == ListPageActivity.class) {
             return true;
         }
