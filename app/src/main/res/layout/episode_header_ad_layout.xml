@@ -37,7 +37,6 @@
         android:layout_marginLeft="@dimen/width_6px"
         android:layout_marginStart="@dimen/width_6px"
         android:layout_marginTop="@dimen/height_47px"
-        android:text="已更新X集"
         android:layout_toEndOf="@id/id_title"
         android:layout_toRightOf="@id/id_title"
         android:includeFontPadding="false"/>

@@ -55,11 +55,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private ContentContract.Presenter mContentPresenter;
     private int layoutId;
 
-    @Override
-    protected void FocusToTop() {
-        Toast.makeText(getApplicationContext(), "ProgrameSeriesAndVarietyDetailActivity 到顶了",
-                Toast.LENGTH_LONG).show();
-    }
 
 
     @Override

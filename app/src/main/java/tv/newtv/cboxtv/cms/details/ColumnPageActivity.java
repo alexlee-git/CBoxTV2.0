@@ -5,11 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -59,12 +61,6 @@ public class ColumnPageActivity extends DetailPageActivity {
     private int currentIndex = -1;
 
     @Override
-    protected void FocusToTop() {
-        Toast.makeText(getApplicationContext(), "ColumnPageActivity 到顶了",
-                Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void prepareMediaPlayer() {
         super.prepareMediaPlayer();
 
@@ -93,6 +89,21 @@ public class ColumnPageActivity extends DetailPageActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_column_page);
+        final LinearLayout upTop = findViewById(R.id.up_top);
+        if (fromOuter) {
+            new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    upTop.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onFinish() {
+                    upTop.setVisibility(View.GONE);
+                }
+            }.start();
+        }
+
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
 
@@ -123,7 +134,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                             playListView.setContentUUID(EpisodeHelper.TYPE_COLUMN_DETAIL,
                                     info.getVideoType(),
                                     getSupportFragmentManager(),
-                                    getContentUUID(), null,info);
+                                    getContentUUID(), null, info);
                             if (sameType != null) {
                                 sameType.setContentUUID(SuggestView.TYPE_COLUMN_SUGGEST, info,
                                         null);
@@ -206,8 +217,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                                 break;
 
                             case R.id.full_screen:
-                                if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                {//判断距离上次点击小于2秒
+                                if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen(ColumnPageActivity.this);
                                 }

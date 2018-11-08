@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +55,9 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.adapter.ColumnDetailsAdapter;
+
 import com.newtv.libs.bean.VideoPlayInfo;
+
 import tv.newtv.cboxtv.cms.details.view.VerticallRecyclerView;
 import tv.newtv.cboxtv.cms.listPage.model.ScreenInfo;
 import tv.newtv.cboxtv.cms.net.NetClient;
@@ -65,9 +69,11 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
@@ -123,6 +129,9 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
     @BindView(R.id.column_detail_ad_img)
     RecycleImageView program_detail_ad_img;
 
+    @BindView(R.id.up_top)
+    LinearLayout upTop;
+
     private ColumnDetailsAdapter mAdapter;
     private Disposable mDisposable;
     private boolean isCollect = false;
@@ -141,8 +150,21 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_column_detail);
         ButterKnife.bind(this);
-        adPresenter = new AdContract.AdPresenter(getApplicationContext(),this);
+        adPresenter = new AdContract.AdPresenter(getApplicationContext(), this);
         mCollectIv.setBackgroundResource(R.drawable.icon_details_uncollect_btn);
+        if (fromOuter) {
+            new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    upTop.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onFinish() {
+                    upTop.setVisibility(View.GONE);
+                }
+            }.start();
+        }
         init();
         initView();
         initData();
@@ -183,8 +205,8 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
 
         ADConfig.getInstance().setSeriesID(contentUUID);
         adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_BANNER, Constant
-                .AD_DETAILPAGE_BANNER,PlayerConfig.getInstance().getFirstChannelId(),PlayerConfig
-                .getInstance().getSecondChannelId(),PlayerConfig.getInstance().getTopicId(),null);
+                .AD_DETAILPAGE_BANNER, PlayerConfig.getInstance().getFirstChannelId(), PlayerConfig
+                .getInstance().getSecondChannelId(), PlayerConfig.getInstance().getTopicId(), null);
         //获取广告
         leftUUID = contentUUID.substring(0, 2);
         rightUUID = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
@@ -433,7 +455,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
                                 @Override
                                 public void run() {
                                     isCollect = false;
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"1,"+contentUuId);
+                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "1," + contentUuId);
                                     mCollectIv.setImageResource(R.drawable.icon_details_uncollect_btn);
                                     Toast.makeText(getApplicationContext(), "取消收藏成功", Toast.LENGTH_SHORT).show();
                                     RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -465,8 +487,8 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
                                 @Override
                                 public void run() {
                                     isCollect = true;
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0," +
-                                            ""+entity.getContentID());
+                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT, "0," +
+                                            "" + entity.getContentID());
                                     mCollectIv.setImageResource(R.drawable.icon_details_collect_btn);
                                     Toast.makeText(getApplicationContext(), R.string.collect_success, Toast.LENGTH_SHORT).show();
                                     RxBus.get().post(Constant.UPDATE_UC_DATA, true);
@@ -513,7 +535,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
             case R.id.btn_detail_big_screen:
                 mPlayPosition = mVideoView.getCurrentPosition();
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(this, dataInfo,
-                        mPlayPosition,true);
+                        mPlayPosition, true);
                 break;
             case R.id.btn_detail_collect:
                 if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
@@ -534,7 +556,7 @@ public class ProgramDetailsPageActivity extends BaseActivity implements
             case R.id.iv_detail_video:
                 mPlayPosition = mVideoView.getCurrentPosition();
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(this, dataInfo,
-                        mPlayPosition,true);
+                        mPlayPosition, true);
                 break;
         }
     }
