@@ -79,11 +79,9 @@ public class HistoryActivity extends FragmentActivity implements
                 if (mCollectBean != null && mCollectBean.size() != 0) {
                     mAdapter.appendToList(mCollectBean);
                     menuTipView.setTextColor(Color.WHITE);
-                }
-                if(mCollectBean==null||mCollectBean.size()==0){
+                }else{
                     menuTipView.setTextColor(Color.GRAY);
                 }
-                mAdapter.notifyDataSetChanged();
             }
             return false;
         }

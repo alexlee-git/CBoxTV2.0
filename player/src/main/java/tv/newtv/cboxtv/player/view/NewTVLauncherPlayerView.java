@@ -159,7 +159,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         @Override
         public void onVideoBufferStart(String typeString) {
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
-            if (!mIsLoading){
+            if (!mIsLoading) {
                 startLoading();
             }
         }
@@ -676,38 +676,38 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
         mProgramSeriesInfo = programSeriesInfo;
 
-        List<SubContent> programsInfos = programSeriesInfo.getData();
-        if (programsInfos != null && programsInfos.size() > index) {
-            SubContent program = programsInfos.get(index);
-            if (mNewTVLauncherPlayerSeekbar != null) {
-                boolean hasMutipleProgram = programsInfos.size() > 1;
-                mNewTVLauncherPlayerSeekbar.setProgramName(program.getTitle(),
-                        hasMutipleProgram);
-            }
+        if (programSeriesInfo != null) {
+            List<SubContent> programsInfos = programSeriesInfo.getData();
+            if (programsInfos != null && programsInfos.size() > index) {
+                SubContent program = programsInfos.get(index);
+                if (mNewTVLauncherPlayerSeekbar != null) {
+                    boolean hasMutipleProgram = programsInfos.size() > 1;
+                    mNewTVLauncherPlayerSeekbar.setProgramName(program.getTitle(),
+                            hasMutipleProgram);
+                }
 
-            if (mNewTVLauncherPlayerSeekbar != null) {
-                mNewTVLauncherPlayerSeekbar.setProgramName(program.getTitle(),
-                        false);
-            }
+                if (mNewTVLauncherPlayerSeekbar != null) {
+                    mNewTVLauncherPlayerSeekbar.setProgramName(program.getTitle(),
+                            false);
+                }
 
-            if (mLoading != null) {
-                mLoading.setProgramName(program.getTitle());
-            }
+                if (mLoading != null) {
+                    mLoading.setProgramName(program.getTitle());
+                }
 
-            playIndex(index);
-
-            if(programSeriesInfo !=null && program !=null){
+                playIndex(index);
                 String seriesUUID = programSeriesInfo.getContentUUID();
                 mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
+
+
+                startLoading();
+                isNeedStartActivity(isNeedStartActivity, programSeriesInfo, index);
+            } else {
+                LogUtils.i(TAG, "playVideo: programsInfos == null || programsInfos.size() <= index");
+                onError("-8", "播放信息为空");
             }
-
-
-            startLoading();
-            isNeedStartActivity(isNeedStartActivity, programSeriesInfo, index);
-        } else {
-            LogUtils.i(TAG, "playVideo: programsInfos == null || programsInfos.size() <= index");
-            onError("-8", "播放信息为空");
         }
+
 
     }
 
@@ -720,6 +720,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * position 从什么位置开始播放
      * */
     private LiveListener mLiveListener;
+
     public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity, LiveListener listener) {
         unshowLoadBack = false;
         mLiveListener = listener;
@@ -747,7 +748,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
         videoDataStruct.setDeviceID(Constant.UUID);
         videoDataStruct.setKey(liveInfo.getKey());
-        if(liveInfo !=null){
+        if (liveInfo != null) {
             videoDataStruct.setContentUUID(liveInfo.getContentUUID());
         }
         mNewTVLauncherPlayer.playAlive(getContext(), mPlayerFrameLayout, liveInfo,
@@ -1374,12 +1375,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public void onChange(String current, String start, String end, boolean isComplete) {
         if (isComplete) {
             release();
-            if(mLiveListener != null){
+            if (mLiveListener != null) {
                 mLiveListener.onComplete();
             }
         }
-        if(mLiveListener!=null){
-            mLiveListener.onTimeChange(current,end);
+        if (mLiveListener != null) {
+            mLiveListener.onTimeChange(current, end);
         }
 
     }
