@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.special.adapter.MedalAdapter;
 import tv.newtv.cboxtv.views.CommonSpacesItemDecoration;
 
 /**
@@ -30,7 +29,7 @@ public class MedalFragment extends BaseSpecialContentFragment{
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

@@ -625,7 +625,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     if (!TextUtils.isEmpty(mInfo.getLvID())) {
                         mPresenter.getContent(mInfo.getLvID(), false, new ContentContract.View() {
                             @Override
-                            public void onContentResult(@Nullable Content content) {
+                            public void onContentResult(@NotNull String uuid, @org.jetbrains
+                                    .annotations.Nullable Content content) {
                                 if (content != null) {
                                     String playUrl = content.getPlayUrl();
                                     liveInfo.setLiveUrl(playUrl);
@@ -637,8 +638,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             }
 
                             @Override
-                            public void onSubContentResult(@org.jetbrains.annotations.Nullable
-                                                                   ArrayList<SubContent> result) {
+                            public void onSubContentResult(@NotNull String uuid, @org.jetbrains
+                                    .annotations.Nullable
+                                    ArrayList<SubContent> result) {
                             }
 
                             @Override
@@ -766,13 +768,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
         mBuilder.infoResult.onResult(content);
         setProgramSeriesInfo(content);
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
 
     }
 

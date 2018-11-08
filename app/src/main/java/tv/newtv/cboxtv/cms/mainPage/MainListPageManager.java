@@ -159,26 +159,27 @@ public class MainListPageManager{
 
         if (defaultPageIdx == 0 && mSharedPreferences != null) {
             currentFocus = mSharedPreferences.getString("page-defaultFocus", "");
-            int count = mNavInfos.size();
-            boolean contain = false;
-            for (int index = 0; index < count; index++) {
-                Nav navInfo = mNavInfos.get(index);
-
-                if (currentFocus.equals(navInfo.getId())) {
-                    defaultPageIdx = index;
-                    contain = true;
-                    break;
-                }
-
-//                if (mNavListPageInfoResult.getDefaultFocus().equals(navInfo.getContentID())) {
-//                    defaultPageIdx = index;
-//                }
-            }
-//            if (!contain) currentFocus = mNavListPageInfoResult.getDefaultFocus();
             if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
                 Nav navInfo = mNavInfos.get(Navbarfoused);
                 currentFocus = navInfo.getId();
             }
+            int count = mNavInfos.size();
+            for (int index = 0; index < count; index++) {
+                Nav navInfo = mNavInfos.get(index);
+
+                if(TextUtils.isEmpty(currentFocus)) {
+                    if ("1".equals(navInfo.isFocus())) {
+                        defaultPageIdx = index;
+                        currentFocus = navInfo.getId();
+                    }
+                }else{
+                    if (currentFocus.equals(navInfo.getId())) {
+                        defaultPageIdx = index;
+                        break;
+                    }
+                }
+            }
+
         }
 
         PlayerConfig.getInstance().setSecondChannelId(currentFocus);

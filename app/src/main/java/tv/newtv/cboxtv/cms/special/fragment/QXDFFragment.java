@@ -72,7 +72,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     @Override
-    protected void onItemContentResult(Content info) {
+    protected void onItemContentResult(String uuid, Content info) {
         mProgramSeriesInfo = info;
         if (info != null) {
             Log.e("info", info.toString());

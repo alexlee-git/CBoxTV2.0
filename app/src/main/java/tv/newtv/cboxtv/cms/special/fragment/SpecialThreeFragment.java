@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
-import com.newtv.cms.bean.Program;
 import com.newtv.libs.Constant;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.special.viewholder.SpecialUniversalAdapter;
 
@@ -41,7 +38,7 @@ public class SpecialThreeFragment extends BaseSpecialContentFragment {
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

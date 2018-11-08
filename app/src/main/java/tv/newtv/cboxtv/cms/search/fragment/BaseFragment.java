@@ -228,6 +228,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             mIsLoading = false;
             mSearchPresenter.stop();
             inputKeyChange();
+            mIsLoading = false;
             return;
         }
         if (!TextUtils.equals(currentkey, key)) {

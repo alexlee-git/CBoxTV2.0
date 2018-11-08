@@ -198,7 +198,6 @@ class AdContract {
 
             if (ad == null) {
                 callback?.let {
-
                     if (it is View) {
                         it.showAd(null, null, extends)
                     } else if (it is Callback) {

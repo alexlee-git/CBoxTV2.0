@@ -101,7 +101,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     }
 
     @Override
-    protected void onItemContentResult(Content info) {
+    protected void onItemContentResult(String uuid, Content info) {
         if (info != null) {
             mProgramSeriesInfo = info;
             Log.e("info", info.toString());

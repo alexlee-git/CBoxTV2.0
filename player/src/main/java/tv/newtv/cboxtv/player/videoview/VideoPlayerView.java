@@ -48,7 +48,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack;
 
-    private Boolean mOuterControl;
+    private Boolean mOuterControl = false;
     private TextView videoTitle;
     private ImageView full_screen;
     private boolean isEnd;

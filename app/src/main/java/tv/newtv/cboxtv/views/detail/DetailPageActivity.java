@@ -100,7 +100,7 @@ public abstract class DetailPageActivity extends BaseActivity {
             return true;
         }
 
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if(event.getAction() == KeyEvent.ACTION_UP){
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                 if (isADEntry) {
                     Intent intent = new Intent();
@@ -112,6 +112,9 @@ public abstract class DetailPageActivity extends BaseActivity {
                 finish();
                 return super.dispatchKeyEvent(event);
             }
+        }
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             ViewGroup viewGroup = findViewById(R.id.root_view);
             if (viewGroup == null) {
                 return super.dispatchKeyEvent(event);

@@ -3,6 +3,7 @@ package com.newtv.libs.ad;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -67,18 +68,18 @@ public class ADHelper {
         return instance;
     }
 
-    public AD parseADString(Context context, String jsonResult) {
+    public @Nullable
+    AD parseADString(Context context, String jsonResult) {
 
-        AD result = null;
-        if (!TextUtils.isEmpty(jsonResult)){
-         return result;
+        if (TextUtils.isEmpty(jsonResult)){
+            return null;
         }
         List<AdInfos> adInfosList = JsonParse.parseAdInfo(jsonResult);
 
         if (adInfosList == null || adInfosList.size() == 0 || adInfosList.get(0) == null ||
                 adInfosList.get(0).m_info == null || adInfosList.get(0).m_info.size() ==
                 0) {
-            return result;
+            return null;
         }
         AdInfo adInfo = adInfosList.get(0).m_info.get(0);
         if (adInfo == null || adInfo.m_material == null || adInfo.m_material
@@ -87,7 +88,7 @@ public class ADHelper {
         }
         List<MaterialInfo> materialInfosList = adInfo.m_material;
         int adTime = 0;
-        result = new AD();
+        AD result = new AD();
         final List<AD.ADItem> paths = new ArrayList<>();
 
         for (final MaterialInfo materialItem : materialInfosList) {
