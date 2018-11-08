@@ -529,7 +529,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
         if (mPlayerFrameLayout != null) {
             mPlayerFrameLayout.updateTimeTextView(getResources().getDimensionPixelSize
-                    (isFullScreen ? R.dimen.height_22px : R.dimen.height_12px));
+                    (isFullScreen ? R.dimen.height_20px : R.dimen.height_10px));
         }
         if (mLoading != null) {
             mLoading.updatePropertys(getResources().getDimensionPixelSize(isFullScreen ? R.dimen
