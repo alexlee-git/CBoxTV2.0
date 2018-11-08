@@ -69,7 +69,7 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
                     mHotRecommend.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "---notifyKeywords:Exception--" + e.toString());
+                Log.e(TAG, "---notifyKeywords:Exception--" + e.getMessage());
             }
         }
     };
@@ -193,9 +193,11 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
                     //TODO keyboard request focus
                     mSearchViewKeyboard.getLastFocusView().requestFocus();
                     mSearchResult.showLeftBackView(false);
+                    mSearchResult.resetLoadingLayout(false);
                 } else {
                     //TODO search result view request focus
                     mSearchResult.showLeftBackView(true);
+                    mSearchResult.resetLoadingLayout(true);
                     if (mSearchResult.getVisibility() == View.VISIBLE) {
                         if (!keyWordChange) {
                             mSearchResult.requestDefaultFocus();

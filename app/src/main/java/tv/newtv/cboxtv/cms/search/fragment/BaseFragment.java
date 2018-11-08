@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.search.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -57,6 +58,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     private SearchContract.Presenter mSearchPresenter;
     private boolean mIsLoading = false;
     private View mLoadingLayout;
+    private View mLoadingImg;
 
     public BaseFragment() {
         mSearchPresenter = new SearchContract.SearchPresenter(LauncherApplication.AppContext, this);
@@ -83,6 +85,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     @Override
     public void onItemClick(int position,SubContent subContent) {
         JumpUtil.detailsJumpActivity(getContext(),subContent.getContentType(),subContent.getContentID());
+//        ToastUtil.showToast(getContext(),"当前是第 ：" + position +"项");//测试使用
     }
 
     @Override
@@ -179,8 +182,9 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         titleText = mLabelView.findViewWithTag("title_text");
     }
 
-    public void setLoadingLayout(View loadingLayout){
+    public void setLoadingLayout(View loadingLayout,View loadingImg){
         mLoadingLayout = loadingLayout;
+        mLoadingImg = loadingImg;
     }
 
     public void setLabelFocusView(View view) {
@@ -264,13 +268,25 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     @Override
     public void onLoading() {
         mIsLoading = true;
-        mLoadingLayout.setVisibility(View.VISIBLE);
+        startLoadingAni();
     }
 
     @Override
     public void loadingFinish() {
         mIsLoading = false;
+        stopLoadingAni();
+    }
+
+    private void startLoadingAni(){
+        AnimationDrawable mAni = (AnimationDrawable) mLoadingImg.getBackground();
+        mLoadingLayout.setVisibility(View.VISIBLE);
+        mAni.start();
+    }
+
+    private void stopLoadingAni(){
+        AnimationDrawable mAni = (AnimationDrawable) mLoadingImg.getBackground();
         mLoadingLayout.setVisibility(View.GONE);
+        mAni.stop();
     }
 
     @Override
