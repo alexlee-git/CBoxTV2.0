@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.screenList.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
 
     @Override
     public void onBindViewHolder(@NonNull final FirstLabelViewHolder labelViewHolder, final int i) {
+
+        if (!TextUtils.isEmpty(childBeans.get(i).getTitle()))
         labelViewHolder.textView.setText(childBeans.get(i).getTitle());
 
         labelViewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -50,12 +53,11 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     RxBus.get().post("labelId", childBeans.get(i));
-                    RxBus.get().post("firstLabelPosition",labelViewHolder.itemView);
+                    RxBus.get().post("labelRecordView",labelViewHolder.itemView);
 
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_select);
 
                 } else {
-                    labelViewHolder.textView.setBackgroundColor(0);
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_default);
 
                 }

@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.screenList.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 
 import com.newtv.libs.util.RxBus;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -42,19 +45,17 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull final SecondMenuViewHolder menuViewHolder, final int i) {
-
+        if (!TextUtils.isEmpty(list.get(i).getTitle()))
         menuViewHolder.textView.setText(list.get(i).getTitle());
+
         menuViewHolder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     RxBus.get().post("labelKey", dataBean);
                     RxBus.get().post("labelValue", list.get(i));
-                    RxBus.get().post("secondLabelPosition",menuViewHolder.itemView);
+                    RxBus.get().post("menuRecordView",menuViewHolder.itemView);
                     menuViewHolder.textView.setBackgroundResource(R.drawable.screen_list_select);
-
                 } else {
                     menuViewHolder.textView.setBackgroundResource(R.drawable.screen_list_default);
 

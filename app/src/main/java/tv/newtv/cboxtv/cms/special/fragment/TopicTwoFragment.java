@@ -107,7 +107,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             Log.e("info", info.toString());
             if (videoPlayerView != null) {
                 videoPlayerView.setSeriesInfo(info);
-                if (playIndex!=-1){
+                if (firstplayIndex!=-1){
                     videoPlayerView.playSingleOrSeries(playIndex, 0);
                 }else{
                     videoPlayerView.playSingleOrSeries(0, 0);
@@ -403,6 +403,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
 
         datas = moduleInfoResult.getData().get(0).getPrograms();
+        Log.d("TopicTwoFragment", "datas.size():" + datas.size());
 
         for (int i = 0; i < datas.size(); i++) {
             if (datas.get(i).getDefaultFocus() == 1) {
@@ -465,6 +466,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
 
         NewsAdapter refreshData(List<Program> datas) {
+            Log.d("NewsAdapter", "datas.size():" + datas.size());
             ModuleItems = datas;
             return this;
         }
@@ -500,12 +502,14 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 public void onFocusChange(View view, boolean hasFocus) {
 
                     if (hasFocus) {
+
                         if (isBottom(news_recycle)) {
                             down_arrow.setVisibility(View.VISIBLE);
                         } else {
                             down_arrow.setVisibility(View.INVISIBLE);
                         }
-                        if (moduleItem != null && !TextUtils.isEmpty(moduleItem.getSubTitle()) && moduleItem.getSubTitle().length() > 10) {
+                        if (moduleItem != null  &&!TextUtils.isEmpty( moduleItem.getSubTitle())&& moduleItem.getSubTitle().length() > 10) {
+
                             holder.news_title.setSingleLine(true);
                             holder.news_title.setText(moduleItem.getSubTitle());
                             holder.news_title.setSelected(true);
@@ -522,19 +526,21 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         holder.relative_fou.setBackgroundResource(0);
                         holder.news_title.setSelected(false);
                         if (moduleItem != null) {
-                            if (!TextUtils.isEmpty(moduleItem.getSubTitle())) {
+
+
+                            if (!TextUtils.isEmpty(moduleItem.getSubTitle())){
                                 if (moduleItem.getSubTitle().length() > 30) {
                                     holder.news_title.setText(moduleItem.getSubTitle().substring(0,
                                             30));
                                     holder.news_title.setSingleLine(false);
                                     holder.news_title.setMaxLines(2);
-
                                 } else {
                                     holder.news_title.setText(moduleItem.getSubTitle());
                                 }
                             }
 
-                        }
+                            }
+
 
                     }
                 }
@@ -578,7 +584,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         }
                         final Program moduleItem = getItem(holder.getAdapterPosition());
                         if (moduleItem != null) {
-                            if (TextUtils.isEmpty(moduleItem.getSubTitle())) {
+                            if (!TextUtils.isEmpty(moduleItem.getSubTitle())) {
                                 if (moduleItem.getSubTitle().length() > 15) {
                                     title.setText(moduleItem.getSubTitle().substring(0, 15));
                                     title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
@@ -595,7 +601,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                                 }
                             }
 
-                            currentUUID = moduleItem.getContentId();
+                            currentUUID = moduleItem.getL_id();
                             onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
                             currentIndex = holder.getAdapterPosition();
                             onItemAction.onItemClick(moduleItem, holder.getAdapterPosition());
@@ -605,22 +611,25 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
                 }
             });
-            if (moduleItem != null && !TextUtils.isEmpty(moduleItem.getSubTitle())) {
-                if (holder.itemView.hasFocus()) {
+            if (moduleItem != null ) {
+                if (holder.itemView.hasFocus()&&!TextUtils.isEmpty(moduleItem.getSubTitle())) {
                     holder.news_title.setSingleLine(true);
                     holder.news_title.setText(moduleItem.getSubTitle());
                 } else {
-                    if (moduleItem.getSubTitle().length() > 30) {
-                        holder.news_title.setSingleLine(false);
-                        holder.news_title.setMaxLines(2);
-                        holder.news_title.setText(moduleItem.getSubTitle().substring(0, 30));
-                    } else {
-                        holder.news_title.setText(moduleItem.getSubTitle());
+                    if (!TextUtils.isEmpty(moduleItem.getSubTitle())){
+                        if (moduleItem.getSubTitle().length() > 30) {
+                            holder.news_title.setSingleLine(false);
+                            holder.news_title.setMaxLines(2);
+                            holder.news_title.setText(moduleItem.getSubTitle().substring(0, 30));
+                        } else {
+                            holder.news_title.setText(moduleItem.getSubTitle());
+                        }
                     }
+
 
                 }
 
-                if (TextUtils.equals(moduleItem.getContentId(), currentUUID)) {
+                if (TextUtils.equals(moduleItem.getL_id(), currentUUID)) {
                     holder.isPlaying.setVisibility(View.VISIBLE);
                 } else {
                     holder.isPlaying.setVisibility(View.GONE);
