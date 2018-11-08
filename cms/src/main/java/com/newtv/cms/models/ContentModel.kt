@@ -47,6 +47,7 @@ internal class ContentModel : BaseModel(), IContent {
     override fun getContentInfo(appkey: String,
                                 channelId: String,
                                 contentId: String,
+                                lock:Boolean,
                                 observer: DataObserver<ModelResult<Content>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
             observer.onError("AppKey or ChannelCode is Empty")
@@ -62,7 +63,7 @@ internal class ContentModel : BaseModel(), IContent {
                 .content.getInfo(appkey,
                 channelId, left,
                 right,
-                contentId), object : TypeToken<ModelResult<Content>>() {}.type)
+                contentId), object : TypeToken<ModelResult<Content>>() {}.type,lock)
         executor.observer(observer)
                 .execute()
         return executor.getID()

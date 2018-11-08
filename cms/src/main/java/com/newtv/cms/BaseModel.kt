@@ -20,7 +20,9 @@ internal abstract class BaseModel {
     fun stop() {
         synchronized(executors) {
             for (iterator: MutableMap.MutableEntry<Long, Executor<*>> in executors.iterator()) {
-                iterator.value.cancel()
+                if(!iterator.value.lock) {
+                    iterator.value.cancel()
+                }
             }
         }
     }
@@ -40,14 +42,14 @@ internal abstract class BaseModel {
 
     fun destroy() {
         stop()
-        executors.clear()
     }
 
     abstract fun getType(): String
 
-    fun <T> buildExecutor(observable: Observable<ResponseBody>, type: Type?): Executor<T> {
+    fun <T> buildExecutor(observable: Observable<ResponseBody>, type: Type?, lock: Boolean = false):
+            Executor<T> {
         synchronized(executors) {
-            val executor: Executor<T> = Executor(observable, type, getType(), object : Executor
+            val executor: Executor<T> = Executor(observable, type, getType(),lock, object : Executor
             .IExecutor<T> {
                 override fun onCancel(executor: Executor<T>) {
                     executors.remove(executor.getID())

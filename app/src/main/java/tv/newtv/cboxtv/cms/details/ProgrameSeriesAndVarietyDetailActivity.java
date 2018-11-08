@@ -108,6 +108,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                         .DB_TYPE_COLLECT))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
+                .autoGetSubContents()
                 .SetClickableIds(R.id.full_screen, R.id.add)
                 .SetContentUUID(getContentUUID())
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
@@ -147,8 +148,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                     public void onPlayerClick(VideoPlayerView videoPlayerView) {
                         if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
-                            videoPlayerView.EnterFullScreen(ProgrameSeriesAndVarietyDetailActivity
-                                    .this, false);
+                            if (videoPlayerView != null){
+                                videoPlayerView.EnterFullScreen(ProgrameSeriesAndVarietyDetailActivity
+                                        .this, false);
+                            }
                         }
                     }
 
@@ -202,11 +205,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
-                if (seriesInfo != null) {
-                    ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
-                    pageContent.setData(contents);
-                    headPlayerView.setProgramSeriesInfo(pageContent);
-                }
+//                if (seriesInfo != null) {
+//                    ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
+//                    pageContent.setData(contents);
+//                    headPlayerView.setProgramSeriesInfo(pageContent);
+//                }
             }
 
             @Override

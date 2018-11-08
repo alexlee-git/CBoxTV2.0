@@ -24,7 +24,8 @@ public class DeviceUtil {
     public static final String FEILIERDE = "feilierde";
     public static final String AILANG = "ailang"; //爱浪
     public static final String XUNMATOUYINGYI = "xunmatouyingyi"; //迅码投影仪
-
+    public static final String VENDORTEST = "vendortest"; //厂家测试
+    public static final String YSTEN_VOICE = "ysten_voice"; //易视腾
     @SuppressWarnings("ConstantConditions")
     public static boolean isSelfDevice() {
         if (BuildConfig.DEBUG) {
@@ -57,6 +58,14 @@ public class DeviceUtil {
             String fvid = "unknown";
             String vid = SystemPropertiesProxy.getProperty("hw.yunos.vendorID", "");
             if (!TextUtils.isEmpty(vid)&&!fvid.equalsIgnoreCase(vid)){
+                return true;
+            }
+        } else if (BuildConfig.FLAVOR.equals(VENDORTEST)) {
+            return true;
+        } else if (BuildConfig.FLAVOR.equals(YSTEN_VOICE)) {
+            String fvid = "ysten";
+            String vid = SystemPropertiesProxy.getProperty("ro.ftserialno", "");
+            if (!TextUtils.isEmpty(vid)&&fvid.equalsIgnoreCase(vid)){
                 return true;
             }
         }

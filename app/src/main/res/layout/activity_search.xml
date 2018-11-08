@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/RelativeLayout"
-    android:layout_width="2576px"
+    android:layout_width="@dimen/width_2576px"
     android:layout_height="match_parent"
     tools:context="tv.newtv.cboxtv.cms.search.view.SearchActivity"
     android:clipChildren="false"

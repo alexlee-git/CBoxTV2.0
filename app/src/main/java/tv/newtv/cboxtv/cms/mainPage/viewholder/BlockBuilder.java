@@ -674,7 +674,7 @@ class BlockBuilder {
         int pxSize2 = mContext.getResources().getDimensionPixelSize(R.dimen.height_40px);
 
         if (!TextUtils.isEmpty(title) && !TextUtils.equals(title, "null")) {
-            if (!TextUtils.equals(layoutCode, "layout_005") && !TextUtils.equals(layoutCode,
+            if (!TextUtils.equals(layoutCode, "layout_030")&&!TextUtils.equals(layoutCode, "layout_005") && !TextUtils.equals(layoutCode,
                     "layout_008")) {
                 AutoSizeTextView titleWidget = (AutoSizeTextView) framelayout.getTag(R.id
                         .tag_title);

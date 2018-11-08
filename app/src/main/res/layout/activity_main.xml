@@ -5,7 +5,6 @@
                 android:layout_height="match_parent">
 
     <include
-        android:visibility="gone"
         layout="@layout/left_top_logo"/>
     <!-- 导航区 -->
 

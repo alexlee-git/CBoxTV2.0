@@ -106,7 +106,7 @@ public class PosterViewGroup extends FrameLayout{
         mPosterTitle.setVisibility(mTitleVisible);
         mPosterTitle.setGravity(mTitleGravity);
         mPosterTitle.setTag(getTag() + "_title");
-        mPosterTitle.setText(R.string.app_name);
+        //mPosterTitle.setText(R.string.app_name);
         addView(mPosterTitle);
 
         mPosterImage = new RecycleImageView(context);
@@ -120,35 +120,35 @@ public class PosterViewGroup extends FrameLayout{
         LayoutParams leftTopAngleParams = new LayoutParams(mAngleLeftTopWidth,mAngleLeftTopHeight);
         mPosterLeftTopAngle.setLayoutParams(leftTopAngleParams);
         mPosterLeftTopAngle.setTag(getTag() + "_angle_left_top");
-        mPosterLeftTopAngle.setImageResource(android.R.color.holo_green_light);
+        mPosterLeftTopAngle.setImageResource(R.color.color_transparent);
         addView(mPosterLeftTopAngle);
 
         mPosterRightTopAngle = new ImageView(context);
         LayoutParams rightTopAngleParams = new LayoutParams(mAngleRightTopWidth,mAngleRightTopHeight);
         mPosterRightTopAngle.setLayoutParams(rightTopAngleParams);
         mPosterRightTopAngle.setTag(getTag() + "_angle_right_top");
-        mPosterRightTopAngle.setImageResource(android.R.color.holo_green_light);
+        mPosterRightTopAngle.setImageResource(R.color.color_transparent);
         addView(mPosterRightTopAngle);
 
         mPosterLeftBottomAngleMainTitle = new TextView(context);
         LayoutParams leftBottomAngleMainTitleParams = new LayoutParams(mAngleTitleWidth,mAngleTitleHeight);
         mPosterLeftBottomAngleMainTitle.setLayoutParams(leftBottomAngleMainTitleParams);
         mPosterLeftBottomAngleMainTitle.setTag(getTag() + "_angle_title");
-        mPosterLeftBottomAngleMainTitle.setText(R.string.app_name);
+        //mPosterLeftBottomAngleMainTitle.setText(R.string.app_name);
         addView(mPosterLeftBottomAngleMainTitle);
 
         mPosterLeftBottomAngleSubTitle = new TextView(context);
         LayoutParams leftBottomAngleSubTitleParams = new LayoutParams(mAngleSubTitleWidth,mAngleSubTitleHeight);
         mPosterLeftBottomAngleSubTitle.setLayoutParams(leftBottomAngleSubTitleParams);
         mPosterLeftBottomAngleSubTitle.setTag(getTag() + "_angle_sub_title");
-        mPosterLeftBottomAngleSubTitle.setText(R.string.app_name);
+        //mPosterLeftBottomAngleSubTitle.setText(R.string.app_name);
         addView(mPosterLeftBottomAngleSubTitle);
 
         mPosterRightBottomAngle = new ImageView(context);
         LayoutParams rightBottomAngleParams = new LayoutParams(mAngleRightBottomWidth,mAngleRightBottomHeight);
         mPosterRightBottomAngle.setLayoutParams(rightBottomAngleParams);
         mPosterRightBottomAngle.setTag(getTag() + "_angle_right_bottom");
-        mPosterRightBottomAngle.setImageResource(android.R.color.holo_green_light);
+        mPosterRightBottomAngle.setImageResource(R.color.color_transparent);
         addView(mPosterRightBottomAngle);
 
     }

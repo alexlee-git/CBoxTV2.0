@@ -75,6 +75,17 @@ android {
     }
 
     productFlavors {
+        ysten_voice {
+
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"50000113\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "50000113"
+            ]
+        }
         xunmatouyingyi {
 
             buildConfigField "int", "LOG_DEBUG", "5"
@@ -180,6 +191,17 @@ android {
             manifestPlaceholders = [
                     APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
                     CHANNEL_ID_VALUE: "600001"
+            ]
+        }
+
+        vendortest {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"60000101\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "60000101"
             ]
         }
     }

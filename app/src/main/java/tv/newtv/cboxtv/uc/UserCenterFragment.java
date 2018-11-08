@@ -275,6 +275,11 @@ public class UserCenterFragment extends BaseFragment implements OnRecycleItemCli
     }
 
     @Override
+    protected String getContentUUID() {
+        return contentId;
+    }
+
+    @Override
     public void onDestroy() {
         RxBus.get().unregister(Constant.UPDATE_UC_DATA, mUpdateDataObservable);
         super.onDestroy();

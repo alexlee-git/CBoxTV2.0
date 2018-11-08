@@ -8,7 +8,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -29,6 +28,7 @@ public class ResizeViewPager extends ViewPager {
     int lastHeight = 0;
     int currentPage = 0;
     boolean userResize = true;
+    private int margin;
     /**
      * 保存position与对于的View
      */
@@ -38,6 +38,9 @@ public class ResizeViewPager extends ViewPager {
 
     public ResizeViewPager(Context context) {
         super(context);
+        setClipChildren(false);
+        setClipToPadding(false);
+        margin = context.getResources().getDimensionPixelOffset(com.newtv.libs.R.dimen.height_10px);
     }
 
     public ResizeViewPager(Context context, AttributeSet attrs) {
@@ -114,6 +117,11 @@ public class ResizeViewPager extends ViewPager {
         return -1;
     }
 
+    /**
+     * 最后一页数据如果为单行时候，是否重置高度为单行高度
+     *
+     * @param value
+     */
     public void setUseResize(boolean value) {
         userResize = value;
     }
@@ -126,23 +134,20 @@ public class ResizeViewPager extends ViewPager {
                     mOnPageChange.onChange(beforeIndex, getCurrentItem(), getAdapter().getCount());
                 }
 
-                AbsEpisodeFragment episodeFragment = (AbsEpisodeFragment) ((FragmentStatePagerAdapter)
+                AbsEpisodeFragment episodeFragment = (AbsEpisodeFragment) (
+                        (FragmentStatePagerAdapter)
                         getAdapter())
                         .getItem(getCurrentItem());
 
                 if (getCurrentItem() > beforeIndex) {
                     //move to right
                     if (episodeFragment != null && this.hasFocus()) {
-                        View focusView = findFocus();
-                        //int index = getFocusIndex(focusView);
                         episodeFragment.requestFirst();
                     }
 
                 } else {
                     //move to left
                     if (episodeFragment != null && this.hasFocus()) {
-                        View focusView = findFocus();
-                        //int index = getFocusIndex(focusView);
                         episodeFragment.requestLast();
                     }
                 }
@@ -171,10 +176,11 @@ public class ResizeViewPager extends ViewPager {
             }
 
             if (getCurrentItem() == getAdapter().getCount() - 1) {
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(userResize ? lastHeight : height,
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec((userResize ? lastHeight : height)
+                                + margin,
                         MeasureSpec.EXACTLY);
             } else {
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(height,
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(height + margin,
                         MeasureSpec.EXACTLY);
             }
         }

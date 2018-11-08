@@ -13,7 +13,6 @@ import com.newtv.cms.bean.Time
  * 创建日期:          2018/10/11
  */
 internal class ClockModel : BaseModel(), IClock {
-
     override fun sync(observer: DataObserver<Time>): Long {
         val executor: Executor<Time> = buildExecutor(Request.clock.getClockData(), object :
                 TypeToken<Time>() {}

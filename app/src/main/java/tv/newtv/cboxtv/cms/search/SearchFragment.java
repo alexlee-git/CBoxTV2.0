@@ -58,6 +58,11 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
     }
 
     @Override
+    protected String getContentUUID() {
+        return contentId;
+    }
+
+    @Override
     public boolean isNoTopView() {
         View focus = null;
         if (contentView != null) {
@@ -73,9 +78,6 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
         if (bundle != null) {
             param = bundle.getString("nav_text");
             contentId = bundle.getString("content_id");
-
-            LogUtils.e("bundleData","searchFragment contentId : " + contentId);
-
             actionType = bundle.getString("actionType");
         }
         mPresenter = new PageContract.ContentPresenter(getContext(), this);
@@ -98,17 +100,6 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
 
             DisplayUtils.adjustView(getActivity(), imgSearch, focusView, R.dimen.width_17dp, R.dimen.height_16dp);
 
-//            int offSize = getResources().getDimensionPixelOffset(R.dimen.width_3dp);
-//            FrameLayout.LayoutParams posterPara = new FrameLayout.LayoutParams(imgSearch.getLayoutParams());
-//            posterPara.setMargins(0,0,0,0);
-//            imgSearch.setLayoutParams(posterPara);
-//            imgSearch.requestLayout();
-
-//            ViewGroup.LayoutParams focusPara = focusView.getLayoutParams();
-//            focusPara.width = posterPara.width+2*offSize;
-//            focusPara.height = posterPara.height+2*offSize;
-//            focusView.setLayoutParams(focusPara);
-//            focusView.requestLayout();
 
             mSearchView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -140,55 +131,6 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
         return mSearchView;
     }
 
-    /*
-    @Override
-    protected void lazyLoad() {
-        super.lazyLoad();
-        getData();
-    }
-    */
-
-//    private void getData() {
-//        NetClient.INSTANCE
-//                .getPageDataApi()
-//                .getPageData(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentId)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<ResponseBody>() {
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//                        mDisposable = d;
-//                    }
-//
-//                    @Override
-//                    public void onNext(ResponseBody value) {
-//                        try {
-//
-//                            String result = value.string();
-//                            ModuleInfoResult moduleData = ModuleUtils.getInstance()
-//                                    .parseJsonForModuleInfo(result);
-//                            changeBG(moduleData,contentId);
-//                            bindData(moduleData.getDatas());
-//                        } catch (Exception e) {
-//                            LogUtils.e(e);
-//                        }
-//
-//                        unSubscribe();
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        LogUtils.e(Constant.TAG, "-----requestPageDataFromServer---onError-----");
-//                        unSubscribe();
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//                        unSubscribe();
-//                    }
-//                });
-//    }
 
     private void bindData(List<Page> pageList) {
         mPrograms = pageList;

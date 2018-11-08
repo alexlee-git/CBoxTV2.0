@@ -55,7 +55,6 @@ public class ColumnPageActivity extends DetailPageActivity {
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
     private Content pageContent;
-    private boolean isADEntry = false;
     private int currentIndex = -1;
 
     @Override
@@ -97,7 +96,6 @@ public class ColumnPageActivity extends DetailPageActivity {
         scrollView = findViewById(R.id.root_view);
 
         String contentUUID = getIntent().getStringExtra("content_uuid");
-        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
@@ -111,6 +109,7 @@ public class ColumnPageActivity extends DetailPageActivity {
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.video_layout)
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView
                         .Builder.DB_TYPE_SUBSCRIP))
+                .autoGetSubContents()
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add)
@@ -220,9 +219,9 @@ public class ColumnPageActivity extends DetailPageActivity {
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
-                ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
-                pageContent.setData(contents);
-                headPlayerView.setProgramSeriesInfo(pageContent);
+//                ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
+//                pageContent.setData(contents);
+//                headPlayerView.setProgramSeriesInfo(pageContent);
             }
 
             @Override

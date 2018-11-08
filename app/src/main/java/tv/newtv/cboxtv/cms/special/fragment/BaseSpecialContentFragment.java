@@ -77,6 +77,10 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
         mPresenter.getContent(uuid,true,contentType);
     }
 
+    protected void getContent(String uuid){
+        mPresenter.getContent(uuid,true);
+    }
+
     @Override
     public void onContentResult(@org.jetbrains.annotations.Nullable Content content) {
         onItemContentResult(content);

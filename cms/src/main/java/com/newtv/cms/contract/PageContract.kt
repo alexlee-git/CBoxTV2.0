@@ -1,6 +1,7 @@
 package com.newtv.cms.contract
 
 import android.content.Context
+import android.text.TextUtils
 
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
@@ -19,6 +20,7 @@ import com.newtv.libs.Libs
  * 创建日期:          2018/9/27
  */
 class PageContract {
+
     interface View : ICmsView {
         fun onPageResult(page: List<Page>?)
     }
