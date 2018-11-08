@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
+import tv.newtv.cboxtv.cms.screenList.ScreenListActivity;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
@@ -102,7 +103,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onStop() {
         super.onStop();
         ActivityStacks.get().onStop(this);
-        if(buyGoodsBusiness != null){
+        if (buyGoodsBusiness != null) {
             buyGoodsBusiness.onStop();
         }
         FrontStage = false;
@@ -134,7 +135,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
 
         setBackgroundAD();
-        if(buyGoodsBusiness != null){
+        if (buyGoodsBusiness != null) {
             buyGoodsBusiness.onResume();
         }
     }
@@ -163,7 +164,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         if (adPopupWindow != null && adPopupWindow.isShowing()) {
             adPopupWindow.dismiss();
         }
-        if(buyGoodsBusiness != null){
+        if (buyGoodsBusiness != null) {
             buyGoodsBusiness.onDestroy();
         }
     }
@@ -207,8 +208,8 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!FrontStage) return true;
         if (isFullScreen()) {
-            if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
-                    && buyGoodsBusiness.dispatchKeyEvent(event)){
+            if (buyGoodsBusiness != null && buyGoodsBusiness.isShow()
+                    && buyGoodsBusiness.dispatchKeyEvent(event)) {
                 return true;
             }
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
@@ -268,7 +269,8 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
                 || clazz == ProgramCollectionActivity.class
                 || clazz == SpecialActivity.class
                 || clazz == PersonsDetailsActivityNew.class
-                || clazz == ListPageActivity.class) {
+                || clazz == ListPageActivity.class
+                || clazz == ScreenListActivity.class) {
             return true;
         }
         return false;
@@ -286,7 +288,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
         boolean isFullScreen = isFullScreen();
         if (fromOuter) {
-        checkIsTop(event);
+            checkIsTop(event);
         }
         return isFullScreen;
     }

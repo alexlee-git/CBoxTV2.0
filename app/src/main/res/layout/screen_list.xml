@@ -13,6 +13,10 @@
         android:layout_height="@dimen/height_110px"
         android:layout_marginLeft="@dimen/width_24px">
 
+        <include
+            layout="@layout/up_top_nav"
+            android:visibility="gone" />
+
         <View
             android:id="@+id/line"
             android:layout_width="@dimen/width_3dp"
@@ -89,8 +93,8 @@
             android:layout_width="@dimen/width_198px"
             android:layout_height="@dimen/height_32px"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/height_60px"
             android:layout_marginRight="@dimen/width_120px"
+            android:layout_marginTop="@dimen/height_60px"
             android:gravity="center"
             android:text=""
             android:textColor="#ffffffff" />
@@ -140,11 +144,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/width_86px"
-        android:paddingTop="@dimen/height_20px"
         android:layout_marginTop="@dimen/height_52px"
-        android:paddingRight="@dimen/width_100px"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:paddingRight="@dimen/width_100px"
+        android:paddingTop="@dimen/height_20px">
 
     </tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView>
 

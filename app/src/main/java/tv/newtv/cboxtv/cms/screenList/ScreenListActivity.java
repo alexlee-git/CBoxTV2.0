@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.screenList;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -27,6 +28,7 @@ import java.util.Map;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
 import tv.newtv.cboxtv.cms.screenList.adapter.FirstLabelAdapter;
@@ -46,7 +48,7 @@ import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
  * Created by 冯凯 on 2018/9/28.
  */
 
-public class ScreenListActivity extends AppCompatActivity implements LabelView {
+public class ScreenListActivity extends BaseActivity implements LabelView {
 
     private LabelPresenterImpl presenter;
     HorizontalRecyclerView labelRecyclerView;
@@ -229,6 +231,20 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
         year_text = findViewById(R.id.year_text);
         result_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
+        final LinearLayout upTop = findViewById(R.id.up_top);
+        if (fromOuter) {
+            new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    upTop.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onFinish() {
+                    upTop.setVisibility(View.GONE);
+                }
+            }.start();
+        }
 
         tab.setScaleValue(1.2f);
         tab.setTabTextColors(Color.parseColor("#ffffff"), Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
@@ -431,6 +447,9 @@ public class ScreenListActivity extends AppCompatActivity implements LabelView {
                     moveFlag--;
                     presenter.getLabelData();
                     return true;
+                }
+                if (tab.hasFocus()&&fromOuter){
+                    super.checkIsTop(event);
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
