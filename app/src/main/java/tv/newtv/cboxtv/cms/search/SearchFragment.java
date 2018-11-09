@@ -160,6 +160,16 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
 
     }
 
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
+
+    }
+
     class HotSearchAdapter extends RecyclerView.Adapter<HotSearchAdapter.MyViewHolder> {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

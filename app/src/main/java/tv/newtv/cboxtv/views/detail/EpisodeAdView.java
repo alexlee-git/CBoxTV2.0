@@ -41,6 +41,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
     private boolean isSuccess = false;
     private ADHelper.AD.ADItem adItem;
 
+
     public EpisodeAdView(Context context) {
         this(context, null);
     }
@@ -56,6 +57,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
 
         measuredHeight = (int) getResources().getDimension(R.dimen.height_386px);
         measuredWidth = (int) getResources().getDimension(R.dimen.width_1746px);
+
     }
 
     @Override
@@ -74,7 +76,6 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        getAd();
     }
 
     @Override
@@ -103,8 +104,10 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
         return false;
     }
 
-    private void getAd() {
-        mADPresenter = new AdContract.AdPresenter(getContext(), this);
+    public void requestAD() {
+        if(mADPresenter == null) {
+            mADPresenter = new AdContract.AdPresenter(getContext(), this);
+        }
         //获取广告
         mADPresenter.getAdByChannel(Constant.AD_DESK, Constant
                 .AD_DETAILPAGE_BANNER, Constant

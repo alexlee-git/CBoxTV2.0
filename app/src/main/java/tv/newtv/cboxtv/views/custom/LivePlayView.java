@@ -71,7 +71,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private int currentMode = MODE_IMAGE;
     private Program mProgramInfo;
     private TextView hintText;
-    private NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig;
 
     private ContentContract.Presenter mContentPresenter;
 
@@ -388,16 +387,15 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private void playVideo(int delay) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playRunnable);
-        postDelayed(playRunnable, playerViewConfig != null && playerViewConfig.isFullScreen ? 0 :
+        postDelayed(playRunnable, mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ? 0 :
                 2000);
     }
 
     private void playLiveVideo(int delay) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
-        postDelayed(playLiveRunnable, playerViewConfig != null && playerViewConfig.isFullScreen ?
-                0 :
-                2000);
+        postDelayed(playLiveRunnable, mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ?
+                0 : 2000);
     }
 
 
