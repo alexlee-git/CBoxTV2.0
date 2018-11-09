@@ -135,6 +135,8 @@ public class NewTVLauncherPlayerViewManager {
         if (mNewTVLauncherPlayerView == null) {
             init(context);
         }
+        this.programSeriesInfo = content;
+
 
         mNewTVLauncherPlayerView.play(content, index, position, newActivity);
     }

@@ -18,15 +18,15 @@ import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.views.custom.DivergeView;
-import tv.newtv.cboxtv.views.detail.DetailPageActivity;
-import tv.newtv.cboxtv.views.detail.EpisodeHelper;
-import tv.newtv.cboxtv.views.detail.HeadPlayerView;
-import tv.newtv.cboxtv.views.detail.IEpisode;
-import tv.newtv.cboxtv.views.detail.SmoothScrollView;
-import tv.newtv.cboxtv.views.detail.SuggestView;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.cboxtv.views.custom.DivergeView;
+import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeAdView;
+import tv.newtv.cboxtv.views.detail.EpisodeHelper;
+import tv.newtv.cboxtv.views.detail.HeadPlayerView;
+import tv.newtv.cboxtv.views.detail.SmoothScrollView;
+import tv.newtv.cboxtv.views.detail.SuggestView;
 
 /**
  * 项目名称:         CBoxTV
@@ -39,13 +39,11 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
 @BuyGoodsAD
 public class SingleDetailPageActivity extends DetailPageActivity {
 
-    private HeadPlayerView headPlayerView;
-    private String contentUUID;
-    private SmoothScrollView scrollView;
-    private boolean isADEntry = false;
     private static final String ACTION = "tv.newtv.cboxtv.action.SINGLEDETAIL";
+    private HeadPlayerView headPlayerView;
+    private EpisodeAdView mAdView;
+    private SmoothScrollView scrollView;
     private SuggestView suggestView;
-    private String leftUUID, rightUUID;
     private boolean isLogin = false;
     private Content mProgramSeriesInfo;
 
@@ -110,32 +108,33 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
         setContentView(R.layout.activity_single_detail_page);
         Log.d("ywy y", "onCreate");
-        if (savedInstanceState == null) {
-            contentUUID = getIntent().getStringExtra("content_uuid");
-            isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
-        } else {
-            contentUUID = savedInstanceState.getString("content_uuid");
-        }
 
+        mAdView = findViewById(R.id.ad_view);
         scrollView = findViewById(R.id.root_view);
         headPlayerView = findViewById(R.id.header_video);
         suggestView = findViewById(R.id.suggest);
+
+
+        initHeadPlayerView(contentUUID);
     }
 
-    private void initHeadPlayerView() {
+    private void initHeadPlayerView(String contentUUID) {
         if (null != headPlayerView) {
             headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.single_item_head)
-                    .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
-                            new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder.DB_TYPE_VIPPAY),
-                            new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder.DB_TYPE_VIPTIP))
+                    .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView
+                                    .Builder.DB_TYPE_COLLECT),
+                            new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder
+                                    .DB_TYPE_VIPPAY),
+                            new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView
+                                    .Builder.DB_TYPE_VIPTIP))
                     .SetPlayerId(R.id.video_container)
                     .SetDefaultFocusID(R.id.full_screen)
                     .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                     .SetContentUUID(contentUUID)
+                    .autoGetSubContents()
                     .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                         @Override
                         public void onResult(Content info) {
@@ -143,6 +142,8 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                             headPlayerView.setProgramSeriesInfo(info);
 //                        headPlayerView.Play(0, 0, false);
                             suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info, null);
+                            mAdView.requestAD();
+
                         }
                     })
                     .SetPlayerCallback(new PlayerCallback() {
@@ -181,9 +182,11 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                     DivergeView mPaiseView = ((DivergeView) headPlayerView
                                             .findViewUseId(R.id
                                                     .view_praise));
-                                    mPaiseView.setEndPoint(new PointF(mPaiseView.getMeasuredWidth() /
+                                    mPaiseView.setEndPoint(new PointF(mPaiseView.getMeasuredWidth
+                                            () /
                                             2, 0));
-                                    mPaiseView.setStartPoint(new PointF(getResources().getDimension(R
+                                    mPaiseView.setStartPoint(new PointF(getResources()
+                                            .getDimension(R
                                             .dimen.width_40px),
                                             getResources().getDimension(R.dimen.height_185px)));
                                     mPaiseView.setDivergeViewProvider(new DivergeView
@@ -202,19 +205,29 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                             (SingleDetailPageActivity.this);
                                     break;
                                 case R.id.vip_pay:
-                                    if (mProgramSeriesInfo != null && mProgramSeriesInfo.getVipFlag() != null) {
-                                        final int vipState = Integer.parseInt(mProgramSeriesInfo.getVipFlag());
+                                    if (mProgramSeriesInfo != null && mProgramSeriesInfo
+                                            .getVipFlag() != null) {
+                                        final int vipState = Integer.parseInt(mProgramSeriesInfo
+                                                .getVipFlag());
                                         if (isLogin) {
                                             //1 单点包月  3vip  4单点
                                             if (vipState == 1) {
-                                                UserCenterUtils.startVIP1(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION);
+                                                UserCenterUtils.startVIP1
+                                                        (SingleDetailPageActivity.this,
+                                                                mProgramSeriesInfo, ACTION);
                                             } else if (vipState == 3) {
-                                                UserCenterUtils.startVIP3(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION);
+                                                UserCenterUtils.startVIP3
+                                                        (SingleDetailPageActivity.this,
+                                                                mProgramSeriesInfo, ACTION);
                                             } else if (vipState == 4) {
-                                                UserCenterUtils.startVIP4(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION);
+                                                UserCenterUtils.startVIP4
+                                                        (SingleDetailPageActivity.this,
+                                                                mProgramSeriesInfo, ACTION);
                                             }
                                         } else {
-                                            UserCenterUtils.startLoginActivity(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION, true);
+                                            UserCenterUtils.startLoginActivity
+                                                    (SingleDetailPageActivity.this,
+                                                            mProgramSeriesInfo, ACTION, true);
                                         }
                                     }
                                     break;

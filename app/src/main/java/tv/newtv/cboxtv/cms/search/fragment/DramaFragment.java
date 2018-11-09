@@ -81,8 +81,12 @@ public class DramaFragment extends BaseFragment {
         } else {
             if(mDatas == null || mDatas.size() == 0) {
                 mDataStatus = false;
-                mEmptyView.setVisibility(View.VISIBLE);
-                mResultTotalView.setVisibility(View.INVISIBLE);
+                if (mEmptyView != null){
+                    mEmptyView.setVisibility(View.VISIBLE);
+                }
+                if (mResultTotalView != null){
+                    mResultTotalView.setVisibility(View.INVISIBLE);
+                }
             }
         }
     }

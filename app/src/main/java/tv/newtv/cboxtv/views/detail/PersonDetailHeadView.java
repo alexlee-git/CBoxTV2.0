@@ -43,11 +43,12 @@ import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
+import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
  * Created by linzy on 2018/10/11.
  *
- * 人物详情子view
+ * 人物详情头部view
  */
 
 public class PersonDetailHeadView extends RelativeLayout implements IEpisode,View.OnKeyListener,ContentContract.View{
@@ -66,21 +67,12 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     TextView detailContentTv;
     @BindView(R.id.detail_tv_star)
     TextView detailStarTv;
-
-    @BindView(R.id.detail_rel_image_send_flower)
-    ImageView mBigScreenIv;
-    @BindView(R.id.detail_rel_image_attention)
-    ImageView mAttentionIv;
-    @BindView(R.id.detail_rel_image_search_programe)
-    ImageView mSearchProIv;
-    @BindView(R.id.btn_detail_send_flower)
-    RelativeLayout mSendflowerBtn;
-    @BindView(R.id.btn_detail_attention)
-    RelativeLayout mAttentionBtn;
-    @BindView(R.id.btn_detail_search_programe)
-    RelativeLayout mSearchProBtn;
     @BindView(R.id.view_flower)
     DivergeView mFlowerView;
+    @BindView(R.id.send_flower)
+    FocusToggleView2 sendFlowerView;
+    @BindView(R.id.attention)
+    FocusToggleView2 attentionView;
 
     private final String TAG = "PersonDetailHeadView";
     private View view;
@@ -121,9 +113,8 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     private void initListener(){
         mContentPresenter = new ContentContract.ContentPresenter(getContext(),this);
 
-        mAttentionBtn.setOnKeyListener(this);
-        mSendflowerBtn.setOnKeyListener(this);
-        mSearchProBtn.setOnKeyListener(this);
+        sendFlowerView.setOnKeyListener(this);
+        attentionView.setOnKeyListener(this);
         mDetailsImgView.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -179,14 +170,9 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         detailTypeTv = null;
         detailContentTv = null;
         detailStarTv = null;
-        mBigScreenIv = null;
-        mAttentionIv = null;
-        mSearchProIv = null;
-        mSendflowerBtn = null;
-        mAttentionBtn = null;
-        mSearchProBtn = null;
+        sendFlowerView = null;
+        attentionView = null;
         mFlowerView = null;
-
     }
 
     @Override
@@ -202,7 +188,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
 
     public void onClickView(View view) {
         switch (view.getId()){
-            case R.id.btn_detail_attention:
+            case R.id.attention:
                 if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                     if (isAttention) {
@@ -212,7 +198,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                     }
                 }
                 break;
-            case R.id.btn_detail_send_flower:
+            case R.id.send_flower:
                 mFlowerView.startDiverges(0);
                 break;
         }
@@ -224,37 +210,18 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
             @Override
             public void onResult(int code, String result) {
                 if (code == 0) {
-                    mAttentionBtn.post(new Runnable() {
+                    attentionView.post(new Runnable() {
                         @Override
                         public void run() {
                             isAttention = false;
-                            mAttentionIv.setImageResource(R.drawable.icon_details_unattention_btn);
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "1," + contentUUID);//取消关注
-                            Toast.makeText(mContext, "取消关注成功", Toast.LENGTH_SHORT)
-                                    .show();
-                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                        }
-                    });
-                }
-            }
-        });
-
-        /*DBUtil.delAttention(contentUuId, new DBCallback<String>() {
-            @Override
-            public void onResult(int code, String result) {
-                if (code == 0) {
-                    mAttentionBtn.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            isAttention = false;
-                            mAttentionIv.setImageResource(R.drawable.icon_details_unattention_btn);
+                            attentionView.setSelect(false);
                             Toast.makeText(mContext, "取消关注成功", Toast.LENGTH_SHORT).show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
                     });
                 }
             }
-        });*/
+        });
     }
 
     private void updateAttention(Content entity) {
@@ -266,45 +233,27 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
             @Override
             public void onResult(int code, String result) {
                 if (code == 0) {
-                    mAttentionBtn.post(new Runnable() {
+                    attentionView.post(new Runnable() {
                         @Override
                         public void run() {
                             isAttention = true;
-                            mAttentionIv.setImageResource(R.drawable.icon_details_attention_btn);
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "0," + contentUUID);//关注
-                            Toast.makeText(mContext, "关注成功", Toast.LENGTH_SHORT)
-                                    .show();
-                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                        }
-                    });
-                }
-            }
-        });
-        /*DBUtil.addAttention(entity, new DBCallback<String>() {
-            @Override
-            public void onResult(int code, String result) {
-                if (code == 0) {
-                    mAttentionBtn.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            isAttention = true;
-                            mAttentionIv.setImageResource(R.drawable.icon_details_attention_btn);
+                            attentionView.setSelect(true);
                             Toast.makeText(mContext, R.string.attention_success, Toast.LENGTH_SHORT).show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
                     });
                 }
             }
-        });*/
+        });
     }
 
     private void setHeadData(Content dataInfo) {
         String img = dataInfo.getVImage();
         detailTypeTv.setText(String.format("%s | %s", dataInfo.getDistrict(), dataInfo.getCountry()));
         if (isAttention) {
-            mAttentionIv.setImageResource(R.drawable.icon_details_attention_btn);
+            attentionView.setSelect(true);
         } else {
-            mAttentionIv.setImageResource(R.drawable.icon_details_unattention_btn);
+            attentionView.setSelect(false);
         }
 
         Picasso.get().load(img).transform(new PosterCircleTransform

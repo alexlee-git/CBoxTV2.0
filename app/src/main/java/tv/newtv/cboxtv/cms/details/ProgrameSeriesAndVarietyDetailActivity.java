@@ -33,6 +33,7 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
@@ -49,12 +50,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
     Content pageContent;
     private static final String ACTION = "tv.newtv.cboxtv.action.PROGRAMESERIES";
-    private String leftUUID, rightUUID;
-    private String contentUUID;
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
     private EpisodePageView playListView;
     private SmoothScrollView scrollView;
+    private EpisodeAdView mAdView;
     private String videoType;
     private long lastClickTime;
     private FragmentTransaction transaction;
@@ -84,10 +84,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
 
-        String contentUUID = getContentUUID();
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
             //requestData();
@@ -99,9 +97,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         }
     }
 
-    private void initView(final Content content) {
+
+    private void initView(final Content content, final String contentUUID) {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
+        mAdView = findViewById(R.id.ad_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
 
         if (!videoType()) {
@@ -130,7 +130,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                             .TYPE_VARIETY_SHOW,
                                     content.getVideoType(),
                                     getSupportFragmentManager(),
-                                    getContentUUID(), null);
+                                    contentUUID, null);
+
+                            if(mAdView != null){
+                                mAdView.requestAD();
+                            }
                         } else {
                             ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ProgrameSeriesAndVarietyDetailActivity.this.finish();
@@ -317,15 +321,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
-
+    public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (content != null) {
             videoType = content.getVideoType();
         }
         //这里跳转不同详情页 综艺、电视剧
         setContentView(R.layout.fragment_new_variety_show);
-        ADConfig.getInstance().setSeriesID(getContentUUID());
-        initView(content);
+        ADConfig.getInstance().setSeriesID(uuid);
+        initView(content,uuid);
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.newtv.cms.bean.Nav;
+import com.newtv.cms.contract.NavContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
@@ -27,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.BackGroundManager;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
@@ -36,7 +37,7 @@ import tv.newtv.cboxtv.cms.search.SearchFragment;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
-import com.newtv.cms.contract.NavContract;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class MainNavManager implements NavContract.View {
@@ -70,7 +71,8 @@ public class MainNavManager implements NavContract.View {
     }
 
 
-    private void inflateNavigationBar(final List<Nav> navInfos, final Context context, String dataFrom) {
+    private void inflateNavigationBar(final List<Nav> navInfos, final Context context, String
+            dataFrom) {
 
         ScreenUtils.initScreen(context);
 
@@ -126,10 +128,12 @@ public class MainNavManager implements NavContract.View {
                         if (BuildConfig.DEBUG) {
                             String url = value.getFocusIcon();
                             if (url.contains("http://172.25.102.19/")) {
-                                url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
+                                url = url.replace("http://172.25.102.19/",
+                                        "http://111.32.132.156/");
                             }
                             if (url.contains("http://172.25.101.210/")) {
-                                url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
+                                url = url.replace("http://172.25.101.210/",
+                                        "http://111.32.132.156/");
                             }
                             ((NavPageMenuViewHolder) holder).setImage(url);
                         } else {
@@ -162,9 +166,9 @@ public class MainNavManager implements NavContract.View {
                         SharedPreferences sp = context.getSharedPreferences("secondConfig",
                                 MODE_PRIVATE);
                         String menu = sp.getString("secondMenu", "");
-                        if (TextUtils.isEmpty(menu)){
+                        if (TextUtils.isEmpty(menu)) {
                             return;
-                        }else{
+                        } else {
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
                                     menu);
                         }
@@ -186,17 +190,22 @@ public class MainNavManager implements NavContract.View {
             int count = mNavInfos.size();
             for (int index = 0; index < count; index++) {
                 Nav navInfo = mNavInfos.get(index);
-                if(!TextUtils.isEmpty(currentFocus)) {
+                if (!TextUtils.isEmpty(currentFocus)) {
                     if (currentFocus.equals(navInfo.getId())) {
                         defaultPageIdx = index;
                     }
-                }else{
-                    if("1".equals(navInfo.isFocus())){
+                } else {
+                    if ("1".equals(navInfo.isFocus())) {
                         defaultPageIdx = index;
                         currentFocus = navInfo.getId();
                     }
                 }
             }
+
+            if (TextUtils.isEmpty(currentFocus) && mNavInfos != null && mNavInfos.size() > 0) {
+                currentFocus = mNavInfos.get(0).getId();
+            }
+
 
             Log.e("--defaultPageIdx-------", Navbarfoused + "----" + defaultPageIdx);
 
