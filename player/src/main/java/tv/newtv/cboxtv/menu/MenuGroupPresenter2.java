@@ -25,7 +25,6 @@ import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
-import com.newtv.libs.util.LogUtils;
 
 import org.json.JSONObject;
 
@@ -69,10 +68,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      */
     private static final int RETRY_DATA = 2;
     /**
-     * 设置栏目树最后一级数据的标识
-     */
-    private static final int SET_LAST_DATA = 3;
-    /**
      * 等待广告播放完毕
      */
     private static final int WAIT_AD_END = 4;
@@ -102,8 +97,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      * 当前正在播放的节目
      */
     private Program playProgram;
+    private SeriesContent seriesContent;
 
-    private LastMenuBean lastMenuBean;
 
     private Handler handler = new MyHandler();
 
@@ -135,9 +130,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     break;
                 case RETRY_DATA:
                     initData();
-                    break;
-                case SET_LAST_DATA:
-                    setLastData();
                     break;
                 case WAIT_AD_END:
                     checkShowHinter();
@@ -222,7 +214,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     /**
      * 从播放器中获取节目集id和节目id
-     *
      * @return
      */
     private boolean getProgramSeriesAndContentUUID() {
@@ -261,11 +252,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return false;
         }
 
-//        programSeries = "11422478";
-//        contentUUID = "11456764";
-
         Log.i(TAG, "detailColumnUUID=" + programSeries);
         Log.i(TAG, "contentUUID=" + contentUUID);
+        Log.i(TAG, "categoryId=" + categoryId);
         return true;
     }
 
@@ -277,6 +266,16 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
             return;
         }
+
+        if(TextUtils.isEmpty(categoryId)){
+            getCategoryId();
+        }else {
+            getCategoryTree();
+        }
+        searchDataInDB();
+    }
+
+    private void getCategoryId(){
         String leftString = contentUUID.substring(0, 2);
         String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
         Request.INSTANCE.getContent()
@@ -294,8 +293,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         }
                     }
                 });
-
-        searchDataInDB();
     }
 
     private void getCategoryTree() {
@@ -312,7 +309,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                             for(Node node : rootNode){
                                 node.initParent();
                             }
-//                            menuGroup.setRootNodes(categoryTree.data);
                             getCategoryContent();
                         }
                     }
@@ -355,7 +351,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         Log.i(TAG, "seriesContent: "+result);
                         SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
                         if(seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0){
-
+                            MenuGroupPresenter2.this.seriesContent = seriesContent;
                             menuGroup.addRootNodes(rootNode);
                             menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, programSeries, contentUUID);
                             playProgram = menuGroup.getPlayProgram();
@@ -478,11 +474,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         if (list == null) {
             list = new ArrayList<>();
         }
-        LastMenuBean lastMenuBean = new LastMenuBean();
-        lastMenuBean.setData(new LastMenuBean.DataBean());
-        lastMenuBean.getData().setPrograms(list);
 
-        node.setLastMenuBean(lastMenuBean);
         node.setPrograms(list);
         node.setRequest(true);
         for (Program p : list) {
@@ -490,38 +482,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
     }
 
-    private void getLastData() {
-        RequestMenuGroupData.getLastData(programSeries, new RequestMenuGroupData.DataListener() {
-            @Override
-            public void success(LastMenuBean lastBean) {
-                if (menuGroup == null) return;
-                MenuGroupPresenter2.this.lastMenuBean = lastBean;
-                if (lastBean == null || lastBean.getData() == null || lastBean.getData().getPrograms() == null) {
-                    return;
-                }
-                setLastData();
-            }
-        });
-    }
-
-    private void setLastData() {
-        if (!menuGroup.isAllNodeInit()) {
-            handler.sendEmptyMessageDelayed(SET_LAST_DATA, 200);
-            return;
-        }
-
-        try {
-            LastMenuBean lastBean = lastMenuBean;
-//            String pid = lastBean.getData().getContentUUID();
-
-            menuGroupIsInit = menuGroup.setLastProgram(lastBean, programSeries, contentUUID);
-//            menuGroup.setAppKeyAndChanelId(Constant.APP_KEY, Constant.CHANNEL_ID);
-            playProgram = menuGroup.getPlayProgram();
-            checkShowHinter();
-        } catch (Exception e) {
-            LogUtils.e(TAG, "exception:" + e.toString());
-        }
-    }
 
     /**
      * 栏目树初始化完成后,如果在播放广告，等待广告播放完毕在显示提示view
@@ -690,31 +650,30 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     public void enterFullScreen() {
         if (menuGroupIsInit) {
             getProgramSeriesAndContentUUID();
-            if(lastMenuBean == null){
-                return;
-            }
-            if(!updatePlayProgram(lastMenuBean)){
-                /**
-                 *  更新playProgram失败，说明当前播放的视频不在lastMenuBean中，需要重新请求数据
-                 * 复用栏目树前N级，重新请求最后一级列表逻辑
-                 */
-                menuGroupIsInit = false;
-                setHintGone();
-                menuGroup.requestLastDataById(programSeries, new MenuGroup.RecreateListener() {
-                    @Override
-                    public void success(LastMenuBean lastMenuBean) {
-                        if(updatePlayProgram(lastMenuBean)){
-                            menuGroupIsInit = true;
-                            menuGroup.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    checkShowHinter();
-                                }
-                            },100);
-                        }
-                    }
-                });
-            }
+            updatePlayProgram();
+
+//            if(!updatePlayProgram(lastMenuBean)){
+//                /**
+//                 *  更新playProgram失败，说明当前播放的视频不在lastMenuBean中，需要重新请求数据
+//                 * 复用栏目树前N级，重新请求最后一级列表逻辑
+//                 */
+//                menuGroupIsInit = false;
+//                setHintGone();
+//                menuGroup.requestLastDataById(programSeries, new MenuGroup.RecreateListener() {
+//                    @Override
+//                    public void success(LastMenuBean lastMenuBean) {
+//                        if(updatePlayProgram(lastMenuBean)){
+//                            menuGroupIsInit = true;
+//                            menuGroup.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    checkShowHinter();
+//                                }
+//                            },100);
+//                        }
+//                    }
+//                });
+//            }
         }
     }
 
@@ -723,17 +682,14 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         setHintGone();
     }
 
-    /**
-     * 根据lastMenuBean更新playProgram,从小屏切换大屏的时候需要更新，否则会显示错误
-     * @param lastMenuBean
-     * @return
-     */
-    public boolean updatePlayProgram(LastMenuBean lastMenuBean){
-        List<Program> programs = lastMenuBean.getData().getPrograms();
-        for (Program program : programs) {
-            if (contentUUID.equals(program.getContentUUID())) {
-                playProgram = program;
-                return true;
+    public boolean updatePlayProgram(){
+        if(seriesContent != null && seriesContent.data != null
+                && seriesContent.data.size() > 0){
+            for(Program program : seriesContent.data){
+                if(contentUUID.equals(program.getContentID())){
+                    playProgram = program;
+                    return true;
+                }
             }
         }
         return false;

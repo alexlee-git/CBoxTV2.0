@@ -130,6 +130,11 @@ public class ADPlayerView extends FrameLayout implements IADPlayer, SurfaceHolde
         } catch (IOException e) {
             e.printStackTrace();
             isException = true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            isException = true;
+
         } finally {
             if (isException) {
                 release(mediaPlayer);
@@ -162,15 +167,20 @@ public class ADPlayerView extends FrameLayout implements IADPlayer, SurfaceHolde
     }
 
     private void release(MediaPlayer mediaPlayer) {
-        if (mediaPlayer != null) {
-            Log.e(TAG, "release: " + mediaPlayer);
-            mediaPlayer.release();
-            mediaPlayer.setOnInfoListener(null);
-            mediaPlayer.setOnCompletionListener(null);
-            mediaPlayer.setOnBufferingUpdateListener(null);
-            mediaPlayer.setOnErrorListener(null);
-            mediaPlayer.setOnPreparedListener(null);
+        try {
+            if (mediaPlayer != null) {
+                Log.e(TAG, "release: " + mediaPlayer);
+                mediaPlayer.release();
+                mediaPlayer.setOnInfoListener(null);
+                mediaPlayer.setOnCompletionListener(null);
+                mediaPlayer.setOnBufferingUpdateListener(null);
+                mediaPlayer.setOnErrorListener(null);
+                mediaPlayer.setOnPreparedListener(null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @Override

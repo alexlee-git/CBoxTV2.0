@@ -26,6 +26,10 @@ import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 import java.util.HashMap;
 
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
+import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
+import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
+import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
+import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
@@ -36,6 +40,7 @@ import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import java.lang.annotation.Annotation;
 
 import tv.newtv.cboxtv.annotation.BuyGoodsInject;
 import tv.newtv.cboxtv.annotation.PopupAD;
@@ -79,7 +84,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             }
         }
 
-        if (hasPlayer()) {
+        if(hasPlayer()){
             Player.get().setCurrentPlayerActivity(this);
         }
 
@@ -103,7 +108,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onStop() {
         super.onStop();
         ActivityStacks.get().onStop(this);
-        if (buyGoodsBusiness != null) {
+        if(buyGoodsBusiness != null){
             buyGoodsBusiness.onStop();
         }
         FrontStage = false;
@@ -135,7 +140,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
 
         setBackgroundAD();
-        if (buyGoodsBusiness != null) {
+        if(buyGoodsBusiness != null){
             buyGoodsBusiness.onResume();
         }
     }
@@ -164,7 +169,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         if (adPopupWindow != null && adPopupWindow.isShowing()) {
             adPopupWindow.dismiss();
         }
-        if (buyGoodsBusiness != null) {
+        if(buyGoodsBusiness != null){
             buyGoodsBusiness.onDestroy();
         }
     }
@@ -208,8 +213,8 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!FrontStage) return true;
         if (isFullScreen()) {
-            if (buyGoodsBusiness != null && buyGoodsBusiness.isShow()
-                    && buyGoodsBusiness.dispatchKeyEvent(event)) {
+            if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                    && buyGoodsBusiness.dispatchKeyEvent(event)){
                 return true;
             }
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
@@ -331,30 +336,23 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     }
 
     private boolean isDetailActivity() {
-//        Class<? extends BaseActivity> clazz = getClass();
-//        if(clazz == ProgrameSeriesAndVarietyDetailActivity.class
-//                ||clazz == ColumnPageActivity.class
-//                || clazz == SingleDetailPageActivity.class
-//                || clazz == ProgramCollectionActivity.class){
-//            return true;
-//        }
+        Class<? extends BaseActivity> clazz = getClass();
+        if(clazz == ProgrameSeriesAndVarietyDetailActivity.class
+                ||clazz == ColumnPageActivity.class
+                || clazz == SingleDetailPageActivity.class
+                || clazz == ProgramCollectionActivity.class){
+            return true;
+        }
         return false;
     }
 
-    private boolean hasPopoupAD() {
+    private boolean hasPopoupAD(){
+        return hasAnnotation(PopupAD.class);
+    }
+    private boolean hasAnnotation(Class ann){
         Class<? extends BaseActivity> clazz = getClass();
-        PopupAD annotation = clazz.getAnnotation(PopupAD.class);
-        if (annotation != null) {
-//=======
-//    private boolean hasPopoupAD(){
-//        return hasAnnotation(PopupAD.class);
-//    }
-//
-//    private boolean hasAnnotation(Class ann){
-//        Class<? extends BaseActivity> clazz = getClass();
-//        Annotation annotation = clazz.getAnnotation(ann);
-//        if(annotation != null){
-//>>>>>>> 1.4
+        Annotation annotation = clazz.getAnnotation(ann);
+        if(annotation != null) {
             return true;
         }
         return false;

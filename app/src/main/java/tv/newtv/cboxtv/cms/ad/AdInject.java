@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.ad;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -17,18 +18,22 @@ public class AdInject {
     private static void injectBuyGoods(Activity activity){
         if(hasAnnotation(activity,BuyGoodsAD.class)){
             Class<?> clazz = activity.getClass().getSuperclass();
-            Field[] mField = clazz.getDeclaredFields();
-            for(Field field : mField){
-                BuyGoodsInject annotation = field.getAnnotation(BuyGoodsInject.class);
-                if(annotation != null){
-                    field.setAccessible(true);
-                    BuyGoodsBusiness buyGoodsBusiness = new BuyGoodsBusiness(activity,activity.findViewById(android.R.id.content));
-                    try {
-                        field.set(activity,buyGoodsBusiness);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+            while(clazz != Activity.class){
+                Field[] mField = clazz.getDeclaredFields();
+                for(Field field : mField){
+                    BuyGoodsInject annotation = field.getAnnotation(BuyGoodsInject.class);
+                    if(annotation != null){
+                        field.setAccessible(true);
+                        BuyGoodsBusiness buyGoodsBusiness = new BuyGoodsBusiness(activity,activity.findViewById(android.R.id.content));
+                        try {
+                            field.set(activity,buyGoodsBusiness);
+                            return;
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+                clazz = clazz.getSuperclass();
             }
         }
     }

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
@@ -40,7 +41,7 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
 /**
  * Created by weihaichao on 2018/10/19.
  */
-
+@BuyGoodsAD
 public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity implements
         ContentContract.LoadingView {
 
@@ -200,11 +201,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
-//                if (seriesInfo != null) {
-//                    ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
-//                    pageContent.setData(contents);
-//                    headPlayerView.setProgramSeriesInfo(pageContent);
-//                }
+                if (seriesInfo != null) {
+                    headPlayerView.resetSeriesInfo(pageContent);
+                }
             }
 
             @Override

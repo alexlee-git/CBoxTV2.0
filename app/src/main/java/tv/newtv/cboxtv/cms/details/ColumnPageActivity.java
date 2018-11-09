@@ -229,9 +229,7 @@ public class ColumnPageActivity extends DetailPageActivity {
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
-//                ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
-//                pageContent.setData(contents);
-//                headPlayerView.setProgramSeriesInfo(pageContent);
+                headPlayerView.resetSeriesInfo(pageContent);
             }
 
             @Override
