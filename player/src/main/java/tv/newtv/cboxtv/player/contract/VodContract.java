@@ -206,6 +206,7 @@ public class VodContract {
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
             videoDataStruct.setDeviceID(Constant.UUID);
             videoDataStruct.setCategoryIds(playResult.getCategoryIds());
+            ADConfig.getInstance().setProgramId(playResult.getContentUUID());
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
 
             if (getView() != null)

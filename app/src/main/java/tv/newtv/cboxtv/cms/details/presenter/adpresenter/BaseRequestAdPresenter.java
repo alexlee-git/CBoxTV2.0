@@ -43,7 +43,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
         this.adLoc = adLoc;
 
         ADConfig.getInstance().registerListener(this);
-        if(columnIsGet || !TextUtils.isEmpty(ADConfig.getInstance().getColumnId())){
+        if(columnIsGet || !TextUtils.isEmpty(ADConfig.getInstance().getSecondColumnId())){
             excute();
         }else {
             handler.sendEmptyMessageDelayed(0,5000);
@@ -106,8 +106,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
     public void destroy(){
         isDestory = true;
         handler.removeCallbacksAndMessages(null);
-        ADConfig.getInstance().setColumnId("");
-        ADConfig.getInstance().setSecondColumnId("");
+        ADConfig.getInstance().reset();
         ADConfig.getInstance().removeListener(this);
     }
 
