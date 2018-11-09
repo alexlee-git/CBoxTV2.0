@@ -2,6 +2,7 @@ package com.newtv.cms.util
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
+import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.LiveParam
 import com.newtv.cms.bean.Video
 import com.newtv.libs.util.CalendarUtil
@@ -18,6 +19,37 @@ import java.util.*
  * 创建日期:          2018/10/8
  */
 object CmsUtil {
+
+    @JvmStatic
+    fun translateIndex(content: Content?, index: Int): Int {
+        content?.let {
+            val isUiDesc: Boolean = isUIDataDesc(it)
+            val isPlayerDesc: Boolean = isPlayDesc(it)
+            if (isUiDesc == isPlayerDesc) {
+                return index
+            }
+            it.data?.let { dataList ->
+                return dataList.size - 1 - index
+            }
+        }
+        return index
+    }
+
+    @JvmStatic
+    fun isUIDataDesc(content: Content?): Boolean {
+        content?.let {
+            return "0".equals(it.isFinish)
+        }
+        return false
+    }
+
+    @JvmStatic
+    fun isPlayDesc(content: Content?): Boolean {
+        content?.let {
+            return "1".equals(it.playOrder)
+        }
+        return false
+    }
 
     private fun getLiveParam(video: Video?): LiveParam? {
         if (video != null) {
@@ -82,7 +114,7 @@ object CmsUtil {
             val current = formatToSeconds(fmt.format(now))
             val startInt = formatToSeconds(start)
             val endInt = formatToSeconds(end)
-            LogUtils.e("CmsUtil","start=$startInt end=$endInt current=$current")
+            LogUtils.e("CmsUtil", "start=$startInt end=$endInt current=$current")
             return current in (startInt + 1)..(endInt - 1)
         }
     }

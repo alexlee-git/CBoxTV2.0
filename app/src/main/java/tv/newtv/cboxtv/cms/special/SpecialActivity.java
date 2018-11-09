@@ -106,7 +106,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
             return super.dispatchKeyEvent(event);
         }
 
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+        if (isBackPressed(event)) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
                 if(isADEntry){
                     startActivity(new Intent(SpecialActivity.this, MainActivity.class));

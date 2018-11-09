@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.uc.UserStatus;
@@ -83,15 +84,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public static final int SHOWING_EXIT_VIEW = 6;
     public static final int SHOWING_PROGRAM_TREE = 7;
     private static final String TAG = NewTVLauncherPlayerView.class.getName();
-
     private static final int PROGRAM_SELECTOR_TYPE_NONE = 0; //不显示选集
     private static final int PROGRAM_SELECTOR_TYPE_NUMBER = 1; //显示数字选集
     private static final int PROGRAM_SELECTOR_TYPE_NAME = 2; //显示名称选集
-
     private static final int PLAY_TYPE_SINGLE = 0;
     private static final int PLAY_TYPE_SERIES = 1;
     private static final int PLAY_TYPE_LIVE = 2;
-
     private static int defaultWidth;
     private static int defaultHeight;
     protected PlayerViewConfig defaultConfig;
@@ -679,13 +677,21 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public void playProgramSeries(Content programSeriesInfo, boolean
             isNeedStartActivity, int index, int position) {
         unshowLoadBack = false;
-        LogUtils.i(TAG, "playVideo: index=" + index + " position=" + position);
-        updatePlayStatus(2, index, position);
         if (isFullScreen() && !equalsInfo(mProgramSeriesInfo, programSeriesInfo)) {
-
             ProgramIsChange = true;
         }
+
         mProgramSeriesInfo = programSeriesInfo;
+//        isDesc = CmsUtil.isPlayDesc(programSeriesInfo);
+//        outListDesc = CmsUtil.isUIDataDesc(programSeriesInfo);
+
+        // 根据播放列表和外部列表排列顺序重设播放index值
+//        if ((outListDesc != isDesc) && mProgramSeriesInfo.getData() != null) {
+//            index = mProgramSeriesInfo.getData().size() - 1 - index;
+//        }
+
+        LogUtils.i(TAG, "playVideo: index=" + index + " position=" + position);
+        updatePlayStatus(2, index, position);
 
         if (programSeriesInfo != null) {
             List<SubContent> programsInfos = programSeriesInfo.getData();
@@ -714,7 +720,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 startLoading();
                 isNeedStartActivity(isNeedStartActivity, programSeriesInfo, index);
             } else {
-                LogUtils.i(TAG, "playVideo: programsInfos == null || programsInfos.size() <= index");
+                LogUtils.i(TAG, "playVideo: programsInfos == null || programsInfos.size() <= " +
+                        "index");
                 onError("-8", "播放信息为空");
             }
         }
@@ -1186,7 +1193,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             }
         } else if (mPlayType == PLAY_TYPE_SERIES) {
             int next = mPlayingIndex + 1;
-            if (mProgramSeriesInfo.getData().size() > next) {
+            if (next <= mProgramSeriesInfo.getData().size() - 1) {
                 playProgramSeries(mProgramSeriesInfo, false, next, 0);
                 if (listener != null && listener.size() > 0) {
                     for (IPlayProgramsCallBackEvent l : listener) {
