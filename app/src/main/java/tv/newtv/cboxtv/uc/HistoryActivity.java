@@ -1,26 +1,32 @@
 package tv.newtv.cboxtv.uc;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.view.animation.Interpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.libs.Constant;
+
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -28,6 +34,8 @@ import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ScaleUtils;
+import com.newtv.libs.util.SharePreferenceUtils;
+import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.XunMaKeyUtils;
 
 import java.lang.reflect.Type;
@@ -35,12 +43,18 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
+import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 /**
  * Created by gaoleichao on 2018/3/29.
@@ -51,18 +65,29 @@ public class HistoryActivity extends FragmentActivity implements
         .OnKeyListener {
 
     private static final int UPDATE = 1001;
-    private static boolean eatKeyEvent = false;
+    private final int COLUMN_COUNT = 6;
     public int action_type;
     public String title;
     @BindView(R.id.id_usercenter_fragment_root)
-    SearchRecyclerView mRecyclerView;
-    @BindView(R.id.id_empty_view)
-    TextView mEmptyView;
-    @BindView(R.id.tv_page_title)
+    RecyclerView mRecyclerView;
+
+    @BindView(R.id.user_info_title)
     TextView mPageTitle;
     private HistoryAdapter mAdapter;
     private BackgroundTipView deleteView;
+
     private int selectPostion;
+
+    @BindView(R.id.id_operation_icon)
+    ImageView operationIcon;
+
+    @BindView(R.id.id_operation_tip)
+    TextView operationText;
+
+    private boolean NeedRefresh = true;
+    private static boolean eatKeyEvent = false;
+
+    private Interpolator mSpringInterpolator;
     private List<UserCenterPageBean.Bean> mCollectBean;
     private Handler mHandler = new Handler(new Handler.Callback() {
         @SuppressWarnings("unchecked")
@@ -73,39 +98,68 @@ public class HistoryActivity extends FragmentActivity implements
                 mCollectBean = (List<UserCenterPageBean.Bean>) message.obj;
                 if (mCollectBean != null && mCollectBean.size() != 0) {
                     mAdapter.appendToList(mCollectBean);
-                    menuTipView.setTextColor(Color.WHITE);
-                }else{
-                    menuTipView.setTextColor(Color.GRAY);
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    // 展示无观看记录的提示
+                    ViewStub viewStub = findViewById(R.id.id_empty_view_vs);
+                    if (viewStub != null) {
+                        View emptyView = viewStub.inflate();
+                        if (emptyView != null) {
+                            TextView textView = emptyView.findViewById(R.id.empty_textview);
+                            if (textView != null) {
+                                textView.setVisibility(View.VISIBLE);
+                                textView.setText("您还没有观看任何节目哦~");
+                            }
+                        }
+                    }
                 }
             }
             return false;
         }
     });
+
     private String tableName;
     private View defaultFocusView;
-    private TextView menuTipView;
+    private String userId;
+
+    private final String TAG = "lx";
+    private String mLoginTokenString;//登录token,用于判断登录状态
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         ButterKnife.bind(this);
+        mSpringInterpolator = new OvershootInterpolator(2.2f);
         init();
         initView();
         initData();
     }
 
     private void initView() {
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(6,
-                StaggeredGridLayoutManager.VERTICAL);
-        layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
+        // layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
         mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int index = parent.getChildLayoutPosition(view);
+                if (index < COLUMN_COUNT) {
+                    outRect.top = 23;
+                }
 
-        menuTipView = findViewById(R.id.tv_right_tips);
+                outRect.bottom = 72;
+            }
+        });
+
         if (action_type != UserCenterFragment.HISTORY) {
-            menuTipView.setVisibility(View.INVISIBLE);
-        } else {
-            menuTipView.setVisibility(View.VISIBLE);
+            if (operationText != null) {
+                operationText.setVisibility(View.INVISIBLE);
+            }
+
+            if (operationIcon != null) {
+                operationIcon.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -130,9 +184,7 @@ public class HistoryActivity extends FragmentActivity implements
                         defaultFocusView.requestFocus();
                     }
                     mAdapter.setAllowLostFocus(true);
-                    ViewGroup contentGroup = getWindow().getDecorView().findViewById(android
-                            .R.id
-                            .content);
+                    ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
                     deleteView.release();
                     contentGroup.removeView(deleteView);
                     deleteView = null;
@@ -200,13 +252,6 @@ public class HistoryActivity extends FragmentActivity implements
         View focusView = mRecyclerView.findFocus();
         if (focusView == null) return;
 
-        Rect visibleRect = new Rect();
-        focusView.getGlobalVisibleRect(visibleRect);
-        int scaleX = (int) (visibleRect.width() * 0.1 / 2);
-        int scaleY = (int) (visibleRect.height() * 0.1 / 2);
-        visibleRect.set(new Rect(visibleRect.left - scaleX, visibleRect.top - scaleY, visibleRect
-                .right + scaleX, visibleRect.right + scaleY));
-
         TextView textView = focusView.findViewWithTag("tag_poster_title");
         if (textView != null) {
             textView.setEllipsize(null);
@@ -218,10 +263,17 @@ public class HistoryActivity extends FragmentActivity implements
         focusView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         focusView.buildDrawingCache(true);
         Bitmap bitmap = focusView.getDrawingCache(true);
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
         Bitmap mBitmap = BitmapUtil.zoomImg(bitmap, 1.1f, 1.1f);
         bitmap.recycle();
 
+        Rect visibleRect = new Rect();
+        focusView.getGlobalVisibleRect(visibleRect);
 
+
+        visibleRect.left -= (mBitmap.getWidth() - w) / 2 + 2;
+        visibleRect.top -= (mBitmap.getHeight() - h) / 2;
         focusView.destroyDrawingCache();
         focusView.setDrawingCacheEnabled(false);
 
@@ -239,8 +291,7 @@ public class HistoryActivity extends FragmentActivity implements
             deleteView.setVisibleRect(mBitmap, visibleRect);
             ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
             contentGroup.addView(deleteView);
-            ImageButton ivDeleteSinle = (ImageButton) deleteView.findViewById(R.id
-                    .delete_single_btn);
+            ImageButton ivDeleteSinle = (ImageButton) deleteView.findViewById(R.id.delete_single_btn);
             ivDeleteSinle.requestFocus();
             ivDeleteSinle.setOnFocusChangeListener(this);
             ivDeleteSinle.setOnKeyListener(this);
@@ -255,9 +306,21 @@ public class HistoryActivity extends FragmentActivity implements
         int defaultICon = 0;
         switch (action_type) {
             case UserCenterFragment.HISTORY:
-                LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,1");//历史观看记录
-                tableName = DBConfig.HISTORY_TABLE_NAME;
+//                LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,1");//历史观看记录
+                // tableName = DBConfig.HISTORY_TABLE_NAME;
                 defaultICon = R.drawable.uc_no_history;
+
+//                String token = SharePreferenceUtils.getToken(getApplicationContext());
+//                if (!TextUtils.isEmpty(token)) {
+//                    tableName = DBConfig.HISTORY_TABLE_NAME;
+//                    userId = SharePreferenceUtils.getUserId(getApplicationContext());
+//                } else {
+//                    tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
+//                    userId = "";
+//                }
+//
+//                Log.d(TAG, "initData userId : " + userId + ", tableName : " + tableName);
+
                 break;
             case UserCenterFragment.COLLECT:
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,0");//收藏
@@ -277,51 +340,92 @@ public class HistoryActivity extends FragmentActivity implements
         mAdapter = new HistoryAdapter(getApplicationContext(), defaultICon, this);
         mRecyclerView.setAdapter(mAdapter);
         mPageTitle.setText(title);
-        requestData(tableName);
+//        requestData(tableName);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        //观看记录页面上报日志
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,1");
+//        String token = SharePreferenceUtils.getToken(getApplicationContext());
+//        if (TextUtils.isEmpty(token)) {
+//            tableName = DBConfig.HISTORY_TABLE_NAME;
+//            userId = SystemUtils.getDeviceMac(getApplicationContext());
+//        } else {
+//            tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
+//            userId = SharePreferenceUtils.getUserId(getApplicationContext());
+//        }
 
-        if (tableName != null) {
-            MainLooper.get().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    requestData(tableName);
-                }
-            }, 400);
-
-        }
-
+//        Log.d(TAG, "onResume userId : " + userId + ", tableName : " + tableName);
+//
+//        if (tableName != null) {
+//            MainLooper.get().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    requestData(tableName);
+//                }
+//            }, 400);
+//        }
+        //获取登录状态
+        requestUserInfo();
     }
 
-    //DBConfig.COLLECT_TABLE_NAME
-    private void requestData(String tableName) {
-        if (tableName != null) {
-            DataSupport.search(tableName)
-                    .condition()
-                    .OrderBy(DBConfig.ORDER_BY_TIME)
-                    .build()
-                    .withCallback(new DBCallback<String>() {
-                        @Override
-                        public void onResult(int code, final String result) {
-                            Log.e("MM", "result=" + result);
-                            if (code == 0) {
-                                Gson mGson = new Gson();
-                                Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                                }.getType();
-                                final List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson
-                                        (result, type);
-                                Message msg = new Message();
-                                msg.what = UPDATE;
-                                msg.obj = mCollectBean;
-                                mHandler.sendMessage(msg);
-                            }
-                        }
-                    }).excute();
+    //获取用户登录状态
+    private void requestUserInfo() {
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(getApplicationContext());
+                Log.d(TAG, "---isTokenRefresh:status:" + status);
+                //获取登录状态
+                mLoginTokenString = SharePreferenceUtils.getToken(getApplicationContext());
+                if (!TextUtils.isEmpty(mLoginTokenString)) {
+                    userId = SharePreferenceUtils.getUserId(getApplicationContext());
+                    e.onNext(mLoginTokenString);
+                } else {
+                    userId = SystemUtils.getDeviceMac(getApplicationContext());
+                    e.onNext("");
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+
+                    @Override
+                    public void accept(String value) throws Exception {
+                        requestData();
+                    }
+                });
+    }
+
+    private void requestData() {
+        String tableNameHistory = DBConfig.HISTORY_TABLE_NAME;
+        if (!TextUtils.isEmpty(mLoginTokenString)) {
+            tableNameHistory = DBConfig.REMOTE_HISTORY_TABLE_NAME;
         }
 
+        Log.e(TAG, "---tableNameHistory：" + tableNameHistory);
+        DataSupport.search(tableNameHistory)
+                .condition()
+                .eq(DBConfig.USERID, userId)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, final String result) {
+                        Log.e(TAG, "---result = " + result);
+                        if (code == 0) {
+                            Gson mGson = new Gson();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                            final List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson(result, type);
+                            Message msg = new Message();
+                            msg.what = UPDATE;
+                            msg.obj = mCollectBean;
+                            mHandler.sendMessage(msg);
+                        }
+                    }
+                }).excute();
     }
 
     private void init() {
@@ -329,26 +433,24 @@ public class HistoryActivity extends FragmentActivity implements
         action_type = getIntent().getIntExtra("action_type", 0);
     }
 
-    /**
-     * 设置empty view的可见性, 该emptyview用于提示页面数据获取异常
-     *
-     * @param visibility
-     */
-    private void setTipVisibility(int visibility) {
-        if (mEmptyView != null) {
-            mEmptyView.setVisibility(visibility);
-        }
-    }
+//    /**
+//     * 设置empty view的可见性, 该emptyview用于提示页面数据获取异常
+//     *
+//     * @param visibility
+//     */
+//    private void setTipVisibility(int visibility) {
+//        if (mEmptyView != null) {
+//            mEmptyView.setVisibility(visibility);
+//        }
+//    }
 
     @Override
     public void onItemClick(View view, int Position, UserCenterPageBean.Bean object) {
-        JumpUtil.activityJump(getApplicationContext(), object._actiontype, object._contenttype,
-                object._contentuuid, "");
+        JumpUtil.activityJump(getApplicationContext(), object._actiontype, object._contenttype, object._contentuuid, "");
     }
 
     @Override
-    public void onItemFocusChange(View view, boolean hasFocus, int Position, UserCenterPageBean
-            .Bean object) {
+    public void onItemFocusChange(View view, boolean hasFocus, int Position, UserCenterPageBean.Bean object) {
 
     }
 
@@ -372,46 +474,58 @@ public class HistoryActivity extends FragmentActivity implements
                 switch (v.getId()) {
                     case R.id.delete_all_btn:
                         if (mCollectBean != null && mCollectBean.size() != 0) {
-//                            for (int i = 0; i < mCollectBean.size(); i++) {
-//                                final int finalI = i;
-                            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME).condition()
-//                                        .eq(DBConfig.CONTENTUUID, mCollectBean.get(i)
-// ._contentuuid)
-                                    .build()
-                                    .withCallback(new DBCallback<String>() {
-                                        @Override
-                                        public void onResult(int code, final String result) {
-                                            if (code == 0) {
 
-                                                LogUploadUtils.uploadLog(Constant
-                                                        .LOG_NODE_HISTORY, "2," + " ");//清空所有历史记录
-                                                mRecyclerView.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-//                                                            if (finalI ==0){
-                                                        Toast.makeText(getApplicationContext(),
-                                                                "删除成功", Toast.LENGTH_SHORT).show();
-//                                                            }
-                                                        if (deleteView != null) {
-                                                            ViewGroup contentGroup = getWindow()
-                                                                    .getDecorView().findViewById
-                                                                            (android.R.id
-                                                                                    .content);
-                                                            contentGroup.removeView(deleteView);
-                                                            deleteView = null;
+                            UserCenterRecordManager.getInstance()
+                                    .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
+                                            getApplicationContext(),
+                                            "",
+                                            null,
+                                            new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "2," + " ");//清空所有历史记录
+                                                    mRecyclerView.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                                            if (deleteView != null) {
+                                                                ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+                                                                contentGroup.removeView(deleteView);
+                                                                deleteView = null;
+                                                            }
+                                                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                                                         }
-                                                        RxBus.get().post(Constant.UPDATE_UC_DATA,
-                                                                true);
+                                                    });
+                                                }
+                                            });
+                            requestUserInfo();
 
-                                                    }
-                                                });
-                                            }
+//                            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME).condition()
+//                                    .build()
+//                                    .withCallback(new DBCallback<String>() {
+//                                        @Override
+//                                        public void onResult(int code, final String result) {
+//                                            if (code == 0) {
+//                                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "2," + " ");//清空所有历史记录
+//                                                mRecyclerView.post(new Runnable() {
+//                                                    @Override
+//                                                    public void run() {
+//                                                        Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+//                                                        if (deleteView != null) {
+//                                                            ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+//                                                            contentGroup.removeView(deleteView);
+//                                                            deleteView = null;
+//                                                        }
+//                                                        RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+//                                                    }
+//                                                });
+//                                            }
+//                                        }
+//                                    }).excute();
+//                            String tableName = DBConfig.HISTORY_TABLE_NAME;
+//                            requestData();
 
-                                        }
-                                    }).excute();
-//                            }
-                            String tableName = DBConfig.HISTORY_TABLE_NAME;
-                            requestData(tableName);
+
                         }
 
 
@@ -420,62 +534,87 @@ public class HistoryActivity extends FragmentActivity implements
                     case R.id.delete_single_btn:
                         if (mCollectBean != null && mCollectBean.size() != 0) {
                             selectPostion = mAdapter.getSelectPostion();
-                            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME).condition()
-                                    .eq(DBConfig.CONTENTUUID, mCollectBean.get(mAdapter
-                                            .getSelectPostion())._contentuuid)
-                                    .build()
-                                    .withCallback(new DBCallback<String>() {
-                                        @Override
-                                        public void onResult(int code, final String result) {
-                                            if (code == 0) {
 
-                                                LogUploadUtils.uploadLog(Constant
-                                                        .LOG_NODE_HISTORY, "1," + mCollectBean
-                                                        .get(mAdapter
-                                                                .getSelectPostion())
-                                                        ._contentuuid);//删除历史记录
-                                                mRecyclerView.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Toast.makeText(getApplicationContext(),
-                                                                "删除成功", Toast.LENGTH_SHORT).show();
-                                                        if (deleteView != null) {
-                                                            ViewGroup contentGroup = getWindow()
-                                                                    .getDecorView().findViewById
-                                                                            (android.R.id
-                                                                                    .content);
-                                                            contentGroup.removeView(deleteView);
-                                                            deleteView = null;
-                                                        }
+                            UserCenterRecordManager.getInstance()
+                                    .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
+                                            getApplicationContext(),
+                                            mCollectBean.get(mAdapter.getSelectPostion())._contentuuid,
+                                            mCollectBean.get(mAdapter.getSelectPostion())._contenttype,
+                                            new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.d(TAG, "onResult remove");
+                                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "1," + mCollectBean.get(mAdapter.getSelectPostion())._contentuuid);//删除历史记录
+                                                    mRecyclerView.post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                                            if (deleteView != null) {
+                                                                ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+                                                                contentGroup.removeView(deleteView);
+                                                                deleteView = null;
+                                                            }
 
-                                                        mAdapter.setAllowLostFocus(true);
-                                                        if (mAdapter.getItemCount() > 0 &&
-                                                                selectPostion >= 1) {
-                                                            StaggeredGridLayoutManager
-                                                                    layoutManager =
-                                                                    (StaggeredGridLayoutManager)
-                                                                            mRecyclerView
-                                                                                    .getLayoutManager();
+                                                            mAdapter.setAllowLostFocus(true);
+                                                            if (mAdapter.getItemCount() > 0 && selectPostion >= 1) {
+                                                                GridLayoutManager layoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
 
-                                                            View focusView = layoutManager
-                                                                    .findViewByPosition
-                                                                            (selectPostion - 1);
+                                                                View focusView = layoutManager.findViewByPosition(selectPostion - 1);
 
                                                             if (focusView != null) {
                                                                 focusView.requestFocus();
                                                             }
 
-                                                            mAdapter.removeItem(selectPostion);
-                                                        } else {
-                                                            requestData(tableName);
+                                                                mAdapter.removeItem(selectPostion);
+                                                            } else {
+//                                                            requestData(tableName);
+                                                                requestUserInfo();
+                                                            }
                                                         }
-                                                    }
-                                                });
-                                            }
+                                                    });
+                                                }
+                                            });
 
-                                        }
-                                    }).excute();
 
+//                            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME).condition()
+//                                    .eq(DBConfig.CONTENTUUID, mCollectBean.get(mAdapter.getSelectPostion())._contentuuid)
+//                                    .build()
+//                                    .withCallback(new DBCallback<String>() {
+//                                        @Override
+//                                        public void onResult(int code, final String result) {
+//                                            if (code == 0) {
+//
+//                                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "1," + mCollectBean.get(mAdapter.getSelectPostion())._contentuuid);//删除历史记录
+//                                                mRecyclerView.post(new Runnable() {
+//                                                    @Override
+//                                                    public void run() {
+//                                                        Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+//                                                        if (deleteView != null) {
+//                                                            ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+//                                                            contentGroup.removeView(deleteView);
+//                                                            deleteView = null;
+//                                                        }
+//
+//                                                        mAdapter.setAllowLostFocus(true);
+//                                                        if (mAdapter.getItemCount() > 0 && selectPostion >= 1) {
+//                                                            StaggeredGridLayoutManager layoutManager = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
+//
+//                                                            View focusView = layoutManager.findViewByPosition(selectPostion - 1);
+//
+//                                                            if (focusView != null) {
+//                                                                focusView.requestFocus();
+//                                                            }
+//
+//                                                            mAdapter.removeItem(selectPostion);
+//                                                        } else {
+////                                                            requestData(tableName);
+//                                                            requestUserInfo();
+//                                                        }
+//                                                    }
+//                                                });
+//                                            }
+//                                        }
+//                                    }).excute();
                         }
 
                         break;

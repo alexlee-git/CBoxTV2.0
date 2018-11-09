@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg">
+
+    <TextView
+        android:layout_width="@dimen/width_4px"
+        android:layout_height="@dimen/height_106px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:background="@drawable/user_order_catalog" />
+
+    <TextView
+        android:layout_width="@dimen/width_213px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginLeft="@dimen/width_147px"
+        android:layout_marginStart="@dimen/width_147px"
+        android:layout_marginTop="@dimen/height_60px"
+        android:text="@string/phone_login_info"
+        android:includeFontPadding="false"
+        android:textColor="#66FFFFFF"
+        android:textSize="@dimen/height_46px" />
+
+    <FrameLayout
+        android:id="@+id/head_container"
+        android:layout_width="@dimen/width_172px"
+        android:layout_height="@dimen/height_172px"
+        android:layout_marginLeft="@dimen/width_875px"
+        android:layout_marginStart="@dimen/width_875px"
+        android:layout_marginTop="@dimen/height_98px">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="Header"
+            android:src="@drawable/user_head_default"
+            tools:ignore="HardcodedText" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/userinfo_tv_vip"
+        android:layout_width="@dimen/width_37px"
+        android:layout_height="@dimen/height_32px"
+        android:layout_marginLeft="@dimen/width_998px"
+        android:layout_marginStart="@dimen/width_998px"
+        android:layout_marginTop="@dimen/height_132px"
+        android:src="@drawable/uc_head_not_member_mark_v2" />
+
+    <TextView
+        android:layout_width="@dimen/width_528px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/head_container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_6px"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:text="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_30px" />
+
+    <LinearLayout
+        android:id="@+id/id_container"
+        android:layout_width="@dimen/width_1104px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_marginLeft="@dimen/width_408px"
+        android:layout_marginStart="@dimen/width_408px"
+        android:layout_marginTop="@dimen/height_373px"
+        android:background="@drawable/userinfo_item_background"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/width_83px"
+        android:paddingRight="@dimen/width_83px"
+        tools:ignore="RtlSymmetry">
+
+        <CheckBox
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:button="@null"
+            android:gravity="center"
+            android:tag="InfoTitle"
+            android:text="@string/user_id"
+            android:textColor="@color/userinfo_title_text_color"
+            android:textSize="@dimen/height_32px" />
+
+        <CheckBox
+            android:id="@+id/userinfo_checkbox_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:button="@null"
+            android:gravity="right|end"
+            android:tag="infoText"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_28px" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mobile_continer"
+        android:layout_width="@dimen/width_1104px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_below="@+id/id_container"
+        android:layout_marginLeft="@dimen/width_408px"
+        android:layout_marginStart="@dimen/width_408px"
+        android:layout_marginTop="@dimen/height_24px"
+        android:background="@drawable/userinfo_item_background"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/width_83px"
+        android:paddingRight="@dimen/width_83px"
+        tools:ignore="RtlSymmetry">
+
+        <CheckBox
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:button="@null"
+            android:gravity="center"
+            android:tag="InfoTitle"
+            android:text="@string/user_mobile"
+            android:textColor="@color/userinfo_title_text_color"
+            android:textSize="@dimen/height_32px" />
+
+        <CheckBox
+            android:id="@+id/userinfo_checkbox_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:button="@null"
+            android:gravity="right|end"
+            android:tag="infoText"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_28px"
+            tools:ignore="RtlHardcoded" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/sex_continer"
+        android:layout_width="@dimen/width_1104px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_below="@+id/mobile_continer"
+        android:layout_marginLeft="@dimen/width_408px"
+        android:layout_marginStart="@dimen/width_408px"
+        android:layout_marginTop="@dimen/height_24px"
+        android:background="@drawable/userinfo_item_background"
+        android:focusable="true"
+        android:paddingEnd="@dimen/width_83px"
+        android:paddingRight="@dimen/width_83px"
+        tools:ignore="RtlSymmetry">
+
+        <CheckBox
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:button="@null"
+            android:gravity="center"
+            android:tag="InfoTitle"
+            android:text="@string/user_sex"
+            android:textColor="@color/userinfo_title_text_color"
+            android:textSize="@dimen/height_32px" />
+
+        <CheckBox
+            android:id="@+id/sex_text"
+            android:layout_width="@dimen/width_128px"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:button="@null"
+            android:drawableLeft="@drawable/userinfo_left_dir"
+            android:drawablePadding="@dimen/width_24px"
+            android:drawableRight="@drawable/userinfo_right_dir"
+            android:gravity="center"
+            android:tag="infoText"
+            android:text="未知"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_28px" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/userinfo_btn_exit"
+        android:layout_width="@dimen/width_476px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_below="@+id/sex_continer"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/height_24px"
+        android:background="@drawable/userinfo_item_background"
+        android:focusable="true"
+        android:text="@string/exit_login"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_36px" />
+</RelativeLayout>

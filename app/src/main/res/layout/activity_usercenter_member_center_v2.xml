@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:orientation="vertical"
+    tools:context="tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <tv.newtv.cboxtv.uc.v2.member.MemberCenterRecyclerView
+            android:id="@+id/id_member_center_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:focusable="false"/>
+
+        <TextView
+            android:id="@+id/id_member_center_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/height_400px"
+            android:clickable="false"
+            android:focusable="false"
+            android:gravity="center_horizontal"
+            android:text="@string/module_area_no_data"
+            android:textColor="@color/colorRecommedPosText"
+            android:textSize="@dimen/height_50px"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+</LinearLayout>

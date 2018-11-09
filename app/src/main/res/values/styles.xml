@@ -164,6 +164,104 @@
         <item name="android:windowBackground">@android:color/transparent</item><!--背景透明-->
         <item name="android:backgroundDimAmount">0.7</item><!--透明度 0.0f到1.0f之间。1.0完全不透明，0.0f完全透明-->
         <item name="android:textColor">#ffffff</item>
+    </style>
 
+
+    <style name="UserInfoTabStyle">
+        <item name="android:gravity">center_horizontal|top</item>
+        <item name="android:button">@null</item>
+        <item name="android:padding">0px</item>
+        <item name="android:layout_marginLeft">@dimen/width_48px</item>
+        <item name="android:paddingLeft">@dimen/width_13px</item>
+        <item name="android:paddingRight">@dimen/width_13px</item>
+        <item name="android:paddingBottom">@dimen/height_13px</item>
+        <item name="android:textSize">@dimen/height_38px</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">@dimen/width_160px</item>
+        <item name="android:layout_height">@dimen/height_60px</item>
+    </style>
+
+
+<!-- 我的页面-->
+    <!-- 海报下主标题style -->
+    <style name="ModulePosterBottomMainTitleStyle">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">@dimen/height_28px</item>
+    </style>
+    <!-- 海报下副标题style -->
+    <style name="ModulePosterBottomSubtitleStyle">
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">@dimen/height_20px</item>
+    </style>
+    <!-- 海报上剧集更新标题style -->
+    <style name="ModulePosterProgramUpdateTitleStyle">
+        <item name="android:textColor">#FFFFFCFC</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_22px</item>
+    </style>
+    <!-- 海报上评分标题style -->
+    <style name="ModulePosterScoreTitleStyle">
+        <item name="android:textColor">#FF50E3C2</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_22px</item>
+    </style>
+    <!-- 会员中心 -->
+    <!-- 会员中心首页用户名标题style -->
+    <style name="MemberCenterHeadTitleStyle">
+        <item name="android:textColor">#FFE6D38E</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:textSize">@dimen/height_36px</item>
+    </style>
+    <!-- 会员中心首页有效期标题style -->
+    <style name="MemberCenterTimeTitleStyle">
+        <item name="android:textColor">#99E6D38E</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:textSize">@dimen/height_24px</item>
+    </style>
+    <!-- 会员中心首页按钮标题style -->
+    <style name="MemberCenterBtnTitleStyle">
+        <item name="android:textColor">#99FFFFFF</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/height_28px</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <!-- 会员中心首页片库推荐位标题style -->
+    <style name="MemberCenterDramaLibraryTitleStyle">
+        <item name="android:textColor">#FFE6D38E</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">@dimen/height_32px</item>
+    </style>
+    <!-- 会员中心二维码扫描提醒上标题style -->
+    <style name="MemberCenterQrTopTitleStyle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_20px</item>
+    </style>
+    <!-- 会员中心二维码扫描提醒下标题style -->
+    <style name="MemberCenterQrBottomTitleStyle">
+        <item name="android:textColor">#000000</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_18px</item>
+    </style>
+    <!-- 会员中心二维码扫描提醒全屏上标题style -->
+    <style name="MemberCenterQrFullScreenTopTitleStyle">
+        <item name="android:textColor">#FF000000</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_32px</item>
+    </style>
+    <!-- 会员中心二维码扫描提醒全屏下标题style -->
+    <style name="MemberCenterQrFullScreenBottomTitleStyle">
+        <item name="android:textColor">#FF000000</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/height_30px</item>
+    </style>
+    <!-- 会员中心会员片库推荐位标题style -->
+    <style name="MemberCenterDramaLibraryRecommendTitleStyle">
+        <item name="android:textColor">#FFE6D38E</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:textSize">@dimen/height_32px</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg">
+
+    <TextView
+        android:layout_width="@dimen/width_4px"
+        android:layout_height="@dimen/height_106px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:background="@drawable/user_order_catalog" />
+
+    <TextView
+        android:layout_width="@dimen/width_800px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_marginLeft="@dimen/width_148px"
+        android:layout_marginStart="@dimen/width_148px"
+        android:layout_marginTop="@dimen/height_60px"
+        android:includeFontPadding="false"
+        android:text="@string/usercenter_member"
+        android:textColor="#66E6D38E"
+        android:textSize="@dimen/height_46px" />
+
+    <RelativeLayout
+        android:id="@+id/paychannel_rel_order_wx"
+        android:layout_width="@dimen/width_180px"
+        android:layout_height="@dimen/height_52px"
+        android:layout_marginLeft="@dimen/width_240px"
+        android:layout_marginStart="@dimen/width_240px"
+        android:layout_marginTop="@dimen/height_182px">
+
+        <TextView
+            android:id="@+id/paychannel_order_tv_wx"
+            android:layout_width="@dimen/width_180px"
+            android:layout_height="@dimen/height_38px"
+            android:focusable="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="@string/usercenter_pay_channel_wx"
+            android:textColor="@color/paychannel_color_change"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/paychannel_order_tv_fouse_wx"
+            android:layout_width="@dimen/width_180px"
+            android:layout_height="@dimen/height_4px"
+            android:layout_below="@+id/paychannel_order_tv_wx"
+            android:layout_marginTop="@dimen/height_10px"
+            android:background="@drawable/paychannel_order_fouse_channel"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="@dimen/width_1494px"
+        android:layout_height="@dimen/height_603px"
+        android:layout_marginLeft="@dimen/width_186px"
+        android:layout_marginStart="@dimen/width_186px"
+        android:layout_marginTop="@dimen/height_247px"
+        android:background="@drawable/paychannel_order_foused"
+        android:focusable="true">
+
+        <RelativeLayout
+            android:layout_width="@dimen/width_1440px"
+            android:layout_height="@dimen/height_548px"
+            android:layout_centerInParent="true"
+            android:background="@drawable/paychannel_order_bg">
+
+            <RelativeLayout
+                android:layout_width="@dimen/width_424px"
+                android:layout_height="@dimen/height_488px"
+                android:layout_marginBottom="@dimen/height_26px"
+                android:layout_marginLeft="@dimen/width_26px"
+                android:layout_marginStart="@dimen/width_26px"
+                android:layout_marginTop="@dimen/height_26px"
+                android:background="@drawable/usercenter_login_qrcode_bg">
+
+                <RelativeLayout
+                    android:id="@+id/paychannel_order_rel_qrcode"
+                    android:layout_width="@dimen/width_390px"
+                    android:layout_height="@dimen/height_390px"
+                    android:layout_marginBottom="@dimen/height_14px"
+                    android:layout_marginLeft="@dimen/width_17px"
+                    android:layout_marginStart="@dimen/width_17px"
+                    android:layout_marginTop="@dimen/height_17px"
+                    android:background="@drawable/activity_login_qr_inside_back">
+
+                    <ImageView
+                        android:id="@+id/paychannel_order_img_qrcode"
+                        android:layout_width="@dimen/width_384px"
+                        android:layout_height="@dimen/height_384px"
+                        android:layout_centerInParent="true" />
+                </RelativeLayout>
+
+                <FrameLayout
+                    android:layout_width="@dimen/width_424px"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/paychannel_order_rel_qrcode">
+
+                    <ImageView
+                        android:layout_width="@dimen/width_54px"
+                        android:layout_height="@dimen/height_54px"
+                        android:layout_marginEnd="@dimen/width_16px"
+                        android:layout_marginLeft="@dimen/width_28px"
+                        android:layout_marginRight="@dimen/width_16px"
+                        android:layout_marginStart="@dimen/width_28px"
+                        android:src="@drawable/usercenter_login_scan" />
+
+                    <TextView
+                        android:layout_width="@dimen/width_314px"
+                        android:layout_height="@dimen/height_26px"
+                        android:layout_marginLeft="@dimen/width_94px"
+                        android:layout_marginStart="@dimen/width_94px"
+                        android:includeFontPadding="false"
+                        android:text="@string/usercenter_pay"
+                        android:textColor="#FF000000"
+                        android:textSize="@dimen/height_24px" />
+
+                    <TextView
+                        android:layout_width="@dimen/width_314px"
+                        android:layout_height="@dimen/height_24px"
+                        android:layout_marginLeft="@dimen/width_94px"
+                        android:layout_marginStart="@dimen/width_94px"
+                        android:layout_marginTop="@dimen/height_32px"
+                        android:includeFontPadding="false"
+                        android:text="@string/usercenter_login_scan_quest"
+                        android:textColor="#99000000"
+                        android:textSize="@dimen/height_22px" />
+                </FrameLayout>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/paychannel_order_tv_name"
+            android:layout_width="@dimen/width_740px"
+            android:layout_height="@dimen/height_38px"
+            android:layout_marginLeft="@dimen/width_633px"
+            android:layout_marginStart="@dimen/width_633px"
+            android:layout_marginTop="@dimen/height_174px"
+            android:includeFontPadding="false"
+            android:text="@string/usercenter_pay_product"
+            android:textColor="#FFE6D38E"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/paychannel_order_tv_price"
+            android:layout_width="@dimen/width_740px"
+            android:layout_height="@dimen/height_38px"
+            android:layout_below="@id/paychannel_order_tv_name"
+            android:layout_marginLeft="@dimen/width_633px"
+            android:layout_marginStart="@dimen/width_633px"
+            android:layout_marginTop="@dimen/height_44px"
+            android:includeFontPadding="false"
+            android:text="@string/usercenter_pay_price"
+            android:textColor="#FFE6D38E"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/paychannel_order_tv_time"
+            android:layout_width="@dimen/width_740px"
+            android:layout_height="@dimen/height_38px"
+            android:layout_below="@id/paychannel_order_tv_price"
+            android:layout_marginLeft="@dimen/width_633px"
+            android:layout_marginStart="@dimen/width_633px"
+            android:layout_marginTop="@dimen/height_44px"
+            android:includeFontPadding="false"
+            android:text="@string/usercenter_pay_time"
+            android:textColor="#FFE6D38E"
+            android:textSize="@dimen/height_36px" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="@dimen/width_600px"
+        android:layout_height="@dimen/height_26px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_990px"
+        android:includeFontPadding="false"
+        android:text="@string/usercenter_use_copyright"
+        android:textColor="#66E6D38E"
+        android:textSize="@dimen/height_24px" />
+
+</RelativeLayout>

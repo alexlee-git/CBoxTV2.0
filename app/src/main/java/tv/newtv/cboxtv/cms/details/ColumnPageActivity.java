@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.cms.details;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,12 +21,14 @@ import com.newtv.libs.util.ToastUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
+import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeHelper;
@@ -49,6 +50,7 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
 @BuyGoodsAD
 public class ColumnPageActivity extends DetailPageActivity {
 
+    private static final String ACTION = "tv.newtv.cboxtv.action.COLUMNPAGE";
     private EpisodePageView playListView;
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
@@ -56,6 +58,9 @@ public class ColumnPageActivity extends DetailPageActivity {
     private SmoothScrollView scrollView;
     private Content pageContent;
     private int currentIndex = -1;
+    private boolean isCollect = false;
+    private boolean isLogin = false;
+    private String memberStatus;
 
     @Override
     protected void FocusToTop() {
@@ -104,16 +109,19 @@ public class ColumnPageActivity extends DetailPageActivity {
             return;
         }
 
+        initLoginStatus();
+
         final SuggestView sameType = findViewById(R.id.same_type);
         headPlayerView = findViewById(R.id.header_video);
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.video_layout)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView
-                        .Builder.DB_TYPE_SUBSCRIP))
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView.Builder.DB_TYPE_SUBSCRIP),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder.DB_TYPE_VIPPAY),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder.DB_TYPE_VIPTIP))
                 .autoGetSubContents()
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
-                .SetClickableIds(R.id.full_screen, R.id.add)
-                .SetContentUUID(getContentUUID())
+                .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
+                .SetContentUUID(contentUUID)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
@@ -202,15 +210,33 @@ public class ColumnPageActivity extends DetailPageActivity {
                                     }
                                 });
                                 mPaiseView.startDiverges(0);
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_LIKE,"0,"+pageContent.getContentUUID());
                                 break;
 
                             case R.id.full_screen:
-                                if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                {//判断距离上次点击小于2秒
+                                if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen(ColumnPageActivity.this);
                                 }
-
+                                break;
+                            case R.id.vip_pay:
+                                if (pageContent != null && pageContent.getVipFlag() != null) {
+                                    final int vipState = Integer.parseInt(pageContent.getVipFlag());
+                                    if (isLogin) {
+                                        //1 单点包月  3vip  4单点
+                                        if (vipState == 1) {
+                                            UserCenterUtils.startVIP1(ColumnPageActivity.this, pageContent, ACTION);
+                                        } else if (vipState == 3) {
+                                            UserCenterUtils.startVIP3(ColumnPageActivity.this, pageContent, ACTION);
+                                        } else if (vipState == 4) {
+                                            UserCenterUtils.startVIP4(ColumnPageActivity.this, pageContent, ACTION);
+                                        }
+                                    } else {
+                                        UserCenterUtils.startLoginActivity(ColumnPageActivity.this,pageContent,ACTION,true);
+                                    }
+                                }
+                                break;
+                            default:
                                 break;
                         }
                     }
@@ -237,6 +263,15 @@ public class ColumnPageActivity extends DetailPageActivity {
         if (headPlayerView != null) {
             headPlayerView.onActivityPause();
         }
+    }
+    //获取登陆状态
+    private void initLoginStatus(){
+        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(boolean status) {
+                isLogin = status;
+            }
+        });
     }
 
     @Override

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <FrameLayout
+        android:id="@+id/id_member_center_info"
+        android:layout_width="@dimen/width_641px"
+        android:layout_height="@dimen/height_173px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_60px">
+        <!--会员头像 -->
+        <ImageView
+            android:id="@+id/id_member_center_head"
+            android:layout_width="@dimen/width_173px"
+            android:layout_height="@dimen/height_173px"
+            android:background="@drawable/member_head_not_login_v2"/>
+
+        <FrameLayout
+            android:layout_width="@dimen/width_420px"
+            android:layout_height="@dimen/height_82px"
+            android:layout_marginLeft="@dimen/height_221px"
+            android:layout_marginTop="@dimen/height_33px"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/id_member_center_name"
+                style="@style/MemberCenterHeadTitleStyle"
+                android:layout_width="@dimen/width_420px"
+                android:layout_height="@dimen/height_38px"
+                android:includeFontPadding="false"/>
+
+            <TextView
+                android:id="@+id/id_member_center_time"
+                style="@style/MemberCenterTimeTitleStyle"
+                android:layout_width="@dimen/width_420px"
+                android:layout_height="@dimen/height_26px"
+                android:layout_marginTop="@dimen/height_56px"
+                android:includeFontPadding="false"/>
+        </FrameLayout>
+        <!--登录按钮 -->
+        <FrameLayout
+            android:id="@+id/id_member_center_btn_login"
+            android:layout_width="@dimen/width_140px"
+            android:layout_height="@dimen/height_68px"
+            android:layout_marginLeft="@dimen/width_221px"
+            android:layout_marginTop="@dimen/height_58px"
+            android:background="@drawable/member_center_btn_normal_v2"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusLeft="@id/id_member_center_btn_login"
+            android:visibility="invisible">
+
+            <TextView
+                style="@style/MemberCenterBtnTitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_28px"
+                android:layout_marginTop="@dimen/height_20px"
+                android:includeFontPadding="false"
+                android:tag="tag_member_center_btn_text"
+                android:text="@string/member_center_btn_login"/>
+        </FrameLayout>
+
+
+    </FrameLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/id_member_center_btn_list"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_68px"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_118px">
+        <!--开通会员按钮 -->
+        <FrameLayout
+            android:id="@+id/id_member_center_btn_open"
+            android:layout_width="@dimen/width_140px"
+            android:layout_height="@dimen/height_68px"
+            android:background="@drawable/member_center_btn_normal_v2"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusLeft="@id/id_member_center_btn_open">
+
+            <TextView
+                style="@style/MemberCenterBtnTitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_28px"
+                android:layout_marginTop="@dimen/height_20px"
+                android:includeFontPadding="false"
+                android:tag="tag_member_center_btn_text"
+                android:text="@string/member_center_btn_open"/>
+        </FrameLayout>
+        <!--会员兑换按钮 -->
+        <FrameLayout
+            android:id="@+id/id_member_center_btn_exchange"
+            android:layout_width="@dimen/width_140px"
+            android:layout_height="@dimen/height_68px"
+            android:layout_marginLeft="@dimen/width_36px"
+            android:layout_toRightOf="@id/id_member_center_btn_open"
+            android:background="@drawable/member_center_btn_normal_v2"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/MemberCenterBtnTitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_28px"
+                android:layout_marginTop="@dimen/height_20px"
+                android:includeFontPadding="false"
+                android:tag="tag_member_center_btn_text"
+                android:text="@string/member_center_btn_exchange"/>
+        </FrameLayout>
+        <!--我的订单按钮 -->
+        <FrameLayout
+            android:id="@+id/id_member_center_btn_order"
+            android:layout_width="@dimen/width_140px"
+            android:layout_height="@dimen/height_68px"
+            android:layout_marginLeft="@dimen/width_36px"
+            android:layout_toRightOf="@id/id_member_center_btn_exchange"
+            android:background="@drawable/member_center_btn_normal_v2"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                style="@style/MemberCenterBtnTitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_28px"
+                android:layout_marginTop="@dimen/height_20px"
+                android:includeFontPadding="false"
+                android:tag="tag_member_center_btn_text"
+                android:text="@string/member_center_btn_order"/>
+        </FrameLayout>
+        <!--会员片库按钮 -->
+        <FrameLayout
+            android:id="@+id/id_member_center_btn_drama_library"
+            android:layout_width="@dimen/width_140px"
+            android:layout_height="@dimen/height_68px"
+            android:layout_marginLeft="@dimen/width_36px"
+            android:layout_toRightOf="@id/id_member_center_btn_order"
+            android:background="@drawable/member_center_btn_normal_v2"
+            android:clickable="true"
+            android:focusable="true"
+            android:nextFocusRight="@id/id_member_center_btn_drama_library">
+
+            <TextView
+                style="@style/MemberCenterBtnTitleStyle"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_28px"
+                android:layout_marginTop="@dimen/height_20px"
+                android:includeFontPadding="false"
+                android:tag="tag_member_center_btn_text"
+                android:text="@string/member_center_btn_drama_library"/>
+        </FrameLayout>
+
+
+    </RelativeLayout>
+</RelativeLayout>
