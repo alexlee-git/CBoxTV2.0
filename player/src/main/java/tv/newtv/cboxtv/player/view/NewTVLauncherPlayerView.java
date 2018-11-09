@@ -126,6 +126,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private VodContract.Presenter mVodPresenter;
 
     private LiveTimer mLiveTimer;
+    private List<ScreenListener> screenListeners;
 
 
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
@@ -399,6 +400,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (mIsPause && mNewTVLauncherPlayer != null) {
             start();
         }
+        callBackScreenListener(false);
     }
 
     public void setFromFullScreen() {
@@ -514,6 +516,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         updateUIPropertys(true);
+        callBackScreenListener(true);
     }
 
     private void createMenuGroup() {
@@ -1376,12 +1379,32 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     }
 
-    public void registerScreenListener(ScreenListener listener) {
+    private void callBackScreenListener(boolean enterFullScreen){
+        if(screenListeners != null){
+            for(ScreenListener screenListener : screenListeners){
+                if(screenListener!=null){
+                    if(enterFullScreen){
+                        screenListener.enterFullScreen();
+                    }else {
+                        screenListener.exitFullScreen();
+                    }
+                }
 
+            }
+        }
+    }
+
+    public void registerScreenListener(ScreenListener listener) {
+        if(screenListeners == null){
+            screenListeners = new ArrayList<>();
+        }
+        screenListeners.add(listener);
     }
 
     public void unregisterScreenListener(ScreenListener listener) {
-
+        if (screenListeners != null) {
+            screenListeners.remove(listener);
+        }
     }
 
     public static class PlayerViewConfig {
