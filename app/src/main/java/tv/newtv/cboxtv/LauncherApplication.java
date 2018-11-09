@@ -49,6 +49,7 @@ import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 //import com.tencent.bugly.crashreport.CrashReport;
 
@@ -130,6 +131,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                 Log.i(Constant.TAG, "accept: " + throwable);
             }
         });
+        UserCenterUtils.init();
     }
 
     /**

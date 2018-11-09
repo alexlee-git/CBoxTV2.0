@@ -40,6 +40,7 @@ import tv.newtv.cboxtv.uc.v2.Pay.ExterPayBean;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 
 /**
@@ -270,6 +271,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                         startActivity(mIntent);
                                     }
                                 }
+                                UserCenterUtils.setIsLogin(true);
                                 finish();
 
                             } catch (Exception e) {

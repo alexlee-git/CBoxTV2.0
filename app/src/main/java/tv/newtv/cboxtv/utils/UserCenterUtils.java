@@ -29,7 +29,50 @@ import static java.lang.String.valueOf;
 
 public class UserCenterUtils {
     private static final String TAG = UserCenterUtils.class.getSimpleName();
+    private static boolean isLogin = false;
+    private static String memberSatus;
 
+    public static void init(){
+        initLoginStatus();
+        initMemberStatus();
+    }
+
+    public static void initLoginStatus(){
+        getLoginStatus(new INotifyLoginStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(boolean status) {
+                isLogin = status;
+            }
+        });
+    }
+
+    public static void initMemberStatus(){
+        getMemberStatus(new INotifyMemberStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
+                memberSatus = status;
+            }
+        });
+    }
+
+    public static void setIsLogin(boolean isLogin) {
+        UserCenterUtils.isLogin = isLogin;
+    }
+
+    public static boolean isLogin(){
+        return isLogin;
+    }
+
+    public static String getMemberSatus() {
+        return memberSatus;
+    }
+
+    public static boolean isVip(){
+        if(!TextUtils.isEmpty(memberSatus) && TextUtils.equals(memberSatus,QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)){
+            return true;
+        }
+        return false;
+    }
     //登陆状态
     public static void getLoginStatus(INotifyLoginStatusCallback callback) {
         QueryUserStatusUtil.getInstance().getLoginStatus(LauncherApplication.AppContext, callback);
