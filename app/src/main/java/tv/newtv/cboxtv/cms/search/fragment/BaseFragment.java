@@ -157,7 +157,6 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     }
 
     public void setKey(String key) {
-        key = key.trim();
         if (!TextUtils.isEmpty(currentkey) && cacheDatas != null) {
             if (key.length() < currentkey.length()) {
                 if (cacheDatas.containsKey(key)) {
@@ -233,12 +232,14 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             mIsLoading = false;
             mSearchPresenter.stop();
             inputKeyChange();
-            mIsLoading = false;
+            notifyToDataInfoResult(true);
             return;
         }
         if (!TextUtils.equals(currentkey, key)) {
             currentPos = -1;
             inputKeyChange();
+        }else{
+            return;
         }
 
         SearchContract.SearchCondition conditionTV = SearchContract.SearchCondition
@@ -254,6 +255,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         }
         currentkey = key;
         mIsLoading = true;
+        notifyToDataInfoResult(true);
         requestId = mSearchPresenter.search(conditionTV);
     }
 
