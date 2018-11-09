@@ -379,7 +379,7 @@
         android:tag="cell_008_4"
         android:visibility="visible">
 
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_360px"
             android:layout_marginLeft="@dimen/width_27px"
@@ -394,7 +394,7 @@
             android:visibility="invisible"/>
 
         <!-- 右上角标志-->
-        <tv.newtv.cboxtv.views.RecycleImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_75px"
             android:layout_height="@dimen/height_30px"
             android:layout_marginLeft="@dimen/width_186px"

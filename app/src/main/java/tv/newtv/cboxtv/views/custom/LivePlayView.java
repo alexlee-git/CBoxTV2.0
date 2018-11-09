@@ -395,7 +395,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
         postDelayed(playLiveRunnable, mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ?
-                0 : 2000);
+                0 :
+                2000);
     }
 
 
