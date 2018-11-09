@@ -37,6 +37,12 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
     public static final String HTML_PATH_MEMBER_PROTOCOL = "HTML_PATH_MEMBER_PROTOCOL";
     public static final String MEMBER_CENTER_PARAMS = "MEMBER_CENTER_PARAMS";
 
+    // cms3.1新增bootguide字段
+    public static final String NEW_CMS = "NEW_CMS";
+    public static final String NEW_SEARCH = "NEW_SEARCH";
+    public static final String HOTSEARCH_CONTENTID = "HOTSEARCH_CONTENTID"; //搜索id
+    public static final String EXIT_CONTENTID = "EXIT_CONTENTID";
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
