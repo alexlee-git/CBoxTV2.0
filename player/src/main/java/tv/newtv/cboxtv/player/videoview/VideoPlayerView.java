@@ -21,6 +21,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.MainLooper;
 
+import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -96,6 +97,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     protected boolean NeedRepeat() {
         return repeatPlay;
     }
+
 
     @Override
     protected void onError(String code, String messgae) {
@@ -223,6 +225,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         setFocusable(true);
 
         HintTextView = new TextView(getContext());
+        HintTextView.setBackgroundResource(R.drawable.normalplayer_bg);
         HintTextView.setTextSize(getResources().getDimensionPixelSize(R.dimen.height_18px));
         HintTextView.setTextColor(Color.WHITE);
         HintTextView.setGravity(Gravity.CENTER);

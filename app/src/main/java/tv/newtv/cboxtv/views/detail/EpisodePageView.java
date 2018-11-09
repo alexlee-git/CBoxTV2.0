@@ -402,9 +402,9 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 });
             }
 
-            if (mOnEpisodeChange != null) {
-                mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
-            }
+//            if (mOnEpisodeChange != null) {
+//                mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
+//            }
 
             if (mContentList != null && mContentList.size() > 0) {
                 if (mControlView != null) {

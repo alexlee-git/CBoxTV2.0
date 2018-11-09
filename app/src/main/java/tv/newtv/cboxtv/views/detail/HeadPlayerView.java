@@ -107,7 +107,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         getMemberStatus();
     }
 
-
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
@@ -168,6 +167,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     @Override
                     public void getHistoryStatus(UserCenterPageBean.Bean bean) {
                         historyBean = bean;
+                        if (historyBean != null) {
+                            if (!TextUtils.isEmpty(historyBean.playPosition)) {
+                                currentPosition = Integer.valueOf(historyBean.playPosition);
+                            } else {
+                                currentPosition = 0;
+                            }
+                        }
                     }
                 });
     }
@@ -710,6 +716,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void play(){
+        playerView.beginChange();
         playerView.setSeriesInfo(mInfo);
         playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
     }
@@ -852,17 +859,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public interface InfoResult {
         void onResult(@Nullable Content info);
-    }
-
-    private static class PlayInfo {
-
-        int index;
-        int position;
-
-        private PlayInfo(int ind, int pos) {
-            index = ind;
-            position = pos;
-        }
     }
 
     public static class CustomFrame {
