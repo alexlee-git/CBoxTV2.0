@@ -10,10 +10,11 @@ import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.uc.UserStatus;
+import com.newtv.libs.uc.pay.ExterPayBean;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
-import tv.newtv.cboxtv.uc.v2.Pay.ExterPayBean;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
@@ -29,8 +30,6 @@ import static java.lang.String.valueOf;
 
 public class UserCenterUtils {
     private static final String TAG = UserCenterUtils.class.getSimpleName();
-    private static boolean isLogin = false;
-    private static String memberSatus;
 
     public static void init(){
         initLoginStatus();
@@ -41,7 +40,7 @@ public class UserCenterUtils {
         getLoginStatus(new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
-                isLogin = status;
+                UserStatus.setIsLogin(status);
             }
         });
     }
@@ -50,29 +49,11 @@ public class UserCenterUtils {
         getMemberStatus(new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
-                memberSatus = status;
+                UserStatus.setMemberSatus(status);
             }
         });
     }
 
-    public static void setIsLogin(boolean isLogin) {
-        UserCenterUtils.isLogin = isLogin;
-    }
-
-    public static boolean isLogin(){
-        return isLogin;
-    }
-
-    public static String getMemberSatus() {
-        return memberSatus;
-    }
-
-    public static boolean isVip(){
-        if(!TextUtils.isEmpty(memberSatus) && TextUtils.equals(memberSatus,QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)){
-            return true;
-        }
-        return false;
-    }
     //登陆状态
     public static void getLoginStatus(INotifyLoginStatusCallback callback) {
         QueryUserStatusUtil.getInstance().getLoginStatus(LauncherApplication.AppContext, callback);
