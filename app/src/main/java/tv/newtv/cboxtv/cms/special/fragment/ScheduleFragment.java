@@ -103,7 +103,7 @@ public class ScheduleFragment extends BaseSpecialContentFragment implements Play
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

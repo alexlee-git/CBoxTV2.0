@@ -25,6 +25,10 @@ import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import java.util.HashMap;
 
+import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
+import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
+import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
+import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
@@ -311,30 +315,23 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     }
 
     private boolean isDetailActivity() {
-//        Class<? extends BaseActivity> clazz = getClass();
-//        if(clazz == ProgrameSeriesAndVarietyDetailActivity.class
-//                ||clazz == ColumnPageActivity.class
-//                || clazz == SingleDetailPageActivity.class
-//                || clazz == ProgramCollectionActivity.class){
-//            return true;
-//        }
+        Class<? extends BaseActivity> clazz = getClass();
+        if(clazz == ProgrameSeriesAndVarietyDetailActivity.class
+                ||clazz == ColumnPageActivity.class
+                || clazz == SingleDetailPageActivity.class
+                || clazz == ProgramCollectionActivity.class){
+            return true;
+        }
         return false;
     }
 
-    private boolean hasPopoupAD() {
+    private boolean hasPopoupAD(){
+        return hasAnnotation(PopupAD.class);
+    }
+    private boolean hasAnnotation(Class ann){
         Class<? extends BaseActivity> clazz = getClass();
-        PopupAD annotation = clazz.getAnnotation(PopupAD.class);
-        if (annotation != null) {
-//=======
-//    private boolean hasPopoupAD(){
-//        return hasAnnotation(PopupAD.class);
-//    }
-//
-//    private boolean hasAnnotation(Class ann){
-//        Class<? extends BaseActivity> clazz = getClass();
-//        Annotation annotation = clazz.getAnnotation(ann);
-//        if(annotation != null){
-//>>>>>>> 1.4
+        Annotation annotation = clazz.getAnnotation(ann);
+        if(annotation != null) {
             return true;
         }
         return false;

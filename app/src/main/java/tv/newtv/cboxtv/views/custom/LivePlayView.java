@@ -421,7 +421,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
         mProgramSeriesInfo = content;
         if (mVideoPlayerView != null) {
             mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
@@ -430,7 +430,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
 
     }
 

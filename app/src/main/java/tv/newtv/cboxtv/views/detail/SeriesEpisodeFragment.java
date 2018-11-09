@@ -132,7 +132,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             contentView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (viewHolders != null && viewHolders.size() > currentIndex) {
+                    if (viewHolders != null && viewHolders.size() > currentIndex && currentIndex>=0) {
                         viewHolders.get(currentIndex).performClick(false);
                     }
                 }

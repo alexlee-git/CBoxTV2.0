@@ -9,3 +9,4 @@
 .externalNativeBuild
 /gradle
 activity_demo.xml
+.idea

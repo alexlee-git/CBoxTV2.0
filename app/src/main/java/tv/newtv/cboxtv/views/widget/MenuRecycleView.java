@@ -412,7 +412,6 @@ public class MenuRecycleView extends RecyclerView {
             mRecyclerView = new WeakReference<MenuRecycleView>(recyclerView);
             mLayoutRes = layout;
 
-
             linearLayoutManager = new MenuScrollLinearLayoutManager(recyclerView.getContext());
             linearLayoutManager.setAutoResize(autoResize);
             recyclerView.setLayoutManager(linearLayoutManager);

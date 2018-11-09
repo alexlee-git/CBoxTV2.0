@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -19,9 +20,13 @@ import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
+import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 项目名称:         CBoxTV
@@ -38,6 +43,11 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     private String contentUUID;
     private SmoothScrollView scrollView;
     private boolean isADEntry = false;
+    private static final String ACTION = "tv.newtv.cboxtv.action.SINGLEDETAIL";
+    private SuggestView suggestView;
+    private String leftUUID, rightUUID;
+    private boolean isLogin = false;
+    private Content mProgramSeriesInfo;
 
     @Override
     public boolean hasPlayer() {
@@ -55,7 +65,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
+        Log.d("ywy y", "onStop");
         if (headPlayerView != null) {
             headPlayerView.onActivityStop();
         }
@@ -64,6 +74,8 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("ywy y", "onResume");
+        initLoginStatus();
         if (headPlayerView != null) {
             headPlayerView.onActivityResume();
         }
@@ -79,6 +91,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("ywy y", "onDestory");
         headPlayerView = null;
     }
 
@@ -100,91 +113,126 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_detail_page);
-
+        Log.d("ywy y", "onCreate");
         if (savedInstanceState == null) {
             contentUUID = getIntent().getStringExtra("content_uuid");
-             isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
+            isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         } else {
             contentUUID = savedInstanceState.getString("content_uuid");
         }
 
         scrollView = findViewById(R.id.root_view);
         headPlayerView = findViewById(R.id.header_video);
-        final SuggestView suggestView = findViewById(R.id.suggest);
-        headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.single_item_head)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
-                        .DB_TYPE_COLLECT))
-                .SetPlayerId(R.id.video_container)
-                .autoGetSubContents()
-                .SetDefaultFocusID(R.id.full_screen)
-                .SetClickableIds(R.id.full_screen, R.id.add)
-                .SetContentUUID(contentUUID)
-                .SetOnInfoResult(new HeadPlayerView.InfoResult() {
-                    @Override
-                    public void onResult(Content info) {
-                        suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
-                    }
-                })
-                .SetPlayerCallback(new PlayerCallback() {
-                    @Override
-                    public void onEpisodeChange(int index, int position) {
+        suggestView = findViewById(R.id.suggest);
+    }
 
-                    }
-
-                    @Override
-                    public void ProgramChange() {
-
-                    }
-
-                    @Override
-                    public void onPlayerClick(VideoPlayerView videoPlayerView) {
-                        videoPlayerView.EnterFullScreen(SingleDetailPageActivity
-                                .this,false);
-                    }
-
-                    @Override
-                    public void AllPlayComplete(boolean isError, String info, VideoPlayerView
-                            videoPlayerView) {
-                        if (!isError) {
-                            videoPlayerView.onComplete();
+    private void initHeadPlayerView() {
+        if (null != headPlayerView) {
+            headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.single_item_head)
+                    .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
+                            new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder.DB_TYPE_VIPPAY),
+                            new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder.DB_TYPE_VIPTIP))
+                    .SetPlayerId(R.id.video_container)
+                    .SetDefaultFocusID(R.id.full_screen)
+                    .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
+                    .SetContentUUID(contentUUID)
+                    .SetOnInfoResult(new HeadPlayerView.InfoResult() {
+                        @Override
+                        public void onResult(Content info) {
+                            mProgramSeriesInfo = info;
+                            headPlayerView.setProgramSeriesInfo(info);
+//                        headPlayerView.Play(0, 0, false);
+                            suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info, null);
                         }
-                    }
-                })
-                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
-                    @Override
-                    public void videoEitFullScreen() {
+                    })
+                    .SetPlayerCallback(new PlayerCallback() {
+                        @Override
+                        public void onEpisodeChange(int index, int position) {
+                        }
 
-                    }
-                })
-                .SetClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        switch (view.getId()) {
-                            case R.id.add:
-                                DivergeView mPaiseView = ((DivergeView) headPlayerView
-                                        .findViewUseId(R.id.view_praise));
-                                mPaiseView.setEndPoint(new PointF(mPaiseView.getMeasuredWidth() /
-                                        2, 0));
-                                mPaiseView.setStartPoint(new PointF(getResources().getDimension(R
-                                        .dimen.width_40px),
-                                        getResources().getDimension(R.dimen.height_185px)));
-                                mPaiseView.setDivergeViewProvider(new DivergeView
-                                        .DivergeViewProvider() {
-                                    @Override
-                                    public Bitmap getBitmap(Object obj) {
-                                        return ((BitmapDrawable) ResourcesCompat.getDrawable
-                                                (getResources(), R.drawable
-                                                        .icon_praise, null)).getBitmap();
+                        @Override
+                        public void ProgramChange() {
+
+                        }
+
+                        public void onPlayerClick(VideoPlayerView videoPlayerView) {
+                            videoPlayerView.EnterFullScreen(SingleDetailPageActivity
+                                    .this, false);
+                        }
+
+                        @Override
+                        public void AllPlayComplete(boolean isError, String info, VideoPlayerView
+                                videoPlayerView) {
+                            if (!isError) {
+                                videoPlayerView.onComplete();
+                            }
+                        }
+                    })
+                    .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                        @Override
+                        public void videoEitFullScreen() {
+
+                        }
+                    }).SetClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            switch (view.getId()) {
+                                case R.id.add:
+                                    DivergeView mPaiseView = ((DivergeView) headPlayerView
+                                            .findViewUseId(R.id
+                                                    .view_praise));
+                                    mPaiseView.setEndPoint(new PointF(mPaiseView.getMeasuredWidth() /
+                                            2, 0));
+                                    mPaiseView.setStartPoint(new PointF(getResources().getDimension(R
+                                            .dimen.width_40px),
+                                            getResources().getDimension(R.dimen.height_185px)));
+                                    mPaiseView.setDivergeViewProvider(new DivergeView
+                                            .DivergeViewProvider() {
+                                        @Override
+                                        public Bitmap getBitmap(Object obj) {
+                                            return ((BitmapDrawable) ResourcesCompat.getDrawable
+                                                    (getResources(), R.drawable
+                                                            .icon_praise, null)).getBitmap();
+                                        }
+                                    });
+                                    mPaiseView.startDiverges(0);
+                                    break;
+                                case R.id.full_screen:
+                                    headPlayerView.EnterFullScreen
+                                            (SingleDetailPageActivity.this);
+                                    break;
+                                case R.id.vip_pay:
+                                    if (mProgramSeriesInfo != null && mProgramSeriesInfo.getVipFlag() != null) {
+                                        final int vipState = Integer.parseInt(mProgramSeriesInfo.getVipFlag());
+                                        if (isLogin) {
+                                            //1 单点包月  3vip  4单点
+                                            if (vipState == 1) {
+                                                UserCenterUtils.startVIP1(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION);
+                                            } else if (vipState == 3) {
+                                                UserCenterUtils.startVIP3(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION);
+                                            } else if (vipState == 4) {
+                                                UserCenterUtils.startVIP4(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION);
+                                            }
+                                        } else {
+                                            UserCenterUtils.startLoginActivity(SingleDetailPageActivity.this, mProgramSeriesInfo, ACTION, true);
+                                        }
                                     }
-                                });
-                                mPaiseView.startDiverges(0);
-                                break;
-                            case R.id.full_screen:
-                                headPlayerView.EnterFullScreen(SingleDetailPageActivity.this);
-
-                                break;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
-                    }
-                }));
+                    }));
+        }
+    }
+
+    //获取登陆状态
+    private void initLoginStatus() {
+        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(boolean status) {
+                isLogin = status;
+            }
+        });
     }
 }

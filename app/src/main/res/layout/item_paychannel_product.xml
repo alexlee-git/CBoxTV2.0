@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width_224px"
+    android:layout_height="@dimen/height_260px"
+    android:layout_margin="@dimen/height_10px"
+    android:background="@drawable/paychannel_item_product_foused"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/paychannel_item_product"
+        android:layout_width="@dimen/width_170px"
+        android:layout_height="@dimen/height_206px"
+        android:layout_margin="@dimen/height_27px"
+        android:src="@drawable/paychannel_item_product" />
+
+    <ImageView
+        android:id="@+id/paychannel_item_product_mark"
+        android:layout_width="@dimen/width_74px"
+        android:layout_height="@dimen/height_31px"
+        android:layout_marginLeft="@dimen/width_75px"
+        android:layout_marginRight="@dimen/width_75px"
+        android:layout_marginStart="@dimen/width_75px"
+        android:layout_marginTop="@dimen/height_27px"
+        android:src="@drawable/paychannel_item_product_mark" />
+
+
+    <TextView
+        android:id="@+id/paychannel_item_discount_price"
+        android:layout_width="@dimen/width_30px"
+        android:layout_height="@dimen/height_16px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_36px"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="6折"
+        android:textColor="#FFFFFFFF"
+        android:textSize="@dimen/height_16px" />
+
+    <RelativeLayout
+        android:id="@+id/paychannel_item_rel_price"
+        android:layout_width="@dimen/width_170px"
+        android:layout_height="@dimen/height_48px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_85px">
+
+        <TextView
+            android:id="@+id/paychannel_item_tv_price"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_48px"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="888"
+            android:textColor="#E6D38E"
+            android:textSize="@dimen/height_48px" />
+
+        <TextView
+            android:id="@+id/paychannel_item_price_mark"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_48px"
+            android:layout_toLeftOf="@+id/paychannel_item_tv_price"
+            android:layout_toStartOf="@+id/paychannel_item_tv_price"
+            android:gravity="bottom"
+            android:includeFontPadding="false"
+            android:text="￥"
+            android:textColor="#E6D38E"
+            android:textSize="@dimen/height_24px" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/paychannel_item_price_name"
+        android:layout_width="@dimen/width_170px"
+        android:layout_height="@dimen/height_24px"
+        android:layout_below="@id/paychannel_item_rel_price"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_8px"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="包月30天"
+        android:textColor="#FFC8A56D"
+        android:textSize="@dimen/height_24px" />
+
+    <ImageView
+        android:id="@+id/paychannel_item_discount"
+        android:layout_width="@dimen/width_160px"
+        android:layout_height="@dimen/height_36px"
+        android:layout_marginLeft="@dimen/width_32px"
+        android:layout_marginRight="@dimen/width_32px"
+        android:layout_marginStart="@dimen/width_32px"
+        android:layout_marginTop="@dimen/height_183px"
+        android:src="@drawable/paychannel_item_discount" />
+    
+    <TextView
+        android:id="@+id/paychannel_item_price_discount"
+        android:layout_width="@dimen/width_126px"
+        android:layout_height="@dimen/height_20px"
+        android:layout_marginLeft="@dimen/width_49px"
+        android:layout_marginStart="@dimen/width_49px"
+        android:layout_marginTop="@dimen/height_192px"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="88元"
+        android:textColor="#FFC8A56D"
+        android:textSize="@dimen/height_20px" />
+</RelativeLayout>

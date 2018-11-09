@@ -18,12 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
-import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ScaleUtils;
@@ -40,7 +40,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.cboxtv.utils.DBUtil;
+import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 
 /**
@@ -148,21 +149,12 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     public void setContentUUID(String contentUUIDs){
         contentUUID = contentUUIDs;
 
-        DataSupport.search(DBConfig.ATTENTION_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, contentUUID)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (TextUtils.isEmpty(result)) {
-                            isAttention = false;
-                        } else {
-                            isAttention = true;
-                        }
-                    }
-                }).excute();
-
+        UserCenterUtils.getAttentionState(getContentUUID(), new IFollowStatusCallback() {
+            @Override
+            public void notifyFollowStatus(boolean status) {
+                isAttention = status;
+            }
+        });
 
         //获取人物信息
         mContentPresenter.getContent(contentUUIDs,false);
@@ -227,7 +219,27 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     }
 
     private void delAttention(String contentUuId) {
-        DBUtil.delAttention(contentUuId, new DBCallback<String>() {
+
+        UserCenterUtils.deleteSomeAttention(dataInfo, contentUuId, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    mAttentionBtn.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            isAttention = false;
+                            mAttentionIv.setImageResource(R.drawable.icon_details_unattention_btn);
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "1," + contentUUID);//取消关注
+                            Toast.makeText(mContext, "取消关注成功", Toast.LENGTH_SHORT)
+                                    .show();
+                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                        }
+                    });
+                }
+            }
+        });
+
+        /*DBUtil.delAttention(contentUuId, new DBCallback<String>() {
             @Override
             public void onResult(int code, String result) {
                 if (code == 0) {
@@ -242,7 +254,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                     });
                 }
             }
-        });
+        });*/
     }
 
     private void updateAttention(Content entity) {
@@ -250,7 +262,25 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
             LogUtils.e("update Attention is null");
             return;
         }
-        DBUtil.addAttention(entity, new DBCallback<String>() {
+        UserCenterUtils.addAttention(entity, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    mAttentionBtn.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            isAttention = true;
+                            mAttentionIv.setImageResource(R.drawable.icon_details_attention_btn);
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "0," + contentUUID);//关注
+                            Toast.makeText(mContext, "关注成功", Toast.LENGTH_SHORT)
+                                    .show();
+                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                        }
+                    });
+                }
+            }
+        });
+        /*DBUtil.addAttention(entity, new DBCallback<String>() {
             @Override
             public void onResult(int code, String result) {
                 if (code == 0) {
@@ -265,7 +295,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                     });
                 }
             }
-        });
+        });*/
     }
 
     private void setHeadData(Content dataInfo) {
@@ -316,6 +346,12 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         if (dataInfo.getTitle() != null) {
             detailTitleTv.setText(dataInfo.getTitle());
         }
+        UserCenterUtils.getAttentionState(contentUUID, new IFollowStatusCallback() {
+            @Override
+            public void notifyFollowStatus(boolean status) {
+                isAttention = status;
+            }
+        });
     }
 
     @Override
@@ -355,7 +391,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (content != null){
             dataInfo = content;
             setHeadData(content);
@@ -373,7 +409,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
 
     }
 }

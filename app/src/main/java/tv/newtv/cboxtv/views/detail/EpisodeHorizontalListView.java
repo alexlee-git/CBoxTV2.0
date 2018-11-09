@@ -303,12 +303,12 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @Nullable Content content) {
 
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> contents) {
+    public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> contents) {
         if (contents == null || contents.size() <= 0) {
             onLoadError();
             return;

@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.screenList.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
 
     @Override
     public void onBindViewHolder(@NonNull final MyHolder myHolder, int i) {
+        if (!TextUtils.isEmpty(list.get(i).getTitle()))
         myHolder.label_title.setText(list.get(i).getTitle());
 
         Picasso.get()

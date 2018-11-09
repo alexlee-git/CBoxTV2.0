@@ -76,7 +76,7 @@ public abstract class BaseFragment extends RxFragment {
         contentView = view;
         super.onViewCreated(view, savedInstanceState);
 
-//        if(isVisible){
+//        if(getUserVisibleHint()){
             invokeLazyLoad();
 //        }
     }

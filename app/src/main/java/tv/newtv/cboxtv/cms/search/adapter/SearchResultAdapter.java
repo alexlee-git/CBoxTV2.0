@@ -86,7 +86,6 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
     public void onBindViewHolder(@NonNull final ResultHolder holder, final int position) {
         if (dataList != null && dataList.size() > 0) {
 
-            LogUtils.e("adapter2323onResult","adapter dataList size : " + dataList.size() + " , list : " + dataList);
             final SubContent subContent = dataList.get(position);
             Picasso.get().load(dataList.get(position).getVImage()).transform(new PosterCircleTransform(mContext, 4))
                     .fit()

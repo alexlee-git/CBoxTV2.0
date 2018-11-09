@@ -21,7 +21,6 @@ import java.util.List;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.views.widget.RecycleSpaceDecoration;
@@ -44,7 +43,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

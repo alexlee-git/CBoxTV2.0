@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.views.detail;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
@@ -49,8 +51,14 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
+import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
+import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
+import tv.newtv.cboxtv.uc.v2.listener.ISubscribeStatusCallback;
+import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
  * 项目名称:         CBoxTV
@@ -75,10 +83,87 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private Builder mBuilder;
     private View contentView;
 
+    private boolean isBuildComplete = false;
     private Boolean isPlayLive = false;
+    private PlayInfo mPlayInfo;
+    private Disposable mDisposable;
+    private String memberStatus;
+    private String expireTime;
 
     private long lastClickTime = 0;
+    private View vipPay;
+    private PlayerCallback mPlayerCallback = new PlayerCallback() {
+        @Override
+        public void onEpisodeChange(int index, int position) {
+            setCurrentPlayIndex("onEpisodeChange", index);
+            currentPosition = position;
 
+            if (mBuilder != null && mBuilder.playerCallback != null) {
+                mBuilder.playerCallback.onEpisodeChange(index, position);
+            }
+        }
+
+        @Override
+        public void onPlayerClick(VideoPlayerView videoPlayerView) {
+            if (mBuilder != null && mBuilder.playerCallback != null) {
+                mBuilder.playerCallback.onPlayerClick(videoPlayerView);
+            }
+        }
+
+        @Override
+        public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+            if (mBuilder != null && mBuilder.playerCallback != null) {
+                mBuilder.playerCallback.AllPlayComplete(isError, info, videoPlayerView);
+            }
+        }
+
+        @Override
+        public void ProgramChange() {
+            if (mBuilder != null && mBuilder.playerCallback != null) {
+                mBuilder.playerCallback.ProgramChange();
+                Log.d("ywy_log", "HeadPlayerView  exitFull listener contentUUID : " + mBuilder.contentUUid);
+                DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.CONTENTUUID, mBuilder.contentUUid)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                Log.d("ywy_log", "code : " + code + "  result : " + result);
+                                if (!TextUtils.isEmpty(result)) {
+                                    Gson mGson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                                    }.getType();
+                                    List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
+                                    if (data.size() > 0) {
+                                        Log.d("ywy_log", "HeadPlayerView iniData title: " + data.get(0)._title_name + " contentUUID : " + data.get(0)._contentuuid);
+                                        UserCenterPageBean.Bean value = data.get(0);
+                                        if (value != null) {
+                                            Log.d("ywy_log", "playPosition : " + value.playPosition);
+                                            if (!TextUtils.isEmpty(value.playPosition)) {
+                                                currentPosition = Integer.valueOf(value.playPosition);
+                                            } else {
+                                                currentPosition = 0;
+                                            }
+                                            if (data.get(0).playIndex != null) {
+                                                setCurrentPlayIndex("DataSupport", Integer.valueOf(data
+                                                        .get(0)
+                                                        .playIndex));
+                                            } else {
+                                                setCurrentPlayIndex("DataSupport", 0);
+                                            }
+                                            playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                                        }
+                                    }
+                                }
+                            }
+                        }).excute();
+
+            }
+        }
+
+
+    };
 
     //检测全屏退出回调
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new
@@ -93,16 +178,19 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public HeadPlayerView(Context context) {
         this(context, null);
+        getMemberStatus();
     }
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
+        getMemberStatus();
     }
 
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+        getMemberStatus();
     }
 
     private void setCurrentPlayIndex(String tag, int index) {
@@ -135,6 +223,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     playerView.setLayoutParams(layoutParams);
                     ((ViewGroup) video).addView(playerView, layoutParams);
                 } else {
+                    currentPosition = defaultConfig.playPosition;
                     playerView = new VideoPlayerView(defaultConfig, getContext());
                     if (defaultConfig.defaultFocusView instanceof VideoPlayerView) {
                         playerView.requestFocus();
@@ -153,38 +242,40 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void initData() {
-        DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, mBuilder.contentUUid)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (!TextUtils.isEmpty(result)) {
-                            Gson mGson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                            }.getType();
-                            List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
-                            if (data.size() > 0) {
-                                historyBean = data.get(0);
-                                if (historyBean != null) {
-                                    if (!TextUtils.isEmpty(historyBean.playPosition)) {
-                                        currentPosition = Integer.valueOf(historyBean.playPosition);
-                                    } else {
-                                        currentPosition = 0;
-                                    }
-                                }
-                            }
-
-                        }
-
+        UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, mBuilder.contentUUid, "", new IHisoryStatusCallback() {
+            @Override
+            public void getHistoryStatus(UserCenterPageBean.Bean bean) {
+                if (null != bean) {
+                    if (!TextUtils.isEmpty(bean.playPosition)) {
+                        currentPosition = Integer.valueOf(bean.playPosition);
+                    } else {
+                        currentPosition = 0;
                     }
-                }).excute();
+                    if (bean.playIndex != null) {
+                        setCurrentPlayIndex("DataSupport", Integer.valueOf(bean.playIndex));
+                    } else {
+                        setCurrentPlayIndex("DataSupport", 0);
+                    }
+                }
+            }
+        });
     }
 
     private void init() {
         setClipChildren(false);
         setClipToPadding(false);
+    }
+
+    private void getMemberStatus() {
+        UserCenterUtils.getMemberStatus(new INotifyMemberStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
+                memberStatus = status;
+                if (memberBundle != null) {
+                    expireTime = (String) memberBundle.get(QueryUserStatusUtil.expireTime);
+                }
+            }
+        });
     }
 
     public <T extends View> T findViewUseId(int id) {
@@ -206,7 +297,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
-
             playerView.release();
             playerView.destory();
             playerView = null;
@@ -224,8 +314,27 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             playerView = null;
         }
     }
+    private void addHistory() {
+        int position = playerView.getCurrentPosition();
+        if (!isPlayLive) {
+            if (mInfo != null) {
+                UserCenterUtils.addHistory(mInfo
+                        , currentPlayIndex, position, playerView.getDuration(), new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                if (code == 0 && mInfo != null) {
+                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
+                                            mInfo.getContentUUID());//添加历史记录
+                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                                }
+                            }
+                        });
+            }
+        }
+    }
 
     public void onActivityResume() {
+        getMemberStatus();
         if (playerView != null && !playerView.isReleased() && playerView.isReady() && (playerView
                 .isADPlaying() || playerView.isPlaying())) {
             Log.e(TAG, "player view is working....");
@@ -239,12 +348,20 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (playerView != null && mInfo != null) {
-            currentPosition = (defaultConfig != null ? defaultConfig.playPosition :
-                    currentPosition);
             Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
             startPlayerView();
         }
+    }
+
+    public void resetSeriesInfo(final Content content){
+        initData();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setProgramSeriesInfo(content);
+            }
+        },300);
     }
 
     //显示全屏
@@ -303,12 +420,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         //TODO
                         final View collect = contentView.findViewById(value.viewId);
                         if (collect != null) {
-                            DBUtil.CheckCollect(mBuilder.contentUUid, new DBCallback<String>() {
-                                @Override
-                                public void onResult(int code, String result) {
+                            UserCenterUtils.getCollectState(mBuilder.contentUUid, new ICollectionStatusCallback() {
+                                public void notifyCollectionStatus(boolean status) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        ((FocusToggleSelect) collect).setSelect(code == 0 &&
-                                                !TextUtils.isEmpty(result));
+                                        ((FocusToggleSelect) collect).setSelect(status);
                                     }
                                 }
                             });
@@ -316,49 +431,31 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) collect).isSelect()) {
-                                                DBUtil.UnCollect(mBuilder.contentUUid, new
-                                                        DBCallback<String>() {
+                                                UserCenterUtils.deleteSomeCollect(mInfo,
+                                                        mBuilder.contentUUid, new DBCallback<String>() {
                                                             @Override
-                                                            public void onResult(int code, String
-                                                                    result) {
-                                                                ((FocusToggleSelect) collect)
-                                                                        .setSelect
-                                                                                (code == 0 &&
-                                                                                        !TextUtils
-                                                                                                .isEmpty(result));
-                                                                RxBus.get().post(Constant
-                                                                        .UPDATE_UC_DATA, true);
+                                                            public void onResult(int code, String result) {
+                                                                ((FocusToggleSelect) collect).setSelect
+                                                                        (code == 0 && !TextUtils.isEmpty(result));
+                                                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                                                                 if (code == 0) {
                                                                     LogUploadUtils.uploadLog
-                                                                            (Constant
-                                                                                    .LOG_NODE_COLLECT, "1," + mBuilder.contentUUid);//取消收藏
-                                                                    Toast.makeText(getContext()
-                                                                                    .getApplicationContext(),
-                                                                            "取消收藏成功",
-                                                                            Toast
-                                                                                    .LENGTH_SHORT)
-                                                                            .show();
+                                                                            (Constant.LOG_NODE_COLLECT, "1," + mBuilder.contentUUid);//取消收藏
+                                                                    Toast.makeText(getContext().getApplicationContext(),
+                                                                            "取消收藏成功", Toast.LENGTH_SHORT).show();
                                                                 }
-
                                                             }
                                                         });
                                             } else {
-                                                DBUtil.PutCollect(mInfo, new DBCallback<String>() {
+                                                UserCenterUtils.addCollect(mInfo, new DBCallback<String>() {
                                                     @Override
                                                     public void onResult(int code, String result) {
-                                                        ((FocusToggleSelect) collect).setSelect
-                                                                (code ==
-                                                                        0 && !TextUtils
-                                                                        .isEmpty
-                                                                                (result));
-                                                        RxBus.get().post(Constant
-                                                                        .UPDATE_UC_DATA,
-
-                                                                true);
+                                                        ((FocusToggleSelect) collect).setSelect(code ==0 && !TextUtils
+                                                                        .isEmpty(result));
+                                                        RxBus.get().post(Constant.UPDATE_UC_DATA,true);
                                                         if (code == 0) {
                                                             LogUploadUtils.uploadLog(Constant
                                                                     .LOG_NODE_COLLECT, "0," +
@@ -369,7 +466,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     Toast.LENGTH_SHORT)
                                                                     .show();
                                                         }
-
                                                     }
                                                 });
                                             }
@@ -381,72 +477,57 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         }
                         break;
                     case Builder.DB_TYPE_SUBSCRIP:
-                        View view = contentView.findViewById
-                                (value.viewId);
                         final View Subscrip = contentView.findViewById
                                 (value.viewId);
                         if (Subscrip != null) {
-                            DBUtil.CheckSubscrip(mBuilder.contentUUid, new DBCallback<String>() {
+                            UserCenterUtils.getSuncribeState(mBuilder.contentUUid, new ISubscribeStatusCallback() {
                                 @Override
-                                public void onResult(int code, String result) {
+                                public void notifySubScribeStatus(boolean status) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        ((FocusToggleSelect) Subscrip).setSelect(code == 0 &&
-                                                !TextUtils.isEmpty
-                                                        (result));
+                                        ((FocusToggleSelect) Subscrip).setSelect(status);
                                     }
                                 }
                             });
+
                             Subscrip.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) Subscrip).isSelect()) {
-                                                DBUtil.UnSubcribe(mBuilder.contentUUid, new
-                                                        DBCallback<String>() {
+                                                UserCenterUtils.deleteSomeSubcribet(mInfo,
+                                                        mBuilder.contentUUid, new DBCallback<String>() {
                                                             @Override
-                                                            public void onResult(int code, String
-                                                                    result) {
-
+                                                            public void onResult(int code, String result) {
+                                                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                                                                 if (code == 0) {
                                                                     ((FocusToggleSelect) Subscrip)
                                                                             .setSelect(false);
+                                                                    ((FocusToggleSelect) Subscrip).setSelect(false);
+                                                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_SUBSCRIP, "1," +
+                                                                            mInfo.getContentUUID());
                                                                     Toast.makeText(getContext()
                                                                                     .getApplicationContext(), "取消订阅成功",
-                                                                            Toast
-                                                                                    .LENGTH_SHORT)
-                                                                            .show();
-                                                                    RxBus.get().post(Constant
-                                                                            .UPDATE_UC_DATA, true);
+                                                                            Toast.LENGTH_SHORT).show();
                                                                 }
                                                             }
                                                         });
                                             } else {
                                                 if (mInfo != null) {
-                                                    DBUtil.AddSubcribe(mInfo, new
-                                                            DBCallback<String>() {
-                                                                @Override
-                                                                public void onResult(int code,
-                                                                                     String
-                                                                                             result) {
-                                                                    if (code == 0) {
-                                                                        ((FocusToggleSelect)
-                                                                                Subscrip)
-                                                                                .setSelect(true);
-                                                                        Toast.makeText(getContext()
-                                                                                        .getApplicationContext(),
-                                                                                R.string.subscribe_success,
-                                                                                Toast
-                                                                                        .LENGTH_SHORT).show();
-                                                                        RxBus.get().post(Constant
-                                                                                        .UPDATE_UC_DATA,
-
-                                                                                true);
-                                                                    }
-                                                                }
-                                                            });
+                                                    UserCenterUtils.addSubcribe(mInfo, currentPlayIndex, currentPosition, new DBCallback<String>() {
+                                                        @Override
+                                                        public void onResult(int code, String result) {
+                                                            if (code == 0) {
+                                                                ((FocusToggleSelect) Subscrip).setSelect(true);
+                                                                LogUploadUtils.uploadLog(Constant.LOG_NODE_SUBSCRIP, "0," +
+                                                                        mInfo.getContentUUID());
+                                                                Toast.makeText(getContext().getApplicationContext(),
+                                                                        "添加订阅成功", Toast.LENGTH_SHORT).show();
+                                                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                                                            }
+                                                        }
+                                                    });
                                                 }
                                             }
                                         }
@@ -454,9 +535,30 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 }
                             });
                         }
-
+                        break;
+                    case Builder.DB_TYPE_VIPPAY:
+                        vipPay = contentView.findViewById(value.viewId);
+                        break;
+                    case Builder.DB_TYPE_VIPTIP:
+                        TextView vipTip = contentView.findViewById
+                                (value.viewId);
+                        if (!TextUtils.isEmpty(memberStatus) && (memberStatus == QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) {
+                            vipTip.setVisibility(View.VISIBLE);
+                            vipTip.setText(String.format(vipTip.getText().toString(), expireTime));
+                        }
                         break;
                 }
+            }
+        }
+    }
+
+    private void setVipPayStatus(Content info) {
+        Log.d("ywy ", "ywy info : " + info.toString());
+        if (null != vipPay && info != null && info.getVipFlag() != null) {
+            final int vipState = Integer.parseInt(info.getVipFlag());
+            if (vipState > 0) {
+                vipPay.setVisibility(View.VISIBLE);
+                ((FocusToggleView2) vipPay).setSelect(true);
             }
         }
     }
@@ -496,6 +598,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         mInfo = programSeriesInfo;
+        setVipPayStatus(mInfo);
         parseResult();
     }
 
@@ -539,7 +642,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void parseResult() {
-        if (mInfo == null) return;
+        if (mInfo == null && contentView == null) return;
 
         TextView title = contentView.findViewById(R.id.id_detail_title);
         TextView type = contentView.findViewById(R.id.id_detail_type);
@@ -618,7 +721,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     if (!TextUtils.isEmpty(mInfo.getLvID())) {
                         mPresenter.getContent(mInfo.getLvID(), false, new ContentContract.View() {
                             @Override
-                            public void onContentResult(@Nullable Content content) {
+                            public void onContentResult(@NotNull String uuid, @org.jetbrains
+                                    .annotations.Nullable Content content) {
                                 if (content != null) {
                                     String playUrl = content.getPlayUrl();
                                     liveInfo.setLiveUrl(playUrl);
@@ -630,8 +734,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             }
 
                             @Override
-                            public void onSubContentResult(@org.jetbrains.annotations.Nullable
-                                                                   ArrayList<SubContent> result) {
+                            public void onSubContentResult(@NotNull String uuid, @org.jetbrains
+                                    .annotations.Nullable
+                                    ArrayList<SubContent> result) {
                             }
 
                             @Override
@@ -649,6 +754,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         playerView.setSeriesInfo(mInfo);
                         playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
                     }
+                }else{
+                    playerView.setSeriesInfo(mInfo);
+                    playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
                 }
             } else {
                 playerView.setSeriesInfo(mInfo);
@@ -756,13 +864,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
         mBuilder.infoResult.onResult(content);
         setProgramSeriesInfo(content);
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
 
     }
 
@@ -820,6 +928,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     public static class Builder {
         public static final int DB_TYPE_SUBSCRIP = 1;
         public static final int DB_TYPE_COLLECT = 2;
+        public static final int DB_TYPE_VIPPAY = 3;
+        public static final int DB_TYPE_VIPTIP = 4;
 
         @SuppressWarnings("UnusedAssignment")
         private int mLayout = -1;

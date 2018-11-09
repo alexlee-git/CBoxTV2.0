@@ -28,7 +28,6 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -59,7 +58,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

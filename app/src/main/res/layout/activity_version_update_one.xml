@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg"
+    android:orientation="vertical"
+    tools:context="tv.newtv.cboxtv.uc.v2.VersionUpdateTwoActivity">
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="@dimen/width_837px"
+        android:layout_height="@dimen/height_114px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/height_312px"
+        android:background="@drawable/update_one_logo"
+        android:focusable="false" />
+
+    <LinearLayout
+        android:id="@+id/ll_update_container"
+        android:layout_width="@dimen/width_1104px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_below="@+id/iv_logo"
+        android:layout_marginLeft="@dimen/width_408px"
+        android:layout_marginStart="@dimen/width_408px"
+        android:layout_marginTop="@dimen/height_174px"
+        android:background="@drawable/userinfo_item_background"
+        android:focusable="true"
+        android:orientation="horizontal"
+        tools:ignore="RtlSymmetry">
+
+        <CheckBox
+            android:id="@+id/cb_version"
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/width_84px"
+            android:layout_marginStart="@dimen/width_84px"
+            android:button="@null"
+            android:gravity="left"
+            android:tag="InfoTitle"
+            android:text="当前版本："
+            android:textColor="@color/userinfo_title_text_color"
+            android:textSize="@dimen/height_32px" />
+
+        <TextView
+            android:id="@+id/tv_update_info"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_100px"
+            android:drawablePadding="@dimen/height_24px"
+            android:drawableRight="@drawable/right_white_arrow"
+            android:gravity="right|end|center_vertical"
+            android:paddingEnd="@dimen/width_83px"
+            android:paddingRight="@dimen/width_83px"
+            android:text="已是最新版"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/height_24px" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_software_info"
+        android:layout_width="@dimen/width_1104px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_below="@+id/ll_update_container"
+        android:layout_marginLeft="@dimen/width_408px"
+        android:layout_marginStart="@dimen/width_408px"
+        android:layout_marginTop="@dimen/height_24px"
+        android:background="@drawable/userinfo_item_background"
+        android:focusable="true"
+        android:nextFocusUp="@+id/ll_update_container"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/width_83px"
+        android:paddingRight="@dimen/width_83px"
+        tools:ignore="RtlSymmetry">
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/width_84px"
+            android:layout_marginRight="@dimen/height_98px"
+            android:layout_marginStart="@dimen/width_84px"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="left"
+            android:tag="InfoTitle"
+            android:text="软件信息"
+            android:textColor="@color/userinfo_title_text_color"
+            android:textSize="@dimen/height_32px" />
+
+        <TextView
+            android:layout_width="@dimen/width_15px"
+            android:layout_height="@dimen/height_28px"
+            android:layout_gravity="center"
+            android:background="@drawable/right_white_arrow"
+            android:gravity="right|end" />
+    </LinearLayout>
+
+</RelativeLayout>
+
+

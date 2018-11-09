@@ -107,7 +107,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
         }
 
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getAction() == KeyEvent.ACTION_UP) {
                 if(isADEntry){
                     startActivity(new Intent(SpecialActivity.this, MainActivity.class));
                     isADEntry = false;

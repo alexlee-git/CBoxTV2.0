@@ -5,6 +5,7 @@ package tv.newtv.cboxtv.cms.mainPage.menu;
  */
 
 import android.support.v7.widget.RecyclerView;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -116,9 +117,11 @@ public abstract class BaseRecyclerAdapter<T, H extends RecyclerView.ViewHolder> 
     /**
      * 根据position 获取单个对象
      */
+
+    @Nullable
     public T getItem(int position) {
         // TODO Auto-generated method stub
-        if (position > mList.size() - 1) {
+        if (position > mList.size() - 1 || position<0) {
             return null;
         }
         return mList.get(position);

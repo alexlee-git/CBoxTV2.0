@@ -44,7 +44,7 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 

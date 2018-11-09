@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 二维码点击放大的布局-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_black_90">
+
+    <!--二维码框 -->
+    <FrameLayout
+        android:id="@+id/id_member_center_full_screen_qr_root"
+        android:layout_width="@dimen/width_666px"
+        android:layout_height="@dimen/height_784px"
+        android:layout_marginLeft="@dimen/width_627px"
+        android:layout_marginTop="@dimen/height_148px"
+        android:background="@drawable/usercenter_login_qrcode_bg"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+        <ImageView
+            android:layout_width="@dimen/width_627px"
+            android:layout_height="@dimen/height_627px"
+            android:layout_marginLeft="@dimen/width_22px"
+            android:layout_marginRight="@dimen/width_17px"
+            android:layout_marginTop="@dimen/height_22px"
+            android:background="@drawable/activity_login_qr_inside_back"/>
+
+        <ImageView
+            android:id="@+id/id_member_center_full_screen_qr_code"
+            android:layout_width="@dimen/width_617px"
+            android:layout_height="@dimen/height_617px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginRight="@dimen/width_22px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:background="@drawable/test_member_center_qr_code_v2"/>
+
+        <ImageView
+            android:id="@+id/id_member_center_full_screen_qr_scan_icon"
+            android:layout_width="@dimen/width_75px"
+            android:layout_height="@dimen/height_76px"
+            android:layout_marginLeft="@dimen/width_67px"
+            android:layout_marginTop="@dimen/height_685px"
+            android:background="@drawable/member_qr_scan_icon_v2"/>
+        <!-- 会员中心二维码扫描提醒上标题 -->
+        <TextView
+            android:id="@+id/id_member_center_full_screen_qr_top_title"
+            style="@style/MemberCenterQrFullScreenTopTitleStyle"
+            android:layout_width="@dimen/width_439px"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginLeft="@dimen/width_160px"
+            android:layout_marginTop="@dimen/height_685px"
+            android:includeFontPadding="false"
+            android:text="@string/member_qr_full_screen_top_title"/>
+        <!-- 会员中心二维码扫描提醒下标题 -->
+        <TextView
+            android:id="@+id/id_member_center_full_screen_qr_bottom_title"
+            style="@style/MemberCenterQrFullScreenBottomTitleStyle"
+            android:layout_width="@dimen/width_439px"
+            android:layout_height="@dimen/height_32px"
+            android:layout_marginLeft="@dimen/width_160px"
+            android:layout_marginTop="@dimen/height_729px"
+            android:includeFontPadding="false"
+            android:text="@string/member_qr_full_screen_bottom_title"/>
+    </FrameLayout>
+</RelativeLayout>
+

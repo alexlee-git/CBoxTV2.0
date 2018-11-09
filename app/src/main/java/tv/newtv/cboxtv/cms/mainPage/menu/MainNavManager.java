@@ -176,16 +176,6 @@ public class MainNavManager implements NavContract.View {
             });
             mFirMenu.setAdapter(menuAdapter);
 
-            int count = mNavInfos.size();
-            boolean contain = false;
-            for (int index = 0; index < count; index++) {
-                Nav navInfo = mNavInfos.get(index);
-                if (currentFocus.equals(navInfo.getId())) {
-                    defaultPageIdx = index;
-                    contain = true;
-                    break;
-                }
-            }
             if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
                 defaultPageIdx = Navbarfoused;
                 Nav navInfo = mNavInfos.get(defaultPageIdx);
@@ -193,11 +183,25 @@ public class MainNavManager implements NavContract.View {
                     currentFocus = navInfo.getId();
                 }
             }
+            int count = mNavInfos.size();
+            for (int index = 0; index < count; index++) {
+                Nav navInfo = mNavInfos.get(index);
+                if(!TextUtils.isEmpty(currentFocus)) {
+                    if (currentFocus.equals(navInfo.getId())) {
+                        defaultPageIdx = index;
+                    }
+                }else{
+                    if("1".equals(navInfo.isFocus())){
+                        defaultPageIdx = index;
+                        currentFocus = navInfo.getId();
+                    }
+                }
+            }
+
             Log.e("--defaultPageIdx-------", Navbarfoused + "----" + defaultPageIdx);
 
             menuAdapter.setMenuItems(mNavInfos, defaultPageIdx, mNavInfos.size());
         }
-//        mFirMenu.setOneMenuData(mNavInfos);
 
         if (mFragments == null) {
             mFragments = new ArrayList<>(Constant.BUFFER_SIZE_8);

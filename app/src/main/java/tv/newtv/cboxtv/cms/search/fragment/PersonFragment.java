@@ -61,7 +61,6 @@ public class PersonFragment extends BaseFragment{
     public void setData(ArrayList<SubContent> result,Integer total) {
 
         if (result != null && result.size() > 0) {
-            LogUtils.e("loaddata","fg result : " + result.size());
             mResultTotalView.setVisibility(View.VISIBLE);
             mEmptyView.setVisibility(View.GONE);
             mDataStatus = true;

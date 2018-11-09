@@ -6002,6 +6002,8 @@
 
 
     <dimen name="_width_18px">-38px</dimen>
+    <dimen name="_width_12px">-25px</dimen>
+    <dimen name="_width_6px">-13px</dimen>
     <dimen name="_width_8px">-17px</dimen>
     <dimen name="_width_5px">-11px</dimen>
     <dimen name="_width_11px">-23px</dimen>

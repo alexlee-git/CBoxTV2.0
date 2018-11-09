@@ -33,9 +33,10 @@ public class LiveInfo {
     private String mLiveUrl;    //
     private String key;         //
 
-    private SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss");
-    private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale
+            .getDefault());
 
     private SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
     private String contentUUID;
@@ -72,7 +73,7 @@ public class LiveInfo {
 
     }
 
-    private void parseLiveParam(){
+    private void parseLiveParam() {
         try {
             String startTime = mLiveParam.getPlayStartTime();
             String endTime = mLiveParam.getPlayEndTime();
