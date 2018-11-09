@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color">
+
+
+    <RelativeLayout
+        android:layout_width="@dimen/width_1494px"
+        android:layout_height="@dimen/height_603px"
+        android:background="@drawable/shape_payorder_success">
+
+        <TextView
+            android:id="@+id/layout_payorder_tv_status"
+            android:layout_width="@dimen/width_1440px"
+            android:layout_height="@dimen/height_36px"
+            android:layout_marginTop="@dimen/height_120px"
+            android:gravity="center"
+            android:includeFontPadding="true"
+            android:text="@string/usercenter_pay_success"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_32px" />
+
+        <TextView
+            android:id="@+id/layout_payorder_tv_time"
+            android:layout_width="@dimen/width_1440px"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginTop="@dimen/height_180px"
+            android:gravity="center"
+            android:includeFontPadding="true"
+            android:text="@string/usercenter_pay_success_time"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_28px" />
+
+        <Button
+            android:id="@+id/layout_payorder_btn"
+            android:layout_width="@dimen/width_460px"
+            android:layout_height="@dimen/height_100px"
+            android:layout_marginLeft="@dimen/width_490px"
+            android:layout_marginStart="@dimen/width_490px"
+            android:layout_marginTop="@dimen/height_320px"
+            android:background="@drawable/shape_payorder_success_btn"
+            android:gravity="center"
+            android:text="@string/usercenter_pay_success_ok"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_36px" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width_240px"
+    android:layout_height="@dimen/height_436px"
+    android:background="@drawable/selector_app_item"
+    android:clickable="true"
+    android:focusable="true" >
+
+    <!-- 海报 -->
+    <ImageView
+        android:id="@+id/id_history_record_poster"
+        android:layout_width="@dimen/width_240px"
+        android:layout_height="@dimen/height_360px"
+        android:background="#4f503f" />
+
+    <!-- 右上角标(显示更新或VIP角标) -->
+    <ImageView
+        android:id="@+id/id_history_record_right_top_superscript"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_30px"
+        android:layout_gravity="right"
+        android:layout_marginRight="@dimen/width_12px"
+        android:layout_marginTop="@dimen/height_12px"
+        android:background="#ff0000" />
+
+    <!-- 更新至xxx集 -->
+    <TextView
+        android:id="@+id/id_history_record_episode_update"
+        android:layout_width="@dimen/width_140px"
+        android:layout_height="@dimen/height_30px"
+        android:layout_marginLeft="@dimen/width_12px"
+        android:layout_marginTop="@dimen/height_319px"
+        android:background="#00ddff" />
+
+    <!-- 评分 -->
+    <TextView
+        android:id="@+id/id_history_record_score"
+        android:layout_width="@dimen/width_40px"
+        android:layout_height="@dimen/height_24px"
+        android:layout_gravity="right"
+        android:layout_marginRight="@dimen/width_12px"
+        android:layout_marginTop="@dimen/height_319px"
+        android:background="#000000" />
+
+    <!-- 节目集名称 -->
+    <TextView
+        android:layout_width="@dimen/width_216px"
+        android:layout_height="@dimen/height_30px"
+        android:layout_marginTop="@dimen/height_372px"
+        android:background="#888888"
+        android:gravity="center_vertical|left" />
+
+    <!-- 观看进度 -->
+    <TextView
+        android:id="@+id/id_history_record_status"
+        android:layout_width="@dimen/width_216px"
+        android:layout_height="@dimen/height_22px"
+        android:layout_marginTop="@dimen/height_414px"
+        android:background="#45d45f"
+        android:gravity="center_vertical|left" />
+</FrameLayout>

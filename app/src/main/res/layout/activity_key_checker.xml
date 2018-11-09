@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".KeyCheckerActivity">
+    android:layout_height="match_parent">
+    <com.newtv.framework.widget.GalleryView
+        android:layout_marginTop="@dimen/height_100px"
+        android:id="@+id/gallery_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_400px">
 
-</android.support.constraint.ConstraintLayout>
+    </com.newtv.framework.widget.GalleryView>
+</FrameLayout>

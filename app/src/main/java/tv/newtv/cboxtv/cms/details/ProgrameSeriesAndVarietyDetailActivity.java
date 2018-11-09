@@ -11,6 +11,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -37,7 +38,8 @@ import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
-
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 /**
  * Created by weihaichao on 2018/10/19.
  */
@@ -46,6 +48,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         ContentContract.LoadingView {
 
     Content pageContent;
+    private static final String ACTION = "tv.newtv.cboxtv.action.PROGRAMESERIES";
+    private String leftUUID, rightUUID;
+    private String contentUUID;
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
     private EpisodePageView playListView;
@@ -55,13 +60,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private FragmentTransaction transaction;
     private ContentContract.Presenter mContentPresenter;
     private int layoutId;
+    private boolean isLogin = false;
+
 
     @Override
     protected void FocusToTop() {
         Toast.makeText(getApplicationContext(), "ProgrameSeriesAndVarietyDetailActivity 到顶了",
                 Toast.LENGTH_LONG).show();
     }
-
 
     @Override
     public boolean hasPlayer() {
@@ -84,7 +90,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         String contentUUID = getContentUUID();
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-
+            //requestData();
+            initLoginStatus();
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getContent(contentUUID, true);
         } else {
@@ -104,14 +111,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         }
 
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
-        headPlayerView.Build(HeadPlayerView.Builder.build(layoutId)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
-                        .DB_TYPE_COLLECT))
+        headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
+                new HeadPlayerView.CustomFrame(R.id.vip_pay,HeadPlayerView.Builder.DB_TYPE_VIPPAY))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
+                .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
+                .SetContentUUID(contentUUID)
                 .autoGetSubContents()
-                .SetClickableIds(R.id.full_screen, R.id.add)
-                .SetContentUUID(getContentUUID())
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
@@ -187,8 +194,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                 });
                                 mPaiseView.startDiverges(0);
                                 break;
-
-
                             case R.id.full_screen:
                                 if (System.currentTimeMillis() - lastClickTime >= 2000)
                                 {//判断距离上次点击小于2秒
@@ -196,12 +201,29 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);
                                 }
-
+                                break;
+                            case R.id.vip_pay:
+                                if (pageContent != null && pageContent.getVipFlag() != null) {
+                                    final int vipState = Integer.parseInt(pageContent.getVipFlag());
+                                    if (isLogin) {
+                                        //1 单点包月  3vip  4单点
+                                        if (vipState == 1) {
+                                            UserCenterUtils.startVIP1(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                        } else if (vipState == 3) {
+                                            UserCenterUtils.startVIP3(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                        } else if (vipState == 4) {
+                                            UserCenterUtils.startVIP4(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                        }
+                                    } else {
+                                        UserCenterUtils.startLoginActivity(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION, true);
+                                    }
+                                }
+                                break;
+                            default:
                                 break;
                         }
                     }
                 }));
-
 
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
@@ -220,6 +242,15 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
     }
 
+    //获取登陆状态
+    private void initLoginStatus(){
+        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(boolean status) {
+                isLogin = status;
+            }
+        });
+    }
 
     @Override
     protected void onDestroy() {

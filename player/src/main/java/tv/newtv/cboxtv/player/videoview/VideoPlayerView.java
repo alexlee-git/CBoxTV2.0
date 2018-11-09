@@ -466,4 +466,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     public void setisEnd(boolean b) {
         this.isEnd = b;
     }
+
+    @Override
+    public int getDuration() {
+        return super.getDuration();
+    }
 }

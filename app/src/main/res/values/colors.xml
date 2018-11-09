@@ -25,4 +25,16 @@
     <color name="color_0b104b">#0b1b4b</color>
     <color name="color_authing">#b3ffffff</color>
     <color name="color_tabIndicator">#ff4a90e2</color>
+     <color name="color_white_20">#33FFFFFF</color>
+    <color name="color_black_90">#e6000000</color>
+    <color name="color_black_60">#99000000</color>
+    <color name="color_btn_blue">#0087FD</color>
+
+    <color name="color_979797_50">#80979797</color>
+    <color name="color_white_30">#4dffffff</color>
+    <color name="color_order_title">#E6D38E</color>
+    <color name="color_order_focus">#D4B077</color>
+    <color name="color_order_focus_text">#955D06</color>
+    <color name="color_member_center_btn">#99E6D38E</color>
+    <color name="color_user_center_about">#000621</color>
 </resources>

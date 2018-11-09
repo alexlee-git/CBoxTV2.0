@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg">
+
+    <RelativeLayout
+        android:id="@+id/user_phone_rel_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_388px">
+
+        <TextView
+            android:id="@+id/phone_login_tip_back1"
+            android:layout_width="@dimen/width_864px"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_94px"
+            android:includeFontPadding="false"
+            android:text="@string/phone_login_tip_1"
+            android:textColor="#80FFFFFF"
+            android:textSize="@dimen/height_32px" />
+
+        <TextView
+            android:id="@+id/phone_login1"
+            android:layout_width="@dimen/width_864px"
+            android:layout_height="@dimen/height_44px"
+            android:layout_below="@+id/phone_login_tip_back1"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_50px"
+            android:includeFontPadding="false"
+            android:text="@string/phone_login_tip_2"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_42px" />
+
+
+        <EditText
+            android:id="@+id/phone_login_input1"
+            android:layout_width="@dimen/width_476px"
+            android:layout_height="@dimen/height_100px"
+            android:layout_below="@+id/phone_login1"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_24px"
+            android:background="@drawable/shape_user_phone_login_key"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:imeOptions="actionDone"
+            android:maxLength="11"
+            android:singleLine="true"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_36px" />
+
+
+        <TextView
+            android:id="@+id/phone_login_tv_tip"
+            android:layout_width="@dimen/width_476px"
+            android:layout_height="@dimen/height_100px"
+            android:layout_below="@id/phone_login_input1"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:includeFontPadding="false"
+            android:text="@string/phone_login_tip_3"
+            android:textColor="#80FFFFFF"
+            android:textSize="@dimen/height_28px" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/user_phone_rel_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_388px"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/phone_login_tip_phone"
+            android:layout_width="@dimen/width_864px"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_94px"
+            android:includeFontPadding="false"
+            android:textColor="#80FFFFFF"
+            android:textSize="@dimen/height_32px" />
+
+        <TextView
+            android:id="@+id/phone_login_code_inval"
+            android:layout_width="@dimen/width_864px"
+            android:layout_height="@dimen/height_44px"
+            android:layout_below="@+id/phone_login_tip_phone"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_50px"
+            android:includeFontPadding="false"
+            android:text="@string/phone_login_tip_5"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_42px" />
+
+
+        <EditText
+            android:id="@+id/phone_login_input2"
+            android:layout_width="@dimen/width_476px"
+            android:layout_height="@dimen/height_100px"
+            android:layout_below="@+id/phone_login_code_inval"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_24px"
+            android:background="@drawable/shape_user_phone_login_key"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:imeOptions="actionDone"
+            android:maxLength="11"
+            android:singleLine="true"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_36px" />
+
+        <Button
+            android:id="@+id/phone_login_refresh_code"
+            android:layout_width="@dimen/width_180px"
+            android:layout_height="@dimen/height_100px"
+            android:layout_below="@+id/phone_login_code_inval"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginStart="@dimen/width_20px"
+            android:layout_marginTop="@dimen/height_24px"
+            android:layout_toEndOf="@+id/phone_login_input2"
+            android:layout_toRightOf="@+id/phone_login_input2"
+            android:background="@drawable/shape_user_foused"
+            android:includeFontPadding="false"
+            android:text="@string/phone_login_status4"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/phone_login_code_status"
+            android:layout_width="@dimen/width_476px"
+            android:layout_height="@dimen/height_100px"
+            android:layout_below="@id/phone_login_input2"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:includeFontPadding="false"
+            android:text="@string/phone_login_status1"
+            android:textColor="#80FFFFFF"
+            android:textSize="@dimen/height_28px" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/login_recyclerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_348px"
+        android:layout_marginRight="@dimen/width_348px"
+        android:layout_marginStart="@dimen/width_348px"
+        android:layout_marginTop="@dimen/height_438px" />
+
+    <TextView
+        android:id="@+id/phone_login_user_agrement"
+        android:layout_width="@dimen/width_240px"
+        android:layout_height="@dimen/height_26px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_1006px"
+        android:includeFontPadding="false"
+        android:text="@string/phone_login_user_agreement"
+        android:textColor="#B3FFFFFF"
+        android:textSize="@dimen/height_24px" />
+
+    <TextView
+        android:id="@+id/phone_login_success"
+        android:layout_width="@dimen/width_864px"
+        android:layout_height="@dimen/height_44px"
+        android:layout_marginLeft="@dimen/width_528px"
+        android:layout_marginStart="@dimen/width_528px"
+        android:layout_marginTop="@dimen/height_970px"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/phone_login_user_success"
+        android:textColor="#80FFFFFF"
+        android:textSize="@dimen/height_42px"
+        android:visibility="gone" />
+</FrameLayout>

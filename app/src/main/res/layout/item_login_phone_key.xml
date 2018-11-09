@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/phone_login_key"
+        android:layout_width="@dimen/width_384px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/height_12px"
+        android:background="@drawable/shape_user_key_foused"
+        android:focusable="true"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:textColor="#FFFFFFFF"
+        android:textSize="@dimen/height_36px" />
+</RelativeLayout>

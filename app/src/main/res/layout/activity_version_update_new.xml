@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/detail_bg"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    tools:context="tv.newtv.cboxtv.uc.v2.VersionUpdateTwoActivity">
+
+    <RelativeLayout
+        android:id="@+id/rela_system"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_170px"
+        android:paddingLeft="@dimen/width_220px">
+
+        <TextView
+            android:id="@+id/tv_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_20px"
+            android:text="@string/user_system_version"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_48px" />
+
+        <TextView
+            android:id="@+id/tv_systemversion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_current"
+            android:layout_marginTop="@dimen/height_20px"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_30px" />
+
+        <TextView
+            android:id="@+id/tv_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_systemversion"
+            android:layout_marginTop="@dimen/height_80px"
+            android:text=""
+            android:textColor="@color/color_btn_blue"
+            android:textSize="@dimen/height_30px" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/line_view"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/rela_system"
+        android:layout_marginLeft="@dimen/width_200px"
+        android:layout_marginRight="@dimen/width_200px"
+        android:layout_marginTop="@dimen/height_24px"
+        android:background="@drawable/update_line" />
+
+    <LinearLayout
+        android:id="@+id/ll_no_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line_view"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView
+            android:id="@+id/sv_no_update"
+            android:layout_width="@dimen/width_1300px"
+            android:layout_height="@dimen/height_464px"
+            android:layout_marginLeft="@dimen/width_220px"
+            android:layout_marginTop="@dimen/height_30px"
+            android:fadeScrollbars="false"
+            android:focusable="false"
+            android:paddingRight="@dimen/width_2px"
+            android:scrollbarSize="@dimen/width_5px"
+            android:scrollbarThumbVertical="@color/color_font"
+            android:scrollbars="none">
+
+            <TextView
+                android:id="@+id/tv_current_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/height_24px"
+                android:textColor="@color/color_font"
+                android:textSize="@dimen/height_30px" />
+        </tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView>
+
+        <ImageView
+            android:id="@+id/iv_bottom_arrow1"
+            android:layout_width="@dimen/width_34px"
+            android:layout_height="@dimen/height_20px"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/uc_about_help_bottom_arrow_v2"
+            android:focusable="false"
+            android:visibility="visible" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_have_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line_view"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView
+            android:id="@+id/sv_have_update"
+            android:layout_width="@dimen/width_1300px"
+            android:layout_height="@dimen/height_248px"
+            android:layout_marginLeft="@dimen/width_220px"
+            android:layout_marginTop="@dimen/height_30px"
+            android:fadeScrollbars="false"
+            android:focusable="false"
+            android:paddingRight="@dimen/width_2px"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/ll_update_sv_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/height_36px"
+                    android:text="亲爱的用户:"
+                    android:textColor="@color/color_font"
+                    android:textSize="@dimen/height_36px" />
+
+                <TextView
+                    android:id="@+id/tv_version_introduce"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/height_20px"
+                    android:text="能享受新版本的服务了,更新如下:"
+                    android:textColor="@color/color_font"
+                    android:textSize="@dimen/height_30px" />
+
+                <TextView
+                    android:id="@+id/tv_describe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/height_24px"
+                    android:textColor="@color/color_font"
+                    android:textSize="@dimen/height_30px" />
+            </LinearLayout>
+        </tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView>
+
+        <ImageView
+            android:id="@+id/iv_bottom_arrow2"
+            android:layout_width="@dimen/width_34px"
+            android:layout_height="@dimen/height_20px"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/uc_about_help_bottom_arrow_v2"
+            android:focusable="false"
+            android:visibility="visible" />
+
+        <RelativeLayout
+            android:id="@+id/liner_isupdate"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_90px"
+            android:layout_marginTop="@dimen/height_30px"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_update"
+                android:layout_width="@dimen/width_330px"
+                android:layout_height="@dimen/height_90px"
+                android:layout_marginRight="@dimen/width_200px"
+                android:background="@drawable/upfocus"
+                android:focusable="true"
+                android:gravity="center"
+                android:textColor="@color/color_font"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="@dimen/width_330px"
+                android:layout_height="@dimen/height_90px"
+                android:layout_toRightOf="@+id/tv_update"
+                android:background="@drawable/chanel"
+                android:focusable="true"
+                android:gravity="center"
+                android:textColor="@color/color_font"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/liner_prograss"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/width_250px"
+            android:layout_marginRight="@dimen/width_250px"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_prograss"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_90px"
+                android:layout_marginTop="@dimen/height_10px"
+                android:gravity="center"
+                android:text="努力下载中"
+                android:textColor="@color/color_font"
+                android:textSize="@dimen/width_30px" />
+
+            <ProgressBar
+                android:id="@+id/pb_prograss"
+                style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_20px"
+                android:progressDrawable="@drawable/pb_update" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

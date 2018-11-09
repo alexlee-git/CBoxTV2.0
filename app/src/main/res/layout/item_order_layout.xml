@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_108px"
+    android:focusable="true">
+
+    <LinearLayout
+        android:id="@+id/ll_order_item"
+        android:layout_width="@dimen/width_1720px"
+        android:layout_height="@dimen/height_90px"
+        android:background="@drawable/uc_order_item_selector"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/width_100px">
+        <TextView
+            android:id="@+id/tv_resume_content"
+            android:layout_width="@dimen/width_340px"
+            android:layout_height="wrap_content"
+            android:maxEms="12"
+            android:layout_marginRight="@dimen/width_104px"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:text="会员：30天"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/width_28px" />
+
+        <TextView
+            android:id="@+id/tv_buy_date"
+            android:layout_width="@dimen/width_230px"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/width_104px"
+            android:text="2018/12/31 09:00"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/width_28px" />
+
+        <TextView
+            android:id="@+id/tv_visible_date"
+            android:layout_width="@dimen/width_230px"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/width_104px"
+            android:text="2019/01/31 09:00"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/width_28px" />
+
+        <TextView
+            android:id="@+id/tv_price_value"
+            android:layout_width="@dimen/width_120px"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/width_104px"
+            android:gravity="center"
+            android:text="888"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/width_28px" />
+
+        <TextView
+            android:id="@+id/tv_pay_result"
+            android:layout_width="@dimen/width_120px"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/width_104px"
+            android:gravity="center"
+            android:text="已支付"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/width_28px" />
+
+        <TextView
+            android:id="@+id/tv_operation"
+            android:layout_width="@dimen/width_120px"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/width_28px"
+            android:gravity="right"
+            android:layout_marginRight="@dimen/width_20px"
+            android:visibility="invisible"/>
+    </LinearLayout>
+
+    
+    <TextView
+        android:id="@+id/line_item_bottom"
+        android:layout_width="@dimen/width_1676px"
+        android:layout_height="@dimen/height_1px"
+        android:background="@color/color_979797_50"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/width_120px"/>
+
+</RelativeLayout>
