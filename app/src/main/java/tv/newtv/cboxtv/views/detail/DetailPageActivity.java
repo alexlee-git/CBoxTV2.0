@@ -33,6 +33,11 @@ public abstract class DetailPageActivity extends BaseActivity {
         return contentUUID;
     }
 
+    @Override
+    protected boolean isDetail() {
+        return true;
+    }
+
     protected abstract boolean interruptDetailPageKeyEvent(KeyEvent event);
 
     @Override
@@ -73,7 +78,7 @@ public abstract class DetailPageActivity extends BaseActivity {
                 if (view instanceof IEpisode) {
                     ((IEpisode) view).destroy();
                 } else if (view instanceof ViewGroup) {
-                    destroyViewGroup(viewGroup);
+                    destroyViewGroup((ViewGroup) view);
                 }
             }
             if (viewGroup instanceof SmoothScrollView) {

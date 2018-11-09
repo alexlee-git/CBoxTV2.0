@@ -617,4 +617,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         return super.dispatchKeyEvent(event);
     }
 
+    @Override
+    protected boolean isDetail() {
+        return true;
+    }
 }

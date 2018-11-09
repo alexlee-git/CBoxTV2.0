@@ -64,6 +64,10 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
 
+    protected boolean isDetail(){
+        return false;
+    }
+
     @BuyGoodsInject
     protected BuyGoodsBusiness buyGoodsBusiness;
 
@@ -266,20 +270,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         return super.onKeyDown(keyCode, event);
     }
 
-    private boolean isDetail() {
-        Class<? extends BaseActivity> clazz = getClass();
-        if (clazz == ProgrameSeriesAndVarietyDetailActivity.class
-                || clazz == ColumnPageActivity.class
-                || clazz == SingleDetailPageActivity.class
-                || clazz == ProgramCollectionActivity.class
-                || clazz == SpecialActivity.class
-                || clazz == PersonsDetailsActivityNew.class
-                || clazz == ListPageActivity.class
-                || clazz == ScreenListActivity.class) {
-            return true;
-        }
-        return false;
-    }
 
 
     /**

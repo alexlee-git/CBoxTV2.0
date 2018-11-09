@@ -72,19 +72,6 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
         ButterKnife.bind(this);
 
         init();
-        if (fromOuter) {
-            new CountDownTimer(5 * 1000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    upTop.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFinish() {
-                    upTop.setVisibility(View.GONE);
-                }
-            }.start();
-        }
         requestData();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + getContentUUID());
@@ -115,7 +102,9 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             personDetailHeadView.setContentUUID(getContentUUID());
             ADConfig.getInstance().setSeriesID(getContentUUID());
         }
-
+        if (fromOuter) {
+            personDetailHeadView.setTopView();
+        }
         hostProgramView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {

@@ -6,6 +6,10 @@
     <include
         layout="@layout/left_top_logo"/>
 
+    <include
+        layout="@layout/up_top_nav"
+        android:visibility="gone" />
+
     <FrameLayout
         android:id="@+id/id_detail_view"
         android:layout_height="@dimen/width_426px"
