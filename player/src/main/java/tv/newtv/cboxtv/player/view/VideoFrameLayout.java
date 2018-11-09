@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import tv.newtv.player.R;
+
 /**
  * 项目名称:         CBoxTV
  * 包名:            tv.newtv.cboxtv.views
@@ -43,8 +45,7 @@ public class VideoFrameLayout extends FrameLayout {
         if (LeftTime != null) {
             Log.e(VideoFrameLayout.class.getSimpleName(), "获取到了TextView");
             LayoutParams layoutParams = (LayoutParams) params;
-            layoutParams.rightMargin = getContext().getResources().getDimensionPixelOffset(com
-                    .newtv.libs.R.dimen.width_30px);
+            layoutParams.rightMargin =getResources().getDimensionPixelOffset(R.dimen.width_50px);
             LeftTime.setLayoutParams(layoutParams);
             if (mTextSize != 0) {
                 LeftTime.setTextSize(mTextSize);

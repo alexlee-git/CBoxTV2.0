@@ -13,7 +13,10 @@ import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.DeviceUtil;
 
 import tv.newtv.cboxtv.BaseActivity;
+import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -25,7 +28,7 @@ import tv.newtv.cboxtv.R;
 public abstract class DetailPageActivity extends BaseActivity {
 
     private String contentUUID;
-
+    private boolean isADEntry = false;
     public String getContentUUID() {
         return contentUUID;
     }
@@ -41,7 +44,7 @@ public abstract class DetailPageActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         if (savedInstanceState == null) {
             contentUUID = getIntent().getStringExtra(Constant.CONTENT_UUID);
         } else {
@@ -97,11 +100,21 @@ public abstract class DetailPageActivity extends BaseActivity {
             return true;
         }
 
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if(event.getAction() == KeyEvent.ACTION_UP){
             if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (isADEntry) {
+                    Intent intent = new Intent();
+                    intent.setClass(LauncherApplication.AppContext, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    LauncherApplication.AppContext.getApplicationContext().startActivity(intent);
+                    isADEntry = false;
+                }
                 finish();
                 return super.dispatchKeyEvent(event);
             }
+        }
+
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             ViewGroup viewGroup = findViewById(R.id.root_view);
             if (viewGroup == null) {
                 return super.dispatchKeyEvent(event);

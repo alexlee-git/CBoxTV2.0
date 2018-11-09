@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 
 import com.newtv.cms.bean.Content;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
-import tv.newtv.cboxtv.views.detail.EpisodeHelper;
+import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
@@ -30,7 +29,6 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
-import tv.newtv.cboxtv.views.detailpage.EpisodeHorizontalListView;
 
 /**
  * 合集页
@@ -128,7 +126,6 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
         mListView = findViewById(R.id.episode_horizontal_list_view);
-        mListView.setTitle("合集节目");
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.video_program_collect_layout)
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
                         new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder.DB_TYPE_VIPPAY),
@@ -186,16 +183,19 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                     public void ProgramChange() {
 
                     }
-                }).SetOnInfoResult(new HeadPlayerView.InfoResult() {
+                })
+                .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
-                        mContent = info;
-                        headPlayerView.setProgramSeriesInfo(info);
-                        mListView.setContentUUID(contentUUID, info);
-                        suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH,info, null);
-//                                headPlayerView.Play(0, 0, false);
-                    }
-                }).SetContentUUID(contentUUID));
+                        if(info == null) return;
+                            mContent = info;
+                            mListView.setContentUUID(getContentUUID());
+                            mListView.onSubContentResult("", new ArrayList<>(info.getData()));
+                            suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH,
+                                    info,null);
+                        }
+                     })
+                     .SetContentUUID(getContentUUID()));
         mListView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {

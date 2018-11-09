@@ -243,7 +243,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
     }
 
     class HistoryViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener, View.OnKeyListener {
-        private FrameLayout mModuleView;
+        private View mModuleView;
         private TextView mTitleTv; // 主标
         private ImageView mFocusIv; // 焦点
         private ImageView mImageIv; // 海报
@@ -255,7 +255,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         public HistoryViewHolder(View itemView) {
             super(itemView);
 
-            mModuleView  = (FrameLayout) itemView.findViewById(R.id.id_module_view);
+            mModuleView  = itemView.findViewById(R.id.id_module_view);
             mTitleTv     = (TextView) itemView.findViewById(R.id.id_title);
             mImageIv     = (ImageView) itemView.findViewById(R.id.id_poster);
             mFocusIv     = (ImageView) itemView.findViewById(R.id.id_focus);

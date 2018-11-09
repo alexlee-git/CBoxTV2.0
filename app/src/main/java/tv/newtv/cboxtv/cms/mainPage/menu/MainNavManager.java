@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.BackGroundManager;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
@@ -121,7 +123,18 @@ public class MainNavManager implements NavContract.View {
                     if (TextUtils.isEmpty(value.getFocusIcon())) {
                         ((NavPageMenuViewHolder) holder).setText(value.getTitle());
                     } else {
-                        ((NavPageMenuViewHolder) holder).setImage(value.getFocusIcon());
+                        if (BuildConfig.DEBUG) {
+                            String url = value.getFocusIcon();
+                            if (url.contains("http://172.25.102.19/")) {
+                                url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
+                            }
+                            if (url.contains("http://172.25.101.210/")) {
+                                url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
+                            }
+                            ((NavPageMenuViewHolder) holder).setImage(url);
+                        } else {
+                            ((NavPageMenuViewHolder) holder).setImage(value.getFocusIcon());
+                        }
                     }
                 }
 
@@ -163,16 +176,6 @@ public class MainNavManager implements NavContract.View {
             });
             mFirMenu.setAdapter(menuAdapter);
 
-            int count = mNavInfos.size();
-            boolean contain = false;
-            for (int index = 0; index < count; index++) {
-                Nav navInfo = mNavInfos.get(index);
-                if (currentFocus.equals(navInfo.getId())) {
-                    defaultPageIdx = index;
-                    contain = true;
-                    break;
-                }
-            }
             if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
                 defaultPageIdx = Navbarfoused;
                 Nav navInfo = mNavInfos.get(defaultPageIdx);
@@ -180,11 +183,25 @@ public class MainNavManager implements NavContract.View {
                     currentFocus = navInfo.getId();
                 }
             }
+            int count = mNavInfos.size();
+            for (int index = 0; index < count; index++) {
+                Nav navInfo = mNavInfos.get(index);
+                if(!TextUtils.isEmpty(currentFocus)) {
+                    if (currentFocus.equals(navInfo.getId())) {
+                        defaultPageIdx = index;
+                    }
+                }else{
+                    if("1".equals(navInfo.isFocus())){
+                        defaultPageIdx = index;
+                        currentFocus = navInfo.getId();
+                    }
+                }
+            }
+
             Log.e("--defaultPageIdx-------", Navbarfoused + "----" + defaultPageIdx);
 
             menuAdapter.setMenuItems(mNavInfos, defaultPageIdx, mNavInfos.size());
         }
-//        mFirMenu.setOneMenuData(mNavInfos);
 
         if (mFragments == null) {
             mFragments = new ArrayList<>(Constant.BUFFER_SIZE_8);
@@ -317,6 +334,7 @@ public class MainNavManager implements NavContract.View {
 
         NavUtil.getNavUtil().navFragment = willShowFragment;
         willShowFragment.setUserVisibleHint(true);
+        BackGroundManager.getInstance().setCurrentNav(navInfo.getId());
         mCurrentShowFragment = (BaseFragment) willShowFragment;
     }
 
@@ -359,6 +377,7 @@ public class MainNavManager implements NavContract.View {
 
     @Override
     public void onNavResult(Context context, List<Nav> result) {
+        BackGroundManager.getInstance().parseNavigation(result);
         inflateNavigationBar(result, context, "server");
     }
 

@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
@@ -26,6 +29,10 @@ import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.Locale;
 
 import io.reactivex.Observable;
@@ -52,6 +59,7 @@ import tv.newtv.cboxtv.utils.DBUtil;
 public class LauncherApplication extends MultiDexApplication implements PlayerObserver {
 
     public static Context AppContext = null;
+    private ContentContract.Presenter mContentPresenter;
 
     private boolean isAdSDKInit = false;//广告初始化结果
 
@@ -72,7 +80,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                Log.e("TAG","throw test");
+                Log.e("TAG", "throw test");
             }
         });
 
@@ -82,7 +90,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         }
 
         AppContext = this.getApplicationContext();
-
+        mContentPresenter = new ContentContract.ContentPresenter(this, null);
         Libs.init(this, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, BuildConfig.FLAVOR,
                 BuildConfig.DEBUG);
 
@@ -119,7 +127,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                Log.i(Constant.TAG, "accept: "+throwable);
+                Log.i(Constant.TAG, "accept: " + throwable);
             }
         });
     }
@@ -182,11 +190,45 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
     @Override
     public void onFinish(final Content playInfo, final int index, final int position) {
-        try {
-            if (index == 0 && position == 0) {
+        if (Constant.CONTENTTYPE_CP.equals(playInfo.getContentType())) {
+            if (TextUtils.isEmpty(playInfo.getCsContentIDs())) {
+                addHistory(playInfo, index, position);
                 return;
             }
+            String csId = playInfo.getCsContentIDs().split("\\|")[0];
+            mContentPresenter.getContent(csId, true,new
+                    ContentContract.View() {
+                        @Override
+                        public void onContentResult(@NotNull String uuid, @Nullable Content content) {
+                            if (content != null) {
+                                playInfo.setVImage(content.getVImage());
+                                playInfo.setTitle(content.getTitle());
+                            }
+                            addHistory(playInfo, index, position);
+                        }
 
+                        @Override
+                        public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
+
+                        }
+
+                        @Override
+                        public void tip(@NotNull Context context, @NotNull String message) {
+
+                        }
+
+                        @Override
+                        public void onError(@NotNull Context context, @Nullable String desc) {
+                            addHistory(playInfo, index, position);
+                        }
+                    });
+        } else {
+            addHistory(playInfo, index, position);
+        }
+    }
+
+    private void addHistory(final Content playInfo, final int index, final int position) {
+        try {
             QueryUserStatusUtil.getInstance().getLoginStatus(this, new INotifyLoginStatusCallback() {
                 @Override
                 public void notifyLoginStatusCallback(boolean login) {
@@ -221,7 +263,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
     @Override
     public void onExitApp() {
-        
+
     }
 
     @Override
@@ -233,4 +275,10 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     public Intent getPlayerActivityIntent() {
         return new Intent(LauncherApplication.this, NewTVLauncherPlayerActivity.class);
     }
+
+    @Override
+    public boolean isVip() {
+        return false;
+    }
+
 }

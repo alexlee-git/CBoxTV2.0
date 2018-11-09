@@ -42,7 +42,6 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
 import tv.newtv.cboxtv.player.LiveListener;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
@@ -52,7 +51,6 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
@@ -70,7 +68,7 @@ import tv.newtv.cboxtv.views.custom.FocusToggleView2;
  * 创建日期:          2018/5/5
  */
 public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnClickListener,
-        ContentContract.View,LiveListener {
+        ContentContract.View, LiveListener {
 
     private static final String TAG = "HeadPlayerView";
     Content mInfo;
@@ -91,6 +89,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private Disposable mDisposable;
     private String memberStatus;
     private String expireTime;
+
     private long lastClickTime = 0;
     private View vipPay;
     private PlayerCallback mPlayerCallback = new PlayerCallback() {
@@ -166,16 +165,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     };
 
-
     //检测全屏退出回调
-    private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new VideoExitFullScreenCallBack() {
-        @Override
-        public void videoEitFullScreen() {
-            if (mBuilder != null && mBuilder.videoExitFullScreenCallBack != null){
-                mBuilder.videoExitFullScreenCallBack.videoEitFullScreen();
-            }
-        }
-    };
+    private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new
+            VideoExitFullScreenCallBack() {
+                @Override
+                public void videoEitFullScreen() {
+                    if (mBuilder != null && mBuilder.videoExitFullScreenCallBack != null) {
+                        mBuilder.videoExitFullScreenCallBack.videoEitFullScreen();
+                    }
+                }
+            };
 
     public HeadPlayerView(Context context) {
         this(context, null);
@@ -202,7 +201,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
      * 准备播放器
      */
     public void prepareMediaPlayer() {
-
         if (playerView != null && playerView.isReleased()) {
             ViewGroup parent = (ViewGroup) playerView.getParent();
             if (parent != null) {
@@ -212,7 +210,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (playerView == null && mBuilder != null && contentView != null) {
-
             View video = contentView.findViewById(mBuilder.mPlayerId);
             if (video == null) return;
             if (video instanceof VideoPlayerView) {
@@ -226,6 +223,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     playerView.setLayoutParams(layoutParams);
                     ((ViewGroup) video).addView(playerView, layoutParams);
                 } else {
+                    currentPosition = defaultConfig.playPosition;
                     playerView = new VideoPlayerView(defaultConfig, getContext());
                     if (defaultConfig.defaultFocusView instanceof VideoPlayerView) {
                         playerView.requestFocus();
@@ -233,9 +231,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 }
             }
             if (playerView != null) {
-                playerView.setPlayerCallback(mPlayerCallback);
+                playerView.setPlayerCallback(mBuilder.playerCallback);
                 playerView.setVideoExitCallback(videoExitFullScreenCallBack);
-                isBuildComplete = true;
             }
         }
     }
@@ -300,7 +297,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
-
             playerView.release();
             playerView.destory();
             playerView = null;
@@ -351,17 +347,21 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             prepareMediaPlayer();
         }
 
-        if (isPlayLive && mInfo != null) {
-            return;
-        }
         if (playerView != null && mInfo != null) {
-            currentPosition = (defaultConfig != null ? defaultConfig.playPosition :
-                    currentPosition);
             Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
-            playerView.setSeriesInfo(mInfo);
-            playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+            startPlayerView();
         }
+    }
+
+    public void resetSeriesInfo(final Content content){
+        initData();
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setProgramSeriesInfo(content);
+            }
+        },300);
     }
 
     //显示全屏
@@ -373,7 +373,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         mBuilder = builder;
         initData();
         if (mBuilder.playerCallback == null) return;
-        //if (mBuilder.videoExitFullScreenCallBack == null) return;
         if (mBuilder.contentUUid == null) return;
         if (mBuilder.mPlayerId == -1) return;
         if (mBuilder.mLayout == -1) return;
@@ -383,8 +382,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         contentView = LayoutInflater.from(getContext()).inflate(mBuilder.mLayout, this, false);
         addView(contentView);
         checkDataFromDB();
-
-        prepareMediaPlayer();
 
         if (mBuilder.focusables != null && mBuilder.focusChangeListener != null) {
             for (int id : mBuilder.focusables) {
@@ -590,29 +587,23 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
-        if(historyBean != null && programSeriesInfo.getData() != null){
-            for(SubContent content : programSeriesInfo.getData()){
-                if(TextUtils.equals(content.getContentUUID(),historyBean.playId)){
+        if (historyBean != null && programSeriesInfo.getData() != null) {
+            for (SubContent content : programSeriesInfo.getData()) {
+                if (TextUtils.equals(content.getContentUUID(), historyBean.playId)) {
                     int index = programSeriesInfo.getData().indexOf(content);
-                    setCurrentPlayIndex("history",index);
+                    setCurrentPlayIndex("history", index);
                     break;
                 }
             }
         }
 
         mInfo = programSeriesInfo;
-        if (playerView != null && !isPlayLive) {
-            playerView.setSeriesInfo(programSeriesInfo);
-            playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
-        } else {
-            mPlayInfo = new PlayInfo(currentPlayIndex, currentPosition);
-        }
         setVipPayStatus(mInfo);
+        parseResult();
     }
 
     //播放
     public void Play(int index, int postion, boolean requestFocus) {
-
 
         if (isPlayLive) {
             isPlayLive = false;
@@ -626,18 +617,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return;
         }
         setCurrentPlayIndex("Play", index);
+        currentPosition = postion;
 
-        prepareMediaPlayer();
+        startPlayerView();
 
-        if (playerView != null) {
-            playerView.beginChange();
-
-            playerView.setSeriesInfo(mInfo);
-            playerView.playSingleOrSeries(index, postion);
-
-            if (requestFocus) {
-                requestPlayerFocus();
-            }
+        if (requestFocus) {
+            requestPlayerFocus();
         }
     }
 
@@ -649,31 +634,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                mPlayerCallback.onPlayerClick(playerView);
+                if (mBuilder.playerCallback != null) {
+                    mBuilder.playerCallback.onPlayerClick(playerView);
+                }
             }
         }, 500);
     }
 
     private void parseResult() {
-        if (mInfo == null) return;
-//=======
-//    private void parseResult(String result) {
-//        if (TextUtils.isEmpty(result)) {
-//            onLoadError("获取结果为空");
-//            return;
-//        }
-//        try {
-//            JSONObject object = new JSONObject(result);
-//            if (object.getInt("errorCode") == 0) {
-//                JSONObject obj = object.getJSONObject("data");
-//                Gson gson = new Gson();
-//                mInfo = gson.fromJson(obj.toString(), ProgramSeriesInfo.class);
-//                mInfo.resolveVip();
-//
-//                if (mBuilder.infoResult != null) {
-//                    mBuilder.infoResult.onResult(mInfo);
-//                }
-//>>>>>>> 1.4:app/src/main/java/tv/newtv/cboxtv/views/detailpage/HeadPlayerView.java
+        if (mInfo == null && contentView == null) return;
 
         TextView title = contentView.findViewById(R.id.id_detail_title);
         TextView type = contentView.findViewById(R.id.id_detail_type);
@@ -687,7 +656,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         Log.e("HeadPlayerparseResult: ", mInfo.toString());
 //              第一行是 地区、年代、一级分级  第二行是 主持人、导演、主演，所有人员名称就是 连续一行显示，用竖线前后空格区分。
-        // mInfo.getDistrict() 地区  mInfo.getArea()//国家地区 mInfo.getPresenter
 
         if (type != null) {
             type.setText(PlayInfoUtil.formatSplitInfo(mInfo.getArea()
@@ -738,18 +706,61 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
+        startPlayerView();
+
+    }
+
+    private void startPlayerView() {
         //TODO 栏目化直播 直播判断
-        if (mInfo.getLiveLoopParam() != null) {
-            LiveInfo liveInfo = new LiveInfo(mInfo);
-            if (liveInfo.isLiveTime()) {
-                //需要直播
-                playerView.playLive(liveInfo, false,this);
-                isPlayLive = true;
-            }
-        } else {
-            if (mInfo != null && mPlayInfo != null) {
+        if (mInfo != null) {
+            prepareMediaPlayer();
+            if (mInfo.getLiveParam() != null) {
+                final LiveInfo liveInfo = new LiveInfo(mInfo);
+                if (liveInfo.isLiveTime()) {
+                    //需要直播
+                    if (!TextUtils.isEmpty(mInfo.getLvID())) {
+                        mPresenter.getContent(mInfo.getLvID(), false, new ContentContract.View() {
+                            @Override
+                            public void onContentResult(@NotNull String uuid, @org.jetbrains
+                                    .annotations.Nullable Content content) {
+                                if (content != null) {
+                                    String playUrl = content.getPlayUrl();
+                                    liveInfo.setLiveUrl(playUrl);
+                                    isPlayLive = true;
+                                    playerView.playLive(liveInfo, false, HeadPlayerView.this);
+                                } else {
+                                    onComplete();
+                                }
+                            }
+
+                            @Override
+                            public void onSubContentResult(@NotNull String uuid, @org.jetbrains
+                                    .annotations.Nullable
+                                    ArrayList<SubContent> result) {
+                            }
+
+                            @Override
+                            public void tip(@NotNull Context context, @NotNull String message) {
+                            }
+
+                            @Override
+                            public void onError(@NotNull Context context, @org.jetbrains.annotations
+                                    .Nullable String desc) {
+                                playerView.setSeriesInfo(mInfo);
+                                playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                            }
+                        });
+                    } else {
+                        playerView.setSeriesInfo(mInfo);
+                        playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                    }
+                }else{
+                    playerView.setSeriesInfo(mInfo);
+                    playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                }
+            } else {
                 playerView.setSeriesInfo(mInfo);
-                playerView.playSingleOrSeries(mPlayInfo.index, mPlayInfo.position);
+                playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
             }
         }
     }
@@ -813,10 +824,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void destroy() {
-        if (mDisposable != null) {
-            mDisposable.dispose();
-            mDisposable = null;
-        }
 
         if (mPresenter != null) {
             mPresenter.destroy();
@@ -854,63 +861,41 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
         mBuilder.infoResult.onResult(null);
-//=======
-//        if (mInfo == null || TextUtils.isEmpty(mInfo.getPlayEndTime())) {
-//            return;
-//        }
-//        LiveTimingUtil.endTime(mInfo.getPlayEndTime(), new LiveTimingUtil.LiveEndListener() {
-//            @Override
-//            public void end() {
-//                if(!NewTVLauncherPlayerViewManager.getInstance().isLiving()){
-//                    Log.i(TAG, "非直播时间，不结束播放");
-//                    return;
-//                }
-//                if (playerView != null) {
-//                    playerView.ExitFullScreen();
-//                    playerView.setHintText("播放已结束");
-//                    playerView.setHintTextVisible(View.VISIBLE);
-//                    playerView.release();
-//                }
-//                TimeDialog.showBuilder(getContext(), "播放时间已结束，您可以观看其它视频.",
-//                        new OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        if (playerView != null && playerView.isReleased()) {
-//                            Log.e(TAG, "player view is released, rebuild it....");
-//                            playerView.destory();
-//                            playerView = null;
-//                            prepareMediaPlayer();
-//                        }
-//                        if (playerView != null && currentProgramSeriesInfo != null) {
-//                            playerView.setSeriesInfo(currentProgramSeriesInfo);
-//                            playerView.playSingleOrSeries(0, 0);
-//                        }
-//                    }
-//                });
-//            }
-//        });
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
         mBuilder.infoResult.onResult(content);
         setProgramSeriesInfo(content);
-        parseResult();
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
 
     }
 
     @Override
     public void onTimeChange(String current, String end) {
+        //TODO 直播时间改变
 
+        if(playerView != null) {
+            playerView.setTipText(String.format("正在直播 %s/%s", current, end));
+        }
     }
 
     @Override
     public void onComplete() {
+        //TODO 栏目化直播结束，继续播放点播视频
 
+        if (playerView != null) {
+            playerView.release();
+            playerView.destory();
+            playerView = null;
+        }
+
+        if (mInfo != null) {
+            startPlayerView();
+        }
     }
 
 

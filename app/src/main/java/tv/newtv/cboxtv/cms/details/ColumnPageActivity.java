@@ -57,7 +57,6 @@ public class ColumnPageActivity extends DetailPageActivity {
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
     private Content pageContent;
-    private boolean isADEntry = false;
     private int currentIndex = -1;
     private boolean isCollect = false;
     private boolean isLogin = false;
@@ -102,7 +101,6 @@ public class ColumnPageActivity extends DetailPageActivity {
         scrollView = findViewById(R.id.root_view);
 
         String contentUUID = getIntent().getStringExtra("content_uuid");
-        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
@@ -119,6 +117,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView.Builder.DB_TYPE_SUBSCRIP),
                         new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder.DB_TYPE_VIPPAY),
                         new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder.DB_TYPE_VIPTIP))
+                .autoGetSubContents()
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
@@ -246,10 +245,7 @@ public class ColumnPageActivity extends DetailPageActivity {
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
             public void onGetProgramSeriesInfo(List<SubContent> seriesInfo) {
-                ArrayList<SubContent> contents = new ArrayList<>(seriesInfo);
-                pageContent.setData(contents);
-                //mProgramSeriesInfo = seriesInfo;
-                headPlayerView.setProgramSeriesInfo(pageContent);
+                headPlayerView.resetSeriesInfo(pageContent);
             }
 
             @Override

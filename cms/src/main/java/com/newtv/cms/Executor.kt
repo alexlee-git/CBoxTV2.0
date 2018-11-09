@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit
 internal class Executor<T>(val observable: Observable<ResponseBody>,
                            val type: Type?,
                            val model: String,
+                           val lock:Boolean,
                            val callback: IExecutor<T>?) {
 
     private var mID: Long = 0;

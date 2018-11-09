@@ -40,6 +40,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private View mFocusView;
     private boolean repeatPlay = false;
     private TextView HintTextView;
+    private TextView TipTextView;
 
     private View defaultFocusView;
     private boolean KeyIsDown = false;
@@ -47,15 +48,21 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack;
 
-    private Boolean mOuterControl;
+    private Boolean mOuterControl = false;
+    private TextView videoTitle;
+    private ImageView full_screen;
+    private boolean isEnd;
 
     public VideoPlayerView(@NonNull Context context) {
         this(context, null);
     }
 
+
     public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
+
+    //    private boolean isFullScrenn = false;
 
     public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int
             defStyleAttr) {
@@ -67,12 +74,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         super(context, attrs, defStyleAttr, config);
     }
 
-
     public VideoPlayerView(PlayerViewConfig config, Context context) {
         this(context, null, 0, config);
     }
-
-    //    private boolean isFullScrenn = false;
 
     @Override
     public void updateDefaultConfig(PlayerViewConfig config) {
@@ -141,7 +145,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         if (HintTextView != null) {
             HintTextView.setTextSize(getResources().getDimensionPixelSize(!isFullScreen ? R.dimen
-                    .height_12px : R.dimen.height_18px));
+                    .height_12sp : R.dimen.height_18sp));
         }
     }
 
@@ -150,11 +154,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void enterFullScreen(final Activity activity) {
-        if (!playCenter.isReady()) {
+        if (!playCenter.isReady() && !isLiving()) {
             return;
         }
-        Content programSeriesInfo = playCenter.getCurrentSeriesInfo();
-        if (programSeriesInfo == null) return;
         EnterFullScreen(activity, false);
     }
 
@@ -167,6 +169,13 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         playerViewConfig.playCenter = playCenter;
         playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
         return playerViewConfig;
+    }
+
+    public void setTipText(String message){
+        if(TipTextView != null){
+            TipTextView.setVisibility(VISIBLE);
+            TipTextView.setText(message);
+        }
     }
 
     @Override
@@ -225,6 +234,20 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
         super.initView(context);
         addView(HintTextView, layoutParams);
+
+        TipTextView = new TextView(getContext());
+        TipTextView.setTextSize(getResources().getDimensionPixelSize(R.dimen.height_12px));
+        TipTextView.setTextColor(Color.WHITE);
+        TipTextView.setGravity(Gravity.CENTER);
+        LayoutParams tiplayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams
+                .WRAP_CONTENT);
+        TipTextView.setVisibility(View.INVISIBLE);
+        tiplayoutParams.rightMargin = 10;
+        tiplayoutParams.bottomMargin = 10;
+        tiplayoutParams.gravity = Gravity.END | Gravity.BOTTOM;
+        TipTextView.setLayoutParams(tiplayoutParams);
+
+        addView(TipTextView, tiplayoutParams);
 
         setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -317,7 +340,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return playCenter != null && playCenter.isReady();
     }
 
-
     private void dispatchComplete(final boolean isError, final String desc) {
         MainLooper.get().postDelayed(new Runnable() {
             @Override
@@ -375,6 +397,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 isEnd = false;
             }
         } else {
+            //当视频都播放完的时候，就不在去加载首次进入详情页播放的视频
+            ProgramIsChange=false;
             if (isFullScreen()) {
                 ExitFullScreen();
             }
@@ -434,10 +458,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         this.videoTitle = videoTitle;
         this.full_screen = full_screen;
     }
-
-    private TextView videoTitle;
-    private ImageView full_screen;
-    private boolean isEnd;
 
     public void outerControl() {
         this.mOuterControl = true;

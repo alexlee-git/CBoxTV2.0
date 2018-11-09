@@ -48,6 +48,11 @@ public class NavFragment extends BaseFragment {
     }
 
     @Override
+    protected String getContentUUID() {
+        return contentId;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mRootLayout = null;
@@ -134,10 +139,10 @@ public class NavFragment extends BaseFragment {
             mainPageWidgets.put("viewpager", viewPager);
             mainPageWidgets.put("nav", mMenuNav);
             mainListPageManager = new MainListPageManager();
+            mainListPageManager.setActionIntent(mExternalAction, mExternalParams);
             mainListPageManager.init(this, getActivity(), getChildFragmentManager(),
                     mainPageWidgets,
                     contentId, mMenus);
-            mainListPageManager.setActionIntent(mExternalAction, mExternalParams);
         }
 
         return rootView;

@@ -44,7 +44,7 @@ internal object Request {
             .addConverterFactory(GsonConverterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
             .baseUrl(if (!Libs.get().isDebug) "http://api31.cloud.ottcn.com"
-                        else "http://testcms31.ottcn.com:30012")
+                        else "http://testcms31.ottcn.com:30013")
             .build()
 
     val nav: INavRetro by lazy { retrofit.create(INavRetro::class.java) }

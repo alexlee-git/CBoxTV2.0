@@ -391,7 +391,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (content != null){
             dataInfo = content;
             setHeadData(content);
@@ -409,7 +409,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
 
     }
 }

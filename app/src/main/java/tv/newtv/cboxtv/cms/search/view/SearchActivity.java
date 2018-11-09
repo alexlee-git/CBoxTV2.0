@@ -47,29 +47,29 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     private final String TAG = this.getClass().getSimpleName();
     private float SearchViewKeyboardWidth = 655;
     private boolean keyWordChange = false;
+    private String mSearchId = "420";
 
     private SearchViewKeyboard mSearchViewKeyboard;
     private PageContract.ContentPresenter mContentPresenter;
     private NewTVSearchResult mSearchResult;
     private NewTVSearchHotRecommend mHotRecommend;
-    private RelativeLayout mRelativeLayout;
+    private View mRelativeLayout;
     //监听输入框值变化
     private OnGetKeyListener onGetKeyListener = new OnGetKeyListener() {
         @Override
         public void notifyKeywords(String key) {
             try {
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_SEARCH, key);
+                mSearchResult.setKey(key);
                 if (!TextUtils.isEmpty(key)) {
-                    mSearchResult.setKey(key);
                     mSearchResult.setVisibility(View.VISIBLE);
                     mHotRecommend.setVisibility(View.GONE);
                 } else {
-                    mSearchResult.setKey(key);
                     mSearchResult.setVisibility(View.GONE);
                     mHotRecommend.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "---notifyKeywords:Exception--" + e.toString());
+                mSearchResult.setKey("");
             }
         }
     };
@@ -90,7 +90,11 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
         initView();
         init();
         mContentPresenter = new PageContract.ContentPresenter(this, this);
-        mContentPresenter.getPageContent("420");
+        String hotSearchId = Constant.getBaseUrl("HOTSEARCH_CONTENTID");
+        if (!TextUtils.isEmpty(hotSearchId)){
+            mSearchId = hotSearchId;
+        }
+        mContentPresenter.getPageContent(mSearchId);
     }
 
     //对象的初始化
@@ -157,10 +161,14 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
             }
             if (nextFocus == null && check) {
                 if ("keyboard".equals(mode)) {
-                    if (!mSearchResult.isLoadComplete()) {
-                        return true;
-                    }
-                    if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
+                    if (mHotRecommend.getVisibility() == View.GONE){
+                        if (!mSearchResult.isLoadComplete()) {
+                            return true;
+                        }
+                        if (mSearchResult.mFragments != null && mSearchResult.mFragments.size() > 0) {
+                            slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
+                        }
+                    }else {
                         slideView(mRelativeLayout, 0, -SearchViewKeyboardWidth, false);
                     }
                 } else if ("search".equals(mode)) {
@@ -185,9 +193,11 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
                     //TODO keyboard request focus
                     mSearchViewKeyboard.getLastFocusView().requestFocus();
                     mSearchResult.showLeftBackView(false);
+                    mSearchResult.resetLoadingLayout(false);
                 } else {
                     //TODO search result view request focus
                     mSearchResult.showLeftBackView(true);
+                    mSearchResult.resetLoadingLayout(true);
                     if (mSearchResult.getVisibility() == View.VISIBLE) {
                         if (!keyWordChange) {
                             mSearchResult.requestDefaultFocus();

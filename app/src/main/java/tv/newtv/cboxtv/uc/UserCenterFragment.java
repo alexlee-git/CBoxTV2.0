@@ -742,6 +742,11 @@ public class UserCenterFragment extends BaseFragment implements
     }
 
     @Override
+    protected String getContentUUID() {
+        return contentId;
+    }
+
+    @Override
     public void onDestroy() {
         try {
             Log.e(TAG, "---onDestroy");

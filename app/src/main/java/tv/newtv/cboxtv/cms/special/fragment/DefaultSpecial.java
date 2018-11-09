@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
+import com.newtv.libs.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
+import tv.newtv.cboxtv.cms.special.viewholder.SpecialUniversalAdapter;
 
 /**
  * 项目名称:         CBoxTV
@@ -27,12 +29,12 @@ import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
  */
 public class DefaultSpecial extends BaseSpecialContentFragment {
 
+    private static final String TAG = DefaultSpecial.class.getSimpleName();
     private TextView mPageTitle;
     private TextView mPageSubTitle;
     private Button mPageFavoriteButton;
     private AiyaRecyclerView mRecyclerView;
     private List<Page> mDatas;
-    private UniversalAdapter mAdapter;
     private ModelResult<ArrayList<Page>> mModuleInfoResult;
 
 
@@ -42,7 +44,7 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
     }
 
     @Override
-    protected void onItemContentResult(Content content) {
+    protected void onItemContentResult(String uuid, Content content) {
 
     }
 
@@ -95,18 +97,17 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
         UniversalAdapter adapter = (UniversalAdapter) mRecyclerView.getAdapter();
         if (adapter == null) {
             mDatas = mModuleInfoResult.getData();
-//            adapter = new SpecialUniversalAdapter(getContext(), mDatas);
-//             Log.e(Constant.TAG, "DefaultSpecial_mDatas : "+mDatas);
-//
-//            adapter.setHasStableIds(true);
-//            mAdapter = adapter;
-//            mRecyclerView.setAdapter(mAdapter);
+            adapter = new SpecialUniversalAdapter(getContext(), mDatas);
+             LogUtils.e(TAG, "DefaultSpecial_mDatas : "+mDatas);
+
+            adapter.setHasStableIds(true);
+            mRecyclerView.setAdapter(adapter);
         } else {
             mDatas.clear();
             mDatas.addAll(mModuleInfoResult.getData());
             adapter.notifyDataSetChanged();
+            adapter.showFirstLineTitle(true);
         }
-		 adapter.showFirstLineTitle(true);
     }
 
     private void setTitleText(ModelResult<ArrayList<Page>> moduleInfoResult) {

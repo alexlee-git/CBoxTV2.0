@@ -22,7 +22,7 @@ import com.newtv.libs.util.LogUtils;
 import java.util.List;
 import java.util.Map;
 
-import tv.newtv.cboxtv.BgChangManager;
+import tv.newtv.cboxtv.BackGroundManager;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
@@ -155,31 +155,31 @@ public class MainListPageManager{
 
         for (Nav navInfo : mNavInfos) {
             String fragmentUUID = navInfo.getId();
-            BgChangManager.getInstance().add(contentId, fragmentUUID);
         }
 
-        if (defaultPageIdx == 0) {
+        if (defaultPageIdx == 0 && mSharedPreferences != null) {
             currentFocus = mSharedPreferences.getString("page-defaultFocus", "");
-            int count = mNavInfos.size();
-            boolean contain = false;
-            for (int index = 0; index < count; index++) {
-                Nav navInfo = mNavInfos.get(index);
-
-                if (currentFocus.equals(navInfo.getId())) {
-                    defaultPageIdx = index;
-                    contain = true;
-                    break;
-                }
-
-//                if (mNavListPageInfoResult.getDefaultFocus().equals(navInfo.getContentID())) {
-//                    defaultPageIdx = index;
-//                }
-            }
-//            if (!contain) currentFocus = mNavListPageInfoResult.getDefaultFocus();
             if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
                 Nav navInfo = mNavInfos.get(Navbarfoused);
                 currentFocus = navInfo.getId();
             }
+            int count = mNavInfos.size();
+            for (int index = 0; index < count; index++) {
+                Nav navInfo = mNavInfos.get(index);
+
+                if(TextUtils.isEmpty(currentFocus)) {
+                    if ("1".equals(navInfo.isFocus())) {
+                        defaultPageIdx = index;
+                        currentFocus = navInfo.getId();
+                    }
+                }else{
+                    if (currentFocus.equals(navInfo.getId())) {
+                        defaultPageIdx = index;
+                        break;
+                    }
+                }
+            }
+
         }
 
         PlayerConfig.getInstance().setSecondChannelId(currentFocus);
@@ -201,7 +201,7 @@ public class MainListPageManager{
                     Nav navInfo = mNavInfos.get(select);
                     String uuid = navInfo.getId();
                     PlayerConfig.getInstance().setSecondChannelId(uuid);
-                    BgChangManager.getInstance().setCurrent(mContext, uuid);
+
 
                     if (mViewPager.getCurrentItem() % mNavInfos.size() ==
                             position % mNavInfos.size()) {
@@ -209,6 +209,7 @@ public class MainListPageManager{
                     }
                     mViewPagerAdapter.setShowItem(position);
                     mViewPager.setCurrentItem(position);
+                    BackGroundManager.getInstance().setCurrentNav(uuid);
                     currentFocus = value.getId();
 
                     if (!TextUtils.isEmpty(uuid)) {
@@ -309,7 +310,9 @@ public class MainListPageManager{
                 @Override
                 public void onPageScrollStateChanged(int state) {
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
-                        currentFragment = mViewPagerAdapter.getCurrentFragment();
+                        if(mViewPagerAdapter !=null){
+                            currentFragment = mViewPagerAdapter.getCurrentFragment();
+                        }
                         //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager
                         // .getCurrentItem());
                         if (currentFragment != null) {

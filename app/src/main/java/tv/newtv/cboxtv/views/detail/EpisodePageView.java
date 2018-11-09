@@ -318,14 +318,11 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         leftDir.setVisibility(View.INVISIBLE);
         rightDir = new TextView(getContext());
         LayoutParams right_layoutParam = new LayoutParams(dir_width, dir_height);
-        // right_layoutParam.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
         right_layoutParam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             right_layoutParam.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
         }
         right_layoutParam.rightMargin = dir_width;
-//        right_layoutParam.topMargin = getResources().getDimensionPixelOffset(R.dimen
-// .height_300px);
         rightDir.setBackgroundResource(R.drawable.icon_detail_tips_right);
         rightDir.setLayoutParams(right_layoutParam);
         addView(rightDir, right_layoutParam);
@@ -360,8 +357,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     public void setContentUUID(Content content, int episodeType, String videoType, FragmentManager
-            manager, String
-                                       uuid, View controlView) {
+            manager, String uuid, View controlView) {
         seriesContent = content;
         mFragmentManager = manager;
         mContentUUID = uuid;
@@ -369,9 +365,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mEpisodeType = episodeType;
         mVideoType = videoType;
 
-        mContentPresenter = new ContentContract.ContentPresenter
-                (getContext(), this);
-        mContentPresenter.getSubContent(mContentUUID);
+        if(content.getData() == null) {
+            mContentPresenter = new ContentContract.ContentPresenter
+                    (getContext(), this);
+            mContentPresenter.getSubContent(mContentUUID);
+        }else{
+            parseResult(content.getData());
+        }
     }
 
     private void onLoadError(String message) {
@@ -386,6 +386,22 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         try {
             mContentList = results;
 
+            boolean tvSeries = !videoType(mVideoType);
+            if (tvSeries) {
+                final boolean sortDesc = !TextUtils.equals(seriesContent.getSeriesSum(), seriesContent
+                        .getRecentNum());
+                Collections.sort(mContentList, new Comparator<SubContent>() {
+                    @Override
+                    public int compare(SubContent t1, SubContent t2) {
+                        if (sortDesc) {
+                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt(t1.getPeriods
+                                    ());
+                        }
+                        return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods());
+                    }
+                });
+            }
+
             if (mOnEpisodeChange != null) {
                 mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
             }
@@ -398,7 +414,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 ShowInfoTextView("");
 
                 if (mContentList.size() > 0) {
-//                    mSeriesInfo.resolveVip();
                     if (mControlView != null) {
                         mControlView.setVisibility(View.VISIBLE);
                     }
@@ -429,20 +444,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         int size = mContentList.size();
         fragments = new ArrayList<>();
         boolean tvSeries = !videoType(mVideoType);
-        if (tvSeries) {
-            final boolean sortDesc = !TextUtils.equals(seriesContent.getSeriesSum(), seriesContent
-                    .getRecentNum());
-            Collections.sort(mContentList, new Comparator<SubContent>() {
-                @Override
-                public int compare(SubContent t1, SubContent t2) {
-                    if (sortDesc) {
-                        return Integer.parseInt(t2.getPeriods()) - Integer.parseInt(t1.getPeriods
-                                ());
-                    }
-                    return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods());
-                }
-            });
-        }
         List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
         for (int index = 0; index < size; index += mPageSize) {
             int endIndex = index + mPageSize;
@@ -705,12 +706,12 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public void onContentResult(@Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @Nullable Content content) {
 
     }
 
     @Override
-    public void onSubContentResult(@Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
         parseResult(result);
     }
 

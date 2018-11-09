@@ -23,7 +23,7 @@
             android:layout_marginLeft="@dimen/width_48px"
             android:ellipsize="marquee"
             android:focusable="false"
-            android:gravity="center"
+            android:gravity="left"
             android:marqueeRepeatLimit="marquee_forever"
             android:singleLine="true"
             android:textColor="#ffffff"

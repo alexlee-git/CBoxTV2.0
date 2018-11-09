@@ -192,12 +192,12 @@ public class Constant {
     public static final String SERVER_TIME_URL = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SERVER_TIME)) ? getBaseUrl(HeadersInterceptor.SERVER_TIME) : "https://bzo.cloud" +
             ".ottcn.com/";
-    public static final String VERSION_UP_BASE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+    public static final String VERSION_UP_BASE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
             "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String VERSION_UP = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .VERSION_UP)) ? getBaseUrl(HeadersInterceptor.VERSION_UP) : VERSION_UP_BASE; //版本升级
 
-    public static final String IS_ORIENTED_BASE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+    public static final String IS_ORIENTED_BASE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
             "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String IS_ORIENTED = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .IS_ORIENTED)) ? getBaseUrl(HeadersInterceptor.IS_ORIENTED) : IS_ORIENTED_BASE; //检查是否是定向升级
@@ -212,18 +212,17 @@ public class Constant {
     public static final String DYNAMIC_KEY = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .DYNAMIC_KEY)) ? getBaseUrl(HeadersInterceptor.DYNAMIC_KEY) : "https://k.cloud.ottcn" +
             ".com"; //动态防盗链
-    private static final String CMS_ONLINE = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+    private static final String CMS_ONLINE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
             "http://111.32.132.156/" : "http://epg.cloud.ottcn.com/";
     public static final String BASE_URL_CMS = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .CMS)) ? getBaseUrl(HeadersInterceptor.CMS) : CMS_ONLINE;
-    private static final String PERMISSTION_CHECK_URL = DeviceUtil.CBOXTEST.equals(BuildConfig
-            .FLAVOR) ? "http://stage-bzo.cloud.ottcn.com/" : "https://account.cloud.ottcn.com/";
+    private static final String PERMISSTION_CHECK_URL = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ? "http://stage-bzo.cloud.ottcn.com/" : "https://account.cloud.ottcn.com/";
     public static final String BASE_PERMISSTION_CHECK = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.PERMISSTION_CHECK)) ? getBaseUrl(HeadersInterceptor
             .PERMISSTION_CHECK) : PERMISSTION_CHECK_URL; //播放鉴权
     //public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
     // .AD)) ? getBaseUrl(HeadersInterceptor.AD) : "https://api.adott.ottcn.com/"; //广告正式地址
-    private static final String AD_URL = DeviceUtil.CBOXTEST.equals(BuildConfig.FLAVOR) ?
+    private static final String AD_URL = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
             "http://api.adott.ottcn.org/" : "https://api.adott.ottcn.com/";
     public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
     ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
