@@ -39,17 +39,20 @@ import tv.newtv.cboxtv.cms.util.Utils;
 
 public class SearchFragment extends BaseFragment implements PageContract.View{
 
-    FrameLayout mSearchView;
-    ImageView imgSearch, focusView;
+    private List<Page> mPrograms = new ArrayList<>();
+
+    private HorizontalRecyclerView hotSearchRecyclerView;
+    private FrameLayout mSearchView;
+    private ImageView imgSearch;
+    private ImageView focusView;
+    private View contentView;
+    private TextView mLoadingView;
+
+    private PageContract.Presenter mPresenter;
+
     private String param;
     private String contentId;
     private String actionType;
-    private HorizontalRecyclerView hotSearchRecyclerView;
-    private List<Page> mPrograms = new ArrayList<>();
-
-    private View contentView;
-
-    private PageContract.Presenter mPresenter;
 
     public static SearchFragment newInstance(Bundle paramBundle) {
         SearchFragment fragment = new SearchFragment();
@@ -60,6 +63,21 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
     @Override
     protected String getContentUUID() {
         return contentId;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null){
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+        hotSearchRecyclerView = null;
+        mSearchView = null;
+        imgSearch = null;
+        focusView = null;
+        contentView = null;
+        mLoadingView = null;
     }
 
     @Override
@@ -97,6 +115,7 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
             mSearchView = contentView.findViewById(R.id.search_layout);
             imgSearch = contentView.findViewById(R.id.search_view);
             focusView = contentView.findViewById(R.id.focus_view);
+            mLoadingView = contentView.findViewById(R.id.id_loading_view);
 
             DisplayUtils.adjustView(getActivity(), imgSearch, focusView, R.dimen.width_17dp, R.dimen.height_16dp);
 
@@ -150,24 +169,27 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
 
     @Override
     public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+        if (mLoadingView != null)
+            mLoadingView.setText("暂无数据内容");
     }
 
     @Override
     public void onPageResult(List<Page> page) {
-//        LogUtils.e("onPageResult11","onPageResult page : " + page);
-//        changeBG(moduleData,contentId);
         bindData(page);
-
     }
 
     @Override
     public void startLoading() {
-
+        if (mLoadingView != null){
+            mLoadingView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void loadingComplete() {
-
+        if (mLoadingView != null){
+            mLoadingView.setVisibility(View.GONE);
+        }
     }
 
     class HotSearchAdapter extends RecyclerView.Adapter<HotSearchAdapter.MyViewHolder> {
