@@ -384,7 +384,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         collect.setRequest(true);
         collect.setParent(root);
 
-        Node history = new Node();
+        Node history = new LocalNode();
         history.setPid("root");
         history.setTitle("我的观看记录");
         history.setId("attention");
@@ -473,7 +473,13 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         if (list == null) {
             list = new ArrayList<>();
         }
+        com.newtv.cms.bean.Content content = new com.newtv.cms.bean.Content();
+        List<SubContent> data = new ArrayList<>();
+        for(Program program : list){
+            data.add(program.convertProgramsInfo());
+        }
 
+        node.setContent(content);
         node.setPrograms(list);
         node.setRequest(true);
         for (Program p : list) {
