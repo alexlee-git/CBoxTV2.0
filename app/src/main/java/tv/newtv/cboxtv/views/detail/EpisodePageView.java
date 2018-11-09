@@ -81,6 +81,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private int mPageSize;
     private String mVideoType;
     private TextView mTitleView;
+    private TextView mUpTitle;
 
     public EpisodePageView(Context context) {
         this(context, null);
@@ -228,6 +229,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
         TitleView.findViewById(R.id.id_title_icon).setVisibility(View.VISIBLE);
         mTitleView = TitleView.findViewById(R.id.id_title);
+        mUpTitle = TitleView.findViewById(R.id.up_title);
         if (mTitleView != null) {
             mTitleView.setVisibility(View.VISIBLE);
             mTitleView.setText("播放列表");
@@ -488,6 +490,13 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             if (!videoType(mVideoType)) {
                 mTitleView.setText("剧集列表");
                 mTitleView.setVisibility(VISIBLE);
+                for (int i = 0; i < mContentList.size(); i++) {
+                    if (!TextUtils.isEmpty(mContentList.get(i).getRecentNum())){
+                        mUpTitle.setText("已更新"+mContentList.get(i).getRecentNum()+"集");
+                    }else {
+                        mUpTitle.setText(seriesContent.getSeriesSum()+"集全");
+                    }
+                }
             }
             LayoutParams layoutParams = (LayoutParams) TitleView.getLayoutParams();
             TitleView.measure(widthMeasureSpec,

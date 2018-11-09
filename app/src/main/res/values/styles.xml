@@ -50,6 +50,11 @@
         <item name="android:textSize">@dimen/height_26px</item>
     </style>
 
+    <style name="popu_anim" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_top</item>
+        <item name="android:windowExitAnimation">@anim/anim_bottom</item>
+    </style>
+
     <style name="ModulePosterBottomTitleStyle_005">
         <item name="android:textColor">@color/colorPosterBottomTitleText</item>
         <item name="android:gravity">center</item>

@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
@@ -100,10 +102,23 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_detail_page);
+        final LinearLayout upTop = findViewById(R.id.up_top);
+        if (fromOuter) {
+            new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    upTop.setVisibility(View.VISIBLE);
+                }
 
+                @Override
+                public void onFinish() {
+                    upTop.setVisibility(View.GONE);
+                }
+            }.start();
+        }
         if (savedInstanceState == null) {
             contentUUID = getIntent().getStringExtra("content_uuid");
-             isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY,false);
+            isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         } else {
             contentUUID = savedInstanceState.getString("content_uuid");
         }

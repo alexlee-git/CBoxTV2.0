@@ -4,29 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <tv.newtv.cboxtv.views.detail.PersonDetailHeadView
             android:id="@+id/person_head"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
-        <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
-            android:id="@+id/hostProgramView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/person_head"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            />
+        <include
+            layout="@layout/up_top_nav"
+            android:visibility="gone" />
 
-        <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
-            android:id="@+id/taProgramView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/hostProgramView"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            />
+    </FrameLayout>
+
+
+    <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
+        android:id="@+id/hostProgramView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/person_head"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
+
+    <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
+        android:id="@+id/taProgramView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hostProgramView"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
 
         <tv.newtv.cboxtv.views.detail.SuggestView
             android:id="@+id/taRelationPerson"

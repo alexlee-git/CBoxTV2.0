@@ -1,10 +1,12 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import tv.newtv.cboxtv.R;
@@ -26,7 +28,7 @@ import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
 
 /**
  * 合集页
- *
+ * <p>
  * 项目名称:         CBoxTV
  * 包名:            tv.newtv.cboxtv.cms.details
  * 创建事件:         13:44
@@ -111,6 +113,20 @@ public class ProgramCollectionActivity extends DetailPageActivity {
             finish();
             return;
         }
+        final LinearLayout upTop = findViewById(R.id.up_top);
+        if (fromOuter){
+            new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    upTop.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onFinish() {
+                    upTop.setVisibility(View.GONE);
+                }
+            }.start();
+        }
         headPlayerView = findViewById(R.id.header_video);
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
@@ -159,12 +175,12 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                         .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                             @Override
                             public void onResult(Content info) {
-                                if(info == null) return;
+                                if (info == null) return;
                                 mContent = info;
                                 mListView.setContentUUID(getContentUUID());
                                 mListView.onSubContentResult("", new ArrayList<>(info.getData()));
                                 suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH,
-                                        info,null);
+                                        info, null);
                             }
                         })
                         .SetContentUUID(getContentUUID()));

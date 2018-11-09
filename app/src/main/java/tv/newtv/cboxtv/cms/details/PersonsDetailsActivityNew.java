@@ -1,11 +1,13 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -50,6 +52,9 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     @BindView(R.id.root_view)
     SmoothScrollView scrollView;
 
+    @BindView(R.id.up_top)
+    LinearLayout upTop;
+
     @Override
     protected boolean interruptDetailPageKeyEvent(KeyEvent event) {
         if (scrollView != null && scrollView.isComputeScroll() && personDetailHeadView != null &&
@@ -67,6 +72,19 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
         ButterKnife.bind(this);
 
         init();
+        if (fromOuter) {
+            new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    upTop.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onFinish() {
+                    upTop.setVisibility(View.GONE);
+                }
+            }.start();
+        }
         requestData();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + getContentUUID());
