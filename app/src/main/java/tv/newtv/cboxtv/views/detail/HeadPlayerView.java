@@ -83,87 +83,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private Builder mBuilder;
     private View contentView;
 
-    private boolean isBuildComplete = false;
     private Boolean isPlayLive = false;
-    private PlayInfo mPlayInfo;
-    private Disposable mDisposable;
     private String memberStatus;
     private String expireTime;
 
     private long lastClickTime = 0;
     private View vipPay;
-    private PlayerCallback mPlayerCallback = new PlayerCallback() {
-        @Override
-        public void onEpisodeChange(int index, int position) {
-            setCurrentPlayIndex("onEpisodeChange", index);
-            currentPosition = position;
-
-            if (mBuilder != null && mBuilder.playerCallback != null) {
-                mBuilder.playerCallback.onEpisodeChange(index, position);
-            }
-        }
-
-        @Override
-        public void onPlayerClick(VideoPlayerView videoPlayerView) {
-            if (mBuilder != null && mBuilder.playerCallback != null) {
-                mBuilder.playerCallback.onPlayerClick(videoPlayerView);
-            }
-        }
-
-        @Override
-        public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
-            if (mBuilder != null && mBuilder.playerCallback != null) {
-                mBuilder.playerCallback.AllPlayComplete(isError, info, videoPlayerView);
-            }
-        }
-
-        @Override
-        public void ProgramChange() {
-            if (mBuilder != null && mBuilder.playerCallback != null) {
-                mBuilder.playerCallback.ProgramChange();
-                Log.d("ywy_log", "HeadPlayerView  exitFull listener contentUUID : " + mBuilder.contentUUid);
-                DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.CONTENTUUID, mBuilder.contentUUid)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, String result) {
-                                Log.d("ywy_log", "code : " + code + "  result : " + result);
-                                if (!TextUtils.isEmpty(result)) {
-                                    Gson mGson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                                    }.getType();
-                                    List<UserCenterPageBean.Bean> data = mGson.fromJson(result, type);
-                                    if (data.size() > 0) {
-                                        Log.d("ywy_log", "HeadPlayerView iniData title: " + data.get(0)._title_name + " contentUUID : " + data.get(0)._contentuuid);
-                                        UserCenterPageBean.Bean value = data.get(0);
-                                        if (value != null) {
-                                            Log.d("ywy_log", "playPosition : " + value.playPosition);
-                                            if (!TextUtils.isEmpty(value.playPosition)) {
-                                                currentPosition = Integer.valueOf(value.playPosition);
-                                            } else {
-                                                currentPosition = 0;
-                                            }
-                                            if (data.get(0).playIndex != null) {
-                                                setCurrentPlayIndex("DataSupport", Integer.valueOf(data
-                                                        .get(0)
-                                                        .playIndex));
-                                            } else {
-                                                setCurrentPlayIndex("DataSupport", 0);
-                                            }
-                                            playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
-                                        }
-                                    }
-                                }
-                            }
-                        }).excute();
-
-            }
-        }
-
-
-    };
 
     //检测全屏退出回调
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new
@@ -312,24 +237,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             playerView.release();
             playerView.destory();
             playerView = null;
-        }
-    }
-    private void addHistory() {
-        int position = playerView.getCurrentPosition();
-        if (!isPlayLive) {
-            if (mInfo != null) {
-                UserCenterUtils.addHistory(mInfo
-                        , currentPlayIndex, position, playerView.getDuration(), new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, String result) {
-                                if (code == 0 && mInfo != null) {
-                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," +
-                                            mInfo.getContentUUID());//添加历史记录
-                                    RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                                }
-                            }
-                        });
-            }
         }
     }
 
@@ -554,7 +461,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     private void setVipPayStatus(Content info) {
         Log.d("ywy ", "ywy info : " + info.toString());
-        if (null != vipPay && info != null && info.getVipFlag() != null) {
+        if (null != vipPay && info != null && !TextUtils.isEmpty(info.getVipFlag())) {
             final int vipState = Integer.parseInt(info.getVipFlag());
             if (vipState > 0) {
                 vipPay.setVisibility(View.VISIBLE);

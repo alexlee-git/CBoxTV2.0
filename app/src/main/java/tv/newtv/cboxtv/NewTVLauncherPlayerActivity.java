@@ -3,7 +3,6 @@ package tv.newtv.cboxtv;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -15,9 +14,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.Libs;
 import com.newtv.libs.util.NetworkManager;
-import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ToastUtil;
 import com.newtv.libs.util.YSLogUtils;
 
@@ -27,15 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
-import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
-import tv.newtv.cboxtv.menu.MenuGroup;
-import tv.newtv.cboxtv.menu.MenuGroupPresenter2;
-import tv.newtv.cboxtv.menu.model.Program;
-
-import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
-import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerUrlConfig;
-import tv.newtv.cboxtv.player.model.VideoPlayInfo;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -52,14 +41,12 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     int playPostion = 0;
     Content mProgramSeriesInfo;
     private FrameLayout mPlayerFrameLayoutContainer;
+
+    private String contentUUID;
+    private String contentType;
+
     private int mIndexPlay;
-    private int mPositionPlay = 0;
     private ContentContract.ContentPresenter mPresenter;
-    private FrameLayout rootView;
-//    private IMenuGroupPresenter menuGroupPresenter;
-    private int abNormalExit = 0x002;//非正常退出
-    private int normalExit = 0x001;//正常退出
-    private int isContinue = normalExit;
 
     public static void play(Context context, Bundle bundle) {
         Intent intent = new Intent(context, NewTVLauncherPlayerActivity.class);
@@ -97,9 +84,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
             YSLogUtils.getInstance(NewTVLauncherPlayerActivity.this).clearData();
         }
 
-        rootView = null;
         mPlayerFrameLayoutContainer = null;
-//        programSeriesInfo = null;
     }
 
     @Override
@@ -118,15 +103,18 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
         mPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
 
-        rootView = findViewById(R.id.root_view);
         mPlayerFrameLayoutContainer = (FrameLayout) findViewById(R.id.player_view_container);
 //        menuGroupPresenter = new MenuGroupPresenter2(this.getApplicationContext());
 //        rootView.addView(menuGroupPresenter.getRootView());
-
-        Bundle extras = getIntent().getExtras();
+        Bundle extras;
+        if (savedInstanceState == null) {
+            extras = getIntent().getExtras();
+        } else {
+            extras = savedInstanceState;
+        }
         if (extras != null) {
-            String contentUUID = (String) extras.getString(Constant.CONTENT_UUID);
-            String contentType = (String) extras.getString(Constant.CONTENT_TYPE);
+            contentUUID = (String) extras.getString(Constant.CONTENT_UUID);
+            contentType = (String) extras.getString(Constant.CONTENT_TYPE);
             if (TextUtils.isEmpty(contentUUID)) {
                 ToastUtil.showToast(getApplicationContext(), "节目ID为空");
                 finish();
@@ -147,7 +135,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 //            }
 //        });
 //
-//        NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
+//        NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent
+// () {
 //
 //            @Override
 //            public void onNext(SubContent info, int index, boolean isNext) {
@@ -163,21 +152,20 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         Log.e(TAG, "action:" + event.getAction() + ",keyCode=" + event.getKeyCode());
-        if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
-                && buyGoodsBusiness.dispatchKeyEvent(event)){
+        if (buyGoodsBusiness != null && buyGoodsBusiness.isShow()
+                && buyGoodsBusiness.dispatchKeyEvent(event)) {
             return true;
         }
-        if(NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)){
+        if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
             return true;
         }
-//        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
-//            return true;
-//        }
+
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
                 case KeyEvent.KEYCODE_ESCAPE:
-                    updateAndSave();
+                    releasePlayer();
+                    finish();
                     break;
             }
         }
@@ -208,12 +196,9 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume: ");
-
-        if (isContinue == abNormalExit)
-            NewTVLauncherPlayerViewManager.getInstance().setContinuePlay(Libs.get().getContext(),
-                    mProgramSeriesInfo,
-                    defaultConfig, playPostion);
-        isContinue = normalExit;
+        if(mProgramSeriesInfo != null){
+            doPlay(mProgramSeriesInfo);
+        }
     }
 
     @Override
@@ -226,10 +211,13 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     protected void onStop() {
         super.onStop();
         Log.i(TAG, "onStop: ");
-        updateAndSave();
 
-        mProgramSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+        releasePlayer();
+    }
+
+    private void releasePlayer() {
         playPostion = NewTVLauncherPlayerViewManager.getInstance().getPlayPostion();
+        mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
         defaultConfig = NewTVLauncherPlayerViewManager.getInstance().getDefaultConfig();
         NewTVLauncherPlayerViewManager.getInstance().releasePlayer();
     }
@@ -238,48 +226,20 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.i(TAG, "onSaveInstanceState01: ");
-        isContinue = abNormalExit;
-    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        Log.i(TAG, "onSaveInstanceState02: ");
-        isContinue = abNormalExit;
-    }
-
-    private void updateAndSave() {
-        mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-        mPositionPlay = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
-        if (NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo() != null) {
-            RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(mIndexPlay,
-                    mPositionPlay, NewTVLauncherPlayerViewManager.getInstance()
-                    .getProgramSeriesInfo().getContentID()));
-            addHistory();
-        } else {
-            finish();
-        }
-    }
-
-    private void addHistory() {
-        Content content = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
-        if (content != null) {
-            mPositionPlay = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition();
-            mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-            Player.get().onFinish(content, mIndexPlay, mPositionPlay);
-        }
-        finish();
+        outState.putString(Constant.CONTENT_UUID, contentUUID);
+        outState.putString(Constant.CONTENT_TYPE, contentType);
     }
 
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
+        mProgramSeriesInfo = content;
         doPlay(content);
     }
 
     private void doPlay(Content content) {
         initListener();
-        NewTVLauncherPlayerViewManager.getInstance().play
-                (this, content, 0, 0, false);
+        NewTVLauncherPlayerViewManager.getInstance().play(this, content, mIndexPlay, playPostion, false);
         NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
                 (mPlayerFrameLayoutContainer, this);
         mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();

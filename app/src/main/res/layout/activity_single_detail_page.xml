@@ -26,6 +26,7 @@
     </tv.newtv.cboxtv.views.detail.SuggestView>
 
     <tv.newtv.cboxtv.views.detail.EpisodeAdView
+        android:id="@+id/ad_view"
         android:layout_width="@dimen/width_1746px"
         android:layout_height="@dimen/height_386px"
         android:layout_below="@id/suggest"

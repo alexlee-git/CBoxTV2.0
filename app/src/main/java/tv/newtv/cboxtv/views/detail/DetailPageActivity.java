@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.views.detail;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.DeviceUtil;
+import com.newtv.libs.util.ToastUtil;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.LauncherApplication;
@@ -28,10 +30,9 @@ import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
 public abstract class DetailPageActivity extends BaseActivity {
 
     private String contentUUID;
-    private boolean isADEntry = false;
-    public String getContentUUID() {
-        return contentUUID;
-    }
+    protected boolean isADEntry = false;
+
+    protected abstract void buildView(@Nullable Bundle savedInstanceState,String contentID);
 
     protected abstract boolean interruptDetailPageKeyEvent(KeyEvent event);
 
@@ -44,9 +45,9 @@ public abstract class DetailPageActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         if (savedInstanceState == null) {
             contentUUID = getIntent().getStringExtra(Constant.CONTENT_UUID);
+            isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         } else {
             Intent intent = savedInstanceState.getParcelable("intent");
             if (intent != null) {
@@ -54,6 +55,14 @@ public abstract class DetailPageActivity extends BaseActivity {
                     contentUUID = intent.getStringExtra(Constant.CONTENT_UUID);
             }
         }
+
+        if(TextUtils.isEmpty(contentUUID)){
+            ToastUtil.showToast(getApplicationContext(),"节目ID为空");
+            finish();
+            return;
+        }
+
+        buildView(savedInstanceState,contentUUID);
     }
 
     @Override
@@ -73,7 +82,7 @@ public abstract class DetailPageActivity extends BaseActivity {
                 if (view instanceof IEpisode) {
                     ((IEpisode) view).destroy();
                 } else if (view instanceof ViewGroup) {
-                    destroyViewGroup(viewGroup);
+                    destroyViewGroup((ViewGroup) view);
                 }
             }
             if (viewGroup instanceof SmoothScrollView) {

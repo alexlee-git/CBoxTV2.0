@@ -21,15 +21,15 @@ import com.newtv.libs.Libs
  */
 class PageContract {
 
-    interface View : ICmsView {
+    interface View : ICmsView,LoadingView {
         fun onPageResult(page: List<Page>?)
     }
 
-    interface ModelView : ICmsView {
+    interface ModelView : ICmsView,LoadingView {
         fun onPageResult(page: ModelResult<ArrayList<Page>>)
     }
 
-    interface LoadingView : View {
+    interface LoadingView  {
         fun startLoading()
         fun loadingComplete()
     }

@@ -157,7 +157,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     }
 
     public void setKey(String key) {
-        notifyToDataInfoResult(true);
+        key = key.trim();
         if (!TextUtils.isEmpty(currentkey) && cacheDatas != null) {
             if (key.length() < currentkey.length()) {
                 if (cacheDatas.containsKey(key)) {
@@ -174,6 +174,11 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             }
         }
 
+        if(!TextUtils.isEmpty(key)) {
+            notifyToDataInfoResult(true);
+        }else{
+            return;
+        }
         requestData(key);
     }
 
@@ -219,7 +224,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     }
 
     private void requestData(String key) {
-        key = key.trim();
+
         if (TextUtils.isEmpty(key)) {
             if(cacheDatas != null){
                 cacheDatas.clear();

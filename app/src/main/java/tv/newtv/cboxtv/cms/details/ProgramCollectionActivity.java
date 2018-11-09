@@ -8,10 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.videoview.PlayerCallback;
-
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.ad.ADConfig;
@@ -19,16 +15,20 @@ import com.newtv.libs.util.DeviceUtil;
 
 import java.util.ArrayList;
 
+import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
-import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 合集页
@@ -43,12 +43,12 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
 public class ProgramCollectionActivity extends DetailPageActivity {
 
     private static final String ACTION = "tv.newtv.cboxtv.action.PROGRAMCOLLECTION";
-    private String contentUUID;
     private HeadPlayerView headPlayerView;
     private SmoothScrollView scrollView;
     private Content mContent;
     private EpisodeHorizontalListView mListView;
     private boolean isLogin = false;
+    private EpisodeAdView mAdView;
 
     @Override
     protected void onDestroy() {
@@ -110,27 +110,27 @@ public class ProgramCollectionActivity extends DetailPageActivity {
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void buildView(@Nullable Bundle savedInstanceState, final String contentUUID) {
         setContentView(R.layout.activity_program_collec_page);
 
-        ADConfig.getInstance().setSeriesID(getContentUUID());
-        if (TextUtils.isEmpty(getContentUUID())) {
-            Toast.makeText(this, "节目合集信息异常", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        ADConfig.getInstance().setSeriesID(contentUUID);
         initLoginStatus();
 
         headPlayerView = findViewById(R.id.header_video);
+        mAdView = findViewById(R.id.column_detail_ad_fl);
         scrollView = findViewById(R.id.root_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
         mListView = findViewById(R.id.episode_horizontal_list_view);
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.video_program_collect_layout)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
-                        new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder.DB_TYPE_VIPPAY),
-                        new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder.DB_TYPE_VIPTIP))
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
+                                .DB_TYPE_COLLECT),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder
+                                .DB_TYPE_VIPPAY),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder
+                                .DB_TYPE_VIPTIP))
                 .SetPlayerId(R.id.video_container)
+                .SetContentUUID(contentUUID)
+                .autoGetSubContents()
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetClickListener(new View.OnClickListener() {
@@ -147,14 +147,19 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                                     if (isLogin) {
                                         //1 单点包月  3vip  4单点
                                         if (vipState == 1) {
-                                            UserCenterUtils.startVIP1(ProgramCollectionActivity.this, mContent, ACTION);
+                                            UserCenterUtils.startVIP1(ProgramCollectionActivity
+                                                    .this, mContent, ACTION);
                                         } else if (vipState == 3) {
-                                            UserCenterUtils.startVIP3(ProgramCollectionActivity.this, mContent, ACTION);
+                                            UserCenterUtils.startVIP3(ProgramCollectionActivity
+                                                    .this, mContent, ACTION);
                                         } else if (vipState == 4) {
-                                            UserCenterUtils.startVIP4(ProgramCollectionActivity.this, mContent, ACTION);
+                                            UserCenterUtils.startVIP4(ProgramCollectionActivity
+                                                    .this, mContent, ACTION);
                                         }
                                     } else {
-                                        UserCenterUtils.startLoginActivity(ProgramCollectionActivity.this, mContent, ACTION, true);
+                                        UserCenterUtils.startLoginActivity
+                                                (ProgramCollectionActivity.this, mContent,
+                                                        ACTION, true);
                                     }
                                 }
                                 break;
@@ -175,9 +180,11 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                     }
 
                     @Override
-                    public void AllPlayComplete(boolean isError, String info,
-                                                VideoPlayerView videoPlayerView) {
+                    public void AllPlayComplete(boolean isError, String info, VideoPlayerView
+                            videoPlayerView) {
+
                     }
+
 
                     @Override
                     public void ProgramChange() {
@@ -187,15 +194,18 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
-                        if(info == null) return;
-                            mContent = info;
-                            mListView.setContentUUID(getContentUUID());
-                            mListView.onSubContentResult("", new ArrayList<>(info.getData()));
-                            suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH,
-                                    info,null);
+                        if (info == null) return;
+                        mContent = info;
+                        mListView.setContentUUID(contentUUID);
+                        mListView.onSubContentResult(contentUUID, new ArrayList<>(info.getData()));
+                        suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH,
+                                info, null);
+
+                        if (mAdView != null) {
+                            mAdView.requestAD();
                         }
-                     })
-                     .SetContentUUID(getContentUUID()));
+                    }
+                }));
         mListView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {
@@ -212,75 +222,5 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 isLogin = status;
             }
         });
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        if (interruptKeyEvent(event)) {
-            return super.dispatchKeyEvent(event);
-        }
-
-
-        //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
-        if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
-                headPlayerView.hasFocus()) {
-            if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                return true;
-            }
-        }
-
-        if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
-                .ACTION_UP) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_ESCAPE:
-                    finish();
-                    return super.dispatchKeyEvent(event);
-            }
-        }
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                return super.dispatchKeyEvent(event);
-            }
-            ViewGroup viewGroup = findViewById(R.id.root_view);
-            int size = viewGroup.getChildCount();
-            for (int index = 0; index < size; index++) {
-                View view = viewGroup.getChildAt(index);
-                if (view != null) {
-                    if (!view.hasFocus()) {
-                        continue;
-                    }
-                    if (view instanceof IEpisode && ((IEpisode) view).interruptKeyEvent
-                            (event)) {
-                        return true;
-                    } else {
-                        View toView = null;
-                        int pos = index;
-                        int dir = 0;
-                        boolean condition = false;
-                        if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                            dir = -1;
-                            condition = true;
-                        } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                            dir = 1;
-                            condition = true;
-                        }
-                        while (condition) {
-                            pos += dir;
-                            if (pos < 0 || pos > viewGroup.getChildCount()) break;
-                            toView = viewGroup.getChildAt(pos);
-                            if (toView != null) {
-                                if (toView instanceof IEpisode && ((IEpisode) toView)
-                                        .interruptKeyEvent
-                                                (event)) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return super.dispatchKeyEvent(event);
     }
 }

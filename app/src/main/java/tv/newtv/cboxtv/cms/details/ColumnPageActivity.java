@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
@@ -54,6 +55,7 @@ public class ColumnPageActivity extends DetailPageActivity {
     private EpisodePageView playListView;
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
+    private EpisodeAdView mAdView;
     private long lastClickTime = 0;
     private SmoothScrollView scrollView;
     private Content pageContent;
@@ -94,20 +96,19 @@ public class ColumnPageActivity extends DetailPageActivity {
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void buildView(@Nullable Bundle savedInstanceState, final String contentUUID) {
         setContentView(R.layout.activity_column_page);
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
+        mAdView = findViewById(R.id.column_detail_ad_fl);
 
-        String contentUUID = getIntent().getStringExtra("content_uuid");
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-        ADConfig.getInstance().setSeriesID(contentUUID);
         if (TextUtils.isEmpty(contentUUID)) {
             Toast.makeText(this, "栏目信息异常", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+        ADConfig.getInstance().setSeriesID(contentUUID);
 
         initLoginStatus();
 
@@ -130,7 +131,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                             playListView.setContentUUID(info,EpisodeHelper.TYPE_COLUMN_DETAIL,
                                     info.getVideoType(),
                                     getSupportFragmentManager(),
-                                    getContentUUID(), null);
+                                    contentUUID, null);
                             if (sameType != null) {
                                 sameType.setContentUUID(SuggestView.TYPE_COLUMN_SUGGEST, info,
                                         null);
@@ -139,6 +140,10 @@ public class ColumnPageActivity extends DetailPageActivity {
                             SuggestView starView = findViewById(R.id.star);
                             starView.setContentUUID(SuggestView.TYPE_COLUMN_FIGURES, info,
                                     null);
+
+                            if(mAdView != null){
+                                mAdView.requestAD();
+                            }
                         } else {
                             ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ColumnPageActivity.this.finish();

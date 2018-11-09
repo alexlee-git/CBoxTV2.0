@@ -88,6 +88,16 @@ class SpecialContract {
         public void onError(@NotNull Context context, @Nullable String desc) {
 
         }
+
+        @Override
+        public void startLoading() {
+
+        }
+
+        @Override
+        public void loadingComplete() {
+
+        }
     }
 
 }
