@@ -103,7 +103,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_detail_page);
         final LinearLayout upTop = findViewById(R.id.up_top);
-        if (fromOuter) {
+        if (isPopup&&fromOuter) {
             new CountDownTimer(5 * 1000, 1000) {
                 @Override
                 public void onTick(long l) {

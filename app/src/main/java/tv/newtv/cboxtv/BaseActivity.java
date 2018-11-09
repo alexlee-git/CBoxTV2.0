@@ -63,6 +63,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected boolean fromOuter = false;//是否是外部跳转进入的
     private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
+    protected boolean isPopup = false;
 
     protected boolean isDetail(){
         return false;
@@ -282,7 +283,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             return true;
         }
         boolean isFullScreen = isFullScreen();
-        if (fromOuter) {
+        if (isPopup&&fromOuter) {
             checkIsTop(event);
         }
         return isFullScreen;

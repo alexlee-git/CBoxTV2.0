@@ -31,6 +31,7 @@ open class Content  : Serializable {
     var videoType: String? = null //一级分类
     var director: String? = null //导演
     var recentNum:String? = null //已更新集数
+    var isFinish:String? = null//是否更新完
 
     @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
     var contentID: String? = null //内容Id

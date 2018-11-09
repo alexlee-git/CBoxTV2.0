@@ -114,7 +114,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
             return;
         }
         final LinearLayout upTop = findViewById(R.id.up_top);
-        if (fromOuter){
+        if (isPopup&&fromOuter){
             new CountDownTimer(5 * 1000, 1000) {
                 @Override
                 public void onTick(long l) {

@@ -232,7 +232,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         result_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
         final LinearLayout upTop = findViewById(R.id.up_top);
-        if (fromOuter) {
+        if (isPopup&&fromOuter) {
             new CountDownTimer(5 * 1000, 1000) {
                 @Override
                 public void onTick(long l) {
@@ -453,7 +453,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     presenter.getLabelData();
                     return true;
                 }
-                if (tab.hasFocus()&&fromOuter){
+                if (tab.hasFocus()&&fromOuter&&isPopup){
                     super.checkIsTop(event);
                 }
                 break;
