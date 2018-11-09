@@ -82,7 +82,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.VIDEO_TYPE + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
-
+            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
 
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
@@ -109,6 +109,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.VIDEO_TYPE + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
 
             sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.UPDATE_TIME + " long default 0");
 
