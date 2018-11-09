@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
         layout="@layout/left_top_logo"/>
@@ -89,55 +90,37 @@
         android:textColor="@color/detail_tvcolor"
         android:textSize="@dimen/height_26px" />
 
-    <RelativeLayout
-        android:id="@+id/btn_detail_send_flower"
-        android:layout_width="@dimen/width_206px"
-        android:layout_height="@dimen/height_130px"
-        android:layout_marginLeft="@dimen/height_388px"
-        android:layout_marginTop="@dimen/height_374px"
-        android:background="@drawable/fouse_btn"
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
+        android:id="@+id/send_flower"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
+        android:layout_marginLeft="@dimen/height_410px"
+        android:layout_marginTop="@dimen/width_400px"
         android:focusable="true"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/detail_rel_image_send_flower"
-            android:layout_width="@dimen/width_152px"
-            android:layout_height="@dimen/height_76px"
-            android:layout_centerInParent="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/icon_details_sendflower" />
-    </RelativeLayout>
+        app:type="send_flowers"
+        />
 
     <tv.newtv.cboxtv.views.custom.DivergeView
         android:id="@+id/view_flower"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_300px"
-        android:layout_alignBottom="@+id/btn_detail_send_flower"
-        android:layout_alignLeft="@+id/btn_detail_send_flower"
-        android:layout_alignRight="@+id/btn_detail_send_flower"
+        android:layout_alignBottom="@+id/send_flower"
+        android:layout_alignLeft="@+id/send_flower"
+        android:layout_alignRight="@+id/send_flower"
         android:focusable="false" />
 
-    <RelativeLayout
-        android:id="@+id/btn_detail_attention"
-        android:layout_width="@dimen/width_206px"
-        android:layout_height="@dimen/height_130px"
-        android:layout_marginBottom="@dimen/height_33px"
-        android:layout_marginLeft="-12px"
-        android:layout_marginTop="@dimen/height_374px"
-        android:layout_toRightOf="@+id/btn_detail_send_flower"
-        android:background="@drawable/fouse_btn"
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
+        android:id="@+id/attention"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
+        android:layout_toRightOf="@+id/send_flower"
+        android:layout_marginLeft="@dimen/height_20px"
+        android:layout_marginStart="@dimen/width_20px"
+        android:layout_marginTop="@dimen/width_400px"
+        android:scaleType="fitXY"
         android:focusable="true"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/detail_rel_image_attention"
-            android:layout_width="@dimen/width_152px"
-            android:layout_height="@dimen/height_76px"
-            android:layout_centerInParent="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/icon_details_unattention_btn" />
-
-    </RelativeLayout>
+        app:type="attention"
+        />
 
     <RelativeLayout
         android:id="@+id/btn_detail_search_programe"
@@ -145,7 +128,7 @@
         android:layout_height="@dimen/height_135px"
         android:layout_marginLeft="-12px"
         android:layout_marginTop="@dimen/height_374px"
-        android:layout_toRightOf="@+id/btn_detail_attention"
+        android:layout_toRightOf="@+id/attention"
         android:background="@drawable/fouse_btn"
         android:focusable="true"
         android:gravity="center"

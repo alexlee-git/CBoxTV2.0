@@ -388,4 +388,14 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
         BackGroundManager.getInstance().setCurrentPageId(getContext(),contentId,page.asAd(),page
                 .getBackground(),getUserVisibleHint());
     }
+
+    @Override
+    public void startLoading() {
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void loadingComplete() {
+        loadingView.setVisibility(View.GONE);
+    }
 }

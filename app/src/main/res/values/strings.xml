@@ -99,4 +99,84 @@
     <string name="attention_success">关注成功,请到我的关注中查看</string>
     <string name="new_version_tip">亲爱的用户: 能享受新版本的服务了,更新如下:</string>
 
+<!--用户中心二期-->
+    <string name="use_mobile_login">用手机号码验证登录</string>
+    <string name="exit_login">退出登录</string>
+    <string name="user_id">用户ID</string>
+    <string name="user_age">年龄</string>
+    <string name="user_sex">性别</string>
+    <string name="user_mobile">手机号</string>
+    <string name="newtv_wechat">中国互联网电视 微信公众号</string>
+    <string name="newtv_weibo">中国互联网电视 微博号</string>
+    <string name="qr_public">扫码关注公众号</string>
+    <string name="qr_webo">扫码关注微博号</string>
+    <string name="service_number">客服电话 4000463366</string>
+    <string name="service_qq">客服QQ 800085092</string>
+    <string name="user_help_back">返回</string>
+    <string name="user_prompt_login">请登录</string>
+    <string name="user_already_login">查看资料</string>
+    <string name="user_prompt_member">会员中心</string>
+    <string name="user_already_member">会员续费</string>
+    <string name="user_poster_program_update_title_left_being">更新至</string>
+    <string name="user_poster_program_update_title_left_end">全</string>
+    <string name="user_tag_poster_program_update_title_right">集</string>
+    <string name="member_qr_top_title">请用手机扫码到M站购买</string>
+    <string name="member_qr_bottom_title">点击【确认键】 可放大二维码</string>
+    <string name="member_qr_full_screen_top_title">请使用手机扫描二维码登录</string>
+    <string name="member_qr_full_screen_bottom_title">点击【返回键】 可缩小二维码</string>
+    <string name="member_center_btn_login">登录</string>
+    <string name="member_center_btn_open">开通会员</string>
+    <string name="member_center_btn_exchange">会员兑换</string>
+    <string name="member_center_btn_order">我的订单</string>
+    <string name="member_center_btn_drama_library">会员片库</string>
+    <string name="member_agreement_title">欢迎查看会员协议</string>
+
+    <string name="usercenter_history_operation_text">按菜单键进行管理</string>
+    <string name="usercenter_subscription_operation_text">取消订阅请进入详情页</string>
+    <string name="usercenter_collection_operation_text">取消收藏请进入详情页</string>
+
+    <string name="usercenter_login_scan_phone">请使用手机扫描二维码登录</string>
+    <string name="usercenter_login_scan_quest">点击【确认键】可放大二维码</string>
+    <string name="phone_login_err">获取二维码失败，请重试</string>
+    <string name="usercenter_login_scan_quest_tv">请在手机操作，勿关闭电视页面</string>
+    <string name="send_phone_err">发送验证码失败!</string>
+    <string name="phone_login_status1">已发送</string>
+    <string name="phone_login_status2">输入错误</string>
+    <string name="phone_login_status3">验证码验证失败!</string>
+    <string name="phone_login_status4">重新发送</string>
+    <string name="phone_login_info">用户资料</string>
+    <string name="phone_login_tip_1">按返回键扫描二维码登录</string>
+    <string name="phone_login_tip_2">请输入手机号登录</string>
+    <string name="phone_login_tip_3">请输入11位数手机号码</string>
+    <string name="phone_login_tip_code">已发送到</string>
+    <string name="phone_login_tip_code1">，按返回键重新输入手机号</string>
+    <string name="phone_login_tip_5">请输入验证码，十五分钟内输入有效</string>
+    <string name="phone_login_code_err">验证码不能为空</string>
+    <string name="phone_login_user_agreement">同意用户协议</string>
+    <string name="phone_login_user_success">登录成功！</string>
+    <string name="phone_login_user_success1">秒跳转</string>
+
+    //会员中心
+    <string name="usercenter_member">亲爱的用户：</string>
+    <string name="usercenter_member_agreement">您购买则表示您同意并接受《会员支付协议》</string>
+    <string name="usercenter_member_down">按下键购买点播</string>
+    <string name="usercenter_pay_channel_wx">微信支付</string>
+    <string name="usercenter_pay_channel_ap">支付宝支付</string>
+    <string name="usercenter_pay">请扫码购买</string>
+    <string name="usercenter_pay_product">购买商品：</string>
+    <string name="usercenter_pay_price">售价：</string>
+    <string name="usercenter_pay_price_unit">元</string>
+    <string name="usercenter_pay_time">观看有效期：</string>
+    <string name="usercenter_pay_time_unit">天</string>
+    <string name="usercenter_pay_copyright">《支付协议》</string>
+    <string name="usercenter_use_copyright">版权使用和解释权归未来电视有限公司所有</string>
+    <string name="usercenter_pay_success">恭喜您完成购买！</string>
+    <string name="usercenter_pay_success_time">观看有效期到</string>
+    <string name="usercenter_pay_success_ok">确定（</string>
+    <string name="usercenter_pay_success_ok1">s）</string>
+    <string name="usercenter_pay_success_ok2">确定</string>
+
+    <!-- 会员到期提醒 -->
+    <string name="vip_tip">已购买，将于%s到期</string>
+
 </resources>

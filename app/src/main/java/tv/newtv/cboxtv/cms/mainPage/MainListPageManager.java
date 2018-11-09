@@ -179,7 +179,10 @@ public class MainListPageManager{
                     }
                 }
             }
+        }
 
+        if (TextUtils.isEmpty(currentFocus) && mNavInfos != null && mNavInfos.size() > 0) {
+            currentFocus = mNavInfos.get(0).getId();
         }
 
         PlayerConfig.getInstance().setSecondChannelId(currentFocus);

@@ -11,6 +11,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -32,12 +33,14 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
-
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 /**
  * Created by weihaichao on 2018/10/19.
  */
@@ -46,15 +49,18 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         ContentContract.LoadingView {
 
     Content pageContent;
+    private static final String ACTION = "tv.newtv.cboxtv.action.PROGRAMESERIES";
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
     private EpisodePageView playListView;
     private SmoothScrollView scrollView;
+    private EpisodeAdView mAdView;
     private String videoType;
     private long lastClickTime;
     private FragmentTransaction transaction;
     private ContentContract.Presenter mContentPresenter;
     private int layoutId;
+    private boolean isLogin = false;
 
 
 
@@ -73,13 +79,12 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
 
-        String contentUUID = getContentUUID();
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-
+            //requestData();
+            initLoginStatus();
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getContent(contentUUID, true);
         } else {
@@ -87,9 +92,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         }
     }
 
-    private void initView(final Content content) {
+
+    private void initView(final Content content, final String contentUUID) {
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
+        mAdView = findViewById(R.id.ad_view);
         final SuggestView suggestView = findViewById(R.id.suggest);
 
         if (!videoType()) {
@@ -99,14 +106,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         }
 
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
-        headPlayerView.Build(HeadPlayerView.Builder.build(layoutId)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
-                        .DB_TYPE_COLLECT))
+        headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
+                new HeadPlayerView.CustomFrame(R.id.vip_pay,HeadPlayerView.Builder.DB_TYPE_VIPPAY))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
+                .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
+                .SetContentUUID(contentUUID)
                 .autoGetSubContents()
-                .SetClickableIds(R.id.full_screen, R.id.add)
-                .SetContentUUID(getContentUUID())
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
@@ -118,7 +125,11 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                             .TYPE_VARIETY_SHOW,
                                     content.getVideoType(),
                                     getSupportFragmentManager(),
-                                    getContentUUID(), null);
+                                    contentUUID, null);
+
+                            if(mAdView != null){
+                                mAdView.requestAD();
+                            }
                         } else {
                             ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ProgrameSeriesAndVarietyDetailActivity.this.finish();
@@ -182,8 +193,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                 });
                                 mPaiseView.startDiverges(0);
                                 break;
-
-
                             case R.id.full_screen:
                                 if (System.currentTimeMillis() - lastClickTime >= 2000)
                                 {//判断距离上次点击小于2秒
@@ -191,12 +200,29 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);
                                 }
-
+                                break;
+                            case R.id.vip_pay:
+                                if (pageContent != null && pageContent.getVipFlag() != null) {
+                                    final int vipState = Integer.parseInt(pageContent.getVipFlag());
+                                    if (isLogin) {
+                                        //1 单点包月  3vip  4单点
+                                        if (vipState == 1) {
+                                            UserCenterUtils.startVIP1(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                        } else if (vipState == 3) {
+                                            UserCenterUtils.startVIP3(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                        } else if (vipState == 4) {
+                                            UserCenterUtils.startVIP4(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                        }
+                                    } else {
+                                        UserCenterUtils.startLoginActivity(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION, true);
+                                    }
+                                }
+                                break;
+                            default:
                                 break;
                         }
                     }
                 }));
-
 
         playListView.setOnEpisodeChange(new EpisodePageView.OnEpisodeChange() {
             @Override
@@ -215,6 +241,15 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
     }
 
+    //获取登陆状态
+    private void initLoginStatus(){
+        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(boolean status) {
+                isLogin = status;
+            }
+        });
+    }
 
     @Override
     protected void onDestroy() {
@@ -281,15 +316,14 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
-
+    public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (content != null) {
             videoType = content.getVideoType();
         }
         //这里跳转不同详情页 综艺、电视剧
         setContentView(R.layout.fragment_new_variety_show);
-        ADConfig.getInstance().setSeriesID(getContentUUID());
-        initView(content);
+        ADConfig.getInstance().setSeriesID(uuid);
+        initView(content,uuid);
     }
 
     @Override

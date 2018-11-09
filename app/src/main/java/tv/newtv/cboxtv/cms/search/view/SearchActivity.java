@@ -2,27 +2,17 @@ package tv.newtv.cboxtv.cms.search.view;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
 
-import com.newtv.cms.bean.Page;
-import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
@@ -42,18 +32,16 @@ import tv.newtv.cboxtv.cms.search.listener.OnReturnInputString;
  * 修改备注：
  */
 
-public class SearchActivity extends FragmentActivity implements PageContract.View {
+public class SearchActivity extends FragmentActivity {
 
-    private final String TAG = this.getClass().getSimpleName();
     private float SearchViewKeyboardWidth = 655;
     private boolean keyWordChange = false;
-    private String mSearchId = "420";
 
     private SearchViewKeyboard mSearchViewKeyboard;
-    private PageContract.ContentPresenter mContentPresenter;
     private NewTVSearchResult mSearchResult;
     private NewTVSearchHotRecommend mHotRecommend;
     private View mRelativeLayout;
+
     //监听输入框值变化
     private OnGetKeyListener onGetKeyListener = new OnGetKeyListener() {
         @Override
@@ -77,6 +65,8 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
         @Override
         public void onReturnInputString(String inputStr) {
             if (onGetKeyListener != null) {
+                inputStr = inputStr.trim();
+                if(TextUtils.isEmpty(inputStr)) return;
                 onGetKeyListener.notifyKeywords(inputStr);
                 keyWordChange = true;
             }
@@ -89,12 +79,7 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
         setContentView(R.layout.activity_search);
         initView();
         init();
-        mContentPresenter = new PageContract.ContentPresenter(this, this);
-        String hotSearchId = Constant.getBaseUrl("HOTSEARCH_CONTENTID");
-        if (!TextUtils.isEmpty(hotSearchId)){
-            mSearchId = hotSearchId;
-        }
-        mContentPresenter.getPageContent(mSearchId);
+
     }
 
     //对象的初始化
@@ -230,28 +215,12 @@ public class SearchActivity extends FragmentActivity implements PageContract.Vie
     }
 
     @Override
-    public void onPageResult(@Nullable List<Page> page) {
-        if (page != null && page.size() > 0) {
-            mHotRecommend.setData(page.get(0).getPrograms());
-        }
-    }
-
-    @Override
-    public void tip(@NotNull Context context, @NotNull String message) {
-
-    }
-
-    @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
-
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mContentPresenter != null) {
-            mContentPresenter.destroy();
-            mContentPresenter = null;
+
+        if(mHotRecommend != null){
+            mHotRecommend.destroy();
+            mHotRecommend = null;
         }
     }
 }

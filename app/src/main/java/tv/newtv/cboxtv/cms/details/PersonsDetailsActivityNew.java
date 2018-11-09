@@ -14,18 +14,17 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.ScaleUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
-import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.PersonDetailHeadView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
@@ -55,6 +54,9 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     @BindView(R.id.up_top)
     LinearLayout upTop;
 
+    @BindView(R.id.person_detail_ad_fl)
+    EpisodeAdView mAdView;
+
     @Override
     protected boolean interruptDetailPageKeyEvent(KeyEvent event) {
         if (scrollView != null && scrollView.isComputeScroll() && personDetailHeadView != null &&
@@ -66,41 +68,42 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
         setContentView(R.layout.activity_person_details_new);
         ButterKnife.bind(this);
 
-        init();
-        requestData();
+        init(contentUUID);
+        requestData(contentUUID);
 
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + getContentUUID());
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
     }
 
-    private void requestData() {
+    private void requestData(String contentUUID) {
         hostProgramView.setHorizontalItemLayout(R.layout.program_horizontal_normal_land_layout);
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
-                getContentUUID(), hostProgramView);// 获取主持列表
+                contentUUID, hostProgramView);// 获取主持列表
 
         taProgramView.setHorizontalItemLayout(R.layout.program_horizontal_normal_land_layout);
         taProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_RELATION_LV,
-                getContentUUID(), taProgramView);// 获取相关节目列表
+                contentUUID, taProgramView);// 获取相关节目列表
 
         Content content = new Content();
-        content.setContentID(getContentUUID());
+        content.setContentID(contentUUID);
         taRelationPerson.setContentUUID(SuggestView.TYPE_PERSON_FIGURES, content,
                 taRelationPerson); //获取TA相关的名人数据
+
+        mAdView.requestAD();
     }
 
-    private void init() {
+    private void init(String contentUUID) {
 
-        if (TextUtils.isEmpty(getContentUUID())) {
+        if (TextUtils.isEmpty(contentUUID)) {
             Toast.makeText(this, "人物信息有误", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + getContentUUID());
-            personDetailHeadView.setContentUUID(getContentUUID());
-            ADConfig.getInstance().setSeriesID(getContentUUID());
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
+            personDetailHeadView.setContentUUID(contentUUID);
+            ADConfig.getInstance().setSeriesID(contentUUID);
         }
         if (isPopup&&fromOuter) {
             personDetailHeadView.setTopView();
@@ -121,7 +124,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             }
         });
 
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + getContentUUID());
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
     }
 
     @Override

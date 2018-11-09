@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <View
+        android:layout_width="@dimen/width_4px"
+        android:layout_height="@dimen/height_116px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:background="@drawable/info_header_line" />
+
+    <TextView
+        android:id="@+id/user_info_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_25px"
+        android:layout_marginStart="@dimen/width_25px"
+        android:layout_marginTop="@dimen/height_60px"
+        android:textColor="#40FFFFFF"
+        android:textSize="@dimen/height_48px" />
+
+    <RadioGroup
+        android:id="@+id/menu_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal" />
+
+</LinearLayout>

@@ -18,16 +18,7 @@ public class Player implements PlayerObserver {
 
     private static Player instance = null;
     private PlayerObserver mObserver;
-    private IPlayerActivity mPlayerActivity;
 
-    public void setCurrentPlayerActivity(IPlayerActivity activity){
-        mPlayerActivity = activity;
-    }
-
-    public boolean isFullScreen(){
-        return mPlayerActivity.isFullScreenActivity() || NewTVLauncherPlayerViewManager
-                .getInstance().isFullScreen();
-    }
 
     private Player() {
 
@@ -40,6 +31,16 @@ public class Player implements PlayerObserver {
             }
         }
         return instance;
+    }
+
+    public boolean isFullScreen() {
+        if (mObserver.getCurrentActivity() != null && mObserver.getCurrentActivity() instanceof
+                IPlayerActivity) {
+            return ((IPlayerActivity) mObserver.getCurrentActivity()).isFullScreenActivity() ||
+                    NewTVLauncherPlayerViewManager
+                            .getInstance().isFullScreen();
+        }
+        return false;
     }
 
     public void attachObserver(PlayerObserver observer) {

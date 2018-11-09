@@ -113,4 +113,10 @@ public class LogUploadUtils {
             e.printStackTrace();
         }
     }
+
+    public static void setLogFileds(String key, String value) {
+        if (logUpload != null) {
+            logUpload.setLogFieldByKey(key, value);
+        }
+    }
 }

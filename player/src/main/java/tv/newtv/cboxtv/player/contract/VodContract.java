@@ -14,6 +14,7 @@ import com.newtv.cms.bean.ChkRequest;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.Encryptor;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.player.ChkPlayResult;
+import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerConstants;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.util.PlayerNetworkRequestUtils;
@@ -140,7 +142,7 @@ public class VodContract {
          * @param result
          */
         private void parseResult(String result) {
-            ChkPlayResult playResult = PlayerNetworkRequestUtils.getInstance()
+            final ChkPlayResult playResult = PlayerNetworkRequestUtils.getInstance()
                     .parsePlayPermissionCheckResult(result);
             if (playResult == null) {
                 LogUtils.i(TAG, "onResponse: programDetailInfo==null");
@@ -179,7 +181,7 @@ public class VodContract {
                 return;
             }
 
-            VideoDataStruct videoDataStruct = new VideoDataStruct();
+            final VideoDataStruct videoDataStruct = new VideoDataStruct();
             if (playResult.getEncryptFlag()) {
                 videoDataStruct.setKey(Encryptor.decrypt(Constant.APPSECRET,
                         playResult.getDecryptKey()));
@@ -187,11 +189,6 @@ public class VodContract {
             LogUtils.i(TAG, "playViewgetEncryptFlag:" + playResult.getEncryptFlag()
                     +",key=" + Encryptor.decrypt(Constant.APPSECRET, playResult.getDecryptKey()));
             videoDataStruct.setPlayType(0);
-
-            if(VipCheck.isTrySee(playResult)){
-                videoDataStruct.setTrySee(true);
-                videoDataStruct.setFreeDuration(playResult.getFreeDuration());
-            }
 
             videoDataStruct.setPlayUrl(playUrl);
             videoDataStruct.setProgramId(playResult.getContentUUID());
@@ -206,12 +203,40 @@ public class VodContract {
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
             videoDataStruct.setDeviceID(Constant.UUID);
             videoDataStruct.setCategoryIds(playResult.getCategoryIds());
+            ADConfig.getInstance().setProgramId(playResult.getContentUUID());
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
 
-            if (getView() != null)
-                getView().onVodchkResult(videoDataStruct, playResult.getContentUUID());
+            if(UserStatus.isVip()){
+                PlayerConfig.getInstance().setJumpAD(true);
+            }
+            String vipFlag = playResult.getVipFlag();
+
+            if(!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_VIP.equals(vipFlag) && !UserStatus.isVip()){
+                callBack(true,videoDataStruct,playResult);
+            }else if(!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_BUY.equals(vipFlag)){
+                VipCheck.isBuy(playResult.getVipProductId(), playResult.getContentUUID(),getContext(),
+                        new VipCheck.BuyFlagListener() {
+                            @Override
+                            public void buyFlag(boolean buyFlag) {
+                                callBack(!buyFlag,videoDataStruct,playResult);
+                            }
+                        });
+            }else{
+                callBack(false,videoDataStruct,playResult);
+            }
+
+
         }
 
+        private void callBack(boolean isTrySee,VideoDataStruct videoDataStruct,ChkPlayResult playResult){
+            if(isTrySee){
+                videoDataStruct.setTrySee(true);
+                videoDataStruct.setFreeDuration(playResult.getFreeDuration());
+            }
+            if (getView() != null){
+                getView().onVodchkResult(videoDataStruct, playResult.getContentUUID());
+            }
+        }
 
         @Override
         public void checkVod(String seriesID, String albumId) {

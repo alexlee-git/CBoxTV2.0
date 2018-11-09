@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--会员权益介绍推荐位 -->
+    <FrameLayout
+        android:id="@+id/id_member_center_interests_introduce"
+        android:layout_width="@dimen/width_1734px"
+        android:layout_height="@dimen/height_254px"
+        android:layout_marginLeft="@dimen/width_93px"
+        android:layout_marginTop="@dimen/height_21px"
+        android:clickable="true"
+        android:focusable="true"
+        android:nextFocusLeft="@id/id_member_center_interests_introduce"
+        android:nextFocusRight="@id/id_member_center_interests_introduce"
+        >
+
+        <ImageView
+            android:layout_width="@dimen/width_1680px"
+            android:layout_height="@dimen/height_200px"
+            android:layout_marginBottom="@dimen/width_27px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginRight="@dimen/width_27px"
+            android:layout_marginTop="@dimen/width_27px"
+            android:tag="tag_poster_image"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/member_center_interests_introduce_focus_v2"
+            android:tag="tag_poster_focus"
+            android:visibility="invisible"/>
+    </FrameLayout>
+
+</RelativeLayout>

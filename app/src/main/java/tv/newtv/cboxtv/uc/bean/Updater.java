@@ -47,6 +47,7 @@ public class Updater {
     private DownloadReceiver downloadReceiver;
     private DownloadObserver downloadObserver;
     private boolean claerCache = false;
+    private String apkStoragePath;//apk下载完成后的路径
     //动态权限需要的
     private String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -105,10 +106,12 @@ public class Updater {
                     LogUtils.e(e.toString());
                 }
             }
-            String absolutePath = file.getAbsolutePath();
+            String apkStoragePath = file.getAbsolutePath();
 
             DownloadManager.Request request1 = request.setDestinationUri(Uri.fromFile(file));
             Log.d("setDestinationUri", new File(apkAbsPath).exists() + "");
+            Log.e("Updater", "---download===========apkAbsPath="+apkAbsPath);
+            Log.e("Updater", "---download===========apkStoragePath="+apkStoragePath);
         }
 
         //  request.setDestinationInExternalPublicDir("myapk", apkFileName);

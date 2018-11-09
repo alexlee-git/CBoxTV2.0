@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.SharePreferenceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -94,9 +95,9 @@ public class DownloadReceiver extends BroadcastReceiver {
                 case DownloadManager.STATUS_RUNNING:
                     break;
                 case DownloadManager.STATUS_SUCCESSFUL:
-
-                    String downloadFileUrl = c
-                            .getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                    Log.e("DownloadReceiver", "queryFileUri: STATUS_SUCCESSFUL" );
+                    String downloadFileUrl = c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                    Log.e("DownloadReceiver", "downloadFileUrl="+downloadFileUrl );
                     installApk(context, Uri.parse(downloadFileUrl));
 //                    context.unregisterReceiver();
                     break;
@@ -110,9 +111,11 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
     private void installApk(Context context, Uri uri) {
+        Log.e("DownloadReceiver", "----installApk: ----" );
         file = new File(uri.getPath());
+        SharePreferenceUtils.saveUpdateApkPath(context,uri.getPath());
         if (!file.exists()) {
-
+            Log.e("DownloadReceiver", "----installApk: ----!file.exists()" );
             return;
         }
         Intent intent = new Intent();

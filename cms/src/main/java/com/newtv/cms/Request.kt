@@ -63,5 +63,6 @@ internal object Request {
     val playChk: IPlayChkRetro by lazy { retrofit.create(IPlayChkRetro::class.java) }
     val search: ISearchRetro by lazy { retrofit.create(ISearchRetro::class.java) }
     val default: IDefaultRetro by lazy { retrofit.create(IDefaultRetro::class.java) }
+    val UserCenterMemberInfoApi by lazy { retrofit.create(IUserCenterMemberInfoApi::class.java) }
 
 }

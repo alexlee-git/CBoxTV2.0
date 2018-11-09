@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/id_hot_recommend_area_icon"
+        android:layout_width="@dimen/width_17px"
+        android:layout_height="@dimen/height_17px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_8px"
+        android:src="@drawable/tuoyuan" />
+
+    <TextView
+        android:id="@+id/id_hot_recommend_area_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_34px"
+        android:layout_marginLeft="@dimen/width_8px"
+        android:layout_marginTop="@dimen/height_0px"
+        android:layout_toRightOf="@id/id_hot_recommend_area_icon"
+        android:includeFontPadding="false"
+        android:text="热门收藏"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/width_30px" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/id_hot_recommend_area_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/id_hot_recommend_area_title"
+        android:layout_marginLeft="@dimen/width_63px"
+        android:layout_marginTop="@dimen/height_0px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/width_20px">
+
+    </android.support.v7.widget.RecyclerView>
+
+</RelativeLayout>

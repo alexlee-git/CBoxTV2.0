@@ -88,12 +88,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
                 fromOuter = intent.getBooleanExtra(Constant.ACTION_FROM, false);
             }
         }
-
-        if(hasPlayer()){
-            Player.get().setCurrentPlayerActivity(this);
-        }
-
-
     }
 
     public boolean hasPlayer() {

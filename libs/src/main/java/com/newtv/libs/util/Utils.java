@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -12,10 +13,14 @@ import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
 import com.newtv.libs.AnimationBuilder;
+import com.newtv.libs.Constant;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static android.content.Context.ACTIVITY_SERVICE;
@@ -27,6 +32,11 @@ public class Utils {
     //语音助手
     static final String AIASSIST_PACKAGE_NAME = "tv.newtv.aiassist";
     static final String AIASSIST_ACTIVITY_NAME = "AIActivity";
+
+    //通过解析这个文件来获取MAC,不同厂家的芯片有可能不同
+    private static final String ETH0_MAC_ADDR = "/sys/class/net/eth0/address";
+    private static final String WIFI_MAC_ADDR = "/sys/class/net/wlan0/address";
+    private static String mac;
 
     public static boolean isTopActivityIsAiassist(){
         Log.i(TAG, "isTopActivityIsAiassist: ");
@@ -186,5 +196,59 @@ public class Utils {
 
         LogUtils.i(TAG, "extend=" + extend);
         return extend;
+    }
+
+
+    /*
+   * 获取mac号
+   * */
+    public static String getWireMacAddr() {
+        try {
+//            return readLine(ETH0_MAC_ADDR);
+            return readLine(WIFI_MAC_ADDR);
+        } catch (IOException e) {
+            Log.e(TAG,
+                    "IO Exception when getting eth0 mac address",
+                    e);
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static String readLine(String filename) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filename), 256);
+        try {
+            return reader.readLine();
+        } finally {
+            reader.close();
+        }
+    }
+
+    public static String getAuthorization(Context context) {
+
+        String icntvId = Constant.UUID;
+        Log.e(TAG, "icntvId---is:" + icntvId);
+//        String MAC = getWireMacAddr();
+        String MAC = SystemUtils.getMac(context);
+        if (TextUtils.isEmpty(MAC)) {
+            Log.e(TAG, "mac---is---null");
+        } else {
+            mac = MAC.replace(":", "").toUpperCase();
+        }
+        if (TextUtils.isEmpty(icntvId) || TextUtils.isEmpty(mac)) {
+            Log.d(TAG, "getAuthorization: encodeAuthorization = ");
+            return null;
+        } else {
+            String authorization = mac + ":" + icntvId;
+            String encodeAuthorization = "Basic ";
+            try {
+                encodeAuthorization = encodeAuthorization + new String(Base64.encode(authorization.getBytes("utf-8"), Base64.DEFAULT), "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return null;
+            }
+            Log.d(TAG, "getAuthorization: encodeAuthorization = " + encodeAuthorization);
+            return encodeAuthorization.replaceAll("\r|\n", "");
+        }
     }
 }

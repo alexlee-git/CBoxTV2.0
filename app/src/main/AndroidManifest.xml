@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools" 
-          package="tv.newtv.cboxtv"
-          android:installLocation="auto" 
-          tools:ignore="MissingLeanbackLauncher">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="tv.newtv.cboxtv"
+    android:installLocation="auto"
+    tools:ignore="MissingLeanbackLauncher">
 
     <uses-feature
         android:name="android.software.leanback"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"
-        android:required="false"/>
+        android:required="false" />
 
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
-    <uses-permission android:name="android.permission.CLEAR_APP_CACHE"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.CLEAR_APP_CACHE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 
     <!--bugly 日志权限-->
-    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.READ_LOGS" />
     <application
         android:name=".LauncherApplication"
         android:allowBackup="true"
@@ -34,54 +35,70 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SplashActivity"
-                  android:exported="true"
-                  android:launchMode="singleTask"
-                  android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".EntryActivity"
             android:launchMode="singleTask"
             android:theme="@style/SplashTheme">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
-        >
-        </activity>
+        <activity android:name=".MainActivity"></activity>
 
-        <activity android:name=".NewTVLauncherPlayerActivity"
-                  android:launchMode="singleTop"/>
-        <activity android:name=".cms.details.ColumnPageActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.details.ProgrameSeriesAndVarietyDetailActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.details.PersonsDetailsActivityNew"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.listPage.ListPageActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.screenList.ScreenListActivity"
-            android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.search.view.SearchActivity"
-                  android:theme="@style/AppContentTheme"/>
         <activity
-            android:name=".WarningExitActivity" android:theme="@style/MyDialogActivityTheme"/>
+            android:name=".NewTVLauncherPlayerActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".cms.details.ColumnPageActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".cms.details.ProgrameSeriesAndVarietyDetailActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".cms.details.PersonsDetailsActivityNew"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".cms.listPage.ListPageActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".cms.screenList.ScreenListActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".cms.search.view.SearchActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".WarningExitActivity"
+            android:theme="@style/MyDialogActivityTheme" />
 
-        <activity android:name=".cms.special.SpecialActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".uc.HistoryActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".uc.AboutMineActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".uc.VersionUpdateActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".uc.SoftWareInfoActivity"
-                  android:theme="@style/AppContentTheme"/>
+        <activity
+            android:name=".cms.special.SpecialActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".uc.HistoryActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".uc.AboutMineActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".uc.VersionUpdateActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".uc.SoftWareInfoActivity"
+            android:theme="@style/AppContentTheme" />
+       <!-- <activity
+            android:name=".cms.details.ProgramListDetailActiviy"
+            android:theme="@style/AppContentTheme" />-->
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -90,31 +107,63 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths"/>
+                android:resource="@xml/filepaths" />
         </provider>
 
         <receiver android:name=".uc.bean.DownloadReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".uc.UserDealActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".DemoActivity"/>
-        <activity android:name=".cms.details.ProgramCollectionActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.details.SingleDetailPageActivity"
-                  android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.details.DescriptionActivity"
-                  android:theme="@style/AppContentTheme"/>
+        <activity
+            android:name=".uc.UserDealActivity"
+            android:theme="@style/AppContentTheme" />
+        <!--<activity
+            android:name=".cms.details.ProgramDetailsPageActivity"
+            android:theme="@style/AppContentTheme" />-->
+        <activity android:name=".DemoActivity" />
+        <activity
+            android:name=".cms.details.ProgramCollectionActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".cms.details.SingleDetailPageActivity"
+            android:theme="@style/AppContentTheme" />
+        <activity
+            android:name=".cms.details.DescriptionActivity"
+            android:theme="@style/AppContentTheme" />
+
+        <activity android:name=".uc.v2.LoginActivity" />
+        <activity android:name=".uc.v2.PhoneLoginActivity" />
+        <activity android:name=".uc.v2.UserInfoActivity" />
+        <activity android:name=".uc.v2.Pay.PayChannelActivity" />
+        <activity android:name=".uc.v2.Pay.PayOrderActivity" />
+        <activity android:name=".uc.v2.Pay.PayRefreshOrderActivity" />
+        <activity android:name=".uc.v2.HistoryDetailActivity" />
+        <activity android:name=".uc.v2.CollectionDetailActivity" />
+        <activity android:name=".uc.v2.SubscribeDetailActivity" />
+        <activity android:name=".uc.v2.AttentionDetailActivity" />
+        <activity android:name=".uc.v2.aboutmine.AboutMineV2Activity" />
+        <activity android:name=".uc.v2.SettingActivity" />
+        <activity android:name=".uc.v2.member.MemberCenterActivity" />
+        <activity
+            android:name=".uc.v2.MyOrderActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.ORDER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".uc.v2.VersionUpdateTwoActivity" />
+        <activity android:name=".uc.v2.VersionUpdateOneActivity" />
+        <activity android:name=".uc.v2.member.MemberAgreementActivity" />
 
         <meta-data
             android:name="appKey"
-            android:value="${APP_KEY_VALUE}"/>
+            android:value="${APP_KEY_VALUE}" />
         <meta-data
             android:name="channelId"
-            android:value="${CHANNEL_ID_VALUE}"/>
+            android:value="${CHANNEL_ID_VALUE}" />
 
     </application>
 

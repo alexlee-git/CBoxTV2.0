@@ -23,6 +23,7 @@ open class Content  : Serializable {
     var vImage: String? = null //竖海报
     var movieLevel: String? = null //影片等级 1、正片，2、预告片，3、花絮
     var seriesSum: String? = null //总集数
+    var seriesType: String? = null //节目集类型 0：显示名称  1：显示集号
     var definition: String? = null //清晰度 SD：标清、HD：高清
     var vipProductId: String? = null //产品包ID
     var contentType: String? = null //内容类型
@@ -31,7 +32,7 @@ open class Content  : Serializable {
     var videoType: String? = null //一级分类
     var director: String? = null //导演
     var recentNum:String? = null //已更新集数
-    var isFinish:String? = null//是否更新完
+    var isFinish:String? = null //是否已更新完  0-未完成  1-已完成
 
     @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
     var contentID: String? = null //内容Id

@@ -69,6 +69,18 @@
         android:clipChildren="false"
         android:clipToPadding="false" />
 
+    <TextView
+        android:id="@+id/id_loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        android:gravity="center"
+        android:text="@string/loading"
+        android:textColor="@color/colorRecommedPosText"
+        android:textSize="@dimen/height_40px"
+        android:visibility="gone"/>
+
 </RelativeLayout>
 
 
