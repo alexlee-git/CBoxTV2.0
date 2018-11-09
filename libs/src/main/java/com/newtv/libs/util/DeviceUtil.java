@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.letv.LetvDeviceUtil;
-import com.newtv.libs.BuildConfig;
+import com.newtv.libs.Libs;
 
 
 /**
@@ -28,41 +28,41 @@ public class DeviceUtil {
     public static final String YSTEN_VOICE = "ysten_voice"; //易视腾
     @SuppressWarnings("ConstantConditions")
     public static boolean isSelfDevice() {
-        if (BuildConfig.DEBUG) {
+        if (Libs.get().isDebug()) {
             return true;
         }
 
-        if (BuildConfig.FLAVOR.equals(XIAO_MI)) {
+        if (Libs.get().getFlavor().equals(XIAO_MI)) {
             String brand = Build.BRAND;
             Log.i("device", brand);
             return !TextUtils.isEmpty(brand) && XIAO_MI.equalsIgnoreCase(brand);
-        } else if (BuildConfig.FLAVOR.equals(LETV)) {
+        } else if (Libs.get().getFlavor().equals(LETV)) {
             LogUtils.i("device", "letv=" + LetvDeviceUtil.isLetvDevice());
             return LetvDeviceUtil.isLetvDevice();
-        } else if (BuildConfig.FLAVOR.equals(XIONG_MAO)) {
+        } else if (Libs.get().getFlavor().equals(XIONG_MAO)) {
             return true;
-        } else if (BuildConfig.FLAVOR.equals(XUN_MA)) {
+        } else if (Libs.get().getFlavor().equals(XUN_MA)) {
             return true;
-        } else if (BuildConfig.FLAVOR.equals(XSJ)) {
+        } else if (Libs.get().getFlavor().equals(XSJ)) {
             return true;
-        } else if (BuildConfig.FLAVOR.equals(CBOXTEST)) {
+        } else if (Libs.get().getFlavor().equals(CBOXTEST)) {
             return true;
-        } else if (BuildConfig.FLAVOR.equals(FEILIERDE)) {
+        } else if (Libs.get().getFlavor().equals(FEILIERDE)) {
             String fled = "pled-3229-newtv";
             String fModel = Build.MODEL;
             Log.i("device", fModel);
             return !TextUtils.isEmpty(fModel) && fled.equalsIgnoreCase(fModel);
-        } else if (BuildConfig.FLAVOR.equals(AILANG)) {
+        } else if (Libs.get().getFlavor().equals(AILANG)) {
             return true;
-        } else if (BuildConfig.FLAVOR.equals(XUNMATOUYINGYI)) {
+        } else if (Libs.get().getFlavor().equals(XUNMATOUYINGYI)) {
             String fvid = "unknown";
             String vid = SystemPropertiesProxy.getProperty("hw.yunos.vendorID", "");
             if (!TextUtils.isEmpty(vid)&&!fvid.equalsIgnoreCase(vid)){
                 return true;
             }
-        } else if (BuildConfig.FLAVOR.equals(VENDORTEST)) {
+        } else if (Libs.get().getFlavor().equals(VENDORTEST)) {
             return true;
-        } else if (BuildConfig.FLAVOR.equals(YSTEN_VOICE)) {
+        } else if (Libs.get().getFlavor().equals(YSTEN_VOICE)) {
             String fvid = "ysten";
             String vid = SystemPropertiesProxy.getProperty("ro.ftserialno", "");
             if (!TextUtils.isEmpty(vid)&&fvid.equalsIgnoreCase(vid)){
