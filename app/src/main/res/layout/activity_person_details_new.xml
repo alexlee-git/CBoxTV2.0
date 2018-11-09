@@ -41,6 +41,7 @@
             android:id="@+id/person_detail_ad_fl"
             android:layout_width="@dimen/width_1746px"
             android:layout_height="@dimen/height_386px"
+            android:scaleType="fitXY"
             android:layout_below="@id/id_usercenter_fragment_root"
             android:layout_marginLeft="@dimen/width_87px"
             android:layout_marginRight="@dimen/width_87px"
