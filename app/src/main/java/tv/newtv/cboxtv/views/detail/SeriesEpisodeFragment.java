@@ -99,6 +99,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
     @Override
     public void setViewPager(ResizeViewPager viewPager, int position, EpisodeChange change) {
         mWeakViewPager = new WeakReference<>(viewPager);
+        mWeakViewPager.get().setUseResize(false);
         mChange = change;
         mPosition = position;
     }

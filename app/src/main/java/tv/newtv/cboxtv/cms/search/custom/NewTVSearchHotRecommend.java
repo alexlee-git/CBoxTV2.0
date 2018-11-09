@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -17,10 +18,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +46,12 @@ import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
  * 修改时间：
  * 修改备注：
  */
-public class NewTVSearchHotRecommend extends RelativeLayout {
+public class NewTVSearchHotRecommend extends RelativeLayout implements PageContract.View {
 
     private final String TAG = this.getClass().getSimpleName();
-
+    private String mSearchId = "420";
     private StaggeredGridLayoutManager mLayoutManager;
+    private PageContract.ContentPresenter mContentPresenter;
     private SearchHotRecommendAdapter mAdapter;
     private SearchRecyclerView mRecyclerView;
     public TextView mEmptyTextView;
@@ -52,6 +60,13 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
     private Context mContext;
     private List<Program> mDatas;
     public boolean keyBoardFocusStatus = false;
+
+    public void destroy(){
+        if (mContentPresenter != null) {
+            mContentPresenter.destroy();
+            mContentPresenter = null;
+        }
+    }
 
     public NewTVSearchHotRecommend(Context context) {
         super(context);
@@ -82,6 +97,13 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
         mLayoutManager = new StaggeredGridLayoutManager(6, LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mDatas = new ArrayList<>();
+
+        mContentPresenter = new PageContract.ContentPresenter(getContext(), this);
+        String hotSearchId = Constant.getBaseUrl("HOTSEARCH_CONTENTID");
+        if (!TextUtils.isEmpty(hotSearchId)){
+            mSearchId = hotSearchId;
+        }
+        mContentPresenter.getPageContent(mSearchId);
     }
 
     public SearchRecyclerView getRecyclerView() {
@@ -110,6 +132,16 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
         } catch (Exception e) {
             Log.e(TAG, "---setData:Exception---" + e.toString());
         }
+    }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
+
     }
 
     class SearchHotRecommendAdapter extends RecyclerView.Adapter<SearchResultViewHolder> {
@@ -210,6 +242,23 @@ public class NewTVSearchHotRecommend extends RelativeLayout {
             sa.setDuration(150);
             view.startAnimation(sa);
         }
+    }
+
+    @Override
+    public void onPageResult(@Nullable List<Page> page) {
+        if (page != null && page.size() > 0) {
+            setData(page.get(0).getPrograms());
+        }
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
+
     }
 
     class SearchResultViewHolder extends RecyclerView.ViewHolder {

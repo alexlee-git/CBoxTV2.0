@@ -144,7 +144,7 @@ class ContentContract {
                                                 }
                                             }
                                         }
-                                        view?.onContentResult("", contentResult)
+                                        view?.onContentResult(uuid, contentResult)
                                         view?.let {
                                             if (it is LoadingView) it.loadComplete()
                                         }
@@ -171,7 +171,7 @@ class ContentContract {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
                         if (!autoSub) {
-                            view?.onContentResult("", result.data);
+                            view?.onContentResult(uuid, result.data);
                         } else {
                             getSubContentsWithCallback(result.data, uuid, contentType)
                         }
@@ -197,7 +197,7 @@ class ContentContract {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
                         if (!autoSub) {
-                            view?.onContentResult("", result.data);
+                            view?.onContentResult(uuid, result.data);
                         } else {
                             getSubContentsWithCallback(result.data, uuid, "")
                         }
