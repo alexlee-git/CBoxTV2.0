@@ -549,8 +549,10 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         if (TextUtils.isEmpty(mFlagAction)) {
             intent.setClass(PayOrderActivity.this, MemberCenterActivity.class);
         } else {
-            intent.setAction(mFlagAction);
+            intent.setClassName(this,
+                    mFlagAction);
         }
+
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//关掉所要到的界面中间的activity
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);//设置不要刷新将要跳转的界面
         PackageManager packageManager = getPackageManager();
