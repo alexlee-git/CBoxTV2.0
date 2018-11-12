@@ -220,3 +220,7 @@
 -dontwarn okio.**
 -dontwarn javax.annotation.**
 -dontwarn org.conscrypt.**
+
+-keep class com.newtv.libs.**{*;}
+-keep class com.newtv.cms.**{*;}
+-keep class tv.newtv.cboxtv.**{*;}
