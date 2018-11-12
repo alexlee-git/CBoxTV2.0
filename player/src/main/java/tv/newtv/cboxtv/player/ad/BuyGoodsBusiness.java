@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.cms.ad;
+package tv.newtv.cboxtv.player.ad;
 
 import android.content.Context;
 import android.os.Handler;
@@ -23,6 +23,8 @@ import com.jd.smartcloudmobilesdk.shopping.bean.BindStatusRecv;
 import com.jd.smartcloudmobilesdk.shopping.bean.SkuInfoRecv;
 import com.jd.smartcloudmobilesdk.shopping.listener.NetDataHandler;
 import com.newtv.libs.Constant;
+import com.newtv.libs.MainLooper;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.bean.AdBean;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.SPrefUtils;
@@ -33,22 +35,21 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.ad.model.BuyGoodsView;
-import tv.newtv.cboxtv.cms.ad.model.GoodsBean;
-import tv.newtv.cboxtv.cms.ad.model.RequestAdParameter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BaseRequestAdPresenter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.BuyGoodsRequestAdPresenter;
-import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
+import tv.icntv.adsdk.AdSDK;
+import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.player.model.GoodsBean;
+import tv.newtv.cboxtv.player.model.RequestAdParameter;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
-import tv.newtv.cboxtv.views.BuyGoodsPopupWindow;
 
-public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBean.AdspacesItem>{
+public class BuyGoodsBusiness{
     private static final int DEFAULT_TIME = 25;
     private static final String APP_KEY = "PSKAATT8IDSKXRSE3TP22ZAZ3265VV4D";
     private static final String APP_SECRET = "hzudu8fs3xpia2fe2qn2nm7p6iujj9vu";
@@ -73,7 +74,6 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     public static final int DISMISS_MSG = 0;
 
     private static boolean isInit = false;
-    private BaseRequestAdPresenter adPresenter;
     private BuyGoodsView buyGoodsView;
     private Context context;
     private View view;
@@ -88,6 +88,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     private int start;
     private BuyGoodsLog log;
     private RequestAdParameter requestAdParameter;
+    private boolean isDestory;
 
     private Handler handler = new Handler(){
         @Override
@@ -109,8 +110,6 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         Log.i(TAG, "BuyGoodsBusiness: ");
         this.context = context;
         this.view = view;
-        adPresenter = new BuyGoodsRequestAdPresenter(this);
-        adPresenter.getAD(Constant.AD_BUY_GOODS,"");
         log = new BuyGoodsLog();
 
         if(!isInit){
@@ -120,14 +119,12 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         }
     }
 
-    @Override
-    public void showAd(AdBean.AdspacesItem item) {
+    private void showAd(AdBean.AdspacesItem item) {
         Log.i(TAG, "showAd: ");
         if(item.materials == null || item.materials.size() == 0){
             Log.i(TAG, "数据不合法");
             return;
         }
-        requestAdParameter = adPresenter.getRequestAdParameter();
         this.item = item;
         extMap = analyzeExt(item.ext);
         GoodsBean goodsBean = GsonUtil.fromjson(item.materials.get(0).eventContent, GoodsBean.class);
@@ -357,8 +354,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         });
     }
 
-    @Override
-    public void fail() {
+    private void fail() {
         Log.i(TAG, "fail: ");
         if(myScreenListener != null){
             NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
@@ -366,20 +362,6 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         if(disposable != null){
             disposable.dispose();
         }
-//        MainLooper.get().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                showAd(new AdBean.AdspacesItem());
-//            }
-//        },3000);
-    }
-
-    public void onResume(){
-        adPresenter.onResume();
-    }
-
-    public void onStop(){
-        adPresenter.onStop();
     }
 
     public void onDestroy(){
@@ -387,7 +369,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
         handler.removeCallbacksAndMessages(null);
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;
-        adPresenter.destroy();
+        isDestory = true;
     }
 
     private Map<String,String> analyzeExt(String ext){
@@ -491,7 +473,7 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
             switch (event.getKeyCode()){
                 case KeyEvent.KEYCODE_ENTER:
                 case KeyEvent.KEYCODE_DPAD_CENTER:
-                    if(!SystemUtils.isFastDoubleClick(3* 1000)){
+                    if(!SystemUtils.isFastDoubleClick(3* 1000) && !isShowQrCode){
                         checkTvBindStatus();
                     }
                     return true;
@@ -549,5 +531,65 @@ public class BuyGoodsBusiness implements IAdConstract.AdCommonConstractView<AdBe
     private void sendCloseMessage(int duration){
         handler.removeMessages(DISMISS_MSG);
         handler.sendEmptyMessageDelayed(DISMISS_MSG,duration * 1000);
+    }
+
+    public void getAd(){
+        final StringBuffer sb = new StringBuffer();
+
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                PlayerConfig playerConfig = PlayerConfig.getInstance();
+                ADConfig config = ADConfig.getInstance();
+                StringBuilder stringBuilder = new StringBuilder();
+                addExtend(stringBuilder,"panel",playerConfig.getFirstChannelId());
+                addExtend(stringBuilder,"secondpanel",playerConfig.getSecondChannelId());
+                addExtend(stringBuilder,"topic",playerConfig.getTopicId());
+                addExtend(stringBuilder,"secondcolumn",config.getSecondColumnId());
+                addExtend(stringBuilder,"program",config.getProgramId());
+                requestAdParameter = new RequestAdParameter();
+                requestAdParameter.setExtend(stringBuilder.toString());
+                requestAdParameter.setProgram(config.getProgramId());
+                requestAdParameter.setSeriesId(config.getSeriesID());
+                e.onNext(AdSDK.getInstance().getAD(Constant.AD_BUY_GOODS, config.getColumnId(), config.getSeriesID(), "", null, stringBuilder.toString(), sb));
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer result) throws Exception {
+                        if(!isDestory){
+                            dealResult(sb.toString());
+                        }
+                    }
+                });
+    }
+
+    private void dealResult(String result) {
+        if(TextUtils.isEmpty(result)){
+            return;
+        }
+
+        AdBean bean = GsonUtil.fromjson(result, AdBean.class);
+        if(bean.adspaces != null && bean.adspaces.buygoods != null && bean.adspaces.buygoods.size() > 0){
+            AdBean.AdspacesItem adspacesItem = bean.adspaces.buygoods.get(0);
+            if(adspacesItem.materials != null && adspacesItem.materials.size() > 0 ){
+                showAd(adspacesItem);
+                return;
+            }
+        }
+
+        fail();
+    }
+
+    private void addExtend(StringBuilder result,String key, String value){
+        if(TextUtils.isEmpty(value)){
+            return;
+        }
+        if(TextUtils.isEmpty(result)){
+            result.append(key+"="+value);
+        } else {
+            result.append("&"+key+"="+value);
+        }
     }
 }

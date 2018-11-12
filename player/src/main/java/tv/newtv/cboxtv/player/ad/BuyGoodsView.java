@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.cms.ad.model;
+package tv.newtv.cboxtv.player.ad;
 
 import android.content.Context;
 import android.view.View;

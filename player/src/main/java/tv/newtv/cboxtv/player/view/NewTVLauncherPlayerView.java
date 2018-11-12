@@ -53,6 +53,7 @@ import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerConstants;
+import tv.newtv.cboxtv.player.ad.BuyGoodsBusiness;
 import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.iPlayCallBackEvent;
@@ -131,8 +132,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private List<ScreenListener> screenListeners;
     private boolean isTrySee;
     private TextView hintVip;
-    private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new
-            FreeDuration();
+    private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new FreeDuration();
+    private BuyGoodsBusiness buyGoodsBusiness = null;
 
 
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
@@ -615,6 +616,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         hidePauseImage();
 
         isReleased = true;
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onDestroy();
+            buyGoodsBusiness = null;
+        }
 
         destroy();
     }
@@ -964,6 +969,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if(isFullScreen() && buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                && buyGoodsBusiness.dispatchKeyEvent(event)){
+            return true;
+        }
         /**
          * 适配讯码盒子
          * 正常盒子按返回键返回KeyEvent.KEYCODE_BACK
@@ -1361,6 +1370,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (mNewTVLauncherPlayerSeekbar != null) {
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
+
+        if(buyGoodsBusiness == null){
+            buyGoodsBusiness = new BuyGoodsBusiness(getContext(),this);
+        }
+        buyGoodsBusiness.getAd();
 
         if (videoDataStruct.isTrySee()) {
             isTrySee = true;

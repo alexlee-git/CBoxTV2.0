@@ -29,23 +29,12 @@ import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
-import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
-import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
-import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
-import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
-import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
-import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
-import tv.newtv.cboxtv.cms.screenList.ScreenListActivity;
-import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import java.lang.annotation.Annotation;
 
-import tv.newtv.cboxtv.annotation.BuyGoodsInject;
 import tv.newtv.cboxtv.annotation.PopupAD;
-import tv.newtv.cboxtv.cms.ad.AdInject;
-import tv.newtv.cboxtv.cms.ad.BuyGoodsBusiness;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.AdPopupWindow;
 
@@ -68,9 +57,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected boolean isDetail(){
         return false;
     }
-
-    @BuyGoodsInject
-    protected BuyGoodsBusiness buyGoodsBusiness;
 
 
     public boolean isFrontStage() {
@@ -107,9 +93,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onStop() {
         super.onStop();
         ActivityStacks.get().onStop(this);
-        if(buyGoodsBusiness != null){
-            buyGoodsBusiness.onStop();
-        }
         FrontStage = false;
     }
 
@@ -139,16 +122,12 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
 
         setBackgroundAD();
-        if(buyGoodsBusiness != null){
-            buyGoodsBusiness.onResume();
-        }
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         setPopupAD();
-        AdInject.inject(this);
     }
 
     private void setPopupAD() {
@@ -167,9 +146,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
         if (adPopupWindow != null && adPopupWindow.isShowing()) {
             adPopupWindow.dismiss();
-        }
-        if(buyGoodsBusiness != null){
-            buyGoodsBusiness.onDestroy();
         }
     }
 
@@ -212,10 +188,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!FrontStage) return true;
         if (isFullScreen()) {
-            if(buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
-                    && buyGoodsBusiness.dispatchKeyEvent(event)){
-                return true;
-            }
             if (NewTVLauncherPlayerViewManager.getInstance().dispatchKeyEvent(event)) {
                 return true;
             }
