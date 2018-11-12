@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.ScreenUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -100,10 +101,9 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
                 qrCodeImage.setVisibility(View.VISIBLE);
                 imageView.setImageResource(R.drawable.qrcode_bg);
 
-                //TODO 修复QR
-//                QrcodeUtil qrcodeUtil = new QrcodeUtil();
-//                qrcodeUtil.createQRImage(authCode,qrCodeImage,217,217);
-//                show(500,370);
+                QrcodeUtil qrcodeUtil = new QrcodeUtil();
+                qrcodeUtil.createQRImage(authCode,qrCodeImage,217,217);
+                show(500,370);
             }
         });
     }
