@@ -116,6 +116,7 @@ public class SearchRecyclerView extends RecyclerView {
                                 return true;
                             } else {
                                 this.smoothScrollBy(0, -focusView.getHeight());
+
                                 View view = getChildAt(0);
                                 if (view == null) {
                                     Log.e(TAG, "view is null");

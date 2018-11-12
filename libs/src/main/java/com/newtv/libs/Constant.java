@@ -169,6 +169,7 @@ public class Constant {
     public static final String BG_EVENT = "bg_event";
     public static final String UPDATE_UC_DATA = "update_uc_data";
     public static final String UPDATE_VIDEO_PLAY_INFO = "update_video_play_info";
+    public static final String IS_VIDEO_END = "isVideoEnd";
     //更新是否成功
     public static final String UP_VERSION_IS_SUCCESS = "up_version_is_success";
     public static final String ADCACHE = Environment.getExternalStorageDirectory()

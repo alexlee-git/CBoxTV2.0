@@ -95,6 +95,13 @@
         </attr>
     </declare-styleable>
 
+
+    <declare-styleable name="GridRecycleView">
+        <attr name="spanCount" format="integer"/>
+        <attr name="decoration_top" format="dimension"/>
+        <attr name="decoration_bottom" format="dimension"/>
+    </declare-styleable>
+
     <!--<declare-styleable name="FocusRelativeLayoutView">-->
         <!--<attr name="normal_drawable" format="reference"/>-->
         <!--<attr name="focus_drawable" format="reference"/>-->

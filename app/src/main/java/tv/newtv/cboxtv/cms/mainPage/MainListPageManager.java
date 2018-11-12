@@ -28,13 +28,13 @@ import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
+import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class MainListPageManager{
+public class MainListPageManager {
 
     private String mCurNavDataFrom;
     private FragmentManager fragmentManager;
@@ -167,12 +167,12 @@ public class MainListPageManager{
             for (int index = 0; index < count; index++) {
                 Nav navInfo = mNavInfos.get(index);
 
-                if(TextUtils.isEmpty(currentFocus)) {
+                if (TextUtils.isEmpty(currentFocus)) {
                     if ("1".equals(navInfo.isFocus())) {
                         defaultPageIdx = index;
                         currentFocus = navInfo.getId();
                     }
-                }else{
+                } else {
                     if (currentFocus.equals(navInfo.getId())) {
                         defaultPageIdx = index;
                         break;
@@ -313,7 +313,7 @@ public class MainListPageManager{
                 @Override
                 public void onPageScrollStateChanged(int state) {
                     if (state == ViewPager.SCROLL_STATE_IDLE) {
-                        if(mViewPagerAdapter !=null){
+                        if (mViewPagerAdapter != null) {
                             currentFragment = mViewPagerAdapter.getCurrentFragment();
                         }
                         //currentFragment = (BaseFragment) mViewPagerAdapter.getItem(mViewPager
@@ -354,7 +354,7 @@ public class MainListPageManager{
                         .append(position)
                         .trimToSize();
                 SharedPreferences sp = mContext.getSharedPreferences("secondConfig", MODE_PRIVATE);
-                sp.edit().putString("secondMenu",logBuff.toString()).commit();
+                sp.edit().putString("secondMenu", logBuff.toString()).commit();
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
                         logBuff.toString());
                 PlayerConfig.getInstance().setSecondChannelId(result);
@@ -390,11 +390,14 @@ public class MainListPageManager{
                 , 500));
         mViewPager.setOffscreenPageLimit(1);
 
+        if (navData == null || navData.size() == 1) {
+            mCircleMenuRv.setVisibility(View.GONE);
+        }
 
         //创建共享参数，存储一些需要的信息
         initSharedPreferences();
 
-        inflateListPage(mNavInfos,"server");
+        inflateListPage(mNavInfos, "server");
     }
 
     //创建共享参数，存储一些需要的信息
@@ -402,12 +405,22 @@ public class MainListPageManager{
         mSharedPreferences = mContext.getSharedPreferences("config", 0);
     }
 
-    public boolean dispatchKeyEvent(KeyEvent event){
+    public boolean dispatchKeyEvent(KeyEvent event) {
         ContentFragment fragment = (ContentFragment) mViewPagerAdapter.getCurrentFragment();
-        if(fragment == null || fragment.dispatchKeyEvent(event)){
+        if (fragment == null || fragment.dispatchKeyEvent(event)) {
             return true;
         }
         return false;
+    }
+
+    public View getFirstFocusView() {
+        if(mCircleMenuRv != null && mCircleMenuRv.getVisibility() == View.VISIBLE) return
+                mCircleMenuRv;
+        ContentFragment fragment = (ContentFragment) mViewPagerAdapter.getCurrentFragment();
+        if (fragment != null){
+            return fragment.getFirstFocusView();
+        }
+        return null;
     }
 
     /**

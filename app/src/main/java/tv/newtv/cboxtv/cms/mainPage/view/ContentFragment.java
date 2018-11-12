@@ -48,6 +48,8 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @SuppressWarnings("unused")
     private String defaultFocus;
 
+    private List<Page> mPageList;
+
     @SuppressWarnings("unused")
     private String actionType;
 
@@ -270,7 +272,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     protected void lazyLoad() {
         super.lazyLoad();
 
-        if (TextUtils.isEmpty(contentId)) {
+        if (TextUtils.isEmpty(contentId) || mPresenter == null) {
             onError(LauncherApplication.AppContext, "暂无数据内容。");
         } else {
             mPresenter.getPageContent(contentId);
@@ -320,44 +322,35 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     }
 
     public void inflateContentPage(@Nullable List<Page> pageList, String dataFrom) {
-        setTipVisibility(View.GONE);
-        // 设置背景图片
-
         updateRecycleView(pageList);
     }
 
 
     private void updateRecycleView(@Nullable final List<Page> pageList) {
-        if (contentView == null || mRecyclerView == null || pageList == null) return;
+        mPageList = pageList;
+        if (contentView == null || mRecyclerView == null) return;
+        if(mPageList != null && mPageList.size()>0) {
+            adapter = (UniversalAdapter) mRecyclerView.getAdapter();
+            if (adapter == null) {
+                ScrollSpeedLinearLayoutManger layoutManager = new ScrollSpeedLinearLayoutManger
+                        (LauncherApplication.AppContext);
+                layoutManager.setSpeed(0.08f);
+                layoutManager.setSmoothScrollbarEnabled(true);
+                mRecyclerView.setLayoutManager(layoutManager);
 
-        adapter = (UniversalAdapter) mRecyclerView.getAdapter();
-        if (adapter == null) {
-            ScrollSpeedLinearLayoutManger layoutManager = new ScrollSpeedLinearLayoutManger
-                    (LauncherApplication.AppContext);
-            layoutManager.setSpeed(0.08f);
-            layoutManager.setSmoothScrollbarEnabled(true);
-            mRecyclerView.setLayoutManager(layoutManager);
-
-            adapter = new UniversalAdapter(LauncherApplication.AppContext, pageList);
-            adapter.setPicassoTag(contentId);
-            adapter.setPlayerUUID(contentId);
-            Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
-            mRecyclerView.setAdapter(adapter);
-        } else {
-            adapter.notifyDataSetChanged();
-        }
-
-        Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
-
-        contentView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (pageList == null || pageList.size() == 0) {
-                    onError(LauncherApplication.AppContext, "数据为空");
-                }
-
+                adapter = new UniversalAdapter(LauncherApplication.AppContext, mPageList);
+                adapter.setPicassoTag(contentId);
+                adapter.setPlayerUUID(contentId);
+                Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
+                mRecyclerView.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
             }
-        }, 10);
+
+            Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
+        }else{
+            onError(LauncherApplication.AppContext, "数据为空");
+        }
     }
 
     public AiyaRecyclerView getRecyclerView() {
@@ -373,8 +366,9 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
-        if (loadingView != null)
-            loadingView.setText("暂无数据内容");
+        setTipVisibility(View.VISIBLE);
+        if (mEmptyView != null)
+            mEmptyView.setText("暂无数据内容");
     }
 
     @Override

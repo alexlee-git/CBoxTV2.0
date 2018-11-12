@@ -52,7 +52,6 @@ class AppMainContract {
                         syncServiceTime()
                     }else{
                         view?.syncServerTime(mNowTime)
-                        Log.d("zhangxianda","1");
                     }
                 }
             }
@@ -80,7 +79,6 @@ class AppMainContract {
                         oldSystemTime = SystemClock.elapsedRealtime()
                         mServiceTime = result.response
                         view?.syncServerTime(result.response)
-                        Log.d("zhangxianda","synvServiceTime");
                     } else {
                         view?.syncServerTime(null)
                     }

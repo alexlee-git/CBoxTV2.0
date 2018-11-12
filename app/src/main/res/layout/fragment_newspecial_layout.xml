@@ -92,6 +92,7 @@
             android:ellipsize="end"
             android:focusable="false"
             android:maxLength="15"
+            android:textStyle="bold"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/height_40px" />
 

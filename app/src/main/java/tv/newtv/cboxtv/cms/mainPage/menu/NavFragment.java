@@ -103,9 +103,14 @@ public class NavFragment extends BaseFragment {
     }
 
     @Override
+    @Nullable
     public View getFirstFocusView() {
-        return mMenuNav;
+        if(mainListPageManager != null){
+            return mainListPageManager.getFirstFocusView();
+        }
+        return null;
     }
+
 
     public boolean isNoTopView() {
         if (mainListPageManager != null) {
