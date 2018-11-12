@@ -121,7 +121,9 @@
         android:layout_toEndOf="@+id/full_screen"
         android:layout_toRightOf="@+id/full_screen"
         android:focusable="true"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:type="pay"/>
+
     <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/collect"
         android:layout_width="@dimen/width_152px"

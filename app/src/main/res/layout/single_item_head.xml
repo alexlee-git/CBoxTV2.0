@@ -113,7 +113,8 @@
         app:drawable_width="@dimen/width_152px"
         app:focus_drawable="@drawable/pos_zui"
         app:normal_drawable="@drawable/vip_pay_nomal"
-        app:selected_drawable="@drawable/vip_pay_focused" />
+        app:selected_drawable="@drawable/vip_pay_focused"
+        app:type="pay" />
 
     <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/collect"
