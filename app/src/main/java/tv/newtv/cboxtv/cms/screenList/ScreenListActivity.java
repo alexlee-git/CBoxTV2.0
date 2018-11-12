@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.screenList;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -230,6 +231,20 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         year_text = findViewById(R.id.year_text);
         result_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
+        final LinearLayout upTop = findViewById(R.id.up_top);
+        if (isPopup&&fromOuter) {
+            new CountDownTimer(5 * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    upTop.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onFinish() {
+                    upTop.setVisibility(View.GONE);
+                }
+            }.start();
+        }
 
         tab.setScaleValue(1.2f);
         tab.setTabTextColors(Color.parseColor("#80ffffff"), Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
@@ -438,6 +453,9 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     presenter.getLabelData();
                     return true;
                 }
+                if (tab.hasFocus()&&fromOuter&&isPopup){
+                    super.checkIsTop(event);
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (!tvRecyclerView.hasFocus()) {
@@ -599,4 +617,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         return super.dispatchKeyEvent(event);
     }
 
+    @Override
+    protected boolean isDetail() {
+        return true;
+    }
 }

@@ -44,7 +44,8 @@ public class ADConfig {
 
     public void setCategoryIds(String categoryIds) {
         this.categoryIds = categoryIds;
-        parseCategoryIds(categoryIds);
+        parseCategoryIdsCmsV31(categoryIds);
+//        parseCategoryIdsCmsV30(categoryIds);
     }
 
     public String getColumnId() {
@@ -63,7 +64,29 @@ public class ADConfig {
         this.secondColumnId = secondColumnId;
     }
 
-    private void parseCategoryIds(String categoryIds){
+    private void parseCategoryIdsCmsV31(String categoryIds) {
+        if(TextUtils.isEmpty(categoryIds)){
+            return ;
+        }
+        StringBuilder secondColumn = new StringBuilder();
+
+        String[] categoryArr = categoryIds.split("\\|");
+        for(String categoryId : categoryArr){
+            secondColumn.append(categoryId);
+            secondColumn.append(",");
+        }
+        if(secondColumn.length() > 0){
+            secondColumn.delete(secondColumn.length()-1,secondColumn.length());
+        }
+        setSecondColumnId(secondColumn.toString());
+        int size = listenerList.size();
+        for(int i=0;i<size;i++){
+            listenerList.get(i).receive();
+        }
+        listenerList.clear();
+    }
+
+    private void parseCategoryIdsCmsV30(String categoryIds){
         if(TextUtils.isEmpty(categoryIds)){
             return ;
         }
@@ -123,5 +146,13 @@ public class ADConfig {
                 ", seriesID='" + seriesID + '\'' +
                 ", listenerList=" + listenerList +
                 '}';
+    }
+
+    public void reset(){
+        columnId = "";
+        secondColumnId = "";
+        categoryIds = "";
+        seriesID = "";
+        programId = "";
     }
 }

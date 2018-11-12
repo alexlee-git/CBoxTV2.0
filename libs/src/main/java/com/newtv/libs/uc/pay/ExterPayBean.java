@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.uc.v2.Pay;
+package com.newtv.libs.uc.pay;
 
 import java.io.Serializable;
 

@@ -25,6 +25,7 @@ import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.PicassoBuilder;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
@@ -49,6 +50,7 @@ import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 //import com.tencent.bugly.crashreport.CrashReport;
 
@@ -130,6 +132,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                 Log.i(Constant.TAG, "accept: " + throwable);
             }
         });
+        UserCenterUtils.init();
     }
 
     /**
@@ -235,7 +238,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                     String userId;
                     String tableName;
                     if (login) {
-                        userId = Constant.USER_ID;
+                        userId = SharePreferenceUtils.getUserId(AppContext);
                         tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
                     } else {
                         userId = SystemUtils.getDeviceMac(getApplicationContext());

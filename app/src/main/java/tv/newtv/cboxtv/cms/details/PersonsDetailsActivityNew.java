@@ -1,24 +1,23 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.ScaleUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
@@ -26,7 +25,6 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
-import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.PersonDetailHeadView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
@@ -52,6 +50,9 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
 
     @BindView(R.id.root_view)
     SmoothScrollView scrollView;
+
+    @BindView(R.id.up_top)
+    LinearLayout upTop;
 
     @BindView(R.id.person_detail_ad_fl)
     EpisodeAdView mAdView;
@@ -104,7 +105,9 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             personDetailHeadView.setContentUUID(contentUUID);
             ADConfig.getInstance().setSeriesID(contentUUID);
         }
-
+        if (isPopup&&fromOuter) {
+            personDetailHeadView.setTopView();
+        }
         hostProgramView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {

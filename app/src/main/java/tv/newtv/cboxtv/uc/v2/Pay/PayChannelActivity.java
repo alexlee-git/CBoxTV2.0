@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.newtv.cms.bean.Program;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.squareup.picasso.Picasso;

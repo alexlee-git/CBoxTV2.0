@@ -22,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.Constant;
+import com.newtv.libs.uc.UserStatus;
+import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
@@ -36,10 +38,10 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.uc.v2.Pay.ExterPayBean;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 
 /**
@@ -270,6 +272,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                         startActivity(mIntent);
                                     }
                                 }
+                                UserStatus.setIsLogin(true);
                                 finish();
 
                             } catch (Exception e) {

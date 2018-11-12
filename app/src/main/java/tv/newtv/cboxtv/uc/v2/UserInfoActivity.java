@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.libs.Constant;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 
@@ -29,6 +30,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -119,6 +121,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnFocusChange
                 //退出登录上报日志
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "0,4");
                 SharePreferenceUtils.clearToken(UserInfoActivity.this);
+                UserStatus.setIsLogin(false);
                 finish();
             }
         });

@@ -29,6 +29,14 @@ import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
+import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
+import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
+import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
+import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
+import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
+import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
+import tv.newtv.cboxtv.cms.screenList.ScreenListActivity;
+import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
@@ -52,17 +60,18 @@ import tv.newtv.cboxtv.views.AdPopupWindow;
 public abstract class BaseActivity extends RxFragmentActivity implements IPlayerActivity {
 
     protected boolean FrontStage = false;//是否已经进入前台
-    private boolean fromOuter = false;//是否是外部跳转进入的
+    protected boolean fromOuter = false;//是否是外部跳转进入的
     private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
+    protected boolean isPopup = false;
+
+    protected boolean isDetail(){
+        return false;
+    }
 
     @BuyGoodsInject
     protected BuyGoodsBusiness buyGoodsBusiness;
 
-
-    protected void FocusToTop() {
-
-    }
 
     public boolean isFrontStage() {
         return FrontStage;
@@ -191,8 +200,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
                 View nextFocus = FocusFinder.getInstance().findNextFocus((ViewGroup) rootView,
                         focusView, View
                                 .FOCUS_UP);
-                if (nextFocus == null) {
-                    FocusToTop();
+                if (isDetail() && nextFocus == null) {
+                    NavPopuView navPopuView = new NavPopuView();
+                    navPopuView.showPopup(this, rootView);
                 }
             }
         }
@@ -255,6 +265,8 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         return super.onKeyDown(keyCode, event);
     }
 
+
+
     /**
      * 拦截按键事件，统一处理
      *
@@ -265,7 +277,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             return true;
         }
         boolean isFullScreen = isFullScreen();
-        if(!isFullScreen) {
+        if (isPopup&&fromOuter) {
             checkIsTop(event);
         }
         return isFullScreen;
