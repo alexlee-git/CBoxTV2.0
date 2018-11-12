@@ -40,7 +40,7 @@ public class DramaFragment extends BaseFragment {
     public int mPageNum = 1;
     private String mPageSize = "48";
     private String mKeyType = "name";
-    private String mType = "PS";
+    private String mType = "PS;CS;CG;PG";
 
     @Override
     public View createView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

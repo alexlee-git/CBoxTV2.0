@@ -63,11 +63,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private boolean isLogin = false;
 
 
-    @Override
-    protected void FocusToTop() {
-        Toast.makeText(getApplicationContext(), "ProgrameSeriesAndVarietyDetailActivity 到顶了",
-                Toast.LENGTH_LONG).show();
-    }
 
     @Override
     public boolean hasPlayer() {

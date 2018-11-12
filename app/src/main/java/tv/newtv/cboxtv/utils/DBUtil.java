@@ -57,6 +57,7 @@ public class DBUtil {
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
         contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
+        contentValues.put(DBConfig.USERID, userId);
 
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (TextUtils.isEmpty(updateTime)) {

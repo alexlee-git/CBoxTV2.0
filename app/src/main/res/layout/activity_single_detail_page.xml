@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<tv.newtv.cboxtv.views.detail.SmoothScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.newtv.cboxtv.views.detail.SmoothScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:topSpace="@dimen/height_83px"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    app:topSpace="@dimen/height_83px">
 
-    <tv.newtv.cboxtv.views.detail.HeadPlayerView
-        android:id="@+id/header_video"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <tv.newtv.cboxtv.views.detail.HeadPlayerView
+            android:id="@+id/header_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include layout="@layout/up_top_nav"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
 
     <tv.newtv.cboxtv.views.detail.SuggestView
         android:id="@+id/suggest"

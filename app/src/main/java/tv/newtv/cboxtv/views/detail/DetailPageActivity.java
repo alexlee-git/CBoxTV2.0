@@ -34,6 +34,11 @@ public abstract class DetailPageActivity extends BaseActivity {
 
     protected abstract void buildView(@Nullable Bundle savedInstanceState,String contentID);
 
+    @Override
+    protected boolean isDetail() {
+        return true;
+    }
+
     protected abstract boolean interruptDetailPageKeyEvent(KeyEvent event);
 
     @Override
@@ -110,7 +115,7 @@ public abstract class DetailPageActivity extends BaseActivity {
         }
 
         if(event.getAction() == KeyEvent.ACTION_UP){
-            if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (isBackPressed(event)) {
                 if (isADEntry) {
                     Intent intent = new Intent();
                     intent.setClass(LauncherApplication.AppContext, MainActivity.class);
@@ -119,7 +124,7 @@ public abstract class DetailPageActivity extends BaseActivity {
                     isADEntry = false;
                 }
                 finish();
-                return super.dispatchKeyEvent(event);
+                return true;
             }
         }
 

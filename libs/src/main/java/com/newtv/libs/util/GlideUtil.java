@@ -12,7 +12,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.newtv.libs.BuildConfig;
+import com.newtv.libs.Libs;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -25,7 +25,7 @@ public class GlideUtil {
 
         imageView.setTag(null);
 
-        if (BuildConfig.DEBUG) {
+        if (Libs.get().isDebug()) {
             if (url.contains("http://172.25.102.19/")) {
                 url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
             }

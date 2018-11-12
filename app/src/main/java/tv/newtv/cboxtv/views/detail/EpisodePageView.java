@@ -81,6 +81,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private int mPageSize;
     private String mVideoType;
     private TextView mTitleView;
+    private TextView mUpTitle;
 
     public EpisodePageView(Context context) {
         this(context, null);
@@ -228,6 +229,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
         TitleView.findViewById(R.id.id_title_icon).setVisibility(View.VISIBLE);
         mTitleView = TitleView.findViewById(R.id.id_title);
+        mUpTitle = TitleView.findViewById(R.id.up_title);
         if (mTitleView != null) {
             mTitleView.setVisibility(View.VISIBLE);
             mTitleView.setText("播放列表");
@@ -384,27 +386,25 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             return;
         }
         try {
-            mContentList = results;
+            mContentList = new ArrayList<>(results);
 
             boolean tvSeries = !videoType(mVideoType);
             if (tvSeries) {
-                final boolean sortDesc = !TextUtils.equals(seriesContent.getSeriesSum(), seriesContent
-                        .getRecentNum());
+                final boolean sortDesc = "0".equals(seriesContent.isFinish());
                 Collections.sort(mContentList, new Comparator<SubContent>() {
                     @Override
                     public int compare(SubContent t1, SubContent t2) {
                         if (sortDesc) {
-                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt(t1.getPeriods
-                                    ());
+                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt(t1.getPeriods());
                         }
                         return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods());
                     }
                 });
             }
 
-            if (mOnEpisodeChange != null) {
-                mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
-            }
+//            if (mOnEpisodeChange != null) {
+//                mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
+//            }
 
             if (mContentList != null && mContentList.size() > 0) {
                 if (mControlView != null) {
@@ -488,6 +488,11 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             if (!videoType(mVideoType)) {
                 mTitleView.setText("剧集列表");
                 mTitleView.setVisibility(VISIBLE);
+                if ("0".equals(seriesContent.isFinish())){//没有更新完
+                    mUpTitle.setText("已更新至"+seriesContent.getRecentNum()+"集 | 共"+seriesContent.getSeriesSum()+"集");
+                }else {
+                    mUpTitle.setText("已完结");
+                }
             }
             LayoutParams layoutParams = (LayoutParams) TitleView.getLayoutParams();
             TitleView.measure(widthMeasureSpec,
@@ -658,20 +663,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         return false;
     }
 
-    @Override
-    public void onChange(IEpisodePlayChange playChange, int index, boolean fromClick) {
-        if (mCurrentPlayImage != null) {
-            mCurrentPlayImage.setIsPlay(false);
-        }
-        currentIndex = index;
-        mCurrentPlayImage = playChange;
-        if (playChange != null) {
-            playChange.setIsPlay(true);
-        }
-        if (mOnEpisodeChange != null) {
-            mOnEpisodeChange.onChange(index, fromClick);
-        }
-    }
 
     @Override
     public void tip(@NotNull Context context, @NotNull String message) {
@@ -713,6 +704,25 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     @Override
     public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
         parseResult(result);
+    }
+
+    @Override
+    public void updateUI(IEpisodePlayChange playChange, int index) {
+        if (mCurrentPlayImage != null) {
+            mCurrentPlayImage.setIsPlay(false);
+        }
+        mCurrentPlayImage = playChange;
+        if (playChange != null) {
+            playChange.setIsPlay(true);
+        }
+    }
+
+    @Override
+    public void onChange(IEpisodePlayChange playChange, int index, boolean fromClick) {
+        currentIndex = index;
+        if (mOnEpisodeChange != null) {
+            mOnEpisodeChange.onChange(index, fromClick);
+        }
     }
 
     public interface OnEpisodeChange {

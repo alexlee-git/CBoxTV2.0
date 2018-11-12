@@ -14,7 +14,6 @@ import retrofit2.http.Query
  * 创建日期:          2018/10/11
  */
 interface IBootGuideRetro {
-
     @GET(Constant.BOOT_GUIDE_HOST + "auth/bootGuide")
     abstract fun getServerAddresses(@Query("platformid") platformId: String): Observable<ResponseBody>
 }

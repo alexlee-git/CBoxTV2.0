@@ -11,5 +11,6 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
  * 创建日期:          2018/5/5
  */
 public interface EpisodeChange {
+    void updateUI(IEpisodePlayChange playChange, int index);
     void onChange(IEpisodePlayChange playChange, int index, boolean fromClick);
 }

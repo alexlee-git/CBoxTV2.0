@@ -1,9 +1,13 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -46,6 +50,9 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
 
     @BindView(R.id.root_view)
     SmoothScrollView scrollView;
+
+    @BindView(R.id.up_top)
+    LinearLayout upTop;
 
     @BindView(R.id.person_detail_ad_fl)
     EpisodeAdView mAdView;
@@ -98,7 +105,9 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             personDetailHeadView.setContentUUID(contentUUID);
             ADConfig.getInstance().setSeriesID(contentUUID);
         }
-
+        if (isPopup&&fromOuter) {
+            personDetailHeadView.setTopView();
+        }
         hostProgramView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {

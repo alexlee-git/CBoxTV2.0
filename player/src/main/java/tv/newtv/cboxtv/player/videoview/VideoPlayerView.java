@@ -18,8 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.MainLooper;
 
+import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -96,6 +98,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return repeatPlay;
     }
 
+
     @Override
     protected void onError(String code, String messgae) {
         super.onError(code, messgae);
@@ -171,8 +174,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return playerViewConfig;
     }
 
-    public void setTipText(String message){
-        if(TipTextView != null){
+    public void setTipText(String message) {
+        if (TipTextView != null) {
             TipTextView.setVisibility(VISIBLE);
             TipTextView.setText(message);
         }
@@ -222,6 +225,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         setFocusable(true);
 
         HintTextView = new TextView(getContext());
+        HintTextView.setBackgroundResource(R.drawable.normalplayer_bg);
         HintTextView.setTextSize(getResources().getDimensionPixelSize(R.dimen.height_18px));
         HintTextView.setTextColor(Color.WHITE);
         HintTextView.setGravity(Gravity.CENTER);
@@ -291,20 +295,21 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void setSeriesInfo(Content seriesInfo) {
-        if (playCenter != null) {
+        if (playCenter != null && seriesInfo != null) {
             playCenter.setSeriesInfo(seriesInfo);
         }
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
         //设置播放的位置
-        playCenter.setCurrentIndex(mIndex);
+        int index = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(),mIndex);
+        playCenter.setCurrentIndex(index);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
         if (dataStruct != null) {
             if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
-                        playCenter.getCurrentSeriesInfo(), false, mIndex, position);
+                        playCenter.getCurrentSeriesInfo(), false, index, position);
             } else {
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
                         playCenter.getCurrentSeriesInfo(), position, false);
@@ -371,7 +376,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     protected void playIndex(int index) {
         super.playIndex(index);
         if (mPlayerCallback != null && !ProgramIsChange) {
-            mPlayerCallback.onEpisodeChange(index, getCurrentPosition());
+            int toIndex = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(),index);
+            mPlayerCallback.onEpisodeChange(toIndex, getCurrentPosition());
         }
     }
 
@@ -398,7 +404,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             }
         } else {
             //当视频都播放完的时候，就不在去加载首次进入详情页播放的视频
-            ProgramIsChange=false;
+            ProgramIsChange = false;
             if (isFullScreen()) {
                 ExitFullScreen();
             }

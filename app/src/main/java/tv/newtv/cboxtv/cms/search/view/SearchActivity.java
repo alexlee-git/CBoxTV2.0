@@ -65,8 +65,6 @@ public class SearchActivity extends FragmentActivity {
         @Override
         public void onReturnInputString(String inputStr) {
             if (onGetKeyListener != null) {
-                inputStr = inputStr.trim();
-                if(TextUtils.isEmpty(inputStr)) return;
                 onGetKeyListener.notifyKeywords(inputStr);
                 keyWordChange = true;
             }
