@@ -64,7 +64,7 @@ public abstract class BaseRecyclerAdapter<T, H extends RecyclerView.ViewHolder> 
             return;
         }
         mList.addAll(list);
-        notifyItemRangeInserted(getItemCount(), list.size());
+        notifyItemRangeInserted(getItemCount(), mList.size());
     }
 
 
