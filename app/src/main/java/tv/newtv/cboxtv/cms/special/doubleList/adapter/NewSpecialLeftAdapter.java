@@ -60,7 +60,7 @@ public class NewSpecialLeftAdapter extends RecyclerView.Adapter<NewSpecialLeftAd
                     holder.topicItem.setBackgroundResource(R.drawable.special_list_focus);
                     if (null != mOnFoucesDataChangeListener) {
                         mOnFoucesDataChangeListener.onFoucesDataChangeListener(mNewSpecialDatas
-                                .get(position).getContentId(), position);
+                                .get(position).getL_id(), position);
                     }
                 } else {
                     holder.topicItem.setSelected(false);

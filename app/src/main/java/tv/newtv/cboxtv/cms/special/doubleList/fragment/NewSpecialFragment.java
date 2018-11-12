@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special.doubleList.fragment;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
@@ -18,35 +19,32 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.util.GsonUtil;
-import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.RxBus;
 
-import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import io.reactivex.Observer;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
+import io.reactivex.functions.Consumer;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.special.doubleList.adapter.NewSpecialCenterAdapter;
 import tv.newtv.cboxtv.cms.special.doubleList.adapter.NewSpecialLeftAdapter;
-import tv.newtv.cboxtv.cms.special.doubleList.bean.SpecialBean;
 import tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
-import tv.newtv.cboxtv.cms.util.ModuleUtils;
+import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * 双列表专题界面
@@ -80,18 +78,20 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     private List<Program> mLeftData = new ArrayList<>();
     private List<Program> mLiftListData = new ArrayList<>();
     private List<Program> mLeftFocusedData = new ArrayList<>();
-    private List<SpecialBean.DataBean.ProgramsBean> mCenterData = new ArrayList<>();
-    private List<SpecialBean.DataBean.ProgramsBean> mCenterFocusedData = new ArrayList<>();
-    private boolean isFristPlay = true, isRightToLeft = false, isMoveKey = false;
-    private int leftPosition = 0, oldLeftPosition = -1, centerPosition = 0;
+    private List<SubContent> mCenterData = new ArrayList<>();
+    private List<SubContent> mCenterFocusedData = new ArrayList<>();
+    private boolean isFristPlay = true, isRightToLeft = false, isMoveKey = false, isPlayNextProgram = false;
+    private int leftPosition = 0, oldLeftPosition = -1, centerPosition = 0, oldCenterPosition = 0;
     private String mDefaultContentUUID;
     private View focusView;
     private String mMoveTag = DOWN;
     private int currentIndex = 0;
     private ModelResult<ArrayList<Page>> mModuleInfoResult;
     private String mLeftContentId;
-    private SpecialBean mSpecialBean = null;
     private Content mProgramSeriesInfo;
+    private Observable<Boolean> isVideoEndObservable;
+    private HashMap<String, Content> mCacheSubContents;
+
     private SpecialHandler mSpecialHandler = new SpecialHandler(NewSpecialFragment.this);
 
     class SpecialHandler extends Handler {
@@ -105,6 +105,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             NewSpecialFragment mNewSpecialFragment = mWeakHandler.get();
+            if (videoPlayerView != null) {
+                videoPlayerView.setVideoPlayNext(leftPosition < mLeftData.size() - 1);
+            }
             if (mNewSpecialFragment != null) {
                 switch (msg.what) {
                     case LEFT_TO_CENTER_POSITION:
@@ -124,7 +127,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     case VIDEO_PLAY:
                         if (mCenterData.size() > 0) {
                             setVideoFocusedPlay(0);
-                            sendEmptyMessageDelayed(SELECT_DEFAULT_ITEM, 400);
+                            sendEmptyMessageDelayed(SELECT_DEFAULT_ITEM, 50);
                         } else {
                             printLogAndToast("Handler", "ywy video playurl is null", false);
                         }
@@ -172,6 +175,21 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
 
     @Override
     protected void onItemContentResult(String uuid, Content content) {
+        //处理返回的数据
+        printLogAndToast("onItemContentResult", "leftPosition : " + leftPosition +
+                "  uuid : " + uuid + "  content : " + content.toString(), false);
+        if (mCacheSubContents == null) {
+            mCacheSubContents = new HashMap<>();
+        }
+        mCacheSubContents.put(leftPosition + uuid, content);
+        refreshCenterData(leftPosition, content);
+        mProgramSeriesInfo = content;
+        initCenterDownStatus();
+
+        if (isPlayNextProgram) {
+            setVideoFocusedPlay(0);
+            setSelectBg(0, true);
+        }
 
     }
 
@@ -181,6 +199,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         initLeftList(view);
         initCenterList(view);
         initVideo(view);
+        setPlayNextVideo();
     }
 
     @Override
@@ -197,7 +216,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             for (int i = 0; i < mLeftData.size(); i++) {
                 if (mLeftData.get(i).getDefaultFocus() == 1) {
                     leftPosition = i;
-                    mDefaultContentUUID = mLeftData.get(i).getContentId();
+                    mDefaultContentUUID = mLeftData.get(i).getL_id();
                     printLogAndToast("setLeftDefaultFocusedP", "default leftPosition : " + leftPosition + "  mDefaultContentUUID : " + mDefaultContentUUID, false);
                 } else {
                     mLiftListData.add(mLeftData.get(i));
@@ -231,7 +250,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             return;
         } else {
             centerPosition++;
-            mCenterMenu.smoothScrollToPosition(centerPosition);
+            mCenterMenu.scrollToPosition(centerPosition);
             mSpecialHandler.sendEmptyMessageDelayed(VIDEO_NEXT_PLAY, 50);
         }
     }
@@ -239,8 +258,13 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     @Override
     public void ProgramChange() {
         printLogAndToast("ProgramChange", "ProgramChange", false);
-        videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-        videoPlayerView.playSingleOrSeries(currentIndex, 0);
+        Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+        if (programSeriesInfo != null && TextUtils.equals(programSeriesInfo.getContentID(), mProgramSeriesInfo.getContentID())) {
+            currentIndex = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+        } else {
+            videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+            videoPlayerView.playSingleOrSeries(currentIndex, 0);
+        }
     }
 
     @Override
@@ -287,6 +311,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         printLogAndToast("onDetach", "onDetach", false);
         isFristPlay = true;
         videoPlayerView = null;
+        RxBus.get().unregister(Constant.IS_VIDEO_END, isVideoEndObservable);
         mSpecialHandler.removeCallbacksAndMessages(null);
     }
 
@@ -305,8 +330,6 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 mMoveTag = DOWN;
                 isMoveKey = true;
             }
-            printLogAndToast("dispatchKeyEvent", "isInstanceof : " + (focusView instanceof VideoPlayerView) + " code : " + event.getKeyCode(), false);
-            printLogAndToast("dispatchKeyEvent", "view  is  : " + focusView.getClass(), false);
             if (focusView instanceof VideoPlayerView) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
@@ -316,7 +339,10 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     case KeyEvent.KEYCODE_DPAD_LEFT:
                         mVideoPlayerTitle.setVisibility(View.GONE);
                         mFullScreenImage.setVisibility(View.GONE);
-                        mCenterMenu.smoothScrollToPosition(centerPosition);
+                        if (leftPosition == oldLeftPosition) {
+                            centerPosition = oldCenterPosition;
+                        }
+                        mCenterMenu.scrollToPosition(centerPosition);
                         mSpecialHandler.sendEmptyMessageDelayed(VIDEO_TO_CENTER_POSITION, 50);
                 }
                 return true;
@@ -345,8 +371,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
 
     private void setLeftUpVisible(String tag, int leftFocusPt) {
         if (null != mLeftUp) {
+            int first = mLeftManager.findFirstVisibleItemPosition();
             if (!TextUtils.isEmpty(tag) && tag.equals(UP)) {
-                if (leftFocusPt > MIN_DIS_POSTION) {
+                if (first > MIN_DIS_POSTION) {
                     mLeftUp.setVisibility(View.VISIBLE);
                 } else {
                     mLeftUp.setVisibility(View.INVISIBLE);
@@ -363,7 +390,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
 
     private void setLeftDownVisible(String tag, int leftFocusPt) {
         if (!TextUtils.isEmpty(tag) && tag.equals(DOWN)) {
-            if ((mLeftData.size() > MAX_DIS_POSTION) && (leftFocusPt == mLeftData.size() - 1)) {
+            if ((mLeftData.size() > MAX_DIS_POSTION + 1) && (leftFocusPt == mLeftData.size() - 1)) {
                 mLeftDown.setVisibility(View.INVISIBLE);
             } else if ((mLeftData.size() > MAX_DIS_POSTION)) {
                 mLeftDown.setVisibility(View.VISIBLE);
@@ -376,7 +403,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     private void initLeftDownStatus() {
-        if (null != mLeftData && mLeftData.size() > MAX_DIS_POSTION) {
+        if (null != mLeftData && mLeftData.size() > MAX_DIS_POSTION + 1) {
             mLeftDown.setVisibility(View.VISIBLE);
         } else {
             mLeftDown.setVisibility(View.INVISIBLE);
@@ -412,7 +439,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         mCenterDown.setVisibility(View.INVISIBLE);
                         mLeftContentId = contentId;
                     }
-                    getCenterData(position, mLeftContentId);
+                    getCenterData(position, mLeftContentId, false);
                 } else {
                     isRightToLeft = false;
                 }
@@ -421,33 +448,35 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             }
         });
         mLeftMenu.setAdapter(mNewSpecialLeftAdapter);
+        playNextProgram();
         mLeftMenu.setOnGetPositionListener(new FocusRecyclerView.OnGetPositionListener() {
             @Override
             public void GetRightPositionListener(int position) {
-                printLogAndToast("initLeftList", "ywy left position right : " + position + " centerPosition : " + centerPosition, false);
                 leftPosition = position;
                 int firstVP = mCenterManager.findFirstVisibleItemPosition();
                 int lastVP = mCenterManager.findLastVisibleItemPosition();
                 Message msg = Message.obtain();
                 msg.what = LEFT_TO_CENTER_POSITION;
+                printLogAndToast("initLeftList", "left to center oldP : " + oldLeftPosition
+                        + " position : " + position + "  centerPosition : " + centerPosition
+                        + "  oldcenterPosition : " + oldCenterPosition, false);
                 if (position == oldLeftPosition) {
-                    mCenterMenu.smoothScrollToPosition(centerPosition);
-                    msg.arg1 = centerPosition;
-                    mSpecialHandler.sendMessage(msg);
+                    mCenterMenu.scrollToPosition(oldCenterPosition);
+                    msg.arg1 = oldCenterPosition;
+                    mSpecialHandler.sendMessageDelayed(msg, 50);
                 } else {
                     centerPosition = 0;
                     if (centerPosition < firstVP) {
-                        mCenterMenu.smoothScrollToPosition(centerPosition);
+                        mCenterMenu.scrollToPosition(centerPosition);
                     } else if (centerPosition > firstVP && centerPosition < lastVP) {
                         int top = mCenterMenu.getChildAt(centerPosition).getTop();
                         mCenterMenu.smoothScrollBy(0, top);
                     } else {
-                        mCenterMenu.smoothScrollToPosition(centerPosition);
+                        mCenterMenu.scrollToPosition(centerPosition);
                     }
                     msg.arg1 = centerPosition;
-                    mSpecialHandler.sendMessageDelayed(msg, 200);
+                    mSpecialHandler.sendMessageDelayed(msg, 50);
                 }
-
             }
 
             @Override
@@ -479,9 +508,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
 
     private void setCenterDownVisible(String tag, int centerFocusPt) {
         if (!TextUtils.isEmpty(tag) && tag.equals(DOWN)) {
-            if ((mCenterData.size() > MAX_DIS_POSTION) && (centerFocusPt == mCenterData.size() - 1)) {
+            if ((mCenterData.size() > MAX_DIS_POSTION + 1) && (centerFocusPt == mCenterData.size() - 1)) {
                 mCenterDown.setVisibility(View.INVISIBLE);
-            } else if ((mLeftData.size() > MAX_DIS_POSTION)) {
+            } else if ((mCenterData.size() > MAX_DIS_POSTION)) {
                 mCenterDown.setVisibility(View.VISIBLE);
             }
         } else if ((!TextUtils.isEmpty(tag) && tag.equals(UP)) && centerFocusPt < mCenterData.size() - 1 - MAX_DIS_POSTION) {
@@ -515,33 +544,18 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             @Override
             public void GetRightPositionListener(int position) {
                 //centerPosition = position;
-                printLogAndToast("initCenterList", "center get   right", false);
+                printLogAndToast("initCenterList", "center get right position : " + position, false);
                 setVideoFocus(true);
-                if (centerPosition == -1) {
-                    mVideoPlayerTitle.setText(mCenterFocusedData.get(0).getTitle());
-                } else {
-                    mVideoPlayerTitle.setText(mCenterFocusedData.get(centerPosition).getTitle());
-                }
+                mVideoPlayerTitle.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void GetLeftPositionListener(int position) {
                 printLogAndToast("initCenterList", "center get   left leftPosition : " + leftPosition + "  position: " + position, false);
                 isRightToLeft = true;
-                //setVideoFocus(false);
-                printLogAndToast("initCenterList", "ywy first : " + (mCenterManager.findFirstVisibleItemPosition() > leftPosition) + "  last " + (mCenterManager.findLastVisibleItemPosition() < leftPosition), false);
-                //mLeftMenu.smoothScrollToPosition(leftPosition);
                 int firstVP = mLeftManager.findFirstVisibleItemPosition();
                 int lastVP = mLeftManager.findLastVisibleItemPosition();
-                /*if (leftPosition < firstVP) {
-                    mLeftMenu.smoothScrollToPosition(leftPosition);
-                } else if (leftPosition > firstVP && leftPosition < lastVP) {
-                    int top = mCenterMenu.getChildAt(leftPosition).getTop();
-                    mLeftMenu.smoothScrollBy(0, top);
-                } else {
-                    mLeftMenu.smoothScrollToPosition(leftPosition);
-                }*/
-                printLogAndToast("initLeftList ", "leftPosition : " + leftPosition, false);
+                printLogAndToast("initLeftList ", " first : " + firstVP + "  last : " + lastVP, false);
                 if (mLeftMenu.getChildAt(leftPosition - firstVP) != null) {
                     mLeftMenu.getChildAt(leftPosition - firstVP).requestFocus();
                 } else {
@@ -558,6 +572,8 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 if (mCenterData.get(position) != null) {
                     mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
                     mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
+                    printLogAndToast("initCenterList", "centerTitle : " + mCenterFocusedData.get(centerPosition).getTitle()
+                            + "centerPosition : " + centerPosition, false);
                     mVideoPlayerTitle.setText(mCenterFocusedData.get(centerPosition).getTitle());
                 } else {
                     printLogAndToast("initCenterList", "mCenter position view is null", false);
@@ -597,6 +613,12 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     private void setSelectBg(int centerPosition, boolean isClick) {
+        if (isPlayNextProgram) {
+            mNewSpecialCenterAdapter.setSelected(centerPosition);
+            printLogAndToast("setSelectBg", "title: " + mCenterFocusedData.get(centerPosition).getTitle(), false);
+            mVideoPlayerTitle.setText(mCenterData.get(centerPosition).getTitle());
+            isPlayNextProgram = false;
+        }
         mNewSpecialCenterAdapter.reFreshSecleted(centerPosition, isClick);
         printLogAndToast("setSelectBg", "centerP : " + centerPosition + "  isClick : " + isClick, false);
         mNewSpecialCenterAdapter.notifyDataSetChanged();
@@ -609,6 +631,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             printLogAndToast("setSelectBg", "ywy setSelectBg is null", false);
         }
         oldLeftPosition = leftPosition;
+        oldCenterPosition = centerPosition;
         printLogAndToast("setSelectBg", "leftPosition : " + leftPosition, false);
     }
 
@@ -616,7 +639,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         if (videoPlayerView != null) {
             videoPlayerView.beginChange();
         }
-        if (mProgramSeriesInfo != null) {
+        if (mCenterData != null && mCenterData.get(index) != null) {
             if (videoPlayerView != null) {
                 videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
                 videoPlayerView.playSingleOrSeries(index, 0);
@@ -628,78 +651,53 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         }
     }
 
-    private void getCenterData(final int position, String contentUUID) {
-
-        if (contentUUID.length() > 2) {
-            printLogAndToast("getCenterData", "left : " + contentUUID.substring(0, 2) + "  right : " + contentUUID.substring(contentUUID.length() - 2, contentUUID.length()) + "  all : " + contentUUID, false);
-        } else {
-            printLogAndToast("getCenterData", "contentUUID length < 2 ", false);
-        }
-
+    private void getCenterData(final int position, String contentID, final Boolean isPlayNextProgram) {
         // 从服务端去数据
-        NetClient.INSTANCE.getSpecialApi().getDoublePageData(Libs.get().getAppKey(), Libs.get().getChannelId(),
-                contentUUID.substring(0, 2), contentUUID.substring(contentUUID.length() - 2, contentUUID.length()),
-                contentUUID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+        printLogAndToast("getCenterData", "AppKey : " + Libs.get().getAppKey() +
+                "ChannelId : " + Libs.get().getChannelId() + "contentUUID : " + contentID, false);
+        if (!TextUtils.isEmpty(Libs.get().getAppKey()) && !TextUtils.isEmpty(Libs.get().getChannelId())
+                && !TextUtils.isEmpty(contentID)) {
+            leftPosition = position;
+            if (null != mCacheSubContents && mCacheSubContents.containsKey(leftPosition + contentID)) {
+                printLogAndToast("getCenterData", "is containsKey true , position : " + position +
+                        "contentID : " + contentID + " isPlayNextProgram : " + isPlayNextProgram +
+                        " data not null : " + (null != mCacheSubContents.get(leftPosition + contentID).getData()), false);
 
-                    @Override
-                    public void onNext(ResponseBody value) {
-                        try {
-                            String result = value.string();
-                            try {
-                                JSONObject jsonObject = new JSONObject(result);
-                                String data = jsonObject.getString("data");
-                                mProgramSeriesInfo = GsonUtil.fromjson(data, Content.class);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            mSpecialBean = ModuleUtils.getInstance()
-                                    .parseJsonForNewSpecialSecondData(result);
-                            printLogAndToast("getCenterData", "bean : " + mSpecialBean.toString() + " value : " + value.string(), false);
-
-                            refreshCenterData(position, mSpecialBean);
-                            initCenterDownStatus();
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        LogUtils.e(e.toString());
-                        printLogAndToast("getCenterData onError", "ywy Throwable: " + e.toString(), false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+                if (null != mCacheSubContents.get(leftPosition + contentID).getData()) {
+                    onSubContentResult(contentID, (ArrayList<SubContent>) mCacheSubContents.get(leftPosition + contentID).getData());
+                } else {
+                    getContent(contentID, mLeftData.get(position).getL_contentType());
+                }
+                if (isPlayNextProgram) {
+                    setVideoFocusedPlay(0);
+                    setSelectBg(0, true);
+                }
+                return;
+            } else {
+                getContent(contentID, mLeftData.get(position).getL_contentType());
+            }
+        }
     }
 
-    private void refreshCenterData(int position, SpecialBean mSpecialBean) {
+    private void refreshCenterData(int position, Content mContent) {
         printLogAndToast("refreshCenterData", "case CENTER_REFRESH_DATA", false);
-        if (null != mSpecialBean) {
-            if (mSpecialBean.getData() != null) {
-                printLogAndToast("refreshCenterData  2  ", "case msg.obj Center_Refresh_data : " + mSpecialBean.getData().toString(), false);
-            }
-        } else {
-            printLogAndToast("refreshCenterData  4  ", "case msg.obj Center_Refresh_data is null ", false);
-        }
-        if (mSpecialBean.getData() != null) {
-            if (mSpecialBean.getData().getPrograms() != null) {
-                mCenterData = mSpecialBean.getData().getPrograms();
+        if (mContent != null) {
+            if (mContent.getData() != null) {
+                mCenterData = mContent.getData();
                 mNewSpecialCenterAdapter.refreshData(position, mCenterData);
                 if (isFristPlay) {
                     mLeftFocusedData = mLeftData;
                     mCenterFocusedData = mCenterData;
+                    if (mCenterFocusedData.size() > 0) {
+                        mVideoPlayerTitle.setText(mCenterFocusedData.get(centerPosition).getTitle());
+                    }
                     mSpecialHandler.sendEmptyMessageDelayed(VIDEO_PLAY, 50);
                     isFristPlay = false;
+                }
+                if (isPlayNextProgram) {
+                    mSpecialTopicName.setText(mLeftData.get(leftPosition).getTitle());
+                    mSpecialTopicTitle.setText(mLeftData.get(leftPosition).getSubTitle());
+                    mSpecialHandler.sendEmptyMessageDelayed(SELECT_DEFAULT_ITEM, 50);
                 }
             } else {
                 printLogAndToast("refreshCenterData  5  ", "ywy center_refresh_data Programs is null", false);
@@ -709,35 +707,90 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         }
     }
 
-    private void setLeftRecyclerFocused(boolean isFocus) {
-        mLeftMenu.setFocusable(isFocus);
-        if (isFocus) {
-            mLeftMenu.requestFocus();
-        }
-    }
-
-    private void setCenterRecyclerFocused(boolean isFocus) {
-        mCenterMenu.setFocusable(isFocus);
-        if (isFocus) {
-            mCenterMenu.requestFocus();
-        }
-    }
-
     private void setVideoFocus(boolean isFocus) {
-        /*if (mVideoLinear != null) {
-            mVideoLinear.setFocusable(isFocus);
-        }
-        if (videoPlayerView != null) {
-            videoPlayerView.setFocusable(isFocus);
-        }*/
         if (isFocus) {
             mFocusViewVideo.requestFocus();
             mVideoPlayerTitle.setVisibility(View.VISIBLE);
             mFullScreenImage.setVisibility(View.VISIBLE);
-            //videoPlayerView.setFocusView(mFocusViewVideo, true);
         } else {
             mVideoPlayerTitle.setVisibility(View.GONE);
             mFullScreenImage.setVisibility(View.GONE);
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private void playNextProgram() {
+        isVideoEndObservable = RxBus.get().register(Constant.IS_VIDEO_END);
+        isVideoEndObservable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) {
+                        if (aBoolean) {
+                            printLogAndToast("playNextProgram", "play next program ", true);
+                            isPlayNextProgram = aBoolean;
+                            centerPosition = 0;
+                            leftPosition += 1;
+                            getCenterData(leftPosition, mLeftData.get(leftPosition).getL_id(), aBoolean);
+                        }
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    private void setPlayNextVideo() {
+        if (null != videoPlayerView) {
+            videoPlayerView.addListener(new IPlayProgramsCallBackEvent() {
+                @Override
+                public void onNext(SubContent info, int index, boolean isNext) {
+                    if (isNext) {
+                        printLogAndToast("setPlayNextVideo", "info : " + info.toString() + "   index : " + index, false);
+
+                        centerPosition = index;
+                        oldCenterPosition = index;
+                        mCenterMenu.scrollToPosition(centerPosition);
+
+                        if (mLeftFocusedData != null && mLeftFocusedData.size() > 0) {
+                            mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
+                            mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
+                        } else {
+                            if (mLeftData != null) {
+                                printLogAndToast("Handler", "video next play data: " + mLeftData.toString(), false);
+                            } else {
+                                printLogAndToast("Handler", "video next play data is null ", false);
+                            }
+                        }
+                        if (info != null) {
+                            mVideoPlayerTitle.setText(info.getTitle());
+                        }
+                        mNewSpecialCenterAdapter.setSelected(centerPosition);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
+        printLogAndToast("onSubContentResult", "refresh center uuid : " + uuid + " result : ", false);
+        if (null != result) {
+            mCenterData = result;
+            mNewSpecialCenterAdapter.refreshData(leftPosition, mCenterData);
+            if (isFristPlay) {
+                mLeftFocusedData = mLeftData;
+                mCenterFocusedData = mCenterData;
+                if (mCenterFocusedData.size() > 0) {
+                    mVideoPlayerTitle.setText(mCenterFocusedData.get(centerPosition).getTitle());
+                }
+                mSpecialHandler.sendEmptyMessageDelayed(VIDEO_PLAY, 50);
+                isFristPlay = false;
+            }
+            if (isPlayNextProgram) {
+                mSpecialTopicName.setText(mLeftData.get(leftPosition).getTitle());
+                mSpecialTopicTitle.setText(mLeftData.get(leftPosition).getSubTitle());
+                mSpecialHandler.sendEmptyMessageDelayed(SELECT_DEFAULT_ITEM, 50);
+            }
+        } else {
+            printLogAndToast("refreshCenterData  5  ", "ywy center_refresh_data Programs is null", false);
         }
     }
 
@@ -747,5 +800,4 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         }
         Log.d(TAG, method + " ywy " + content);
     }
-
 }

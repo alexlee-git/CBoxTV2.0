@@ -128,6 +128,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private VodContract.Presenter mVodPresenter;
 
     private LiveTimer mLiveTimer;
+    private boolean isNextPlay;
     private List<ScreenListener> screenListeners;
     private boolean isTrySee;
     private TextView hintVip;
@@ -1202,12 +1203,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         l.onNext(null, next, false);
                     }
                 }
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                        .play_complete), Toast.LENGTH_SHORT).show();
-                if (startIsFullScreen) {
-                    NewTVLauncherPlayerViewManager.getInstance().release();
+                if (isNextPlay) {
+                    RxBus.get().post(Constant.IS_VIDEO_END, true);
+                } else {
+                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
+                            .play_complete), Toast.LENGTH_SHORT).show();
+                    if (startIsFullScreen) {
+                        NewTVLauncherPlayerViewManager.getInstance().release();
+                    }
+                    AllComplete(false, "播放结束");
                 }
-                AllComplete(false, "播放结束");
             }
         }
     }
@@ -1471,6 +1476,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             intent.putExtra("payBean", exterPayBean);
             getContext().startActivity(intent);
         }
+    }
+
+    public void setVideoPlayNext(boolean isNextPlay) {
+        this.isNextPlay = isNextPlay;
     }
 
     public static class PlayerViewConfig {
