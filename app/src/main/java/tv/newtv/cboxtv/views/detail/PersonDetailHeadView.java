@@ -79,7 +79,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     private final String TAG = "PersonDetailHeadView";
     private View view;
     private String contentUUID;
-    private boolean isAttention;
+    private boolean isAttention = false;
     private Context mContext;
     private long lastClickTime = 0;
     private Content dataInfo;
@@ -267,11 +267,18 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     private void setHeadData(Content dataInfo) {
         String img = dataInfo.getVImage();
         detailTypeTv.setText(String.format("%s | %s", dataInfo.getDistrict(), dataInfo.getCountry()));
-        if (isAttention) {
-            attentionView.setSelect(true);
-        } else {
-            attentionView.setSelect(false);
-        }
+
+        UserCenterUtils.getAttentionState(contentUUID, new IFollowStatusCallback() {
+            @Override
+            public void notifyFollowStatus(boolean status) {
+                if (status) {
+                    attentionView.setSelect(true);
+                } else {
+                    attentionView.setSelect(false);
+                }
+                isAttention = status;
+            }
+        });
 
         Picasso.get().load(img).transform(new PosterCircleTransform
                 (mContext, 8)).fit().memoryPolicy(MemoryPolicy.NO_STORE)
@@ -312,12 +319,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         if (dataInfo.getTitle() != null) {
             detailTitleTv.setText(dataInfo.getTitle());
         }
-        UserCenterUtils.getAttentionState(contentUUID, new IFollowStatusCallback() {
-            @Override
-            public void notifyFollowStatus(boolean status) {
-                isAttention = status;
-            }
-        });
+
     }
 
     @Override
