@@ -270,7 +270,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     protected void lazyLoad() {
         super.lazyLoad();
 
-        if (TextUtils.isEmpty(contentId)) {
+        if (TextUtils.isEmpty(contentId) || mPresenter == null) {
             onError(LauncherApplication.AppContext, "暂无数据内容。");
         } else {
             mPresenter.getPageContent(contentId);
