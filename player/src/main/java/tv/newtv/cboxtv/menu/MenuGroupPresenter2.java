@@ -49,7 +49,6 @@ import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
-import tv.newtv.player.BuildConfig;
 import tv.newtv.player.R;
 
 /**
@@ -527,7 +526,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
              * 正常盒子按返回键返回KeyEvent.KEYCODE_BACK
              * 讯码盒子非长按返回KeyEvent.KEYCODE_ESCAPE  长按返回KeyEvent.KEYCODE_ESCAPE KeyEvent.KEYCODE_BACK
              */
-            if (BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
+            if (Libs.get().getFlavor().equals(DeviceUtil.XUN_MA)) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_ESCAPE:
                         if (menuGroupIsInit && menuGroup.getVisibility() == View.VISIBLE) {

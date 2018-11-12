@@ -134,7 +134,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                 @Override
                 public void run() {
                     if (viewHolders != null && viewHolders.size() > currentIndex && currentIndex>=0) {
-                        viewHolders.get(currentIndex).performClick(false);
+                        viewHolders.get(currentIndex).select();
                     }
                 }
             }, 100);
@@ -262,7 +262,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    performClick(true);
+                    performClick(true,true);
                 }
             });
         }
@@ -282,8 +282,15 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             itemView = null;
         }
 
-        void performClick(boolean fromClick) {
+        void select(){
+            if(mChange != null){
+                mChange.updateUI(this,mPosition * getPageSize() + mIndex);
+            }
+        }
+
+        void performClick(boolean fromClick,boolean dispatch) {
             if (mChange != null) {
+                mChange.updateUI(this,mPosition * getPageSize() + mIndex);
                 mChange.onChange(this, mPosition * getPageSize() + mIndex, fromClick);
             }
         }

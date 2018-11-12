@@ -18,26 +18,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
@@ -51,13 +47,13 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.ISubscribeStatusCallback;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
@@ -110,7 +106,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         this(context, attrs, 0);
         getMemberStatus();
     }
-
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -167,23 +162,20 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void initData() {
-        UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, mBuilder.contentUUid, "", new IHisoryStatusCallback() {
-            @Override
-            public void getHistoryStatus(UserCenterPageBean.Bean bean) {
-                if (null != bean) {
-                    if (!TextUtils.isEmpty(bean.playPosition)) {
-                        currentPosition = Integer.valueOf(bean.playPosition);
-                    } else {
-                        currentPosition = 0;
+        UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, mBuilder.contentUUid, "", new
+                IHisoryStatusCallback() {
+                    @Override
+                    public void getHistoryStatus(UserCenterPageBean.Bean bean) {
+                        historyBean = bean;
+                        if (historyBean != null) {
+                            if (!TextUtils.isEmpty(historyBean.playPosition)) {
+                                currentPosition = Integer.valueOf(historyBean.playPosition);
+                            } else {
+                                currentPosition = 0;
+                            }
+                        }
                     }
-                    if (bean.playIndex != null) {
-                        setCurrentPlayIndex("DataSupport", Integer.valueOf(bean.playIndex));
-                    } else {
-                        setCurrentPlayIndex("DataSupport", 0);
-                    }
-                }
-            }
-        });
+                });
     }
 
     private void init() {
@@ -261,14 +253,14 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
-    public void resetSeriesInfo(final Content content){
+    public void resetSeriesInfo(final Content content) {
         initData();
         postDelayed(new Runnable() {
             @Override
             public void run() {
                 setProgramSeriesInfo(content);
             }
-        },300);
+        }, 300);
     }
 
     //显示全屏
@@ -327,54 +319,77 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         //TODO
                         final View collect = contentView.findViewById(value.viewId);
                         if (collect != null) {
-                            UserCenterUtils.getCollectState(mBuilder.contentUUid, new ICollectionStatusCallback() {
-                                public void notifyCollectionStatus(boolean status) {
-                                    if (collect instanceof FocusToggleSelect) {
-                                        ((FocusToggleSelect) collect).setSelect(status);
-                                    }
-                                }
-                            });
+                            UserCenterUtils.getCollectState(mBuilder.contentUUid, new
+                                    ICollectionStatusCallback() {
+                                        public void notifyCollectionStatus(boolean status) {
+                                            if (collect instanceof FocusToggleSelect) {
+                                                ((FocusToggleSelect) collect).setSelect(status);
+                                            }
+                                        }
+                                    });
                             collect.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                        {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) collect).isSelect()) {
                                                 UserCenterUtils.deleteSomeCollect(mInfo,
-                                                        mBuilder.contentUUid, new DBCallback<String>() {
+                                                        mBuilder.contentUUid, new
+                                                                DBCallback<String>() {
+                                                                    @Override
+                                                                    public void onResult(int code, String
+                                                                            result) {
+                                                                        ((FocusToggleSelect)
+                                                                                collect)
+                                                                                .setSelect
+                                                                                        (code ==
+                                                                                                0
+                                                                                                && !TextUtils
+                                                                                                .isEmpty(result));
+                                                                        RxBus.get().post(Constant
+                                                                                .UPDATE_UC_DATA,
+                                                                                true);
+                                                                        if (code == 0) {
+                                                                            LogUploadUtils.uploadLog
+                                                                                    (Constant
+                                                                                            .LOG_NODE_COLLECT, "1," + mBuilder.contentUUid);//取消收藏
+                                                                            Toast.makeText
+                                                                                    (getContext()
+                                                                                            .getApplicationContext(),
+                                                                                    "取消收藏成功", Toast
+                                                                                            .LENGTH_SHORT).show();
+                                                                        }
+                                                                    }
+                                                                });
+                                            } else {
+                                                UserCenterUtils.addCollect(mInfo, new
+                                                        DBCallback<String>() {
                                                             @Override
-                                                            public void onResult(int code, String result) {
-                                                                ((FocusToggleSelect) collect).setSelect
-                                                                        (code == 0 && !TextUtils.isEmpty(result));
-                                                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                                                            public void onResult(int code, String
+                                                                    result) {
+                                                                ((FocusToggleSelect) collect)
+                                                                        .setSelect
+                                                                        (code == 0 && !TextUtils
+                                                                                .isEmpty(result));
+                                                                RxBus.get().post(Constant
+                                                                                .UPDATE_UC_DATA,
+                                                                        true);
                                                                 if (code == 0) {
                                                                     LogUploadUtils.uploadLog
-                                                                            (Constant.LOG_NODE_COLLECT, "1," + mBuilder.contentUUid);//取消收藏
-                                                                    Toast.makeText(getContext().getApplicationContext(),
-                                                                            "取消收藏成功", Toast.LENGTH_SHORT).show();
+                                                                            (Constant
+                                                                            .LOG_NODE_COLLECT,
+                                                                                    "0," +
+                                                                            mInfo.getContentID());
+                                                                    Toast.makeText(getContext()
+                                                                                    .getApplicationContext(),
+                                                                            R.string.collect_success,
+                                                                            Toast.LENGTH_SHORT)
+                                                                            .show();
                                                                 }
                                                             }
                                                         });
-                                            } else {
-                                                UserCenterUtils.addCollect(mInfo, new DBCallback<String>() {
-                                                    @Override
-                                                    public void onResult(int code, String result) {
-                                                        ((FocusToggleSelect) collect).setSelect(code ==0 && !TextUtils
-                                                                        .isEmpty(result));
-                                                        RxBus.get().post(Constant.UPDATE_UC_DATA,true);
-                                                        if (code == 0) {
-                                                            LogUploadUtils.uploadLog(Constant
-                                                                    .LOG_NODE_COLLECT, "0," +
-                                                                    mInfo.getContentID());
-                                                            Toast.makeText(getContext()
-                                                                            .getApplicationContext(),
-                                                                    R.string.collect_success,
-                                                                    Toast.LENGTH_SHORT)
-                                                                    .show();
-                                                        }
-                                                    }
-                                                });
                                             }
                                         }
 
@@ -387,54 +402,82 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         final View Subscrip = contentView.findViewById
                                 (value.viewId);
                         if (Subscrip != null) {
-                            UserCenterUtils.getSuncribeState(mBuilder.contentUUid, new ISubscribeStatusCallback() {
-                                @Override
-                                public void notifySubScribeStatus(boolean status) {
-                                    if (Subscrip instanceof FocusToggleSelect) {
-                                        ((FocusToggleSelect) Subscrip).setSelect(status);
-                                    }
-                                }
-                            });
+                            UserCenterUtils.getSuncribeState(mBuilder.contentUUid, new
+                                    ISubscribeStatusCallback() {
+                                        @Override
+                                        public void notifySubScribeStatus(boolean status) {
+                                            if (Subscrip instanceof FocusToggleSelect) {
+                                                ((FocusToggleSelect) Subscrip).setSelect(status);
+                                            }
+                                        }
+                                    });
 
                             Subscrip.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                        {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) Subscrip).isSelect()) {
                                                 UserCenterUtils.deleteSomeSubcribet(mInfo,
-                                                        mBuilder.contentUUid, new DBCallback<String>() {
-                                                            @Override
-                                                            public void onResult(int code, String result) {
-                                                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                                                                if (code == 0) {
-                                                                    ((FocusToggleSelect) Subscrip)
-                                                                            .setSelect(false);
-                                                                    ((FocusToggleSelect) Subscrip).setSelect(false);
-                                                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_SUBSCRIP, "1," +
-                                                                            mInfo.getContentUUID());
-                                                                    Toast.makeText(getContext()
-                                                                                    .getApplicationContext(), "取消订阅成功",
-                                                                            Toast.LENGTH_SHORT).show();
-                                                                }
-                                                            }
-                                                        });
+                                                        mBuilder.contentUUid, new
+                                                                DBCallback<String>() {
+                                                                    @Override
+                                                                    public void onResult(int code, String
+                                                                            result) {
+                                                                        RxBus.get().post(Constant
+                                                                                .UPDATE_UC_DATA,
+                                                                                true);
+                                                                        if (code == 0) {
+                                                                            ((FocusToggleSelect)
+                                                                                    Subscrip)
+                                                                                    .setSelect
+                                                                                            (false);
+                                                                            ((FocusToggleSelect)
+                                                                                    Subscrip)
+                                                                                    .setSelect
+                                                                                    (false);
+                                                                            LogUploadUtils.uploadLog
+                                                                                    (Constant
+                                                                                            .LOG_NODE_SUBSCRIP, "1," +
+                                                                                            mInfo.getContentUUID());
+                                                                            Toast.makeText
+                                                                                    (getContext()
+                                                                                            .getApplicationContext(), "取消订阅成功",
+                                                                                    Toast.LENGTH_SHORT)
+                                                                                    .show();
+                                                                        }
+                                                                    }
+                                                                });
                                             } else {
                                                 if (mInfo != null) {
-                                                    UserCenterUtils.addSubcribe(mInfo, currentPlayIndex, currentPosition, new DBCallback<String>() {
-                                                        @Override
-                                                        public void onResult(int code, String result) {
-                                                            if (code == 0) {
-                                                                ((FocusToggleSelect) Subscrip).setSelect(true);
-                                                                LogUploadUtils.uploadLog(Constant.LOG_NODE_SUBSCRIP, "0," +
-                                                                        mInfo.getContentUUID());
-                                                                Toast.makeText(getContext().getApplicationContext(),
-                                                                        "添加订阅成功", Toast.LENGTH_SHORT).show();
-                                                                RxBus.get().post(Constant.UPDATE_UC_DATA, true);
-                                                            }
-                                                        }
-                                                    });
+                                                    UserCenterUtils.addSubcribe(mInfo,
+                                                            currentPlayIndex, currentPosition,
+                                                            new DBCallback<String>() {
+                                                                @Override
+                                                                public void onResult(int code,
+                                                                                     String
+                                                                        result) {
+                                                                    if (code == 0) {
+                                                                        ((FocusToggleSelect)
+                                                                                Subscrip)
+                                                                                .setSelect(true);
+                                                                        LogUploadUtils.uploadLog
+                                                                                (Constant
+                                                                                .LOG_NODE_SUBSCRIP, "0," +
+                                                                                mInfo.getContentUUID());
+                                                                        Toast.makeText(getContext()
+                                                                                        .getApplicationContext(),
+                                                                                "添加订阅成功", Toast
+                                                                                        .LENGTH_SHORT)
+                                                                                .show();
+                                                                        RxBus.get().post(Constant
+                                                                                .UPDATE_UC_DATA,
+                                                                                true);
+                                                                    }
+                                                                }
+                                                            });
                                                 }
                                             }
                                         }
@@ -449,7 +492,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     case Builder.DB_TYPE_VIPTIP:
                         TextView vipTip = contentView.findViewById
                                 (value.viewId);
-                        if (!TextUtils.isEmpty(memberStatus) && (memberStatus == QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) {
+                        if (!TextUtils.isEmpty(memberStatus) && (memberStatus ==
+                                QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) {
                             vipTip.setVisibility(View.VISIBLE);
                             vipTip.setText(String.format(vipTip.getText().toString(), expireTime));
                         }
@@ -509,9 +553,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         parseResult();
     }
 
+    public int translateIndex(int index, Content content) {
+        return CmsUtil.translateIndex(content,index);
+    }
+
     //播放
     public void Play(int index, int postion, boolean requestFocus) {
-
         if (isPlayLive) {
             isPlayLive = false;
             if (playerView != null) {
@@ -523,6 +570,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
             return;
         }
+
         setCurrentPlayIndex("Play", index);
         currentPosition = postion;
 
@@ -614,7 +662,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         startPlayerView();
-
     }
 
     private void startPlayerView() {
@@ -653,23 +700,25 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             @Override
                             public void onError(@NotNull Context context, @org.jetbrains.annotations
                                     .Nullable String desc) {
-                                playerView.setSeriesInfo(mInfo);
-                                playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                                play();
                             }
                         });
                     } else {
-                        playerView.setSeriesInfo(mInfo);
-                        playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                        play();
                     }
-                }else{
-                    playerView.setSeriesInfo(mInfo);
-                    playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                } else {
+                    play();
                 }
             } else {
-                playerView.setSeriesInfo(mInfo);
-                playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                play();
             }
         }
+    }
+
+    private void play(){
+        playerView.beginChange();
+        playerView.setSeriesInfo(mInfo);
+        playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
     }
 
     @Override
@@ -771,13 +820,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     @Override
-    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content
+            content) {
         mBuilder.infoResult.onResult(content);
         setProgramSeriesInfo(content);
     }
 
     @Override
-    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable
+            ArrayList<SubContent> result) {
 
     }
 
@@ -785,7 +836,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     public void onTimeChange(String current, String end) {
         //TODO 直播时间改变
 
-        if(playerView != null) {
+        if (playerView != null) {
             playerView.setTipText(String.format("正在直播 %s/%s", current, end));
         }
     }
@@ -808,17 +859,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public interface InfoResult {
         void onResult(@Nullable Content info);
-    }
-
-    private static class PlayInfo {
-
-        int index;
-        int position;
-
-        private PlayInfo(int ind, int pos) {
-            index = ind;
-            position = pos;
-        }
     }
 
     public static class CustomFrame {
