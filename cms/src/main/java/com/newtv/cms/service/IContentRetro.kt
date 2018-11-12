@@ -1,8 +1,10 @@
 package com.newtv.cms.service
 
+import com.newtv.libs.HeadersInterceptor
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 
 /**
@@ -13,6 +15,7 @@ import retrofit2.http.Path
  * 创建日期:          2018/9/25
  */
 internal interface IContentRetro {
+    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
     @GET("api/v31/{appkey}/{channelCode}/content/{left}/{right}/{contentID}.json")
     fun getInfo(@Path("appkey") appkey: String,
                          @Path("channelCode") channelId: String,
@@ -20,7 +23,7 @@ internal interface IContentRetro {
                          @Path("right") right: String,
                          @Path("contentID") contentUUID: String): Observable<ResponseBody>
 
-
+    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
     @GET("api/v31/{appkey}/{channelCode}/subcontents/{left}/{right}/{contentID}.json")
     fun getSubInfo(@Path("appkey") appkey: String,
                 @Path("channelCode") channelId: String,

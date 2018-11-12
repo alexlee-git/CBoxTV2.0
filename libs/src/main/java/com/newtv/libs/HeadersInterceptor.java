@@ -99,6 +99,12 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                 case PRODUCT:
                     newBaseUrl = HttpUrl.parse(Constant.BASE_URL_PRODUCT);
                     break;
+                case NEW_CMS:
+                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_NEW_CMS);
+                    break;
+                case NEW_SEARCH:
+                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_NEW_SEARCH);
+                    break;
                 case USER_BEHAVIOR:
                     newBaseUrl = HttpUrl.parse(Constant.BASE_URL_USER_BEHAVIOR);
                     break;

@@ -1,8 +1,10 @@
 package com.newtv.cms.service
 
+import com.newtv.libs.HeadersInterceptor
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.Path
 
 /**
@@ -17,6 +19,7 @@ interface IPersonRetro {
     /**
      * 获取主持人主持的电视栏目列表
      */
+    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
     @GET("api/v31/{appkey}/{channelCode}/tvlist/{left}/{right}/{contentID}.json")
     fun getPersonTvList(@Path("appkey") appkey: String,
                         @Path("channelCode") channel: String,
@@ -27,6 +30,7 @@ interface IPersonRetro {
     /**
      * 获取主持人相关的节目
      */
+    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
     @GET("api/v31/{appkey}/{channelCode}/programlist/{left}/{right}/{contentID}.json")
     fun getPersonProgramList(@Path("appkey") appkey: String,
                         @Path("channelCode") channel: String,

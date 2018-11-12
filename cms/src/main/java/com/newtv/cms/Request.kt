@@ -1,6 +1,7 @@
 package com.newtv.cms
 
 import com.newtv.cms.service.*
+import com.newtv.libs.Constant
 import com.newtv.libs.HeadersInterceptor
 import com.newtv.libs.Libs
 import com.newtv.libs.util.HttpsUtils
@@ -43,8 +44,7 @@ internal object Request {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .addConverterFactory(ScalarsConverterFactory.create())
-            .baseUrl(if (!Libs.get().isDebug) "http://api31.cloud.ottcn.com"
-                        else "http://testcms31.ottcn.com:30013")
+            .baseUrl(Constant.BASE_URL_NEW_CMS)
             .build()
 
     val nav: INavRetro by lazy { retrofit.create(INavRetro::class.java) }
