@@ -28,7 +28,6 @@ import java.util.List;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
-import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
 import tv.newtv.cboxtv.cms.search.view.ISearchPageView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.exit.bean.RecommendBean;
@@ -49,7 +48,6 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private AdContract.Presenter mAdPresenter;
     RecommendPresenterImpl presenter;
     OvershootInterpolator mSpringInterpolator;
-    SearchPagePresenter mSearchPagePresenter;
     private RecommendBean.DataBean.ProgramsBean programsBean;
     private FrameLayout focus_layout;
     private Button okButton;
@@ -69,7 +67,6 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         cancelButton = (Button) findViewById(R.id.cancelButton);
 
         exit_image = findViewById(R.id.exit_image);
-        mSearchPagePresenter = new SearchPagePresenter(this, this);
         cancelButton.requestFocus();
 
         okButton.setOnClickListener(this);
