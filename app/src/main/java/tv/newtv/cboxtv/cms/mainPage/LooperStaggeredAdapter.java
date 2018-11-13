@@ -12,7 +12,6 @@ import com.newtv.libs.Constant;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.cms.listPage.model.NavListPageInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 
@@ -134,20 +133,4 @@ public class LooperStaggeredAdapter extends FragmentStatePagerAdapter {
         return fragment;
     }
 
-    private String getContentUUID(NavListPageInfoResult.NavInfo navInfo) {
-        String result = "";
-        if (Constant.OPEN_PAGE.equals(navInfo.getActionType())) {
-            result = navInfo.getContentID();
-        } else if (Constant.OPEN_CHANNEL.equals(navInfo.getActionType())) {
-            result = navInfo.getActionURI();
-        } else {
-            result = navInfo.getContentID();
-        }
-
-        if (result == null) {
-            result = "";
-        }
-
-        return result;
-    }
 }
