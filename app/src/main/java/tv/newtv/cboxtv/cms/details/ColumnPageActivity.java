@@ -53,7 +53,7 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
 @BuyGoodsAD
 public class ColumnPageActivity extends DetailPageActivity {
 
-    private static final String ACTION = "tv.newtv.cboxtv.action.COLUMNPAGE";
+    private static final String ACTION = ColumnPageActivity.class.getName();
     private EpisodePageView playListView;
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;

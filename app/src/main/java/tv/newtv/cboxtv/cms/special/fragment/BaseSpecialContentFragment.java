@@ -150,6 +150,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
         }
 
         if (defaultPlayerConfig != null && videoPlayerView == null) {
+            mPlayPosition = defaultPlayerConfig.playPosition;
             videoPlayerView = new VideoPlayerView(defaultPlayerConfig, getContext());
             if(defaultPlayerConfig.defaultFocusView instanceof NewTVLauncherPlayerView){
                 videoPlayerView.requestFocus();

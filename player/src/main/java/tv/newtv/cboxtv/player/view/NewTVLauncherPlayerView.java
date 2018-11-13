@@ -53,6 +53,7 @@ import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerConstants;
+import tv.newtv.cboxtv.player.ad.BuyGoodsBusiness;
 import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.iPlayCallBackEvent;
@@ -128,11 +129,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private VodContract.Presenter mVodPresenter;
 
     private LiveTimer mLiveTimer;
+    private boolean isNextPlay;
     private List<ScreenListener> screenListeners;
     private boolean isTrySee;
     private TextView hintVip;
-    private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new
-            FreeDuration();
+    private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new FreeDuration();
+    private BuyGoodsBusiness buyGoodsBusiness = null;
 
 
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
@@ -615,6 +617,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         hidePauseImage();
 
         isReleased = true;
+        if(buyGoodsBusiness != null){
+            buyGoodsBusiness.onDestroy();
+            buyGoodsBusiness = null;
+        }
 
         destroy();
     }
@@ -964,6 +970,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if(isFullScreen() && buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
+                && buyGoodsBusiness.dispatchKeyEvent(event)){
+            return true;
+        }
         /**
          * 适配讯码盒子
          * 正常盒子按返回键返回KeyEvent.KEYCODE_BACK
@@ -1202,12 +1212,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         l.onNext(null, next, false);
                     }
                 }
-                Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                        .play_complete), Toast.LENGTH_SHORT).show();
-                if (startIsFullScreen) {
-                    NewTVLauncherPlayerViewManager.getInstance().release();
+                if (isNextPlay) {
+                    RxBus.get().post(Constant.IS_VIDEO_END, true);
+                } else {
+                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
+                            .play_complete), Toast.LENGTH_SHORT).show();
+                    if (startIsFullScreen) {
+                        NewTVLauncherPlayerViewManager.getInstance().release();
+                    }
+                    AllComplete(false, "播放结束");
                 }
-                AllComplete(false, "播放结束");
             }
         }
     }
@@ -1362,6 +1376,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
 
+        if(buyGoodsBusiness == null){
+            buyGoodsBusiness = new BuyGoodsBusiness(getContext(),this);
+        }
+        buyGoodsBusiness.getAd();
+
         if (videoDataStruct.isTrySee()) {
             isTrySee = true;
             hintVip.setVisibility(View.VISIBLE);
@@ -1451,7 +1470,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         exterPayBean.setTitle(mProgramSeriesInfo.getTitle());
 
         String vipFlag = mProgramSeriesInfo.getVipFlag();
-        if (UserStatus.isLogin() && VipCheck.VIP_FLAG_VIP.equals(vipFlag)) {
+        if (UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag) ||
+                VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag))) {
             Intent intent = new Intent();
             intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity");
             intent.putExtra("ispay", true);
@@ -1464,13 +1484,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             intent.putExtra("payBean", exterPayBean);
             getContext().startActivity(intent);
         } else if (!UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag)
-                || VipCheck.VIP_FLAG_BUY.equals(vipFlag))) {
+                || VipCheck.VIP_FLAG_BUY.equals(vipFlag) || VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag))) {
             Intent intent = new Intent();
             intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.LoginActivity");
             intent.putExtra("ispay", true);
             intent.putExtra("payBean", exterPayBean);
             getContext().startActivity(intent);
         }
+    }
+
+    public void setVideoPlayNext(boolean isNextPlay) {
+        this.isNextPlay = isNextPlay;
     }
 
     public static class PlayerViewConfig {

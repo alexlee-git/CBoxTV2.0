@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +24,8 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
     private static final String TAG = NewSpecialCenterAdapter.class.getSimpleName();
     protected final Context context;
     private CenterHolder mCenterHolder;
-    private List<SpecialBean.DataBean.ProgramsBean> mSpecialData, oldSpecialData;
-    private Map<Integer, List<SpecialBean.DataBean.ProgramsBean>> mOldData = new HashMap<Integer, List<SpecialBean.DataBean.ProgramsBean>>();
+    private List<SubContent> mSpecialData, oldSpecialData;
+    private Map<Integer, List<SubContent>> mOldData = new HashMap<Integer, List<SubContent>>();
     private List<Integer> mSelectIdList = new ArrayList<>();
     private List<Integer> mLeftSelectList = new ArrayList<>();
     private boolean isFirstInit = true, isFirstClick = false;
@@ -32,7 +34,7 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
     private OnVideoChangeListener mOnVideoChangeListener;
     private OnFocusedDataChangeListener mOnFocusedDataChangeListener;
 
-    public NewSpecialCenterAdapter(Context context, List<SpecialBean.DataBean.ProgramsBean> objectList) {
+    public NewSpecialCenterAdapter(Context context, List<SubContent> objectList) {
         this.mSpecialData = objectList;
         this.context = context;
     }
@@ -105,11 +107,15 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
 
     private void setItemStatus(int position) {
         if (mSelectIdList.contains(position) && mSpecialData.get(position).isPlay()) {
-            mCenterHolder.mPlayerIcon.setVisibility(View.VISIBLE);
-            mCenterHolder.topicContainer.setBackgroundResource(R.drawable.xuanhong);
+            if (null != mCenterHolder.mPlayerIcon && null != mCenterHolder.topicContainer) {
+                mCenterHolder.mPlayerIcon.setVisibility(View.VISIBLE);
+                mCenterHolder.topicContainer.setBackgroundResource(R.drawable.xuanhong);
+            }
         } else {
-            mCenterHolder.mPlayerIcon.setVisibility(View.GONE);
-            mCenterHolder.topicContainer.setBackgroundColor(Color.parseColor("#00000000"));
+            if (null != mCenterHolder.mPlayerIcon && null != mCenterHolder.topicContainer) {
+                mCenterHolder.mPlayerIcon.setVisibility(View.GONE);
+                mCenterHolder.topicContainer.setBackgroundColor(Color.parseColor("#00000000"));
+            }
         }
     }
 
@@ -117,6 +123,11 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
         reSetSelect(selectid);
         reFreshSecleted(selectid, false);
         notifyDataSetChanged();
+    }
+
+    public void resetFocusView(int focusId) {
+        reSetSelect(focusId);
+        reFreshSecleted(focusId, false);
     }
 
     public void reSetSelect(int position) {
@@ -130,7 +141,7 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
         mSelectIdList.add(position);
     }
 
-    public void refreshData(int leftId, List<SpecialBean.DataBean.ProgramsBean> mData) {
+    public void refreshData(int leftId, List<SubContent> mData) {
         if (!mOldData.containsKey(leftId)) {
             mOldData.put(leftId, mData);
             mSpecialData = mData;

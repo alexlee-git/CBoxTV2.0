@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.views;
+package tv.newtv.cboxtv.player.ad;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.ScreenUtils;
 import com.squareup.picasso.Callback;
@@ -18,10 +19,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Map;
 
-import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.ad.model.BuyGoodsView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
+import tv.newtv.player.R;
 
 public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
 

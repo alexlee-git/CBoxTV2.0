@@ -18,7 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
-import tv.newtv.cboxtv.cms.ad.model.RequestAdParameter;
+import tv.newtv.cboxtv.player.model.RequestAdParameter;
 import tv.newtv.cboxtv.player.PlayerConfig;
 
 public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener {

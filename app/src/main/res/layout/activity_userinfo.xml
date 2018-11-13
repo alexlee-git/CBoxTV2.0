@@ -18,8 +18,8 @@
         android:layout_marginLeft="@dimen/width_147px"
         android:layout_marginStart="@dimen/width_147px"
         android:layout_marginTop="@dimen/height_60px"
-        android:text="@string/phone_login_info"
         android:includeFontPadding="false"
+        android:text="@string/phone_login_info"
         android:textColor="#66FFFFFF"
         android:textSize="@dimen/height_46px" />
 
@@ -55,10 +55,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/height_6px"
         android:gravity="center"
-        android:visibility="invisible"
         android:text="@string/app_name"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/height_30px" />
+        android:textSize="@dimen/height_30px"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:id="@+id/id_container"
@@ -74,23 +74,20 @@
         android:paddingRight="@dimen/width_83px"
         tools:ignore="RtlSymmetry">
 
-        <CheckBox
+        <TextView
             android:layout_width="@dimen/width_240px"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:button="@null"
             android:gravity="center"
-            android:tag="InfoTitle"
             android:text="@string/user_id"
             android:textColor="@color/userinfo_title_text_color"
             android:textSize="@dimen/height_32px" />
 
-        <CheckBox
+        <TextView
             android:id="@+id/userinfo_checkbox_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:button="@null"
             android:gravity="right|end"
             android:tag="infoText"
             android:textColor="@android:color/white"
@@ -112,25 +109,23 @@
         android:paddingRight="@dimen/width_83px"
         tools:ignore="RtlSymmetry">
 
-        <CheckBox
+        <TextView
             android:layout_width="@dimen/width_240px"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:button="@null"
+            android:focusable="false"
             android:gravity="center"
-            android:tag="InfoTitle"
             android:text="@string/user_mobile"
             android:textColor="@color/userinfo_title_text_color"
             android:textSize="@dimen/height_32px" />
 
-        <CheckBox
+        <TextView
             android:id="@+id/userinfo_checkbox_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:button="@null"
+            android:focusable="false"
             android:gravity="right|end"
-            android:tag="infoText"
             android:textColor="@android:color/white"
             android:textSize="@dimen/height_28px"
             tools:ignore="RtlHardcoded" />
@@ -150,29 +145,27 @@
         android:paddingRight="@dimen/width_83px"
         tools:ignore="RtlSymmetry">
 
-        <CheckBox
+        <TextView
             android:layout_width="@dimen/width_240px"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:button="@null"
+            android:focusable="false"
             android:gravity="center"
-            android:tag="InfoTitle"
             android:text="@string/user_sex"
             android:textColor="@color/userinfo_title_text_color"
             android:textSize="@dimen/height_32px" />
 
-        <CheckBox
+        <TextView
             android:id="@+id/sex_text"
             android:layout_width="@dimen/width_128px"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:button="@null"
             android:drawableLeft="@drawable/userinfo_left_dir"
             android:drawablePadding="@dimen/width_24px"
             android:drawableRight="@drawable/userinfo_right_dir"
+            android:focusable="false"
             android:gravity="center"
-            android:tag="infoText"
             android:text="未知"
             android:textColor="@android:color/white"
             android:textSize="@dimen/height_28px" />

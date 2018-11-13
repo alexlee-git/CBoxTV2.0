@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.cms.ad.model;
+package tv.newtv.cboxtv.player.model;
 
 public class RequestAdParameter {
     private String program;

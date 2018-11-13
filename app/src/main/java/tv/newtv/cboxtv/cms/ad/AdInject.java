@@ -1,13 +1,13 @@
 package tv.newtv.cboxtv.cms.ad;
 
 import android.app.Activity;
-import android.util.Log;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.annotation.BuyGoodsInject;
+import tv.newtv.cboxtv.player.ad.BuyGoodsBusiness;
 
 public class AdInject {
 

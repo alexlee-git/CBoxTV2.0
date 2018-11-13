@@ -36,6 +36,15 @@ public class UserCenterUtils {
         initMemberStatus();
     }
 
+    public static void setLogin(boolean login){
+        UserStatus.setIsLogin(login);
+        if(login){
+            initMemberStatus();
+        }else {
+            UserStatus.setMemberSatus(UserStatus.SIGN_MEMBER_OPEN_NOT);
+        }
+    }
+
     public static void initLoginStatus(){
         getLoginStatus(new INotifyLoginStatusCallback() {
             @Override

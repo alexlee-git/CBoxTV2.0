@@ -55,6 +55,7 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.views.GridRecycleView;
 
 /**
  * Created by gaoleichao on 2018/3/29.
@@ -69,7 +70,7 @@ public class HistoryActivity extends FragmentActivity implements
     public int action_type;
     public String title;
     @BindView(R.id.id_usercenter_fragment_root)
-    RecyclerView mRecyclerView;
+    GridRecycleView mRecyclerView;
 
     @BindView(R.id.user_info_title)
     TextView mPageTitle;
@@ -85,7 +86,6 @@ public class HistoryActivity extends FragmentActivity implements
     TextView operationText;
 
     private boolean NeedRefresh = true;
-    private static boolean eatKeyEvent = false;
 
     private Interpolator mSpringInterpolator;
     private List<UserCenterPageBean.Bean> mCollectBean;
@@ -137,20 +137,20 @@ public class HistoryActivity extends FragmentActivity implements
     }
 
     private void initView() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
-        // layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int index = parent.getChildLayoutPosition(view);
-                if (index < COLUMN_COUNT) {
-                    outRect.top = 23;
-                }
-
-                outRect.bottom = 72;
-            }
-        });
+//        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
+//        // layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+//        mRecyclerView.setLayoutManager(layoutManager);
+//        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//            @Override
+//            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                int index = parent.getChildLayoutPosition(view);
+//                if (index < COLUMN_COUNT) {
+//                    outRect.top = 23;
+//                }
+//
+//                outRect.bottom = 72;
+//            }
+//        });
 
         if (action_type != UserCenterFragment.HISTORY) {
             if (operationText != null) {
@@ -217,15 +217,6 @@ public class HistoryActivity extends FragmentActivity implements
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
                 || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
             return super.dispatchKeyEvent(event);
-        }
-        if (event.getRepeatCount() % 8 == 0) {
-            eatKeyEvent = false;
-        }
-        if (eatKeyEvent) {
-            return true;
-        }
-        if (event.getRepeatCount() % 4 == 0) {
-            eatKeyEvent = true;
         }
         return super.dispatchKeyEvent(event);
     }

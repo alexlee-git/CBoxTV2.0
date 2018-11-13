@@ -169,6 +169,7 @@ public class Constant {
     public static final String BG_EVENT = "bg_event";
     public static final String UPDATE_UC_DATA = "update_uc_data";
     public static final String UPDATE_VIDEO_PLAY_INFO = "update_video_play_info";
+    public static final String IS_VIDEO_END = "isVideoEnd";
     //更新是否成功
     public static final String UP_VERSION_IS_SUCCESS = "up_version_is_success";
     public static final String ADCACHE = Environment.getExternalStorageDirectory()
@@ -190,7 +191,7 @@ public class Constant {
     public static final String CMS_NEW_SEARCH = "http://111.32.138.57:80/";//测试地址
     public static final String GRANT_TYPE_SMS = "sms_code";
     public static final String GRANT_TYPE_REFRESH = "refresh_code";
-    public static final String CLIENT_ID = "1";
+    public static final String CLIENT_ID = "17";
     public static final String USER_ID = "USER_ID";
     public static final String UC_HISTORY = "历史记录";
     //检查是否是定向升级

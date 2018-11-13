@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.cms.ad;
+package tv.newtv.cboxtv.player.ad;
 
 import android.util.Log;
 
@@ -6,7 +6,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 
 import tv.icntv.adsdk.AdSDK;
-import tv.newtv.cboxtv.cms.ad.model.RequestAdParameter;
+import tv.newtv.cboxtv.player.model.RequestAdParameter;
 
 public class BuyGoodsLog {
     private static final String TAG = "BuyGoodsLog";
