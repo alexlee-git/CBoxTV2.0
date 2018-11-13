@@ -70,7 +70,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
         exit_image = findViewById(R.id.exit_image);
         mSearchPagePresenter = new SearchPagePresenter(this, this);
-        okButton.requestFocus();
+        cancelButton.requestFocus();
 
         okButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
@@ -90,7 +90,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
                 switch (event.getKeyCode()){
                     case KeyEvent.KEYCODE_DPAD_DOWN:
-                        okButton.requestFocus();
+                        cancelButton.requestFocus();
                         return true;
                     case KeyEvent.KEYCODE_DPAD_LEFT:
 

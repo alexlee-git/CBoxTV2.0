@@ -60,8 +60,7 @@
                   android:theme="@style/AppContentTheme"/>
         <activity android:name=".cms.details.PersonsDetailsActivity"
                   android:theme="@style/AppContentTheme"/>
-        <activity android:name=".cms.listPage.ListPageActivity"
-                  android:theme="@style/AppContentTheme"/>
+
         <activity android:name=".cms.screenList.ScreenListActivity"
             android:theme="@style/AppContentTheme"/>
         <activity android:name=".cms.search.view.SearchActivity"
