@@ -47,6 +47,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
@@ -98,6 +99,7 @@ public class PayRefreshOrderActivity extends Activity implements View.OnClickLis
     private final String prdType = "1";
     private String mContentUUID, order, mVipFlag, mTitle, mContentType;
     private long amount, orderduration;
+    private String message_error = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -228,6 +230,20 @@ public class PayRefreshOrderActivity extends Activity implements View.OnClickLis
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    message_error = jsonObject.getString("message");
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(MSG_ERROR);
+                                    }
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
                             if (mDisposable_order != null) {
                                 mDisposable_order.dispose();
                                 mDisposable_order = null;
@@ -267,7 +283,7 @@ public class PayRefreshOrderActivity extends Activity implements View.OnClickLis
                     break;
                 }
                 case MSG_ERROR: {
-                    Toast.makeText(PayRefreshOrderActivity.this, "订单生成失败,请重试", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PayRefreshOrderActivity.this, message_error, Toast.LENGTH_LONG).show();
                     finish();
                     break;
                 }

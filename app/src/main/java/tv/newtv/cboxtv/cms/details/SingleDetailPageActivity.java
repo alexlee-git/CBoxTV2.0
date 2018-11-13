@@ -41,7 +41,7 @@ import tv.newtv.cboxtv.views.detail.SuggestView;
 @BuyGoodsAD
 public class SingleDetailPageActivity extends DetailPageActivity {
 
-    private static final String ACTION = "tv.newtv.cboxtv.action.SINGLEDETAIL";
+    private static final String ACTION = SingleDetailPageActivity.class.getName();
     private HeadPlayerView headPlayerView;
     private EpisodeAdView mAdView;
     private SmoothScrollView scrollView;
@@ -110,7 +110,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     }
 
     @Override
-    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
+    protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
         setContentView(R.layout.activity_single_detail_page);
         Log.d("ywy y", "onCreate");
 
@@ -120,7 +120,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         suggestView = findViewById(R.id.suggest);
 
         final LinearLayout upTop = findViewById(R.id.up_top);
-        if (isPopup&&fromOuter) {
+        if (isPopup && fromOuter) {
             new CountDownTimer(5 * 1000, 1000) {
                 @Override
                 public void onTick(long l) {
@@ -202,7 +202,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                             2, 0));
                                     mPaiseView.setStartPoint(new PointF(getResources()
                                             .getDimension(R
-                                            .dimen.width_40px),
+                                                    .dimen.width_40px),
                                             getResources().getDimension(R.dimen.height_185px)));
                                     mPaiseView.setDivergeViewProvider(new DivergeView
                                             .DivergeViewProvider() {

@@ -58,6 +58,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
@@ -96,6 +97,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     private final int MSG_RESULT_OK_TIME = 5;
     private final int MSG_RESULT_OK = 6;
     private final int MSG_SETMESSAGE = 7;
+    private final int MSG_REFRESHORDER = 8;
     private boolean isFirstQrCode = true;
     private String mFlagAction;
     private PopupWindow mPopupWindow;
@@ -114,6 +116,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     private boolean isBuyOnly = false;  //true 单点 ，false显示
     private boolean isVip = false;
     private ExterPayBean mExterPayBean;
+    private String message_error;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -366,7 +369,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         String Authorization = "Bearer " + mToken;
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getPayResponse(Authorization, requestBody)
+                    .getPayResponse_new(Authorization, requestBody)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -427,13 +430,16 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                             getResources().getDimensionPixelOffset(R.dimen.width_607px),
                             getResources().getDimensionPixelOffset(R.dimen.height_607px));
                     if (mHandler != null) {
+                        mHandler.removeMessages(MSG_RESULT);
+                        mHandler.removeMessages(MSG_REFRESHORDER);
                         mHandler.sendEmptyMessage(MSG_RESULT);
+                        mHandler.sendEmptyMessageDelayed(MSG_REFRESHORDER, 2 * 60 * 60 * 1000);
                     }
                     uploadUnPayLog(0);
                     break;
                 }
                 case MSG_ERROR: {
-                    Toast.makeText(PayOrderActivity.this, "获取失败,请重试", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PayOrderActivity.this, message_error, Toast.LENGTH_LONG).show();
                     finish();
                     break;
                 }
@@ -507,6 +513,9 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                     }
                     break;
                 }
+                case MSG_REFRESHORDER:
+                    getReFreshOrder(String.valueOf(orderId));
+                    break;
             }
             return false;
         }
@@ -540,8 +549,10 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         if (TextUtils.isEmpty(mFlagAction)) {
             intent.setClass(PayOrderActivity.this, MemberCenterActivity.class);
         } else {
-            intent.setAction(mFlagAction);
+            intent.setClassName(this,
+                    mFlagAction);
         }
+
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);//关掉所要到的界面中间的activity
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);//设置不要刷新将要跳转的界面
         PackageManager packageManager = getPackageManager();
@@ -678,6 +689,76 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         } catch (Exception e) {
             e.printStackTrace();
             Log.i(Constant.TAG, "get pay  result error");
+        }
+    }
+
+
+    private void getReFreshOrder(String order) {
+
+        String Authorization = "Bearer " + mToken;
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .getRefreshOrder(Authorization, order)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            mDisposable_order = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody value) {
+
+                            try {
+                                String data = value.string();
+                                JSONObject object = new JSONObject(data);
+                                orderId = object.getLong("id");
+                                code = object.getString("code");
+                                qrCodeUrl = object.getString("qrCodeUrl");
+                                if (mHandler != null) {
+                                    mHandler.sendEmptyMessage(MSG_QRCODE);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+//                                mHandler.sendEmptyMessage(3);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    message_error = jsonObject.getString("message");
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(MSG_ERROR);
+                                    }
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            if (mDisposable_order != null) {
+                                mDisposable_order.dispose();
+                                mDisposable_order = null;
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mDisposable_order != null) {
+                                mDisposable_order.dispose();
+                                mDisposable_order = null;
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i(TAG, "git payurl error");
         }
     }
 

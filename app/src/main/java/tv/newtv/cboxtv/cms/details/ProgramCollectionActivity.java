@@ -44,7 +44,7 @@ import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
  */
 public class ProgramCollectionActivity extends DetailPageActivity {
 
-    private static final String ACTION = "tv.newtv.cboxtv.action.PROGRAMCOLLECTION";
+    private static final String ACTION = ProgramCollectionActivity.class.getName();
     private HeadPlayerView headPlayerView;
     private SmoothScrollView scrollView;
     private Content mContent;

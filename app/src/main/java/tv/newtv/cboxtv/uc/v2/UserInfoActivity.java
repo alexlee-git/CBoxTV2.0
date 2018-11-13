@@ -39,12 +39,11 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
  * 创建人:           weihaichao
  * 创建日期:          2018/8/24
  */
-public class UserInfoActivity extends BaseActivity implements View.OnFocusChangeListener, View
-        .OnKeyListener {
+public class UserInfoActivity extends BaseActivity implements View.OnKeyListener {
     private final String TAG = "UserInfoActivity";
     private String[] sexValues = {"男", "女", "未知"};
     private int sexIndex = 2;
-    private CheckBox sexSelector;
+    private TextView sexSelector;
     private Disposable disposable_user;
     private String token;
     private String Authorition;
@@ -60,9 +59,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnFocusChange
         //我的账户上报日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "0,6");
         member_status = getIntent().getStringExtra("member_status");
-        findViewById(R.id.id_container).setOnFocusChangeListener(this);
-        findViewById(R.id.sex_continer).setOnFocusChangeListener(this);
-        findViewById(R.id.mobile_continer).setOnFocusChangeListener(this);
 
         tv_id = findViewById(R.id.userinfo_checkbox_id);
         tv_phone = findViewById(R.id.userinfo_checkbox_phone);
@@ -130,20 +126,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnFocusChange
     private void updateUI() {
         if (sexSelector != null)
             sexSelector.setText(sexValues[sexIndex]);
-    }
-
-    @Override
-    public void onFocusChange(View v, boolean hasFocus) {
-
-        CheckBox target = v.findViewWithTag("infoText");
-        if (target != null) {
-            target.setChecked(hasFocus);
-        }
-
-        CheckBox title = v.findViewWithTag("InfoTitle");
-        if (title != null) {
-            title.setChecked(hasFocus);
-        }
     }
 
     @Override

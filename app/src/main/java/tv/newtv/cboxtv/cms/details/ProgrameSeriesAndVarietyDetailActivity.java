@@ -49,7 +49,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         ContentContract.LoadingView {
 
     Content pageContent;
-    private static final String ACTION = "tv.newtv.cboxtv.action.PROGRAMESERIES";
+    private static final String ACTION = ProgrameSeriesAndVarietyDetailActivity.class.getName();
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
     private EpisodePageView playListView;
