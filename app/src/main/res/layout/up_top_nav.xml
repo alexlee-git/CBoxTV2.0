@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/height_12px"
     android:gravity="center"
-    android:tag="up_top"
     android:orientation="vertical">
 
     <ImageView

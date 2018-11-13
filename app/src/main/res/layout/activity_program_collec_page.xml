@@ -9,19 +9,11 @@
     android:orientation="vertical"
     app:topSpace="@dimen/height_83px">
 
-    <FrameLayout
+
+    <tv.newtv.cboxtv.views.detail.HeadPlayerView
+        android:id="@+id/header_video"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include
-            layout="@layout/up_top_nav"
-            android:visibility="gone" />
-
-        <tv.newtv.cboxtv.views.detail.HeadPlayerView
-            android:id="@+id/header_video"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </FrameLayout>
+        android:layout_height="wrap_content" />
 
 
     <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView

@@ -241,7 +241,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
             Log.d(TAG, "直播中，特殊处理");
             if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
-                JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mPlayInfo.contentType,
+                Log.e(TAG, "dispatchClick: "+mProgramInfo );
+                JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mProgramInfo.getL_contentType(),
                         mPlayInfo.ContentUUID, mProgramInfo.getL_actionUri());
                 return;
             }

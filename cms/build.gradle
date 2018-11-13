@@ -13,9 +13,6 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "boolean", "NEW_CMS", "true"
-        buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
-        buildConfigField "String", "CHANNEL_ID", "\"600001\""
     }
 
     buildTypes {

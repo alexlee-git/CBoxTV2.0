@@ -94,20 +94,6 @@ public class ColumnPageActivity extends DetailPageActivity {
     @Override
     protected void buildView(@Nullable Bundle savedInstanceState, final String contentUUID) {
         setContentView(R.layout.activity_column_page);
-        final LinearLayout upTop = findViewById(R.id.up_top);
-        if (isPopup&&fromOuter) {
-            new CountDownTimer(5 * 1000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    upTop.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFinish() {
-                    upTop.setVisibility(View.GONE);
-                }
-            }.start();
-        }
 
         playListView = findViewById(R.id.play_list);
         scrollView = findViewById(R.id.root_view);
@@ -134,6 +120,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetContentUUID(contentUUID)
+                .setTopView(fromOuter,isPopup)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {

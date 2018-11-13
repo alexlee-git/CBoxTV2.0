@@ -1,5 +1,7 @@
 package com.newtv.libs.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 /**
@@ -15,15 +17,26 @@ public class PlayerTimeUtils {
     private PlayerTimeUtils() {
     }
 
-    public static PlayerTimeUtils getInstance(){
-        if(mPlayerTimeUtils==null){
-            synchronized (PlayerTimeUtils.class){
-                if(mPlayerTimeUtils==null){
+    public static PlayerTimeUtils getInstance() {
+        if (mPlayerTimeUtils == null) {
+            synchronized (PlayerTimeUtils.class) {
+                if (mPlayerTimeUtils == null) {
                     mPlayerTimeUtils = new PlayerTimeUtils();
                 }
             }
         }
         return mPlayerTimeUtils;
+    }
+
+    public static Long parseTime(String time, String format) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format,
+                Locale.getDefault());
+        try {
+            return dateFormat.parse(time).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0L;
+        }
     }
 
 
@@ -34,8 +47,9 @@ public class PlayerTimeUtils {
         long s = time % 60;
         long h = time / 3600L;
         long m = (time / 60) % 60;
-        returnStr = String.format(Locale.getDefault(),"%02d", h) + ":" + String.format(Locale.getDefault(),"%02d", m)
-                + ":" + String.format(Locale.getDefault(),"%02d", s);
+        returnStr = String.format(Locale.getDefault(), "%02d", h) + ":" + String.format(Locale
+                .getDefault(), "%02d", m)
+                + ":" + String.format(Locale.getDefault(), "%02d", s);
         return returnStr;
     }
 }

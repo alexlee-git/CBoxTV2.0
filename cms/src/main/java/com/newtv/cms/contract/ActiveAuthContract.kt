@@ -55,7 +55,7 @@ class ActiveAuthContract {
         override fun destroy() {
             super.destroy()
 
-            handler!!.removeCallbacksAndMessages(null)
+            handler?.removeCallbacksAndMessages(null)
             handler = null
         }
 
@@ -63,8 +63,8 @@ class ActiveAuthContract {
             if (status < Constract.LOCAL_EXCEPTION
                     && num < Constract.MAX_NUM * Constant.activateUrls.size && handler != null) {
                 Constant.BASE_URL_ACTIVATE = Constant.activateUrls[num / Constract.MAX_NUM]
-                val message = handler!!.obtainMessage(Constract.RETRY_ACTIVE)
-                handler!!.sendMessageDelayed(message, Constract.TIME_ONE_SECOND.toLong())
+                val message = handler?.obtainMessage(Constract.RETRY_ACTIVE)
+                handler?.sendMessageDelayed(message, Constract.TIME_ONE_SECOND.toLong())
                 num++
             } else {
                 view!!.failed(type, status)

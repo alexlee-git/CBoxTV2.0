@@ -248,7 +248,12 @@ public class Utils {
                 return null;
             }
             Log.d(TAG, "getAuthorization: encodeAuthorization = " + encodeAuthorization);
-            return encodeAuthorization.replaceAll("\r|\n", "");
+
+            // TODO 切换到正式发环境后修改
+            return "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW";
+
+            // 正式逻辑
+            //return encodeAuthorization.replaceAll("\r|\n", "");
         }
     }
 }

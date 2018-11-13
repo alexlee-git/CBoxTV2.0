@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.views.detail;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -279,6 +281,20 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (mBuilder.focusables != null && mBuilder.focusChangeListener == null) return;
 
         contentView = LayoutInflater.from(getContext()).inflate(mBuilder.mLayout, this, false);
+        final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_nav, null);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        inflate.setLayoutParams(lp);
+        if (mBuilder.fromOuter && mBuilder.isPopup) {
+                 addView(inflate);
+                  postDelayed(new Runnable() {
+                      @Override
+                      public void run() {
+                          removeView(inflate);
+                      }
+                  },5000);
+
+        }
         addView(contentView);
         checkDataFromDB();
 
@@ -331,8 +347,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) collect).isSelect()) {
                                                 UserCenterUtils.deleteSomeCollect(mInfo,
@@ -349,7 +364,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                                 && !TextUtils
                                                                                                 .isEmpty(result));
                                                                         RxBus.get().post(Constant
-                                                                                .UPDATE_UC_DATA,
+                                                                                        .UPDATE_UC_DATA,
                                                                                 true);
                                                                         if (code == 0) {
                                                                             LogUploadUtils.uploadLog
@@ -357,9 +372,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                             .LOG_NODE_COLLECT, "1," + mBuilder.contentUUid);//取消收藏
                                                                             Toast.makeText
                                                                                     (getContext()
-                                                                                            .getApplicationContext(),
-                                                                                    "取消收藏成功", Toast
-                                                                                            .LENGTH_SHORT).show();
+                                                                                                    .getApplicationContext(),
+                                                                                            "取消收藏成功", Toast
+                                                                                                    .LENGTH_SHORT).show();
                                                                         }
                                                                     }
                                                                 });
@@ -371,17 +386,17 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     result) {
                                                                 ((FocusToggleSelect) collect)
                                                                         .setSelect
-                                                                        (code == 0 && !TextUtils
-                                                                                .isEmpty(result));
+                                                                                (code == 0 && !TextUtils
+                                                                                        .isEmpty(result));
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
                                                                         true);
                                                                 if (code == 0) {
                                                                     LogUploadUtils.uploadLog
                                                                             (Constant
-                                                                            .LOG_NODE_COLLECT,
+                                                                                            .LOG_NODE_COLLECT,
                                                                                     "0," +
-                                                                            mInfo.getContentID());
+                                                                                            mInfo.getContentID());
                                                                     Toast.makeText(getContext()
                                                                                     .getApplicationContext(),
                                                                             R.string.collect_success,
@@ -416,8 +431,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) Subscrip).isSelect()) {
                                                 UserCenterUtils.deleteSomeSubcribet(mInfo,
@@ -427,7 +441,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     public void onResult(int code, String
                                                                             result) {
                                                                         RxBus.get().post(Constant
-                                                                                .UPDATE_UC_DATA,
+                                                                                        .UPDATE_UC_DATA,
                                                                                 true);
                                                                         if (code == 0) {
                                                                             ((FocusToggleSelect)
@@ -437,15 +451,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                             ((FocusToggleSelect)
                                                                                     Subscrip)
                                                                                     .setSelect
-                                                                                    (false);
+                                                                                            (false);
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
                                                                                             .LOG_NODE_SUBSCRIP, "1," +
                                                                                             mInfo.getContentUUID());
                                                                             Toast.makeText
                                                                                     (getContext()
-                                                                                            .getApplicationContext(), "取消订阅成功",
-                                                                                    Toast.LENGTH_SHORT)
+                                                                                                    .getApplicationContext(), "取消订阅成功",
+                                                                                            Toast.LENGTH_SHORT)
                                                                                     .show();
                                                                         }
                                                                     }
@@ -458,22 +472,22 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                 @Override
                                                                 public void onResult(int code,
                                                                                      String
-                                                                        result) {
+                                                                                             result) {
                                                                     if (code == 0) {
                                                                         ((FocusToggleSelect)
                                                                                 Subscrip)
                                                                                 .setSelect(true);
                                                                         LogUploadUtils.uploadLog
                                                                                 (Constant
-                                                                                .LOG_NODE_SUBSCRIP, "0," +
-                                                                                mInfo.getContentUUID());
+                                                                                        .LOG_NODE_SUBSCRIP, "0," +
+                                                                                        mInfo.getContentUUID());
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
                                                                                 "添加订阅成功", Toast
                                                                                         .LENGTH_SHORT)
                                                                                 .show();
                                                                         RxBus.get().post(Constant
-                                                                                .UPDATE_UC_DATA,
+                                                                                        .UPDATE_UC_DATA,
                                                                                 true);
                                                                     }
                                                                 }
@@ -554,7 +568,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public int translateIndex(int index, Content content) {
-        return CmsUtil.translateIndex(content,index);
+        return CmsUtil.translateIndex(content, index);
     }
 
     //播放
@@ -715,7 +729,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
-    private void play(){
+    private void play() {
         playerView.beginChange();
         playerView.setSeriesInfo(mInfo);
         playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
@@ -894,6 +908,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private boolean autoGetSub = false;
         private List<CustomFrame> dbTypes;
         private int defaultFocusID = 0;
+        private boolean isPopup, fromOuter;
 
         private ExitVideoFullCallBack videoFullCallBack;
 
@@ -970,6 +985,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         public Builder SetContentUUID(String uuid) {
             contentUUid = uuid;
+            return this;
+        }
+
+        public Builder setTopView(boolean fromOuter, boolean isPopup) {
             return this;
         }
 

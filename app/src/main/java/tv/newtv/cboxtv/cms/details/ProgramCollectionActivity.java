@@ -118,20 +118,6 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         ADConfig.getInstance().setSeriesID(contentUUID);
         initLoginStatus();
 
-        final LinearLayout upTop = findViewById(R.id.up_top);
-        if (isPopup&&fromOuter){
-            new CountDownTimer(5 * 1000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    upTop.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFinish() {
-                    upTop.setVisibility(View.GONE);
-                }
-            }.start();
-        }
         headPlayerView = findViewById(R.id.header_video);
         mAdView = findViewById(R.id.column_detail_ad_fl);
         scrollView = findViewById(R.id.root_view);

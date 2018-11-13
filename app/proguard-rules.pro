@@ -172,20 +172,12 @@
 -keep class tv.icntv.**{*;}
 
 #bean
--keep class tv.newtv.tvlauncher.mainPage.model.**{*;}
--keep class tv.newtv.tvlauncher.listPage.model.**{*;}
--keep class tv.newtv.tvlauncher.DetailsPage.model.**{*;}
--keep class tv.newtv.tvlauncher.specialpage.bean.**{*;}
--keep class tv.newtv.tvlauncher.statusbar.model.**{*;}
--keep class tv.newtv.tvlauncher.superscript.model.**{*;}
--keep class tv.newtv.tvlauncher.SearchPage.bean.**{*;}
--keep class tv.newtv.tvlauncher.adutil.model.**{*;}
+
 
 -keep class tv.newtv.cboxtv.bean.**{*;}
 -keep class tv.newtv.cboxtv.cms.ad.model.**{*;}
 -keep class tv.newtv.cboxtv.cms.mainPage.model.**{*;}
 -keep class tv.newtv.cboxtv.cms.details.model.**{*;}
--keep class tv.newtv.cboxtv.cms.listPage.model.**{*;}
 -keep class tv.newtv.cboxtv.cms.search.model.**{*;}
 -keep class tv.newtv.cboxtv.cms.search.bean.**{*;}
 -keep class tv.newtv.cboxtv.cms.special.bean.**{*;}
@@ -223,11 +215,19 @@
 
 -keep class com.newtv.libs.bean.** { *; }
 -keep class com.newtv.cms.bean.** { *; }
+-keep class tv.newtv.cboxtv.cms.screenList.bean.** { *; }
+-keep class tv.newtv.cboxtv.exit.bean.** { *; }
+
 
 -keep class tv.newtv.cboxtv.menu.model.** { *; }
 -keep class tv.newtv.cboxtv.player.model.** { *; }
+
 
 -keep class tv.newtv.cboxtv.player.ProgramSeriesInfo {*;}
 -keep class tv.newtv.cboxtv.player.ChkPlayResult {*;}
 -keep class tv.newtv.cboxtv.player.ExtendAttr {*;}
 -keep class tv.newtv.cboxtv.player.PlayerPlayInfoItem {*;}
+-keep class tv.newtv.cboxtv.player.ProgramSeriesInfo {*;}
+-keep class tv.newtv.cboxtv.player.PlayerUrlConfig {*;}
+-keep class tv.newtv.cboxtv.player.PlayerPlayInfoItem{*;}
+-keep class tv.newtv.cboxtv.player.PlayerConfig{*;}
