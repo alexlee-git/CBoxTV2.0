@@ -273,7 +273,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                         startActivity(mIntent);
                                     }
                                 }
-                                UserStatus.setIsLogin(true);
+                                UserCenterUtils.setLogin(true);
                                 finish();
 
                             } catch (Exception e) {

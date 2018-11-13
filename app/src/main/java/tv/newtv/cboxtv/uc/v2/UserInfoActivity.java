@@ -117,7 +117,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
                 //退出登录上报日志
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "0,4");
                 SharePreferenceUtils.clearToken(UserInfoActivity.this);
-                UserStatus.setIsLogin(false);
+                UserCenterUtils.setLogin(false);
                 finish();
             }
         });

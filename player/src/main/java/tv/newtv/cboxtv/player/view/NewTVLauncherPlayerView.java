@@ -1470,7 +1470,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         exterPayBean.setTitle(mProgramSeriesInfo.getTitle());
 
         String vipFlag = mProgramSeriesInfo.getVipFlag();
-        if (UserStatus.isLogin() && VipCheck.VIP_FLAG_VIP.equals(vipFlag)) {
+        if (UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag) ||
+                VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag))) {
             Intent intent = new Intent();
             intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity");
             intent.putExtra("ispay", true);
@@ -1483,7 +1484,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             intent.putExtra("payBean", exterPayBean);
             getContext().startActivity(intent);
         } else if (!UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag)
-                || VipCheck.VIP_FLAG_BUY.equals(vipFlag))) {
+                || VipCheck.VIP_FLAG_BUY.equals(vipFlag) || VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag))) {
             Intent intent = new Intent();
             intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.LoginActivity");
             intent.putExtra("ispay", true);
