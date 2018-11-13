@@ -177,7 +177,7 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Log.e(TAG, "---onPageFinished");
+                Log.d(TAG, "wqs:onPageFinished");
                 if (!isError) {
                     isSuccess = true;
                     //回调成功后的相关操作
@@ -185,11 +185,11 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
                 isError = false;
                 if (mWebView != null) {
                     if (isSuccess) {
-                        Log.d(TAG, "---loadUrl Success");
+                        Log.d(TAG, "wqs:loadUrl Success");
                         mWebView.setVisibility(View.VISIBLE);
 
                     } else {
-                        Log.d(TAG, "---loadUrl Error");
+                        Log.d(TAG, "wqs:loadUrl Error");
                         mWebView.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -199,7 +199,7 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                Log.e(TAG, "---onReceivedError");
+                Log.d(TAG, "wqs:onReceivedError");
                 isError = true;
                 isSuccess = false;
                 //回调失败的相关操作
@@ -229,7 +229,7 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
         if (!TextUtils.isEmpty(Constant.HTML_PATH_HELPER)) {
             mWebView.loadUrl(Constant.HTML_PATH_HELPER);
         } else {
-            Log.e(TAG, "---html:path==null");
+            Log.d(TAG, "wqs:html:path==null");
             mWebView.setVisibility(View.GONE);
         }
 
@@ -238,7 +238,7 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "---onDestroy");
+        Log.d(TAG, "wqs:onDestroy");
         if (mWebView != null) {
             mWebView.clearCache(true);
             mWebView.clearHistory();
@@ -249,7 +249,7 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
 
     @Override
     public void onScrolledToBottom() {
-        Log.e(TAG, "---onScrolledToBottom");
+        Log.d(TAG, "wqs:onScrolledToBottom");
 //        if (mBottomArrow != null) {
 //            mBottomArrow.setVisibility(View.INVISIBLE);
 //        }
@@ -257,7 +257,7 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
 
     @Override
     public void onScrolledChange() {
-        Log.e(TAG, "---onScrolledChange");
+        Log.d(TAG, "wqs:onScrolledChange");
 //        if (mBottomArrow != null) {
 //            mBottomArrow.setVisibility(View.VISIBLE);
 //        }
