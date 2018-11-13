@@ -221,4 +221,13 @@
 -dontwarn javax.annotation.**
 -dontwarn org.conscrypt.**
 
--keep class com.newtv.libs.util.**{*;}
+-keep class com.newtv.libs.bean.** { *; }
+-keep class com.newtv.cms.bean.** { *; }
+
+-keep class tv.newtv.cboxtv.menu.model.** { *; }
+-keep class tv.newtv.cboxtv.player.model.** { *; }
+
+-keep class tv.newtv.cboxtv.player.ProgramSeriesInfo {*;}
+-keep class tv.newtv.cboxtv.player.ChkPlayResult {*;}
+-keep class tv.newtv.cboxtv.player.ExtendAttr {*;}
+-keep class tv.newtv.cboxtv.player.PlayerPlayInfoItem {*;}
