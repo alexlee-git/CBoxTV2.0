@@ -26,6 +26,7 @@ import com.newtv.cms.contract.ActiveAuthContract;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.EntryContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.HeadersInterceptor;
 import com.newtv.libs.ad.AdEventContent;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
@@ -42,7 +43,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Locale;
 
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.ad.ADPlayerView;
 

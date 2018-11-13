@@ -44,7 +44,7 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
@@ -112,7 +112,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         mPopupView = LayoutInflater.from(this).inflate(R.layout.activity_usercenter_member_center_qr_code_full_screen_v2, null);
         mPopupWindow = new PopupWindow(mPopupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
-        Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(HeadersInterceptor.PAGE_MEMBER);
+        Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
         if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
             //获取推荐位数据
             requestRecommendData();
@@ -507,7 +507,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     }
                     break;
                 case R.id.id_member_center_btn_drama_library:
-                    Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(HeadersInterceptor.MEMBER_CENTER_PARAMS);
+                    Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
                     if (!TextUtils.isEmpty(Constant.MEMBER_CENTER_PARAMS)) {
                         intent.putExtra("action", "panel");
                         intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);

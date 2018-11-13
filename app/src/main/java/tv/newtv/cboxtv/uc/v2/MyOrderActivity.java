@@ -46,7 +46,7 @@ import tv.newtv.cboxtv.BaseActivity;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.OrderInfoBean;
@@ -416,7 +416,7 @@ public class MyOrderActivity extends BaseActivity {
         //会员片库
         Intent intent = new Intent();
         Class mPageClass = null;
-        Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(HeadersInterceptor.MEMBER_CENTER_PARAMS);
+        Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
         if (!TextUtils.isEmpty(Constant.MEMBER_CENTER_PARAMS)) {
             intent.putExtra("action", "panel");
             intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);

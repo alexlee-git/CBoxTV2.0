@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 object NetClient {
     private val logInterceptor = HttpLoggingInterceptor()
-    private val headersInterceptor = HeadersInterceptor();
+    private val headersInterceptor = AppHeadersInterceptor();
 
     init {
         if (BuildConfig.DEBUG) {

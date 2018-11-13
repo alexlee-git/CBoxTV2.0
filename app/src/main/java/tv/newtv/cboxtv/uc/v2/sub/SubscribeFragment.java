@@ -37,7 +37,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
@@ -210,7 +210,7 @@ public class SubscribeFragment extends BaseDetailSubFragment {
      * 展示热门订阅数据
      */
     private void showHotRecommend() {
-        String hotRecommendParam = Constant.getBaseUrl(HeadersInterceptor.PAGE_SUBSCRIPTION);
+        String hotRecommendParam = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_SUBSCRIPTION);
         NetClient.INSTANCE.getHotSubscribeApi()
                 .getHotSubscribeInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), hotRecommendParam)
                 .subscribeOn(Schedulers.io())

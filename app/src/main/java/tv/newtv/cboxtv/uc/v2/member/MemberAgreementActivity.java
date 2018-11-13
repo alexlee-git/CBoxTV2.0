@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.newtv.libs.Constant;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView;
 
 /**
@@ -151,7 +151,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
 //                "特别提示：如用户对本条款内容有任何疑问，可拨打未来电视官方客服电话（400 046 3366）。");
         //以上为会员协议文本写死方案
         //以下为webview加载html页面方案
-        Constant.HTML_PATH_MEMBER_PROTOCOL = Constant.getBaseUrl(HeadersInterceptor.HTML_PATH_MEMBER_PROTOCOL);
+        Constant.HTML_PATH_MEMBER_PROTOCOL = Constant.getBaseUrl(AppHeadersInterceptor.HTML_PATH_MEMBER_PROTOCOL);
         mWebView = (WebView) findViewById(R.id.id_webView);
         mWebView.clearCache(true);
         mWebView.clearHistory();
