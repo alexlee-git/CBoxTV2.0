@@ -354,7 +354,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public PlayerViewConfig getDefaultConfig() {
-        buildPlayerViewConfig();
+        if(null == defaultConfig){
+            buildPlayerViewConfig();
+        }
         return defaultConfig;
     }
 

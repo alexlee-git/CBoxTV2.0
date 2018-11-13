@@ -1,7 +1,9 @@
 package tv.newtv.cboxtv.uc.v2;
 
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,11 +23,11 @@ import tv.newtv.cboxtv.uc.v2.sub.FollowRecordFragment;
 public class AttentionDetailActivity extends BaseUCDetailActivity<UserCenterPageBean.Bean>
         implements DetailCallback<UserCenterPageBean.Bean> {
 
-    private static final String TAG = "lx";
+    private static final String TAG = "AttentionDetailActivity";
 
     @Override
     protected String[] getTabList() {
-        return null;
+        return new String[]{};
     }
 
     @Override
@@ -40,9 +42,18 @@ public class AttentionDetailActivity extends BaseUCDetailActivity<UserCenterPage
 
     @Override
     protected void updateWidgets() {
-        ShowFragment(FollowRecordFragment.class, R.id.content_container);
         hideView(operationIcon);
-        hideView(operationText);
+        showView(operationText);
+        if (operationText != null) {
+            operationText.setText(R.string.usercenter_attention_operation_text);
+        }
+
+        Class<? extends Fragment> clz = FollowRecordFragment.class;
+        if (clz != null) {
+            ShowFragment(clz, R.id.content_container);
+        } else {
+            Toast.makeText(this, "NotSupported!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -52,7 +63,12 @@ public class AttentionDetailActivity extends BaseUCDetailActivity<UserCenterPage
 
     @Override
     protected void onTabChange(String title, View view) {
-
+        Class<? extends Fragment> clz = FollowRecordFragment.class;
+        if (clz != null) {
+            ShowFragment(clz, R.id.content_container);
+        } else {
+            Toast.makeText(this, "NotSupported!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -69,6 +85,11 @@ public class AttentionDetailActivity extends BaseUCDetailActivity<UserCenterPage
     private void hideView(View view) {
         if (view != null) {
             view.setVisibility(View.INVISIBLE);
+        }
+    }
+    private void showView(View view) {
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
         }
     }
 }

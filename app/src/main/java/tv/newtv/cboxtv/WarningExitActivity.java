@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.ad.ADHelper;
@@ -24,8 +28,8 @@ import java.util.List;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
 import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
-import tv.newtv.cboxtv.cms.search.presenter.SearchPagePresenter;
 import tv.newtv.cboxtv.cms.search.view.ISearchPageView;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.exit.bean.RecommendBean;
 import tv.newtv.cboxtv.exit.presenter.RecommendPresenterImpl;
 import tv.newtv.cboxtv.exit.view.RecommendView;
@@ -34,7 +38,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 
 public class WarningExitActivity extends BaseActivity implements View.OnClickListener,
-        ISearchPageView, View.OnFocusChangeListener,RecommendView {
+        ISearchPageView, View.OnFocusChangeListener, RecommendView {
 
     private RecycleImageView exit_image;
     private SearchResultInfos.ResultListBean mResultListBeanInfo;
@@ -44,7 +48,10 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private AdContract.Presenter mAdPresenter;
     RecommendPresenterImpl presenter;
     OvershootInterpolator mSpringInterpolator;
-    SearchPagePresenter mSearchPagePresenter;
+    private RecommendBean.DataBean.ProgramsBean programsBean;
+    private FrameLayout focus_layout;
+    private Button okButton;
+    private Button cancelButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,13 +63,12 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         setContentView(R.layout.activity_warning_exit);
         mSpringInterpolator = new OvershootInterpolator(2.2f);
 
-        final Button okButton = (Button) findViewById(R.id.okButton);
-        final Button cancelButton = (Button) findViewById(R.id.cancelButton);
+        okButton = (Button) findViewById(R.id.okButton);
+        cancelButton = (Button) findViewById(R.id.cancelButton);
 
         exit_image = findViewById(R.id.exit_image);
-        mSearchPagePresenter = new SearchPagePresenter(this, this);
+        cancelButton.requestFocus();
 
-        okButton.requestFocus();
         okButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         okButton.setOnFocusChangeListener(this);
@@ -72,12 +78,52 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         initView();
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        View focusView = getWindow().getDecorView().findFocus();
+        if(focusView != null){
+            if(focusView instanceof FrameLayout){
+
+                switch (event.getKeyCode()){
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                        cancelButton.requestFocus();
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_LEFT:
+
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_RIGHT:
+
+                        return true;
+                    case KeyEvent.KEYCODE_DPAD_UP:
+
+                        return true;
+                }
+
+            }
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
 
     private void initView() {
 
 
         mRecyclerView = findViewById(R.id.guess_like_recyclerview);
+        focus_layout = findViewById(R.id.focus_layout);
+
+        focus_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (programsBean != null) {
+
+                    JumpUtil.activityJump(WarningExitActivity.this, programsBean.getL_actionType(), programsBean.getL_contentType(), programsBean.getL_id(), "");
+                }
+
+            }
+        });
         mAdapter = new ExitPromptLikeAdapter(this);
+
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
                 .HORIZONTAL, false));
@@ -174,7 +220,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                         @Override
                         public void onSuccess() {
                             ADHelper.AD.ADItem item = mAdPresenter.getAdItem();
-                            if(item != null) {
+                            if (item != null) {
                                 AdSDK.getInstance().report((item.mid + ""), item.aid + "", item.id + "",
                                         "", null, item.PlayTime + "", null);
                             }
@@ -192,14 +238,12 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void showData(RecommendBean recommendBean) {
-
-        if (recommendBean.getIsAd().equals("1")) {
-            getAD();//获取广告
+        programsBean = recommendBean.getData().get(0).getPrograms().get(0);
+        String img = programsBean.getImg();
+        if (!TextUtils.isEmpty(img)) {
+            Picasso.get().load(img).into(exit_image);
         } else {
-            if (recommendBean.getBackground() != null) {
-                Picasso.get().load(recommendBean.getBackground()).into(exit_image);
-            }
-
+            getAD();//获取广告
         }
 
 
@@ -211,4 +255,6 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         super.onDestroy();
         presenter.detachView();
     }
+
+
 }

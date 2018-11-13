@@ -18,7 +18,7 @@ import retrofit2.http.Query;
  */
 public interface IUserCenterMemberInfoApi {
     //获取用户会员信息
-    @Headers("host_type: " + HeadersInterceptor.USER)
+    @Headers("host_type: " + AppHeadersInterceptor.USER)
     @GET("goldenpheasant/api/programRights")
     Observable<ResponseBody> getMemberInfo(@Header("Authorization") String Authorization,
                                            @Query("productId") String productId,

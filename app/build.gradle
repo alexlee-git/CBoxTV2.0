@@ -25,7 +25,7 @@ android {
     buildToolsVersion '26.0.3'
     defaultConfig {
         applicationId "com.newtv.cboxtv"
-        minSdkVersion 17
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 1000
         versionName "2.0.0"
@@ -227,7 +227,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //支付二维码
-    compile 'com.android.support:leanback-v17:26.1.0'
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.1.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'

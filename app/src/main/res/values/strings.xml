@@ -134,6 +134,7 @@
     <string name="usercenter_history_operation_text">按菜单键进行管理</string>
     <string name="usercenter_subscription_operation_text">取消订阅请进入详情页</string>
     <string name="usercenter_collection_operation_text">取消收藏请进入详情页</string>
+    <string name="usercenter_attention_operation_text">取消关注请进入详情页</string>
 
     <string name="usercenter_login_scan_phone">请使用手机扫描二维码登录</string>
     <string name="usercenter_login_scan_quest">点击【确认键】可放大二维码</string>

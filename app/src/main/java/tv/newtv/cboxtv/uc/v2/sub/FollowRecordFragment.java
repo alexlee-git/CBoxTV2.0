@@ -3,10 +3,13 @@ package tv.newtv.cboxtv.uc.v2.sub;
 import android.annotation.SuppressLint;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewStub;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -46,7 +49,7 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
     private RecyclerView mRecyclerView;
     private List<UserCenterPageBean.Bean> mDatas;
     private String mLoginTokenString;//登录token,用于判断登录状态
-
+    private TextView emptyTextView;
     public static final int INFLATE_DATA_BASE = 1001;//填充数据库数据
     private final int COLUMN_COUNT = 6;
     private String userId;
@@ -122,11 +125,11 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
     }
 
     private void inflate(UserCenterPageBean bean) {
-        if (bean == null) {
+        if (contentView == null) {
             return;
         }
-
-        if (bean.data == null) {
+        if (bean == null || bean.data == null || bean.data.size() == 0) {
+            inflatePageWhenNoData();
             return;
         }
 
@@ -156,7 +159,29 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
             }
         }
     }
+    private void inflatePageWhenNoData() {
+        mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
+        mRecyclerView.setVisibility(View.INVISIBLE);
 
+        showEmptyTip();
+    }
+
+    /**
+     * 展示无数据提示
+     */
+    private void showEmptyTip() {
+        ViewStub emptyViewStub = contentView.findViewById(R.id.id_empty_view_vs);
+        if (emptyViewStub != null) {
+            View emptyView = emptyViewStub.inflate();
+            if (emptyView != null) {
+                if (emptyTextView == null) {
+                    emptyTextView = emptyView.findViewById(R.id.empty_textview);
+                    emptyTextView.setText("您还没有关注任何人物哦～");
+                    emptyTextView.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
