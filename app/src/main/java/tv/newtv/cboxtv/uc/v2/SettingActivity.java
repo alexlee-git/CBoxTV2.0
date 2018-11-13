@@ -24,12 +24,10 @@ import android.widget.TextView;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.FileCacheUtils;
-import com.newtv.libs.util.FileUtil;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScaleUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 
-import java.io.File;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
@@ -59,7 +57,6 @@ public class SettingActivity extends BaseActivity implements View.OnFocusChangeL
     private LinearLayout llClearCacheStart, llClearCacheFinish;
     private String cacheSize = "0.0";
     private CountDownTimer timer;
-    private File picassoFile = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -248,8 +245,7 @@ public class SettingActivity extends BaseActivity implements View.OnFocusChangeL
             @Override
             public void onClick(View v) {
                 Log.e(TAG, " tvClearCache.setOnClickListener");
-                FileCacheUtils.cleanInternalCache(getApplicationContext());
-                FileCacheUtils.deleteFilesByDirectory(picassoFile);
+                FileCacheUtils.clearAllCache(SettingActivity.this);
                 llClearCacheStart.setVisibility(View.GONE);
                 llClearCacheFinish.setVisibility(View.VISIBLE);
                 tvConfirmTimer.requestFocus();
@@ -318,32 +314,8 @@ public class SettingActivity extends BaseActivity implements View.OnFocusChangeL
      * 当前缓存数据
      */
     private void initCacheSize() {
-    /*
-    * 获取SD卡根目录：Environment.getExternalStorageDirectory().getAbsolutePath();
-        外部Cache路径：/mnt/sdcard/android/data/com.xxx.xxx/cache 一般存储缓存数据（注：通过getExternalCacheDir()获取）
-        外部File路径：/mnt/sdcard/android/data/com.xxx.xxx/files 存储长时间存在的数据
-        （注：通过getExternalFilesDir(String type)获取， type为特定类型，可以是以下任何一种
-                    Environment.DIRECTORY_MUSIC,
-                    Environment.DIRECTORY_PODCASTS,
-                     Environment.DIRECTORY_RINGTONES,
-                     Environment.DIRECTORY_ALARMS,
-                     Environment.DIRECTORY_NOTIFICATIONS,
-                     Environment.DIRECTORY_PICTURES,
-                      Environment.DIRECTORY_MOVIES. ）
-    * */
-        picassoFile = FileUtil.getCacheDirectory(getApplicationContext(),"cache_image");
-        Log.e(TAG, "==picassoFile=====sdPath=" + picassoFile.getPath());
-//        String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-//        Log.e(TAG, "==sdPath=======sdPath=" + sdPath);
-//        File outFilePath = getExternalFilesDir(Environment.DIRECTORY_ALARMS);
-//        Log.e(TAG, "==outFilePath=======path=" + outFilePath.getPath());
-        File cacheDir = getCacheDir();
-        Log.e(TAG, "==CacheFile=======path=" + cacheDir.getPath());
         try {
-            long picassoCache  = FileCacheUtils.getFolderSize(picassoFile);
-            long innerCache = FileCacheUtils.getFolderSize(cacheDir);
-            double allSize = picassoCache + innerCache;
-            cacheSize = FileCacheUtils.getFormatSize(allSize);
+            cacheSize = FileCacheUtils.getTotalCacheSize(SettingActivity.this);
             Log.e(TAG, "==CacheFile=======cacheSize=" + cacheSize);
             tvCacheSize.setText(cacheSize);
 
