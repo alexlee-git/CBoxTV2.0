@@ -191,7 +191,7 @@ public class Constant {
     public static final String CMS_NEW_SEARCH = "http://111.32.138.57:80/";//测试地址
     public static final String GRANT_TYPE_SMS = "sms_code";
     public static final String GRANT_TYPE_REFRESH = "refresh_code";
-    public static final String CLIENT_ID = "17";
+    public static final String CLIENT_ID = Libs.get().getClientId();
     public static final String USER_ID = "USER_ID";
     public static final String UC_HISTORY = "历史记录";
     //检查是否是定向升级

@@ -80,6 +80,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"50000113\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -91,6 +92,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"1000701\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
@@ -102,6 +104,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600001\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
@@ -113,6 +116,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600002\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -125,6 +129,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600003\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -139,6 +144,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"10002\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -151,6 +157,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"10007\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -163,6 +170,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"500003\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -175,6 +183,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"200001\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -187,6 +196,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600001\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
@@ -198,6 +208,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"60000101\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
