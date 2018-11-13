@@ -24,13 +24,17 @@ public class VipCheck {
      */
     public static final String VIP_FLAG_FREE = "0";
     /**
+     * 单点包月（买会员或者买单点都能看）
+     */
+    public static final String VIP_FLAG_VIP_BUY = "1";
+    /**
      * Vip才能看
      */
-    public static final String VIP_FLAG_VIP = "1";
+    public static final String VIP_FLAG_VIP = "4";
     /**
      *  单点才能看
      */
-    public static final String VIP_FLAG_BUY = "2";
+    public static final String VIP_FLAG_BUY = "3";
 
     public static void isBuy(String productIds,String contentUUID,Context context,final BuyFlagListener listener){
         String token = SharePreferenceUtils.getToken(context);
