@@ -476,8 +476,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         com.newtv.cms.bean.Content content = new com.newtv.cms.bean.Content();
         List<SubContent> data = new ArrayList<>();
         for(Program program : list){
-            data.add(program.convertProgramsInfo());
+            SubContent subContent = program.convertProgramsInfo();
+            subContent.setUseSeriesSubUUID(true);
+            data.add(subContent);
         }
+        content.setData(data);
 
         node.setContent(content);
         node.setPrograms(list);

@@ -714,7 +714,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
 
                 playIndex(index);
-                String seriesUUID = programSeriesInfo.getContentUUID();
+                String seriesUUID = "";
+                if(program.getUseSeriesSubUUID()){
+                    seriesUUID = program.getSeriesSubUUID();
+                }else {
+                    seriesUUID = programSeriesInfo.getContentUUID();
+                }
                 mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
 
 

@@ -29,4 +29,5 @@ open class SubContent : Serializable {
     var drm: String? = null //是否付费 腾讯内容专用： 0不付费 1普通付费 2drm付费
     var isPlay: Boolean? = false //是否是正在播放的数据
     var seriesSubUUID:String? = null//节目集id或者栏目id
+    var useSeriesSubUUID:Boolean? = false
 }
