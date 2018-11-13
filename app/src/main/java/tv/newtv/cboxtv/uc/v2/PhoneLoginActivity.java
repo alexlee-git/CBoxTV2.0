@@ -41,6 +41,7 @@ import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -463,6 +464,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                                     mTime_success = 3;
                                     mHandler.sendEmptyMessage(CODE_SUCCESS);
                                 }
+                                UserCenterUtils.setLogin(true);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
