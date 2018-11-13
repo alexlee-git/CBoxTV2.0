@@ -44,18 +44,11 @@ object NetClient {
 
     val clockSyncApi by lazy { retrofit.create(IClockSyncApi::class.java) }
     val pageDataApi by lazy { retrofit.create(IPageDataApi::class.java) }
-    val programSeriesInfoApi by lazy { retrofit.create(IProgramSeriesInfoApi::class.java) }
     val detailsPageApi by lazy { retrofit.create(IDetailsPageApi::class.java) }
     val listPageApi by lazy { retrofit.create(IListPageApi::class.java) }
     val searchRecommendApi by lazy { retrofit.create(ISearchRecommendApi::class.java) }
-    val searchResultApi by lazy { retrofit.create(ISearchResultApi::class.java) }
     val specialApi by lazy { retrofit.create(ISpecialApi::class.java) }
-    val superScriptApi by lazy { retrofit.create(ISuperScriptApi::class.java) }
-    val bootGuideApi by lazy { retrofit.create(IBootGuideApi::class.java) }
-    val activateAuthApi by lazy { retrofit.create(IActivateAuthApi::class.java) }
     val upVersion by lazy { retrofit.create(UpVersionApi::class.java) }
-    val MenuApi by lazy { retrofit.create(IMenuApi::class.java)}
-    val playPermissionCheckApi by lazy { retrofit.create(IPlayPermissionCheckApi::class.java)}
     val ordersApi by lazy { retrofit.create(IOrderApi::class.java) }
     val UserCenterLoginApi by lazy { retrofit.create(IUserCenterLoginApi::class.java) }
     val UserCenterMemberInfoApi by lazy { retrofit.create(IUserCenterMemberInfoApi::class.java) }
