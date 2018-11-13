@@ -102,7 +102,8 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
                 headPlayerView.hasFocus()) {
             if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
                 return true;
             }
         }
