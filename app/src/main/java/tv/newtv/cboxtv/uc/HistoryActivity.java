@@ -469,7 +469,7 @@ public class HistoryActivity extends FragmentActivity implements
                             UserCenterRecordManager.getInstance()
                                     .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
                                             getApplicationContext(),
-                                            "",
+                                            "clean",
                                             null,
                                             new DBCallback<String>() {
                                                 @Override

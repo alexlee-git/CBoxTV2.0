@@ -52,7 +52,6 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 public class BuyGoodsBusiness{
     private static final int DEFAULT_TIME = 25;
     private static final String APP_KEY = "PSKAATT8IDSKXRSE3TP22ZAZ3265VV4D";
-    private static final String APP_SECRET = "hzudu8fs3xpia2fe2qn2nm7p6iujj9vu";
     /**
      * 京东联盟ID
      */
@@ -60,7 +59,7 @@ public class BuyGoodsBusiness{
     /**
      * 电视在京东联盟创建的应用ID
      */
-    private static final String SITE_ID = "1479901399";
+    private static final String SITE_ID = "1467889640";
     private static final String TAG = "BuyGoodsBusiness";
     /**
      * 产品id

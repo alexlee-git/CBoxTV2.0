@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.LogUploadUtils;
@@ -171,7 +172,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private void getQrcode(String Authorization, String response_type, String client_id) {
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getLoginQRCode(Authorization, response_type, client_id)
+                    .getLoginQRCode(Authorization, response_type, client_id, Libs.get().getChannelId())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -272,7 +273,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                         startActivity(mIntent);
                                     }
                                 }
-                                UserStatus.setIsLogin(true);
+                                UserCenterUtils.setLogin(true);
                                 finish();
 
                             } catch (Exception e) {

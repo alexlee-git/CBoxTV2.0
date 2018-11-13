@@ -213,7 +213,8 @@ public class VodContract {
 
             if(!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_VIP.equals(vipFlag) && !UserStatus.isVip()){
                 callBack(true,videoDataStruct,playResult);
-            }else if(!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_BUY.equals(vipFlag)){
+            }else if(!TextUtils.isEmpty(vipFlag) && (VipCheck.VIP_FLAG_BUY.equals(vipFlag)
+                    || VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag) && !UserStatus.isVip())){
                 VipCheck.isBuy(playResult.getVipProductId(), playResult.getContentUUID(),getContext(),
                         new VipCheck.BuyFlagListener() {
                             @Override
@@ -229,9 +230,11 @@ public class VodContract {
         }
 
         private void callBack(boolean isTrySee,VideoDataStruct videoDataStruct,ChkPlayResult playResult){
+//            isTrySee = true;
             if(isTrySee){
                 videoDataStruct.setTrySee(true);
                 videoDataStruct.setFreeDuration(playResult.getFreeDuration());
+//                videoDataStruct.setFreeDuration("300");
             }
             if (getView() != null){
                 getView().onVodchkResult(videoDataStruct, playResult.getContentUUID());
