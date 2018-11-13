@@ -3,7 +3,6 @@
     android:id="@+id/id_module_view"
     android:layout_width="@dimen/width_294px"
     android:layout_height="wrap_content"
-    android:clickable="true"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:focusable="true">
@@ -71,6 +70,9 @@
         android:layout_marginLeft="@dimen/width_27px"
         android:layout_marginTop="@dimen/height_399px"
         android:ellipsize="marquee"
+        android:enabled="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true" />
 

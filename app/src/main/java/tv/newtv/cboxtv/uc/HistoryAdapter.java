@@ -108,6 +108,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             String score = entity.getGrade();
             if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null")) {
                 viewHolder.mScore.setText(entity.getGrade());
+            } else {
+                viewHolder.mScore.setText("0.0");
             }
 
             // 观看进度
@@ -171,14 +173,14 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 picasso.transform(new PosterCircleTransform(context, 4)).into(viewHolder.mImageIv);
             }
 
-            Log.e("MM", "selectPostion=" + selectPostion + ",position=" + position + ",size=" + mList.size());
-            if (position == selectPostion || (selectPostion == mList.size() && position == mList.size() - 1)) {
-                Log.e("MM", "if###########selectPostion=" + selectPostion + ",position=" + position + ",size=" + mList.size());
-                viewHolder.itemView.requestFocus();
-            } else {
-                viewHolder.itemView.clearFocus();
-                viewHolder.mFocusIv.setVisibility(View.INVISIBLE);
-            }
+//            Log.e("MM", "selectPostion=" + selectPostion + ",position=" + position + ",size=" + mList.size());
+//            if (position == selectPostion || (selectPostion == mList.size() && position == mList.size() - 1)) {
+//                Log.e("MM", "if###########selectPostion=" + selectPostion + ",position=" + position + ",size=" + mList.size());
+//                viewHolder.itemView.requestFocus();
+//            } else {
+//                viewHolder.itemView.clearFocus();
+//                viewHolder.mFocusIv.setVisibility(View.INVISIBLE);
+//            }
         }
     }
 
@@ -192,10 +194,10 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             focusImageView.setVisibility(View.INVISIBLE);
         }
 
-        TextView titleView = (TextView) view.findViewById(R.id.tv_title);
-        if (titleView != null) {
-            titleView.setSelected(false);
-        }
+//        TextView titleView = (TextView) view.findViewById(R.id.tv_title);
+//        if (titleView != null) {
+//            titleView.setSelected(false);
+//        }
 
         // 直接缩小view
         ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -210,11 +212,10 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             focusImageView.setVisibility(View.VISIBLE);
         }
 
-        TextView titleView = (TextView) view.findViewById(R.id.tv_title);
-        if (titleView != null) {
-            titleView.setSelected(true);
-        }
-
+//        TextView titleView = (TextView) view.findViewById(R.id.tv_title);
+//        if (titleView != null) {
+//            titleView.setSelected(true);
+//        }
         currentFocusView = focusImageView;
         selectPostion = postion;
 
@@ -276,12 +277,12 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             if (hasFocus) {
                 currentFocusView = mModuleView;
                 onItemGetFocus(v, mFocusIv, getAdapterPosition());
-                mTitleTv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                mTitleTv.setSelected(true);
             } else {
                 if (mAllowLost) {
                     onItemLoseFocus(v, mFocusIv);
                 }
-                mTitleTv.setEllipsize(null);
+                mTitleTv.setSelected(false);
             }
         }
 
