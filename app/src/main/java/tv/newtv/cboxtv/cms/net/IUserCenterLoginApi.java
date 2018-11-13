@@ -148,7 +148,7 @@ public interface IUserCenterLoginApi {
 
 
     @Headers("host_type: " + HeadersInterceptor.USER_BEHAVIOR)
-    @DELETE("/gazella/service/collections/del")
+    @DELETE("/gazella/service/historys/del")
     Observable<ResponseBody> deleteHistory(@Header("Authorization") String Authorization,
                                            @Query("is_program") String is_program,
                                            @Query("channel_code") String channel_code,
