@@ -10,9 +10,6 @@
         android:background="@drawable/user_mu_gb"
         android:backgroundTint="@color/color_0b104b">
 
-        <include layout="@layout/up_top_nav"
-            android:visibility="gone"/>
-
         <include
             layout="@layout/left_top_logo"/>
 

@@ -119,20 +119,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         headPlayerView = findViewById(R.id.header_video);
         suggestView = findViewById(R.id.suggest);
 
-        final LinearLayout upTop = findViewById(R.id.up_top);
-        if (isPopup && fromOuter) {
-            new CountDownTimer(5 * 1000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    upTop.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFinish() {
-                    upTop.setVisibility(View.GONE);
-                }
-            }.start();
-        }
         initHeadPlayerView(contentUUID);
     }
 
@@ -150,6 +136,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                     .SetContentUUID(contentUUID)
                     .autoGetSubContents()
+                    .setTopView(fromOuter,isPopup)
                     .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                         @Override
                         public void onResult(Content info) {
