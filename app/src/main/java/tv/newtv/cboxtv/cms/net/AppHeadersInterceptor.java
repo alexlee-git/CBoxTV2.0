@@ -12,7 +12,7 @@ import okhttp3.Response;
  * Created by TCP on 2018/5/8.
  */
 
-public class HeadersInterceptor implements okhttp3.Interceptor {
+public class AppHeadersInterceptor implements okhttp3.Interceptor {
     public static final String CMS = "CMS";
     public static final String SERVER_TIME = "SERVER_TIME";
     public static final String VERSION_UP = "VERSION_UP";

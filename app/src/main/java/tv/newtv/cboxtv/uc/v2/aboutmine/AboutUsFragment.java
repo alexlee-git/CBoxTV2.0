@@ -14,7 +14,7 @@ import android.webkit.WebViewClient;
 import com.newtv.libs.Constant;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 
 /**
@@ -52,7 +52,7 @@ public class AboutUsFragment extends BaseDetailSubFragment {
     @Override
     protected void updateUiWidgets(View view) {
         //以下为webview加载html页面方案
-        Constant.HTML_PATH_ABOUT_US = Constant.getBaseUrl(HeadersInterceptor.HTML_PATH_ABOUT_US);
+        Constant.HTML_PATH_ABOUT_US = Constant.getBaseUrl(AppHeadersInterceptor.HTML_PATH_ABOUT_US);
         mWebView = (WebView) view.findViewById(R.id.id_webView);
         mWebView.clearCache(true);
         mWebView.clearHistory();
