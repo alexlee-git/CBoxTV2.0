@@ -34,9 +34,17 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
- * Created by gaoleichao on 2018/3/27.
+ * 项目名称： CBoxTV2.0
+ * 包名： tv.newtv.cboxtv.uc.v2
+ * 类描述：我的页面dapter
+ * 创建人：gaoleichao
+ * 创建时间：
+ * 创建日期：2018/3/27
+ * 修改人：wqs
+ * 修改时间：15:25
+ * 修改备注：2018/9/4
+ * 修改备注：二期需求修改
  */
-
 public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, RecyclerView
         .ViewHolder> {
     private final String TAG = "UserCenterAdapter";
@@ -71,7 +79,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
     private String sign_member_open_lose = "member_open_lose";//已开通，但失效
     private String sign_member_open_good = "member_open_good";//已开通，有效
 
-    public UserCenterAdapter(Context context, OnRecycleItemClickListener<UserCenterPageBean.Bean>
+    UserCenterAdapter(Context context, OnRecycleItemClickListener<UserCenterPageBean.Bean>
             listener) {
         this.context = context;
         this.listener = listener;
@@ -81,6 +89,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
     public View getFirstView() {
         return firstView;
     }
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -98,7 +107,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onCreateViewHolder:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onCreateViewHolder:Exception:" + e.toString());
         }
         return viewHolder;
     }
@@ -114,7 +123,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---getItemViewType:Exception:" + e.toString());
+            Log.e(TAG, "wqs:getItemViewType:Exception:" + e.toString());
         }
         return super.getItemViewType(position);
     }
@@ -173,7 +182,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onBindViewHolder:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onBindViewHolder:Exception:" + e.toString());
         }
     }
 
@@ -198,7 +207,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             view.startAnimation(sa);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onItemLoseFocus:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onItemLoseFocus:Exception:" + e.toString());
         }
     }
 
@@ -224,7 +233,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             view.startAnimation(sa);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onItemGetFocus:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onItemGetFocus:Exception:" + e.toString());
         }
     }
 
@@ -304,7 +313,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setDataList:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setDataList:Exception:" + e.toString());
         }
     }
 
@@ -315,13 +324,13 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
      */
     public void setVersionUpdate(boolean status) {
         try {
-            Log.d(TAG, "---setVersionUpdate:" + status);
+            Log.d(TAG, "wqs:setVersionUpdate:" + status);
             ImageView posterImageView = null;
             if (mBtnVersion != null) {
                 posterImageView = (ImageView) mBtnVersion.findViewWithTag(TAG_POSTER_IMAGE);
 
             } else {
-                Log.e(TAG, "---mBtnVersion==null");
+                Log.d(TAG, "wqs:mBtnVersion==null");
             }
             if (status) {
                 if (posterImageView != null) {
@@ -335,7 +344,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setVersionUpdate:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setVersionUpdate:Exception:" + e.toString());
         }
     }
 
@@ -357,20 +366,20 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                         mHeadImage.setBackgroundResource(R.drawable.member_head_login_v2);
                         mPromptTextView.setText(context.getResources().getString(R.string.user_already_login));
                     } else {
-                        Log.e(TAG, "---setLoginStatus:tokenString==null");
+                        Log.d(TAG, "wqs:setLoginStatus:tokenString==null");
                         mHeadImage.setBackgroundResource(R.drawable.member_head_not_login_v2);
                         mPromptTextView.setText(context.getResources().getString(R.string.user_prompt_login));
                     }
                 } else {
-                    Log.e(TAG, "---setLoginStatus:mHeadImage==null:" + (mHeadImage == null));
-                    Log.e(TAG, "---setLoginStatus:mPromptTextView==null:" + (mPromptTextView == null));
+                    Log.d(TAG, "wqs:setLoginStatus:mHeadImage==null:" + (mHeadImage == null));
+                    Log.d(TAG, "wqs:setLoginStatus:mPromptTextView==null:" + (mPromptTextView == null));
                 }
             } else {
-                Log.e(TAG, "---setLoginStatus:mBtnlogin==null");
+                Log.d(TAG, "wqs:setLoginStatus:mBtnlogin==null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setLoginStatus:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setLoginStatus:Exception:" + e.toString());
         }
     }
 
@@ -381,7 +390,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
      */
     public void setMemberStatus(String memberStatus) {
         try {
-            Log.d(TAG, "---setMemberStatus:" + memberStatus);
+            Log.d(TAG, "wqs:setMemberStatus:" + memberStatus);
             memberStatusString = memberStatus;
             ImageView mMemberImage = null;
             ImageView mMarkImage = null;
@@ -398,7 +407,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                             mMarkImage.setBackgroundResource(R.drawable.uc_head_member_mark_v2);
                             mMarkImage.setVisibility(View.VISIBLE);
                         } else {
-                            Log.e(TAG, "---setMemberStatus:mMarkImage == null");
+                            Log.d(TAG, "wqs:setMemberStatus:mMarkImage == null");
                         }
                     } else if (TextUtils.equals(memberStatus, sign_member_open_lose)) {
                         mMemberImage.setBackgroundResource(R.drawable.uc_open_member_normal_v2);
@@ -407,7 +416,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                             mMarkImage.setBackgroundResource(R.drawable.uc_head_not_member_mark_v2);
                             mMarkImage.setVisibility(View.VISIBLE);
                         } else {
-                            Log.e(TAG, "---setMemberStatus:mMarkImage == null");
+                            Log.d(TAG, "wqs:setMemberStatus:mMarkImage == null");
                         }
                     } else {
                         mMemberImage.setBackgroundResource(R.drawable.uc_open_member_normal_v2);
@@ -416,20 +425,20 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                             mMarkImage.setBackgroundResource(R.drawable.uc_head_not_member_mark_v2);
                             mMarkImage.setVisibility(View.GONE);
                         } else {
-                            Log.e(TAG, "---setMemberStatus:mMarkImage == null");
+                            Log.d(TAG, "wqs:setMemberStatus:mMarkImage == null");
                         }
                     }
                 } else {
-                    Log.e(TAG, "---setMemberStatus:mMemberImage==null:" + (mMemberImage == null));
-                    Log.e(TAG, "---setMemberStatus:mPromptTextView==null:" + (mPromptTextView == null));
+                    Log.d(TAG, "wqs:setMemberStatus:mMemberImage==null:" + (mMemberImage == null));
+                    Log.d(TAG, "wqs:setMemberStatus:mPromptTextView==null:" + (mPromptTextView == null));
                 }
             } else {
-                Log.e(TAG, "---setMemberStatus:mBtnlogin==null");
+                Log.d(TAG, "wqs:setMemberStatus:mBtnlogin==null");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setMemberStatus:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setMemberStatus:Exception:" + e.toString());
         }
     }
 
@@ -450,7 +459,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setAdData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setAdData:Exception:" + e.toString());
         }
     }
 
@@ -494,7 +503,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             goneView(container);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setViewGone:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setViewGone:Exception:" + e.toString());
         }
     }
 
@@ -514,7 +523,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             showView(container);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setViewGVisible:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setViewGVisible:Exception:" + e.toString());
         }
     }
 
@@ -531,7 +540,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setViewGone:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setViewGone:Exception:" + e.toString());
         }
     }
 
@@ -541,26 +550,26 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                 RecycleImageView posterImageview = (RecycleImageView) mModuleView.findViewWithTag
                         (TAG_POSTER_IMAGE);
                 if (!TextUtils.isEmpty(imgUrl)) {
-                    goneView(mAdTitle);
-                    goneView(mAdTitleIcon);
+                    hideView(mAdTitle);
+                    hideView(mAdTitleIcon);
                     posterImageview.placeHolder(R.drawable.default_member_center_1680_320_v2)
                             .errorHolder(R.drawable.default_member_center_1680_320_v2)
                             .hasCorner(true)
                             .load(imgUrl);
                 } else {
-                    goneView(mAdTitle);
-                    goneView(mAdTitleIcon);
+                    hideView(mAdTitle);
+                    hideView(mAdTitleIcon);
                     posterImageview.placeHolder(R.drawable.default_member_center_1680_320_v2)
                             .errorHolder(R.drawable.default_member_center_1680_320_v2)
                             .hasCorner(true)
                             .load(R.drawable.default_member_center_1680_320_v2);
                 }
             } else {
-                Log.e(TAG, "---setADPosterData:mModuleView == null");
+                Log.d(TAG, "wqs:setADPosterData:mModuleView == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setADPosterData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setADPosterData:Exception:" + e.toString());
         }
     }
 
@@ -658,11 +667,11 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                     hideView(programUpdateRoot);
                 }
             } else {
-                Log.e(TAG, "---setPosterData:mModuleView == null");
+                Log.d(TAG, "wqs:setPosterData:mModuleView == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setPosterData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setPosterData:Exception:" + e.toString());
         }
     }
 
@@ -778,7 +787,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---ContentViewHolder:onKey:Exception:" + e.toString());
+                Log.d(TAG, "wqs:ContentViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
         }
@@ -845,7 +854,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---HeadViewHolder:onKey:Exception:" + e.toString());
+                Log.e(TAG, "wqs:HeadViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
         }
@@ -903,7 +912,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---ADViewHolder:onKey:Exception:" + e.toString());
+                Log.d(TAG, "wqs:ADViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
         }

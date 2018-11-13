@@ -150,7 +150,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onBindViewHolder:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onBindViewHolder:Exception:" + e.toString());
         }
     }
 
@@ -207,7 +207,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     showView(mMemberName);
                     showView(mMemberTime);
                 } else {
-                    Log.e(TAG, "---setMemberStatus:memberInfoBean==null");
+                    Log.e(TAG, "wqs:setMemberStatus:memberInfoBean==null");
 
                     if (mMemberName != null) {
                         mMemberName.setText("");
@@ -219,7 +219,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                         if (mBtnTextView != null) {
                             mBtnTextView.setText(context.getResources().getString(R.string.member_center_btn_open));
                         } else {
-                            Log.e(TAG, "---setMemberStatus:memberInfoBean == null:mBtnTextView == null");
+                            Log.e(TAG, "wqs:setMemberStatus:memberInfoBean == null:mBtnTextView == null");
                         }
                     }
                     goneView(mMemberName);
@@ -237,16 +237,16 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 if (mBtnTextView != null) {
                     mBtnTextView.setText(context.getResources().getString(R.string.member_center_btn_open));
                 } else {
-                    Log.e(TAG, "---setMemberStatus:memberInfoBean == null:mBtnTextView == null");
+                    Log.e(TAG, "wqs:setMemberStatus:memberInfoBean == null:mBtnTextView == null");
                 }
                 showView(mBtnLogin);
-                Log.e(TAG, "---setMemberStatus:mLoginTokenString==null");
+                Log.e(TAG, "wqs:setMemberStatus:mLoginTokenString==null");
 
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setMemberStatus:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setMemberStatus:Exception:" + e.toString());
         }
     }
 
@@ -270,7 +270,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             view.startAnimation(sa);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onItemLoseFocus:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onItemLoseFocus:Exception:" + e.toString());
         }
     }
 
@@ -294,7 +294,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             view.startAnimation(sa);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onItemGetFocus:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onItemGetFocus:Exception:" + e.toString());
         }
     }
 
@@ -341,7 +341,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setDataList:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setDataList:Exception:" + e.toString());
         }
     }
 
@@ -373,7 +373,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             container.setVisibility(View.GONE);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setViewGone:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setViewGone:Exception:" + e.toString());
         }
     }
 
@@ -393,7 +393,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             container.setVisibility(View.VISIBLE);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setViewGVisible:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setViewGVisible:Exception:" + e.toString());
         }
     }
 
@@ -410,7 +410,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setViewGone:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setViewGone:Exception:" + e.toString());
         }
     }
 
@@ -425,10 +425,10 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 if (UserCenterPageBean.data != null && UserCenterPageBean.data.size() > 0) {
                     imageUrl = UserCenterPageBean.data.get(0).get_imageurl();
                 } else {
-                    Log.e(TAG, "---setRecommendPosterData:UserCenterPageBean.data == null");
+                    Log.e(TAG, "wqs:setRecommendPosterData:UserCenterPageBean.data == null");
                 }
             } else {
-                Log.e(TAG, "---setRecommendPosterData:UserCenterPageBean == null");
+                Log.e(TAG, "wqs:setRecommendPosterData:UserCenterPageBean == null");
             }
             //设置会员促销推荐位海报
             if (mModuleView.getId() == R.id.id_member_center_promotion_recommend) {
@@ -446,7 +446,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setRecommendPosterData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setRecommendPosterData:Exception:" + e.toString());
         }
     }
 
@@ -528,11 +528,11 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     if (!TextUtils.isEmpty(superscript) && !TextUtils.equals(superscript, "null")) {
                         Corner superscriptInfo;
                         superscriptInfo = SuperScriptManager.getInstance().getSuperscriptInfoById(superscript);
-                        Log.e(TAG, "---superscript:" + bean.getSuperscript());
+                        Log.e(TAG, "wqs:superscript:" + bean.getSuperscript());
                         if (superscriptInfo != null && !TextUtils.isEmpty(superscriptInfo.getCornerImg())) {
                             rightTopMarkImageView.load(superscriptInfo.getCornerImg());
                         }
-                        Log.e(TAG, "---superscriptInfo.getCornerImg():" + superscriptInfo.getCornerImg());
+                        Log.e(TAG, "wqs:superscriptInfo.getCornerImg():" + superscriptInfo.getCornerImg());
                     }
                 } else {
                     //由于数据为空，令各个显示的view隐藏，副标题gone
@@ -542,11 +542,11 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     hideView(programUpdateRoot);
                 }
             } else {
-                Log.e(TAG, "---setPosterData:mModuleView == null");
+                Log.e(TAG, "wqs:setPosterData:mModuleView == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---setPosterData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:setPosterData:Exception:" + e.toString());
         }
     }
 
@@ -600,7 +600,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---ContentViewHolder:onFocusChange:Exception:" + e.toString());
+                Log.e(TAG, "wqs:ContentViewHolder:onFocusChange:Exception:" + e.toString());
             }
 
         }
@@ -656,7 +656,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---ContentViewHolder:onKey:Exception:" + e.toString());
+                Log.e(TAG, "wqs:ContentViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
         }
@@ -713,7 +713,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---InfoViewHolder:onKey:Exception:" + e.toString());
+                Log.e(TAG, "wqs:InfoViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
         }
@@ -766,7 +766,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---InfoViewHolder:onFocusChange:Exception:" + e.toString());
+                Log.e(TAG, "wqs:InfoViewHolder:onFocusChange:Exception:" + e.toString());
             }
 
 
@@ -812,7 +812,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---RecommendViewHolder:onFocusChange:Exception:" + e.toString());
+                Log.e(TAG, "wqs:RecommendViewHolder:onFocusChange:Exception:" + e.toString());
             }
         }
 
@@ -829,7 +829,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---RecommendViewHolder:onKey:Exception:" + e.toString());
+                Log.e(TAG, "wqs:RecommendViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
         }
@@ -860,7 +860,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---RecommendViewHolder:onFocusChange:Exception:" + e.toString());
+                Log.e(TAG, "wqs:RecommendViewHolder:onFocusChange:Exception:" + e.toString());
             }
         }
 
@@ -877,7 +877,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e(TAG, "---RecommendViewHolder:onKey:Exception:" + e.toString());
+                Log.e(TAG, "wqs:RecommendViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
         }

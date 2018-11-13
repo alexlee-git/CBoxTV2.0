@@ -143,7 +143,7 @@ public class UserCenterFragment extends BaseFragment implements
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---isNoTopView:Exception:" + e.toString());
+            Log.e(TAG, "wqs:isNoTopView:Exception:" + e.toString());
         }
         return false;
     }
@@ -158,7 +158,7 @@ public class UserCenterFragment extends BaseFragment implements
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onBackPressed:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onBackPressed:Exception:" + e.toString());
         }
 
 
@@ -167,7 +167,7 @@ public class UserCenterFragment extends BaseFragment implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.e(TAG, "---onCreate");
+        Log.e(TAG, "wqs:onCreate");
         Bundle bundle = getArguments();
         if (bundle != null) {
             param = bundle.getString("nav_text");
@@ -184,7 +184,7 @@ public class UserCenterFragment extends BaseFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "---onCreateView");
+        Log.d(TAG, "wqs:onCreateView");
         View view = inflater.inflate(R.layout.layout_uc_fragment, container, false);
         init();
         mRecyclerView = (AiyaRecyclerView) view.findViewById(R.id.id_usercenter_fragment_root);
@@ -202,7 +202,7 @@ public class UserCenterFragment extends BaseFragment implements
             //获取猜你喜欢推荐位的数据
             requestRecommendData();
         } else {
-            Log.e(TAG, "---ID_PAGE_USERCENTER==null");
+            Log.e(TAG, "wqs:ID_PAGE_USERCENTER==null");
         }
         if (mDataBaseCompleteReceiver == null) {
             mDataBaseCompleteReceiver = new DataBaseCompleteReceiver();
@@ -241,7 +241,7 @@ public class UserCenterFragment extends BaseFragment implements
                     });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---init:Exception:" + e.toString());
+            Log.e(TAG, "wqs:init:Exception:" + e.toString());
         }
 
     }
@@ -252,7 +252,7 @@ public class UserCenterFragment extends BaseFragment implements
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
                 boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(getActivity());
-                Log.d(TAG, "---isTokenRefresh:status:" + status);
+                Log.d(TAG, "wqs:isTokenRefresh:status:" + status);
                 //获取登录状态
                 mLoginTokenString = SharePreferenceUtils.getToken(getActivity().getApplicationContext());
                 if (!TextUtils.isEmpty(mLoginTokenString)) {
@@ -271,23 +271,23 @@ public class UserCenterFragment extends BaseFragment implements
                     public void accept(String value) throws Exception {
                         if (!TextUtils.isEmpty(value)) {
                             //用户已登录
-                            Log.e(TAG, "---requestUserInfo:loginStatus:true:requestMemberInfo");
+                            Log.d(TAG, "wqs:requestUserInfo:loginStatus:true:requestMemberInfo");
                             //获取用户会员信息
                             requestMemberInfo();
                         } else {
-                            Log.e(TAG, "---requestUserInfo:loginStatus:false:not requestMemberInfo");
+                            Log.d(TAG, "wqs:requestUserInfo:loginStatus:false:not requestMemberInfo");
                             //用户未登录
                             memberStatusString = sign_member_open_not;
                             if (mHandler != null) {
                                 mHandler.sendEmptyMessage(HEAD);
                             } else {
-                                Log.e(TAG, "---requestUserInfo:mHandler == null");
+                                Log.e(TAG, "wqs:requestUserInfo:mHandler == null");
                             }
                         }
                         if (mHandler != null) {
                             mHandler.sendEmptyMessage(REQUEST_DATA_BASE);
                         } else {
-                            Log.e(TAG, "---requestUserInfo:mHandler == null");
+                            Log.e(TAG, "wqs:requestUserInfo:mHandler == null");
                         }
 
                     }
@@ -311,7 +311,7 @@ public class UserCenterFragment extends BaseFragment implements
                     String memberInfo = null;
                     try {
                         memberInfo = responseBody.string();
-                        Log.e(TAG, "---requestMemberInfo:onNext:" + memberInfo);
+                        Log.d(TAG, "wqs:requestMemberInfo:onNext:" + memberInfo);
                         JSONArray jsonArray = new JSONArray(memberInfo);
                         if (jsonArray != null && jsonArray.length() > 0) {
                             JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -327,8 +327,8 @@ public class UserCenterFragment extends BaseFragment implements
                                 long expireTimeInMillis = TimeUtil.getInstance().getSecondsFromDate(expireTimeDate);
                                 //与当前时间进行对比，判断会员是否到期
                                 long currentTimeInMillis = TimeUtil.getInstance().getCurrentTimeInMillis();
-                                Log.d(TAG, "---expireTimeInMillis:" + expireTimeInMillis);
-                                Log.d(TAG, "---currentTimeInMillis:" + currentTimeInMillis);
+                                Log.d(TAG, "wqs:expireTimeInMillis:" + expireTimeInMillis);
+                                Log.d(TAG, "wqs:currentTimeInMillis:" + currentTimeInMillis);
                                 if (expireTimeInMillis >= currentTimeInMillis) {
                                     //用户会员有效
                                     memberStatusString = sign_member_open_good;
@@ -338,11 +338,11 @@ public class UserCenterFragment extends BaseFragment implements
                                 }
                             } else {
                                 memberStatusString = sign_member_open_not;
-                                Log.e(TAG, "---requestMemberInfo:next:expireTime==null");
+                                Log.d(TAG, "wqs:requestMemberInfo:next:expireTime==null");
                             }
                         } else {
                             memberStatusString = sign_member_open_not;
-                            Log.e(TAG, "---requestMemberInfo:next:memberInfo==null");
+                            Log.d(TAG, "wqs:requestMemberInfo:next:memberInfo==null");
                         }
                         unMemberInfoSubscribe();
                     } catch (Exception e) {
@@ -351,18 +351,18 @@ public class UserCenterFragment extends BaseFragment implements
                     if (mHandler != null) {
                         mHandler.sendEmptyMessage(HEAD);
                     } else {
-                        Log.e(TAG, "---requestUserInfo:mHandler == null");
+                        Log.d(TAG, "wqs:requestUserInfo:mHandler == null");
                     }
                 }
 
                 @Override
                 public void onError(Throwable e) {
-                    Log.e(TAG, "---requestMemberInfo:onError");
+                    Log.e(TAG, "wqs:requestMemberInfo:onError");
                     unMemberInfoSubscribe();
                     if (mHandler != null) {
                         mHandler.sendEmptyMessage(HEAD);
                     } else {
-                        Log.e(TAG, "---requestUserInfo:mHandler == null");
+                        Log.d(TAG, "wqs:requestUserInfo:mHandler == null");
                     }
                 }
 
@@ -374,7 +374,7 @@ public class UserCenterFragment extends BaseFragment implements
         } catch (Exception e) {
             e.printStackTrace();
             unMemberInfoSubscribe();
-            Log.e(TAG, "---requestMemberInfo:Exception:" + e.toString());
+            Log.e(TAG, "wqs:requestMemberInfo:Exception:" + e.toString());
         }
     }
 
@@ -408,12 +408,12 @@ public class UserCenterFragment extends BaseFragment implements
                         Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                         }.getType();
                         List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson(result, type);
-                        Log.d(TAG, "---user_subscribe_info:" + mGson.toJson(mCollectBean));
+                        Log.d(TAG, "wqs:user_subscribe_info:" + mGson.toJson(mCollectBean));
                         UserCenterPageBean.data = mCollectBean;
                         if (mHandler != null) {
                             mHandler.sendEmptyMessage(SUBSCRIBE);
                         } else {
-                            Log.e(TAG, "---user_subscribe_info:mHandler==null");
+                            Log.d(TAG, "wqs:user_subscribe_info:mHandler==null");
                         }
 
                     }
@@ -431,12 +431,12 @@ public class UserCenterFragment extends BaseFragment implements
                         Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                         }.getType();
                         List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson(result, type);
-                        Log.d(TAG, "---user_collect_info:" + mGson.toJson(mCollectBean));
+                        Log.d(TAG, "wqs:user_collect_info:" + mGson.toJson(mCollectBean));
                         UserCenterPageBean.data = mCollectBean;
                         if (mHandler != null) {
                             mHandler.sendEmptyMessage(COLLECT);
                         } else {
-                            Log.e(TAG, "---user_collect_info：mHandler==null");
+                            Log.d(TAG, "wqs:user_collect_info：mHandler==null");
                         }
 
                     }
@@ -454,12 +454,12 @@ public class UserCenterFragment extends BaseFragment implements
                         Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                         }.getType();
                         List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson(result, type);
-                        Log.d(TAG, "---user_history_info:" + mGson.toJson(mCollectBean));
+                        Log.d(TAG, "wqs:user_history_info:" + mGson.toJson(mCollectBean));
                         UserCenterPageBean.data = mCollectBean;
                         if (mHandler != null) {
                             mHandler.sendEmptyMessage(HISTORY);
                         } else {
-                            Log.e(TAG, "---user_history_info:mHandler==null");
+                            Log.d(TAG, "wqs:user_history_info:mHandler==null");
                         }
                     }
                 }
@@ -476,19 +476,19 @@ public class UserCenterFragment extends BaseFragment implements
                         Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                         }.getType();
                         List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson(result, type);
-                        Log.d(TAG, "---user_attention_info:" + mGson.toJson(mCollectBean));
+                        Log.d(TAG, "wqs:user_attention_info:" + mGson.toJson(mCollectBean));
                         UserCenterPageBean.data = mCollectBean;
                         if (mHandler != null) {
                             mHandler.sendEmptyMessage(ATTENTION);
                         } else {
-                            Log.e(TAG, "---user_attention_info:mHandler==null");
+                            Log.d(TAG, "wqs:user_attention_info:mHandler==null");
                         }
                     }
                 }
             }).excute();
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---requestData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:requestData:Exception:" + e.toString());
         }
 
     }
@@ -517,7 +517,7 @@ public class UserCenterFragment extends BaseFragment implements
                     List<Program> programInfoList = null;
                     try {
                         value = responseBody.string();
-                        Log.d(TAG, "---requestRecommendData:value:" + value);
+                        Log.d(TAG, "wqs:requestRecommendData:value:" + value);
                         mResult = mGSon.fromJson(value, ModuleInfoResult.class);
                         if (mResult != null) {
                             if (mResult.getDatas() != null && mResult.getDatas().size() > 0) {
@@ -533,26 +533,26 @@ public class UserCenterFragment extends BaseFragment implements
                                             mProgramInfo.set_imageurl(programInfoList.get(i).getImg());
                                             mProgramInfo.set_actiontype(programInfoList.get(i).getL_actionType());
                                             mProgramInfo.setGrade(programInfoList.get(i).getGrade());
-                                            // mProgramInfo.setSuperscript(programInfoList.get(i).getrSuperScript());
+//                                            mProgramInfo.setSuperscript(programInfoList.get(i).getrSuperScript());
                                             mRecommendBean.add(mProgramInfo);
                                         }
                                     } else {
-                                        Log.e(TAG, "---requestRecommendData：mResult.getDatas().get(0).getDatas()== null");
+                                        Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas().get(0).getDatas()== null");
                                     }
                                 } else {
-                                    Log.e(TAG, "---requestRecommendData：mResult.getDatas().get(0) == null");
+                                    Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas().get(0) == null");
                                 }
                             } else {
-                                Log.e(TAG, "---requestRecommendData：mResult.getDatas() == null");
+                                Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas() == null");
                             }
                         } else {
-                            Log.e(TAG, "---requestRecommendData：mResult == null");
+                            Log.d(TAG, "wqs:requestRecommendData：mResult == null");
                         }
                         UserCenterPageBean.data = mRecommendBean;
                         if (mHandler != null) {
                             mHandler.sendEmptyMessage(RECOMMEND);
                         } else {
-                            Log.e(TAG, "---requestRecommendData:mHandler==null");
+                            Log.d(TAG, "wqs:requestRecommendData:mHandler==null");
                         }
 
                     } catch (IOException e) {
@@ -574,7 +574,7 @@ public class UserCenterFragment extends BaseFragment implements
         } catch (Exception e) {
             unRecommendSubscribe();
             e.printStackTrace();
-            Log.e(TAG, "---requestGuessYouLikeData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:requestGuessYouLikeData:Exception:" + e.toString());
         }
 
     }
@@ -599,7 +599,7 @@ public class UserCenterFragment extends BaseFragment implements
                         public void accept(Integer result) throws Exception {
                             try {
                                 if (result == 0) {
-                                    Log.d(TAG, "---getBannerAD:" + mStringBuffer.toString());
+                                    Log.d(TAG, "wqs:getBannerAD:" + mStringBuffer.toString());
                                     Gson mGson = new Gson();
                                     AdBean bean = mGson.fromJson(mStringBuffer.toString(), AdBean.class);
 
@@ -618,17 +618,17 @@ public class UserCenterFragment extends BaseFragment implements
                                         mHandler.sendEmptyMessage(BANNER_AD);
                                     }
                                 } else {
-                                    Log.e(TAG, "---getBannerAD:getAD:result!=0");
+                                    Log.d(TAG, "wqs:getBannerAD:getAD:result!=0");
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                Log.e(TAG, "---getBannerAD:accept:Exception:" + e.toString());
+                                Log.d(TAG, "wqs:getBannerAD:accept:Exception:" + e.toString());
                             }
                         }
                     });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---getBannerAD:Exception:" + e.toString());
+            Log.e(TAG, "wqs:getBannerAD:Exception:" + e.toString());
         }
     }
 
@@ -644,11 +644,11 @@ public class UserCenterFragment extends BaseFragment implements
                 mAdapter.notifyItemChanged(position);
                 mAdapter.notifyDataSetChanged();
             } else {
-                Log.e(TAG, "---bindData:mAdapter == null");
+                Log.d(TAG, "wqs:bindData:mAdapter == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---bindData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:bindData:Exception:" + e.toString());
         }
     }
 
@@ -658,7 +658,7 @@ public class UserCenterFragment extends BaseFragment implements
      * @param
      */
     private void updateHeadInfo(int position) {
-        Log.d(TAG, "---bindData");
+        Log.d(TAG, "wqs:bindData");
         try {
             if (mAdapter != null) {
                 mAdapter.setLoginStatus(mLoginTokenString);
@@ -666,11 +666,11 @@ public class UserCenterFragment extends BaseFragment implements
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyDataSetChanged();
             } else {
-                Log.e(TAG, "---bindData:mAdapter == null");
+                Log.d(TAG, "wqs:bindData:mAdapter == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---bindData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:bindData:Exception:" + e.toString());
         }
     }
 
@@ -680,18 +680,18 @@ public class UserCenterFragment extends BaseFragment implements
      * @param position
      */
     private void bindBannerAdData(int position) {
-        Log.d(TAG, "---bindData");
+        Log.d(TAG, "wqs:bindData");
         try {
             if (mAdapter != null) {
                 mAdapter.setAdData(mBannerAdInfo);
                 mAdapter.notifyItemChanged(position);
                 mAdapter.notifyDataSetChanged();
             } else {
-                Log.e(TAG, "---bindData:mAdapter == null");
+                Log.d(TAG, "wqs:bindData:mAdapter == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---bindData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:bindData:Exception:" + e.toString());
         }
     }
 
@@ -702,7 +702,7 @@ public class UserCenterFragment extends BaseFragment implements
      */
     private void reportAdInfo(final AdBean.AdspacesItem adspacesItem) {
         try {
-            Log.d(TAG, "---reportAdInfo");
+            Log.d(TAG, "wqs:reportAdInfo");
             if (adspacesItem != null) {
                 //日志上传sdk初始化
                 Observable.create(new ObservableOnSubscribe<Boolean>() {
@@ -718,27 +718,27 @@ public class UserCenterFragment extends BaseFragment implements
                         .subscribe(new Consumer<Boolean>() {
                             @Override
                             public void accept(Boolean value) throws Exception {
-                                Log.e(TAG, "---reportAdInfo:result=" + value);
+                                Log.d(TAG, "wqs:reportAdInfo:result=" + value);
                             }
                         });
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---reportAdInfo:Exception:" + e.toString());
+            Log.e(TAG, "wqs:reportAdInfo:Exception:" + e.toString());
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.e(TAG, "---onResume");
+        Log.d(TAG, "wqs:onResume");
         requestUserInfo();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.e(TAG, "---onDestroyView");
+        Log.d(TAG, "wqs:onDestroyView");
     }
 
     @Override
@@ -749,7 +749,7 @@ public class UserCenterFragment extends BaseFragment implements
     @Override
     public void onDestroy() {
         try {
-            Log.e(TAG, "---onDestroy");
+            Log.d(TAG, "wqs:onDestroy");
             RxBus.get().unregister(Constant.UPDATE_UC_DATA, mUpdateDataObservable);
             if (mHandler != null) {
                 mHandler.removeCallbacksAndMessages(null);
@@ -760,7 +760,7 @@ public class UserCenterFragment extends BaseFragment implements
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onDestroy:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onDestroy:Exception:" + e.toString());
         }
 
         super.onDestroy();
@@ -792,7 +792,7 @@ public class UserCenterFragment extends BaseFragment implements
      * @param eventContentString
      */
     private void toSecondPageFromAd(String eventContentString) {
-        Log.i(TAG, "---toSecondPageFromAd");
+        Log.i(TAG, "wqs:toSecondPageFromAd");
         try {
             AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent.class);
             JumpUtil.activityJump(getActivity(), adEventContent.actionType, adEventContent.contentType,
@@ -897,10 +897,10 @@ public class UserCenterFragment extends BaseFragment implements
                             reportAdInfo(mAdSpacesItem);
                             toSecondPageFromAd(mBannerAdInfo.eventContent);
                         } else {
-                            Log.e(TAG, "---onItemClick:mBannerAdInfo == null");
+                            Log.d(TAG, "wqs:onItemClick:mBannerAdInfo == null");
                         }
                     } else {
-                        Log.e(TAG, "---onItemClick:mAdspacesItem == null");
+                        Log.d(TAG, "wqs:onItemClick:mAdspacesItem == null");
                     }
 
                     break;
@@ -914,7 +914,7 @@ public class UserCenterFragment extends BaseFragment implements
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onItemClick:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onItemClick:Exception:" + e.toString());
         }
 
 
@@ -923,7 +923,7 @@ public class UserCenterFragment extends BaseFragment implements
     @Override
     public void onItemFocusChange(View view, boolean hasFocus, int Position, UserCenterPageBean
             .Bean object) {
-        Log.e(TAG, "---onItemFocusChange:Position:" + Position);
+        Log.d(TAG, "wqs:onItemFocusChange:Position:" + Position);
 
 
     }
@@ -982,12 +982,12 @@ public class UserCenterFragment extends BaseFragment implements
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            Log.e(TAG, "---receive database request complete broadcast, action : " + action);
+            Log.d(TAG, "wqs:receive database request complete broadcast, action : " + action);
             if (TextUtils.equals(action, "action.uc.data.sync.complete")) {
                 if (mHandler != null) {
                     mHandler.sendEmptyMessage(REQUEST_DATA_BASE);
                 } else {
-                    Log.e(TAG, "---DataBaseCompleteReceiver:mHandler == null");
+                    Log.d(TAG, "wqs:DataBaseCompleteReceiver:mHandler == null");
                 }
             }
         }
