@@ -158,7 +158,7 @@ public class MemberCenterRecyclerView extends RecyclerView {
     public void smoothScrollToPosition(int position) {
         super.smoothScrollToPosition(position);
         if (position == 0) {
-            Log.d(TAG, "---smoothScrollToPosition:position:" + position);
+            Log.d(TAG, "wqs:smoothScrollToPosition:position:" + position);
             event_code = 0;
         }
     }
