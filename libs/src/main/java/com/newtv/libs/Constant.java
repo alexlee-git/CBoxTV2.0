@@ -262,24 +262,24 @@ public class Constant {
     public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
     ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
     private static final String USER = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
-             "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
 //            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_USER = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .USER)
     ) ? getBaseUrl(HeadersInterceptor.USER) : USER; //正式地址
     private static final String PAY = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
-            "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
             // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_PAY = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.PAY)
     ) ? getBaseUrl(HeadersInterceptor.PAY) : PAY; //正式地址
     private static final String PRODUCT = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
-            "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
             // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_PRODUCT = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.USER)
     ) ? getBaseUrl(HeadersInterceptor.PRODUCT) : PRODUCT; //正式地址
     private static final String USER_BEHAVIOR = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
-            "http://stage-bzo.cloud.ottcn.com/" : "// http://stage-bzo.cloud.ottcn.com/";
+            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
             // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_USER_BEHAVIOR = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.USER)
