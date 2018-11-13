@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
@@ -137,25 +138,28 @@ public class VPlayCenter {
             return;
         }
 
-        final boolean isDesc = "1".equals(seriesInfo.getPlayOrder());
-        if (seriesInfo.getData() != null && seriesInfo.getData().size() > 0) {
-            Collections.sort(seriesInfo.getData(), new Comparator<SubContent>() {
-                @Override
-                public int compare(SubContent t1, SubContent t2) {
-                    try {
-                        String valueA = TextUtils.isEmpty(t1.getPeriods()) ? "0" : t1.getPeriods();
-                        String valueB = TextUtils.isEmpty(t2.getPeriods()) ? "0" : t2.getPeriods();
-                        if (isDesc) {
-                            return Integer.parseInt(valueB) - Integer.parseInt
-                                    (valueA);
+        if(CmsUtil.isVideoTv(seriesInfo)) {
+            final boolean isDesc = "1".equals(seriesInfo.getPlayOrder());
+            if (seriesInfo.getData() != null && seriesInfo.getData().size() > 0) {
+                Collections.sort(seriesInfo.getData(), new Comparator<SubContent>() {
+                    @Override
+                    public int compare(SubContent t1, SubContent t2) {
+                        try {
+                            String valueA = TextUtils.isEmpty(t1.getPeriods()) ? "0" : t1.getPeriods();
+                            String valueB = TextUtils.isEmpty(t2.getPeriods()) ? "0" :
+                                    t2.getPeriods();
+                            if (isDesc) {
+                                return Integer.parseInt(valueB) - Integer.parseInt
+                                        (valueA);
+                            }
+                            return Integer.parseInt(valueA) - Integer.parseInt(valueB);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return 0;
                         }
-                        return Integer.parseInt(valueA) - Integer.parseInt(valueB);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return 0;
                     }
-                }
-            });
+                });
+            }
         }
         currentIndex = 0;
         programSeriesInfo = seriesInfo;

@@ -141,11 +141,8 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                         @Override
                         public void onResult(Content info) {
                             mProgramSeriesInfo = info;
-                            headPlayerView.setProgramSeriesInfo(info);
-//                        headPlayerView.Play(0, 0, false);
                             suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info, null);
                             mAdView.requestAD();
-
                         }
                     })
                     .SetPlayerCallback(new PlayerCallback() {

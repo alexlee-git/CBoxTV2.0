@@ -24,6 +24,7 @@ internal object Model {
     const val MODEL_CHK_PLAY: String = "ChkPlay"       //播控鉴权
     const val MODEL_PERSON: String = "Person"       //播控鉴权
     const val MODEL_SEARCH: String = "Search"       //搜索
+    const val MODEL_ALTERNATE: String = "Alternate"       //轮播
     const val MODEL_DEFAULT: String = "Default"       //通用
 
 

@@ -81,7 +81,7 @@ public class Constant {
     public static final String CONTENTTYPE_CG = "CG";   //节目合集
     public static final String CONTENTTYPE_SA = "SA";   //专题
     public static final String CONTENTTYPE_LV = "LV";   //直播
-    public static final String CONTENTTYPE_VL = "VL";   //轮播
+    public static final String CONTENTTYPE_LB = "LB";   //轮播
     public static final String CONTENTTYPE_LK = "VL";   //连接
     // 央视影音新加入
     public static final String CONTENTTYPE_CR = "CR";   //人物

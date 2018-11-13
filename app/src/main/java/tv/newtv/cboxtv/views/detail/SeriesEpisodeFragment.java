@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
@@ -60,12 +61,11 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
     }
 
     @Override
-    public String getTabString() {
+    public String getTabString(int index, int endIndex) {
         if (mData.size() == 1) {
             return mData.get(0).getPeriods();
         }
-        return String.format("%s-%s", mData.get(0).getPeriods(), mData.get(mData.size() - 1)
-                .getPeriods());
+        return String.format(Locale.getDefault(), "%d-%d", index+1, endIndex);
     }
 
     @Override
@@ -133,7 +133,8 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             contentView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (viewHolders != null && viewHolders.size() > currentIndex && currentIndex>=0) {
+                    if (viewHolders != null && viewHolders.size() > currentIndex && currentIndex
+                            >= 0) {
                         viewHolders.get(currentIndex).select();
                     }
                 }
@@ -262,7 +263,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    performClick(true,true);
+                    performClick(true, true);
                 }
             });
         }
@@ -282,15 +283,15 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             itemView = null;
         }
 
-        void select(){
-            if(mChange != null){
-                mChange.updateUI(this,mPosition * getPageSize() + mIndex);
+        void select() {
+            if (mChange != null) {
+                mChange.updateUI(this, mPosition * getPageSize() + mIndex);
             }
         }
 
-        void performClick(boolean fromClick,boolean dispatch) {
+        void performClick(boolean fromClick, boolean dispatch) {
             if (mChange != null) {
-                mChange.updateUI(this,mPosition * getPageSize() + mIndex);
+                mChange.updateUI(this, mPosition * getPageSize() + mIndex);
                 mChange.onChange(this, mPosition * getPageSize() + mIndex, fromClick);
             }
         }

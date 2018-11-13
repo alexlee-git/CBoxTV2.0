@@ -22,8 +22,8 @@ import com.newtv.libs.Libs
  */
 class ContentContract {
 
-    interface contentViewCallack : ICmsView {
-        fun onContentResult(content:Content?)
+    interface ContentCallabck : ICmsView {
+        fun onContentResult(content: Content?)
     }
 
     interface View : ICmsView {
@@ -45,7 +45,7 @@ class ContentContract {
          */
         fun getContent(uuid: String, autoSub: Boolean)
 
-        fun getContent(uuid: String,lock:Boolean, callback: View?)
+        fun getContent(uuid: String, lock: Boolean, callback: View?)
         fun getContent(uuid: String, autoSub: Boolean, contentType: String)
 
         /**
@@ -166,7 +166,7 @@ class ContentContract {
             view?.let {
                 if (it is LoadingView) it.onLoading()
             }
-            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid,false, object
+            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false, object
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
@@ -192,7 +192,7 @@ class ContentContract {
             view?.let {
                 if (it is LoadingView) it.onLoading()
             }
-            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid,false, object
+            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false, object
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {

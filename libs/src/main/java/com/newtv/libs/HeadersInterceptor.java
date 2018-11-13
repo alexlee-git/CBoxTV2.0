@@ -50,9 +50,9 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
         Request.Builder builder = request.newBuilder();
         String headerValue = request.header("host_type");
         HttpUrl newBaseUrl = null;
-        if(headerValue != null){
+        if (headerValue != null) {
             builder.removeHeader("host_type");
-            switch (headerValue){
+            switch (headerValue) {
                 case CMS:
                     newBaseUrl = HttpUrl.parse(Constant.BASE_URL_CMS);
                     break;
@@ -81,11 +81,7 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                     newBaseUrl = HttpUrl.parse(Constant.DYNAMIC_KEY);
                     break;
                 case PERMISSTION_CHECK:
-                    if(Libs.get().isDebug()){
-                        newBaseUrl = HttpUrl.parse("http://stage-bzo.cloud.ottcn.com/");
-                    }else {
-                        newBaseUrl = HttpUrl.parse(Constant.BASE_PERMISSTION_CHECK);
-                    }
+                    newBaseUrl = HttpUrl.parse(Constant.BASE_PERMISSTION_CHECK);
                     break;
                 case IS_ORIENTED:
                     newBaseUrl = HttpUrl.parse(Constant.IS_ORIENTED);
@@ -111,7 +107,7 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
 
             }
 
-            if(newBaseUrl == null){
+            if (newBaseUrl == null) {
                 return chain.proceed(request);
             }
             HttpUrl newFullUrl = oldHttpUrl.newBuilder()
@@ -121,7 +117,7 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                     .build();
 
             return chain.proceed(builder.url(newFullUrl).build());
-        }else{
+        } else {
             return chain.proceed(request);
         }
     }

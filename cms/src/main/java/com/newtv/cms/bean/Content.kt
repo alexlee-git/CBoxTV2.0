@@ -81,4 +81,8 @@ open class Content  : Serializable {
     var presenter: String? = null     //主持人	 String
     var premiereTime: String? = null     //首播时间	 String
 
+
+    // LB
+    var alternateNumber:String? = null   //台号
+
 }
