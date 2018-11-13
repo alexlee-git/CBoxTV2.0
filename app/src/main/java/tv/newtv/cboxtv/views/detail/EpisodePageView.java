@@ -21,6 +21,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
@@ -367,11 +368,11 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mEpisodeType = episodeType;
         mVideoType = videoType;
 
-        if(content.getData() == null) {
+        if (content.getData() == null) {
             mContentPresenter = new ContentContract.ContentPresenter
                     (getContext(), this);
             mContentPresenter.getSubContent(mContentUUID);
-        }else{
+        } else {
             parseResult(content.getData());
         }
     }
@@ -388,23 +389,20 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         try {
             mContentList = new ArrayList<>(results);
 
-            boolean tvSeries = !videoType(mVideoType);
-            if (tvSeries) {
+            if (CmsUtil.isVideoTv(seriesContent)) {
                 final boolean sortDesc = "0".equals(seriesContent.isFinish());
                 Collections.sort(mContentList, new Comparator<SubContent>() {
                     @Override
                     public int compare(SubContent t1, SubContent t2) {
                         if (sortDesc) {
-                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt(t1.getPeriods());
+                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt
+                                    (t1.getPeriods());
                         }
-                        return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods());
+                        return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods
+                                ());
                     }
                 });
             }
-
-//            if (mOnEpisodeChange != null) {
-//                mOnEpisodeChange.onGetProgramSeriesInfo(mContentList);
-//            }
 
             if (mContentList != null && mContentList.size() > 0) {
                 if (mControlView != null) {
@@ -463,7 +461,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             episodeFragment.setData(mContentList.subList(index, endIndex));
             episodeFragment.setViewPager(ListPager, fragments.size(), this);
             fragments.add(episodeFragment);
-            pageItems.add(new EpisodePageAdapter.PageItem(episodeFragment.getTabString()));
+            pageItems.add(new EpisodePageAdapter.PageItem(episodeFragment.getTabString(index,endIndex)));
         }
         EpisodeAdapter episodeAdapter = new EpisodeAdapter(mFragmentManager, fragments);
         ListPager.setAdapter(episodeAdapter);
@@ -488,9 +486,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             if (!videoType(mVideoType)) {
                 mTitleView.setText("剧集列表");
                 mTitleView.setVisibility(VISIBLE);
-                if ("0".equals(seriesContent.isFinish())){//没有更新完
-                    mUpTitle.setText("已更新至"+seriesContent.getRecentNum()+"集 | 共"+seriesContent.getSeriesSum()+"集");
-                }else {
+                if ("0".equals(seriesContent.isFinish())) {//没有更新完
+                    mUpTitle.setText("已更新至" + seriesContent.getRecentNum() + "集 | 共" +
+                            seriesContent.getSeriesSum() + "集");
+                } else {
                     mUpTitle.setText("已完结");
                 }
             }

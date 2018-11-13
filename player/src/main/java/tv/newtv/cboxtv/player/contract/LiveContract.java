@@ -13,10 +13,10 @@ import com.newtv.cms.bean.ChkRequest;
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.Encryptor;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.NetworkManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +42,7 @@ public class LiveContract {
 
     public interface Presenter extends ICmsPresenter {
         void checkLive(LiveInfo liveInfo);
+
         boolean isInLive(Content content);
     }
 
@@ -83,8 +84,10 @@ public class LiveContract {
                                     .string
                                     .check_error), Toast.LENGTH_SHORT).show();
                         }
-                        getView().onChkError("-6", getContext().getResources().getString(R.string
-                                .search_fail_agin));
+                        if (getView() != null)
+                            getView().onChkError("-6", getContext().getResources().getString(R
+                                    .string
+                                    .search_fail_agin));
                     }
 
                     @Override
@@ -100,8 +103,9 @@ public class LiveContract {
                                         .getString(R.string
                                                 .check_error), Toast.LENGTH_SHORT).show();
                             }
-                            getView().onChkError("-2", getContext().getResources()
-                                    .getString(R.string.check_error));
+                            if (getView() != null)
+                                getView().onChkError("-2", getContext().getResources()
+                                        .getString(R.string.check_error));
                             LogUtils.e(TAG, "调用鉴权接口后没有返回数据");
                             return;
                         }
@@ -115,10 +119,12 @@ public class LiveContract {
                                         livePermissionCheck.getData()
                                                 .getDecryptKey()));
                             }
-                            getView().liveChkResult(liveInfo);
+                            if (getView() != null)
+                                getView().liveChkResult(liveInfo);
                         } else {
-                            getView().onChkError(livePermissionCheck.getErrorCode(),
-                                    livePermissionCheck.getErrorMessage());
+                            if (getView() != null)
+                                getView().onChkError(livePermissionCheck.getErrorCode(),
+                                        livePermissionCheck.getErrorMessage());
                         }
 
                     }

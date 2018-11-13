@@ -32,6 +32,7 @@ open class CmsServicePresenter<V : ICmsView>(
         const val SERVICE_CONTENT: String = Model.MODEL_CONTENT       // interface-> IContent
         const val SERVICE_DEFAULT: String = Model.MODEL_DEFAULT       // interface-> IDefault
         const val SERVICE_SEARCH: String = Model.MODEL_SEARCH       // interface-> ISearch
+        const val SERVICE_ALTERNATE: String = Model.MODEL_ALTERNATE       // interface-> IAlternate
         const val SERVICE_ACTIVE_AUTH: String = Model.MODEL_ACTIVE_AUTH       // interface->
         // IActiveAuth
         const val SERVICE_CATEGORY: String = Model.MODEL_CATEGORY     // interface-> ICategory

@@ -46,6 +46,7 @@ internal object ModelFactory {
             Model.MODEL_CHK_PLAY -> PlayChkModel()
             Model.MODEL_PERSON -> PersonModel()
             Model.MODEL_SEARCH -> SearchModel()
+            Model.MODEL_ALTERNATE -> AlternateModel()
             Model.MODEL_DEFAULT -> DefaultModel()
 
             else -> {

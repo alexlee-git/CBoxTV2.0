@@ -222,7 +222,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     }
 
     @Override
-    public String getTabString() {
+    public String getTabString(int index,int endIndex) {
         if (mData.size() == 1) {
             return mData.get(0).getPeriods();
         }

@@ -20,21 +20,38 @@ import java.util.*
  */
 object CmsUtil {
 
+
+    @JvmStatic
+    fun isVideoTv(content: Content?): Boolean {
+        val videoType = content?.videoType
+        return TextUtils.equals(videoType, "电视剧")
+                || TextUtils.equals(videoType, "动漫");
+    }
+
+
+    /**
+     * 转换剧集页内外排序之后的对应关系
+     */
     @JvmStatic
     fun translateIndex(content: Content?, index: Int): Int {
-        content?.let {
-            val isUiDesc: Boolean = isUIDataDesc(it)
-            val isPlayerDesc: Boolean = isPlayDesc(it)
-            if (isUiDesc == isPlayerDesc) {
-                return index
-            }
-            it.data?.let { dataList ->
-                return dataList.size - 1 - index
+        if (isVideoTv(content)) {
+            content?.let {
+                val isUiDesc: Boolean = isUIDataDesc(it)
+                val isPlayerDesc: Boolean = isPlayDesc(it)
+                if (isUiDesc == isPlayerDesc) {
+                    return index
+                }
+                it.data?.let { dataList ->
+                    return dataList.size - 1 - index
+                }
             }
         }
         return index
     }
 
+    /**
+     * UI是否需要倒序显示
+     */
     @JvmStatic
     fun isUIDataDesc(content: Content?): Boolean {
         content?.let {
@@ -43,6 +60,9 @@ object CmsUtil {
         return false
     }
 
+    /**
+     * 播放器是否倒序播放
+     */
     @JvmStatic
     fun isPlayDesc(content: Content?): Boolean {
         content?.let {
@@ -50,6 +70,7 @@ object CmsUtil {
         }
         return false
     }
+
 
     private fun getLiveParam(video: Video?): LiveParam? {
         if (video != null) {
