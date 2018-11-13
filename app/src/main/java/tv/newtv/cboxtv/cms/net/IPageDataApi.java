@@ -11,7 +11,7 @@ import retrofit2.http.Path;
  */
 
 public interface IPageDataApi {
-    @Headers("host_type: " + HeadersInterceptor.CMS)
+    @Headers("host_type: " + AppHeadersInterceptor.CMS)
     @GET("icms_api/api/{appKey}/{channelid}/page/{pageuuid}.json")
     Observable<ResponseBody> getPageData(@Path("appKey") String appKey, @Path("channelid") String channelid, @Path("pageuuid") String pageuuid);
 }

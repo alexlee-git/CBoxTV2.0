@@ -16,7 +16,7 @@ import retrofit2.http.Path;
  * 修改备注：
  */
 public interface ISearchRecommendApi {
-    @Headers("host_type: " + HeadersInterceptor.CMS)
+    @Headers("host_type: " + AppHeadersInterceptor.CMS)
     @GET("icms_api/api/{appKey}/{channelid}/hotsearch.json")
     Observable<ResponseBody> getRecommendResponse(@Path("appKey") String appKey, @Path("channelid") String channelid);
 }
