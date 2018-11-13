@@ -94,7 +94,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         AppContext = this.getApplicationContext();
         mContentPresenter = new ContentContract.ContentPresenter(this, null);
         Libs.init(this, BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, BuildConfig.FLAVOR,
-                BuildConfig.DEBUG);
+                BuildConfig.DEBUG, BuildConfig.CLIENT_ID);
 
         Player.get().attachObserver(this);
         DataSupport.init(getApplicationContext());

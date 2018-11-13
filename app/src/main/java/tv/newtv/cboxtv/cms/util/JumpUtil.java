@@ -29,7 +29,6 @@ import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
-import tv.newtv.cboxtv.cms.listPage.ListPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.screenList.ScreenListActivity;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;

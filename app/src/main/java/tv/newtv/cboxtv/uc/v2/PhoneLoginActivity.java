@@ -389,6 +389,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                                 String time = mJsonObject.optString("expires_in");
                                 mTime = Integer.parseInt(time);
                                 btn_refresh.setText(getResources().getString(R.string.phone_login_status1));
+                                tv_code_status.setText("请输入6位数验证码");
                                 if (mHandler != null) {
                                     mHandler.sendEmptyMessageDelayed(DELAY_MILLIS, 1000);
                                 }
@@ -476,6 +477,8 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                                 disposable_sendok = null;
                             }
                             tv_code_status.setText(getResources().getString(R.string.phone_login_status3));
+                            btn_refresh.setText("重新发送");
+                            mPhoneCodeInput.setText("");
                             Toast.makeText(PhoneLoginActivity.this, getResources().getString(R.string.phone_login_status3), Toast.LENGTH_LONG).show();
                         }
 

@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.newtv.libs.Constant;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView;
 
 /**
@@ -151,7 +151,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
 //                "特别提示：如用户对本条款内容有任何疑问，可拨打未来电视官方客服电话（400 046 3366）。");
         //以上为会员协议文本写死方案
         //以下为webview加载html页面方案
-        Constant.HTML_PATH_MEMBER_PROTOCOL = Constant.getBaseUrl(HeadersInterceptor.HTML_PATH_MEMBER_PROTOCOL);
+        Constant.HTML_PATH_MEMBER_PROTOCOL = Constant.getBaseUrl(AppHeadersInterceptor.HTML_PATH_MEMBER_PROTOCOL);
         mWebView = (WebView) findViewById(R.id.id_webView);
         mWebView.clearCache(true);
         mWebView.clearHistory();
@@ -175,7 +175,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Log.e(TAG, "---onPageFinished");
+                Log.e(TAG, "wqs:onPageFinished");
                 if (!isError) {
                     isSuccess = true;
                     //回调成功后的相关操作
@@ -183,11 +183,11 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
                 isError = false;
                 if (mWebView != null) {
                     if (isSuccess) {
-                        Log.d(TAG, "---loadUrl Success");
+                        Log.d(TAG, "wqs:loadUrl Success");
                         mWebView.setVisibility(View.VISIBLE);
 
                     } else {
-                        Log.d(TAG, "---loadUrl Error");
+                        Log.d(TAG, "wqs:loadUrl Error");
                         mWebView.setVisibility(View.INVISIBLE);
                     }
                 }
@@ -197,7 +197,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                Log.e(TAG, "---onReceivedError");
+                Log.e(TAG, "wqs:onReceivedError");
                 isError = true;
                 isSuccess = false;
                 //回调失败的相关操作
@@ -227,7 +227,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
         if (!TextUtils.isEmpty(Constant.HTML_PATH_MEMBER_PROTOCOL)) {
             mWebView.loadUrl(Constant.HTML_PATH_MEMBER_PROTOCOL);
         } else {
-            Log.e(TAG, "---html:path==null");
+            Log.e(TAG, "wqs:html:path==null");
             mWebView.setVisibility(View.GONE);
         }
     }
@@ -235,7 +235,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "---onDestroy");
+        Log.e(TAG, "wqs:onDestroy");
         if (mWebView != null) {
             mWebView.clearCache(true);
             mWebView.clearHistory();
@@ -246,7 +246,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
 
     @Override
     public void onScrolledToBottom() {
-        Log.e(TAG, "---onScrolledToBottom");
+        Log.e(TAG, "wqs:onScrolledToBottom");
 //        if (mBottomArrow != null) {
 //            mBottomArrow.setVisibility(View.INVISIBLE);
 //        }
@@ -254,7 +254,7 @@ public class MemberAgreementActivity extends Activity implements ScanScrollView.
 
     @Override
     public void onScrolledChange() {
-        Log.e(TAG, "---onScrolledChange");
+        Log.e(TAG, "wqs:onScrolledChange");
 //        if (mBottomArrow != null) {
 //            mBottomArrow.setVisibility(View.VISIBLE);
 //        }

@@ -214,6 +214,7 @@ public class Program {
         info.setVImage(vImage);
         info.setTitle(title);
         info.setSubTitle(subTitle);
+        info.setSeriesSubUUID(seriesSubUUID);
 //        info.setActionType(actionType);
 //        info.setActionUri(actionUri);
         info.setGrade(grade);

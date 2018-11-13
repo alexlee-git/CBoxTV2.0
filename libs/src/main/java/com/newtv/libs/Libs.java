@@ -21,16 +21,18 @@ public class Libs {
 
     private String mAppKey;
     private String mChannelId;
+    private String mClientId;
     private String mFlavor;
     private boolean mDebug;
 
-    private Libs(Context context, String appkey, String channelId, String flavor, boolean isDebug) {
+    private Libs(Context context, String appkey, String channelId, String flavor,
+                 boolean isDebug, String clientId) {
         mContext = context.getApplicationContext();
         mAppKey = appkey;
         mChannelId = channelId;
         mFlavor = flavor;
         mDebug = isDebug;
-
+        mClientId = clientId;
 
 
         NetworkManager.init(context);
@@ -41,11 +43,11 @@ public class Libs {
     }
 
     public static void init(Context context, String appkey, String channelId, String flavor,
-                            boolean isDebug) {
+                            boolean isDebug, String clientId) {
         if (instance == null)
             synchronized (Libs.class) {
                 if (instance == null) {
-                    instance = new Libs(context, appkey, channelId, flavor, isDebug);
+                    instance = new Libs(context, appkey, channelId, flavor, isDebug, clientId);
                 }
             }
     }
@@ -68,5 +70,9 @@ public class Libs {
 
     public boolean isDebug() {
          return mDebug;
+    }
+
+    public String getClientId() {
+        return mClientId;
     }
 }

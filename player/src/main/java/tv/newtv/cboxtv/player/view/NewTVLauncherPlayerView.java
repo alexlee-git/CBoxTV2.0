@@ -354,7 +354,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public PlayerViewConfig getDefaultConfig() {
-        buildPlayerViewConfig();
+        if(null == defaultConfig){
+            buildPlayerViewConfig();
+        }
         return defaultConfig;
     }
 
@@ -714,7 +716,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
 
                 playIndex(index);
-                String seriesUUID = programSeriesInfo.getContentUUID();
+                String seriesUUID = "";
+                if(program.getUseSeriesSubUUID()){
+                    seriesUUID = program.getSeriesSubUUID();
+                }else {
+                    seriesUUID = programSeriesInfo.getContentUUID();
+                }
                 mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
 
 
@@ -1336,7 +1343,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void addHistory() {
         if (isLiving()) return;
 
-        if (mProgramSeriesInfo == null) {
+        if (mProgramSeriesInfo == null || mProgramSeriesInfo.getData() == null) {
             return;
         }
 
@@ -1345,8 +1352,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), mProgramSeriesInfo.getContentUUID()));
 
+        if(mProgramSeriesInfo.getData().size() > index
+                && mProgramSeriesInfo.getData().get(index).getUseSeriesSubUUID()){
+            return;
+        }
         Player.get().onFinish(mProgramSeriesInfo, index, getCurrentPosition());
-
     }
 
     public boolean isADPlaying() {
@@ -1384,9 +1394,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (videoDataStruct.isTrySee()) {
             isTrySee = true;
             hintVip.setVisibility(View.VISIBLE);
-            if (!TextUtils.isEmpty(videoDataStruct.getFreeDuration())) {
+            String freeDuration = videoDataStruct.getFreeDuration();
+            if (!TextUtils.isEmpty(freeDuration) && Integer.parseInt(freeDuration) > 0) {
                 int duration = Integer.parseInt(videoDataStruct.getFreeDuration());
                 mNewTVLauncherPlayerSeekbar.setFreeDuration(duration, freeDurationListener);
+            } else {
+                goToBuy();
             }
         } else {
             isTrySee = false;

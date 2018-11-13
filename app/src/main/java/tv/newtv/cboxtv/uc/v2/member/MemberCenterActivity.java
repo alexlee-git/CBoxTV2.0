@@ -44,7 +44,7 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.net.HeadersInterceptor;
+import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
@@ -112,12 +112,12 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         mPopupView = LayoutInflater.from(this).inflate(R.layout.activity_usercenter_member_center_qr_code_full_screen_v2, null);
         mPopupWindow = new PopupWindow(mPopupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
-        Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(HeadersInterceptor.PAGE_MEMBER);
+        Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
         if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
             //获取推荐位数据
             requestRecommendData();
         } else {
-            Log.e(TAG, "---ID_PAGE_MEMBER==null");
+            Log.d(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
     }
 
@@ -140,7 +140,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     Gson mGSon = new Gson();
                     try {
                         value = responseBody.string();
-                        Log.d(TAG, "---requestRecommendData:value:" + value);
+                        Log.d(TAG, "wqs:requestRecommendData:value:" + value);
                         moduleInfoResult = mGSon.fromJson(value, ModuleInfoResult.class);
                         inflateData(moduleInfoResult);
                     } catch (IOException e) {
@@ -162,7 +162,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         } catch (Exception e) {
             unRecommendSubscribe();
             e.printStackTrace();
-            Log.e(TAG, "---requestGuessYouLikeData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:requestGuessYouLikeData:Exception:" + e.toString());
         }
 
     }
@@ -173,7 +173,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
                 boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(MemberCenterActivity.this);
-                Log.d(TAG, "---isTokenRefresh:status:" + status);
+                Log.d(TAG, "wqs:isTokenRefresh:status:" + status);
                 //获取登录状态
                 mLoginTokenString = SharePreferenceUtils.getToken(getApplicationContext());
                 if (!TextUtils.isEmpty(mLoginTokenString)) {
@@ -190,17 +190,17 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     public void accept(String value) throws Exception {
                         if (!TextUtils.isEmpty(value)) {
                             //用户已登录
-                            Log.e(TAG, "---requestUserInfo:loginStatus:true:requestMemberInfo");
+                            Log.d(TAG, "wqs:requestUserInfo:loginStatus:true:requestMemberInfo");
                             //获取用户会员信息
                             requestMemberInfo();
                         } else {
                             //用户未登录
-                            Log.e(TAG, "---requestUserInfo:loginStatus:false:not requestMemberInfo");
+                            Log.d(TAG, "wqs:requestUserInfo:loginStatus:false:not requestMemberInfo");
                         }
                         if (mHandler != null) {
                             mHandler.sendEmptyMessage(HEAD);
                         } else {
-                            Log.e(TAG, "---requestUserInfo:mHandler == null");
+                            Log.d(TAG, "wqs:requestUserInfo:mHandler == null");
                         }
                     }
                 });
@@ -223,7 +223,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     String memberInfo = null;
                     try {
                         memberInfo = responseBody.string();
-                        Log.e(TAG, "---requestMemberInfo:onNext:" + memberInfo);
+                        Log.d(TAG, "wqs:requestMemberInfo:onNext:" + memberInfo);
                         JSONArray jsonArray = new JSONArray(memberInfo);
                         if (jsonArray != null && jsonArray.length() > 0) {
                             JSONObject jsonObject = jsonArray.getJSONObject(0);
@@ -236,7 +236,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                             String expireTime = TimeUtil.getInstance().getDateFromSeconds(seconds + "");
                             mMemberInfoBean.setExpireTime(expireTime);
                         } else {
-                            Log.e(TAG, "---requestMemberInfo:next:memberInfo==null");
+                            Log.d(TAG, "wqs:requestMemberInfo:next:memberInfo==null");
                         }
                         unMemberInfoSubscribe();
                     } catch (Exception e) {
@@ -249,11 +249,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
 
                 @Override
                 public void onError(Throwable e) {
-                    Log.e(TAG, "---requestMemberInfo:onError");
+                    Log.e(TAG, "wqs:requestMemberInfo:onError");
                     if (mHandler != null) {
                         mHandler.sendEmptyMessage(HEAD);
                     } else {
-                        Log.e(TAG, "---requestMemberInfo:mHandler == null");
+                        Log.d(TAG, "wqs:requestMemberInfo:mHandler == null");
                     }
                     unMemberInfoSubscribe();
                 }
@@ -266,7 +266,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         } catch (Exception e) {
             e.printStackTrace();
             unMemberInfoSubscribe();
-            Log.e(TAG, "---requestMemberInfo:Exception:" + e.toString());
+            Log.e(TAG, "wqs:requestMemberInfo:Exception:" + e.toString());
         }
     }
 
@@ -276,7 +276,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
      * @param
      */
     private void updateHeadInfo(int position) {
-        Log.d(TAG, "---updateHeadInfo");
+        Log.d(TAG, "wqs:updateHeadInfo");
         try {
             if (mAdapter != null) {
                 //传递用户会员信息数据
@@ -284,11 +284,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyDataSetChanged();
             } else {
-                Log.e(TAG, "---bindData:mAdapter == null");
+                Log.d(TAG, "wqs:bindData:mAdapter == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---bindData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:bindData:Exception:" + e.toString());
         }
     }
 
@@ -318,7 +318,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
      * @param
      */
     private void inflateData(ModuleInfoResult moduleInfoResult) {
-        Log.d(TAG, "---inflateData");
+        Log.d(TAG, "wqs:inflateData");
         UserCenterPageBean UserCenterPageBean = null;
         UserCenterPageBean.Bean mProgramInfo = null;
         String title = "";
@@ -328,7 +328,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         try {
             if (moduleInfoResult != null) {
                 if (moduleInfoResult.getDatas() != null && moduleInfoResult.getDatas().size() > 0) {
-                    Log.d(TAG, "---inflateData:moduleInfoResult.getDatas().size():" + moduleInfoResult.getDatas().size());
+                    Log.d(TAG, "wqs:inflateData:moduleInfoResult.getDatas().size():" + moduleInfoResult.getDatas().size());
                     for (int i = 0; i < moduleInfoResult.getDatas().size(); i++) {
                         List<Program> programInfoList = null;
                         if (i == 0) {
@@ -347,10 +347,10 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                         mPromotionRecommendBean.add(mProgramInfo);
                                     }
                                 } else {
-                                    Log.e(TAG, "---inflateData：i == 0:moduleInfoResult.getDatas().get(0).getDatas()== null");
+                                    Log.d(TAG, "wqs:inflateData：i == 0:moduleInfoResult.getDatas().get(0).getDatas()== null");
                                 }
                             } else {
-                                Log.e(TAG, "---inflateData：i == 0:moduleInfoResult.getDatas().get(0) == null");
+                                Log.d(TAG, "wqs:inflateData：i == 0:moduleInfoResult.getDatas().get(0) == null");
                             }
                         } else if (i == 1) {
                             if (moduleInfoResult.getDatas().get(i) != null) {
@@ -366,10 +366,10 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                     mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                                     mInterestsRecommendBean.add(mProgramInfo);
                                 } else {
-                                    Log.e(TAG, "---inflateData：i == 1:moduleInfoResult.getDatas().get(0).getDatas()== null");
+                                    Log.d(TAG, "wqs:inflateData：i == 1:moduleInfoResult.getDatas().get(0).getDatas()== null");
                                 }
                             } else {
-                                Log.e(TAG, "---inflateData：i == 1:moduleInfoResult.getDatas().get(0) == null");
+                                Log.d(TAG, "wqs:inflateData：i == 1:moduleInfoResult.getDatas().get(0) == null");
                             }
                         } else if (i == 2) {
                             if (moduleInfoResult.getDatas().get(i) != null) {
@@ -388,53 +388,53 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                         mDramaRecommendBean.add(mProgramInfo);
                                     }
                                 } else {
-                                    Log.e(TAG, "---inflateData：i == 2:moduleInfoResult.getDatas().get(0).getDatas()== null");
+                                    Log.d(TAG, "wqs:inflateData：i == 2:moduleInfoResult.getDatas().get(0).getDatas()== null");
                                 }
                             } else {
-                                Log.e(TAG, "---inflateData：i == 2:moduleInfoResult.getDatas().get(0) == null");
+                                Log.d(TAG, "wqs:inflateData：i == 2:moduleInfoResult.getDatas().get(0) == null");
                             }
                         } else {
-                            Log.e(TAG, "---只取三组数据，多余数据不取");
+                            Log.d(TAG, "wqs:只取三组数据，多余数据不取");
                             break;
                         }
                     }
                 } else {
-                    Log.e(TAG, "---inflateData：moduleInfoResult.getDatas() == null");
+                    Log.d(TAG, "wqs:inflateData：moduleInfoResult.getDatas() == null");
                 }
             } else {
-                Log.e(TAG, "---inflateData：moduleInfoResult == null");
+                Log.d(TAG, "wqs:inflateData：moduleInfoResult == null");
             }
             if (mAdapter != null) {
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_PROMOTION - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mPromotionRecommendBean;
                 } else {
-                    Log.e(TAG, "---inflateData：PromotionRecommend==null");
+                    Log.d(TAG, "wqs:inflateData：PromotionRecommend==null");
                 }
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_INTERESTS - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mInterestsRecommendBean;
                 } else {
-                    Log.e(TAG, "---inflateData：mInterestsRecommendBean==null");
+                    Log.d(TAG, "wqs:inflateData：mInterestsRecommendBean==null");
                 }
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_DRAMA - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mDramaRecommendBean;
                     UserCenterPageBean.title = title;
                 } else {
-                    Log.e(TAG, "---inflateData：mDramaRecommendBean==null");
+                    Log.d(TAG, "wqs:inflateData：mDramaRecommendBean==null");
                 }
             } else {
-                Log.e(TAG, "---inflateData：mAdapter == null");
+                Log.d(TAG, "wqs:inflateData：mAdapter == null");
             }
             if (mHandler != null) {
                 mHandler.sendEmptyMessage(RECOMMEND);
             } else {
-                Log.e(TAG, "---inflateData：mHandler == null");
+                Log.d(TAG, "wqs:inflateData：mHandler == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---inflateData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:inflateData:Exception:" + e.toString());
         }
     }
 
@@ -445,23 +445,23 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
      */
 
     private void bindData() {
-        Log.d(TAG, "---bindData");
+        Log.d(TAG, "wqs:bindData");
         try {
             if (mAdapter != null) {
                 mAdapter.notifyDataSetChanged();
             } else {
-                Log.e(TAG, "---bindData:mAdapter == null");
+                Log.d(TAG, "wqs:bindData:mAdapter == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---bindData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:bindData:Exception:" + e.toString());
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "---onResume");
+        Log.d(TAG, "wqs:onResume");
         //会员中心首页上报日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5,");
         requestUserInfo();
@@ -470,7 +470,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "---onDestroy");
+        Log.d(TAG, "wqs:onDestroy");
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
@@ -507,11 +507,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     }
                     break;
                 case R.id.id_member_center_btn_drama_library:
-                    Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(HeadersInterceptor.MEMBER_CENTER_PARAMS);
+                    Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
                     if (!TextUtils.isEmpty(Constant.MEMBER_CENTER_PARAMS)) {
                         intent.putExtra("action", "panel");
                         intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
-                        Log.d(TAG, "---MEMBER_CENTER_PARAMS:action:panel----params:" + Constant.MEMBER_CENTER_PARAMS);
+                        Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + Constant.MEMBER_CENTER_PARAMS);
                         mPageClass = SplashActivity.class;
                     } else {
                         Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();
@@ -560,7 +560,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onItemClick:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onItemClick:Exception:" + e.toString());
         }
     }
 
@@ -569,14 +569,14 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         try {
             if (view != null && view.getId() == R.id.id_member_center_promotion_recommend && hasFocus) {
                 if (mRecyclerView.canScrollVertically(-1)) {
-                    Log.d(TAG, "---onItemFocusChange:promotion_recommend:top");
+                    Log.d(TAG, "wqs:onItemFocusChange:promotion_recommend:top");
                     mRecyclerView.smoothScrollToPosition(0);
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "---onItemFocusChange:Exception:" + e.toString());
+            Log.e(TAG, "wqs:onItemFocusChange:Exception:" + e.toString());
 
         }
     }
