@@ -92,7 +92,7 @@ class SuggestContract {
 
         override fun getPersonFigureList(contentUUID: String) {
             val content = getService<IPerson>(CmsServicePresenter.SERVICE_PERSON_DETAIL)
-            content?.getPersonFigureList(BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID, contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
+            content?.getPersonFigureList(Libs.get().appKey, Libs.get().channelId, contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
                 override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.columnPersonFiguresResult(result.data)

@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 
-import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.libs.Constant;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.BaseActivity;
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
 import tv.newtv.cboxtv.MainActivity;
