@@ -7,14 +7,26 @@
     android:clipToPadding="false"
     android:gravity="center_horizontal"
     android:orientation="vertical">
-
-    <tv.newtv.cboxtv.views.custom.RecycleImageView
-        android:id="@+id/exit_image"
+    <FrameLayout
+        android:id="@+id/focus_layout"
         android:layout_marginTop="@dimen/height_210px"
-        android:layout_width="@dimen/width_816px"
-        android:layout_height="@dimen/height_480px"
-        android:scaleType="fitXY"
-        />
+        android:layout_width="@dimen/width_868px"
+        android:layout_height="@dimen/height_526px"
+        android:focusable="true"
+
+        android:background="@drawable/selector_pos_background_27px"
+        >
+
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:id="@+id/exit_image"
+            android:layout_width="@dimen/width_816px"
+            android:layout_height="@dimen/height_480px"
+            android:scaleType="fitXY"
+            />
+
+
+    </FrameLayout>
+
 
     <TextView
         android:id="@+id/like_tv"
@@ -79,7 +91,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/height_20px"
             android:background="@drawable/exit_see_status"
-            android:focusable="true" />
+            />
 
     </RelativeLayout>
 

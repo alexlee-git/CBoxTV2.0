@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!-- 二维码点击放大的布局-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_black_90">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/color_black_90">
 
     <!--二维码框 -->
     <FrameLayout
@@ -22,7 +22,7 @@
             android:layout_marginRight="@dimen/width_17px"
             android:layout_marginStart="@dimen/width_22px"
             android:layout_marginTop="@dimen/height_22px"
-            android:background="@drawable/activity_login_qr_inside_back" />
+            android:background="@drawable/activity_login_qr_inside_back"/>
 
         <ImageView
             android:id="@+id/layout_usercenter_img_qrcode"
@@ -32,7 +32,7 @@
             android:layout_marginLeft="@dimen/width_37px"
             android:layout_marginRight="@dimen/width_32px"
             android:layout_marginStart="@dimen/width_37px"
-            android:layout_marginTop="@dimen/height_37px" />
+            android:layout_marginTop="@dimen/height_37px"/>
 
         <ImageView
             android:id="@+id/usercenter_full_screen_qr_scan_icon"
@@ -41,7 +41,7 @@
             android:layout_marginLeft="@dimen/width_67px"
             android:layout_marginStart="@dimen/width_67px"
             android:layout_marginTop="@dimen/height_681px"
-            android:background="@drawable/member_qr_scan_icon_v2" />
+            android:background="@drawable/member_qr_scan_icon_v2"/>
         <!-- 会员中心二维码扫描提醒上标题 -->
         <TextView
             android:id="@+id/usercenter_full_screen_qr_top_title"
@@ -52,7 +52,7 @@
             android:layout_marginStart="@dimen/width_160px"
             android:layout_marginTop="@dimen/height_681px"
             android:includeFontPadding="false"
-            android:text="@string/usercenter_login_scan_phone" />
+            android:text="@string/usercenter_login_scan_phone"/>
         <!-- 会员中心二维码扫描提醒下标题 -->
         <TextView
             android:id="@+id/usercenter_full_screen_qr_bottom_title"
@@ -63,7 +63,7 @@
             android:layout_marginStart="@dimen/width_160px"
             android:layout_marginTop="@dimen/height_724px"
             android:includeFontPadding="false"
-            android:text="@string/usercenter_login_scan_quest_tv" />
+            android:text="@string/usercenter_login_scan_quest_tv"/>
     </FrameLayout>
 </RelativeLayout>
 
