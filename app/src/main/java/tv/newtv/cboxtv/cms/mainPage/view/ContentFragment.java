@@ -344,7 +344,9 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
                 mRecyclerView.setAdapter(adapter);
             } else {
-                adapter.notifyDataSetChanged();
+                if (!mRecyclerView.hasFocus()) {
+                    adapter.notifyDataSetChanged();
+                }
             }
 
             Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
