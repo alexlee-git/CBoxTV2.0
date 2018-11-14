@@ -27,6 +27,7 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
+import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
 
 /**
@@ -323,8 +324,8 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                     TitleView.setText(programsInfo.getTitle());
                 }
 
-                if (("1".equals(programsInfo.getVipFlag()) || "2".equals(programsInfo.getVipFlag
-                        ())) && vipView != null) {
+                if ((VipCheck.VIP_FLAG_VIP_BUY.equals(programsInfo.getVipFlag()) || VipCheck.VIP_FLAG_VIP.equals(programsInfo.getVipFlag
+                        ()) || VipCheck.VIP_FLAG_BUY.equals(programsInfo.getVipFlag())) && vipView != null) {
                     vipView.setVisibility(View.VISIBLE);
                 }
             } else {
