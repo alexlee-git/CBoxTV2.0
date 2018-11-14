@@ -1352,7 +1352,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), mProgramSeriesInfo.getContentUUID()));
 
-        if(mProgramSeriesInfo.getData().size() > index
+        if(mProgramSeriesInfo.getData().size() > index && index >= 0
                 && mProgramSeriesInfo.getData().get(index).getUseSeriesSubUUID()){
             return;
         }
