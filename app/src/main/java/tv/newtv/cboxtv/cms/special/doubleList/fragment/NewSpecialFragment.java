@@ -181,7 +181,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         if (mCacheSubContents == null) {
             mCacheSubContents = new HashMap<>();
         }
-        mCacheSubContents.put(leftPosition + uuid, content);
+        mCacheSubContents.put(leftPosition + mLeftData.get(leftPosition).getL_id(), content);
         refreshCenterData(leftPosition, content);
         mProgramSeriesInfo = content;
         initCenterDownStatus();
@@ -275,12 +275,6 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     @Override
     public void onResume() {
         super.onResume();
-        /*if (leftPosition > 0) {
-            mLeftMenu.getChildAt(leftPosition).requestFocus();
-        }
-        if (centerPosition > 0) {
-            mCenterMenu.getChildAt(centerPosition).requestFocus();
-        }*/
     }
 
     @Override
@@ -379,7 +373,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     mLeftUp.setVisibility(View.INVISIBLE);
                 }
             } else if (!TextUtils.isEmpty(tag) && tag.equals(DOWN)) {
-                if (leftFocusPt > MAX_DIS_POSTION) {
+                if (mLeftData.size() > MAX_DIS_POSTION + 1) {
                     mLeftUp.setVisibility(View.VISIBLE);
                 } else {
                     mLeftUp.setVisibility(View.INVISIBLE);
@@ -771,7 +765,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
 
     @Override
     public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
-        printLogAndToast("onSubContentResult", "refresh center uuid : " + uuid + " result : ", false);
+        printLogAndToast("onSubContentResult", "refresh center uuid : " + uuid + " result : " + result, false);
         if (null != result) {
             mCenterData = result;
             mNewSpecialCenterAdapter.refreshData(leftPosition, mCenterData);

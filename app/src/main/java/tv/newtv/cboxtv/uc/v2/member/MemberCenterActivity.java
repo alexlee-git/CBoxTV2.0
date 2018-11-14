@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.uc.v2.member;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -18,11 +19,17 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.UpVersion;
+import com.newtv.cms.contract.PageContract;
+import com.newtv.cms.contract.PageContract.ContentPresenter;
+import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -69,7 +76,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * 修改日期：
  * 修改备注：
  */
-public class MemberCenterActivity extends Activity implements OnRecycleItemClickListener<UserCenterPageBean.Bean> {
+public class MemberCenterActivity extends Activity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>,VersionUpdateContract.View {
     private final String TAG = "MemberCenterActivity";
     public static final int HEAD = 0;
     public static final int RECOMMEND_PROMOTION = 1;//会员促销推荐位
@@ -87,7 +94,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private Disposable mRecommendDisposable;//推荐位
     private MemberInfoBean mMemberInfoBean;
     private String mLoginTokenString;//登录token,用于判断登录状态
-
+    private PageContract.ContentPresenter mContentPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +122,9 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
         if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
             //获取推荐位数据
-            requestRecommendData();
+            mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(),this);
+            mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
+            //requestRecommendData();
         } else {
             Log.d(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
@@ -579,6 +588,21 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
             Log.e(TAG, "wqs:onItemFocusChange:Exception:" + e.toString());
 
         }
+    }
+
+    @Override
+    public void versionCheckResult(@Nullable UpVersion versionBeen, boolean isForce) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
+
     }
 
 
