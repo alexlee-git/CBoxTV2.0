@@ -486,12 +486,12 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             if (!videoType(mVideoType)) {
                 mTitleView.setText("剧集列表");
                 mTitleView.setVisibility(VISIBLE);
-                if ("0".equals(seriesContent.isFinish())) {//没有更新完
-                    mUpTitle.setText("已更新至" + seriesContent.getRecentNum() + "集 | 共" +
-                            seriesContent.getSeriesSum() + "集");
-                } else {
-                    mUpTitle.setText("已完结");
-                }
+            }
+            if (seriesContent != null && "0".equals(seriesContent.isFinish())) {//没有更新完
+                mUpTitle.setText("已更新至" + seriesContent.getRecentNum() + "集 | 共" +
+                        seriesContent.getSeriesSum() + "集");
+            } else if(seriesContent != null && "1".equals(seriesContent.isFinish())){
+                mUpTitle.setText("共"+seriesContent.getSeriesSum()+"集已剧终");
             }
             LayoutParams layoutParams = (LayoutParams) TitleView.getLayoutParams();
             TitleView.measure(widthMeasureSpec,
