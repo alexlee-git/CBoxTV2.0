@@ -42,6 +42,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import tv.newtv.ottlauncher.db.History;
+
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuPopupWindow;
 import tv.newtv.cboxtv.player.ChkPlayResult;
@@ -1352,11 +1354,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), mProgramSeriesInfo.getContentUUID()));
 
-        if(mProgramSeriesInfo.getData().size() > index
+        if(mProgramSeriesInfo.getData().size() > index && index >= 0
                 && mProgramSeriesInfo.getData().get(index).getUseSeriesSubUUID()){
             return;
         }
         Player.get().onFinish(mProgramSeriesInfo, index, getCurrentPosition());
+
     }
 
     public boolean isADPlaying() {

@@ -22,6 +22,9 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.UpVersion;
+import com.newtv.cms.contract.PageContract;
+import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.ad.AdEventContent;
@@ -35,6 +38,7 @@ import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -92,7 +96,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * 修改备注：收藏节目集和节目、关注人物、订阅CCTV、订阅CCTV
  */
 public class UserCenterFragment extends BaseFragment implements
-        OnRecycleItemClickListener<UserCenterPageBean.Bean> {
+        OnRecycleItemClickListener<UserCenterPageBean.Bean> ,VersionUpdateContract.View{
 
     public static final int SUBSCRIBE = 3;
     public static final int COLLECT = 4;
@@ -124,7 +128,7 @@ public class UserCenterFragment extends BaseFragment implements
     private String sign_member_open_good = "member_open_good";//已开通，有效
     private String userId;//用户ID
     private DataBaseCompleteReceiver mDataBaseCompleteReceiver;//接收登陆成功数据同步结束广播，用于数据更新
-
+    private PageContract.ContentPresenter mContentPresenter;
     public static BaseFragment newInstance(Bundle paramBundle) {
         BaseFragment fragment = new UserCenterFragment();
         fragment.setArguments(paramBundle);
@@ -200,7 +204,9 @@ public class UserCenterFragment extends BaseFragment implements
         Constant.ID_PAGE_USERCENTER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_USERCENTER);
         if (!TextUtils.isEmpty(Constant.ID_PAGE_USERCENTER)) {
             //获取猜你喜欢推荐位的数据
-            requestRecommendData();
+            mContentPresenter = new PageContract.ContentPresenter(getContext(),this);
+            mContentPresenter.getPageContent(Constant.ID_PAGE_USERCENTER);
+            //requestRecommendData();
         } else {
             Log.e(TAG, "wqs:ID_PAGE_USERCENTER==null");
         }
@@ -933,6 +939,21 @@ public class UserCenterFragment extends BaseFragment implements
         if (mAdapter == null)
             return null;
         return mAdapter.getFirstView();
+    }
+
+    @Override
+    public void versionCheckResult(@org.jetbrains.annotations.Nullable UpVersion versionBeen, boolean isForce) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+
     }
 
     public static class MyHandler extends Handler {

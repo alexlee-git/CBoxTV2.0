@@ -21,6 +21,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.UpVersion;
+import com.newtv.cms.contract.PageContract;
+import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.uc.pay.ExterPayBean;
@@ -28,6 +31,7 @@ import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,7 +66,7 @@ import tv.newtv.cboxtv.uc.v2.member.MemberAgreementActivity;
  * 创建人:       caolonghe
  * 创建日期:     2018/9/12 0012
  */
-public class PayChannelActivity extends Activity {
+public class PayChannelActivity extends Activity implements VersionUpdateContract.View{
 
     private final String TAG = "PayChannelActivity";
     private RecyclerView mRecyclerView;
@@ -86,7 +90,7 @@ public class PayChannelActivity extends Activity {
     private String mToken;
     private boolean isVip;
     private ExterPayBean mExterPayBean;
-
+    private PageContract.ContentPresenter mContentPresenter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +136,9 @@ public class PayChannelActivity extends Activity {
         } else {
             rel_down.setVisibility(View.INVISIBLE);
         }
-        requestRecommendData();
+        mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(),this);
+        mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
+        //requestRecommendData();
         Observable.create(new ObservableOnSubscribe<Long>() {
             @Override
             public void subscribe(ObservableEmitter<Long> emitter) throws Exception {
@@ -225,6 +231,21 @@ public class PayChannelActivity extends Activity {
             return false;
         }
     });
+
+    @Override
+    public void versionCheckResult(@org.jetbrains.annotations.Nullable UpVersion versionBeen, boolean isForce) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+
+    }
 
     class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder> {
 
