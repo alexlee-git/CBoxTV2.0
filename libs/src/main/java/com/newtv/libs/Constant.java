@@ -187,8 +187,7 @@ public class Constant {
             "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     //用户中心
     public static final String RESPONSE_TYPE = "device_code";
-//public static final String BASE_URL_SEARCH = "http://searchapi.cloud.ottcn.com/";//正式地址
-    public static final String CMS_NEW_SEARCH = "http://111.32.138.57:80/";//测试地址
+
     public static final String GRANT_TYPE_SMS = "sms_code";
     public static final String GRANT_TYPE_REFRESH = "refresh_code";
     public static final String CLIENT_ID = Libs.get().getClientId();
@@ -205,10 +204,12 @@ public class Constant {
             .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH)
             : "http://search.cloud.ottcn.com:8080/";
 
+    public static final String CMS_NEW_SEARCH = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
+            ? "http://111.32.138.57:80/":
+            "http://searchapi.cloud.ottcn.com/";
     public static final String BASE_URL_NEW_SEARCH = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.NEW_SEARCH)) ? getBaseUrl(HeadersInterceptor.NEW_SEARCH)
             : CMS_NEW_SEARCH;
-
 
     public static final String SERVER_TIME_URL = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SERVER_TIME)) ? getBaseUrl(HeadersInterceptor.SERVER_TIME) : "https://bzo.cloud" +
@@ -232,7 +233,6 @@ public class Constant {
             ".com"; //动态防盗链
 
 
-
     private static final String CMS_ONLINE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
             ? "http://111.32.132.156/"
             : "http://epg.cloud.ottcn.com/";
@@ -243,8 +243,8 @@ public class Constant {
 
 
     private static final String CMS_NEW_ONLINE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
-            ? "http://testcms31.ottcn.com:30013"
-            : "http://api31.cloud.ottcn.com";
+            ? "http://testcms31.ottcn.com:30013/"
+            : "http://api31.cloud.ottcn.com/";
 
 
     public static final String BASE_URL_NEW_CMS = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
