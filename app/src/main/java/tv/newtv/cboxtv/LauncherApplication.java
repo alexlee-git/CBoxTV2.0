@@ -51,6 +51,7 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.ottlauncher.db.History;
 
 //import com.tencent.bugly.crashreport.CrashReport;
 
@@ -199,7 +200,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                 return;
             }
             String csId = playInfo.getCsContentIDs().split("\\|")[0];
-            mContentPresenter.getContent(csId, true,new
+            mContentPresenter.getContent(csId, true, new
                     ContentContract.View() {
                         @Override
                         public void onContentResult(@NotNull String uuid, @Nullable Content content) {
@@ -257,8 +258,18 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                             }
                         }
                     }, tableName);
+
+
                 }
             });
+
+            History mHistory = new History(playInfo.getContentID(), playInfo.getContentType(),
+                    playInfo.getTitle(), playInfo.getVImage(), "com.newtv.cboxtv",
+                    "tv.newtv.cboxtv.SplashActivity", "", "", System.currentTimeMillis());
+            Intent mIntent = new Intent();
+            mIntent.setAction("android.intent.action.CONTENT_HISTORY");
+            mIntent.putExtra("history", mHistory);
+            sendBroadcast(mIntent);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -42,6 +42,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import tv.newtv.ottlauncher.db.History;
+
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuPopupWindow;
 import tv.newtv.cboxtv.player.ChkPlayResult;
@@ -66,7 +68,6 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VPlayCenter;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.vip.VipCheck;
-import tv.newtv.ottlauncher.db.History;
 import tv.newtv.player.R;
 
 //import tv.newtv.cboxtv.cms.details.PushManager;
@@ -1359,12 +1360,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
         Player.get().onFinish(mProgramSeriesInfo, index, getCurrentPosition());
 
-        History mHistory = new History(mProgramSeriesInfo.getContentID(), mProgramSeriesInfo.getContentType(),
-                mProgramSeriesInfo.getTitle(), mProgramSeriesInfo.getVImage(), "", "", "", System.currentTimeMillis());
-        Intent mIntent = new Intent();
-        mIntent.setAction("android.intent.action.CONTENT_HISTORY");
-        mIntent.putExtra("history", mHistory);
-        getContext().sendBroadcast(mIntent);
     }
 
     public boolean isADPlaying() {
