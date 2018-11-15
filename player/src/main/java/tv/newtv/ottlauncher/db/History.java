@@ -19,7 +19,9 @@ public final class History implements Serializable {
 
     private final String contentImgUrl;
 
-    private final String id;
+    private final String packageName;
+
+    private final String className;
 
     private final String extent1;
 
@@ -28,12 +30,13 @@ public final class History implements Serializable {
     private final long updateTime;
 
 
-    public History(@NonNull String contentUUId, String contentType, String contentName, String contentImgUrl, @NonNull String id, @NonNull String extent1, @NonNull String extent2, long updateTime) {
+    public History(@NonNull String contentUUId, String contentType, String contentName, String contentImgUrl, @NonNull String packageName, @NonNull String className, @NonNull String extent1, @NonNull String extent2, long updateTime) {
         this.contentUUId = contentUUId;
         this.contentType = contentType;
         this.contentName = contentName;
         this.contentImgUrl = contentImgUrl;
-        this.id = id;
+        this.packageName = packageName;
+        this.className = className;
         this.extent1 = extent1;
         this.extent2 = extent2;
         this.updateTime = updateTime;
@@ -59,9 +62,15 @@ public final class History implements Serializable {
         return contentImgUrl;
     }
 
+
     @NonNull
-    public String getId() {
-        return id;
+    public String getPackageName() {
+        return packageName;
+    }
+
+    @NonNull
+    public String getClassName() {
+        return className;
     }
 
     @NonNull
@@ -86,7 +95,8 @@ public final class History implements Serializable {
                 ", contentType='" + contentType + '\'' +
                 ", contentName='" + contentName + '\'' +
                 ", contentImgUrl='" + contentImgUrl + '\'' +
-                ", id='" + id + '\'' +
+                ", packageName='" + packageName + '\'' +
+                ", className='" + className + '\'' +
                 ", extent1='" + extent1 + '\'' +
                 ", extent2='" + extent2 + '\'' +
                 ", updateTime=" + updateTime +
