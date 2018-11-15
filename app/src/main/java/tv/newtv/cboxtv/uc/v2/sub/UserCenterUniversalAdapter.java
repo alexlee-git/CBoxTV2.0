@@ -113,6 +113,10 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
                     .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
                     .transform(new PosterCircleTransform(mContext, 4))
                     .into(holder.poster);
+        }else {
+            if (holder.poster != null){
+                holder.poster.setImageResource(R.drawable.default_member_center_240_360_v2);
+            }
         }
 
 
