@@ -184,23 +184,23 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         mColumnFragment.setLabelFocusView(mColumnFocusImageView);
         mFragments.add(mColumnFragment);
 
-        mPersonFragment = new PersonFragment();
-        mPersonFragment.setIndex(1);
-        mPersonFragment.attachDataInfoResult(this);
-        mPersonFragment.setLabelView(mPersonFrameLayout);
-        mPersonFragment.setLoadingLayout(mLoadingLayout,mLoadingImg);
-        tabs.add(mPersonFrameLayout);
-        mPersonFragment.setLabelFocusView(mPersonFocusImageView);
-        mFragments.add(mPersonFragment);
-
         mDramaFragment = new DramaFragment();
-        mDramaFragment.setIndex(2);
+        mDramaFragment.setIndex(1);
         mDramaFragment.attachDataInfoResult(this);
         mDramaFragment.setLabelView(mDramaFrameLayout);
         mDramaFragment.setLoadingLayout(mLoadingLayout,mLoadingImg);
         tabs.add(mDramaFrameLayout);
         mDramaFragment.setLabelFocusView(mDramaFocusImageView);
         mFragments.add(mDramaFragment);
+
+        mPersonFragment = new PersonFragment();
+        mPersonFragment.setIndex(2);
+        mPersonFragment.attachDataInfoResult(this);
+        mPersonFragment.setLabelView(mPersonFrameLayout);
+        mPersonFragment.setLoadingLayout(mLoadingLayout,mLoadingImg);
+        tabs.add(mPersonFrameLayout);
+        mPersonFragment.setLabelFocusView(mPersonFocusImageView);
+        mFragments.add(mPersonFragment);
 
         mViewPagerAdapter = new SearchViewPagerAdapter(((FragmentActivity) getContext()).getSupportFragmentManager(), mFragments);
         mViewpager.setAdapter(mViewPagerAdapter);
@@ -253,10 +253,8 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     public void setEmptyViewVisible() {
         if (isLoadComplete()) {
             if (mFragments != null && mFragments.size() > 0) {
-                LogUtils.e("NewTVSearchResult","mSearchResultEmpty setVisibility GONE");
                 mSearchResultEmpty.setVisibility(GONE);
             } else {
-                LogUtils.e("NewTVSearchResult","mSearchResultEmpty setVisibility VISIBLE");
                 mSearchResultEmpty.setVisibility(VISIBLE);
             }
         }else{

@@ -12,8 +12,9 @@
     <string name="search_history">搜索历史</string>
     <string name="search_poster_title">搜索结果</string>
     <string name="search_Load_reminding">正在加载请稍后</string>
-    <string name="search_drama_title">影音</string>
-    <string name="search_column_title">栏目</string>
+    <string name="search_drama_title">剧集</string>
+    <string name="search_single_title">单片</string>
+    <string name="search_column_title">电视栏目</string>
     <string name="search_person_title">人物</string>
     <string name="search_result_empty">暂无搜索结果</string>
     <string name="search_hot_recommend_empty">暂无热搜结果</string>

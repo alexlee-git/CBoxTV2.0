@@ -54,6 +54,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private ContentContract.Presenter mContentPresenter;
     private View controlView;
 
+    private int mHorizontalCount = 4;
+
     private OnSeriesInfoResult mOnSeriesInfoResult;
     private boolean usePlayNotify = true;
     private int item_layout = R.layout.program_horizontal_layout;
@@ -99,9 +101,9 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     public String setTitleByType(int type) {
         switch (type) {
             case TYPE_PERSON_HOST_LV:
-                return "TA 主持的CCTV+栏目";
-            case TYPE_PERSON_RELATION_LV:
                 return "TA 的节目";
+            case TYPE_PERSON_RELATION_LV:
+                return "TA 主持的CCTV+栏目";
             case TYPE_PROGRAM_SERICE_LV:
                 return "节目合集";
             default:
@@ -140,7 +142,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             mRecycleView = findViewById(R.id.list_view);
             mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                     .HORIZONTAL, false));
-            mRecycleView.setShowCounts(4);
+            mRecycleView.setShowCounts(mHorizontalCount);
             mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
                     .getDimensionPixelOffset(R.dimen.width_48px)));
             mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id.dir_right));
@@ -232,8 +234,9 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         }
     }
 
-    public void setHorizontalItemLayout(int layout) {
+    public void setHorizontalItemLayout(int layout,int count) {
         item_layout = layout;
+        mHorizontalCount = count;
         usePlayNotify = false;
     }
 
@@ -330,7 +333,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             super(itemView);
 
             modleView = itemView.findViewById(R.id.id_module_view);
-            posterView = itemView.findViewById(R.id.iv_player);
+            posterView = itemView.findViewWithTag("tag_poster_image");
             titleText = itemView.findViewWithTag("tag_poster_title");
 
             modleView.setOnFocusChangeListener(this);
