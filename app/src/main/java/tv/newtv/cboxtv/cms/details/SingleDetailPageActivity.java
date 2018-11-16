@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
@@ -118,6 +119,9 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         scrollView = findViewById(R.id.root_view);
         headPlayerView = findViewById(R.id.header_video);
         suggestView = findViewById(R.id.suggest);
+
+        //进入节目详情页上传日志
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "1," + contentUUID);
 
         initHeadPlayerView(contentUUID);
     }
