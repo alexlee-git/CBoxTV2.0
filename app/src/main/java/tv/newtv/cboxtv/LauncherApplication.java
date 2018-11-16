@@ -236,6 +236,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
     private void addHistory(final Content playInfo, final int index, final int position) {
         try {
+            LogUtils.e("receive addHistory...");
             QueryUserStatusUtil.getInstance().getLoginStatus(this, new INotifyLoginStatusCallback() {
                 @Override
                 public void notifyLoginStatusCallback(boolean login) {
@@ -280,7 +281,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
     @Override
     public void onExitApp() {
-
+        ActivityStacks.get().ExitApp();
     }
 
     @Override
