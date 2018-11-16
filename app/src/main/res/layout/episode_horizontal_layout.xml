@@ -31,7 +31,7 @@
         <tv.newtv.cboxtv.views.widget.HorizontalRecycleView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_360px"
+            android:layout_height="wrap_content"
             android:layout_toStartOf="@+id/dir_right"
             android:layout_toLeftOf="@+id/dir_right"
             android:layout_toEndOf="@+id/dir_left"
