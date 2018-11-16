@@ -23,7 +23,7 @@ public class GlideUtil {
     public static void loadImage(Context context, ImageView imageView, String url,
                                  int placeHolderResId, int errorResId, boolean isCorner) {
 
-        imageView.setTag(null);
+        //imageView.setTag(null);
 
         if (Libs.get().isDebug()) {
             if (url.contains("http://172.25.102.19/")) {

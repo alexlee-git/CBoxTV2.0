@@ -114,7 +114,9 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
                     .transform(new PosterCircleTransform(mContext, 4))
                     .into(holder.poster);
         }else {
-            Picasso.get().load(R.drawable.default_member_center_240_360_v2).into(holder.poster);
+            if (holder.poster != null){
+                holder.poster.setImageResource(R.drawable.default_member_center_240_360_v2);
+            }
         }
 
 
