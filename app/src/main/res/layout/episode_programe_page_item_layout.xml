@@ -7,9 +7,11 @@
         android:layout_marginLeft="@dimen/width_120px"
         android:layout_marginRight="@dimen/width_120px"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/height_254px"
         android:columnCount="15"
-        android:rowCount="2">
+        android:rowCount="2"
+        android:layout_centerInParent="true"
+        >
         <!--1-->
         <FrameLayout
             android:id="@+id/rl_focus_30_1"
