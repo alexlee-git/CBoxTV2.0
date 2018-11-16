@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
@@ -78,6 +79,8 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public void onCreate() {
         super.onCreate();
+
+        ViewTarget.setTagId(R.id.tag_glide_id);
 
         //解决Rxjava的onError()异常
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
