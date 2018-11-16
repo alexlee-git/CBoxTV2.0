@@ -63,10 +63,10 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
 
     @Override
     public String getTabString(int index, int endIndex) {
-        if (mData.size() == 1) {
-            return mData.get(0).getPeriods();
+        if (index + 1 == endIndex) {
+            return String.format(Locale.getDefault(), "%d", index + 1);
         }
-        return String.format(Locale.getDefault(), "%d-%d", index+1, endIndex);
+        return String.format(Locale.getDefault(), "%d-%d", index + 1, endIndex);
     }
 
     @Override
