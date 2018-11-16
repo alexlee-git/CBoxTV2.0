@@ -198,7 +198,10 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
 
             if (isBackPressed(event)) {
                 if (fromOuter) {
-                    Player.get().onExitApp();
+//                    Player.get().onExitApp();
+                    startActivityForResult(new Intent().setClass(this, WarningExitActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                            , 0x999);
                     return true;
                 }
             }
