@@ -36,13 +36,15 @@ public class AdPopupWindow extends PopupWindow implements IAdConstract.IADConstr
         imageView = popView.findViewById(tv.newtv.cboxtv.R.id.image);
         setContentView(popView);
 
-        int width = 300;
-        int height = 150;
+        int marginBottom = context.getResources().getDimensionPixelOffset(com.newtv.cms.R.dimen.width_60px);
+        int marginRight = context.getResources().getDimensionPixelOffset(com.newtv.cms.R.dimen.width_120px);
+        int width = context.getResources().getDimensionPixelOffset(com.newtv.cms.R.dimen.width_359px);
+        int height = context.getResources().getDimensionPixelOffset(com.newtv.cms.R.dimen.width_359px);
         setWidth(width);
         setHeight(height);
         setBackgroundDrawable(new BitmapDrawable());
-        showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width,
-                ScreenUtils.getScreenH() - height);
+        showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width - marginRight,
+                ScreenUtils.getScreenH() - height - marginBottom);
 
         adPresenter = new ADPresenter(this);
         adPresenter.getAD(Constant.AD_DESK,Constant.AD_GLOBAL_POPUP,"");
