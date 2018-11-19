@@ -127,7 +127,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setPopupAD();
+//        setPopupAD();
     }
 
     private void setPopupAD() {
