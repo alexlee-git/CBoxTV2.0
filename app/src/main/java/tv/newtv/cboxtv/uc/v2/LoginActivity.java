@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
@@ -37,6 +38,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
@@ -212,6 +214,19 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                                 disposable_Qrcode.dispose();
                                 disposable_Qrcode = null;
                             }
+                            String error = getResources().getString(R.string.send_phone_err);
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    error = jsonObject.getString("msg");
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
