@@ -98,20 +98,21 @@ public class Updater {
             String apkAbsPath = packageResourcePath + File.separator + apkFileName;
             FileDownloader.setup(LauncherApplication.AppContext);
             FileDownloadUtils.setDefaultSaveRootPath(apkAbsPath);
-            File file= new File(apkAbsPath);
-            if(!file.exists()){
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    LogUtils.e(e.toString());
-                }
+            File file = new File(apkAbsPath);
+            if (!file.exists()) {
+                file.delete();
+            }
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                LogUtils.e(e.toString());
             }
             String apkStoragePath = file.getAbsolutePath();
 
             DownloadManager.Request request1 = request.setDestinationUri(Uri.fromFile(file));
             Log.d("setDestinationUri", new File(apkAbsPath).exists() + "");
-            Log.e("Updater", "---download===========apkAbsPath="+apkAbsPath);
-            Log.e("Updater", "---download===========apkStoragePath="+apkStoragePath);
+            Log.e("Updater", "---download===========apkAbsPath=" + apkAbsPath);
+            Log.e("Updater", "---download===========apkStoragePath=" + apkStoragePath);
         }
 
         //  request.setDestinationInExternalPublicDir("myapk", apkFileName);
@@ -129,7 +130,7 @@ public class Updater {
         //加入下载队列后会给该任务返回一个long型的id，
         //通过该id可以取消任务，重启任务等等
 
-            mTaskId = downloadManager.enqueue(request);
+        mTaskId = downloadManager.enqueue(request);
 
 
     }
@@ -331,6 +332,4 @@ public class Updater {
         }
 
     }
-
-
 }

@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!--bugly 日志权限-->
     <uses-permission android:name="android.permission.READ_LOGS" />
@@ -96,13 +96,13 @@
         <activity
             android:name=".uc.SoftWareInfoActivity"
             android:theme="@style/AppContentTheme" />
-       <!-- <activity
-            android:name=".cms.details.ProgramListDetailActiviy"
-            android:theme="@style/AppContentTheme" />-->
+        <!-- <activity
+             android:name=".cms.details.ProgramListDetailActiviy"
+             android:theme="@style/AppContentTheme" />-->
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
+            android:authorities="tv.newtv.cboxtv.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
@@ -116,6 +116,7 @@
             </intent-filter>
         </receiver>
 
+        <service android:name=".uc.bean.DownloadReceiver$MyIntentService" />
         <activity
             android:name=".uc.UserDealActivity"
             android:theme="@style/AppContentTheme" />
