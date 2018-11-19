@@ -3,24 +3,21 @@ package tv.newtv.cboxtv.views.detail;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 
-import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 
-import tv.newtv.cboxtv.player.PlayerConfig;
-
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
 
 public class SmallWindowView extends BaseAdView implements IEpisode {
     private static final String TAG = "SmallWindowView";
 
     public SmallWindowView(Context context) {
-        this(context, null);
+        this(context,null);
     }
 
     public SmallWindowView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
+        this(context, attrs,0);
     }
 
     public SmallWindowView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -28,10 +25,8 @@ public class SmallWindowView extends BaseAdView implements IEpisode {
     }
 
     @Override
-    protected void getAD(AdContract.Presenter mADPresenter) {
-        mADPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_RIGHTPOS, "", PlayerConfig
-                .getInstance().getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId
-                (), PlayerConfig.getInstance().getTopicId(),null);
+    protected void getAD(ADPresenter mADPresenter) {
+        mADPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_RIGHTPOS,"");
     }
 
     @Override
