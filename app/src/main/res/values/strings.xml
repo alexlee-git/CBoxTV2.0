@@ -100,7 +100,7 @@
     <string name="attention_success">关注成功,请到我的关注中查看</string>
     <string name="new_version_tip">亲爱的用户: 能享受新版本的服务了,更新如下:</string>
 
-<!--用户中心二期-->
+    <!--用户中心二期-->
     <string name="use_mobile_login">用手机号码验证登录</string>
     <string name="exit_login">退出登录</string>
     <string name="user_id">用户ID</string>
@@ -154,7 +154,7 @@
     <string name="phone_login_tip_code1">，按返回键重新输入手机号</string>
     <string name="phone_login_tip_5">请输入验证码，十五分钟内输入有效</string>
     <string name="phone_login_code_err">验证码不能为空</string>
-    <string name="phone_login_user_agreement">同意用户协议</string>
+    <string name="phone_login_user_agreement">同意《用户协议》</string>
     <string name="phone_login_user_success">登录成功！</string>
     <string name="phone_login_user_success1">秒跳转</string>
 
