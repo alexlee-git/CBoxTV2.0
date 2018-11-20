@@ -87,7 +87,7 @@ public class FileCacheUtils {
         double kiloByte = size / 1024;
         if (kiloByte < 1) {
 //            return size + "Byte";
-            return "0M";
+            return "0.0M";
         }
         double megaByte = kiloByte / 1024;
         if (megaByte < 1) {
