@@ -205,6 +205,7 @@ public class VodContract {
             videoDataStruct.setCategoryIds(playResult.getCategoryIds());
             ADConfig.getInstance().setProgramId(playResult.getContentUUID());
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
+            ADConfig.getInstance().setDuration(playResult.getDuration());
 
             if(UserStatus.isVip()){
                 PlayerConfig.getInstance().setJumpAD(true);

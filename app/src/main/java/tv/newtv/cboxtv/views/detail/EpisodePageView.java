@@ -77,7 +77,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     private List<SubContent> mContentList;
 
-    private AdContract.Presenter adPresenter;
+//    private AdContract.Presenter adPresenter;
     private ContentContract.Presenter mContentPresenter;
     private int mPageSize;
     private String mVideoType;
@@ -95,24 +95,24 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     public EpisodePageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize(context);
-        getAD();
+//        getAD();
     }
 
     private void getAD() {
-        adPresenter = new AdContract.AdPresenter(getContext(), this);
-        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_CONTENTLIST, "",
-                PlayerConfig
-                        .getInstance().getFirstChannelId(), PlayerConfig.getInstance()
-                        .getSecondChannelId
-                                (), PlayerConfig.getInstance().getTopicId(), null);
+//        adPresenter = new AdContract.AdPresenter(getContext(), this);
+//        adPresenter.getAdByChannel(Constant.AD_DESK, Constant.AD_DETAILPAGE_CONTENTLIST, "",
+//                PlayerConfig
+//                        .getInstance().getFirstChannelId(), PlayerConfig.getInstance()
+//                        .getSecondChannelId
+//                                (), PlayerConfig.getInstance().getTopicId(), null);
     }
 
     @Override
     public void destroy() {
-        if (adPresenter != null) {
-            adPresenter.destroy();
-            adPresenter = null;
-        }
+//        if (adPresenter != null) {
+//            adPresenter.destroy();
+//            adPresenter = null;
+//        }
         if (mContentPresenter != null) {
             mContentPresenter.destroy();
             mContentPresenter = null;
@@ -457,7 +457,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             } else {
                 episodeFragment = new SeriesEpisodeFragment();
             }
-            episodeFragment.setAdItem(adPresenter.getAdItem());
+//            episodeFragment.setAdItem(adPresenter.getAdItem());
             episodeFragment.setData(mContentList.subList(index, endIndex));
             episodeFragment.setViewPager(ListPager, fragments.size(), this);
             fragments.add(episodeFragment);
