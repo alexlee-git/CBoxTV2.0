@@ -38,7 +38,12 @@ public class Constant {
     public static final String TAG = "CBoxTV";
     public static final String BASE_URL_LISTPAGE = "listPage";
     public static final String CMS_URL = "icms_api/api/";
-    public static final String BOOT_GUIDE_HOST = "http://newtv.boot.ottcn.com:8080/";
+
+    public static final String BOOT_GUIDE_HOST = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
+            ? "http://111.32.138.57:8080/" : "http://newtv.boot.ottcn.com:8080/";
+
+
+
     //广告位类型
     public static final String AD_TOPIC = "topic";//专题广告
     public static final String AD_DESK = "desk";//桌面广告
