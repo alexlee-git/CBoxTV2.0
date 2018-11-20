@@ -503,6 +503,7 @@
             android:layout_marginLeft="@dimen/width_39px"
             android:layout_marginTop="@dimen/height_399px"
             android:ellipsize="marquee"
+            android:includeFontPadding="false"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
