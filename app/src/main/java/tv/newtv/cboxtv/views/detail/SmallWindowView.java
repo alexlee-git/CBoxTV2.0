@@ -26,7 +26,7 @@ public class SmallWindowView extends BaseAdView implements IEpisode {
 
     @Override
     protected void getAD(ADPresenter mADPresenter) {
-        mADPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_RIGHTPOS,"");
+//        mADPresenter.getAD(Constant.AD_DESK,Constant.AD_DETAILPAGE_RIGHTPOS,"");
     }
 
     @Override
