@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/width_33px"
+    android:clipToPadding="false"
+    >
+
+    <tv.newtv.cboxtv.views.detail.FocusRelativeLayout
+        android:id="@+id/id_module_view"
+        android:layout_width="@dimen/width_306px"
+        android:layout_height="@dimen/height_426px"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:focusable="true"
+        android:tag="tag_focus_layout"
+        android:visibility="visible"
+        >
+
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:layout_width="@dimen/width_306px"
+            android:layout_height="@dimen/height_426px"
+            android:scaleType="fitXY"
+            android:tag="tag_poster_image"
+            android:src="@drawable/focus_240_360"
+            />
+
+    </tv.newtv.cboxtv.views.detail.FocusRelativeLayout>
+
+    <TextView
+        style="@style/ModulePosterBottomTitleStyle"
+        android:layout_width="@dimen/width_240px"
+        android:layout_height="@dimen/height_32px"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:tag="tag_poster_title" />
+
+</LinearLayout>

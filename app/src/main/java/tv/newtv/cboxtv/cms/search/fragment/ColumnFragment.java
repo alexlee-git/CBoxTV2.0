@@ -23,8 +23,6 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.adapter.SearchResultAdapter;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
-import tv.newtv.cboxtv.cms.search.listener.OnGetSearchResultFocus;
-import tv.newtv.cboxtv.cms.search.listener.ResultViewFocusListener;
 
 
 /**
@@ -84,7 +82,7 @@ public class ColumnFragment extends BaseFragment{
                 mAdapter.setSearchHolderAction(this);
                 mRecyclerView.setAdapter(mAdapter);
             }else {
-                mAdapter.notifyItemRangeInserted(mAdapter.getItemCount(), mDatas.size() - 1);
+                mAdapter.notifyItemRangeInserted(mAdapter.getItemCount(), mDatas.size());
             }
         } else {
             if(mDatas == null || mDatas.size() == 0) {
