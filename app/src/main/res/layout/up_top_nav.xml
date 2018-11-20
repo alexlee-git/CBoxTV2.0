@@ -9,7 +9,7 @@
 
     <ImageView
         android:layout_width="@dimen/height_34px"
-        android:layout_height="@dimen/_height_20px"
+        android:layout_height="@dimen/height_20px"
         android:src="@drawable/icon_prompt" />
 
     <ImageView

@@ -44,7 +44,6 @@ public class ADPresenter extends BaseRequestAdPresenter implements IAdConstract.
             return;
         }
 
-        Log.e("AdHelper", "显示:" + mAD.toString());
         mAD.setCallback(new ADHelper.ADCallback() {
             @Override
             public void showAd(String type, String url) {

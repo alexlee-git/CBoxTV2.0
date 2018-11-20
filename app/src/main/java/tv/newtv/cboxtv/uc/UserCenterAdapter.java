@@ -669,23 +669,17 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
         }
     }
 
-    private void disPlayItemData(ImageView imageView, Object img) {
+    private void disPlayItemData(RecycleImageView imageView, Object img) {
         if (img instanceof String) {
-            RequestCreator picasso = Picasso.get()
-                    .load((String) img)
-                    .priority(Picasso.Priority.HIGH)
-                    .config(Bitmap.Config.ARGB_8888);
-            picasso = picasso.placeholder(R.drawable.default_member_center_240_360_v2).
-                    error(R.drawable.deful_user);
-            picasso.into(imageView);
+            imageView.placeHolder(R.drawable.default_member_center_240_360_v2)
+                    .errorHolder(R.drawable.default_member_center_240_360_v2)
+                    .hasCorner(true)
+                    .load((String) img);
         } else {
-            RequestCreator picasso = Picasso.get()
-                    .load((int) img)
-                    .priority(Picasso.Priority.HIGH)
-                    .config(Bitmap.Config.ARGB_8888);
-            picasso = picasso.placeholder(R.drawable.default_member_center_240_360_v2).
-                    error(R.drawable.deful_user);
-            picasso.into(imageView);
+            imageView.placeHolder(R.drawable.default_member_center_240_360_v2)
+                    .errorHolder(R.drawable.default_member_center_240_360_v2)
+                    .hasCorner(true)
+                    .load((int) img);
         }
     }
 
