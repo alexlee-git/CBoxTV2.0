@@ -156,11 +156,12 @@
 
     <TextView
         android:id="@+id/phone_login_user_agrement"
-        android:layout_width="@dimen/width_240px"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/height_26px"
         android:layout_marginLeft="@dimen/width_120px"
         android:layout_marginStart="@dimen/width_120px"
         android:layout_marginTop="@dimen/height_1006px"
+        android:focusable="true"
         android:includeFontPadding="false"
         android:text="@string/phone_login_user_agreement"
         android:textColor="#B3FFFFFF"

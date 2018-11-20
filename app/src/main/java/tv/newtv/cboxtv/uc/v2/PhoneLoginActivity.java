@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -63,6 +64,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
 
     private RelativeLayout rel_phone, rel_code;
     private TextView tv_code_phone, tv_code_status, tv_code_inval;
+    private TextView tv_agreenment;
     private TextView tv_success;
     private Button btn_refresh;
     private EditText mPhoneCodeInput;
@@ -103,6 +105,19 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
         rel_code.setVisibility(View.INVISIBLE);
 
         tv_success = findViewById(R.id.phone_login_success);
+        tv_agreenment = findViewById(R.id.phone_login_user_agrement);
+        tv_agreenment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    tv_agreenment.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
+                    tv_agreenment.getPaint().setAntiAlias(true);//抗锯齿
+                }else{
+                    tv_agreenment.getPaint().setFlags(0); // 取消设置的的划线
+                    tv_agreenment.getPaint().setAntiAlias(true);//抗锯齿
+                }
+            }
+        });
         tv_code_phone = findViewById(R.id.phone_login_tip_phone);
         tv_code_status = findViewById(R.id.phone_login_code_status);
         tv_code_inval = findViewById(R.id.phone_login_code_inval);
