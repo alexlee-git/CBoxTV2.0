@@ -444,7 +444,7 @@ class BlockBuilder {
         }
 
         String tag = (String) view.getTag();
-        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2")) {
+        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") || tag.equals("cell_001_1")) {
             //直接放大view
             ScaleAnimation sa = new ScaleAnimation(1.0f, 1.07f, 1.0f, 1.07f, Animation
                     .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -488,7 +488,7 @@ class BlockBuilder {
         }
 
         String tag = (String) view.getTag();
-        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2")) {
+        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") || tag.equals("cell_001_1")) {
             ScaleAnimation sa = new ScaleAnimation(1.07f, 1.0f, 1.07f, 1.0f, Animation
                     .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             sa.setFillAfter(true);

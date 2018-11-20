@@ -3,6 +3,7 @@ package tv.newtv.cboxtv;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,8 @@ import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.HeadersInterceptor;
 import com.newtv.libs.ad.ADHelper;
+import com.newtv.libs.ad.AdEventContent;
+import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -40,6 +43,8 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private PageContract.Presenter mPresenter;
     private AdContract.Presenter mAdPresenter;
     private Program program;
+    private boolean isAd =false;
+    private String eventContent="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +99,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         cancelButton.setOnClickListener(this);
         okButton.setOnFocusChangeListener(this);
         cancelButton.setOnFocusChangeListener(this);
+        focus_layout.setOnClickListener(this);
 
     }
 
@@ -106,9 +112,20 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         } else if (id == R.id.cancelButton) {
             setResult(RESULT_CANCELED);
         }else if (id==R.id.focus_layout){
-            if (program!=null){
-                JumpUtil.activityJump(this,program.getL_actionType(),program.getL_contentType(),program.getL_uuid(),program.getL_actionUri());
+            if (isAd){
+                if (!TextUtils.isEmpty(eventContent)){
+                    AdEventContent adEventContent = GsonUtil.fromjson(eventContent, AdEventContent
+                            .class);
+                    JumpUtil.activityJump(this, adEventContent.actionType, adEventContent.contentType,
+                            adEventContent.contentUUID,adEventContent.actionURI);
+                }
+
+            }else {
+                if (program!=null){
+                    JumpUtil.activityJump(this,program.getL_actionType(),program.getL_contentType(),program.getL_id(),program.getL_actionUri());
+                }
             }
+
         }
         finish();
     }
@@ -138,9 +155,11 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                         @Override
                         public void onSuccess() {
                             ADHelper.AD.ADItem item = mAdPresenter.getAdItem();
+                            eventContent = item.eventContent;
                             if (item != null) {
                                 AdSDK.getInstance().report((item.mid + ""), item.aid + "", item.id + "",
                                         "", null, item.PlayTime + "", null);
+
                             }
                         }
 
@@ -165,12 +184,15 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onPageResult(@NotNull ModelResult<ArrayList<Page>> page) {
         program = page.getData().get(0).getPrograms().get(0);
+        Log.d("WarningExitActivity", "program.isAd():" + program.isAd());
         if (program.isAd() != 1) {
             if (!TextUtils.isEmpty(program.getImg())) {
                 Picasso.get().load(program.getImg()).into(exit_image);
             }
         } else {
+            isAd = true;
             getAD();
+
         }
 
 

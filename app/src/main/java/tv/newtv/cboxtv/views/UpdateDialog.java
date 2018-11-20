@@ -17,12 +17,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.liulishuo.filedownloader.FileDownloader;
-import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.newtv.cms.bean.UpVersion;
-import com.newtv.libs.util.FileUtil;
+import com.newtv.libs.util.SPrefUtils;
 
-import java.io.File;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -42,6 +39,7 @@ import tv.newtv.cboxtv.uc.bean.Updater;
  */
 public class UpdateDialog {
     private static final String TAG = UpdateDialog.class.getSimpleName();
+    private static final String APK_SIZE = "apk_size";
     private AlertDialog constraintDialog;
     private RelativeLayout rlUp;
     private LinearLayout linerPrograss;
@@ -100,9 +98,10 @@ public class UpdateDialog {
             public void onClick(View view) {
                 rlUp.setVisibility(View.GONE);
                 linerPrograss.setVisibility(View.VISIBLE);
-                if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getPackageAddr())) {
-                    Log.d(TAG, "exist : " + fileApkExist());
-                    if (fileApkExist()) {
+                if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getPackageAddr())) {//22696530
+                    if (((Long) SPrefUtils.getValue(LauncherApplication.AppContext, APK_SIZE, 0L) > 0)
+                            && String.valueOf(SPrefUtils.getValue(LauncherApplication.AppContext, APK_SIZE, 0L))
+                            .equals(versionBeen.getPackageSize())) {
                         Intent intent = new Intent(LauncherApplication.AppContext, DownloadReceiver.MyIntentService.class);
                         intent.setAction("startIntentService");
                         LauncherApplication.AppContext.startService(intent);
@@ -148,6 +147,7 @@ public class UpdateDialog {
             @Override
             public void onProgressChange(long totalBytes, long curBytes, float progress) {
                 pbUpdate.setProgress((int) progress);
+                SPrefUtils.setValue(LauncherApplication.AppContext, APK_SIZE, curBytes);
                 tvPrograss.setText(String.format(Locale.getDefault(), "努力下载中 %d%%", (int)
                         progress));
                 if ((int) progress == 100) {
@@ -166,19 +166,5 @@ public class UpdateDialog {
                 }
             }
         });
-    }
-
-    public boolean fileApkExist() {
-        String packageResourcePath = FileUtil.getCacheDirectory(LauncherApplication.AppContext, "").getAbsolutePath();
-        Log.i("File", new File(packageResourcePath).isDirectory() + "");
-        String apkAbsPath = packageResourcePath + File.separator + "CBox.apk";
-        FileDownloader.setup(LauncherApplication.AppContext);
-        FileDownloadUtils.setDefaultSaveRootPath(apkAbsPath);
-        File file = new File(apkAbsPath);
-        if (file.exists()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }
