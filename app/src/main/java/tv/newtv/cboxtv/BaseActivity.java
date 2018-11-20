@@ -121,7 +121,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             NewTVLauncherPlayerViewManager.getInstance().setVideoSilent(false);
         }
 
-        setBackgroundAD();
+//        setBackgroundAD();
     }
 
     @Override
