@@ -43,6 +43,8 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
     public static final String HOTSEARCH_CONTENTID = "HOTSEARCH_CONTENTID"; //搜索id
     public static final String EXIT_CONTENTID = "EXIT_CONTENTID";
 
+    public static final String BOOT_GUIDE = "BOOT_GUIDE";
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
@@ -103,6 +105,9 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                     break;
                 case USER_BEHAVIOR:
                     newBaseUrl = HttpUrl.parse(Constant.BASE_URL_USER_BEHAVIOR);
+                    break;
+                case BOOT_GUIDE:
+                    newBaseUrl = HttpUrl.parse(Constant.BOOT_GUIDE_HOST);
                     break;
 
             }

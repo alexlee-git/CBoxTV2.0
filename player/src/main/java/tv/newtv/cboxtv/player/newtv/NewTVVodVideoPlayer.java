@@ -333,30 +333,19 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
      * @return
      */
     private String parseCategoryIds(String categoryIds, IcntvPlayerInfo info) {
-        if (TextUtils.isEmpty(categoryIds)) {
-            return null;
+        if(TextUtils.isEmpty(categoryIds)){
+            return "";
         }
-
-        StringBuilder column = new StringBuilder();
         StringBuilder secondColumn = new StringBuilder();
-        String[] categoryArr = categoryIds.split(",");
-        for (String categoryId : categoryArr) {
-            String[] split = categoryId.split("/");
-            if (split.length >= 1) {
-                column.append(split[0]);
-                column.append(",");
-            }
-            if (split.length >= 2) {
-                secondColumn.append(split[1]);
-                secondColumn.append(",");
-            }
+
+        String[] categoryArr = categoryIds.split("\\|");
+        for(String categoryId : categoryArr){
+            secondColumn.append(categoryId);
+            secondColumn.append(",");
         }
-        column.delete(column.length() - 1, column.length());
-        if (secondColumn.length() > 0) {
-            secondColumn.delete(secondColumn.length() - 1, secondColumn.length());
+        if(secondColumn.length() > 0){
+            secondColumn.delete(secondColumn.length()-1,secondColumn.length());
         }
-        info.setColumnId(column.toString());
-//        info.setExtend("secondcolumn="+secondColumn.toString());
         return secondColumn.toString();
     }
 

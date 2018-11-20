@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.Program;
 import com.newtv.libs.Constant;
 import com.squareup.picasso.Picasso;
@@ -87,7 +86,7 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JumpUtil.activityJump(mContext, Constant.OPEN_DETAILS, info.getContentType(), info.getContentId(), "");
+                JumpUtil.activityJump(mContext, Constant.OPEN_DETAILS, info.getL_contentType(), info.getL_id(), "");
             }
         });
     }
@@ -122,13 +121,14 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
         ImageView poster;
         ImageView superscript;
         ImageView focus;
+
         public MyViewHolder(View itemView) {
             super(itemView);
-            score   = itemView.findViewById(R.id.id_score);
-            name    = itemView.findViewById(R.id.id_title);
-            focus   = itemView.findViewById(R.id.id_focus);
+            score = itemView.findViewById(R.id.id_score);
+            name = itemView.findViewById(R.id.id_title);
+            focus = itemView.findViewById(R.id.id_focus);
             episode = itemView.findViewById(R.id.id_episode_data);
-            poster  = itemView.findViewById(R.id.id_poster);
+            poster = itemView.findViewById(R.id.id_poster);
             superscript = itemView.findViewById(R.id.id_superscript);
         }
     }
