@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
 
     @BindView(R.id.person_detail_ad_fl)
     EpisodeAdView mAdView;
+    private long lastTime = 0;
 
     @Override
     protected boolean interruptDetailPageKeyEvent(KeyEvent event) {
@@ -119,8 +121,11 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
         taProgramView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {
-                JumpUtil.detailsJumpActivity(getApplicationContext(), data.getContentType(), data
-                        .getContentID());
+                if (System.currentTimeMillis() - lastTime >= 2000) {//判断距离上次点击小于2秒
+                    lastTime = System.currentTimeMillis();//记录这次点击时间
+                    JumpUtil.detailsJumpActivity(getApplicationContext(), data.getContentType(), data
+                            .getContentID());
+                }
             }
         });
 
