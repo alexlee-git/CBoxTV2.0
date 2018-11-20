@@ -117,7 +117,7 @@
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
             android:visibility="invisible"/>
@@ -199,7 +199,7 @@
             android:layout_height="@dimen/height_30px"
             android:layout_marginLeft="@dimen/width_39px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:tag="tag_poster_program_update_root"
             android:visibility="invisible">
 
@@ -242,7 +242,7 @@
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
             android:visibility="invisible"/>
@@ -322,7 +322,7 @@
             android:layout_height="@dimen/height_30px"
             android:layout_marginLeft="@dimen/width_39px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:tag="tag_poster_program_update_root"
             android:visibility="invisible">
 
@@ -365,7 +365,7 @@
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
             android:text="8.3"
@@ -447,7 +447,7 @@
             android:layout_height="@dimen/height_30px"
             android:layout_marginLeft="@dimen/width_39px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:tag="tag_poster_program_update_root"
             android:visibility="invisible">
 
@@ -490,7 +490,7 @@
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
             android:text="8.3"
@@ -571,7 +571,7 @@
             android:layout_height="@dimen/height_30px"
             android:layout_marginLeft="@dimen/width_39px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:tag="tag_poster_program_update_root"
             android:visibility="invisible">
 
@@ -613,7 +613,7 @@
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
             android:text="8.3"
@@ -695,7 +695,7 @@
             android:layout_height="@dimen/height_30px"
             android:layout_marginLeft="@dimen/width_39px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:tag="tag_poster_program_update_root"
             android:visibility="invisible">
 
@@ -737,7 +737,7 @@
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
-            android:background="#FF000000"
+            android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
             android:text="8.3"
