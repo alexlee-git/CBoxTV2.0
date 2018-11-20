@@ -1,7 +1,6 @@
 package tv.newtv.cboxtv.uc;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,8 +21,6 @@ import android.widget.TextView;
 import com.newtv.cms.bean.Corner;
 import com.newtv.libs.Constant;
 import com.newtv.libs.bean.AdBean;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,11 +199,9 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
 
             // 直接缩小view
-            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
             sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
+            sa.setDuration(150);
             view.startAnimation(sa);
         } catch (Exception e) {
             e.printStackTrace();
@@ -227,11 +222,9 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
 
             //直接放大view
-            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
             sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
+            sa.setDuration(150);
             view.bringToFront();
             view.startAnimation(sa);
         } catch (Exception e) {
