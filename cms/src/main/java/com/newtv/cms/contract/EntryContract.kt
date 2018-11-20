@@ -64,27 +64,23 @@ class EntryContract {
         }
 
         internal fun getBootGuide() {
-            if (DeviceUtil.CBOXTEST != Libs.get().flavor) {
-                val bootGuide = getService<IBootGuide>(CmsServicePresenter.SERVICE_BOOT_GUIDE)
-                if (bootGuide != null) {
-                    val platform = Libs.get().appKey + Libs.get().channelId
-                    bootGuide.getBootGuide(platform, object : DataObserver<String> {
-                        override fun onResult(result: String, requestCode: Long) {
-                            val cacheValue = SPrefUtils.getValue(context,
-                                    SPrefUtils.KEY_SERVER_ADDRESS, "") as String
-                            if (!TextUtils.equals(cacheValue, result)) {
-                                SPrefUtils.setValue(context, SPrefUtils
-                                        .KEY_SERVER_ADDRESS, result)
-                                Constant.parseServerAddress(result)
-                            }
-                            view?.bootGuildResult()
+            val bootGuide = getService<IBootGuide>(CmsServicePresenter.SERVICE_BOOT_GUIDE)
+            if (bootGuide != null) {
+                val platform = Libs.get().appKey + Libs.get().channelId
+                bootGuide.getBootGuide(platform, object : DataObserver<String> {
+                    override fun onResult(result: String, requestCode: Long) {
+                        val cacheValue = SPrefUtils.getValue(context,
+                                SPrefUtils.KEY_SERVER_ADDRESS, "") as String
+                        if (!TextUtils.equals(cacheValue, result)) {
+                            SPrefUtils.setValue(context, SPrefUtils
+                                    .KEY_SERVER_ADDRESS, result)
+                            Constant.parseServerAddress(result)
                         }
+                        view?.bootGuildResult()
+                    }
 
-                        override fun onError(desc: String?) {}
-                    })
-                }
-            } else {
-                view?.bootGuildResult()
+                    override fun onError(desc: String?) {}
+                })
             }
         }
 
