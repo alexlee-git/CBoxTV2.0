@@ -131,6 +131,7 @@
     <string name="member_center_btn_order">我的订单</string>
     <string name="member_center_btn_drama_library">会员片库</string>
     <string name="member_agreement_title">欢迎查看会员协议</string>
+    <string name="user_agreement_title">欢迎查看用户协议</string>
 
     <string name="usercenter_history_operation_text">按菜单键进行管理</string>
     <string name="usercenter_subscription_operation_text">取消订阅请进入详情页</string>
