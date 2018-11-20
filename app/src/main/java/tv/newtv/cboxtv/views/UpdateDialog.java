@@ -1,10 +1,13 @@
 package tv.newtv.cboxtv.views;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -14,13 +17,19 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.newtv.cms.bean.UpVersion;
+import com.newtv.libs.util.FileUtil;
 
+import java.io.File;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.uc.bean.DownloadReceiver;
 import tv.newtv.cboxtv.uc.bean.ProgressListener;
 import tv.newtv.cboxtv.uc.bean.Updater;
 
@@ -32,6 +41,7 @@ import tv.newtv.cboxtv.uc.bean.Updater;
  * 创建日期:          2018/10/11
  */
 public class UpdateDialog {
+    private static final String TAG = UpdateDialog.class.getSimpleName();
     private AlertDialog constraintDialog;
     private RelativeLayout rlUp;
     private LinearLayout linerPrograss;
@@ -91,9 +101,18 @@ public class UpdateDialog {
                 rlUp.setVisibility(View.GONE);
                 linerPrograss.setVisibility(View.VISIBLE);
                 if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getPackageAddr())) {
-                    loadApk(activity, versionBeen.getPackageAddr());
+                    Log.d(TAG, "exist : " + fileApkExist());
+                    if (fileApkExist()) {
+                        Intent intent = new Intent(LauncherApplication.AppContext, DownloadReceiver.MyIntentService.class);
+                        intent.setAction("startIntentService");
+                        LauncherApplication.AppContext.startService(intent);
+                        if (constraintDialog != null && constraintDialog.isShowing()) {
+                            constraintDialog.dismiss();
+                        }
+                    } else {
+                        loadApk(activity, versionBeen.getPackageAddr());
+                    }
                 }
-
             }
         });
 
@@ -134,6 +153,9 @@ public class UpdateDialog {
                 if ((int) progress == 100) {
                     if (constraintDialog != null && constraintDialog.isShowing()) {
                         constraintDialog.dismiss();
+                        Intent intent = new Intent();
+                        intent.setAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                        LauncherApplication.AppContext.sendBroadcast(intent);
                     }
                     new Timer().schedule(new TimerTask() {
                         @Override
@@ -141,10 +163,22 @@ public class UpdateDialog {
                             //updater.getDownloadManager().remove(updater.getmTaskId());
                         }
                     }, 1000);
-
                 }
-
             }
         });
+    }
+
+    public boolean fileApkExist() {
+        String packageResourcePath = FileUtil.getCacheDirectory(LauncherApplication.AppContext, "").getAbsolutePath();
+        Log.i("File", new File(packageResourcePath).isDirectory() + "");
+        String apkAbsPath = packageResourcePath + File.separator + "CBox.apk";
+        FileDownloader.setup(LauncherApplication.AppContext);
+        FileDownloadUtils.setDefaultSaveRootPath(apkAbsPath);
+        File file = new File(apkAbsPath);
+        if (file.exists()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
