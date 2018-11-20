@@ -44,6 +44,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
 import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
@@ -465,7 +466,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                         intent.putExtra("action", "panel");
                         intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
                         Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + Constant.MEMBER_CENTER_PARAMS);
-                        mPageClass = SplashActivity.class;
+                        mPageClass = MainActivity.class;
                     } else {
                         Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();
                     }

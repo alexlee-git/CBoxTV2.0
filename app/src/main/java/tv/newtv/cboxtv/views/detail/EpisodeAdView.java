@@ -200,7 +200,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
         if(adItem != null && !TextUtils.isEmpty(adItem.eventContent)){
             AdEventContent adEventContent = GsonUtil.fromjson(adItem.eventContent, AdEventContent.class);
             JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
-                    adEventContent.contentUUID, adEventContent.actionURI);
+                    adEventContent.contentUUID, adEventContent.actionURI,adEventContent.defaultUUID);
         }
     }
 }
