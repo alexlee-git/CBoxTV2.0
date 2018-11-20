@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -54,7 +56,7 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
  * 创建人:           weihaichao
  * 创建日期:          2018/8/24
  */
-public class LoginActivity extends Activity implements View.OnClickListener {
+public class LoginActivity extends Activity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private final String TAG = "LoginActivity";
     private ImageView img_login;
@@ -76,6 +78,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private boolean mFlagPay;
     private ExterPayBean mExterPayBean;
     private String mVipFlag;
+    private int location = -1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,16 +86,21 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
 
         init();
+        location = getIntent().getIntExtra("location", -1);
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         if (mExterPayBean != null) {
-            Log.e(TAG, "mExterPayBean: " + mExterPayBean);
+            Log.i(TAG, "mExterPayBean: " + mExterPayBean);
             mVipFlag = mExterPayBean.getVipFlag();
         }
-        Log.e(TAG, "mFlagPay: " + mFlagPay);
+        Log.i(TAG, "mFlagPay: " + mFlagPay);
         if (TextUtils.isEmpty(Authorization)) {
             Authorization = Utils.getAuthorization(LoginActivity.this);
             Constant.Authorization = Authorization;
+        }
+        if (location == 1) {
+            Log.i(TAG, "location: " + location);
+            mButton.requestFocus();
         }
 
     }
@@ -104,6 +112,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         frameLayout_qrcode = findViewById(R.id.login_frame_qrcode_root);
         mButton.setOnClickListener(this);
         frameLayout_qrcode.setOnClickListener(this);
+        mButton.setOnFocusChangeListener(this);
+        frameLayout_qrcode.setOnFocusChangeListener(this);
         mQrcodeUtil = new QrcodeUtil();
         mPopupView = LayoutInflater.from(this).inflate(R.layout.layout_usercenter_qr_code_full, null);
         img_qrcode_full = mPopupView.findViewById(R.id.layout_usercenter_img_qrcode);
@@ -138,7 +148,16 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 mPopupWindow.showAtLocation(v, Gravity.NO_GRAVITY, 0, 0);
                 break;
         }
+    }
 
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+
+        if (hasFocus) {
+            onItemGetFocus(v);
+        } else {
+            onItemLoseFocus(v);
+        }
     }
 
     @Override
@@ -259,7 +278,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                         public void onNext(ResponseBody responseBody) {
                             try {
                                 String data = responseBody.string();
-                                Log.i(TAG, "Login responseBody :" + responseBody);
+                                Log.i(TAG, "Login responseBody :" + data);
                                 JSONObject mJsonObject = new JSONObject(data);
                                 String mAccessToken = mJsonObject.optString("access_token");
                                 String RefreshToken = mJsonObject.optString("refresh_token");
@@ -336,6 +355,22 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             disposable_token.dispose();
             disposable_token = null;
         }
+    }
+
+    private void onItemGetFocus(View view) {
+        //直接放大view
+        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        sa.setFillAfter(true);
+        sa.setDuration(150);
+        view.startAnimation(sa);
+    }
+
+    private void onItemLoseFocus(View view) {
+        // 直接缩小view
+        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        sa.setFillAfter(true);
+        sa.setDuration(150);
+        view.startAnimation(sa);
     }
 
 }
