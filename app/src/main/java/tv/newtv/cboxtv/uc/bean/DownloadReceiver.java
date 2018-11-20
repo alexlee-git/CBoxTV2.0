@@ -42,14 +42,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class DownloadReceiver extends BroadcastReceiver {
     private static final String TAG = DownloadReceiver.class.getSimpleName();
     private static final String UPDATA_KEY = "updata_key";
-    private static File file;
-    private static SharedPreferences pref;
-    private static Context context;
     private static long downId;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        this.context = context;
         if (null != intent) {
             Bundle bundle = intent.getExtras();
             if (null != bundle) {
@@ -127,7 +123,7 @@ public class DownloadReceiver extends BroadcastReceiver {
 
     private static void installApk(Context context, Uri uri) {
         Log.e(TAG, "----installApk: ----");
-        file = new File(uri.getPath());
+        File file = new File(uri.getPath());
         SharePreferenceUtils.saveUpdateApkPath(context, uri.getPath());
         if (!file.exists()) {
             Log.e(TAG, "----installApk: ----!file.exists()");
@@ -203,10 +199,11 @@ public class DownloadReceiver extends BroadcastReceiver {
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
         }
 
+        SharedPreferences pref;
         pref = LauncherApplication.AppContext.getSharedPreferences("VersionMd5", MODE_PRIVATE);
         String versionmd5 = pref.getString("versionmd5", null);
         Log.e(TAG, "versionmd5 : " + versionmd5 + "");
-        String fileMD5 = getFileMD5(file);
+        String fileMD5 = getFileMD5(apkFile);
         Log.e(TAG, "fileMD5 : " + fileMD5 + "");
         if (!TextUtils.isEmpty(versionmd5) && !TextUtils.isEmpty(fileMD5)) {
             if (versionmd5.equals(fileMD5)) {
@@ -215,7 +212,7 @@ public class DownloadReceiver extends BroadcastReceiver {
                 LauncherApplication.AppContext.startActivity(intent);
             } else {
                 RxBus.get().post(Constant.UP_VERSION_IS_SUCCESS, "version_up_faild");
-                Toast.makeText(context, "下载文件有误,请返回页面,重新下载", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LauncherApplication.AppContext, "下载文件有误,请返回页面,重新下载", Toast.LENGTH_SHORT).show();
             }
         }
     }

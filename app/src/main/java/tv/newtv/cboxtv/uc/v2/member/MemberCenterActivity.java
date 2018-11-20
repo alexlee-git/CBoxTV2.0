@@ -17,12 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.bean.UpVersion;
 import com.newtv.cms.contract.PageContract;
-import com.newtv.cms.contract.PageContract.ContentPresenter;
-import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
@@ -33,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +46,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
@@ -76,7 +71,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * 修改日期：
  * 修改备注：
  */
-public class MemberCenterActivity extends Activity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>,VersionUpdateContract.View {
+public class MemberCenterActivity extends Activity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>, PageContract.View {
     private final String TAG = "MemberCenterActivity";
     public static final int HEAD = 0;
     public static final int RECOMMEND_PROMOTION = 1;//会员促销推荐位
@@ -95,6 +90,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private MemberInfoBean mMemberInfoBean;
     private String mLoginTokenString;//登录token,用于判断登录状态
     private PageContract.ContentPresenter mContentPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +107,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         pageData = new ArrayList<>();
         pageData.add(new UserCenterPageBean(""));
         pageData.add(new UserCenterPageBean(""));
-        pageData.add(new UserCenterPageBean("会员片库"));
+        pageData.add(new UserCenterPageBean(""));
         mAdapter = new MemberCenterAdapter(this, this);
         mAdapter.setHasStableIds(true);
         mAdapter.appendToList(pageData);
@@ -122,58 +118,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
         if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
             //获取推荐位数据
-            mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(),this);
+            mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
-            //requestRecommendData();
         } else {
             Log.d(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
-    }
-
-    //获取推荐位数据
-    private void requestRecommendData() {
-        try {
-            NetClient.INSTANCE.getPageDataApi().getPageData(Libs.get().getAppKey(), Libs.get().getChannelId(), Constant.ID_PAGE_MEMBER).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
-
-                @Override
-                public void onSubscribe(Disposable d) {
-                    unRecommendSubscribe();
-                    mRecommendDisposable = d;
-                }
-
-                @Override
-                public void onNext(ResponseBody responseBody) {
-                    ModuleInfoResult moduleInfoResult = null;
-                    String value = null;
-                    Gson mGSon = new Gson();
-                    try {
-                        value = responseBody.string();
-                        Log.d(TAG, "wqs:requestRecommendData:value:" + value);
-                        moduleInfoResult = mGSon.fromJson(value, ModuleInfoResult.class);
-                        inflateData(moduleInfoResult);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    unRecommendSubscribe();
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    unRecommendSubscribe();
-                }
-
-                @Override
-                public void onComplete() {
-                    unRecommendSubscribe();
-                }
-            });
-        } catch (Exception e) {
-            unRecommendSubscribe();
-            e.printStackTrace();
-            Log.e(TAG, "wqs:requestGuessYouLikeData:Exception:" + e.toString());
-        }
-
     }
 
     //获取用户登录状态
@@ -326,8 +275,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
      *
      * @param
      */
-    private void inflateData(ModuleInfoResult moduleInfoResult) {
-        Log.d(TAG, "wqs:inflateData");
+    private void inflateRecommendData(List<Page> pageList) {
+        Log.d(TAG, "wqs:inflateRecommendData");
         UserCenterPageBean UserCenterPageBean = null;
         UserCenterPageBean.Bean mProgramInfo = null;
         String title = "";
@@ -335,115 +284,110 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         List<UserCenterPageBean.Bean> mInterestsRecommendBean = new ArrayList<>();//会员权益介绍推荐数据
         List<UserCenterPageBean.Bean> mDramaRecommendBean = new ArrayList<>();//会员片库推荐数据
         try {
-            if (moduleInfoResult != null) {
-                if (moduleInfoResult.getDatas() != null && moduleInfoResult.getDatas().size() > 0) {
-                    Log.d(TAG, "wqs:inflateData:moduleInfoResult.getDatas().size():" + moduleInfoResult.getDatas().size());
-                    for (int i = 0; i < moduleInfoResult.getDatas().size(); i++) {
-                        List<Program> programInfoList = null;
-                        if (i == 0) {
-                            if (moduleInfoResult.getDatas().get(i) != null) {
-                                if (moduleInfoResult.getDatas().get(i).getDatas() != null && moduleInfoResult.getDatas().get(i).getDatas().size() > 0) {
-                                    programInfoList = moduleInfoResult.getDatas().get(i).getDatas();
-                                    if (programInfoList != null && programInfoList.size() > 0) {
-                                        mProgramInfo = new UserCenterPageBean.Bean();
-                                        mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                                        mProgramInfo.set_contentuuid(programInfoList.get(0).getContentId());
-                                        mProgramInfo.set_contenttype(programInfoList.get(0).getContentType());
-                                        mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
-                                        mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
-                                        mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                        mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
-                                        mPromotionRecommendBean.add(mProgramInfo);
-                                    }
-                                } else {
-                                    Log.d(TAG, "wqs:inflateData：i == 0:moduleInfoResult.getDatas().get(0).getDatas()== null");
-                                }
-                            } else {
-                                Log.d(TAG, "wqs:inflateData：i == 0:moduleInfoResult.getDatas().get(0) == null");
-                            }
-                        } else if (i == 1) {
-                            if (moduleInfoResult.getDatas().get(i) != null) {
-                                if (moduleInfoResult.getDatas().get(i).getDatas() != null && moduleInfoResult.getDatas().get(i).getDatas().size() > 0) {
-                                    programInfoList = moduleInfoResult.getDatas().get(i).getDatas();
-                                    mProgramInfo = new UserCenterPageBean.Bean();
-                                    mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                                    mProgramInfo.set_contentuuid(programInfoList.get(0).getContentId());
-                                    mProgramInfo.set_contenttype(programInfoList.get(0).getContentType());
-                                    mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
-                                    mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
-                                    mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                    mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
-                                    mInterestsRecommendBean.add(mProgramInfo);
-                                } else {
-                                    Log.d(TAG, "wqs:inflateData：i == 1:moduleInfoResult.getDatas().get(0).getDatas()== null");
-                                }
-                            } else {
-                                Log.d(TAG, "wqs:inflateData：i == 1:moduleInfoResult.getDatas().get(0) == null");
-                            }
-                        } else if (i == 2) {
-                            if (moduleInfoResult.getDatas().get(i) != null) {
-                                if (moduleInfoResult.getDatas().get(i).getDatas() != null && moduleInfoResult.getDatas().get(0).getDatas().size() > 0) {
-                                    programInfoList = moduleInfoResult.getDatas().get(i).getDatas();
-                                    title = moduleInfoResult.getDatas().get(i).getBlockTitle();
-                                    for (int j = 0; j < programInfoList.size(); j++) {
-                                        mProgramInfo = new UserCenterPageBean.Bean();
-                                        mProgramInfo.set_title_name(programInfoList.get(j).getTitle());
-                                        mProgramInfo.set_contentuuid(programInfoList.get(j).getContentId());
-                                        mProgramInfo.set_contenttype(programInfoList.get(j).getContentType());
-                                        mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
-                                        mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
-                                        mProgramInfo.setGrade(programInfoList.get(j).getGrade());
-                                        mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
-                                        mDramaRecommendBean.add(mProgramInfo);
-                                    }
-                                } else {
-                                    Log.d(TAG, "wqs:inflateData：i == 2:moduleInfoResult.getDatas().get(0).getDatas()== null");
-                                }
-                            } else {
-                                Log.d(TAG, "wqs:inflateData：i == 2:moduleInfoResult.getDatas().get(0) == null");
+            if (pageList == null && pageList.size() <= 0) {
+                return;
+            }
+            for (int i = 0; i < pageList.size(); i++) {
+                List<Program> programInfoList = null;
+                if (i == 0) {
+                    if (pageList.get(i) != null) {
+                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
+                            programInfoList = pageList.get(i).getPrograms();
+                            if (programInfoList != null && programInfoList.size() > 0) {
+                                mProgramInfo = new UserCenterPageBean.Bean();
+                                mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
+                                mProgramInfo.set_contentuuid(programInfoList.get(0).getL_id());
+                                mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
+                                mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
+                                mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
+                                mProgramInfo.setGrade(programInfoList.get(0).getGrade());
+                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+                                mPromotionRecommendBean.add(mProgramInfo);
                             }
                         } else {
-                            Log.d(TAG, "wqs:只取三组数据，多余数据不取");
-                            break;
+                            Log.d(TAG, "wqs:inflateRecommendData：i == 0:page.getPrograms().get(0).getDatas()== null");
                         }
+                    } else {
+                        Log.d(TAG, "wqs:inflateRecommendData：i == 0:page.getPrograms().get(0) == null");
+                    }
+                } else if (i == 1) {
+                    if (pageList.get(i) != null) {
+                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
+                            programInfoList = pageList.get(i).getPrograms();
+                            mProgramInfo = new UserCenterPageBean.Bean();
+                            mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
+                            mProgramInfo.set_contentuuid(programInfoList.get(0).getL_id());
+                            mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
+                            mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
+                            mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
+                            mProgramInfo.setGrade(programInfoList.get(0).getGrade());
+                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+                            mInterestsRecommendBean.add(mProgramInfo);
+                        } else {
+                            Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0).getDatas()== null");
+                        }
+                    } else {
+                        Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0) == null");
+                    }
+                } else if (i == 2) {
+                    if (pageList.get(i) != null) {
+                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
+                            programInfoList = pageList.get(i).getPrograms();
+                            title = pageList.get(i).getBlockTitle();
+                            for (int j = 0; j < programInfoList.size(); j++) {
+                                mProgramInfo = new UserCenterPageBean.Bean();
+                                mProgramInfo.set_title_name(programInfoList.get(j).getTitle());
+                                mProgramInfo.set_contentuuid(programInfoList.get(j).getL_id());
+                                mProgramInfo.set_contenttype(programInfoList.get(j).getL_contentType());
+                                mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
+                                mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
+                                mProgramInfo.setGrade(programInfoList.get(j).getGrade());
+                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
+                                mDramaRecommendBean.add(mProgramInfo);
+                            }
+                        } else {
+                            Log.d(TAG, "wqs:inflateRecommendData：i == 2:page.getPrograms().get(0).getDatas()== null");
+                        }
+                    } else {
+                        Log.d(TAG, "wqs:inflateRecommendData：i == 2:page.getPrograms().get(0) == null");
                     }
                 } else {
-                    Log.d(TAG, "wqs:inflateData：moduleInfoResult.getDatas() == null");
+                    Log.d(TAG, "wqs:只取三组数据，多余数据不取");
+                    break;
                 }
-            } else {
-                Log.d(TAG, "wqs:inflateData：moduleInfoResult == null");
             }
+
             if (mAdapter != null) {
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_PROMOTION - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mPromotionRecommendBean;
                 } else {
-                    Log.d(TAG, "wqs:inflateData：PromotionRecommend==null");
+                    Log.d(TAG, "wqs:inflateRecommendData：PromotionRecommend==null");
                 }
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_INTERESTS - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mInterestsRecommendBean;
                 } else {
-                    Log.d(TAG, "wqs:inflateData：mInterestsRecommendBean==null");
+                    Log.d(TAG, "wqs:inflateRecommendData：mInterestsRecommendBean==null");
                 }
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_DRAMA - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mDramaRecommendBean;
                     UserCenterPageBean.title = title;
                 } else {
-                    Log.d(TAG, "wqs:inflateData：mDramaRecommendBean==null");
+                    Log.d(TAG, "wqs:inflateRecommendData：mDramaRecommendBean==null");
                 }
             } else {
-                Log.d(TAG, "wqs:inflateData：mAdapter == null");
+                Log.d(TAG, "wqs:inflateRecommendData：mAdapter == null");
             }
             if (mHandler != null) {
                 mHandler.sendEmptyMessage(RECOMMEND);
             } else {
-                Log.d(TAG, "wqs:inflateData：mHandler == null");
+                Log.d(TAG, "wqs:inflateRecommendData：mHandler == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "wqs:inflateData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:inflateRecommendData:Exception:" + e.toString());
         }
     }
 
@@ -591,8 +535,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     }
 
     @Override
-    public void versionCheckResult(@Nullable UpVersion versionBeen, boolean isForce) {
-
+    public void onPageResult(@Nullable List<Page> page) {
+        inflateRecommendData(page);
     }
 
     @Override
@@ -602,6 +546,16 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
 
     @Override
     public void onError(@NotNull Context context, @Nullable String desc) {
+
+    }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
 
     }
 

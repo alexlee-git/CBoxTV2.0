@@ -20,10 +20,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.bean.UpVersion;
 import com.newtv.cms.contract.PageContract;
-import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.uc.pay.ExterPayBean;
@@ -66,7 +65,7 @@ import tv.newtv.cboxtv.uc.v2.member.MemberAgreementActivity;
  * 创建人:       caolonghe
  * 创建日期:     2018/9/12 0012
  */
-public class PayChannelActivity extends Activity implements VersionUpdateContract.View{
+public class PayChannelActivity extends Activity implements PageContract.View {
 
     private final String TAG = "PayChannelActivity";
     private RecyclerView mRecyclerView;
@@ -91,6 +90,7 @@ public class PayChannelActivity extends Activity implements VersionUpdateContrac
     private boolean isVip;
     private ExterPayBean mExterPayBean;
     private PageContract.ContentPresenter mContentPresenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,8 +136,12 @@ public class PayChannelActivity extends Activity implements VersionUpdateContrac
         } else {
             rel_down.setVisibility(View.INVISIBLE);
         }
-        mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(),this);
-        mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
+        if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
+            mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
+            mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
+        } else {
+            Log.e(TAG, "wqs:ID_PAGE_MEMBER==null");
+        }
         //requestRecommendData();
         Observable.create(new ObservableOnSubscribe<Long>() {
             @Override
@@ -217,7 +221,7 @@ public class PayChannelActivity extends Activity implements VersionUpdateContrac
                     }
                     break;
                 case MSG_IMAGE:
-                    inflateData();
+//                    inflateData();
                     break;
                 case MSG_PRODUCT:
                     if (mVipFlag != null && mVipFlag.equals("3")) {
@@ -233,8 +237,8 @@ public class PayChannelActivity extends Activity implements VersionUpdateContrac
     });
 
     @Override
-    public void versionCheckResult(@org.jetbrains.annotations.Nullable UpVersion versionBeen, boolean isForce) {
-
+    public void onPageResult(@org.jetbrains.annotations.Nullable List<Page> page) {
+        inflateData(page);
     }
 
     @Override
@@ -246,6 +250,17 @@ public class PayChannelActivity extends Activity implements VersionUpdateContrac
     public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
 
     }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
+
+    }
+
 
     class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder> {
 
@@ -612,33 +627,26 @@ public class PayChannelActivity extends Activity implements VersionUpdateContrac
      *
      * @param
      */
-    private void inflateData() {
-        Log.d(TAG, "---inflateData");
+    private void inflateData(List<Page> pageList) {
+        Log.d(TAG, "wqs:inflateData");
         UserCenterPageBean.Bean mProgramInfo = null;
+        if (pageList == null && pageList.size() <= 0) {
+            return;
+        }
         try {
-            if (moduleInfoResult != null) {
-                if (moduleInfoResult.getDatas() != null && moduleInfoResult.getDatas().size() > 0) {
-                    Log.d(TAG, "---inflateData:moduleInfoResult.getDatas().size():" + moduleInfoResult.getDatas().size());
-
-                    if (moduleInfoResult.getDatas().size() >= 2) {
-                        List<Program> programInfoList = moduleInfoResult.getDatas().get(1).getDatas();
-                        mProgramInfo = new UserCenterPageBean.Bean();
-                        mProgramInfo._title_name = programInfoList.get(0).getTitle();
-                        mProgramInfo._contentuuid = programInfoList.get(0).getContentId();
-                        mProgramInfo._contenttype = programInfoList.get(0).getContentType();
-                        mProgramInfo._imageurl = programInfoList.get(0).getImg();
-                        mProgramInfo._actiontype = programInfoList.get(0).getL_actionType();
-                        if (!TextUtils.isEmpty(mProgramInfo._imageurl)) {
-                            Picasso.get().load(mProgramInfo._imageurl)
-                                    .error(R.drawable.default_member_center_1680_200_v2)
-                                    .into(img_rights);
-                        }
-                    }
-                } else {
-                    Log.i(TAG, "---inflateData：moduleInfoResult.getDatas() == null");
+            if (pageList.size() >= 2) {
+                List<Program> programInfoList = pageList.get(1).getPrograms();
+                mProgramInfo = new UserCenterPageBean.Bean();
+                mProgramInfo._title_name = programInfoList.get(0).getTitle();
+                mProgramInfo._contentuuid = programInfoList.get(0).getL_id();
+                mProgramInfo._contenttype = programInfoList.get(0).getL_contentType();
+                mProgramInfo._imageurl = programInfoList.get(0).getImg();
+                mProgramInfo._actiontype = programInfoList.get(0).getL_actionType();
+                if (!TextUtils.isEmpty(mProgramInfo._imageurl)) {
+                    Picasso.get().load(mProgramInfo._imageurl)
+                            .error(R.drawable.default_member_center_1680_200_v2)
+                            .into(img_rights);
                 }
-            } else {
-                Log.i(TAG, "---inflateData：moduleInfoResult == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
