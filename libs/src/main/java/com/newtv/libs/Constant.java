@@ -112,6 +112,7 @@ public class Constant {
     public static final String OPEN_SEARCH = "OPEN_SEARCH";   //执行搜索
     public static final String OPEN_VIDEO = "OPEN_VIDEO";  //打开视频
     public static final String OPEN_USERCENTER = "OPEN_USERCENTER";  //打开个人中心
+    public static final String OPEN_VIPCENTER = "OPEN_VIPCENTER"; //会员中心
     public static final String OPEN_SPECIAL = "OPEN_SPECIAL"; // 打开专题
     public static final String OPEN_APP_LIST = "OPEN_APP_LIST";
     public static final String PAGE_UUID = "page_uuid";

@@ -34,6 +34,7 @@ import tv.newtv.cboxtv.cms.screenList.ScreenListActivity;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
 import tv.newtv.cboxtv.utils.PlayInfoUtil;
 
 public class JumpUtil {
@@ -263,6 +264,11 @@ public class JumpUtil {
                 bundle.putString(Constant.CONTENT_UUID, contentUUID);
                 NewTVLauncherPlayerActivity.play(context, bundle);
 
+            } else if (Constant.OPEN_VIPCENTER.equals(actionType)) {
+                jumpIntent = new Intent(context, MemberCenterActivity.class);
+            } else {
+                Toast.makeText(context, R.string.not_support_direct_type, Toast.LENGTH_LONG)
+                        .show();
             }
         } catch (Exception e) {
             LogUtils.e(e);
