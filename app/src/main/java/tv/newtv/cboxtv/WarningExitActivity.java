@@ -1,93 +1,72 @@
 package tv.newtv.cboxtv;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.AdContract;
+import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.Constant;
+import com.newtv.libs.HeadersInterceptor;
 import com.newtv.libs.ad.ADHelper;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import tv.icntv.adsdk.AdSDK;
-import tv.newtv.cboxtv.cms.search.bean.SearchHotInfo;
-import tv.newtv.cboxtv.cms.search.bean.SearchResultInfos;
-import tv.newtv.cboxtv.cms.search.view.ISearchPageView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.exit.bean.RecommendBean;
-import tv.newtv.cboxtv.exit.presenter.RecommendPresenterImpl;
-import tv.newtv.cboxtv.exit.view.RecommendView;
-import tv.newtv.cboxtv.views.SpacesItemDecoration;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 
 public class WarningExitActivity extends BaseActivity implements View.OnClickListener,
-        ISearchPageView, View.OnFocusChangeListener, RecommendView {
-
+        View.OnFocusChangeListener, PageContract.ModelView {
     private RecycleImageView exit_image;
-    private SearchResultInfos.ResultListBean mResultListBeanInfo;
-    private List<SearchResultInfos.ResultListBean> mResultListBeanList;
-    private RecyclerView mRecyclerView;
-    private ExitPromptLikeAdapter mAdapter;
-    private AdContract.Presenter mAdPresenter;
-    RecommendPresenterImpl presenter;
-    OvershootInterpolator mSpringInterpolator;
-    private RecommendBean.DataBean.ProgramsBean programsBean;
     private FrameLayout focus_layout;
     private Button okButton;
     private Button cancelButton;
+    private PageContract.Presenter mPresenter;
+    private AdContract.Presenter mAdPresenter;
+    private Program program;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FrontStage = true;
-        presenter = new RecommendPresenterImpl();
-        presenter.attachView(this);
-        presenter.getRecommendData();
         setContentView(R.layout.activity_warning_exit);
-        mSpringInterpolator = new OvershootInterpolator(2.2f);
-
-        okButton = (Button) findViewById(R.id.okButton);
-        cancelButton = (Button) findViewById(R.id.cancelButton);
-
-        exit_image = findViewById(R.id.exit_image);
-        cancelButton.requestFocus();
-
-        okButton.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
-        okButton.setOnFocusChangeListener(this);
-        cancelButton.setOnFocusChangeListener(this);
-
-//        getAD();//获取广告
         initView();
+        mPresenter = new PageContract.ContentPresenter(this, this);
+        mAdPresenter = new AdContract.AdPresenter(getApplicationContext(), null);
+        String baseUrl = Constant.getBaseUrl(HeadersInterceptor.EXIT_CONTENTID);
+        if (TextUtils.isEmpty(baseUrl)) {
+            return;
+        } else {
+            mPresenter.getPageContent(baseUrl);
+        }
+
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-
         View focusView = getWindow().getDecorView().findFocus();
-        if(focusView != null){
-            if(focusView instanceof FrameLayout){
-
-                switch (event.getKeyCode()){
+        if (focusView != null) {
+            if (focusView instanceof FrameLayout) {
+                switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_DPAD_DOWN:
-                        cancelButton.requestFocus();
+                        if (cancelButton!=null)
+                            cancelButton.requestFocus();
                         return true;
                     case KeyEvent.KEYCODE_DPAD_LEFT:
 
@@ -102,87 +81,22 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
             }
         }
-
         return super.dispatchKeyEvent(event);
     }
 
     private void initView() {
-
-
-        mRecyclerView = findViewById(R.id.guess_like_recyclerview);
+        okButton = findViewById(R.id.okButton);
+        cancelButton = findViewById(R.id.cancelButton);
+        exit_image = findViewById(R.id.exit_image);
         focus_layout = findViewById(R.id.focus_layout);
-
-        focus_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (programsBean != null) {
-
-                    JumpUtil.activityJump(WarningExitActivity.this, programsBean.getL_actionType(), programsBean.getL_contentType(), programsBean.getL_id(), "");
-                }
-
-            }
-        });
-        mAdapter = new ExitPromptLikeAdapter(this);
-
-
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager
-                .HORIZONTAL, false));
-        mRecyclerView.addItemDecoration(new SpacesItemDecoration(getResources()
-                .getDimensionPixelSize(R.dimen.width_10px)));
-        mRecyclerView.setAdapter(mAdapter);
-//        mSearchPagePresenter.requestPageRecommendData(Constant.APP_KEY, Constant.CHANNEL_ID);//获取服务器数据
+        cancelButton.requestFocus();
+        okButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        okButton.setOnFocusChangeListener(this);
+        cancelButton.setOnFocusChangeListener(this);
 
     }
 
-    //加载热搜数据，进行分类填充
-    @Override
-    public void inflatePageRecommendData(SearchHotInfo searchHotInfo) {
-        try {
-            if (searchHotInfo == null) {
-                return;
-            }
-            mResultListBeanList = new ArrayList<>();
-            List<SearchHotInfo.DataBean.ProgramsBean> moduleItemList = new ArrayList<>();
-            SearchHotInfo.DataBean.ProgramsBean programInfo;
-            if (searchHotInfo.getData() != null && searchHotInfo.getData().size() > 0) {
-                for (int i = 0; i < searchHotInfo.getData().size(); i++) {
-                    if (searchHotInfo.getData().get(i).getBlockType().equals("recommendOnCell")) {
-                        if (searchHotInfo.getData().get(i).getPrograms() != null && searchHotInfo
-                                .getData().get(i).getPrograms().size() > 0) {
-                            for (int j = 0; j < searchHotInfo.getData().get(i).getPrograms().size
-                                    (); j++) {
-                                programInfo = searchHotInfo.getData().get(i).getPrograms().get(j);
-                                moduleItemList.add(programInfo);
-                            }
-                        }
-                    }
-                }
-                if (moduleItemList.size() > 0) {
-                    for (int j = 0; j < moduleItemList.size(); j++) {
-                        mResultListBeanInfo = new SearchResultInfos.ResultListBean();
-                        mResultListBeanInfo.setUUID(moduleItemList.get(j).getContentUUID());
-                        mResultListBeanInfo.setContentType(moduleItemList.get(j).getContentType());
-                        mResultListBeanInfo.setType(moduleItemList.get(j).getActionType());
-                        mResultListBeanInfo.setHpicurl(moduleItemList.get(j).getImg());
-                        mResultListBeanInfo.setName(moduleItemList.get(j).getTitle());
-                        if (moduleItemList.get(j).getActionUri() != null) {
-                            mResultListBeanInfo.setActionUri(moduleItemList.get(j).getActionUri()
-                                    .toString());
-                        }
-
-                        mResultListBeanList.add(mResultListBeanInfo);
-                    }
-
-                    mAdapter.appendToList(mResultListBeanList);
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-        } catch (Exception e) {
-            LogUtils.e("MM", "---inflatePageRecommendData：Exception：" + e.toString());
-        }
-
-
-    }
 
     @Override
     public void onClick(View v) {
@@ -191,6 +105,10 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
             setResult(RESULT_OK);
         } else if (id == R.id.cancelButton) {
             setResult(RESULT_CANCELED);
+        }else if (id==R.id.focus_layout){
+            if (program!=null){
+                JumpUtil.activityJump(this,program.getL_actionType(),program.getL_contentType(),program.getL_uuid(),program.getL_actionUri());
+            }
         }
         finish();
     }
@@ -236,25 +154,46 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
+
     @Override
-    public void showData(RecommendBean recommendBean) {
-        programsBean = recommendBean.getData().get(0).getPrograms().get(0);
-        String img = programsBean.getImg();
-        if (!TextUtils.isEmpty(img)) {
-            Picasso.get().load(img).into(exit_image);
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.destroy();
+    }
+
+
+    @Override
+    public void onPageResult(@NotNull ModelResult<ArrayList<Page>> page) {
+        program = page.getData().get(0).getPrograms().get(0);
+        if (program.isAd() != 1) {
+            if (!TextUtils.isEmpty(program.getImg())) {
+                Picasso.get().load(program.getImg()).into(exit_image);
+            }
         } else {
-            getAD();//获取广告
+            getAD();
         }
 
 
     }
 
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
+    public void tip(@NotNull Context context, @NotNull String message) {
+
     }
 
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
 
+
+    }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
+
+    }
 }
