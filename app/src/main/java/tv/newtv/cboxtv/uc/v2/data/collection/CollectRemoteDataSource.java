@@ -194,10 +194,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
                                     entity.set_contentuuid(item.optString("program_child_id"));
-                                } else if (Constant.CONTENTTYPE_PS.equals(contentType) || Constant.CONTENTTYPE_CG.equals(contentType) || Constant.CONTENTTYPE_CS.equals(contentType)) {
-                                    entity.set_contentuuid(item.optString("programset_id"));
                                 } else {
-                                    Log.d(TAG, "invalid contentType : " + contentType);
+                                    entity.set_contentuuid(item.optString("programset_id"));
                                 }
 
                                 entity.set_contenttype(contentType);
