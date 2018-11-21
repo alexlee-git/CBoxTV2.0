@@ -104,7 +104,7 @@ public class Constant {
     public static final String OPEN_LIVE = "OPEN_LIVE"; //打开直播
     public static final String OPEN_PLAYLIST = "OPEN_PLAYLIST";  //打开连播
     public static final String OPEN_PAGE = "OPEN_PAGE";  //打开页面
-    public static final String OPEN_LISTPAGE = "OPEN_LISTPAGE";   //打开列表页
+    public static final String OPEN_FILTER = "OPEN_FILTER";   //打开列表页
     public static final String OPEN_APK = "OPEN_APK";  //打开APK
     public static final String DOWNLOAD_APK = "DOWNLOAD_APK";   //下载APK
     public static final String OPEN_DETAILS = "OPEN_DETAILS";   //打开详情页
