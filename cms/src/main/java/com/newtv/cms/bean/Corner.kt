@@ -15,29 +15,14 @@ data class Corner(
         var cornerCondition: List<CornerCondition>? = null,
         var cornerId: String? = null,
         var cornerImg: String? = null,
-        var cornerPosition: String? = null,
-        var cornerType: String? = null
+        var cornerPosition: String? = null
 ) {
-    /**
-     * 是否适配使用
-     */
-    fun suitFor(any: Any): Boolean {
-        try {
-            val clz: Array<Field> = any::class.java.declaredFields
-            clz.forEach {
-                cornerCondition?.let { list ->
-                    list.forEach { condition ->
-                        if (TextUtils.equals(condition.fieldName, it.name)
-                                && TextUtils.equals(condition.fieldValue, it.get(any).toString())) {
-                            return true
-                        }
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return false
+    companion object {
+        //1.左上 2右上 3左下 4右下
+        const val LEFT_TOP: String = "1"
+        const val RIGHT_TOP: String = "2"
+        const val LEFT_BOTTOM: String = "3"
+        const val RIGHT_BOTTOM: String = "4"
     }
 }
 
