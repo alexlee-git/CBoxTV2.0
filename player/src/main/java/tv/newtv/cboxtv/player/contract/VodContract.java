@@ -44,6 +44,7 @@ import tv.newtv.player.R;
 public class VodContract {
     public static final String USER_NOT_LOGIN = "60017";
     public static final String USER_TOKEN_IS_EXPIRED = "60019";
+    public static final String USER_NOT_BUY = "60006";
 
     public interface View extends ICmsView {
         void onVodchkResult(VideoDataStruct videoDataStruct, String contentUUID);
@@ -158,10 +159,9 @@ public class VodContract {
                     String toastText = "";
                     switch (errorCode){
                         case USER_NOT_LOGIN:
-                            toastText = "用户未登录，登录后才可以观看";
-                            break;
                         case USER_TOKEN_IS_EXPIRED:
-                            toastText = "登录已过期，请重新登录后观看";
+                        case USER_NOT_BUY:
+                            toastText = "付费内容需购买后才能观看";
                             break;
 
                             default:

@@ -106,10 +106,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         String hint = null;
         switch (code){
             case VodContract.USER_NOT_LOGIN:
-                hint = "用户未登录，登录后才可以观看";
-                break;
             case VodContract.USER_TOKEN_IS_EXPIRED:
-                hint = "登录已过期，请重新登录后观看";
+            case VodContract.USER_NOT_BUY:
+                hint = "付费内容需购买后才能观看";
                 break;
 
             default:

@@ -33,6 +33,7 @@ import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.KeyEventUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.ScreenUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -564,7 +565,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public boolean isFullScreen() {
-        return isFullScreen;
+        return this.getWidth() == ScreenUtils.getScreenW() && this.getHeight() == ScreenUtils
+                .getScreenH();
     }
 
     public void destroy() {
@@ -1127,6 +1129,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         LogUtils.i(TAG, "onKeyUp: " + keyCode);
 
+        if(keyCode == KeyEvent.KEYCODE_DPAD_CENTER
+                || keyCode == KeyEvent.KEYCODE_ENTER){
+            if (isFullScreen() && isTrySee) {
+                goToBuy();
+                return true;
+            }
+        }
+
         if (!mIsPrepared) {
             if (keyCode == KeyEvent.KEYCODE_BACK) {
                 NewTVLauncherPlayerViewManager.getInstance().release();
@@ -1143,11 +1153,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 if (mShowingChildView == SHOWING_SEEKBAR_VIEW || mShowingChildView ==
                         SHOWING_NO_VIEW) {
                     if (mNewTVLauncherPlayer == null) {
-                        return true;
-                    }
-
-                    if (isFullScreen() && isTrySee) {
-                        goToBuy();
                         return true;
                     }
 
@@ -1436,6 +1441,15 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     @Override
     public void onChkError(String code, String desc) {
+        switch (code){
+            case VodContract.USER_NOT_BUY:
+            case VodContract.USER_NOT_LOGIN:
+            case VodContract.USER_TOKEN_IS_EXPIRED:
+                isTrySee = true;
+                break;
+            default:
+                isTrySee = false;
+        }
         onError(code, desc);
     }
 
@@ -1546,7 +1560,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public class FreeDuration implements NewTVLauncherPlayerSeekbar.FreeDurationListener {
         @Override
         public void end() {
-            goToBuy();
+            onError(VodContract.USER_NOT_BUY,"");
+//            goToBuy();
         }
     }
 
