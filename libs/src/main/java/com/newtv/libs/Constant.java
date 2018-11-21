@@ -112,6 +112,7 @@ public class Constant {
     public static final String OPEN_SEARCH = "OPEN_SEARCH";   //执行搜索
     public static final String OPEN_VIDEO = "OPEN_VIDEO";  //打开视频
     public static final String OPEN_USERCENTER = "OPEN_USERCENTER";  //打开个人中心
+    public static final String OPEN_VIPCENTER = "OPEN_VIPCENTER"; //会员中心
     public static final String OPEN_SPECIAL = "OPEN_SPECIAL"; // 打开专题
     public static final String OPEN_APP_LIST = "OPEN_APP_LIST";
     public static final String PAGE_UUID = "page_uuid";
@@ -310,6 +311,9 @@ public class Constant {
     //会员协议html地址
     public static String HTML_PATH_MEMBER_PROTOCOL = getBaseUrl(HeadersInterceptor
             .HTML_PATH_MEMBER_PROTOCOL);
+    //用户协议html地址
+    public static String HTML_PATH_USER_PROTOCOL = getBaseUrl(HeadersInterceptor
+            .HTML_PATH_USER_PROTOCOL);
     //会员中心跳转会员片库params值
     public static String MEMBER_CENTER_PARAMS = getBaseUrl(HeadersInterceptor
             .HTML_PATH_MEMBER_PROTOCOL);

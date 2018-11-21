@@ -161,11 +161,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:drawableLeft="@drawable/userinfo_left_dir"
-            android:drawablePadding="@dimen/width_24px"
-            android:drawableRight="@drawable/userinfo_right_dir"
             android:focusable="false"
-            android:gravity="center"
+            android:gravity="center|right"
             android:text="未知"
             android:textColor="@android:color/white"
             android:textSize="@dimen/height_28px" />

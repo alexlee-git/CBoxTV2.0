@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,6 +45,7 @@ import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.uc.v2.member.UserAgreementActivity;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
@@ -63,6 +66,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
 
     private RelativeLayout rel_phone, rel_code;
     private TextView tv_code_phone, tv_code_status, tv_code_inval;
+    private TextView tv_agreenment;
     private TextView tv_success;
     private Button btn_refresh;
     private EditText mPhoneCodeInput;
@@ -103,6 +107,22 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
         rel_code.setVisibility(View.INVISIBLE);
 
         tv_success = findViewById(R.id.phone_login_success);
+        tv_agreenment = findViewById(R.id.phone_login_user_agrement);
+        tv_agreenment.setOnClickListener(this);
+        tv_agreenment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    tv_agreenment.setTextColor(Color.parseColor("#FFFFFF"));
+                    tv_agreenment.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
+                    tv_agreenment.getPaint().setAntiAlias(true);//抗锯齿
+                } else {
+                    tv_agreenment.setTextColor(Color.parseColor("#B3FFFFFF"));
+                    tv_agreenment.getPaint().setFlags(0); // 取消设置的的划线
+                    tv_agreenment.getPaint().setAntiAlias(true);//抗锯齿
+                }
+            }
+        });
         tv_code_phone = findViewById(R.id.phone_login_tip_phone);
         tv_code_status = findViewById(R.id.phone_login_code_status);
         tv_code_inval = findViewById(R.id.phone_login_code_inval);
@@ -213,6 +233,9 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
         switch (view.getId()) {
             case R.id.phone_login_refresh_code:
                 sendCodePhone();
+                break;
+            case R.id.phone_login_user_agrement:
+                startActivity(new Intent(this, UserAgreementActivity.class));
                 break;
         }
     }
@@ -335,6 +358,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                 return true;
             } else {
                 Intent intent = new Intent(PhoneLoginActivity.this, LoginActivity.class);
+                intent.putExtra("location", 1);
                 intent.putExtra("ispay", mFlagPay);
                 intent.putExtra("payBean", mExterPayBean);
                 startActivity(intent);
