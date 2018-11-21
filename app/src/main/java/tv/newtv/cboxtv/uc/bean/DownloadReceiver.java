@@ -79,7 +79,7 @@ public class DownloadReceiver extends BroadcastReceiver {
         protected void onHandleIntent(@Nullable Intent intent) {
             Log.d(TAG, "onHandleIntent : " + intent.getAction());
             if ("startIntentService".equals(intent.getAction())) {
-                if (0 == downId) {
+                if (0 <= downId) {
                     downId = (long) SPrefUtils.getValue(LauncherApplication.AppContext, UPDATA_KEY, downId);
                 }
                 queryFileUri(LauncherApplication.AppContext, downId);
@@ -187,7 +187,10 @@ public class DownloadReceiver extends BroadcastReceiver {
             DownloadManager mDownloadManager = (DownloadManager) LauncherApplication.AppContext
                     .getSystemService(Context.DOWNLOAD_SERVICE);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) { // 6.0以下
-                uri = mDownloadManager.getUriForDownloadedFile(completeDownLoadId);
+                if (downId <= 0) {
+                    downId = (long) SPrefUtils.getValue(LauncherApplication.AppContext, UPDATA_KEY, 0L);
+                }
+                uri = mDownloadManager.getUriForDownloadedFile(downId);
             } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) { // 6.0 - 7.0
                 uri = Uri.fromFile(apkFile);
             }

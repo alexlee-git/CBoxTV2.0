@@ -1368,7 +1368,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 && mProgramSeriesInfo.getData().get(index).getUseSeriesSubUUID()) {
             return;
         }
-        Player.get().onFinish(mProgramSeriesInfo, index, getCurrentPosition());
+        Player.get().onFinish(mProgramSeriesInfo, index, getCurrentPosition(), getDuration());
 
     }
 

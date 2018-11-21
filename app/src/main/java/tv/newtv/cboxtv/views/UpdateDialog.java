@@ -99,9 +99,8 @@ public class UpdateDialog {
                 rlUp.setVisibility(View.GONE);
                 linerPrograss.setVisibility(View.VISIBLE);
                 if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getPackageAddr())) {//22696530
-                    if (((Long) SPrefUtils.getValue(LauncherApplication.AppContext, APK_SIZE, 0L) > 0)
-                            && String.valueOf(SPrefUtils.getValue(LauncherApplication.AppContext, APK_SIZE, 0L))
-                            .equals(versionBeen.getPackageSize())) {
+                    String spApkSize = String.valueOf(SPrefUtils.getValue(LauncherApplication.AppContext, APK_SIZE, 0L));
+                    if (!TextUtils.isEmpty(spApkSize) && spApkSize.equals(versionBeen.getPackageSize())) {
                         Intent intent = new Intent(LauncherApplication.AppContext, DownloadReceiver.MyIntentService.class);
                         intent.setAction("startIntentService");
                         LauncherApplication.AppContext.startService(intent);

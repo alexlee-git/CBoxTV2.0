@@ -48,9 +48,9 @@ public class Player implements PlayerObserver {
     }
 
     @Override
-    public void onFinish(Content playInfo, int index, int position) {
+    public void onFinish(Content playInfo, int index, int position, int duration) {
 
-        mObserver.onFinish(playInfo, index, position);
+        mObserver.onFinish(playInfo, index, position, duration);
     }
 
     @Override
