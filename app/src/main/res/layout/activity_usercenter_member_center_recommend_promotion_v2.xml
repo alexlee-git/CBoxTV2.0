@@ -40,7 +40,6 @@
                 android:layout_marginLeft="@dimen/width_22px"
                 android:layout_marginRight="@dimen/width_22px"
                 android:layout_marginTop="@dimen/height_23px"
-                android:background="@drawable/test_member_center_qr_code_v2"
                 android:tag="tag_poster_image"/>
 
             <ImageView
