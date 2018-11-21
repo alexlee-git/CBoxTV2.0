@@ -44,6 +44,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
+import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.views.custom.AutoSizeTextView;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -286,12 +287,22 @@ class BlockBuilder {
                 // 加载海报图
                 final View posterView = itemView.findViewWithTag(posterWidgetId);
                 RecycleImageView recycleImageView = null;
+                LiveInfo mLiveInfo = null;
+                if(info != null){
+                    mLiveInfo = new LiveInfo(info.getTitle(),info.getVideo());
+                }
                 if (posterView instanceof RecycleImageView) {
                     recycleImageView = (RecycleImageView) posterView;
+                    if (mLiveInfo != null){
+                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
+                    }
                 } else if (posterView instanceof LivePlayView) {
                     ((LivePlayView) posterView).setProgramInfo(info);
                     ((LivePlayView) posterView).setUUID(PlayerUUID);
                     recycleImageView = ((LivePlayView) posterView).getPosterImageView();
+                    if (mLiveInfo != null){
+                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
+                    }
                 }
 
                 if (recycleImageView != null) {
