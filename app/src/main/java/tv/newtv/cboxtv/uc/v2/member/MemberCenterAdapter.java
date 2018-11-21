@@ -910,4 +910,11 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             return false;
         }
     }
+
+    public void release() {
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+    }
 }
