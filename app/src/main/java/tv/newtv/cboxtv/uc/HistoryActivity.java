@@ -77,7 +77,7 @@ public class HistoryActivity extends FragmentActivity implements
     private HistoryAdapter mAdapter;
     private BackgroundTipView deleteView;
 
-    private int selectPostion;
+    private int selectPostion =0;
 
     @BindView(R.id.id_operation_icon)
     ImageView operationIcon;

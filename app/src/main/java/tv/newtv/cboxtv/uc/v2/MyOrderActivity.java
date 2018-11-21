@@ -422,7 +422,7 @@ public class MyOrderActivity extends BaseActivity {
             intent.putExtra("action", "panel");
             intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
             Log.d(TAG, "---MEMBER_CENTER_PARAMS:action:panel----params:" + Constant.MEMBER_CENTER_PARAMS);
-            mPageClass = MainActivity.class;
+            mPageClass = SplashActivity.class;
         } else {
             Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();
         }

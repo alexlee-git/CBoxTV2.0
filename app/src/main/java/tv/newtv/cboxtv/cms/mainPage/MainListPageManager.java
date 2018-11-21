@@ -78,29 +78,16 @@ public class MainListPageManager {
         Log.e("--params---|-", action + "----" + params);
         if (action != null) {
             if (action.equals("panel")) {
-                if (params.contains("&")){
-                    try {
-                        String[] panels = params.split("&");
-                        if (panels.length > 1) {
-                            Navbarfoused = Integer.parseInt(panels[1]);
-                        }
-
-                    } catch (Exception e) {
-                        LogUtils.e(e.toString());
-                        Navbarfoused = -1;
+                try {
+                    String[] panels = params.split("&");
+//                    Log.e("--params----",panels[0]+"----"+panels[1]) ;
+                    if (panels.length > 1) {
+                        Navbarfoused = Integer.parseInt(panels[1]);
                     }
-                }else if (params.contains("|")){//适配二级导航
-                    try {
-                        String[] panels = params.split("\\|");
-                        Log.e("--params---|-", panels[1] + "----");
-                        if (panels.length > 1) {
-                            Navbarfoused = Integer.parseInt(panels[1]);
-                        }
 
-                    } catch (Exception e) {
-                        LogUtils.e(e.toString());
-                        Navbarfoused = -1;
-                    }
+                } catch (Exception e) {
+                    LogUtils.e(e.toString());
+                    Navbarfoused = -1;
                 }
             }
         } else {
