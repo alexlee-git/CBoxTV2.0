@@ -76,6 +76,9 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mAdPresenter!=null){
+            mAdPresenter.destroy();
+        }
 
         if (imageView != null) {
             imageView.setImageDrawable(null);
@@ -315,7 +318,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     }
 
     private void enterMain() {
-        mAdPresenter.destroy();
+
         authLogSuccess();//认证成功
 
         if (mStoped) {
@@ -334,7 +337,10 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 startActivity(intent);
             } else if (Constant.EXTERNAL_OPEN_URI.equals(mExternalAction)) {//点击广告进入详情页
                 if (mAdPresenter.getAdItem() != null) {
+                    Log.e(TAG, "enterMain: ..1" );
                     toSecondPageFromAd(mAdPresenter.getAdItem().eventContent);
+                }else {
+                    Log.e(TAG, "enterMain: ..2" );
                 }
             } else {
                 boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),

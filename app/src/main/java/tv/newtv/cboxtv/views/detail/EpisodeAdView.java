@@ -39,7 +39,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
     private AdContract.Presenter mADPresenter;
     private int measuredWidth, measuredHeight;
     private boolean isSuccess = false;
-    private ADHelper.AD.ADItem adItem;
+
 
 
     public EpisodeAdView(Context context) {
@@ -197,6 +197,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
 
     @Override
     public void onClick(View v) {
+        ADHelper.AD.ADItem adItem = mADPresenter.getAdItem();
         if(adItem != null && !TextUtils.isEmpty(adItem.eventContent)){
             AdEventContent adEventContent = GsonUtil.fromjson(adItem.eventContent, AdEventContent.class);
             JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
