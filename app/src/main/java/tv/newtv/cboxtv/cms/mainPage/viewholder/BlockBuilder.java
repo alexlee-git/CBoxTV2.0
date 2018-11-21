@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.mainPage.viewholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -23,22 +24,24 @@ import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.Row;
-import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
-import com.newtv.libs.util.GlideUtil;
-import com.newtv.libs.util.ImageUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
@@ -56,7 +59,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 创建人:           weihaichao
  * 创建日期:          2018/10/18
  */
-class BlockBuilder {
+class BlockBuilder extends BaseBlockBuilder {
 
     public static final String TAG = BlockBuilder.class.getSimpleName();
     private final String SHOW_BLOCK_TITLE = "1";
@@ -64,23 +67,19 @@ class BlockBuilder {
     private Context mContext;
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
-    private String PicassoTag = "";
-    private String PlayerUUID = "";
     private boolean showFirstTitle = false;
-    private AdContract.Presenter mAdPresenter;
+
 
     BlockBuilder(Context context) {
+        super(context);
         mContext = context;
 
         mSpringInterpolator = new OvershootInterpolator(2.2f);
-        mAdPresenter = new AdContract.AdPresenter(context, null);
+
     }
 
     public void destroy() {
-        if (mAdPresenter != null) {
-            mAdPresenter.destroy();
-            mAdPresenter = null;
-        }
+        super.destroy();
         mContext = null;
     }
 
@@ -107,7 +106,8 @@ class BlockBuilder {
         return -1;
     }
 
-    int getItemViewType(int position, Page item) {
+    @Override
+    public int getItemViewType(int position, Page item) {
         try {
             if (item != null) {
                 if (!"6".equals(item.getBlockType())) {
@@ -127,18 +127,13 @@ class BlockBuilder {
         return -1;
     }
 
-    void showFirstLineTitle(boolean value) {
+    @Override
+    public void showFirstLineTitle(boolean value) {
         showFirstTitle = value;
     }
 
-    void setPlayerUUID(String uuid) {
-        PlayerUUID = uuid;
-    }
 
-    void setPicassoTag(String tag) {
-        PicassoTag = tag;
-    }
-
+    @Override
     public void build(final Page moduleItem, View itemView, int position) {
         if (moduleItem == null) {
             return;
@@ -188,7 +183,8 @@ class BlockBuilder {
             int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
             Log.i(TAG, "layoutCode=" + layoutCode);
             for (int i = 0; i < posSize; ++i) {
-                if (moduleItem.getPrograms().size() - 1 < i) break;
+                if (moduleItem.getPrograms() == null || moduleItem.getPrograms().size() - 1 < i)
+                    break;
                 final Program info = moduleItem.getPrograms().get(i);
 
                 // 拿1号组件的1号推荐位为例, 其子海报控件的id为 : cell_001_1_poster
@@ -220,6 +216,11 @@ class BlockBuilder {
                 final FrameLayout frameLayout = (FrameLayout) itemView.findViewWithTag
                         (frameLayoutId);
                 if (frameLayout != null) {
+//                    if (frameLayout instanceof AlternatePageView) {
+//                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID);
+//                        ((AlternatePageView) frameLayout).setProgram(moduleItem);
+//                        return;
+//                    }
                     //屏幕适配
                     if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
@@ -278,8 +279,6 @@ class BlockBuilder {
                         frameLayout.setTag(R.id.tag_textview, textView);
                         frameLayout.setTag(R.id.tag_imageview, focusView);
                     }
-
-
                 }
 
                 // 是否圆角
@@ -287,35 +286,24 @@ class BlockBuilder {
                 // 加载海报图
                 final View posterView = itemView.findViewWithTag(posterWidgetId);
                 RecycleImageView recycleImageView = null;
-                LiveInfo mLiveInfo = null;
-                if(info != null){
-                    mLiveInfo = new LiveInfo(info.getTitle(),info.getVideo());
-                }
-                if (posterView instanceof RecycleImageView) {
-                    recycleImageView = (RecycleImageView) posterView;
-                    if (mLiveInfo != null){
-                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
-                    }
-                } else if (posterView instanceof LivePlayView) {
-                    ((LivePlayView) posterView).setProgramInfo(info);
-                    ((LivePlayView) posterView).setUUID(PlayerUUID);
-                    recycleImageView = ((LivePlayView) posterView).getPosterImageView();
-                    if (mLiveInfo != null){
-                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
-                    }
-                }
 
-                if (recycleImageView != null) {
-                    if (info.isAd() != 1) {
-                        showPosterByCMS(posterWidgetId, recycleImageView, info.getImg(),
-                                hasCorner);
-                    } else {
-                        Log.e(Constant.TAG, "block id : " + moduleItem.getBlockId() + ", " +
-                                "cellcode" +
-                                " : "
-                                + info.getCellCode() + ", isAd : " + info.isAd());
-                        showPosterByAD(posterWidgetId, moduleItem, recycleImageView, info,
-                                hasCorner);
+                if (posterView != null && info != null) {
+                    LiveInfo mLiveInfo = new LiveInfo(info.getTitle(), info.getVideo());
+                    if (posterView instanceof RecycleImageView) {
+                        recycleImageView = (RecycleImageView) posterView;
+                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
+                    } else if (posterView instanceof LivePlayView) {
+                        ((LivePlayView) posterView).setProgramInfo(info);
+                        ((LivePlayView) posterView).setPageUUID(PlayerUUID);
+                        recycleImageView = ((LivePlayView) posterView).getPosterImageView();
+                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
+                    }
+//                    else if (posterView instanceof AlternateView) {
+//                        ((AlternateView) posterView).setContentUUID(info.getContentId());
+//                    }
+
+                    if (recycleImageView != null) {
+                        loadPosterToImage(moduleItem, info, recycleImageView, hasCorner);
                     }
                 }
             }
@@ -343,68 +331,6 @@ class BlockBuilder {
             }
         }
         return hasCorner;
-    }
-
-    /**
-     * 推荐位显示广告
-     */
-    private void showPosterByAD(final String imageId, final Page moduleItem, final RecycleImageView
-            imageView, final Program info, final boolean hasCorner) {
-
-        if (imageView == null) {
-            return;
-        }
-
-        if (info == null) {
-            return;
-        }
-
-        if (moduleItem == null) {
-            return;
-        }
-
-        mAdPresenter.getAdByType(Constant.AD_DESK, moduleItem.getBlockId() + "_" + info
-                        .getCellCode(),
-                "", null, new AdContract.Callback() {
-                    @Override
-                    public void showAd(@Nullable String type, @Nullable String url, @Nullable
-                            HashMap<?, ?> hashMap) {
-                        LogUtils.e(TAG, "load " + imageId + " AD image path=" + url);
-                        if (TextUtils.isEmpty(url)) {
-                            showPosterByCMS(imageId, imageView, info.getImg(), hasCorner);
-                        } else {
-                            int width = imageView.getLayoutParams().width;
-                            int height = imageView.getLayoutParams().height;
-                            int placeHolderResId = ImageUtils.getProperPlaceHolderResId(mContext,
-                                    width, height);
-                            if (placeHolderResId != 0) {
-                                imageView.Tag(PicassoTag).placeHolder(placeHolderResId)
-                                        .hasCorner(hasCorner).load(url);
-                            } else {
-                                imageView.Tag(PicassoTag).hasCorner(hasCorner).load(url);
-                            }
-                        }
-                    }
-                });
-    }
-
-    /**
-     * 推荐位显示海报
-     */
-    void showPosterByCMS(String imageId, final RecycleImageView imageView, final String
-            imgUrl, boolean isCorner) {
-        LogUtils.e(TAG, "load " + imageId + " cms image path=" + imgUrl);
-        if (imageView != null) {
-            int width = imageView.getLayoutParams().width;
-            int height = imageView.getLayoutParams().height;
-
-            int placeHolderResId = ImageUtils.getProperPlaceHolderResId(imageView.getContext(),
-                    width, height);
-            GlideUtil.loadImage(imageView.getContext(), imageView,
-                    imgUrl, placeHolderResId, placeHolderResId, isCorner);
-        } else {
-            Log.e(Constant.TAG, "未找到的控件地址 : ");
-        }
     }
 
     /**
@@ -443,8 +369,6 @@ class BlockBuilder {
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {
-
-//                focusView.requestFocus();
                 focusView.setBackgroundResource(R.drawable.pos_zui_27px);
             }
         }
@@ -455,7 +379,8 @@ class BlockBuilder {
         }
 
         String tag = (String) view.getTag();
-        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") || tag.equals("cell_001_1")) {
+        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") ||
+                tag.equals("cell_001_1")) {
             //直接放大view
             ScaleAnimation sa = new ScaleAnimation(1.0f, 1.07f, 1.0f, 1.07f, Animation
                     .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -499,7 +424,8 @@ class BlockBuilder {
         }
 
         String tag = (String) view.getTag();
-        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") || tag.equals("cell_001_1")) {
+        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") ||
+                tag.equals("cell_001_1")) {
             ScaleAnimation sa = new ScaleAnimation(1.07f, 1.0f, 1.07f, 1.0f, Animation
                     .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
             sa.setFillAfter(true);
@@ -553,119 +479,136 @@ class BlockBuilder {
         }
         if (info instanceof Program) {
             Program pInfo = (Program) info;
-//            JumpUtil.activityJump(mContext,pInfo.getL_actionType(),pInfo.getContentType(),pInfo
-//                    .getL_id(),pInfo.getL_actionUri());
             JumpUtil.activityJump(mContext, (Program) info);
         } else if (info instanceof Row) {
             Row row = (Row) info;
             JumpUtil.detailsJumpActivity(mContext, row.getContentType(), row.getContentId());
         }
-
     }
 
-    private void processSuperscript(String layoutCode, Program info, ViewGroup parent) {
+    @SuppressLint("CheckResult")
+    private void processSuperscript(final String layoutCode, final Program info, final ViewGroup
+            parent) {
         if (info == null || parent == null) {
             return;
         }
-
-        String leftTopUrl = info.getLSuperScript();
-        if (!TextUtils.isEmpty(leftTopUrl)) {
-            addLeftTopSuperscript(leftTopUrl,info, parent);
-        }
-
-        String rightTopUrl = info.getRSuperScript();
-        if (!TextUtils.isEmpty(rightTopUrl)) {
-            addRightTopSuperscript(rightTopUrl,info, parent);
-        }
-
-        String leftBottomUrl = info.getLSubScript();
-        if (!TextUtils.isEmpty(leftBottomUrl)) {
-            addLeftBottomSuperscript(layoutCode, leftBottomUrl,info, parent);
-        }
-
-        String rightBottomUrl = info.getRSubScript();
-        if (!TextUtils.isEmpty(rightBottomUrl)) {
-            addRightBottomSuperscript(layoutCode, rightBottomUrl,info, parent);
-        }
-    }
-
-    private void addLeftTopSuperscript(String superId,Program program, ViewGroup parent) {
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-        lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-        ;
-
-        ImageView imageView = new ImageView(mContext);
-        imageView.setLayoutParams(lp);
-        parent.addView(imageView,lp);
-
-        loadSuperscript(imageView,program, superId);
-    }
-
-    private void addLeftBottomSuperscript(String layoutCode, String superId,Program program, ViewGroup parent) {
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-        if (TextUtils.equals(layoutCode, "layout_008") || TextUtils.equals(layoutCode,
-                "layout_005")) {
-            lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
-        } else {
-            lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-        }
-
-        lp.gravity = Gravity.BOTTOM;
-        ImageView imageView = new ImageView(mContext);
-        imageView.setLayoutParams(lp);
-        parent.addView(imageView,lp);
-
-        loadSuperscript(imageView,program, superId);
-    }
-
-    private void addRightTopSuperscript(String superId,Program program, ViewGroup parent) {
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-        lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-        lp.gravity = Gravity.RIGHT | Gravity.END;
-        ImageView imageView = new ImageView(mContext);
-        imageView.setLayoutParams(lp);
-        parent.addView(imageView,lp);
-        loadSuperscript(imageView, program,superId);
-    }
-
-    private void addRightBottomSuperscript(String layoutCode, String superId,Program program, ViewGroup parent) {
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
-                "layout_008")) {
-            lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
-        } else {
-            lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-        }
-        lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-        lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
-        ImageView imageView = new ImageView(mContext);
-        imageView.setLayoutParams(lp);
-        parent.addView(imageView,lp);
-
-        // 加载角标
-        loadSuperscript(imageView, program,superId);
-    }
-
-    private void loadSuperscript(ImageView target,Program program, String superscriptId) {
-        Corner info = SuperScriptManager.getInstance().getSuperscriptInfoById
-                (superscriptId);
-        if (info != null && info.suitFor(program)) {
-            String superType = info.getCornerType();
-            if ("IMG".equals(superType)) {
-                String superUrl = info.getCornerImg();
-                if (!TextUtils.isEmpty(superUrl)) {
-                    GlideUtil.loadImage(mContext,target,superUrl,-1,-1,false);
-                }
+        Observable.create(new ObservableOnSubscribe<List<Corner>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<Corner>> e) throws Exception {
+                List<Corner> cornerList = SuperScriptManager.getInstance().findSuitCorner(info);
+                e.onNext(cornerList);
             }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Corner>>() {
+                    @Override
+                    public void accept(List<Corner> cornerList) throws Exception {
+                        if (cornerList != null && cornerList.size() > 0) {
+                            for (Corner corner : cornerList) {
+                                if (Corner.LEFT_TOP.equals(corner.getCornerPosition())) {
+                                    addLeftTopSuperscript(corner, parent);
+                                } else if (Corner.LEFT_BOTTOM.equals(corner.getCornerPosition())) {
+                                    addLeftBottomSuperscript(layoutCode, corner, parent);
+                                } else if (Corner.RIGHT_TOP.equals(corner.getCornerPosition())) {
+                                    addRightTopSuperscript(corner, parent);
+                                } else if (Corner.RIGHT_BOTTOM.equals(corner.getCornerPosition())) {
+                                    addRightBottomSuperscript(layoutCode, corner, parent);
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void addLeftTopSuperscript(Corner corner, ViewGroup parent) {
+        RecycleImageView imageView = parent.findViewWithTag("CORNER_LEFT_TOP");
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
+                    .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+
+            imageView = new RecycleImageView(mContext);
+            imageView.setLayoutParams(lp);
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
+            imageView.setTag("CORNER_LEFT_TOP");
+            parent.addView(imageView, lp);
+        }
+        showCorner(corner, imageView);
+    }
+
+    private void addLeftBottomSuperscript(String layoutCode, Corner corner,
+                                          ViewGroup parent) {
+        RecycleImageView imageView = parent.findViewWithTag("CENTER_LEFT_BOTTOM");
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            if (TextUtils.equals(layoutCode, "layout_008") || TextUtils.equals(layoutCode,
+                    "layout_005")) {
+                lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
+            } else {
+                lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+            }
+
+            lp.gravity = Gravity.BOTTOM;
+            imageView = new RecycleImageView(mContext);
+            imageView.setTag("CENTER_LEFT_BOTTOM");
+            imageView.setLayoutParams(lp);
+            parent.addView(imageView, lp);
+        }
+
+        showCorner(corner, imageView);
+    }
+
+    private void addRightTopSuperscript(Corner corner, ViewGroup parent) {
+        RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_TOP");
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+            lp.gravity = Gravity.RIGHT | Gravity.END;
+            imageView = new RecycleImageView(mContext);
+            imageView.setTag("CORNER_RIGHT_TOP");
+            imageView.setLayoutParams(lp);
+            parent.addView(imageView, lp);
+        }
+        showCorner(corner, imageView);
+    }
+
+    private void addRightBottomSuperscript(String layoutCode, Corner corner, ViewGroup parent) {
+        RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_BOTTOM");
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
+                    "layout_008")) {
+                lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
+            } else {
+                lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+            }
+            lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
+            imageView = new RecycleImageView(mContext);
+            imageView.setTag("CORNER_RIGHT_BOTTOM");
+            imageView.setLayoutParams(lp);
+            parent.addView(imageView, lp);
+        }
+
+        // 加载角标x
+        showCorner(corner, imageView);
+    }
+
+
+    private void showCorner(Corner corner, RecycleImageView target) {
+        String superUrl = corner.getCornerImg();
+        if (!TextUtils.isEmpty(superUrl)) {
+            target.hasCorner(false).useResize(false).load(superUrl);
+//            GlideUtil.loadImage(mContext, target, superUrl, -1, -1, false);
         }
     }
+
 
     /**
      * 按需添加标题控件
@@ -687,8 +630,9 @@ class BlockBuilder {
 
         if (!TextUtils.isEmpty(title) && !TextUtils.equals(title, "null")) {
             Log.d(TAG, title);
-            if (!TextUtils.equals(layoutCode, "layout_030")&&!TextUtils.equals(layoutCode, "layout_005") && !TextUtils.equals(layoutCode,
-                    "layout_008")) {
+            if (!TextUtils.equals(layoutCode, "layout_030") && !TextUtils.equals(layoutCode,
+                    "layout_005") && !TextUtils.equals(layoutCode,
+            "layout_008")){
                 TextView titleWidget = (TextView) framelayout.getTag(R.id
                         .tag_title);
 
@@ -703,20 +647,22 @@ class BlockBuilder {
                     background.setLayoutParams(layoutParams);
                     framelayout.addView(background);
                     FrameLayout.LayoutParams lp;
-                    if (TextUtils.equals(layoutCode, "layout_006")){
-                        lp  = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
+                    if (TextUtils.equals(layoutCode, "layout_006")) {
+                        lp = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
                                 .SCALE_TYPE_WIDTH), FrameLayout.LayoutParams.WRAP_CONTENT);
                         titleWidget = new TextView(mContext);
                         titleWidget.setSingleLine();
-                        titleWidget.   setLines(1);
-                        titleWidget.     setTextColor(Color.parseColor("#ededed"));
-                        titleWidget.   setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.height_12sp));
-                        titleWidget.      setMarqueeRepeatLimit(-1);
-                        titleWidget.  setEllipsize(TextUtils.TruncateAt.MARQUEE);
-                        titleWidget.       setIncludeFontPadding(false);
-                        titleWidget.     setGravity(Gravity.CENTER_VERTICAL);
-                    }else{
-                        lp  = new FrameLayout.LayoutParams( FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                        titleWidget.setLines(1);
+                        titleWidget.setTextColor(Color.parseColor("#ededed"));
+                        titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
+                                .dimen.height_12sp));
+                        titleWidget.setMarqueeRepeatLimit(-1);
+                        titleWidget.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        titleWidget.setIncludeFontPadding(false);
+                        titleWidget.setGravity(Gravity.CENTER_VERTICAL);
+                    } else {
+                        lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                                FrameLayout.LayoutParams.WRAP_CONTENT);
                         titleWidget = new AutoSizeTextView(mContext);
                     }
                     lp.gravity = Gravity.BOTTOM;
@@ -766,12 +712,12 @@ class BlockBuilder {
                 }
             } else {
                 FrameLayout.LayoutParams lp;
-                if (TextUtils.equals(layoutCode, "layout_006"))  {
-                    lp  = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
+                if (TextUtils.equals(layoutCode, "layout_006")) {
+                    lp = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
                             .SCALE_TYPE_HEIGHT), FrameLayout.LayoutParams.WRAP_CONTENT);
                     lp.gravity = Gravity.BOTTOM;
                     lp.bottomMargin = DisplayUtils.translate(34, DisplayUtils.SCALE_TYPE_HEIGHT);
-                }else{
+                } else {
                     lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                             .MATCH_PARENT, DisplayUtils.translate(33, DisplayUtils
                             .SCALE_TYPE_HEIGHT));
