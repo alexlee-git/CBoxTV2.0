@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.uc;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +14,6 @@ import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +21,6 @@ import com.newtv.cms.bean.Corner;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
@@ -111,7 +110,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             } else {
                 viewHolder.mScore.setText("0.0");
             }
-
+            viewHolder.mScore.setBackgroundColor(Color.parseColor("#99000000"));
             // 观看进度
             viewHolder.mSubTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(entity.getPlayPosition(), entity.getDuration()));
 
@@ -256,13 +255,13 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         public HistoryViewHolder(View itemView) {
             super(itemView);
 
-            mModuleView  = itemView.findViewById(R.id.id_module_view);
-            mTitleTv     = (TextView) itemView.findViewById(R.id.id_title);
-            mImageIv     = (ImageView) itemView.findViewById(R.id.id_poster);
-            mFocusIv     = (ImageView) itemView.findViewById(R.id.id_focus);
-            mSubTitle    = itemView.findViewById(R.id.id_subtitle);
-            mScore       = itemView.findViewById(R.id.id_score);
-            mEpisode     = itemView.findViewById(R.id.id_episode_data);
+            mModuleView = itemView.findViewById(R.id.id_module_view);
+            mTitleTv = (TextView) itemView.findViewById(R.id.id_title);
+            mImageIv = (ImageView) itemView.findViewById(R.id.id_poster);
+            mFocusIv = (ImageView) itemView.findViewById(R.id.id_focus);
+            mSubTitle = itemView.findViewById(R.id.id_subtitle);
+            mScore = itemView.findViewById(R.id.id_score);
+            mEpisode = itemView.findViewById(R.id.id_episode_data);
             mSuperscript = itemView.findViewById(R.id.id_superscript);
 
             mModuleView.setOnFocusChangeListener(this);
