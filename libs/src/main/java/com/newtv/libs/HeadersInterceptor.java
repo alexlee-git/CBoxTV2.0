@@ -35,6 +35,7 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
     public static final String HTML_PATH_HELPER = "HTML_PATH_HELPER";
     public static final String HTML_PATH_ABOUT_US = "HTML_PATH_ABOUT_US";
     public static final String HTML_PATH_MEMBER_PROTOCOL = "HTML_PATH_MEMBER_PROTOCOL";
+    public static final String HTML_PATH_USER_PROTOCOL = "HTML_PATH_USER_PROTOCOL";
     public static final String MEMBER_CENTER_PARAMS = "MEMBER_CENTER_PARAMS";
 
     // cms3.1新增bootguide字段

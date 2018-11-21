@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.uc.v2;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
@@ -135,7 +136,10 @@ public abstract class BaseUCDetailActivity<T> extends FragmentActivity implement
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
+            buttonView.setTextColor(Color.parseColor("#FFFFFFFF"));
             onTabChange(buttonView.getText().toString(), buttonView);
+        } else {
+            buttonView.setTextColor(Color.parseColor("#CCFFFFFF"));
         }
     }
 

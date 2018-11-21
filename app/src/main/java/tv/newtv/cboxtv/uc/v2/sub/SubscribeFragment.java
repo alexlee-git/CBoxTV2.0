@@ -195,8 +195,13 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
 
         showEmptyTip();
         String hotRecommendParam = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_SUBSCRIPTION);
-        mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
-        mContentPresenter.getPageContent(hotRecommendParam);
+        if (!TextUtils.isEmpty(hotRecommendParam)) {
+            mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
+            mContentPresenter.getPageContent(hotRecommendParam);
+        } else {
+            Log.e(TAG, "wqs:PAGE_SUBSCRIPTION==null");
+        }
+
 //        showHotRecommend();
     }
 

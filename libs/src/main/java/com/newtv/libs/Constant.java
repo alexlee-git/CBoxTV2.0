@@ -311,6 +311,9 @@ public class Constant {
     //会员协议html地址
     public static String HTML_PATH_MEMBER_PROTOCOL = getBaseUrl(HeadersInterceptor
             .HTML_PATH_MEMBER_PROTOCOL);
+    //用户协议html地址
+    public static String HTML_PATH_USER_PROTOCOL = getBaseUrl(HeadersInterceptor
+            .HTML_PATH_USER_PROTOCOL);
     //会员中心跳转会员片库params值
     public static String MEMBER_CENTER_PARAMS = getBaseUrl(HeadersInterceptor
             .HTML_PATH_MEMBER_PROTOCOL);
