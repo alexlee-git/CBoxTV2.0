@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.uc.v2.member;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +14,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,7 +26,9 @@ import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
+import com.newtv.libs.util.Utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,6 +84,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     public static final int RECOMMEND_INTERESTS = 2;//会员权益介绍推荐位
     public static final int RECOMMEND_DRAMA = 3;//会员片库推荐
     public static final int RECOMMEND = 4;//推荐位
+    public static final int QR_CODE_INVALID = 5;//推荐位
     private MemberCenterRecyclerView mRecyclerView;
     private TextView mEmptyView;
     private List<UserCenterPageBean> pageData;
@@ -88,9 +94,17 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private View mPopupView;
     private Disposable mMemberInfoDisposable;
     private Disposable mRecommendDisposable;//推荐位
+    private Disposable mQrCodeDisposable;//推荐位
     private MemberInfoBean mMemberInfoBean;
     private String mLoginTokenString;//登录token,用于判断登录状态
     private PageContract.ContentPresenter mContentPresenter;
+    private String Authorization;
+    private QrcodeUtil mQrCodeUtil;
+    private String deviceCode;
+    private String qrCode;
+    private int expires;
+    private Bitmap mBitmap;
+    private ImageView mFullQrCodeImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +128,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         mAdapter.appendToList(pageData);
         mRecyclerView.setAdapter(mAdapter);
         mPopupView = LayoutInflater.from(this).inflate(R.layout.activity_usercenter_member_center_qr_code_full_screen_v2, null);
+        mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        mFullQrCodeImageView = mPopupView.findViewById(R.id.id_member_center_full_screen_qr_code);
         mPopupWindow = new PopupWindow(mPopupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
         Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
@@ -124,6 +140,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         } else {
             Log.d(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
+        mQrCodeUtil = new QrcodeUtil();
     }
 
     //获取用户登录状态
@@ -230,6 +247,78 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     }
 
     /**
+     * 获取M站购买二维码信息
+     *
+     * @param Authorization
+     * @param response_type
+     * @param client_id
+     */
+    private void requestQrCodeInfo(String Authorization, String response_type, String client_id) {
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .getLoginQRCode(Authorization, response_type, client_id, Libs.get().getChannelId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            unQrCodeSubscribe();
+                            mQrCodeDisposable = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String data = responseBody.string();
+                                Log.i(TAG, "Login Qrcode :" + data.toString());
+                                JSONObject mJsonObject = new JSONObject(data);
+                                deviceCode = mJsonObject.optString("device_code");
+                                qrCode = mJsonObject.optString("veriﬁcation_uri_complete");
+                                expires = mJsonObject.optInt("expires_in");
+                                if (mAdapter != null) {
+                                    mAdapter.setQrCodeImageView(qrCode);
+                                }
+                                if (!TextUtils.isEmpty(qrCode)) {
+                                    mQrCodeUtil.createQRImage(qrCode, getResources().getDimensionPixelOffset(R.dimen.height_617px),
+                                            getResources().getDimensionPixelOffset(R.dimen.height_617px), mBitmap, mFullQrCodeImageView);
+                                } else {
+                                    mFullQrCodeImageView.setBackgroundResource(R.drawable.default_member_center_full_screen_qr_code_v2);
+                                }
+                                if (expires > 0) {
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessageDelayed(QR_CODE_INVALID, expires * 1000);
+                                    }
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i(TAG, "GetToken  onError" + e);
+                            unQrCodeSubscribe();
+                            if (mAdapter != null) {
+                                mAdapter.setQrCodeImageView("");
+                            }
+                            if (mFullQrCodeImageView != null) {
+                                mFullQrCodeImageView.setBackgroundResource(R.drawable.default_member_center_full_screen_qr_code_v2);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            unQrCodeSubscribe();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * adapter刷新头部数据
      *
      * @param
@@ -240,8 +329,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
             if (mAdapter != null) {
                 //传递用户会员信息数据
                 mAdapter.setMemberStatus(mMemberInfoBean);
-                mAdapter.notifyItemRemoved(position);
-                mAdapter.notifyDataSetChanged();
+                mAdapter.notifyItemChanged(position);
+//                mAdapter.notifyDataSetChanged();
             } else {
                 Log.d(TAG, "wqs:bindData:mAdapter == null");
             }
@@ -268,6 +357,16 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         if (mRecommendDisposable != null && !mRecommendDisposable.isDisposed()) {
             mRecommendDisposable.dispose();
             mRecommendDisposable = null;
+        }
+    }
+
+    /**
+     * 解除获取二维码图片数据绑定
+     */
+    private void unQrCodeSubscribe() {
+        if (mQrCodeDisposable != null && !mQrCodeDisposable.isDisposed()) {
+            mQrCodeDisposable.dispose();
+            mQrCodeDisposable = null;
         }
     }
 
@@ -415,10 +514,24 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "wqs:onResume");
-        //会员中心首页上报日志
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5,");
-        requestUserInfo();
+        try {
+            Log.d(TAG, "wqs:onResume");
+            //会员中心首页上报日志
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5,");
+            requestUserInfo();
+            //获取M站二维码信息
+            if (TextUtils.isEmpty(Authorization)) {
+                Authorization = Utils.getAuthorization(MemberCenterActivity.this);
+                if (!TextUtils.isEmpty(Authorization)) {
+                    requestQrCodeInfo(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
+                }
+            } else {
+                requestQrCodeInfo(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
+            }
+            Log.d(TAG, "wqs:Authorization?null:" + TextUtils.isEmpty(Authorization));
+        } catch (Exception e) {
+            Log.e(TAG, "wqs:onResume:Exception:" + e.toString());
+        }
     }
 
     @Override
@@ -429,8 +542,17 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
         }
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+        if (mAdapter != null) {
+            mAdapter.release();
+            mAdapter = null;
+        }
         unMemberInfoSubscribe();
         unRecommendSubscribe();
+        unQrCodeSubscribe();
     }
 
 
@@ -588,6 +710,9 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     if (activity != null) {
                         activity.bindData();
                     }
+                    break;
+                case QR_CODE_INVALID:
+                    activity.requestQrCodeInfo(activity.Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
                     break;
                 default:
                     break;

@@ -66,6 +66,11 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
             String score = info.getGrade();
             if (!TextUtils.isEmpty(score) && !TextUtils.equals("null", score)) {
                 holder.score.setText(score);
+                holder.score.setVisibility(View.VISIBLE);
+                Log.d("pf", "vv : " + score);
+            } else {
+                holder.score.setVisibility(View.INVISIBLE);
+                Log.d("pf", "haha");
             }
 
             holder.subTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(info.getPlayPosition(), info.getDuration()));
@@ -84,8 +89,12 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
             // 角标 & 主标 & 海报 & 更新剧集 & 评分
             String score = info.getGrade();
             if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null")) {
+                holder.score.setVisibility(View.VISIBLE);
                 holder.score.setText(score);
+            } else {
+               holder.score.setVisibility(View.INVISIBLE);
             }
+
             holder.episode.setText(getEpisode(info));
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
@@ -100,6 +109,7 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
         } else if (TextUtils.equals(mContentType, Constant.UC_FOLLOW)) {
             // 主标 & 海报 这两个下面统一做,这里只需将衬托剧集信息和评分区域的蒙版隐藏掉
             holder.mask.setVisibility(View.GONE);
+            holder.score.setVisibility(View.GONE);
         }
 
         // 主标题
@@ -107,15 +117,16 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
 
         // 海报
         String posterUrl = info.get_imageurl();
-        if (!TextUtils.isEmpty(posterUrl) && holder.poster != null) {
+        if (!TextUtils.isEmpty(posterUrl) && !TextUtils.isEmpty("null") && holder.poster != null) {
             Picasso.get().load(posterUrl)
                     .placeholder(R.drawable.default_member_center_240_360_v2)
+                    .error(R.drawable.deful_user)
                     .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
                     .transform(new PosterCircleTransform(mContext, 4))
                     .into(holder.poster);
-        }else {
-            if (holder.poster != null){
-                holder.poster.setImageResource(R.drawable.default_member_center_240_360_v2);
+        } else {
+            if (holder.poster != null) {
+                holder.poster.setImageResource(R.drawable.deful_user);
             }
         }
 

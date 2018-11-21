@@ -58,8 +58,8 @@
         android:layout_gravity="right"
         android:layout_marginRight="@dimen/width_39px"
         android:layout_marginTop="@dimen/width_347px"
-        android:gravity="center"
         android:background="#99000000"
+        android:gravity="center"
         android:includeFontPadding="false"/>
 
     <TextView

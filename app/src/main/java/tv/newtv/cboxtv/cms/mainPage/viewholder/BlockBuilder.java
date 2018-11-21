@@ -672,12 +672,15 @@ class BlockBuilder {
         int pxheight_1px = mContext.getResources().getDimensionPixelSize(R.dimen._height_1px);
         int pxSize = mContext.getResources().getDimensionPixelSize(R.dimen.width_70px);
         int pxSize2 = mContext.getResources().getDimensionPixelSize(R.dimen.height_40px);
+        int width = mContext.getResources().getDimensionPixelSize(R.dimen.width_168px);
 
         if (!TextUtils.isEmpty(title) && !TextUtils.equals(title, "null")) {
+            Log.d(TAG, title);
             if (!TextUtils.equals(layoutCode, "layout_030")&&!TextUtils.equals(layoutCode, "layout_005") && !TextUtils.equals(layoutCode,
                     "layout_008")) {
-                AutoSizeTextView titleWidget = (AutoSizeTextView) framelayout.getTag(R.id
+                TextView titleWidget = (TextView) framelayout.getTag(R.id
                         .tag_title);
+
                 if (titleWidget == null) {
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup
                             .LayoutParams.MATCH_PARENT, DisplayUtils.translate(pxSize, DisplayUtils
@@ -688,21 +691,38 @@ class BlockBuilder {
                     background.setBackgroundResource(R.drawable.gradient_white_to_black);
                     background.setLayoutParams(layoutParams);
                     framelayout.addView(background);
-
-                    FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout
-                            .LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                    FrameLayout.LayoutParams lp;
+                    if (TextUtils.equals(layoutCode, "layout_006")){
+                        lp  = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
+                                .SCALE_TYPE_WIDTH), FrameLayout.LayoutParams.WRAP_CONTENT);
+                        titleWidget = new TextView(mContext);
+                        titleWidget.setSingleLine();
+                        titleWidget.   setLines(1);
+                        titleWidget.     setTextColor(Color.parseColor("#ededed"));
+                        titleWidget.   setTextSize(mContext.getResources().getDimensionPixelSize(R.dimen.height_12sp));
+                        titleWidget.      setMarqueeRepeatLimit(-1);
+                        titleWidget.  setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        titleWidget.       setIncludeFontPadding(false);
+                        titleWidget.     setGravity(Gravity.CENTER_VERTICAL);
+                    }else{
+                        lp  = new FrameLayout.LayoutParams( FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                        titleWidget = new AutoSizeTextView(mContext);
+                    }
                     lp.gravity = Gravity.BOTTOM;
                     lp.bottomMargin = 0;
                     lp.leftMargin = 0;
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                         lp.setMarginStart(0);
                     }
-                    titleWidget = new AutoSizeTextView(mContext);
+
                     titleWidget.setLayoutParams(lp);
                     framelayout.setTag(R.id.tag_title, titleWidget);
                     framelayout.addView(titleWidget, lp);
+
                 }
                 titleWidget.setText(title);
+                titleWidget.setVisibility(View.VISIBLE);
             }
         }
 
@@ -734,12 +754,19 @@ class BlockBuilder {
                     framelayout.addView(subTitleWidget, lp);
                 }
             } else {
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                        .MATCH_PARENT, DisplayUtils.translate(33, DisplayUtils
-                        .SCALE_TYPE_HEIGHT));
-                lp.gravity = Gravity.BOTTOM;
-                lp.bottomMargin = DisplayUtils.translate(34, DisplayUtils.SCALE_TYPE_HEIGHT);
-
+                FrameLayout.LayoutParams lp;
+                if (TextUtils.equals(layoutCode, "layout_006"))  {
+                    lp  = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
+                            .SCALE_TYPE_HEIGHT), FrameLayout.LayoutParams.WRAP_CONTENT);
+                    lp.gravity = Gravity.BOTTOM;
+                    lp.bottomMargin = DisplayUtils.translate(34, DisplayUtils.SCALE_TYPE_HEIGHT);
+                }else{
+                    lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
+                            .MATCH_PARENT, DisplayUtils.translate(33, DisplayUtils
+                            .SCALE_TYPE_HEIGHT));
+                    lp.gravity = Gravity.BOTTOM;
+                    lp.bottomMargin = DisplayUtils.translate(34, DisplayUtils.SCALE_TYPE_HEIGHT);
+                }
                 subTitleWidget = new TextView(mContext);
                 subTitleWidget.setLayoutParams(lp);
                 subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils

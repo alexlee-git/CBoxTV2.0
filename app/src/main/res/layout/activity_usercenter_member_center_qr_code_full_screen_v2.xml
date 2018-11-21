@@ -31,8 +31,7 @@
             android:layout_height="@dimen/height_617px"
             android:layout_marginLeft="@dimen/width_27px"
             android:layout_marginRight="@dimen/width_22px"
-            android:layout_marginTop="@dimen/height_27px"
-            android:background="@drawable/test_member_center_qr_code_v2"/>
+            android:layout_marginTop="@dimen/height_27px"/>
 
         <ImageView
             android:id="@+id/id_member_center_full_screen_qr_scan_icon"

@@ -21,9 +21,7 @@ public interface LabelApi {
 
     @GET("api/v31/8acb5c18e56c1988723297b1a8dc9260/600001/filterkeywords/101.json")
     Observable<ResponseBody> getSecondMenu();
-    @Headers("Content-Type:application/x-www-form-urlencoded; charset=utf-8")
-    @GET("api/v31/8acb5c18e56c1988723297b1a8dc9260/600001/search.json?")
-    Observable<ResponseBody> getData(@QueryMap Map<String, Object> param);
+
 
 
 }

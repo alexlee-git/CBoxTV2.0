@@ -454,7 +454,7 @@ public class UserCenterRecordManager {
                 UserCenterPageBean.Bean bean = iterator.next();
 
                 Content info = new Content();
-                info.setContentUUID(bean.get_contentuuid());
+                info.setContentID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -475,7 +475,10 @@ public class UserCenterRecordManager {
                 UserCenterPageBean.Bean bean = iterator.next();
 
                 Content info = new Content();
-                info.setContentUUID(bean.get_contentuuid());
+
+                Log.d("sub", "addSubscribeToDataBase contentid : " + bean.get_contentuuid());
+
+                info.setContentID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -496,7 +499,7 @@ public class UserCenterRecordManager {
                 UserCenterPageBean.Bean bean = iterator.next();
 
                 Content info = new Content();
-                info.setContentUUID(bean.get_contentuuid());
+                info.setContentID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -517,7 +520,7 @@ public class UserCenterRecordManager {
                 UserCenterPageBean.Bean bean = iterator.next();
 
                 Content info = new Content();
-                info.setContentUUID(bean.get_contentuuid());
+                info.setContentID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -722,6 +725,7 @@ public class UserCenterRecordManager {
 
         UserCenterPageBean.Bean pageBean = new UserCenterPageBean.Bean();
         pageBean.set_contentuuid(bundle.getString(DBConfig.CONTENTUUID));
+        Log.d("sub", "packageData contentID : " + bundle.get(DBConfig.CONTENTUUID));
         pageBean.set_title_name(bundle.getString(DBConfig.TITLE_NAME));
         pageBean.set_imageurl(bundle.getString(DBConfig.IMAGEURL));
         pageBean.setProgress(bundle.getString(DBConfig.PLAY_PROGRESS));

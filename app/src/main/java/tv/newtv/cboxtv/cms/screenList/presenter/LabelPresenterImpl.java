@@ -1,10 +1,14 @@
 package tv.newtv.cboxtv.cms.screenList.presenter;
 
 
+import android.content.Context;
+
+import com.newtv.cms.bean.SubContent;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
-import tv.newtv.cboxtv.cms.screenList.bean.LabelDataBean;
 import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
 import tv.newtv.cboxtv.cms.screenList.model.FirstLabelModel;
 import tv.newtv.cboxtv.cms.screenList.model.FirstLabelModelImpl;
@@ -27,10 +31,10 @@ public class LabelPresenterImpl extends LabelPresenter<LabelView> {
     private LabelView iView;
 
 
-    public LabelPresenterImpl() {
+    public LabelPresenterImpl(Context context) {
         firstLabelModel = new FirstLabelModelImpl();
         secondLabelModel = new SecondLabelModelImpl();
-        dataModel = new LabelDataModelImpl();
+        dataModel = new LabelDataModelImpl(context);
     }
 
 
@@ -77,9 +81,9 @@ public class LabelPresenterImpl extends LabelPresenter<LabelView> {
         Map<String, Object> map = iView.getMap();
         dataModel.requestLabelData(map, new LabelDataModel.DataCompleteListener() {
             @Override
-            public void sendLabelData(LabelDataBean labelDataBean) {
+            public void sendLabelData(ArrayList<SubContent> content,int total) {
 
-                iView.showData(labelDataBean);
+                iView.showData(content ,  total);
 
             }
         });

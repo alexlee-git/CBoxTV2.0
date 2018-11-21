@@ -85,11 +85,10 @@ public class PayChannelActivity extends Activity implements PageContract.View {
     private ModuleInfoResult moduleInfoResult;
     private final String prdType = "3";
     private String mContentUUID, mMAMID, mVipFlag, mTitle, mContentType;
-    private long expireTime;
     private String mToken;
-    private boolean isVip;
     private ExterPayBean mExterPayBean;
     private PageContract.ContentPresenter mContentPresenter;
+    private final String ACTTYPE = "DISCOUNT";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,34 +107,7 @@ public class PayChannelActivity extends Activity implements PageContract.View {
             mFlagAction = mExterPayBean.getAction();
             mVipFlag = mExterPayBean.getVipFlag();
         }
-
-//        mVipProductId = getIntent().getStringExtra("VipProductId");
-//        mFlagAction = getIntent().getStringExtra("action");
-//        mContentUUID = getIntent().getStringExtra("ContentUUID");
-//        mMAMID = getIntent().getStringExtra("MAMID");
-//        mTitle = getIntent().getStringExtra("Title");
-//        mVipFlag = getIntent().getStringExtra("vipFlag");
-//        mContentType = getIntent().getStringExtra("ContentType");
-
         Log.e(TAG, "mVipProductId: " + mVipProductId + "---mFlagAction: " + mFlagAction);
-        if (mVipFlag != null && mVipFlag.equals("1")) {
-            rel_down.setVisibility(View.VISIBLE);
-            tv_agreement.setOnKeyListener(new View.OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-                            Intent mIntent = new Intent(PayChannelActivity.this, PayOrderActivity.class);
-                            mIntent.putExtra("payBean", mExterPayBean);
-                            startActivity(mIntent);
-                        }
-                    }
-                    return false;
-                }
-            });
-        } else {
-            rel_down.setVisibility(View.INVISIBLE);
-        }
         if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
             mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
@@ -143,42 +115,18 @@ public class PayChannelActivity extends Activity implements PageContract.View {
             Log.e(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
         //requestRecommendData();
-        Observable.create(new ObservableOnSubscribe<Long>() {
-            @Override
-            public void subscribe(ObservableEmitter<Long> emitter) throws Exception {
-                long time = 0;
-                try {
-                    boolean isRefresh = TokenRefreshUtil.getInstance().isTokenRefresh(PayChannelActivity.this);
-                    if (isRefresh) {
-                        Log.i(TAG, "isToken is ture");
-                        mToken = SharePreferenceUtils.getToken(PayChannelActivity.this);
-                        time = requestMemberInfo();
+        initAgreemrntView();
 
-                    } else {
-                        Log.i(TAG, "isToken is false");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                emitter.onNext(time);
+        if (mVipProductId == null) {
+            requestProductData();
+        } else {
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
+            if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
+                getProductPrice(mVipProductId, Libs.get().getAppKey(), prdType, Libs.get().getChannelId());
+            } else {
+                getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-                        if (mVipProductId == null) {
-                            requestProductData();
-                        } else {
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
-                            if (mVipFlag != null && mVipFlag.equals("3")) {
-                                getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
-                            } else {
-                                getProductPrice(mVipProductId, Libs.get().getAppKey(), prdType, Libs.get().getChannelId());
-                            }
-                        }
-                    }
-                });
+        }
     }
 
     private void init() {
@@ -202,6 +150,29 @@ public class PayChannelActivity extends Activity implements PageContract.View {
                 startActivity(new Intent(PayChannelActivity.this, MemberAgreementActivity.class));
             }
         });
+    }
+
+    private void initAgreemrntView() {
+        if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
+            rel_down.setVisibility(View.VISIBLE);
+            tv_agreement.setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                        if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                            if (mVipProductId != null) {
+                                Intent mIntent = new Intent(PayChannelActivity.this, PayOrderActivity.class);
+                                mIntent.putExtra("payBean", mExterPayBean);
+                                startActivity(mIntent);
+                            }
+                        }
+                    }
+                    return false;
+                }
+            });
+        } else {
+            rel_down.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -224,10 +195,10 @@ public class PayChannelActivity extends Activity implements PageContract.View {
 //                    inflateData();
                     break;
                 case MSG_PRODUCT:
-                    if (mVipFlag != null && mVipFlag.equals("3")) {
-                        getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
-                    } else {
+                    if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
                         getProductPrice(mVipProductId, Libs.get().getAppKey(), prdType, Libs.get().getChannelId());
+                    } else {
+                        getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
                     }
                     break;
             }
@@ -284,38 +255,38 @@ public class PayChannelActivity extends Activity implements PageContract.View {
             }
 
             ProductPricesInfo.ResponseBean.PricesBean pricesBean = prices.get(position);
-
+            if (pricesBean == null) {
+                return;
+            }
             holder.tv_name.setText(pricesBean.getName());
             int price = pricesBean.getPrice();
-            int price_discount;
-            String price_current, price_save;
-            if (isVip) {
-                Log.e(TAG, "user is vip");
-                price_discount = pricesBean.getVipPriceDiscount();
-                price_current = BigDecimal.valueOf((long) pricesBean.getVipPriceDiscount()).divide(new BigDecimal(100)).toString();
-                int saveprice = price - pricesBean.getVipPriceDiscount();
-                price_save = BigDecimal.valueOf((long) saveprice).divide(new BigDecimal(100)).toString();
-            } else {
-                Log.e(TAG, "user is  no vip");
-                price_discount = pricesBean.getPriceDiscount();
-                price_current = BigDecimal.valueOf((long) pricesBean.getPriceDiscount()).divide(new BigDecimal(100)).toString();
-                int saveprice = price - price_discount;
-                price_save = BigDecimal.valueOf((long) saveprice).divide(new BigDecimal(100)).toString();
-            }
-            holder.tv_price.setText(price_current);
-            holder.tv_price_discount.setText("已省" + price_save + "元");
-            holder.tv_discount.setText((price_discount * 10 / price) + "折");
-
-            if (price == price_discount) {
+            ProductPricesInfo.ResponseBean.PricesBean.ActivityBean activityBean = prices.get(position).getActivity();
+            Log.i(TAG, "activityBean: " + activityBean);
+            if (activityBean == null) {
                 holder.img_product_mark.setVisibility(View.INVISIBLE);
                 holder.tv_price_discount.setVisibility(View.INVISIBLE);
                 holder.tv_discount.setVisibility(View.INVISIBLE);
                 holder.img_discount_price.setVisibility(View.INVISIBLE);
+                holder.tv_price.setText(tranPrices(price));
             } else {
-                holder.img_product_mark.setVisibility(View.VISIBLE);
-                holder.tv_price_discount.setVisibility(View.VISIBLE);
-                holder.tv_discount.setVisibility(View.VISIBLE);
-                holder.img_discount_price.setVisibility(View.VISIBLE);
+                String actType = activityBean.getActType();
+                if (TextUtils.equals(actType, ACTTYPE)) {
+                    holder.img_product_mark.setVisibility(View.VISIBLE);
+                    holder.tv_price_discount.setVisibility(View.VISIBLE);
+                    holder.tv_discount.setVisibility(View.VISIBLE);
+                    holder.img_discount_price.setVisibility(View.VISIBLE);
+                    int price_discount = pricesBean.getPriceDiscount();
+                    int percentage = activityBean.getPercentage() / 10;
+                    holder.tv_price_discount.setText("已省" + (price - price_discount) + "元");
+                    holder.tv_discount.setText(percentage + "折");
+                    holder.tv_price.setText(tranPrices(price_discount));
+                } else {
+                    holder.img_product_mark.setVisibility(View.INVISIBLE);
+                    holder.tv_price_discount.setVisibility(View.INVISIBLE);
+                    holder.tv_discount.setVisibility(View.INVISIBLE);
+                    holder.img_discount_price.setVisibility(View.INVISIBLE);
+                    holder.tv_price.setText(tranPrices(price));
+                }
             }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -353,6 +324,11 @@ public class PayChannelActivity extends Activity implements PageContract.View {
 
             }
         }
+    }
+
+    private String tranPrices(int price) {
+        String strprice = BigDecimal.valueOf((long) price).divide(new BigDecimal(100)).toString();
+        return strprice;
     }
 
     private void getProductPriceOnly(String prdId, String channelId) {
@@ -557,69 +533,69 @@ public class PayChannelActivity extends Activity implements PageContract.View {
             e.printStackTrace();
         }
     }
-
-    //读取用户会员信息
-    private long requestMemberInfo() {
-        try {
-            NetClient.INSTANCE.getUserCenterMemberInfoApi()
-                    .getMemberInfo("Bearer " + mToken, "",
-                            Libs.get().getAppKey())
-                    .subscribe(new Observer<ResponseBody>() {
-
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            mDisposable_time = d;
-                        }
-
-                        @Override
-                        public void onNext(ResponseBody responseBody) {
-                            try {
-                                String data = responseBody.string();
-                                JSONArray jsonArray = new JSONArray(data);
-                                if (jsonArray != null && jsonArray.length() > 0) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(0);
-                                    String Exp_time = jsonObject.optString("expireTime");
-                                    Log.e(TAG, "---expireTime：" + Exp_time);
-                                    Calendar calendar = Calendar.getInstance();
-                                    calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(Exp_time));
-                                    System.out.println("日期[2018-11-12 17:08:12]对应毫秒：" + calendar.getTimeInMillis());
-                                    expireTime = calendar.getTimeInMillis();
-                                    Log.e(TAG, "---expireTime：" + expireTime);
-                                    Log.e(TAG, "---systemTime：" + TimeUtil.getInstance().getCurrentTimeInMillis());
-                                    if (expireTime <= TimeUtil.getInstance().getCurrentTimeInMillis()) {
-                                        isVip = false;
-                                    } else {
-                                        isVip = true;
-                                    }
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.e(TAG, "---requestMemberInfo:onError");
-                            expireTime = TimeUtil.getInstance().getCurrentTimeInMillis();
-                            if (mDisposable_time != null) {
-                                mDisposable_time.dispose();
-                                mDisposable_time = null;
-                            }
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            if (mDisposable_time != null) {
-                                mDisposable_time.dispose();
-                                mDisposable_time = null;
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return expireTime;
-    }
+//
+//    //读取用户会员信息
+//    private long requestMemberInfo() {
+//        try {
+//            NetClient.INSTANCE.getUserCenterMemberInfoApi()
+//                    .getMemberInfo("Bearer " + mToken, "",
+//                            Libs.get().getAppKey())
+//                    .subscribe(new Observer<ResponseBody>() {
+//
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//                            mDisposable_time = d;
+//                        }
+//
+//                        @Override
+//                        public void onNext(ResponseBody responseBody) {
+//                            try {
+//                                String data = responseBody.string();
+//                                JSONArray jsonArray = new JSONArray(data);
+//                                if (jsonArray != null && jsonArray.length() > 0) {
+//                                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+//                                    String Exp_time = jsonObject.optString("expireTime");
+//                                    Log.e(TAG, "---expireTime：" + Exp_time);
+//                                    Calendar calendar = Calendar.getInstance();
+//                                    calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(Exp_time));
+//                                    System.out.println("日期[2018-11-12 17:08:12]对应毫秒：" + calendar.getTimeInMillis());
+//                                    expireTime = calendar.getTimeInMillis();
+//                                    Log.e(TAG, "---expireTime：" + expireTime);
+//                                    Log.e(TAG, "---systemTime：" + TimeUtil.getInstance().getCurrentTimeInMillis());
+//                                    if (expireTime <= TimeUtil.getInstance().getCurrentTimeInMillis()) {
+//                                        isVip = false;
+//                                    } else {
+//                                        isVip = true;
+//                                    }
+//                                }
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            Log.e(TAG, "---requestMemberInfo:onError");
+//                            expireTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+//                            if (mDisposable_time != null) {
+//                                mDisposable_time.dispose();
+//                                mDisposable_time = null;
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            if (mDisposable_time != null) {
+//                                mDisposable_time.dispose();
+//                                mDisposable_time = null;
+//                            }
+//                        }
+//                    });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return expireTime;
+//    }
 
 
     /**
