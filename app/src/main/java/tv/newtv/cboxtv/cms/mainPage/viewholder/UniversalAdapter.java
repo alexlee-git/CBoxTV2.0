@@ -24,7 +24,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private List<Page> mDatas;
 
     private int bottomMargin = 0;
-    private BlockBuilder blockBuilder;
+    private IBlockBuilder blockBuilder;
     private List<UniversalViewHolder> holderList = new ArrayList<>();
 
     public UniversalAdapter(Context context, List<Page> datas) {

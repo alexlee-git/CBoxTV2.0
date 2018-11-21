@@ -64,6 +64,12 @@ class EntryContract {
         }
 
         internal fun getBootGuide() {
+            /** 测试用
+            if (Libs.get().isDebug) {
+                view?.bootGuildResult()
+                return
+            }
+            */
             val bootGuide = getService<IBootGuide>(CmsServicePresenter.SERVICE_BOOT_GUIDE)
             if (bootGuide != null) {
                 val platform = Libs.get().appKey + Libs.get().channelId

@@ -186,12 +186,9 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
     private void loadSuperscript(ImageView target, String superscriptId) {
         Corner info = SuperScriptManager.getInstance().getSuperscriptInfoById(superscriptId);
         if (info != null) {
-            String superType = info.getCornerType();
-            if ("IMG".equals(superType)) {
-                String superUrl = info.getCornerImg();
-                if (superUrl != null) {
-                    Picasso.get().load(superUrl).into(target);
-                }
+            String superUrl = info.getCornerImg();
+            if (superUrl != null) {
+                Picasso.get().load(superUrl).into(target);
             }
         }
     }

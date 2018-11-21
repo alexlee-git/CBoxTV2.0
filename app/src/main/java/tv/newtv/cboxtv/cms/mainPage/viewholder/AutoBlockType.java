@@ -262,7 +262,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                 }
 
                 if (recycleImageView != null) {
-                    blockBuilder.showPosterByCMS(posterWidgetId, recycleImageView, info.getVImage(),
+                    blockBuilder.showPosterByCMS(recycleImageView, info.getVImage(),
                             hasCorner);
                 }
             }

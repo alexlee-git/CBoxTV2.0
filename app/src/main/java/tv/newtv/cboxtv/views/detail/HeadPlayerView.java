@@ -25,9 +25,11 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
@@ -251,7 +253,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (playerView != null && mInfo != null) {
             Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
-            startPlayerView();
+            startPlayerView(isPlayLive);
         }
     }
 
@@ -286,13 +288,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
         if (mBuilder.fromOuter && mBuilder.isPopup) {
-                 addView(inflate);
-                  postDelayed(new Runnable() {
-                      @Override
-                      public void run() {
-                          removeView(inflate);
-                      }
-                  },5000);
+            addView(inflate);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    removeView(inflate);
+                }
+            },5000);
 
         }
         addView(contentView);
@@ -588,7 +590,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         setCurrentPlayIndex("Play", index);
         currentPosition = postion;
 
-        startPlayerView();
+        startPlayerView(!requestFocus);
 
         if (requestFocus) {
             requestPlayerFocus();
@@ -675,16 +677,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
-        startPlayerView();
+        startPlayerView(true);
     }
 
-    private void startPlayerView() {
+    private void startPlayerView(boolean checkLive) {
         //TODO 栏目化直播 直播判断
         if (mInfo != null) {
             prepareMediaPlayer();
             if (mInfo.getLiveParam() != null) {
                 final LiveInfo liveInfo = new LiveInfo(mInfo);
-                if (liveInfo.isLiveTime()) {
+                if (liveInfo.isLiveTime() && checkLive) {
                     //需要直播
                     if (!TextUtils.isEmpty(mInfo.getLvID())) {
                         mPresenter.getContent(mInfo.getLvID(), false, new ContentContract.View() {
@@ -851,7 +853,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         //TODO 直播时间改变
 
         if (playerView != null) {
-            playerView.setTipText(String.format("正在直播 %s/%s", current, end));
+            if (Libs.get().isDebug()) {
+                playerView.setTipText(String.format("正在播放 %s/%s", current, end));
+            }
         }
     }
 
@@ -866,7 +870,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (mInfo != null) {
-            startPlayerView();
+            startPlayerView(false);
         }
     }
 
