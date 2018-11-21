@@ -20,4 +20,6 @@ public interface BuyGoodsView {
     void showQrCode(String authCode);
 
     boolean isShow();
+
+    void onDestroy();
 }

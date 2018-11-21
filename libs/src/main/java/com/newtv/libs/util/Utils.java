@@ -250,10 +250,10 @@ public class Utils {
             Log.d(TAG, "getAuthorization: encodeAuthorization = " + encodeAuthorization);
 
             // TODO 切换到正式发环境后修改
-            return "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW";
+            //return "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW";
 
             // 正式逻辑
-            //return encodeAuthorization.replaceAll("\r|\n", "");
+            return encodeAuthorization.replaceAll("\r|\n", "");
         }
     }
 }

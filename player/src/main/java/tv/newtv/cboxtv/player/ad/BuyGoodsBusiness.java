@@ -365,6 +365,12 @@ public class BuyGoodsBusiness{
 
     public void onDestroy(){
         dismiss();
+        if(buyGoodsView != null){
+            buyGoodsView.onDestroy();
+        }
+        if(disposable != null ){
+            disposable.dispose();
+        }
         handler.removeCallbacksAndMessages(null);
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;

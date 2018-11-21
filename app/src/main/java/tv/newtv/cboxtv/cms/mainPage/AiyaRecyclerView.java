@@ -30,6 +30,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     public static final int ALIGN_END = 3;      //尾对齐
     public static final int ALIGN_AUTO = 4;      //尾对齐
     public static final int ALIGN_AUTO_TWO = 5;
+    private boolean isDown = false;
     private static final String TAG = AiyaRecyclerView.class.getSimpleName();
     private DispatchKeyHandle mDispatchKeyHandle;
     private int mAlign = ALIGN_START;
@@ -256,7 +257,6 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 } else if (mAlign == ALIGN_START) {
                     smoothScrollBy(0, rootView.getTop() - getScrollY());
                 } else if (mAlign == ALIGN_END) {
-
                 } else {
                     int locationY = rootView.getTop() - getScrollY();
                     if (currentDir == View.FOCUS_UP) {
@@ -301,6 +301,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 dx = firstView.getWidth();
             }
             if (event.getAction() == KeyEvent.ACTION_UP) {
+                isDown =false;
                 // 放行back键
                 if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                     return super.dispatchKeyEvent(event);
@@ -320,6 +321,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 }
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
+                        isDown =false;
                         if (!isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         if (ModuleLayoutManager.getInstance().isNeedInterceptRightKeyEvent
                                 (cellCode)) {
@@ -340,6 +342,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                         }
 
                     case KeyEvent.KEYCODE_DPAD_LEFT:
+                        isDown =false;
                         if (!isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         View leftView = FocusFinder.getInstance().findNextFocus(this, focusView,
                                 View.FOCUS_LEFT);
@@ -355,6 +358,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                             return true;
                         }
                     case KeyEvent.KEYCODE_DPAD_DOWN:
+                        isDown=true;
+
                         if (isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         View downView = FocusFinder.getInstance().findNextFocus(this, focusView,
                                 View.FOCUS_DOWN);
@@ -370,6 +375,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                             return true;
                         }
                     case KeyEvent.KEYCODE_DPAD_UP:
+                        isDown=false;
+
                         if (isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         View upView = FocusFinder.getInstance().findNextFocus(this, focusView,
                                 View.FOCUS_UP);
@@ -403,6 +410,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
 
                         }
                     case KeyEvent.KEYCODE_BACK:
+                        isDown=false;
+
                         return super.dispatchKeyEvent(event);
                 }
 

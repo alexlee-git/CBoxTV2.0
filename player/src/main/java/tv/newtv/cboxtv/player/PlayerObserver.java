@@ -14,7 +14,7 @@ import com.newtv.cms.bean.Content;
  * 创建日期:          2018/10/10
  */
 public interface PlayerObserver {
-    void onFinish(Content playInfo, int index, int position);
+    void onFinish(Content playInfo, int index, int position,int duration);
     void onExitApp();
     Activity getCurrentActivity();
     Intent getPlayerActivityIntent();

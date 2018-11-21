@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +37,15 @@ import tv.newtv.cboxtv.BuildConfig;
 
 public class SuperScriptManager implements CornerContract.View {
 
+
     private volatile static SuperScriptManager mInstance;
+
     private final String CACHE_FILE_NAME = "super.json";
     private final String TAG = "superscript";
     private String mLocalUpdateTime; // 本地缓存的角标对应的时间戳信息
     private Map<String, Corner> mSuperscriptMap;
     private CornerContract.Presenter mPresenter;
+
 
     private SuperScriptManager() {
     }
@@ -54,6 +59,59 @@ public class SuperScriptManager implements CornerContract.View {
             }
         }
         return mInstance;
+    }
+
+    private boolean isContain(List<CornerCondition> conditions, Object item) {
+        boolean suit = false;
+        try {
+            Field[] fields = item.getClass().getDeclaredFields();
+            fieldLoop:
+            for (Field field : fields) {
+                field.setAccessible(true);
+                String name = field.getName();
+                Object value = field.get(item);
+                for (CornerCondition condition : conditions) {
+                    if (TextUtils.equals(condition.getFieldName(), name) && value != null) {
+                        String result = "";
+                        if (value instanceof String) {
+                            result = value.toString();
+                        } else if (value instanceof Integer) {
+                            result = Integer.toString((Integer) value);
+                        }
+                        LogUtils.d("SuperScriptMananger",
+                                String.format("fname=%s fvalue=%s cname=%s cvalue = %s",
+                                        name, result, condition.getFieldName(), condition
+                                                .getFieldValue())
+                        );
+                        if (!TextUtils.equals(condition.getFieldValue(), result)) {
+                            suit = false;
+                            break fieldLoop;
+                        } else {
+                            suit = true;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            suit = false;
+        }
+
+        return suit;
+    }
+
+    public List<Corner> findSuitCorner(Object item) {
+        List<Corner> cornerList = new ArrayList<>();
+        Collection<Corner> corners = mSuperscriptMap.values();
+        for (Corner corner : corners) {
+            List<CornerCondition> conditionList = corner.getCornerCondition();
+            if (conditionList != null) {
+                if (isContain(conditionList, item)) {
+                    cornerList.add(corner);
+                }
+            }
+        }
+        return cornerList;
     }
 
     public void init(Context context) {
@@ -135,8 +193,6 @@ public class SuperScriptManager implements CornerContract.View {
                     info.setCornerImg(item.optString("cornerImg"));
                 if (item.has("cornerPosition"))
                     info.setCornerPosition(item.optString("cornerPosition"));
-                if (item.has("cornerType"))
-                    info.setCornerType(item.optString("cornerType"));
                 if (item.has("cornerCondition")) {
                     JSONArray condition = item.getJSONArray("cornerCondition");
                     if (condition != null && condition.length() > 0) {
