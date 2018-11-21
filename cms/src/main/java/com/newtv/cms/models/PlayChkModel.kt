@@ -16,13 +16,13 @@ import okhttp3.RequestBody
  */
 internal class PlayChkModel : BaseModel(), IPlayChk {
 
-    override fun check(request: ChkRequest, observer: DataObserver<String>): Long {
+    override fun check(request: ChkRequest,authorization : String, observer: DataObserver<String>): Long {
         val gson = Gson()
         val requestJson = gson.toJson(request)
         val requestBody = RequestBody.create(MediaType.parse("Content-Type, application/json"),
                 requestJson)
         val executor: Executor<String> = buildExecutor(Request.playChk.getCheckResult
-        (requestBody), null)
+        (requestBody,authorization), null)
         executor.observer(observer)
                 .execute()
         return executor.getID()

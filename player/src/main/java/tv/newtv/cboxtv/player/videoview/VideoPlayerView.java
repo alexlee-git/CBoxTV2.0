@@ -21,6 +21,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.MainLooper;
 
+import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -102,7 +103,19 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     protected void onError(String code, String messgae) {
         super.onError(code, messgae);
-        setHintText(String.format("%s 错误码:%s", messgae, code));
+        String hint = null;
+        switch (code){
+            case VodContract.USER_NOT_LOGIN:
+                hint = "用户未登录，登录后才可以观看";
+                break;
+            case VodContract.USER_TOKEN_IS_EXPIRED:
+                hint = "登录已过期，请重新登录后观看";
+                break;
+
+            default:
+               String.format("%s 错误码:%s", messgae, code);
+        }
+        setHintText(hint);
     }
 
     //退出全屏

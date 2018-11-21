@@ -18,6 +18,7 @@ import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.Encryptor;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
+import com.newtv.libs.util.SharePreferenceUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +42,8 @@ import tv.newtv.player.R;
  * 创建日期:          2018/10/12
  */
 public class VodContract {
+    public static final String USER_NOT_LOGIN = "60017";
+    public static final String USER_TOKEN_IS_EXPIRED = "60019";
 
     public interface View extends ICmsView {
         void onVodchkResult(VideoDataStruct videoDataStruct, String contentUUID);
@@ -152,10 +155,20 @@ public class VodContract {
                             .getString(R.string
                                     .search_fail_agin), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), getContext().getResources()
-                            .getString(R.string
-                                    .check_error) + errorCode, Toast
-                            .LENGTH_SHORT).show();
+                    String toastText = "";
+                    switch (errorCode){
+                        case USER_NOT_LOGIN:
+                            toastText = "用户未登录，登录后才可以观看";
+                            break;
+                        case USER_TOKEN_IS_EXPIRED:
+                            toastText = "登录已过期，请重新登录后观看";
+                            break;
+
+                            default:
+                                toastText =  getContext().getResources()
+                                        .getString(R.string.check_error) + errorCode;
+                    }
+                    Toast.makeText(getContext(),toastText, Toast.LENGTH_SHORT).show();
                 }
                 if (getView() != null)
                     getView().onChkError(errorCode, getContext().getResources()
@@ -251,9 +264,11 @@ public class VodContract {
         @Override
         public void checkVod(String seriesID, String albumId) {
             final IPlayChk playChk = getService(SERVICE_CHK_PLAY);
+            String token = SharePreferenceUtils.getToken(getContext());
+            String resultToken = TextUtils.isEmpty(token) ? "" : "Bearer " + token;
             if (playChk != null) {
                 ChkRequest request = createVodRequestBean(seriesID, albumId);
-                playChk.check(request, new DataObserver<String>() {
+                playChk.check(request,resultToken, new DataObserver<String>() {
                     @Override
                     public void onResult(String result, long requestCode) {
                         if (TextUtils.isEmpty(result)) {

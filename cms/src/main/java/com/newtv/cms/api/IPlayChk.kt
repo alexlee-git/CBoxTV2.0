@@ -11,5 +11,5 @@ import com.newtv.cms.bean.ChkRequest
  * 创建日期:          2018/10/12
  */
 interface IPlayChk : IService {
-    fun check(request:ChkRequest,observer: DataObserver<String>):Long
+    fun check(request:ChkRequest,authorization : String,observer: DataObserver<String>):Long
 }
