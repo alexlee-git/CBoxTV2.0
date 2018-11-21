@@ -13,24 +13,24 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.screenList.bean.LabelDataBean;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
 
 public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHolder> {
 
     private Context context;
-    private List<LabelDataBean.DataBean> list;
+    private  List<SubContent> list;
     private MyHolder holder;
 
 
-    public LabelDataAdapter(Context context, List<LabelDataBean.DataBean> list) {
+    public LabelDataAdapter(Context context, List<SubContent> list) {
         this.context = context;
         this.list = list;
 

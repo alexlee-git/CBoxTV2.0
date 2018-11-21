@@ -237,7 +237,7 @@ public class JumpUtil {
                     Toast.makeText(context, actionType + ":" + contentType, Toast.LENGTH_SHORT)
                             .show();
                 }
-            } else if (Constant.OPEN_LISTPAGE.equals(actionType)) { // 打开列表页
+            } else if (Constant.OPEN_FILTER.equals(actionType)) { // 打开列表页
                 jumpIntent = new Intent(context, ScreenListActivity.class);
             } else if (Constant.OPEN_LINK.equals(actionType)) { // 打开链接
                 Toast.makeText(context, R.string.no_link, Toast.LENGTH_LONG)
