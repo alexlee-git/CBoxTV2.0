@@ -294,7 +294,7 @@ class BlockBuilder extends BaseBlockBuilder {
                         recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
                     } else if (posterView instanceof LivePlayView) {
                         ((LivePlayView) posterView).setProgramInfo(info);
-                        ((LivePlayView) posterView).setPageUUID(PlayerUUID);
+                        ((LivePlayView) posterView).setUUID(PlayerUUID);
                         recycleImageView = ((LivePlayView) posterView).getPosterImageView();
                         recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
                     }
