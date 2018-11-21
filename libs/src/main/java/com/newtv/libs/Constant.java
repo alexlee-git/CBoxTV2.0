@@ -323,7 +323,7 @@ public class Constant {
             .HTML_PATH_MEMBER_PROTOCOL);
     public static boolean isInitStatus = true;
     public static String UUID_KEY = "uuid";
-    public static String UUID;
+    public static String UUID = "";
     public static String ALREADY_SAVE = "alreadySave";
     // 定义一个全局的静态变量   用于在小屏和大屏两种模式下， 确定当前是否符合直播的条件
     // 开启直播时，将该值置为true   到达直播结束时间，关闭直播时，将该值置为false
