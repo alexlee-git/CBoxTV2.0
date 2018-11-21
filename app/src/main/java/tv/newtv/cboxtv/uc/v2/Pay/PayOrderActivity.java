@@ -117,6 +117,8 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     private boolean isVip = false;
     private ExterPayBean mExterPayBean;
     private String message_error;
+    private final String ACTTYPE = "DISCOUNT";
+    private int price;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,7 +141,6 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
             mFlagAction = mExterPayBean.getAction();
             mVipFlag = mExterPayBean.getVipFlag();
         }
-
         init();
         qrcodeUtil = new QrcodeUtil();
 
@@ -172,12 +173,13 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                             isBuyOnly = true;
                             if (mVipProductId == null) {
                                 Toast.makeText(PayOrderActivity.this, "产品ID不能为空", Toast.LENGTH_LONG).show();
+                                finish();
                                 return;
                             }
-                            if (mVipFlag != null && mVipFlag.equals("4")) {
-                                getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
-                            } else {
+                            if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
                                 getProductPrice(mVipProductId, Libs.get().getAppKey(), Libs.get().getChannelId());
+                            } else {
+                                getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
                             }
                         } else {
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
@@ -479,22 +481,54 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                         if (mProductPricesInfo.getResponse() != null) {
                             if (mProductPricesInfo.getResponse().getPrices() != null && mProductPricesInfo.getResponse().getPrices().size() > 0) {
                                 ProductPricesInfo.ResponseBean.PricesBean pricesBean = mProductPricesInfo.getResponse().getPrices().get(position);
-                                if (isBuyOnly) {
-                                    tv_name.setText(getResources().getString(R.string.usercenter_pay_product) + mTitle);
-                                } else {
-                                    tv_name.setText(getResources().getString(R.string.usercenter_pay_product) + pricesBean.getName());
+                                if (pricesBean == null) {
+                                    return true;
                                 }
+                                ProductPricesInfo.ResponseBean.PricesBean.ActivityBean activityBean = pricesBean.getActivity();
+
                                 try {
-                                    String price;
-                                    if (isVip) {
-                                        Log.e(TAG, "user  is  vip");
-                                        price = BigDecimal.valueOf((long) pricesBean.getVipPointDiscount()).divide(new BigDecimal(100)).toString();
+                                    if (isBuyOnly) {
+                                        tv_name.setText(getResources().getString(R.string.usercenter_pay_product) + mTitle);
                                     } else {
-                                        Log.e(TAG, "user  is  no vip");
-                                        price = BigDecimal.valueOf((long) pricesBean.getPriceDiscount()).divide(new BigDecimal(100)).toString();
+                                        tv_name.setText(getResources().getString(R.string.usercenter_pay_product) + pricesBean.getName());
                                     }
-                                    tv_price.setText(getResources().getString(R.string.usercenter_pay_price) + price
-                                            + getResources().getString(R.string.usercenter_pay_price_unit));
+                                    if (activityBean == null) {
+                                        if (isBuyOnly) {
+                                            if (isVip) {
+                                                price = pricesBean.getVipPrice();
+                                            } else {
+                                                price = pricesBean.getPrice();
+                                            }
+                                        } else {
+                                            price = pricesBean.getPrice();
+                                        }
+                                    } else {
+                                        String actType = activityBean.getActType();
+                                        if (TextUtils.equals(actType, ACTTYPE)) {
+                                            if (isBuyOnly) {
+                                                if (isVip) {
+                                                    price = pricesBean.getVipPriceDiscount();
+                                                } else {
+                                                    price = pricesBean.getPriceDiscount();
+                                                }
+                                            } else {
+                                                price = pricesBean.getPriceDiscount();
+                                            }
+                                        } else {
+                                            if (isBuyOnly) {
+                                                if (isVip) {
+                                                    price = pricesBean.getVipPrice();
+                                                } else {
+                                                    price = pricesBean.getPrice();
+                                                }
+                                            } else {
+                                                price = pricesBean.getPrice();
+                                            }
+                                        }
+                                    }
+
+
+                                    tv_price.setText(getResources().getString(R.string.usercenter_pay_price) + tranPrices(price) + getResources().getString(R.string.usercenter_pay_price_unit));
                                     long duration = pricesBean.getRealDuration() * 60 * 60 * 1000;
                                     Log.e(TAG, "duration :" + duration);
                                     Log.e(TAG, "expireTime :" + expireTime);
@@ -520,6 +554,11 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
             return false;
         }
     });
+
+    private String tranPrices(int price) {
+        String strprice = BigDecimal.valueOf((long) price).divide(new BigDecimal(100)).toString();
+        return strprice;
+    }
 
     private void setExprefresh() {
         Observable.create(new ObservableOnSubscribe<Long>() {
@@ -604,11 +643,9 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         JSONObject priceObject = new JSONObject();
         try {
             priceObject.put("id", mProductPricesInfo.getResponse().getPrices().get(position).getId());
-            if (isVip) {
-                priceObject.put("price", mProductPricesInfo.getResponse().getPrices().get(position).getVipPointDiscount());
-            } else {
-                priceObject.put("price", mProductPricesInfo.getResponse().getPrices().get(position).getPriceDiscount());
-            }
+
+            priceObject.put("price", price);
+
 
         } catch (JSONException e) {
             e.printStackTrace();
