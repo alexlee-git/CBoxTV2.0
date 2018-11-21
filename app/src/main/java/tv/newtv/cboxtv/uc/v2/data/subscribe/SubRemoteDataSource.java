@@ -201,6 +201,8 @@ public class SubRemoteDataSource implements SubDataSource {
                                     entity.set_contentuuid(item.optString("programset_id"));
                                 }
 
+                                Log.d("sub", "getRemoteSubscribeList contentId : " + entity.get_contentuuid());
+
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
