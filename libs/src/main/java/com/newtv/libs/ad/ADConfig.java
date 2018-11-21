@@ -34,9 +34,16 @@ public class ADConfig {
     }
 
     public void setSeriesID(String seriesID) {
+        setSeriesID(seriesID,true);
+
+    }
+
+    public void setSeriesID(String seriesID,boolean reset){
         this.seriesID = seriesID;
-        columnId = "";
-        secondColumnId = "";
+        if(reset){
+            columnId = "";
+            secondColumnId = "";
+        }
     }
 
     public String getCategoryIds() {
@@ -164,6 +171,8 @@ public class ADConfig {
                 ", secondColumnId='" + secondColumnId + '\'' +
                 ", categoryIds='" + categoryIds + '\'' +
                 ", seriesID='" + seriesID + '\'' +
+                ", programId='" + programId + '\'' +
+                ", duration='" + duration + '\'' +
                 ", listenerList=" + listenerList +
                 '}';
     }

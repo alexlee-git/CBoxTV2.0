@@ -199,13 +199,19 @@ public class VodContract {
                         .getDuration()));
             }
 
-            videoDataStruct.setSeriesId(playResult.getProgramSeriesUUIDs());
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
             videoDataStruct.setDeviceID(Constant.UUID);
             videoDataStruct.setCategoryIds(playResult.getCategoryIds());
             ADConfig.getInstance().setProgramId(playResult.getContentUUID());
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
             ADConfig.getInstance().setDuration(playResult.getDuration());
+            if(playResult.getPrograms() != null && playResult.getPrograms().size() > 0){
+                String contentId = playResult.getPrograms().get(0).getProgramSeriesId();
+                ADConfig.getInstance().setSeriesID(contentId,false);
+                videoDataStruct.setSeriesId(contentId);
+            }else {
+                ADConfig.getInstance().setSeriesID("",false);
+            }
 
             if(UserStatus.isVip()){
                 PlayerConfig.getInstance().setJumpAD(true);
