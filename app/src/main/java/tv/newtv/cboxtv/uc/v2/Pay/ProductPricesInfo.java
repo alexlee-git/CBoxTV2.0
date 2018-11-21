@@ -260,6 +260,7 @@ public class ProductPricesInfo implements Serializable {
             private String focusIcon;
             private Object prdSource;
             private Object extCode;
+            @SerializedName("activity")
             private ActivityBean activity;
 
             public int getId() {
@@ -462,12 +463,17 @@ public class ProductPricesInfo implements Serializable {
                  */
 
                 private int id;
+                @SerializedName("prcId")
                 private int prcId;
+                @SerializedName("name")
                 private String name;
+                @SerializedName("actType")
                 private String actType;
                 private long startTime;
                 private long endTime;
+                @SerializedName("detailType")
                 private String detailType;
+                @SerializedName("percentage")
                 private int percentage;
                 private Object giveHour;
                 private Object givePrcId;

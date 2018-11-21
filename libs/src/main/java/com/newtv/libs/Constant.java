@@ -43,7 +43,6 @@ public class Constant {
             ? "http://111.32.138.57:8080/" : "http://newtv.boot.ottcn.com:8080/";
 
 
-
     //广告位类型
     public static final String AD_TOPIC = "topic";//专题广告
     public static final String AD_DESK = "desk";//桌面广告
@@ -199,6 +198,11 @@ public class Constant {
     public static final String CLIENT_ID = Libs.get().getClientId();
     public static final String USER_ID = "USER_ID";
     public static final String UC_HISTORY = "历史记录";
+    //支付
+    public static final String BUY_VIPANDONLY = "1";
+    public static final String BUY_VIP = "3";
+    public static final String BUY_ONLY = "4";
+
     //检查是否是定向升级
     public static final String UC_FOLLOW = "关注";
     public static final String UC_SUBSCRIBE = "订阅";
@@ -211,7 +215,7 @@ public class Constant {
             : "http://search.cloud.ottcn.com:8080/";
 
     public static final String CMS_NEW_SEARCH = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
-            ? "http://111.32.138.57:80/":
+            ? "http://111.32.138.57:80/" :
             "http://searchapi.cloud.ottcn.com/";
     public static final String BASE_URL_NEW_SEARCH = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.NEW_SEARCH)) ? getBaseUrl(HeadersInterceptor.NEW_SEARCH)
@@ -268,25 +272,25 @@ public class Constant {
     public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
     ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
     private static final String USER = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
-             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-//            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
+    //            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_USER = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .USER)
     ) ? getBaseUrl(HeadersInterceptor.USER) : USER; //正式地址
     private static final String PAY = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-            // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_PAY = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.PAY)
     ) ? getBaseUrl(HeadersInterceptor.PAY) : PAY; //正式地址
     private static final String PRODUCT = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-            // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_PRODUCT = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.USER)
     ) ? getBaseUrl(HeadersInterceptor.PRODUCT) : PRODUCT; //正式地址
     private static final String USER_BEHAVIOR = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-            // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_USER_BEHAVIOR = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.USER)
     ) ? getBaseUrl(HeadersInterceptor.USER_BEHAVIOR) : USER_BEHAVIOR; //正式地址
