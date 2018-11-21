@@ -199,7 +199,7 @@ public interface IUserCenterLoginApi {
                                         @Field("action_type") String action_type);
 
     @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
-    @DELETE("/gazella/service/collections")
+    @DELETE("/gazella/service/collections/del")
     Observable<ResponseBody> deleteCollect(@Header("authorization") String authorization,
                                            @Query("user_id") String user_id,
                                            @Query("is_program") String is_program,
@@ -239,7 +239,7 @@ public interface IUserCenterLoginApi {
                                        @Field("action_type") String action_type);
 
     @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
-    @DELETE("/gazella/service/concerns")
+    @DELETE("/gazella/service/concerns/del")
     Observable<ResponseBody> deleteFollow(@Header("authorization") String authorization,
                                           @Query("user_id") String user_id,
                                           @Query("is_program") String is_program,
@@ -279,7 +279,7 @@ public interface IUserCenterLoginApi {
                                            @Field("action_type") String action_type);
 
     @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
-    @DELETE("/gazella/service/subscribes")
+    @DELETE("/gazella/service/subscribes/del")
     Observable<ResponseBody> deleteSubscribes(@Header("authorization") String authorization,
                                               @Query("user_id") String user_id,
                                               @Query("is_program") String is_program,
