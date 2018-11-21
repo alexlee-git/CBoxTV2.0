@@ -42,7 +42,6 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
 public class UserInfoActivity extends BaseActivity implements View.OnKeyListener {
     private final String TAG = "UserInfoActivity";
     private String[] sexValues = {"男", "女", "未知"};
-    private int sexIndex = 2;
     private TextView sexSelector;
     private Disposable disposable_user;
     private String token;
@@ -64,9 +63,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
         tv_phone = findViewById(R.id.userinfo_checkbox_phone);
         btn_exit = findViewById(R.id.userinfo_btn_exit);
         img_vip = findViewById(R.id.userinfo_tv_vip);
-
-        findViewById(R.id.sex_continer).setOnKeyListener(this);
-
         sexSelector = findViewById(R.id.sex_text);
 
         if (member_status != null) {
@@ -123,11 +119,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
         });
     }
 
-    private void updateUI() {
-        if (sexSelector != null)
-            sexSelector.setText(sexValues[sexIndex]);
-    }
-
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -135,30 +126,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
                     && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT) {
                 return false;
             }
-            switch (v.getId()) {
-                case R.id.sex_continer:
-                    onSexChange(keyCode == KeyEvent.KEYCODE_DPAD_LEFT);
-                    break;
-            }
         }
 
         return false;
-    }
-
-    /**
-     * 调整性别
-     *
-     * @param isLeftKey
-     */
-    private void onSexChange(boolean isLeftKey) {
-        if (isLeftKey) {
-            sexIndex -= 1;
-        } else {
-            sexIndex += 1;
-        }
-        if (sexIndex < 0) sexIndex = sexValues.length - 1;
-        if (sexIndex > sexValues.length - 1) sexIndex = 0;
-        updateUI();
     }
 
     private void getUserInfo(String Authorization) {
@@ -188,13 +158,12 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
                                 tv_id.setText(jsonObject.optString("id"));
                                 int isMale = jsonObject.optInt("isMale");
                                 if (isMale == 0) {
-                                    sexIndex = 2;
+                                    sexSelector.setText(sexValues[2]);
                                 } else if (isMale == 1) {
-                                    sexIndex = 0;
+                                    sexSelector.setText(sexValues[0]);
                                 } else {
-                                    sexIndex = 1;
+                                    sexSelector.setText(sexValues[1]);
                                 }
-                                updateUI();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

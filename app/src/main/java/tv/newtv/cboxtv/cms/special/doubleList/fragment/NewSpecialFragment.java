@@ -44,6 +44,7 @@ import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
@@ -181,7 +182,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         if (mCacheSubContents == null) {
             mCacheSubContents = new HashMap<>();
         }
-        mCacheSubContents.put(leftPosition + mLeftData.get(leftPosition).getL_id(), content);
+        mCacheSubContents.put(leftPosition + uuid, content);
         refreshCenterData(leftPosition, content);
         mProgramSeriesInfo = content;
         initCenterDownStatus();
@@ -540,7 +541,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 //centerPosition = position;
                 printLogAndToast("initCenterList", "center get right position : " + position, false);
                 setVideoFocus(true);
-                mVideoPlayerTitle.setVisibility(View.VISIBLE);
+                setVideoPlayerTipStatus();
             }
 
             @Override
@@ -563,7 +564,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 centerPosition = position;
                 mLeftFocusedData = mLeftData;
                 mCenterFocusedData = mCenterData;
-                if (mCenterData.get(position) != null) {
+                if (mCenterData.get(position) != null && (position <= mCenterData.size() - 1)) {
                     mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
                     mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
                     printLogAndToast("initCenterList", "centerTitle : " + mCenterFocusedData.get(centerPosition).getTitle()
@@ -598,10 +599,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         videoPlayerView.setVideoExitCallback(new VideoExitFullScreenCallBack() {
             @Override
             public void videoEitFullScreen() {
-                if (mVideoPlayerTitle != null && mFullScreenImage != null) {
-                    mVideoPlayerTitle.setVisibility(View.VISIBLE);
-                    mFullScreenImage.setVisibility(View.VISIBLE);
-                }
+                setVideoPlayerTipStatus();
             }
         });
     }
@@ -704,8 +702,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     private void setVideoFocus(boolean isFocus) {
         if (isFocus) {
             mFocusViewVideo.requestFocus();
-            mVideoPlayerTitle.setVisibility(View.VISIBLE);
-            mFullScreenImage.setVisibility(View.VISIBLE);
+            setVideoPlayerTipStatus();
         } else {
             mVideoPlayerTitle.setVisibility(View.GONE);
             mFullScreenImage.setVisibility(View.GONE);
@@ -785,6 +782,27 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             }
         } else {
             printLogAndToast("refreshCenterData  5  ", "ywy center_refresh_data Programs is null", false);
+        }
+    }
+
+    private void setVideoPlayerTipStatus() {
+        if (null != videoPlayerView) {
+            videoPlayerView.setOnGetHaveADListener(new NewTVLauncherPlayerView.GetHaveADListener() {
+                @Override
+                public void OnGetHaveADListener(boolean isHavaAD) {
+                    if (isHavaAD) {
+                        if (mVideoPlayerTitle != null && mFullScreenImage != null) {
+                            mVideoPlayerTitle.setVisibility(View.GONE);
+                            mFullScreenImage.setVisibility(View.GONE);
+                        }
+                    }else{
+                        if (mVideoPlayerTitle != null && mFullScreenImage != null) {
+                            mVideoPlayerTitle.setVisibility(View.VISIBLE);
+                            mFullScreenImage.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            });
         }
     }
 
