@@ -226,7 +226,7 @@ public class UserCenterUtils {
             bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentID());
             bundle.putString(DBConfig.TITLE_NAME, mProgramSeriesInfo.getTitle());
             bundle.putString(DBConfig.VIDEO_TYPE, mProgramSeriesInfo.getVideoType());
-            //bundle.putString(DBConfig.IMAGEURL, mProgramSeriesInfo.getvImage());
+            bundle.putString(DBConfig.IMAGEURL, mProgramSeriesInfo.getVImage());
             bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
             bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             UserCenterRecordManager.getInstance().addRecord(
