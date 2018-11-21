@@ -255,20 +255,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                             rootView.getHeight(), getHeight(), rootView.getTop(), space));
                     smoothScrollBy(0, space);
                 } else if (mAlign == ALIGN_START) {
-                    int downOffset =0;
-                    if (isDown){
-                        if (rootView.getTop()>0){
-                            downOffset      = rootView.getTop() + rootView.getHeight() / 2 -getHeight()/2;
-                        }else{
-                            downOffset      =  rootView.getHeight() / 2 -getHeight()/2;
-                        }
-                        smoothScrollBy(0, downOffset);
-                    }else{
-                        return;
-                    }
-
+                    smoothScrollBy(0, rootView.getTop() - getScrollY());
                 } else if (mAlign == ALIGN_END) {
-
                 } else {
                     int locationY = rootView.getTop() - getScrollY();
                     if (currentDir == View.FOCUS_UP) {
