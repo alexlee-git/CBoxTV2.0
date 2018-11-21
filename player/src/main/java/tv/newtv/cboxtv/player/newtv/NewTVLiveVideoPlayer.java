@@ -213,6 +213,7 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         icntvPlayerInfo.setPlayUrl(videoDataStruct.getPlayUrl());
         Log.i(TAG, "playVideo: videoDataStruct playUrl=" + videoDataStruct.getPlayUrl());
         icntvPlayerInfo.setProgramListID(videoDataStruct.getContentUUID());
+
         icntvPlayerInfo.setDuration(videoDataStruct.getDuration());
         icntvPlayerInfo.setProgramID(videoDataStruct.getProgramId());
         icntvPlayerInfo.setKey(videoDataStruct.getKey());
