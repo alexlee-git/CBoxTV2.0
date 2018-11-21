@@ -137,7 +137,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private TextView hintVip;
     private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new FreeDuration();
     private BuyGoodsBusiness buyGoodsBusiness = null;
-
+    private GetHaveADListener mGetHaveADListener;
 
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
@@ -172,6 +172,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             LogUtils.i(TAG, "onVideoBufferStart: typeString=" + typeString);
             if (!mIsLoading) {
                 startLoading();
+            }
+
+            boolean isHaveAD ;
+            if (typeString.equals("ad_Prepared")) {
+                isHaveAD = true;
+            } else {
+                isHaveAD = false;
+            }
+            if (null != mGetHaveADListener) {
+                mGetHaveADListener.OnGetHaveADListener(isHaveAD);
             }
         }
 
@@ -356,7 +366,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public PlayerViewConfig getDefaultConfig() {
-        if(null == defaultConfig){
+        if (null == defaultConfig) {
             buildPlayerViewConfig();
         }
         return defaultConfig;
@@ -621,7 +631,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         hidePauseImage();
 
         isReleased = true;
-        if(buyGoodsBusiness != null){
+        if (buyGoodsBusiness != null) {
             buyGoodsBusiness.onDestroy();
             buyGoodsBusiness = null;
         }
@@ -719,9 +729,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
                 playIndex(index);
                 String seriesUUID = "";
-                if(program.getUseSeriesSubUUID()){
+                if (program.getUseSeriesSubUUID()) {
                     seriesUUID = program.getSeriesSubUUID();
-                }else {
+                } else {
                     seriesUUID = programSeriesInfo.getContentUUID();
                 }
                 mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
@@ -979,8 +989,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @SuppressWarnings("ConstantConditions")
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(isFullScreen() && buyGoodsBusiness != null &&buyGoodsBusiness.isShow()
-                && buyGoodsBusiness.dispatchKeyEvent(event)){
+        if (isFullScreen() && buyGoodsBusiness != null && buyGoodsBusiness.isShow()
+                && buyGoodsBusiness.dispatchKeyEvent(event)) {
             return true;
         }
         /**
@@ -1354,8 +1364,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), mProgramSeriesInfo.getContentUUID()));
 
-        if(mProgramSeriesInfo.getData().size() > index && index >= 0
-                && mProgramSeriesInfo.getData().get(index).getUseSeriesSubUUID()){
+        if (mProgramSeriesInfo.getData().size() > index && index >= 0
+                && mProgramSeriesInfo.getData().get(index).getUseSeriesSubUUID()) {
             return;
         }
         Player.get().onFinish(mProgramSeriesInfo, index, getCurrentPosition());
@@ -1389,8 +1399,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
 
-        if(buyGoodsBusiness == null){
-            buyGoodsBusiness = new BuyGoodsBusiness(getContext(),this);
+        if (buyGoodsBusiness == null) {
+            buyGoodsBusiness = new BuyGoodsBusiness(getContext(), this);
         }
         buyGoodsBusiness.getAd();
 
@@ -1533,4 +1543,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             goToBuy();
         }
     }
+
+    public interface GetHaveADListener {
+        // isHavaAD 专题通过判断是否有广告，决定是否显示播放器上的Title和Enter全屏提示
+        void OnGetHaveADListener(boolean isHavaAD);
+    }
+
+    public void setOnGetHaveADListener(GetHaveADListener getHaveADListener) {
+        mGetHaveADListener = getHaveADListener;
+    }
+
 }

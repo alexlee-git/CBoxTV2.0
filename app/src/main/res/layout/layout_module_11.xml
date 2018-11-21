@@ -59,7 +59,7 @@
         android:tag="cell_011_2">
 
         <!--海报-->
-        <ImageView
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_384px"
             android:layout_height="@dimen/height_548px"
             android:tag="cell_011_2_poster" />

@@ -1,9 +1,11 @@
 package tv.newtv.cboxtv.cms.screenList.view;
 
+import com.newtv.cms.bean.SubContent;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
-import tv.newtv.cboxtv.cms.screenList.bean.LabelDataBean;
 import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
 
 /**
@@ -16,5 +18,5 @@ public interface LabelView {
 
     Map<String, Object> getMap();
 
-    void showData(LabelDataBean dataBean);
+    void showData(ArrayList<SubContent> contents, int total);
 }
