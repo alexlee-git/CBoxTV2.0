@@ -224,7 +224,6 @@ public class UserAgreementActivity extends Activity implements ScanScrollView.IS
                 handler.proceed();
             }
         });
-        Log.e(TAG,"wqs:HTML_PATH_USER_PROTOCOL:"+Constant.HTML_PATH_USER_PROTOCOL);
         if (!TextUtils.isEmpty(Constant.HTML_PATH_USER_PROTOCOL)) {
             mWebView.loadUrl(Constant.HTML_PATH_USER_PROTOCOL);
         } else {

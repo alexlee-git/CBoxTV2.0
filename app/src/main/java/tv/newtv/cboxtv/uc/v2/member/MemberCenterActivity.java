@@ -541,8 +541,17 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
         }
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+        if (mAdapter != null) {
+            mAdapter.release();
+            mAdapter = null;
+        }
         unMemberInfoSubscribe();
         unRecommendSubscribe();
+        unQrCodeSubscribe();
     }
 
 
