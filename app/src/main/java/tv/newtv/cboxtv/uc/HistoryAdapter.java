@@ -2,7 +2,6 @@ package tv.newtv.cboxtv.uc;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -110,7 +109,6 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             } else {
                 viewHolder.mScore.setText("0.0");
             }
-            viewHolder.mScore.setBackgroundColor(Color.parseColor("#99000000"));
             // 观看进度
             viewHolder.mSubTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(entity.getPlayPosition(), entity.getDuration()));
 
