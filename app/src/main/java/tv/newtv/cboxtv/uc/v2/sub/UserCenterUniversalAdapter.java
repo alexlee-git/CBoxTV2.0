@@ -107,9 +107,10 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
 
         // 海报
         String posterUrl = info.get_imageurl();
-        if (!TextUtils.isEmpty(posterUrl) && holder.poster != null) {
+        if (!TextUtils.isEmpty(posterUrl) && !TextUtils.isEmpty("null") && holder.poster != null) {
             Picasso.get().load(posterUrl)
                     .placeholder(R.drawable.default_member_center_240_360_v2)
+                    .error(R.drawable.deful_user)
                     .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
                     .transform(new PosterCircleTransform(mContext, 4))
                     .into(holder.poster);
