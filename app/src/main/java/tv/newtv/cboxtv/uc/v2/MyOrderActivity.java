@@ -44,6 +44,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
 
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
 import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;

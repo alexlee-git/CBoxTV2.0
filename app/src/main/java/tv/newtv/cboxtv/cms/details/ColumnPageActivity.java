@@ -4,13 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -20,12 +18,10 @@ import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -253,6 +249,7 @@ public class ColumnPageActivity extends DetailPageActivity {
 
             @Override
             public void onChange(int index, boolean fromClick) {
+                scrollView.scrollToTop(false);
                 headPlayerView.Play(index, 0, fromClick);
             }
         });

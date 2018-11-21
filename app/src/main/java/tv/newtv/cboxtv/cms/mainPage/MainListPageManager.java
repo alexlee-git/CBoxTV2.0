@@ -75,7 +75,7 @@ public class MainListPageManager {
 
     // 外部跳转action、params
     public void setActionIntent(String action, String params) {
-        Log.e("--mainlist-------", action + "----" + params);
+        Log.e("--params---|-", action + "----" + params);
         if (action != null) {
             if (action.equals("panel")) {
                 try {
@@ -270,6 +270,7 @@ public class MainListPageManager {
             if (Navbarfoused != -1) {
                 defaultPageIdx = Navbarfoused;
             }
+            Log.e("--params---", "inflateListPage: "+defaultPageIdx );
             menuAdapter.setMenuItems(mNavInfos, defaultPageIdx);
         }
 

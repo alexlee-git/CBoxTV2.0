@@ -1,23 +1,16 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.util.DeviceUtil;
 
 import java.util.ArrayList;
 
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -27,7 +20,6 @@ import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
-import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
@@ -212,6 +204,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         mListView.setOnItemClick(new onEpisodeItemClick() {
             @Override
             public void onItemClick(int position, SubContent data) {
+                scrollView.scrollToTop(false);
                 headPlayerView.Play(position, 0, true);
             }
         });

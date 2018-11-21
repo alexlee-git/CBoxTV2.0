@@ -11,7 +11,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -235,6 +234,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
             @Override
             public void onChange(int index, boolean fromClick) {
+                scrollView.scrollToTop(false);
                 headPlayerView.Play(index, 0, fromClick);
             }
         });
