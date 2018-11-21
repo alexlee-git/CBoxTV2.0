@@ -53,7 +53,7 @@
         android:layout_width="@dimen/width_882px"
         android:layout_height="@dimen/height_386px"
         android:layout_below="@id/id_module_2_title"
-        android:layout_marginLeft="@dimen/width_951px"
+        android:layout_marginLeft="@dimen/width_965px"
         android:layout_marginTop="@dimen/height_15px"
         android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
