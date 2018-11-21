@@ -26,6 +26,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.DeviceUtil;
@@ -1407,6 +1408,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
+        }
+
+        if(mProgramSeriesInfo != null && Constant.CONTENTTYPE_CG.equals(mProgramSeriesInfo.getContentType())){
+            videoDataStruct.setSeriesId(mProgramSeriesInfo.getContentID());
+            ADConfig.getInstance().setSeriesID(mProgramSeriesInfo.getContentID(),false);
         }
         mNewTVLauncherPlayer.play(getContext(), mPlayerFrameLayout, mCallBackEvent,
                 videoDataStruct);
