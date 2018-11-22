@@ -112,7 +112,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 break;
 
             default:
-               String.format("%s 错误码:%s", messgae, code);
+                hint = String.format("%s 错误码:%s", messgae, code);
         }
         setHintText(hint);
     }

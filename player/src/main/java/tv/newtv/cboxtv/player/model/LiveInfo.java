@@ -61,10 +61,10 @@ public class LiveInfo {
     public LiveInfo(String title, @Nullable Video video) {
         if (video == null) return;
         if (TextUtils.isEmpty(video.getLiveUrl())) return;
-        if (TextUtils.isEmpty(video.getContentUUID())) return;
+        if (TextUtils.isEmpty(video.getContentId())) return;
         mTitle = title;
         setLiveUrl(video.getLiveUrl());
-        setContentUUID(video.getContentUUID());
+        setContentUUID(video.getContentId());
 
         mLiveParam = CmsUtil.isLive(video);
         if (mLiveParam == null) return;
