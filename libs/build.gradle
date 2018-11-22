@@ -49,7 +49,7 @@ dependencies {
     compile 'com.google.zxing:android-core:3.3.0'
     compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
     compile 'com.liulishuo.filedownloader:library:1.7.2'
-    implementation files('libs/SmartTvShoppingSDK_v1.4.jar')
+    implementation files('libs/SmartTvShoppingSDK_v1.5.jar')
     implementation('jp.wasabeef:glide-transformations:3.3.0') {
         exclude group: "com.android.support"
     }
