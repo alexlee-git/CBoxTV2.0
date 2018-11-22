@@ -49,7 +49,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.LauncherApplication;
-import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
 import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
@@ -92,7 +91,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private MemberHandler mHandler;
     private PopupWindow mPopupWindow;
     private View mPopupView;
-    private Disposable mMemberInfoDisposable;
+    private Disposable mUserInfoDisposable;  //用户信息 
+    private Disposable mMemberInfoDisposable;//会员信息
     private Disposable mRecommendDisposable;//推荐位
     private Disposable mQrCodeDisposable;//推荐位
     private MemberInfoBean mMemberInfoBean;
@@ -105,6 +105,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private int expires;
     private Bitmap mBitmap;
     private ImageView mFullQrCodeImageView;
+    private String mobileString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +144,52 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         mQrCodeUtil = new QrcodeUtil();
     }
 
+
+    private void getUserInfo(String Authorization) {
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .getUser(Authorization)
+                    .subscribe(new Observer<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            unUserInfoSubscribe();
+                            mUserInfoDisposable = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String result = responseBody.string();
+                                JSONObject jsonObject = new JSONObject(result);
+                                mobileString = jsonObject.optString("mobile");
+                                if (mobileString.length() == 11) {
+                                    mobileString = mobileString.substring(0, 3) + "xxxx" + mobileString.substring(7, 11);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mobileString = "";
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "wqs:getUserInfo:onError:" + e.toString());
+                            mobileString = "";
+                            unUserInfoSubscribe();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            unUserInfoSubscribe();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     //获取用户登录状态
     private void requestUserInfo() {
         Observable.create(new ObservableOnSubscribe<String>() {
@@ -153,7 +200,12 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 //获取登录状态
                 mLoginTokenString = SharePreferenceUtils.getToken(getApplicationContext());
                 if (!TextUtils.isEmpty(mLoginTokenString)) {
-                    e.onNext(mLoginTokenString);
+                    getUserInfo("Bearer " + mLoginTokenString);
+                    if (!TextUtils.isEmpty(mobileString)) {
+                        e.onNext(mLoginTokenString);
+                    } else {
+                        e.onNext("");
+                    }
                 } else {
                     e.onNext("");
                 }
@@ -328,8 +380,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         try {
             if (mAdapter != null) {
                 //传递用户会员信息数据
-                mAdapter.setMemberStatus(mMemberInfoBean);
-                mAdapter.notifyItemChanged(position);
+                mAdapter.setMemberStatus(mobileString, mMemberInfoBean);
+//                mAdapter.notifyItemChanged(position);
 //                mAdapter.notifyDataSetChanged();
             } else {
                 Log.d(TAG, "wqs:bindData:mAdapter == null");
@@ -347,6 +399,16 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         if (mMemberInfoDisposable != null && !mMemberInfoDisposable.isDisposed()) {
             mMemberInfoDisposable.dispose();
             mMemberInfoDisposable = null;
+        }
+    }
+
+    /**
+     * 解除获取用户信息绑定
+     */
+    private void unUserInfoSubscribe() {
+        if (mUserInfoDisposable != null && !mUserInfoDisposable.isDisposed()) {
+            mUserInfoDisposable.dispose();
+            mUserInfoDisposable = null;
         }
     }
 
@@ -553,6 +615,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         unMemberInfoSubscribe();
         unRecommendSubscribe();
         unQrCodeSubscribe();
+        unUserInfoSubscribe();
     }
 
 
