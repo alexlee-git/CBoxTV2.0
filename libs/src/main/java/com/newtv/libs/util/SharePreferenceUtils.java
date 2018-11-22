@@ -99,6 +99,24 @@ public class SharePreferenceUtils {
     }
 
     /**
+     * 用户性别
+     */
+    public static int getSex(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("User", Context.MODE_PRIVATE);
+        int status = preferences.getInt("sex", -1);
+        Log.d(TAG, "SharePreferenceUtils--getSex: sex = " + status);
+        return status;
+    }
+
+    public static void saveSex(Context context, int status) {
+        SharedPreferences preferences = context.getSharedPreferences("User", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        Log.d(TAG, "saveSex: sex = " + status);
+        editor.putInt("sex", status);
+        editor.apply();
+    }
+
+    /**
      * 设置中本地行为是否自动同步到已登录账号下
      * 0-是；1-否
      *
@@ -159,13 +177,14 @@ public class SharePreferenceUtils {
     /**
      * 升级下载apk时downloadId获取和保存
      */
-    public static Long getDownloadId(Context context){
+    public static Long getDownloadId(Context context) {
 
         SharedPreferences preferences = context.getSharedPreferences("Update", Context.MODE_PRIVATE);
         Long downloadId = preferences.getLong("downloadId", 0L);
         Log.d(TAG, "SharePreferenceUtils--getDownloadId: downloadId = " + downloadId);
         return downloadId;
     }
+
     public static void saveDownloadId(Context context, Long downloadId) {
         SharedPreferences preferences = context.getSharedPreferences("Update", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
