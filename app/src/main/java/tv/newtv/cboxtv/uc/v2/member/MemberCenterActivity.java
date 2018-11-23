@@ -60,7 +60,6 @@ import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
-import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
@@ -149,6 +148,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
                     .getUser(Authorization)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
 
                         @Override
@@ -260,9 +260,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                             mMemberInfoBean.setAppKey(jsonObject.optString("appKey"));
                             mMemberInfoBean.setUserId(jsonObject.optInt("userId"));
                             mMemberInfoBean.setProductId(jsonObject.optInt("productId"));
-                            long seconds = TimeUtil.getInstance().getSecondsFromDate(jsonObject.optString("expireTime"));
-                            String expireTime = TimeUtil.getInstance().getDateFromSeconds(seconds + "");
-                            mMemberInfoBean.setExpireTime(expireTime);
+                            mMemberInfoBean.setExpireTime(jsonObject.optString("expireTime"));
                         } else {
                             Log.d(TAG, "wqs:requestMemberInfo:next:memberInfo==null");
                         }
