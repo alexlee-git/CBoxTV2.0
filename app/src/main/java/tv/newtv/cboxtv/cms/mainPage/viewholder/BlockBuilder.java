@@ -44,10 +44,12 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.mainPage.AlternatePageView;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.player.model.LiveInfo;
+import tv.newtv.cboxtv.views.custom.AlternateView;
 import tv.newtv.cboxtv.views.custom.AutoSizeTextView;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -89,11 +91,15 @@ class BlockBuilder extends BaseBlockBuilder {
             // 根据viewType获取相应的布局文件
             int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType
                     (viewType);
+            if(layoutResId == R.layout.layout_module_32 && !Constant.canUseAlternate){
+                //不允许使用轮播
+                layoutResId = R.layout.layout_module_1;
+            }
             holder = new UniversalViewHolder(LayoutInflater.from(parent
                     .getContext()).inflate
-                    (layoutResId, parent, false));
+                    (layoutResId, parent, false),PlayerUUID);
         } else if (viewType == 0) {
-            holder = new UniversalViewHolder(new AutoBlockType(parent.getContext()));
+            holder = new UniversalViewHolder(new AutoBlockType(parent.getContext()),PlayerUUID);
         }
         return holder;
     }
@@ -216,11 +222,11 @@ class BlockBuilder extends BaseBlockBuilder {
                 final FrameLayout frameLayout = (FrameLayout) itemView.findViewWithTag
                         (frameLayoutId);
                 if (frameLayout != null) {
-//                    if (frameLayout instanceof AlternatePageView) {
-//                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID);
-//                        ((AlternatePageView) frameLayout).setProgram(moduleItem);
-//                        return;
-//                    }
+                    if (frameLayout instanceof AlternatePageView) {
+                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID);
+                        ((AlternatePageView) frameLayout).setProgram(moduleItem);
+                        return;
+                    }
                     //屏幕适配
                     if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
@@ -294,13 +300,12 @@ class BlockBuilder extends BaseBlockBuilder {
                         recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
                     } else if (posterView instanceof LivePlayView) {
                         ((LivePlayView) posterView).setProgramInfo(info);
-                        ((LivePlayView) posterView).setUUID(PlayerUUID);
+                        ((LivePlayView) posterView).setPageUUID(PlayerUUID);
                         recycleImageView = ((LivePlayView) posterView).getPosterImageView();
                         recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
+                    } else if (posterView instanceof AlternateView) {
+                        ((AlternateView) posterView).setContentUUID(info.getContentId());
                     }
-//                    else if (posterView instanceof AlternateView) {
-//                        ((AlternateView) posterView).setContentUUID(info.getContentId());
-//                    }
 
                     if (recycleImageView != null) {
                         loadPosterToImage(moduleItem, info, recycleImageView, hasCorner);

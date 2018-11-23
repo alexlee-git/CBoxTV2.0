@@ -1,6 +1,6 @@
 package com.newtv.cms.service
 
-import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.BootGuide
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -21,7 +21,7 @@ internal interface ICategoryRetro{
      * @param appkey
      * @param channelCode
      */
-    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
+    @Headers("host_type: " + BootGuide.NEW_CMS)
     @GET("api/v31/{appkey}/{channelCode}/categorytree/categorytree.json")
     fun getCategoryTree(@Path("appkey") appkey: String,
                 @Path("channelCode") channelId: String): Observable<ResponseBody>
@@ -32,7 +32,7 @@ internal interface ICategoryRetro{
      * @param channelCode
      * @param categoryId
      */
-    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
+    @Headers("host_type: " + BootGuide.NEW_CMS)
     @GET("api/v31/{appkey}/{channelCode}/categorycontents/{left}/{right}/{contentID}.json")
     fun getCategoryContent(@Path("appkey") appkey: String,
                         @Path("channelCode") channelId: String,

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
+        android:id="@+id/id_module_title_icon"
+        android:layout_width="@dimen/width_17px"
+        android:layout_height="@dimen/height_17px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_68px"
+        android:background="@drawable/tuoyuan"
+        android:tag="module_title_icon"/>
+
+    <TextView
+        android:id="@+id/id_module_title"
+        android:text="@string/app_name"
+        style="@style/ModuleTitleStyle"
+        android:layout_width="@dimen/width_376px"
+        android:layout_height="@dimen/height_34px"
+        android:layout_marginStart="@dimen/width_8px"
+        android:layout_marginLeft="@dimen/width_8px"
+        android:layout_marginTop="@dimen/height_59px"
+        android:layout_toEndOf="@id/id_module_title_icon"
+        android:layout_toRightOf="@id/id_module_title_icon"
+        android:includeFontPadding="false"
+        android:tag="module_title_text"
+        android:visibility="visible"/>
+</RelativeLayout>

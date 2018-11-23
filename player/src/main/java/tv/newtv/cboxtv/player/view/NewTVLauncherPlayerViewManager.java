@@ -86,7 +86,7 @@ public class NewTVLauncherPlayerViewManager {
     public long setPlayerView(NewTVLauncherPlayerView playerView) {
 
         if (mNewTVLauncherPlayerView != null && mNewTVLauncherPlayerView != playerView) {
-            mNewTVLauncherPlayerView.buildPlayerViewConfig();
+//            mNewTVLauncherPlayerView.buildPlayerViewConfig();
             release();
         }
 
@@ -184,7 +184,7 @@ public class NewTVLauncherPlayerViewManager {
         }
         if (isNeedStartActivity) {
             if (mNewTVLauncherPlayerView != null) {
-                mNewTVLauncherPlayerView.buildPlayerViewConfig();
+//                mNewTVLauncherPlayerView.buildPlayerViewConfig();
                 release();
             }
         }
@@ -211,7 +211,7 @@ public class NewTVLauncherPlayerViewManager {
         }
         if (openActivity) {
             if (mNewTVLauncherPlayerView != null) {
-                mNewTVLauncherPlayerView.buildPlayerViewConfig();
+//                mNewTVLauncherPlayerView.buildPlayerViewConfig();
                 release();
             }
         }

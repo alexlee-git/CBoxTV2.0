@@ -340,7 +340,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         String leftString = programSeries.substring(0, 2);
         String rightString = programSeries.substring(programSeries.length() - 2, programSeries.length());
         Request.INSTANCE.getContent()
-                .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,programSeries)
+                .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),programSeries)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {

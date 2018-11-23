@@ -4,20 +4,19 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.newtv.cms.bean.CategoryTreeNode;
 import com.newtv.libs.util.RxBus;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
 
 
 /**
@@ -26,10 +25,10 @@ import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
 public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.FirstLabelViewHolder> {
 
     Context context;
-    List<TabBean.DataBean.ChildBean> childBeans;
+    List<CategoryTreeNode> childBeans;
     private int defaultFocusLab =-1;
 
-    public FirstLabelAdapter(Context context, List<TabBean.DataBean.ChildBean> childBeans) {
+    public FirstLabelAdapter(Context context, List<CategoryTreeNode> childBeans) {
         this.context = context;
         this.childBeans = childBeans;
     }
@@ -70,12 +69,9 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
                     if (defaultFocusLab!=-1){
                         RxBus.get().post("defaultFocusLab",true);
                     }
-
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_select);
-
                 } else {
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_default);
-
                 }
             }
         });

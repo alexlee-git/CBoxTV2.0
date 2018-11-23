@@ -4,16 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.newtv.cms.bean.Content;
-import com.newtv.libs.Constant;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
@@ -135,7 +132,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetPlayerId(R.id.video_container)
                     .SetDefaultFocusID(R.id.full_screen)
                     .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
-                    .SetContentUUID(contentUUID)
+                    .SetContentUUID(contentUUID,"")
                     .autoGetSubContents()
                     .setTopView(fromOuter,isPopup)
                     .SetOnInfoResult(new HeadPlayerView.InfoResult() {
