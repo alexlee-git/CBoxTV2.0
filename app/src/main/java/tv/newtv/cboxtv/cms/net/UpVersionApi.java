@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.cms.net;
 
+import com.newtv.libs.BootGuide;
+
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -14,11 +16,11 @@ import retrofit2.http.QueryMap;
 
 public interface UpVersionApi {
 
-    @Headers("host_type: " + AppHeadersInterceptor.VERSION_UP)
+    @Headers("host_type: " + BootGuide.VERSION_UP)
     @GET("bradypod/api/apps")
     Observable<ResponseBody> getUpVersion(@QueryMap Map<String, String>map);
 
-    @Headers("host_type: " + AppHeadersInterceptor.IS_ORIENTED)
+    @Headers("host_type: " + BootGuide.IS_ORIENTED)
     @GET("bradypod/api/apps/isOriented")
     Observable<ResponseBody> getIsOriented(@QueryMap Map<String, String>map);
 

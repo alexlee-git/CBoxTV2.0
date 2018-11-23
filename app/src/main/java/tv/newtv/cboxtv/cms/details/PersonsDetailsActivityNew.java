@@ -75,6 +75,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     }
 
     private void requestData(String contentUUID) {
+
         hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6);
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
                 contentUUID, hostProgramView);// 获取主持列表

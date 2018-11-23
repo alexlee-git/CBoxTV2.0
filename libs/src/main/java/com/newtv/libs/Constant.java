@@ -212,8 +212,6 @@ public class Constant {
     public static final String UC_COLLECTION = "收藏";
     private static final Map<String, String> mServerAddressMap = new HashMap<>();
 
-
-
     public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH)
             : "http://search.cloud.ottcn.com:8080/";
