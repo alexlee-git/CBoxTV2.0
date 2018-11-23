@@ -2,6 +2,7 @@ package tv.newtv.cboxtv;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.media.ExifInterface;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -42,9 +43,10 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private Button cancelButton;
     private PageContract.Presenter mPresenter;
     private AdContract.Presenter mAdPresenter;
-    private Program program;
     private boolean isAd =false;
     private String eventContent="";
+    private ModelResult<ArrayList<Page>> page;
+    private Program program;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -156,7 +158,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                         public void onSuccess() {
                             ADHelper.AD.ADItem item = mAdPresenter.getAdItem();
                             eventContent = item.eventContent;
-                            if (item != null) {
+                            if (item != null&&!TextUtils.isEmpty(item.mid)&&!TextUtils.isEmpty(item.aid)&&!TextUtils.isEmpty(item.id)) {
                                 AdSDK.getInstance().report((item.mid + ""), item.aid + "", item.id + "",
                                         "", null, item.PlayTime + "", null);
 
@@ -168,6 +170,10 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
                         }
                     });
+                }else{
+                    if (program!=null&&!TextUtils.isEmpty(program.getImg())) {
+                        Picasso.get().load(program.getImg()).into(exit_image);
+                    }
                 }
             }
         });
@@ -178,14 +184,19 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.destroy();
+        if (mAdPresenter!=null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
     }
 
 
     @Override
     public void onPageResult(@NotNull ModelResult<ArrayList<Page>> page) {
+        this.page = page;
         program = page.getData().get(0).getPrograms().get(0);
-        Log.d("WarningExitActivity", "program.isAd():" + program.isAd());
-        if (program.isAd() != 1) {
+
+        if (program!=null&&program.isAd()!=1) {
             if (!TextUtils.isEmpty(program.getImg())) {
                 Picasso.get().load(program.getImg()).into(exit_image);
             }

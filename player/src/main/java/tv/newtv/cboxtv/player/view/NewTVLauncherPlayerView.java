@@ -735,7 +735,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 if (program.getUseSeriesSubUUID()) {
                     seriesUUID = program.getSeriesSubUUID();
                 } else {
-                    seriesUUID = programSeriesInfo.getContentUUID();
+                    seriesUUID = programSeriesInfo.getContentID();
                 }
                 mVodPresenter.checkVod(program.getContentUUID(), seriesUUID);
 

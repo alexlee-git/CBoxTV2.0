@@ -1,49 +1,46 @@
 package tv.newtv.cboxtv.cms.screenList.model;
 
-import com.google.gson.Gson;
+import android.content.Context;
+import com.newtv.cms.bean.FilterItem;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.contract.FilterContract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.cms.screenList.api.LabelApi;
-import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
-import tv.newtv.cboxtv.cms.screenList.manager.RetrofitManager;
 
 /**
  * Created by 冯凯 on 2018/9/30.
  */
 
-public class SecondLabelModelImpl implements SecondLabelModel {
+public class SecondLabelModelImpl implements SecondLabelModel, FilterContract.View {
+    private FilterContract.FilterPresenter filterPresenter ;
+    private SecondLabelCompleteListener completeListener;
+
+    public SecondLabelModelImpl(Context context) {
+        filterPresenter = new FilterContract.FilterPresenter(context,this);
+    }
+
     @Override
-    public void requestSecondLabel(final SecondLabelCompleteListener completeListener) {
+        public void requestSecondLabel(String categoryId, final SecondLabelCompleteListener completeListener) {
+            this.completeListener = completeListener;
+            filterPresenter.getFilter(categoryId);
+    }
 
+    @Override
+    public void onFilterResult(@NotNull Context context, @NotNull ModelResult<List<FilterItem>> result) {
+        if (completeListener!=null&&result!=null){
+            completeListener.sendSecondLabel(result);
+        }
+    }
 
-        RetrofitManager retrofitManager = RetrofitManager.getRetrofitManager();
-        Observable<ResponseBody> observable = retrofitManager.create(LabelApi.class).getSecondMenu();
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
 
+    }
 
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseBody>() {
-                    @Override
-                    public void accept(ResponseBody responseBody) throws Exception {
-
-                        Gson gson = new Gson();
-                        if (responseBody!=null){
-                            LabelBean labelBean = gson.fromJson(responseBody.string(), LabelBean.class);
-
-                            completeListener.sendSecondLabel(labelBean);
-                        }
-
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                    }
-                });
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
 
     }
 }

@@ -24,8 +24,8 @@ class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
 
     private long mDuration = DEFAULT_DURATION;
     private Interpolator mInterpolator;
-    private ValueAnimatorCompat.Impl.AnimatorListenerProxy mListener;
-    private ValueAnimatorCompat.Impl.AnimatorUpdateListenerProxy mUpdateListener;
+    private AnimatorListenerProxy mListener;
+    private AnimatorUpdateListenerProxy mUpdateListener;
 
     private float mAnimatedFraction;
     private long mStartDelay = 0;
@@ -65,12 +65,12 @@ class ValueAnimatorCompatImplEclairMr1 extends ValueAnimatorCompat.Impl {
     }
 
     @Override
-    public void setListener(ValueAnimatorCompat.Impl.AnimatorListenerProxy listener) {
+    public void setListener(AnimatorListenerProxy listener) {
         mListener = listener;
     }
 
     @Override
-    public void setUpdateListener(ValueAnimatorCompat.Impl.AnimatorUpdateListenerProxy updateListener) {
+    public void setUpdateListener(AnimatorUpdateListenerProxy updateListener) {
         mUpdateListener = updateListener;
     }
 
