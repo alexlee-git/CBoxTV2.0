@@ -1632,8 +1632,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public class FreeDuration implements NewTVLauncherPlayerSeekbar.FreeDurationListener {
         @Override
         public void end() {
-            stop();
-            onError(VodContract.USER_NOT_BUY, "");
+            if(isFullScreen()){
+                goToBuy();
+                ExitFullScreen();
+            }else {
+                stop();
+                onError(VodContract.USER_NOT_BUY, "");
+            }
 //            goToBuy();
         }
     }
