@@ -1,7 +1,6 @@
 package com.newtv.cms.service
 
-import com.newtv.libs.Constant
-import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.BootGuide
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -16,7 +15,7 @@ import retrofit2.http.Query
  * 创建日期:          2018/10/11
  */
 interface IBootGuideRetro {
-    @Headers("host_type: " + HeadersInterceptor.BOOT_GUIDE)
+    @Headers("host_type: " + BootGuide.BOOT_GUIDE)
     @GET("auth/bootGuide")
     abstract fun getServerAddresses(@Query("platformid") platformId: String): Observable<ResponseBody>
 }

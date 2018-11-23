@@ -1,6 +1,6 @@
 package com.newtv.cms.service
 
-import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.BootGuide
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.*
@@ -13,7 +13,7 @@ import retrofit2.http.*
  * 创建日期:          2018/10/16
  */
 interface ISearchRetro {
-    @Headers("host_type: " + HeadersInterceptor.NEW_SEARCH)
+    @Headers("host_type: " + BootGuide.NEW_SEARCH)
     @GET(value = "api/v31/{appkey}/{channelCode}/search.json")
     fun search(
             @Path(value = "appkey", encoded = false) appKey: String,

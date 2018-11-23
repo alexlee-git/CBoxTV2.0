@@ -1,6 +1,6 @@
 package com.newtv.cms.service
 
-import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.BootGuide
 import com.newtv.libs.bean.ActivateBean
 import com.newtv.libs.bean.AuthBean
 import io.reactivex.Observable
@@ -17,11 +17,11 @@ import retrofit2.http.POST
  * 创建日期:          2018/10/11
  */
 interface IActiveAuthRetro {
-    @Headers("host_type: " + HeadersInterceptor.ACTIVATE)
+    @Headers("host_type: " + BootGuide.ACTIVATE)
     @POST("monkeyking/service/apps/activate")
     abstract fun activate(@Body activateBean: ActivateBean): Observable<ResponseBody>
 
-    @Headers("host_type: " + HeadersInterceptor.ACTIVATE)
+    @Headers("host_type: " + BootGuide.ACTIVATE)
     @POST("monkeyking/service/apps/auth")
     abstract fun auth(@Body authBean: AuthBean): Observable<ResponseBody>
 }

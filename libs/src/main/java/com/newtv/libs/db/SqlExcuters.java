@@ -134,8 +134,7 @@ class SqlExcuters {
                 Set<String> keySet = contentValue.keySet();
                 if (keys == null) {
                     /* 构建SQL模板 */
-                    keys = new ArrayList<>();
-                    keys.addAll(keySet);
+                    keys = new ArrayList<>(keySet);
                     sql = buildSql(keys, sql);
                     stmt = db.compileStatement(sql);
                 }

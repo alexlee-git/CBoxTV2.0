@@ -192,7 +192,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     protected void onResume() {
         super.onResume();
         Log.i(TAG, "onResume: ");
-        if(mProgramSeriesInfo != null){
+        if (mProgramSeriesInfo != null) {
             doPlay(mProgramSeriesInfo);
         }
     }
@@ -201,14 +201,14 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     protected void onPause() {
         super.onPause();
         Log.i(TAG, "onPause: ");
+
+        releasePlayer();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Log.i(TAG, "onStop: ");
-
-        releasePlayer();
     }
 
     private void releasePlayer() {
@@ -235,7 +235,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
     private void doPlay(Content content) {
         initListener();
-        NewTVLauncherPlayerViewManager.getInstance().play(this, content, mIndexPlay, playPostion, false);
+        NewTVLauncherPlayerViewManager.getInstance().play(this, content, mIndexPlay, playPostion,
+                false);
         NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
                 (mPlayerFrameLayoutContainer, this);
         mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();

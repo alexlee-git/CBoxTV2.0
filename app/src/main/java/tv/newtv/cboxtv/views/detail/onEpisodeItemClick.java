@@ -11,6 +11,6 @@ import tv.newtv.cboxtv.player.ProgramSeriesInfo;
  * 创建人:           weihaichao
  * 创建日期:          2018/7/30
  */
-public interface onEpisodeItemClick {
-    void onItemClick(int position,SubContent data);
+public interface onEpisodeItemClick<T> {
+    boolean onItemClick(int position,T data);
 }

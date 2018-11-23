@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.views.detail;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -218,6 +217,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
+            releasePlayer();
+        }
+    }
+
+    public void releasePlayer() {
+        if (playerView != null) {
             playerView.release();
             playerView.destory();
             playerView = null;
@@ -229,10 +234,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
-            playerView.stopPlay();
-            playerView.release();
-            playerView.destory();
-            playerView = null;
+            releasePlayer();
         }
     }
 
@@ -295,7 +297,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     removeView(inflate);
                 }
             },5000);
-
         }
         addView(contentView);
         checkDataFromDB();
@@ -349,7 +350,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                        {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) collect).isSelect()) {
                                                 UserCenterUtils.deleteSomeCollect(mInfo,
@@ -388,7 +390,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     result) {
                                                                 ((FocusToggleSelect) collect)
                                                                         .setSelect
-                                                                                (code == 0 && !TextUtils
+                                                                                (code == 0 &&
+                                                                                        !TextUtils
                                                                                         .isEmpty(result));
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
@@ -433,7 +436,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                        {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) Subscrip).isSelect()) {
                                                 UserCenterUtils.deleteSomeSubcribet(mInfo,
@@ -554,12 +558,18 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
-        if (historyBean != null && programSeriesInfo.getData() != null) {
-            for (SubContent content : programSeriesInfo.getData()) {
-                if (TextUtils.equals(content.getContentUUID(), historyBean.playId)) {
-                    int index = programSeriesInfo.getData().indexOf(content);
-                    setCurrentPlayIndex("history", index);
-                    break;
+        if (programSeriesInfo.getData() != null) {
+            String playId = mBuilder.childContentUUID;
+            if (TextUtils.isEmpty(playId) && historyBean != null) {
+                playId = historyBean.playId;
+            }
+            if (!TextUtils.isEmpty(playId)) {
+                for (SubContent content : programSeriesInfo.getData()) {
+                    if (TextUtils.equals(content.getContentUUID(), playId)) {
+                        int index = programSeriesInfo.getData().indexOf(content);
+                        setCurrentPlayIndex("history", index);
+                        break;
+                    }
                 }
             }
         }
@@ -580,12 +590,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             if (playerView != null) {
                 playerView.setHintTextVisible(View.GONE);
             }
-        } else if (currentPlayIndex == index) {
+        } else if (currentPlayIndex == index && !isPlayLive) {
             if (requestFocus) {
                 requestPlayerFocus();
             }
             return;
         }
+
+        releasePlayer();
+        prepareMediaPlayer();
 
         setCurrentPlayIndex("Play", index);
         currentPosition = postion;
@@ -908,6 +921,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private OnFocusChangeListener focusChangeListener;
         private InfoResult infoResult;
         private String contentUUid;
+        private String childContentUUID;
         private int ProgramType;
         private boolean autoGetSub = false;
         private List<CustomFrame> dbTypes;
@@ -987,8 +1001,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return this;
         }
 
-        public Builder SetContentUUID(String uuid) {
+        public Builder SetContentUUID(String uuid, String subContentUUID) {
             contentUUid = uuid;
+            childContentUUID = subContentUUID;
             return this;
         }
 

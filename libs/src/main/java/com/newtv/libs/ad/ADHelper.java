@@ -271,6 +271,7 @@ public class ADHelper {
             if (adCallback != null) {
                 adCallback.showAd(adItem.AdType, adItem.AdUrl);
                 adCallback.showAdItem(adItem);
+                Log.e("ADHelper", "showaditem : " + adItem.toString());
             }
 
             if (isReportAD) {

@@ -144,7 +144,9 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         View view = LayoutInflater.from(context).inflate(R.layout.newtv_launcher_player_seekbar,
                 this);
         mSeekBar = (SeekBar) view.findViewById(R.id.player_seekbar);
-        BitmapDrawable newDrawable = getNewDrawable(R.drawable.seekbar_thumb,getResources().getDimensionPixelOffset(R.dimen.width_4px), getResources().getDimensionPixelOffset(R.dimen.height_40dp));
+        BitmapDrawable newDrawable = getNewDrawable(R.drawable.seekbar_thumb, getResources()
+                .getDimensionPixelOffset(R.dimen.width_4px), getResources()
+                .getDimensionPixelOffset(R.dimen.height_40dp));
         mSeekBar.setThumb(newDrawable);
         mSeekBar.setThumbOffset(0);
         mProgramNameTextView = (TextView) view.findViewById(R.id.seekbar_program_name);
@@ -245,7 +247,6 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         String durationString = PlayerTimeUtils.getInstance().timeFormat(duration);
         mRightTimeTextView.setText(durationString);
         initseekbar();
-        show();
     }
 
     public void setProgramName(String programName, boolean isNeedDownArrow) {
@@ -285,8 +286,8 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         mHandler.sendEmptyMessageDelayed(REFRESH_CURRENTTIME_AND_PROGRESS,
                 REFRESH_CURRENTTIME_AND_PROGRESS_DELAY_TIME);
 
-        if(freeDuration > 0 && freeDurationListener != null){
-            if(currentPosition / 1000 > freeDuration){
+        if (freeDuration > 0 && freeDurationListener != null) {
+            if (currentPosition / 1000 > freeDuration) {
                 freeDurationListener.end();
             }
         }
@@ -417,12 +418,18 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
     }
 
     public void setSeekPauseIcon() {
-        if (mImgSeekStatus != null)
+        if (mImgSeekStatus != null) {
             mImgSeekStatus.setImageResource(R.drawable.seek_pause);
+            mImgSeekStatus.postInvalidate();
+
+        }
     }
 
     public void setSeekPlayIcon() {
-        mImgSeekStatus.setImageResource(R.drawable.seek_play);
+        if (mImgSeekStatus != null) {
+            mImgSeekStatus.setImageResource(R.drawable.seek_play);
+            mImgSeekStatus.postInvalidate();
+        }
     }
 
     public BitmapDrawable getNewDrawable(int restId, int dstWidth, int dstHeight) {
@@ -445,9 +452,13 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         }
     }
 
-    public void setFreeDuration(int freeDuration,FreeDurationListener freeDurationListener){
+    public void setFreeDuration(int freeDuration, FreeDurationListener freeDurationListener) {
         this.freeDuration = freeDuration;
         this.freeDurationListener = freeDurationListener;
+    }
+
+    public interface FreeDurationListener {
+        void end();
     }
 
     @SuppressLint("HandlerLeak")
@@ -483,9 +494,5 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
                     break;
             }
         }
-    }
-
-    public interface FreeDurationListener{
-        void end();
     }
 }

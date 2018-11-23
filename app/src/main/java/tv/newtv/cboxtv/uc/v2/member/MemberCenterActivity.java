@@ -460,7 +460,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                 mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+//                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                                 mPromotionRecommendBean.add(mProgramInfo);
                             }
                         } else {
@@ -480,7 +480,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                             mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                             mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                             mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+//                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                             mInterestsRecommendBean.add(mProgramInfo);
                         } else {
                             Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0).getDatas()== null");
@@ -501,7 +501,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                 mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(j).getGrade());
-                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
+//                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
                                 mDramaRecommendBean.add(mProgramInfo);
                             }
                         } else {
@@ -649,6 +649,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                         intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
                         Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + Constant.MEMBER_CENTER_PARAMS);
                         mPageClass = SplashActivity.class;
+
+
                     } else {
                         Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();
                     }

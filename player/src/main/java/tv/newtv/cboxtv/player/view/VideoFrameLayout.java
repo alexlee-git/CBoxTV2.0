@@ -45,7 +45,7 @@ public class VideoFrameLayout extends FrameLayout {
         if (LeftTime != null) {
             Log.e(VideoFrameLayout.class.getSimpleName(), "获取到了TextView");
             LayoutParams layoutParams = (LayoutParams) params;
-            layoutParams.rightMargin =getResources().getDimensionPixelOffset(R.dimen.width_50px);
+            layoutParams.rightMargin = getResources().getDimensionPixelOffset(R.dimen.width_50px);
             LeftTime.setLayoutParams(layoutParams);
             if (mTextSize != 0) {
                 LeftTime.setTextSize(mTextSize);

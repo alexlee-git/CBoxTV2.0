@@ -2,9 +2,7 @@ package tv.newtv.cboxtv;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.media.ExifInterface;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +13,7 @@ import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.PageContract;
-import com.newtv.libs.Constant;
-import com.newtv.libs.HeadersInterceptor;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.ad.ADHelper;
 import com.newtv.libs.ad.AdEventContent;
 import com.newtv.libs.util.GsonUtil;
@@ -43,8 +40,8 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private Button cancelButton;
     private PageContract.Presenter mPresenter;
     private AdContract.Presenter mAdPresenter;
-    private boolean isAd =false;
-    private String eventContent="";
+    private boolean isAd = false;
+    private String eventContent = "";
     private ModelResult<ArrayList<Page>> page;
     private Program program;
 
@@ -56,13 +53,11 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         initView();
         mPresenter = new PageContract.ContentPresenter(this, this);
         mAdPresenter = new AdContract.AdPresenter(getApplicationContext(), null);
-        String baseUrl = Constant.getBaseUrl(HeadersInterceptor.EXIT_CONTENTID);
+        String baseUrl = BootGuide.getBaseUrl(BootGuide.EXIT_CONTENTID);
         if (TextUtils.isEmpty(baseUrl)) {
             return;
-        } else {
-            mPresenter.getPageContent(baseUrl);
         }
-
+        mPresenter.getPageContent(baseUrl);
     }
 
     @Override
@@ -72,7 +67,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
             if (focusView instanceof FrameLayout) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_DPAD_DOWN:
-                        if (cancelButton!=null)
+                        if (cancelButton != null)
                             cancelButton.requestFocus();
                         return true;
                     case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -113,18 +108,20 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
             setResult(RESULT_OK);
         } else if (id == R.id.cancelButton) {
             setResult(RESULT_CANCELED);
-        }else if (id==R.id.focus_layout){
-            if (isAd){
-                if (!TextUtils.isEmpty(eventContent)){
+        } else if (id == R.id.focus_layout) {
+            if (isAd) {
+                if (!TextUtils.isEmpty(eventContent)) {
                     AdEventContent adEventContent = GsonUtil.fromjson(eventContent, AdEventContent
                             .class);
-                    JumpUtil.activityJump(this, adEventContent.actionType, adEventContent.contentType,
-                            adEventContent.contentUUID,adEventContent.actionURI);
+                    JumpUtil.activityJump(this, adEventContent.actionType, adEventContent
+                                    .contentType,
+                            adEventContent.contentUUID, adEventContent.actionURI);
                 }
 
-            }else {
-                if (program!=null){
-                    JumpUtil.activityJump(this,program.getL_actionType(),program.getL_contentType(),program.getL_id(),program.getL_actionUri());
+            } else {
+                if (program != null) {
+                    JumpUtil.activityJump(this, program.getL_actionType(), program
+                            .getL_contentType(), program.getL_id(), program.getL_actionUri());
                 }
             }
 
@@ -156,10 +153,12 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                     Picasso.get().load(url).into(exit_image, new Callback() {
                         @Override
                         public void onSuccess() {
-                            ADHelper.AD.ADItem item = mAdPresenter.getAdItem();
+                            ADHelper.AD.ADItem item = mAdPresenter.getCurrentAdItem();
                             eventContent = item.eventContent;
-                            if (item != null&&!TextUtils.isEmpty(item.mid)&&!TextUtils.isEmpty(item.aid)&&!TextUtils.isEmpty(item.id)) {
-                                AdSDK.getInstance().report((item.mid + ""), item.aid + "", item.id + "",
+                            if (item != null && !TextUtils.isEmpty(item.mid) && !TextUtils
+                                    .isEmpty(item.aid) && !TextUtils.isEmpty(item.id)) {
+                                AdSDK.getInstance().report((item.mid + ""), item.aid + "", item
+                                                .id + "",
                                         "", null, item.PlayTime + "", null);
 
                             }
@@ -170,8 +169,8 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
                         }
                     });
-                }else{
-                    if (program!=null&&!TextUtils.isEmpty(program.getImg())) {
+                } else {
+                    if (program != null && !TextUtils.isEmpty(program.getImg())) {
                         Picasso.get().load(program.getImg()).into(exit_image);
                     }
                 }
@@ -184,7 +183,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.destroy();
-        if (mAdPresenter!=null){
+        if (mAdPresenter != null) {
             mAdPresenter.destroy();
             mAdPresenter = null;
         }
@@ -196,7 +195,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         this.page = page;
         program = page.getData().get(0).getPrograms().get(0);
 
-        if (program!=null&&program.isAd()!=1) {
+        if (program != null && program.isAd() != 1) {
             if (!TextUtils.isEmpty(program.getImg())) {
                 Picasso.get().load(program.getImg()).into(exit_image);
             }

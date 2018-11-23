@@ -26,13 +26,10 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(pageuuid)
-        val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
                 buildExecutor(Request.program
                         .getCurrentList
-                        (appKey, channelid,
-                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+                        (appKey, channelid, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()
@@ -48,13 +45,10 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(pageuuid)
-        val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
                 buildExecutor(Request.program
                         .getHistoryList
-                        (appKey, channelid,
-                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+                        (appKey, channelid, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()
@@ -70,13 +64,10 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(pageuuid)
-        val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
                 buildExecutor(Request.program
                         .getTvFigureList
-                        (appKey, channelid,
-                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+                        (appKey, channelid, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()
@@ -92,13 +83,10 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(pageuuid)
-        val right: String = getRight(pageuuid)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
                 buildExecutor(Request.program
                         .getTvFigureTvList
-                        (appKey, channelid,
-                                left, right, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
+                        (appKey, channelid, pageuuid), object : TypeToken<ModelResult<ArrayList<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()

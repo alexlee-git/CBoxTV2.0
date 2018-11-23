@@ -3,9 +3,7 @@ package com.newtv.cms
 import com.newtv.cms.service.*
 import com.newtv.libs.Constant
 import com.newtv.libs.HeadersInterceptor
-import com.newtv.libs.Libs
 import com.newtv.libs.util.HttpsUtils
-import okhttp3.Call
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory

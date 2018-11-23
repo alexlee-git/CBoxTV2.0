@@ -31,6 +31,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import tv.newtv.cboxtv.ActivityStacks;
+import tv.newtv.cboxtv.ILifeCycle;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
@@ -52,7 +54,7 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  * 创建日期:          2018/4/29
  */
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
-        ContentContract.View,LiveListener {
+        ContentContract.View, LiveListener, ICustomPlayer {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -72,19 +74,22 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private Program mProgramInfo;
     private TextView hintText;
 
+    private boolean mIsShow;
+
     private ContentContract.Presenter mContentPresenter;
 
     private NewTVLauncherPlayerView.PlayerViewConfig mPlayerViewConfig;
     private String mUUID;
 
+    private boolean playerReady = false;
+
     private int mIndex = 0;
     private int mPosition = 0;
-
-
     private Runnable playRunnable = new Runnable() {
         @Override
         public void run() {
-            if (mPlayInfo != null) {
+            if (mPlayInfo != null && !playerReady) {
+                playerReady = true;
                 prepareVideoPlayer();
                 if (mProgramSeriesInfo != null) {
                     if (mVideoPlayerView != null) {
@@ -97,14 +102,14 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             }
         }
     };
-
     private Runnable playLiveRunnable = new Runnable() {
         @Override
         public void run() {
             prepareVideoPlayer();
-            mVideoPlayerView.playLive(mLiveInfo, false,LivePlayView.this);
+            mVideoPlayerView.playLive(mLiveInfo, false, LivePlayView.this);
         }
     };
+    private ScreenListener mListener;
 
     public LivePlayView(@NonNull Context context) {
         this(context, null);
@@ -119,12 +124,15 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         init(attrs);
     }
 
-    public void setUUID(String uuid) {
+    public void setPageUUID(String uuid) {
         mUUID = uuid;
     }
 
-
     private void prepareVideoPlayer() {
+        if (mVideoPlayerView != null) {
+            releaseVideoPlayer();
+            mPlayerViewConfig = null;
+        }
         if (mVideoPlayerView == null) {
             if (mPlayerViewConfig != null) {
                 mVideoPlayerView = new VideoPlayerView(mPlayerViewConfig, getContext());
@@ -169,6 +177,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         } catch (Exception e) {
             LogUtils.e(e);
         } finally {
+            playerReady = false;
             mVideoPlayerView = null;
             LiveTimingUtil.clearListener();
         }
@@ -241,8 +250,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
             Log.d(TAG, "直播中，特殊处理");
             if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
-                Log.e(TAG, "dispatchClick: "+mProgramInfo );
-                JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mProgramInfo.getL_contentType(),
+                Log.e(TAG, "dispatchClick: " + mProgramInfo);
+                JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mProgramInfo
+                                .getL_contentType(),
                         mPlayInfo.ContentUUID, mProgramInfo.getL_actionUri());
                 return;
             }
@@ -253,36 +263,42 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         }
     }
 
-    @Override
-    protected void onWindowVisibilityChanged(int visibility) {
-        super.onWindowVisibilityChanged(visibility);
-        setVisibleChange(visibility);
-    }
-
-    private void setVisibleChange(int visibility) {
+    private void setVisibleChange(int visibility, boolean check) {
         if (mPlayInfo == null) return;
+
+        mIsShow = (visibility == VISIBLE);
         if (visibility == View.GONE) {
             releaseVideoPlayer();
         } else if (visibility == View.VISIBLE) {
-            if (currentMode == MODE_LIVE) {
-                if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
-                    playLiveVideo(0);
-                } else {
-                    if (centerTextView != null) {
-                        centerTextView.setVisibility(View.VISIBLE);
-                        centerTextView.setText("暂无播放");
-                        releaseVideoPlayer();
-                    }
+            doPlay();
+        }
+    }
+
+    private void doPlay() {
+        if (currentMode == MODE_LIVE) {
+            if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
+                playLiveVideo(0);
+            } else {
+                if (centerTextView != null) {
+                    centerTextView.setVisibility(View.VISIBLE);
+                    centerTextView.setText("暂无播放");
+                    releaseVideoPlayer();
                 }
-            } else if (currentMode == MODE_OPEN_VIDEO) {
-                playVideo(0);
             }
+        } else if (currentMode == MODE_OPEN_VIDEO) {
+            playVideo(0);
         }
     }
 
     private void init(AttributeSet attrs) {
         setClipChildren(false);
         setClipToPadding(false);
+
+        setTag(R.id.block_type_tag, "LIVE_PLAY_VIEW");
+
+        if (isInEditMode()) {
+            return;
+        }
 
         if (mVideoPlayer == null) {
             mVideoPlayer = new VideoFrameLayout(getContext());
@@ -325,7 +341,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             addView(centerTextView, layoutParams);
         }
 
-        if(hintText == null){
+        if (hintText == null) {
             LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams
                     .WRAP_CONTENT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -354,6 +370,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public void setProgramInfo(Program programInfo) {
         if (programInfo == null) return;
+        if (mProgramInfo != null) {
+            if (TextUtils.equals(mProgramInfo.toString(), programInfo.toString())) return;
+        }
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
         mPlayInfo.contentType = programInfo.getContentType();
@@ -370,7 +389,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (mProgramInfo.getRecommendedType().equals("2")) {
             //如果有playurl并且在直播的时间段内，则判断是直播
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
+
             if (liveInfo.isLiveTime()) {
+
                 mLiveInfo = liveInfo;
                 currentMode = MODE_LIVE;
                 playLiveVideo(2000);
@@ -400,7 +421,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 2000);
     }
 
-
     private boolean isVod() {
         if (mProgramInfo == null) return false;
         Video video = mProgramInfo.getVideo();
@@ -415,14 +435,15 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     @Override
     public void onChange(String uuid) {
         if (Navigation.get().isCurrentPage(mUUID)) {
-            setVisibleChange(VISIBLE);
+            setVisibleChange(VISIBLE, false);
         } else {
-            setVisibleChange(GONE);
+            setVisibleChange(GONE, false);
         }
     }
 
     @Override
-    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
+    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content
+            content) {
         mProgramSeriesInfo = content;
         if (mVideoPlayerView != null) {
             mVideoPlayerView.setSeriesInfo(mProgramSeriesInfo);
@@ -431,7 +452,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
-    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable
+            ArrayList<SubContent> result) {
 
     }
 
@@ -447,7 +469,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void onTimeChange(String current, String end) {
-        mVideoPlayerView.setTipText(String.format("%s/%s",current,end));
+        mVideoPlayerView.setTipText(String.format("%s/%s", current, end));
     }
 
     @Override
@@ -455,11 +477,42 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     }
 
-    public void setHintText(String message){
-        if(hintText != null){
+    public void setHintText(String message) {
+        if (hintText != null) {
             hintText.setVisibility(View.VISIBLE);
             hintText.setText(message);
         }
+    }
+
+    @Override
+    public void destroy() {
+        
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+
+        setVisibleChange(visibility,true);
+    }
+
+    @Override
+    public void onWindowVisibleChange(int visible) {
+        LogUtils.d(TAG,"visible change = "+visible+" contentID="+mUUID);
+        setVisibleChange(visible, true);
+    }
+
+    @Override
+    public void attachScreenListener(ScreenListener listener) {
+        mListener = listener;
+        if (mVideoPlayerView != null)
+            mVideoPlayerView.registerScreenListener(listener);
+    }
+
+    @Override
+    public void detachScreenListener(ScreenListener listener) {
+        if (mVideoPlayerView != null)
+            mVideoPlayerView.unregisterScreenListener(listener);
     }
 
     private static class PlayInfo {
@@ -478,11 +531,16 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         @Override
         public void enterFullScreen() {
-
+            if (mListener != null) {
+                mListener.enterFullScreen();
+            }
         }
 
         @Override
         public void exitFullScreen() {
+            if (mListener != null) {
+                mListener.exitFullScreen();
+            }
             if (getParent() != null && getParent() instanceof ViewGroup) {
                 ViewGroup viewGroup = (ViewGroup) getParent();
                 int count = viewGroup.getChildCount();
