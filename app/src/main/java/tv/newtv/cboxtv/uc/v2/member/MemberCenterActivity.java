@@ -148,7 +148,6 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
                     .getUser(Authorization)
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
 
                         @Override
