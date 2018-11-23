@@ -104,6 +104,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private boolean hasDefaultFocus = true;
     private boolean hasDefaultFocusSecond = true;
     List<FilterItem> dataBeans ;
+    private  String recordId ="";
 
 
     @Override
@@ -177,6 +178,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                @Override
                                public void accept(CategoryTreeNode categoryTreeNode) throws Exception {
                                    if (categoryTreeNode != null) {
+                                       categoryId = categoryTreeNode.getId();
+                                       presenter.getSecondLabel();
                                        map.put("categoryId", categoryTreeNode.getId());
                                        presenter.getLabelData();
                                        title_label.setText(categoryTreeNode.getTitle());
@@ -248,7 +251,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         menuRecordViewObservable = RxBus.get().register("menuRecordView");
         menuRecordViewObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<View>() {
-
                     @Override
                     public void accept(View view) throws Exception {
                         int childCount = container.getChildCount();
@@ -313,6 +315,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
                 int position = tab.getPosition();
                 categoryId = data.get(position).getId();
+                recordId=categoryId;
+
                 presenter.getSecondLabel();
                 map.put("categoryId", categoryId);
                 presenter.getLabelData();
@@ -417,31 +421,28 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 HorizontalRecyclerView horizontalRecyclerView = new HorizontalRecyclerView(this);
                 FilterItem dataBean = dataBeans.get(i);
                 List<FilterValue> filterValue = dataBean.getFilterValue();
-
                 secondLabelAdapter secondMenuAdapter = new secondLabelAdapter(filterValue, this, dataBean);
                 for (int j = 0; j < filterValue.size(); j++) {
-                    if (i == 0 && focusBean != null && !TextUtils.isEmpty(focusBean.getClassTypes())) {
+                    if ( focusBean != null && !TextUtils.isEmpty(focusBean.getClassTypes())) {
                         if (focusBean.getClassTypes().equals(filterValue.get(j).getTitle())) {
                             default_record_position = j;
+                            Log.d("ScreenListActivity", "default_record_position:" + default_record_position);
                         }
                     }
-                    if (i == 1 && focusBean != null && !TextUtils.isEmpty(focusBean.getYears())) {
+                    if (focusBean != null && !TextUtils.isEmpty(focusBean.getYears())) {
                         if (focusBean.getYears().equals(filterValue.get(j).getTitle())) {
                             default_record_position_second = j;
+                            Log.d("ScreenListActivity", "default_record_position_second:" + default_record_position_second);
                         }
                     }
                 }
                 horizontalRecyclerView.setAdapter(secondMenuAdapter);
-
                 if (hasDefaultFocusSecond){
-                    if (i == 0) {
+                    if (i==0){
                         secondMenuAdapter.setDefaultFocusFirst(default_record_position);
-                    }
-                    if (i == 1) {
+                    }else if (i==1){
                         secondMenuAdapter.setDefaultFocusSecond(default_record_position_second);
                     }
-
-                    hasDefaultFocusSecond = false;
                 }
 
                 int height = DisplayUtils.translate(50, 1);
@@ -505,14 +506,18 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
+                hasDefaultFocusSecond = false;
                 pageNum = 1;
                 loadMore = false;
+                tvRecyclerView.smoothScrollToPosition(0);
                 if (moveFlag == 1) {
                     title_label.setVisibility(View.GONE);
+                    labelRecyclerView.smoothScrollToPosition(0);
                     tab.setFocusable(true);
                     tab.requestFocus();
-                    labelRecyclerView.smoothScrollToPosition(0);
                     moveFlag = 0;
+                    categoryId =recordId;
+                    presenter.getSecondLabel();
                     map.put("categoryId", categoryId);
                     presenter.getLabelData();
                     return true;
@@ -523,6 +528,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     if (labelRecordView != null) {
                         labelRecordView.requestFocus();
                     }
+
                     moveFlag--;
                     map.remove(type_key);
                     presenter.getLabelData();
@@ -533,9 +539,15 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     View view = container.getChildAt(0);
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
-
                         if (first_Record_View != null) {
                             first_Record_View.requestFocus();
+                        }
+                    }else{
+                        labelRecyclerView.setVisibility(View.VISIBLE);
+                        if (labelRecordView != null) {
+                            labelRecordView.requestFocus();
+                            moveFlag =2;
+                            map.remove(type_key);
                         }
                     }
                     moveFlag--;
@@ -545,11 +557,30 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 }
                 if (moveFlag == 4) {
                     place_text.setVisibility(View.GONE);
-                    View view = container.getChildAt(1);
-                    if (view != null) {
-                        view.setVisibility(View.VISIBLE);
+                    View view1 = container.getChildAt(1);
+                    View view = container.getChildAt(0);
+                    if (view1 != null) {
+                        view1.setVisibility(View.VISIBLE);
                         if (second_Record_View != null) {
                             second_Record_View.requestFocus();
+                        }
+
+                    }else{
+                        if (view!=null){
+                            view.setVisibility(View.VISIBLE);
+                            if (first_Record_View!=null){
+                                first_Record_View .requestFocus();
+                                moveFlag =3;
+                                map.remove(year_key);
+                            }
+                        }else {
+                            if (labelRecordView!=null){
+                                labelRecyclerView.setVisibility(View.VISIBLE);
+
+                                labelRecyclerView.requestFocus();
+                                moveFlag =2;
+                                map.remove(type_key);
+                            }
                         }
                     }
                     moveFlag--;
@@ -558,12 +589,40 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     return true;
                 }
                 if (moveFlag == 5) {
-                    View view = container.getChildAt(2);
-                    if (view != null) {
-                        view.setVisibility(View.VISIBLE);
+                    View view3 = container.getChildAt(2);
+                    View view2 = container.getChildAt(1);
+                    View view1 = container.getChildAt(0);
+                    if (view3 != null) {
+                        view3.setVisibility(View.VISIBLE);
                         if (third_Record_View != null) {
                             third_Record_View.requestFocus();
                         }
+                    }else {
+                        if (view2!=null){
+                            view2.setVisibility(View.VISIBLE);
+                            if (second_Record_View!=null){
+                                second_Record_View.requestFocus();
+                                moveFlag =4;
+                                map.remove(place_key);
+                            }
+                        }else {
+                            if (view1!=null){
+                                view1.setVisibility(View.VISIBLE);
+                                if (first_Record_View!=null){
+                                    first_Record_View .requestFocus();
+                                    moveFlag =3;
+                                    map.remove(year_key);
+                                }
+                            }else {
+                                if (labelRecordView!=null){
+                                    labelRecyclerView.setVisibility(View.VISIBLE);
+                                    labelRecyclerView.requestFocus();
+                                    moveFlag =2;
+                                    map.remove(type_key);
+                                }
+                            }
+                        }
+
                     }
                     moveFlag--;
                     presenter.getLabelData();
@@ -572,11 +631,11 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
+
                 if (!tvRecyclerView.hasFocus()) {
                     moveFlag++;
                     if (tab.hasFocus()) {
                         labelRecordView = null;
-                        tab.setFocusable(false);
                         if (labelRecyclerView.getChildAt(0)!=null){
                             labelRecyclerView.getChildAt(0).requestFocus();
                         }
@@ -588,29 +647,61 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         if (container.getChildAt(0) != null) {
                             container.getChildAt(0).setFocusable(true);
                             container.getChildAt(0).requestFocus();
+                        }else {
+                            if (container.getChildAt(1)!=null){
+                                container.getChildAt(1).requestFocus();
+                                moveFlag =3;
+                            }else {
+                                if (container.getChildAt(2)!=null){
+                                    container.getChildAt(2).requestFocus();
+                                    moveFlag = 4;
+                                }else{
+                                    if (tvRecyclerView.getChildAt(0)!=null){
+                                        tvRecyclerView.getChildAt(0).requestFocus();
+                                    }
+                                    moveFlag =5;
+                                }
+                            }
                         }
+
                         return true;
                     }
                     if (moveFlag == 3&&container.getChildAt(0)!=null&&container.getChildAt(0).hasFocus()) {
                         second_Record_View = null;
+                        container.getChildAt(0).setVisibility(View.GONE);
                         if ( container.getChildAt(1) != null) {
-                            container.getChildAt(0).setVisibility(View.GONE);
                             container.getChildAt(1).setFocusable(true);
                             container.getChildAt(1).requestFocus();
+                        }else{
+                            if (container.getChildAt(2)!=null){
+                                container.getChildAt(2).requestFocus();
+                                moveFlag =4;
+                            }else{
+                                if (tvRecyclerView.getChildAt(0)!=null){
+                                    tvRecyclerView.requestFocus();
+                                    moveFlag =5;
+                                }
+                            }
                         }
 
                         return true;
                     }
                     if (moveFlag == 4&&container.getChildAt(1) != null&&container.getChildAt(1).hasFocus()) {
                         third_Record_View = null;
+                        container.getChildAt(1).setVisibility(View.GONE);
                         if ( container.getChildAt(2) != null) {
-                            container.getChildAt(1).setVisibility(View.GONE);
                             container.getChildAt(2).setFocusable(true);
                             container.getChildAt(2).requestFocus();
+                        }else {
+                            if (tvRecyclerView.getChildAt(0)!=null){
+                                tvRecyclerView.getChildAt(0).requestFocus();
+                                moveFlag =5;
+                            }
                         }
                         return true;
                     }
                     if (moveFlag == 5&&container.getChildAt(2) != null&&container.getChildAt(2).hasFocus()) {
+                        container.getChildAt(2).setVisibility(View.GONE);
 
                         if (tvRecyclerView.getChildAt(0) != null) {
                             tvRecyclerView.getChildAt(0).requestFocus();
@@ -628,6 +719,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
                 break;
             case KeyEvent.KEYCODE_BACK:
+                hasDefaultFocusSecond = false;
                 pageNum = 1;
                 loadMore = false;
                 tvRecyclerView.smoothScrollToPosition(0);
@@ -637,6 +729,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     tab.setFocusable(true);
                     tab.requestFocus();
                     moveFlag = 0;
+                    categoryId =recordId;
+                    presenter.getSecondLabel();
                     map.put("categoryId", categoryId);
                     presenter.getLabelData();
                     return true;
@@ -647,6 +741,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     if (labelRecordView != null) {
                         labelRecordView.requestFocus();
                     }
+
                     moveFlag--;
                     map.remove(type_key);
                     presenter.getLabelData();
@@ -660,6 +755,13 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         if (first_Record_View != null) {
                             first_Record_View.requestFocus();
                         }
+                    }else{
+                        labelRecyclerView.setVisibility(View.VISIBLE);
+                            if (labelRecordView != null) {
+                                labelRecordView.requestFocus();
+                                moveFlag =2;
+                                map.remove(type_key);
+                            }
                     }
                     moveFlag--;
                     map.remove(year_key);
@@ -668,11 +770,30 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 }
                 if (moveFlag == 4) {
                     place_text.setVisibility(View.GONE);
-                    View view = container.getChildAt(1);
-                    if (view != null) {
-                        view.setVisibility(View.VISIBLE);
+                    View view1 = container.getChildAt(1);
+                    View view = container.getChildAt(0);
+                    if (view1 != null) {
+                        view1.setVisibility(View.VISIBLE);
                         if (second_Record_View != null) {
                             second_Record_View.requestFocus();
+                        }
+
+                    }else{
+                        if (view!=null){
+                            view.setVisibility(View.VISIBLE);
+                            if (first_Record_View!=null){
+                                first_Record_View .requestFocus();
+                                moveFlag =3;
+                                map.remove(year_key);
+                            }
+                        }else {
+                            if (labelRecordView!=null){
+                                labelRecyclerView.setVisibility(View.VISIBLE);
+
+                                labelRecyclerView.requestFocus();
+                                moveFlag =2;
+                                map.remove(type_key);
+                            }
                         }
                     }
                     moveFlag--;
@@ -681,12 +802,40 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     return true;
                 }
                 if (moveFlag == 5) {
-                    View view = container.getChildAt(2);
-                    if (view != null) {
-                        view.setVisibility(View.VISIBLE);
+                    View view3 = container.getChildAt(2);
+                    View view2 = container.getChildAt(1);
+                    View view1 = container.getChildAt(0);
+                    if (view3 != null) {
+                        view3.setVisibility(View.VISIBLE);
                         if (third_Record_View != null) {
                             third_Record_View.requestFocus();
                         }
+                    }else {
+                        if (view2!=null){
+                            view2.setVisibility(View.VISIBLE);
+                            if (second_Record_View!=null){
+                                second_Record_View.requestFocus();
+                                moveFlag =4;
+                                map.remove(place_key);
+                            }
+                        }else {
+                            if (view1!=null){
+                                view1.setVisibility(View.VISIBLE);
+                                if (first_Record_View!=null){
+                                    first_Record_View .requestFocus();
+                                    moveFlag =3;
+                                    map.remove(year_key);
+                                }
+                            }else {
+                                if (labelRecordView!=null){
+                                    labelRecyclerView.setVisibility(View.VISIBLE);
+                                    labelRecyclerView.requestFocus();
+                                    moveFlag =2;
+                                    map.remove(type_key);
+                                }
+                            }
+                        }
+
                     }
                     moveFlag--;
                     presenter.getLabelData();
