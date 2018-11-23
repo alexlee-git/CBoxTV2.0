@@ -1415,8 +1415,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             hintVip.setVisibility(View.VISIBLE);
             String freeDuration = videoDataStruct.getFreeDuration();
             if (!TextUtils.isEmpty(freeDuration) && Integer.parseInt(freeDuration) > 0) {
-                int duration = Integer.parseInt(videoDataStruct.getFreeDuration());
-                mNewTVLauncherPlayerSeekbar.setFreeDuration(duration, freeDurationListener);
+                if(mNewTVLauncherPlayerSeekbar != null){
+                    int duration = Integer.parseInt(videoDataStruct.getFreeDuration());
+                    mNewTVLauncherPlayerSeekbar.setFreeDuration(duration, freeDurationListener);
+                }
             } else {
                 goToBuy();
             }
