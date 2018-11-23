@@ -90,7 +90,6 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             }
         });
 
-
         if (BuildConfig.DEBUG) {
 //            LeakCanary.install(this);
         }

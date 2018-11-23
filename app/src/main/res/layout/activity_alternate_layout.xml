@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tv.newtv.cboxtv.views.detail.SmoothScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <tv.newtv.cboxtv.views.detail.AlterHeaderView
+        android:id="@+id/header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
+        android:id="@+id/play_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_view">
+
+    </tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView>
+
+    <tv.newtv.cboxtv.views.detail.EpisodeAdView
+        android:layout_below="@+id/play_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</tv.newtv.cboxtv.views.detail.SmoothScrollView>

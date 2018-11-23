@@ -12,13 +12,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.SearchContract;
 import com.newtv.libs.util.LogUtils;
-import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,11 +24,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tv.newtv.cboxtv.JumpScreen;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.cms.search.adapter.SearchResultAdapter;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
 import tv.newtv.cboxtv.cms.search.listener.SearchResultDataInfo;
-import tv.newtv.cboxtv.cms.util.JumpUtil;
 
 /**
  * 类描述：
@@ -83,9 +81,13 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     protected abstract void inputKeyChange();
 
     @Override
-    public void onItemClick(int position,SubContent subContent) {
-        JumpUtil.detailsJumpActivity(getContext(),subContent.getContentType(),subContent.getContentID());
+    public void onItemClick(int position, SubContent subContent) {
+//        JumpUtil.detailsJumpActivity(getContext(), subContent.getContentType(), subContent
+//                .getContentID());
 //        ToastUtil.showToast(getContext(),"当前是第 ：" + position +"项");//测试使用
+        JumpScreen.jumpDetailActivity(getContext(), subContent.getContentID(), subContent
+                .getContentType());
+
     }
 
     @Override
@@ -181,7 +183,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         titleText = mLabelView.findViewWithTag("title_text");
     }
 
-    public void setLoadingLayout(View loadingLayout,View loadingImg){
+    public void setLoadingLayout(View loadingLayout, View loadingImg) {
         mLoadingLayout = loadingLayout;
         mLoadingImg = loadingImg;
     }
@@ -219,7 +221,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
 
     private void requestData(String key) {
         if (TextUtils.isEmpty(key)) {
-            if(cacheDatas != null){
+            if (cacheDatas != null) {
                 cacheDatas.clear();
             }
             currentPos = -1;
@@ -232,8 +234,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         if (!TextUtils.equals(currentkey, key)) {
             currentPos = -1;
             inputKeyChange();
-        }
-        else{
+        } else {
             return;
         }
 
@@ -282,13 +283,13 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
         stopLoadingAni();
     }
 
-    private void startLoadingAni(){
+    private void startLoadingAni() {
         AnimationDrawable mAni = (AnimationDrawable) mLoadingImg.getBackground();
         mLoadingLayout.setVisibility(View.VISIBLE);
         mAni.start();
     }
 
-    private void stopLoadingAni(){
+    private void stopLoadingAni() {
         AnimationDrawable mAni = (AnimationDrawable) mLoadingImg.getBackground();
         mLoadingLayout.setVisibility(View.GONE);
         mAni.stop();

@@ -28,7 +28,7 @@ public class ModuleLayoutManager {
             "layout_012", "layout_013", "layout_014", "layout_015", "layout_016", "layout_017",
             "layout_018", "layout_019", "layout_020", "layout_021", "layout_022", "layout_023",
             "layout_024", "layout_025", "layout_026", "layout_027", "layout_028", "layout_029",
-            "layout_030", "layout_031"};
+            "layout_030", "layout_031", "layout_032"};
 
     private int[] layoutResIds = new int[]{R.layout.layout_module_1, R.layout.layout_module_2,
             R.layout.layout_module_3, R.layout.layout_module_4, R.layout.layout_module_5, R.layout.layout_module_6,
@@ -38,7 +38,7 @@ public class ModuleLayoutManager {
             R.layout.layout_module_19, R.layout.layout_module_20, R.layout.layout_module_21, R.layout.layout_module_22,
             R.layout.layout_module_23, R.layout.layout_module_24, R.layout.layout_module_25, R.layout.layout_module_26,
             R.layout.layout_module_27_other, R.layout.layout_module_28_other, R.layout.layout_module_29,
-            R.layout.layout_module_30, R.layout.layout_module_31};
+            R.layout.layout_module_30, R.layout.layout_module_31,R.layout.layout_module_32};
 
     private String[] rightEdgeIds = new String[] {"cell_001_1", "cell_002_2", "cell_003_3",
             "cell_004_4", "cell_005_6", "cell_006_8", "cell_007_8", "cell_008_6",
@@ -51,26 +51,27 @@ public class ModuleLayoutManager {
             "cell_023_2", "cell_024_8", "cell_025_6", "cell_026_3", "cell_027_3",
             "cell_027_7", "cell_028_2", "cell_029_3", "cell_029_5", "cell_029_11"};
 
-    private int[] subViewSizes = new int[]{1, 2, 3, 4, 6, 8, 8, 6, 5, 7, 4, 5, 6, 6, 7, 7, 9, 5, 6, 14, 9, 10, 2, 8, 6, 3, 7, 2, 11, 12, 12};
+    private int[] subViewSizes = new int[]{1, 2, 3, 4, 6, 8, 8, 6, 5, 7, 4, 5, 6, 6, 7, 7, 9, 5,
+            6, 14, 9, 10, 2, 8, 6, 3, 7, 2, 11, 12, 12,6};
     private Map<String, List<String>> mFirstLineModules; // 所有组件的第一行的推荐位列表, 因为这些推荐位需要监听上按键
     private Map<String, String> mRightEdgeCells;
 
     private ModuleLayoutManager() {
         if (mModuleDataBase == null) {
-            mModuleDataBase = new ConcurrentHashMap<String, List<String>>(Constant.BUFFER_SIZE_32) {
+            mModuleDataBase = new ConcurrentHashMap<String, List<String>>(Constant.BUFFER_SIZE_64) {
             };
         }
 
         if (mViewTypeAndLayoutResFileMap == null) {
-            mViewTypeAndLayoutResFileMap = new ConcurrentHashMap<>(Constant.BUFFER_SIZE_32);
+            mViewTypeAndLayoutResFileMap = new ConcurrentHashMap<>(Constant.BUFFER_SIZE_64);
         }
 
         if (mWidgetCounter == null) {
-            mWidgetCounter = new ConcurrentHashMap<>(Constant.BUFFER_SIZE_32);
+            mWidgetCounter = new ConcurrentHashMap<>(Constant.BUFFER_SIZE_64);
         }
 
         if (mFirstLineModules == null) {
-            mFirstLineModules = new HashMap<>(Constant.BUFFER_SIZE_32);
+            mFirstLineModules = new HashMap<>(Constant.BUFFER_SIZE_64);
         }
 
         List<String> firstLineCellCodes;
@@ -300,6 +301,10 @@ public class ModuleLayoutManager {
                     mFirstLineModules.put(ids, firstLineCellCodes);
                     break;
                 case "layout_030":
+                    firstLineCellCodes = new ArrayList<>(Constant.BUFFER_SIZE_4);
+                    mFirstLineModules.put(ids, firstLineCellCodes);
+                    break;
+                case "layout_032":
                     firstLineCellCodes = new ArrayList<>(Constant.BUFFER_SIZE_4);
                     mFirstLineModules.put(ids, firstLineCellCodes);
                     break;

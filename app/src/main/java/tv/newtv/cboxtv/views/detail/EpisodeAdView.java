@@ -36,10 +36,9 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
 public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContract
         .View, View.OnFocusChangeListener, View.OnClickListener {
 
-    private AdContract.Presenter mADPresenter;
+    private AdContract.AdPresenter mADPresenter;
     private int measuredWidth, measuredHeight;
     private boolean isSuccess = false;
-
 
 
     public EpisodeAdView(Context context) {

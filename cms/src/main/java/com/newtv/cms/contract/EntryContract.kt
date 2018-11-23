@@ -12,6 +12,7 @@ import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
 import com.newtv.cms.ICmsView
 import com.newtv.cms.api.IBootGuide
+import com.newtv.libs.BootGuide
 import com.newtv.libs.Constant
 import com.newtv.libs.Libs
 import com.newtv.libs.util.CNTVLogUtils
@@ -81,6 +82,7 @@ class EntryContract {
                             SPrefUtils.setValue(context, SPrefUtils
                                     .KEY_SERVER_ADDRESS, result)
                             Constant.parseServerAddress(result)
+                            BootGuide.parse(result)
                         }
                         view?.bootGuildResult()
                     }
