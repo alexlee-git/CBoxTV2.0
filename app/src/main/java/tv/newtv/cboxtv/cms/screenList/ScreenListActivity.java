@@ -68,7 +68,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private LinearLayout container;
     private Map<String, Object> map;
     private String key;
-    private String categoryId="";
+    private String categoryId = "";
     private String type_key;
     private String year_key;
     private String place_key;
@@ -104,8 +104,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private Observable<Boolean> observableTwo;
     private boolean hasDefaultFocus = true;
     private boolean hasDefaultFocusSecond = true;
-    List<FilterItem> dataBeans ;
-    private  String recordId ="";
+    List<FilterItem> dataBeans;
+    private String recordId = "";
 
 
     @Override
@@ -121,7 +121,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
     private void initFocus() {
         String s = getIntent().getStringExtra(Constant.DEFAULT_UUID);
-        Log.d("ScreenListActivity", s);
         Gson gson = new Gson();
         if (!TextUtils.isEmpty(s)) {
             focusBean = gson.fromJson(s, FocusBean.class);
@@ -325,14 +324,14 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-             title_label .setVisibility(View.GONE);
-                type_text .setVisibility(View.GONE);
-                year_text .setVisibility(View.GONE);
-                place_text .setVisibility(View.GONE);
+                title_label.setVisibility(View.GONE);
+                type_text.setVisibility(View.GONE);
+                year_text.setVisibility(View.GONE);
+                place_text.setVisibility(View.GONE);
 
                 int position = tab.getPosition();
                 categoryId = data.get(position).getId();
-                recordId=categoryId;
+                recordId = categoryId;
 
                 presenter.getSecondLabel();
                 map.put("categoryId", categoryId);
@@ -341,12 +340,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 childData.clear();
                 childData.addAll(data.get(position).getChild());
                 adapter.notifyDataSetChanged();
-                MainLooper.get().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
 
-                    }
-                }, 1000);
 
                 for (int i = 0; i < childData.size(); i++) {
                     if (focusBean != null && !TextUtils.isEmpty(focusBean.getCateLv2())) {
@@ -387,7 +381,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 .getLayoutManager();
         int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-        Log.d("ScreenListActivity", "lastItem:" + lastVisibleItemPosition);
 
         if (firstVisibleItemPosition <= position && position <= lastVisibleItemPosition) {
             return false;
@@ -411,7 +404,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     public void showFirstMenuData(ModelResult<List<CategoryTreeNode>> modelResult) {
 
         if (modelResult != null) {
-            data =  modelResult.getData();
+            data = modelResult.getData();
             for (int i = 0; i < data.size(); i++) {
                 tab.addTab(tab.newTab().setText(data.get(i).getTitle()));
                 if (focusBean != null && !TextUtils.isEmpty(focusBean.getCateLv1()) && !TextUtils.isEmpty(data.get(i).getId())) {
@@ -433,31 +426,29 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     public void showSecondMenuData(ModelResult<List<FilterItem>> modelResult) {
         if (modelResult != null) {
             container.removeAllViews();
-          dataBeans = modelResult.getData();
+            dataBeans = modelResult.getData();
             for (int i = 0; i < dataBeans.size(); i++) {
                 HorizontalRecyclerView horizontalRecyclerView = new HorizontalRecyclerView(this);
                 FilterItem dataBean = dataBeans.get(i);
                 List<FilterValue> filterValue = dataBean.getFilterValue();
                 secondLabelAdapter secondMenuAdapter = new secondLabelAdapter(filterValue, this, dataBean);
                 for (int j = 0; j < filterValue.size(); j++) {
-                    if ( focusBean != null && !TextUtils.isEmpty(focusBean.getClassTypes())) {
+                    if (focusBean != null && !TextUtils.isEmpty(focusBean.getClassTypes())) {
                         if (focusBean.getClassTypes().equals(filterValue.get(j).getTitle())) {
                             default_record_position = j;
-                            Log.d("ScreenListActivity", "default_record_position:" + default_record_position);
                         }
                     }
                     if (focusBean != null && !TextUtils.isEmpty(focusBean.getYears())) {
                         if (focusBean.getYears().equals(filterValue.get(j).getTitle())) {
                             default_record_position_second = j;
-                            Log.d("ScreenListActivity", "default_record_position_second:" + default_record_position_second);
                         }
                     }
                 }
                 horizontalRecyclerView.setAdapter(secondMenuAdapter);
-                if (hasDefaultFocusSecond){
-                    if (i==0){
+                if (hasDefaultFocusSecond) {
+                    if (i == 0) {
                         secondMenuAdapter.setDefaultFocusFirst(default_record_position);
-                    }else if (i==1){
+                    } else if (i == 1) {
                         secondMenuAdapter.setDefaultFocusSecond(default_record_position_second);
                     }
                 }
@@ -485,7 +476,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
     @Override
     public String getCategoryId() {
-        Log.d("ScreenListActivity", categoryId);
         return categoryId;
     }
 
@@ -533,7 +523,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     tab.setFocusable(true);
                     tab.requestFocus();
                     moveFlag = 0;
-                    categoryId =recordId;
+                    categoryId = recordId;
                     presenter.getSecondLabel();
                     map.put("categoryId", categoryId);
                     presenter.getLabelData();
@@ -559,11 +549,11 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         if (first_Record_View != null) {
                             first_Record_View.requestFocus();
                         }
-                    }else{
+                    } else {
                         labelRecyclerView.setVisibility(View.VISIBLE);
                         if (labelRecordView != null) {
                             labelRecordView.requestFocus();
-                            moveFlag =2;
+                            moveFlag = 2;
                             map.remove(type_key);
                         }
                     }
@@ -582,20 +572,20 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                             second_Record_View.requestFocus();
                         }
 
-                    }else{
-                        if (view!=null){
+                    } else {
+                        if (view != null) {
                             view.setVisibility(View.VISIBLE);
-                            if (first_Record_View!=null){
-                                first_Record_View .requestFocus();
-                                moveFlag =3;
+                            if (first_Record_View != null) {
+                                first_Record_View.requestFocus();
+                                moveFlag = 3;
                                 map.remove(year_key);
                             }
-                        }else {
-                            if (labelRecordView!=null){
+                        } else {
+                            if (labelRecordView != null) {
                                 labelRecyclerView.setVisibility(View.VISIBLE);
 
                                 labelRecyclerView.requestFocus();
-                                moveFlag =2;
+                                moveFlag = 2;
                                 map.remove(type_key);
                             }
                         }
@@ -614,27 +604,27 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         if (third_Record_View != null) {
                             third_Record_View.requestFocus();
                         }
-                    }else {
-                        if (view2!=null){
+                    } else {
+                        if (view2 != null) {
                             view2.setVisibility(View.VISIBLE);
-                            if (second_Record_View!=null){
+                            if (second_Record_View != null) {
                                 second_Record_View.requestFocus();
-                                moveFlag =4;
+                                moveFlag = 4;
                                 map.remove(place_key);
                             }
-                        }else {
-                            if (view1!=null){
+                        } else {
+                            if (view1 != null) {
                                 view1.setVisibility(View.VISIBLE);
-                                if (first_Record_View!=null){
-                                    first_Record_View .requestFocus();
-                                    moveFlag =3;
+                                if (first_Record_View != null) {
+                                    first_Record_View.requestFocus();
+                                    moveFlag = 3;
                                     map.remove(year_key);
                                 }
-                            }else {
-                                if (labelRecordView!=null){
+                            } else {
+                                if (labelRecordView != null) {
                                     labelRecyclerView.setVisibility(View.VISIBLE);
                                     labelRecyclerView.requestFocus();
-                                    moveFlag =2;
+                                    moveFlag = 2;
                                     map.remove(type_key);
                                 }
                             }
@@ -645,7 +635,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     presenter.getLabelData();
                     return true;
                 }
-                if (tab.hasFocus()&&fromOuter){
+                if (tab.hasFocus() && fromOuter) {
                     super.checkIsTop(event);
                 }
                 break;
@@ -656,7 +646,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     moveFlag++;
                     if (tab.hasFocus()) {
                         labelRecordView = null;
-                        if (labelRecyclerView.getChildAt(0)!=null){
+                        if (labelRecyclerView.getChildAt(0) != null) {
                             labelRecyclerView.getChildAt(0).requestFocus();
                         }
                         return true;
@@ -667,60 +657,60 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         if (container.getChildAt(0) != null) {
                             container.getChildAt(0).setFocusable(true);
                             container.getChildAt(0).requestFocus();
-                        }else {
-                            if (container.getChildAt(1)!=null){
+                        } else {
+                            if (container.getChildAt(1) != null) {
                                 container.getChildAt(1).requestFocus();
-                                moveFlag =3;
-                            }else {
-                                if (container.getChildAt(2)!=null){
+                                moveFlag = 3;
+                            } else {
+                                if (container.getChildAt(2) != null) {
                                     container.getChildAt(2).requestFocus();
                                     moveFlag = 4;
-                                }else{
-                                    if (tvRecyclerView.getChildAt(0)!=null){
+                                } else {
+                                    if (tvRecyclerView.getChildAt(0) != null) {
                                         tvRecyclerView.getChildAt(0).requestFocus();
                                     }
-                                    moveFlag =5;
+                                    moveFlag = 5;
                                 }
                             }
                         }
 
                         return true;
                     }
-                    if (moveFlag == 3&&container.getChildAt(0)!=null&&container.getChildAt(0).hasFocus()) {
+                    if (moveFlag == 3 && container.getChildAt(0) != null && container.getChildAt(0).hasFocus()) {
                         second_Record_View = null;
                         container.getChildAt(0).setVisibility(View.GONE);
-                        if ( container.getChildAt(1) != null) {
+                        if (container.getChildAt(1) != null) {
                             container.getChildAt(1).setFocusable(true);
                             container.getChildAt(1).requestFocus();
-                        }else{
-                            if (container.getChildAt(2)!=null){
+                        } else {
+                            if (container.getChildAt(2) != null) {
                                 container.getChildAt(2).requestFocus();
-                                moveFlag =4;
-                            }else{
-                                if (tvRecyclerView.getChildAt(0)!=null){
+                                moveFlag = 4;
+                            } else {
+                                if (tvRecyclerView.getChildAt(0) != null) {
                                     tvRecyclerView.requestFocus();
-                                    moveFlag =5;
+                                    moveFlag = 5;
                                 }
                             }
                         }
 
                         return true;
                     }
-                    if (moveFlag == 4&&container.getChildAt(1) != null&&container.getChildAt(1).hasFocus()) {
+                    if (moveFlag == 4 && container.getChildAt(1) != null && container.getChildAt(1).hasFocus()) {
                         third_Record_View = null;
                         container.getChildAt(1).setVisibility(View.GONE);
-                        if ( container.getChildAt(2) != null) {
+                        if (container.getChildAt(2) != null) {
                             container.getChildAt(2).setFocusable(true);
                             container.getChildAt(2).requestFocus();
-                        }else {
-                            if (tvRecyclerView.getChildAt(0)!=null){
+                        } else {
+                            if (tvRecyclerView.getChildAt(0) != null) {
                                 tvRecyclerView.getChildAt(0).requestFocus();
-                                moveFlag =5;
+                                moveFlag = 5;
                             }
                         }
                         return true;
                     }
-                    if (moveFlag == 5&&container.getChildAt(2) != null&&container.getChildAt(2).hasFocus()) {
+                    if (moveFlag == 5 && container.getChildAt(2) != null && container.getChildAt(2).hasFocus()) {
                         container.getChildAt(2).setVisibility(View.GONE);
 
                         if (tvRecyclerView.getChildAt(0) != null) {
@@ -749,7 +739,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     tab.setFocusable(true);
                     tab.requestFocus();
                     moveFlag = 0;
-                    categoryId =recordId;
+                    categoryId = recordId;
                     presenter.getSecondLabel();
                     map.put("categoryId", categoryId);
                     presenter.getLabelData();
@@ -775,13 +765,13 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         if (first_Record_View != null) {
                             first_Record_View.requestFocus();
                         }
-                    }else{
+                    } else {
                         labelRecyclerView.setVisibility(View.VISIBLE);
-                            if (labelRecordView != null) {
-                                labelRecordView.requestFocus();
-                                moveFlag =2;
-                                map.remove(type_key);
-                            }
+                        if (labelRecordView != null) {
+                            labelRecordView.requestFocus();
+                            moveFlag = 2;
+                            map.remove(type_key);
+                        }
                     }
                     moveFlag--;
                     map.remove(year_key);
@@ -798,20 +788,20 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                             second_Record_View.requestFocus();
                         }
 
-                    }else{
-                        if (view!=null){
+                    } else {
+                        if (view != null) {
                             view.setVisibility(View.VISIBLE);
-                            if (first_Record_View!=null){
-                                first_Record_View .requestFocus();
-                                moveFlag =3;
+                            if (first_Record_View != null) {
+                                first_Record_View.requestFocus();
+                                moveFlag = 3;
                                 map.remove(year_key);
                             }
-                        }else {
-                            if (labelRecordView!=null){
+                        } else {
+                            if (labelRecordView != null) {
                                 labelRecyclerView.setVisibility(View.VISIBLE);
 
                                 labelRecyclerView.requestFocus();
-                                moveFlag =2;
+                                moveFlag = 2;
                                 map.remove(type_key);
                             }
                         }
@@ -830,27 +820,27 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         if (third_Record_View != null) {
                             third_Record_View.requestFocus();
                         }
-                    }else {
-                        if (view2!=null){
+                    } else {
+                        if (view2 != null) {
                             view2.setVisibility(View.VISIBLE);
-                            if (second_Record_View!=null){
+                            if (second_Record_View != null) {
                                 second_Record_View.requestFocus();
-                                moveFlag =4;
+                                moveFlag = 4;
                                 map.remove(place_key);
                             }
-                        }else {
-                            if (view1!=null){
+                        } else {
+                            if (view1 != null) {
                                 view1.setVisibility(View.VISIBLE);
-                                if (first_Record_View!=null){
-                                    first_Record_View .requestFocus();
-                                    moveFlag =3;
+                                if (first_Record_View != null) {
+                                    first_Record_View.requestFocus();
+                                    moveFlag = 3;
                                     map.remove(year_key);
                                 }
-                            }else {
-                                if (labelRecordView!=null){
+                            } else {
+                                if (labelRecordView != null) {
                                     labelRecyclerView.setVisibility(View.VISIBLE);
                                     labelRecyclerView.requestFocus();
-                                    moveFlag =2;
+                                    moveFlag = 2;
                                     map.remove(type_key);
                                 }
                             }
