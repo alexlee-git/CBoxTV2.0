@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
@@ -43,7 +44,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
@@ -194,7 +194,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         mRecyclerView.setVisibility(View.INVISIBLE);
 
         showEmptyTip();
-        String hotRecommendParam = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_SUBSCRIPTION);
+        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_SUBSCRIPTION);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
             mContentPresenter.getPageContent(hotRecommendParam);
@@ -226,7 +226,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
      * 展示热门订阅数据
      */
     private void showHotRecommend() {
-        String hotRecommendParam = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_SUBSCRIPTION);
+        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_SUBSCRIPTION);
         NetClient.INSTANCE.getHotSubscribeApi()
                 .getHotSubscribeInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), hotRecommendParam)
                 .subscribeOn(Schedulers.io())

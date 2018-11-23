@@ -69,7 +69,7 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
                         menuViewHolder.itemView.requestFocus();
 
                     }
-                }, 100);
+                }, 200);
             }
         }
 
