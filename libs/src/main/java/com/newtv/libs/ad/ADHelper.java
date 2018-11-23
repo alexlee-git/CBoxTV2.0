@@ -14,10 +14,9 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.bean.AdBean;
 import com.newtv.libs.bean.CountDown;
+import com.newtv.libs.util.AdJsonUtil;
 import com.newtv.libs.util.FileUtil;
-import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUtils;
 
 import java.io.File;
@@ -35,7 +34,6 @@ import tv.icntv.adsdk.AdSDK;
 import tv.icntv.been.AdInfo;
 import tv.icntv.been.AdInfos;
 import tv.icntv.been.MaterialInfo;
-import tv.icntv.util.JsonParse;
 
 /**
  * 项目名称:         CBoxTV
@@ -74,7 +72,7 @@ public class ADHelper {
         if (TextUtils.isEmpty(jsonResult)){
             return null;
         }
-        List<AdInfos> adInfosList = JsonParse.parseAdInfo(jsonResult);
+        List<AdInfos> adInfosList = AdJsonUtil.parseAdInfo(jsonResult);
 
         if (adInfosList == null || adInfosList.size() == 0 || adInfosList.get(0) == null ||
                 adInfosList.get(0).m_info == null || adInfosList.get(0).m_info.size() ==
@@ -247,10 +245,7 @@ public class ADHelper {
                     time += adItem.PlayTime;
                 }
             }
-            Log.d(TAG,"checkoutStart time : "+ time+ "  ctime : "+ctime);
-            if(time > 0){
-                adCallback.updateTime(time, time);
-            }
+            adCallback.updateTime(time, time);
             doNext(isReportAD);
         }
 
@@ -307,8 +302,7 @@ public class ADHelper {
                 @Override
                 public void onCount(final int t) {
                     ctime++;
-                    Log.d(TAG, " time : " + time + "ctime : " + ctime);
-                    if (adCallback != null && time - ctime > 0) {
+                    if (adCallback != null) {
                         adCallback.updateTime(time, time - ctime);
                     }
                 }
