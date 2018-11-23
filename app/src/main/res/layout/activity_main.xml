@@ -35,6 +35,7 @@
 
     <tv.newtv.cboxtv.views.widget.MenuRecycleView
         android:id="@+id/list_view"
+        android:tag="main"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_60px"
         android:layout_alignParentTop="true"

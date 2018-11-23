@@ -42,6 +42,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.BaseActivity;
 
 import tv.newtv.cboxtv.MainActivity;
@@ -92,12 +93,14 @@ public class MyOrderActivity extends BaseActivity {
     private int pageNum = 50;
     private int offset = 1;//页数
     private final static int REQUEST_CODE = 1; // 返回的结果码
+    private boolean isBackground;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_order);
         ButterKnife.bind(this);
+        isBackground = ActivityStacks.get().isBackGround();
         initData();
         initView();
     }
@@ -422,7 +425,7 @@ public class MyOrderActivity extends BaseActivity {
             intent.putExtra("action", "panel");
             intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
             Log.d(TAG, "---MEMBER_CENTER_PARAMS:action:panel----params:" + Constant.MEMBER_CENTER_PARAMS);
-            mPageClass = SplashActivity.class;
+            mPageClass = MainActivity.class;
         } else {
             Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();
         }
@@ -430,8 +433,11 @@ public class MyOrderActivity extends BaseActivity {
             return;
         }
         intent.setClass(MyOrderActivity.this, mPageClass);
-        startActivity(intent);
-        if (mPageClass == SplashActivity.class) {
+        if (!isBackground){
+            ActivityStacks.get().finishAllActivity();
+            startActivity(intent);
+        }
+        if (mPageClass == MainActivity.class) {
             MyOrderActivity.this.finish();
         }
     }

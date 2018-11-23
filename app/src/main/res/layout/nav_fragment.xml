@@ -17,6 +17,7 @@
     <tv.newtv.cboxtv.views.widget.MenuRecycleView
         android:id="@+id/sub_list_view"
         android:layout_width="match_parent"
+        android:tag="nav"
         android:layout_height="@dimen/height_60px"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
