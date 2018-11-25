@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/height_10px"
+                android:paddingBottom="@dimen/height_10px">
+
+    <tv.newtv.cboxtv.views.custom.RecycleImageView
+        android:id="@+id/id_module_32_title_icon"
+        android:layout_width="@dimen/width_17px"
+        android:layout_height="@dimen/height_17px"
+        android:layout_marginStart="@dimen/width_120px"
+        android:layout_marginLeft="@dimen/width_120px"
+        android:layout_marginTop="@dimen/height_56px"
+        android:background="@drawable/tuoyuan"
+        android:tag="module_032_title_icon"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/id_module_32_title"
+        style="@style/ModuleTitleStyle"
+        android:layout_width="@dimen/width_376px"
+        android:layout_height="@dimen/height_34px"
+        android:layout_marginStart="@dimen/width_6px"
+        android:layout_marginLeft="@dimen/width_6px"
+        android:layout_marginTop="@dimen/height_47px"
+        android:layout_toEndOf="@id/id_module_32_title_icon"
+        android:layout_toRightOf="@id/id_module_32_title_icon"
+        android:includeFontPadding="false"
+        android:tag="module_032_title"
+        android:visibility="gone"/>
+
+    <!-- 1 -->
+    <tv.newtv.cboxtv.cms.mainPage.AlternatePageView
+        android:id="@+id/id_module_32_view1"
+        android:layout_width="match_parent"
+        android:tag="cell_032_1"
+        android:layout_height="wrap_content">
+
+    </tv.newtv.cboxtv.cms.mainPage.AlternatePageView>
+</RelativeLayout>
+
+

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
@@ -44,10 +45,8 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
 
-import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.OrderInfoBean;
@@ -417,11 +416,12 @@ public class MyOrderActivity extends BaseActivity {
         //会员片库
         Intent intent = new Intent();
         Class mPageClass = null;
-        Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
-        if (!TextUtils.isEmpty(Constant.MEMBER_CENTER_PARAMS)) {
+        String centerParams = BootGuide.getBaseUrl(BootGuide.MEMBER_CENTER_PARAMS);
+//        Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
+        if (!TextUtils.isEmpty(centerParams)) {
             intent.putExtra("action", "panel");
-            intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
-            Log.d(TAG, "---MEMBER_CENTER_PARAMS:action:panel----params:" + Constant.MEMBER_CENTER_PARAMS);
+            intent.putExtra("params", centerParams);
+            Log.d(TAG, "---MEMBER_CENTER_PARAMS:action:panel----params:" + centerParams);
             mPageClass = SplashActivity.class;
         } else {
             Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();

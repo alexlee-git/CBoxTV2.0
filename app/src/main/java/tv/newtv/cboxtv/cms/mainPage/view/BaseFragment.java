@@ -50,6 +50,14 @@ public abstract class BaseFragment extends RxFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(getUserVisibleHint()){
+            onVisible();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 

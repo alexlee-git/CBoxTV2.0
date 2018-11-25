@@ -87,6 +87,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
             mRecyclerView.setAdapter(null);
             mRecyclerView = null;
         }
+
         if (mPresenter != null) {
             mPresenter.destroy();
             mPresenter = null;
@@ -230,9 +231,8 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
             mEmptyView = (TextView) contentView.findViewById(R.id.id_empty_view);
             mRecyclerView = (AiyaRecyclerView) contentView.findViewById(R.id
                     .id_content_fragment_root);
-
+            mRecyclerView.setPageUUID(contentId);
             Log.d("contentFragment", "onViewCreated param=" + param + " recyle=" + mRecyclerView);
-
 
             if (mRecyclerView == null) {
                 LogUtils.e("mRecyclerView == null");
@@ -329,7 +329,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     private void updateRecycleView(@Nullable final List<Page> pageList) {
         mPageList = pageList;
         if (contentView == null || mRecyclerView == null) return;
-        if(mPageList != null && mPageList.size()>0) {
+        if (mPageList != null && mPageList.size() > 0) {
             adapter = (UniversalAdapter) mRecyclerView.getAdapter();
             if (adapter == null) {
                 ScrollSpeedLinearLayoutManger layoutManager = new ScrollSpeedLinearLayoutManger
@@ -350,7 +350,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
             }
 
             Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
-        }else{
+        } else {
             onError(LauncherApplication.AppContext, "数据为空");
         }
     }
@@ -381,12 +381,13 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @Override
     public void onPageResult(@NotNull ModelResult<ArrayList<Page>> page) {
         inflateContentPage(page.getData(), "server");
-        BackGroundManager.getInstance().setCurrentPageId(getContext(),contentId,page.asAd(),page
-                .getBackground(),getUserVisibleHint());
+        BackGroundManager.getInstance().setCurrentPageId(getContext(), contentId, page.asAd(), page
+                .getBackground(), getUserVisibleHint());
     }
 
     @Override
     public void startLoading() {
+        setTipVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
     }
 

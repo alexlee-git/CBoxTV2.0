@@ -1,14 +1,10 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -21,8 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
-import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
@@ -70,7 +64,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     }
 
     @Override
-    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
+    protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
         setContentView(R.layout.activity_person_details_new);
         ButterKnife.bind(this);
 
@@ -81,6 +75,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     }
 
     private void requestData(String contentUUID) {
+
         hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6);
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
                 contentUUID, hostProgramView);// 获取主持列表
@@ -110,22 +105,24 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
         if (isPopup&&fromOuter) {
             personDetailHeadView.setTopView();
         }
-        hostProgramView.setOnItemClick(new onEpisodeItemClick() {
+        hostProgramView.setOnItemClick(new onEpisodeItemClick<SubContent>() {
             @Override
-            public void onItemClick(int position, SubContent data) {
+            public boolean onItemClick(int position, SubContent data) {
                 JumpUtil.detailsJumpActivity(PersonsDetailsActivityNew.this, data.getContentType
                         (), data.getContentID());
+                return true;
             }
         });
 
-        taProgramView.setOnItemClick(new onEpisodeItemClick() {
+        taProgramView.setOnItemClick(new onEpisodeItemClick<SubContent>() {
             @Override
-            public void onItemClick(int position, SubContent data) {
+            public boolean onItemClick(int position, SubContent data) {
                 if (System.currentTimeMillis() - lastTime >= 2000) {//判断距离上次点击小于2秒
                     lastTime = System.currentTimeMillis();//记录这次点击时间
                     JumpUtil.detailsJumpActivity(getApplicationContext(), data.getContentType(), data
                             .getContentID());
                 }
+                return true;
             }
         });
 

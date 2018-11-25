@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:clipToPadding="false"
+              android:orientation="vertical">
+
+    <tv.newtv.cboxtv.views.custom.BlockPosterView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_60px"
+        app:block_poster_height="@dimen/height_426px"
+        app:block_poster_type="image"
+        app:block_poster_holder="@drawable/focus_384_480"
+        app:block_poster_width="@dimen/width_306px"
+        app:block_show_title="true">
+
+    </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+</LinearLayout>

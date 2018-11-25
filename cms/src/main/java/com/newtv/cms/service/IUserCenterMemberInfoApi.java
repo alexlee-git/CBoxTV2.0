@@ -1,6 +1,6 @@
 package com.newtv.cms.service;
 
-import com.newtv.libs.HeadersInterceptor;
+import com.newtv.libs.BootGuide;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
@@ -21,13 +21,13 @@ import retrofit2.http.Query;
  */
 public interface IUserCenterMemberInfoApi {
     //获取用户会员信息
-    @Headers("host_type: " + HeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @GET("goldenpheasant/api/programRights")
     Observable<ResponseBody> getMemberInfo(@Header("Authorization") String Authorization,
                                            @Query("productId") String productId,
                                            @Query("appKey") String appKey);
     //节目集权益信息
-    @Headers("host_type: " + HeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @POST("goldenpheasant/api/programRights")
     Observable<ResponseBody> getBuyFlag(@Header("Authorization") String authorization,
                                         @Query("productIds") String productIds,

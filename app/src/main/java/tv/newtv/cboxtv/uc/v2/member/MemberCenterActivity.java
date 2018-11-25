@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
@@ -51,7 +52,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
@@ -132,11 +132,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         mFullQrCodeImageView = mPopupView.findViewById(R.id.id_member_center_full_screen_qr_code);
         mPopupWindow = new PopupWindow(mPopupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
-        Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
-        if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
+        String idPageNumber = BootGuide.getBaseUrl(BootGuide.PAGE_MEMBER);
+        if (!TextUtils.isEmpty(idPageNumber)) {
             //获取推荐位数据
             mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
-            mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
+            mContentPresenter.getPageContent(idPageNumber);
         } else {
             Log.d(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
@@ -460,7 +460,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                 mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+//                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                                 mPromotionRecommendBean.add(mProgramInfo);
                             }
                         } else {
@@ -480,7 +480,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                             mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                             mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                             mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+//                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                             mInterestsRecommendBean.add(mProgramInfo);
                         } else {
                             Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0).getDatas()== null");
@@ -501,7 +501,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                 mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(j).getGrade());
-                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
+//                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
                                 mDramaRecommendBean.add(mProgramInfo);
                             }
                         } else {
@@ -643,11 +643,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     }
                     break;
                 case R.id.id_member_center_btn_drama_library:
-                    Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
-                    if (!TextUtils.isEmpty(Constant.MEMBER_CENTER_PARAMS)) {
+                    String jumpParam = BootGuide.getBaseUrl(BootGuide.MEMBER_CENTER_PARAMS);
+                    if (!TextUtils.isEmpty(jumpParam)) {
                         intent.putExtra("action", "panel");
-                        intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
-                        Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + Constant.MEMBER_CENTER_PARAMS);
+                        intent.putExtra("params", jumpParam);
+                        Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + jumpParam);
                         mPageClass = SplashActivity.class;
                     } else {
                         Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();

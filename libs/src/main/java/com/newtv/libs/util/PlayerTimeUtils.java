@@ -2,6 +2,7 @@ package com.newtv.libs.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -37,6 +38,12 @@ public class PlayerTimeUtils {
             e.printStackTrace();
             return 0L;
         }
+    }
+
+    public static String formatTime(Date time, String format) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format,
+                Locale.getDefault());
+        return dateFormat.format(time);
     }
 
 

@@ -4,6 +4,7 @@ package com.newtv.libs.util;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -23,7 +24,7 @@ public class GlideUtil {
     public static void loadImage(Context context, ImageView imageView, String url,
                                  int placeHolderResId, int errorResId, boolean isCorner) {
 
-        //imageView.setTag(null);
+        if (TextUtils.isEmpty(url)) return;
 
         if (Libs.get().isDebug()) {
             if (url.contains("http://172.25.102.19/")) {
@@ -47,7 +48,7 @@ public class GlideUtil {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target,
                                         boolean isFirstResource) {
-                LogUtils.e("loadImage", String.format
+                LogUtils.e("GlideUtil", String.format
                         ("failed e=%s:model=%s:target=%s:isFirstResource=%s", e != null ? e
                                         .toString()
                                         : "null", model != null ? model.toString() : "null",
@@ -58,16 +59,19 @@ public class GlideUtil {
         };
 
         RequestOptions options = new RequestOptions()
-                .format(DecodeFormat.PREFER_RGB_565)
-                .override(imageView.getWidth(),imageView.getHeight())
-                .placeholder(placeHolderResId)
-                .error(errorResId);
+                .format(DecodeFormat.PREFER_RGB_565);
+        if (placeHolderResId > 0) {
+            options = options.placeholder(placeHolderResId);
+        }
+        if (errorResId > 0) {
+            options = options.error(errorResId);
+        }
 
         if (isCorner) {
             options = options.transform(new RoundedCornersTransformation(4, 0));
         }
 
-        LogUtils.e("loadImage", "img url=" + url);
+        LogUtils.e("GlideUtil", "img url=" + url);
 
         Glide.with(imageView.getContext())
                 .load(url)

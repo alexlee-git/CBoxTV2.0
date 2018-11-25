@@ -279,26 +279,35 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             return false;
         }
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_DOWN) {
-                if (!getChildAt(0).hasFocus()) {
-                    getDefaultFocus().requestFocus();
-                    return true;
+            if(getChildCount() > 0) {
+                if(getChildAt(0) instanceof RecyclerView){
+                    AiyaRecyclerView recyclerView = (AiyaRecyclerView) getChildAt(0);
+                    return recyclerView.dispatchKeyEvent(event);
+                }else {
+                    if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent
+                            .KEYCODE_DPAD_DOWN) {
+                        if (!getChildAt(0).hasFocus()) {
+                            getDefaultFocus().requestFocus();
+                            return true;
+                        }
+                    } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                        View leftView = FocusFinder.getInstance().findNextFocus(this, findFocus()
+                                , View
+                                .FOCUS_LEFT);
+                        if (leftView != null) {
+                            leftView.requestFocus();
+                        }
+                        return true;
+                    } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        View rightView = FocusFinder.getInstance().findNextFocus(this, findFocus
+                                (), View
+                                .FOCUS_RIGHT);
+                        if (rightView != null) {
+                            rightView.requestFocus();
+                        }
+                        return true;
+                    }
                 }
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
-                View leftView = FocusFinder.getInstance().findNextFocus(this, findFocus(), View
-                        .FOCUS_LEFT);
-                if (leftView != null) {
-                    leftView.requestFocus();
-                }
-                return true;
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                View rightView = FocusFinder.getInstance().findNextFocus(this, findFocus(), View
-                        .FOCUS_RIGHT);
-                if (rightView != null) {
-                    rightView.requestFocus();
-                }
-                return true;
             }
         }
         return false;

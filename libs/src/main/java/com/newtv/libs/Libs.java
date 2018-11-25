@@ -34,7 +34,6 @@ public class Libs {
         mDebug = isDebug;
         mClientId = clientId;
 
-
         NetworkManager.init(context);
     }
 
@@ -48,6 +47,7 @@ public class Libs {
             synchronized (Libs.class) {
                 if (instance == null) {
                     instance = new Libs(context, appkey, channelId, flavor, isDebug, clientId);
+                    BootGuide.init(context);
                 }
             }
     }

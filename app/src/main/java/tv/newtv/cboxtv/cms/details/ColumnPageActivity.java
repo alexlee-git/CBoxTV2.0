@@ -115,7 +115,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
-                .SetContentUUID(contentUUID)
+                .SetContentUUID(contentUUID,getChildContentUUID())
                 .setTopView(fromOuter,isPopup)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
@@ -253,8 +253,6 @@ public class ColumnPageActivity extends DetailPageActivity {
                 headPlayerView.Play(index, 0, fromClick);
             }
         });
-
-
     }
 
     @Override

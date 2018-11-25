@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.cms.net;
 
+import com.newtv.libs.BootGuide;
+
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
@@ -17,7 +19,7 @@ import retrofit2.http.Query;
  */
 public interface IOrderApi {
     //获取订单
-    @Headers("host_type: " + AppHeadersInterceptor.PAY)
+    @Headers("host_type: " + BootGuide.PAY)
     @GET("goldenpheasant/api/orders")
     Observable<ResponseBody> getOrders(@Header("Authorization") String Authorization,
                                          @Query("appKey") String appKey,

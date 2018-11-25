@@ -1,0 +1,23 @@
+<Service id="DeviceBoot">
+    <addressList>
+        <address url="https://account.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="PERMISSTION_CHECK"/>
+        <address url="http://search.cloud.ottcn.com:8080/" debug="http://search.cloud.ottcn.com:8080/" name="SEARCH"/>
+        <address url="https://terminal.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="ACTIVATE"/>
+        <address url="https://bzo.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="IS_ORIENTED"/>
+        <address url="https://cdndispatchnewtv.ottcn.com" debug="https://cdndispatchnewtv.ottcn.com" name="CDN"/>
+        <address url="https://bzo.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="VERSION_UP"/>
+        <address url="http://newtv.boot.ottcn.com:8080/" debug="http://111.32.138.57:8080/" name="BOOT_GUIDE"/>
+        <address url="https://bzo.cloud.ottcn.com/" debug="https://bzo.cloud.ottcn.com/" name="SERVER_TIME"/>
+        <address url="http://searchapi.cloud.ottcn.com/" debug="http://111.32.138.57:80/" name="NEW_SEARCH"/>
+        <address url="https://api.adott.ottcn.com/" debug="http://api.adott.ottcn.org/" name="AD"/>
+        <address url="log.cloud.ottcn.com:14630" debug="log.cloud.ottcn.com:14630" name="LOG"/>
+        <address url="http://epg.cloud.ottcn.com/" debug="http://111.32.132.156/" name="CMS"/>
+        <address url="http://stage-bzo.cloud.ottcn.com/" name="USER_BEHAVIOR"/>
+        <address url="https://terminal2.cloud.ottcn.com/" name="ACTIVATE2"/>
+        <address url="http://stage-bzo.cloud.ottcn.com/" name="PRODUCT"/>
+        <address url="http://testcms31.ottcn.com:30013/" name="NEW_CMS"/>
+        <address url="http://stage-bzo.cloud.ottcn.com/" name="USER"/>
+        <address url="https://k.cloud.ottcn.com" name="DYNAMIC_KEY"/>
+        <address url="http://stage-bzo.cloud.ottcn.com" name="PAY"/>
+    </addressList>
+</Service>
