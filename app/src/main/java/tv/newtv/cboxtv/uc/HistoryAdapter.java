@@ -215,7 +215,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
                 .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         sa.setFillAfter(true);
-        sa.setDuration(400);
+        sa.setDuration(50);
         sa.setInterpolator(mSpringInterpolator);
         view.startAnimation(sa);
     }
@@ -238,7 +238,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
                 .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         sa.setFillAfter(true);
-        sa.setDuration(400);
+        sa.setDuration(50);
         sa.setInterpolator(mSpringInterpolator);
         view.bringToFront();
         view.startAnimation(sa);

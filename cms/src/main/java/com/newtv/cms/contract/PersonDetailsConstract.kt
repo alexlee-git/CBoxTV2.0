@@ -9,33 +9,43 @@ import com.newtv.cms.api.IPerson
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
 import com.newtv.libs.Libs
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by linzy on 2018/10/18.
  */
 class PersonDetailsConstract {
     interface View : ICmsView {
-        fun setPersonTvList(contents : ArrayList<SubContent>?)
-        fun setPersonProgramList(contents : ArrayList<SubContent>?)
+        fun setPersonTvList(contents: ArrayList<SubContent>?)
+        fun setPersonProgramList(contents: ArrayList<SubContent>?)
     }
 
     interface Presenter : ICmsPresenter {
         /**
          * 获取主持人主持的电视栏目列表
          */
-        fun getPersonTvList(uuid : String)
+        fun getPersonTvList(uuid: String)
+
         /**
          * 获取主持人相关的节目
          */
-        fun getPersonProgramList(uuid : String)
+        fun getPersonProgramList(uuid: String)
     }
 
-    class PersonDetailPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view), Presenter{
-        override fun getPersonTvList(uuid: String) {
-            val content : IPerson? = getService<IPerson>(SERVICE_PERSON_DETAIL)
+    class PersonDetailPresenter(context: Context, view: View?)
+        : CmsServicePresenter<View>(context, view), Presenter {
 
-            content?.getPersonTvList(Libs.get().appKey, Libs.get().channelId, uuid, object
+
+        private var personService:IPerson? = null
+
+        init {
+            personService = getService<IPerson>(SERVICE_PERSON_DETAIL)
+        }
+
+        override fun getPersonTvList(uuid: String) {
+
+
+            personService?.getPersonTvList(Libs.get().appKey, Libs.get().channelId, uuid, object
                 : DataObserver<ModelResult<ArrayList<SubContent>>> {
                 override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
@@ -52,9 +62,8 @@ class PersonDetailsConstract {
         }
 
         override fun getPersonProgramList(uuid: String) {
-            val content : IPerson? = getService<IPerson>(SERVICE_PERSON_DETAIL)
 
-            content?.getPersonProgramList(Libs.get().appKey, Libs.get().channelId, uuid, object
+            personService?.getPersonProgramList(Libs.get().appKey, Libs.get().channelId, uuid, object
                 : DataObserver<ModelResult<ArrayList<SubContent>>> {
                 override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {

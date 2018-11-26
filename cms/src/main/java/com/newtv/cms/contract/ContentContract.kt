@@ -43,7 +43,8 @@ class ContentContract {
          *                  如果设置为true，onContentResult回调结果中Content中data自动获取
          *                  如果设置为false，onContentResult回调结果中data为空
          */
-        fun getContent(uuid: String, autoSub: Boolean):Long
+        fun getContent(uuid: String, autoSub: Boolean): Long
+
         fun getContent(uuid: String, lock: Boolean, callback: View?)
         fun getContent(uuid: String, autoSub: Boolean, contentType: String)
 
@@ -59,10 +60,14 @@ class ContentContract {
     class ContentPresenter(context: Context, view: View?)
         : CmsServicePresenter<View>(context, view), Presenter {
 
-        override fun getContent(uuid: String, lock: Boolean, callback: View?) {
-            val content: IContent? = getService(SERVICE_CONTENT)
+        private var contentService: IContent? = null
 
-            content?.let {
+        init {
+            contentService = getService(SERVICE_CONTENT)
+        }
+
+        override fun getContent(uuid: String, lock: Boolean, callback: View?) {
+            contentService?.let {
                 it.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, lock, object
                     : DataObserver<ModelResult<Content>> {
                     override fun onResult(result: ModelResult<Content>, requestCode: Long) {
@@ -90,14 +95,11 @@ class ContentContract {
         }
 
         override fun cancel(id: Long) {
-            val content: IContent? = getService(SERVICE_CONTENT)
-            content?.cancel(id)
+            contentService?.cancel(id)
         }
 
         override fun getSubContent(uuid: String): Long {
-            val content: IContent? = getService(SERVICE_CONTENT)
-
-            content?.let {
+            contentService?.let {
                 val id: Long = it.getSubContent(Libs.get().appKey, Libs.get().channelId, uuid, object
                     : DataObserver<ModelResult<List<SubContent>>> {
                     override fun onResult(result: ModelResult<List<SubContent>>, requestCode: Long) {
@@ -119,8 +121,7 @@ class ContentContract {
 
         fun getSubContentsWithCallback(contentResult: Content?, uuid: String, contentTYpe: String) {
             if (contentResult != null) {
-                val content: IContent? = getService(SERVICE_CONTENT)
-                content?.let { iContent ->
+                contentService?.let { iContent ->
                     var single = false
                     var suuid: String? = uuid
                     if (Constant.CONTENTTYPE_PG.equals(contentTYpe) || Constant.CONTENTTYPE_CP.equals(contentTYpe)) {
@@ -161,11 +162,10 @@ class ContentContract {
         }
 
         override fun getContent(uuid: String, autoSub: Boolean, contentType: String) {
-            val content: IContent? = getService(SERVICE_CONTENT)
             view?.let {
                 if (it is LoadingView) it.onLoading()
             }
-            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false, object
+            contentService?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false, object
                 : DataObserver<ModelResult<Content>> {
                 override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                     if (result.isOk()) {
@@ -186,32 +186,31 @@ class ContentContract {
             })
         }
 
-        override fun getContent(uuid: String, autoSub: Boolean):Long {
-            val content: IContent? = getService(SERVICE_CONTENT)
+        override fun getContent(uuid: String, autoSub: Boolean): Long {
             view?.let {
                 if (it is LoadingView) it.onLoading()
             }
-            content?.let {
+            contentService?.let {
                 return it.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false,
                         object
-                    : DataObserver<ModelResult<Content>> {
-                    override fun onResult(result: ModelResult<Content>, requestCode: Long) {
-                        if (result.isOk()) {
-                            if (!autoSub) {
-                                view?.onContentResult(uuid, result.data);
-                            } else {
-                                getSubContentsWithCallback(result.data, uuid, "")
+                            : DataObserver<ModelResult<Content>> {
+                            override fun onResult(result: ModelResult<Content>, requestCode: Long) {
+                                if (result.isOk()) {
+                                    if (!autoSub) {
+                                        view?.onContentResult(uuid, result.data);
+                                    } else {
+                                        getSubContentsWithCallback(result.data, uuid, "")
+                                    }
+                                } else {
+                                    view?.onError(context, result.errorMessage)
+                                }
                             }
-                        } else {
-                            view?.onError(context, result.errorMessage)
-                        }
-                    }
 
-                    override fun onError(desc: String?) {
-                        view?.onError(context, desc)
-                    }
+                            override fun onError(desc: String?) {
+                                view?.onError(context, desc)
+                            }
 
-                })
+                        })
             }
             return 0L
         }

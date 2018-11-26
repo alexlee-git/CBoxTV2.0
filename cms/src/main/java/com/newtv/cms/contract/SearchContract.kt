@@ -34,10 +34,10 @@ class SearchContract {
          * 搜索
          */
         fun search(condition: SearchCondition): Long
-
         fun cancel(id: Long)
     }
 
+    @Suppress("FunctionName")
     class SearchCondition {
 
         internal var categoryId = ""
@@ -115,14 +115,19 @@ class SearchContract {
     class SearchPresenter(context: Context, view: View)
         : CmsServicePresenter<View>(context, view), Presenter {
 
+        private var searchService:ISearch? = null
+
+        init {
+            searchService = getService<ISearch>(CmsServicePresenter.SERVICE_SEARCH)
+        }
+
+
         override fun cancel(id: Long) {
-            val search: ISearch? = getService(SERVICE_SEARCH)
-            search?.cancel(id)
+            searchService?.cancel(id)
         }
 
         override fun search(condition: SearchCondition): Long {
-            val search = getService<ISearch>(CmsServicePresenter.SERVICE_SEARCH)
-            search?.let { iSearch ->
+            searchService?.let { iSearch ->
                 view?.let {
                     if (it is LoadingView) {
                         it.onLoading()

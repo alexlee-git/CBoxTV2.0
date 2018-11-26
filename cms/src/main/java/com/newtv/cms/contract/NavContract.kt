@@ -29,9 +29,15 @@ class NavContract {
 
     class MainNavPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
 
+
+        private var navService:INav? = null
+
+        init {
+            navService = getService<INav>(CmsServicePresenter.SERVICE_NAV)
+        }
+
         override fun requestNav() {
-            val nav = getService<INav>(CmsServicePresenter.SERVICE_NAV)
-            nav?.getNav(
+            navService?.getNav(
                     Libs.get().appKey,
                     Libs.get().channelId,
                     object : DataObserver<ModelResult<List<Nav>>> {

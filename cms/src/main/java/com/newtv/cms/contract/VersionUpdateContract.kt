@@ -34,11 +34,17 @@ class VersionUpdateContract {
 
     class UpdatePresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
 
+        private var updateService: IUpVersion? = null
+
+        init {
+            updateService = getService<IUpVersion>(CmsServicePresenter.SERVICE_UPVERSTION)
+        }
+
         override fun checkVersionUpdate(context: Context) {
-            val upVersion = getService<IUpVersion>(CmsServicePresenter.SERVICE_UPVERSTION)
-            if (upVersion != null) {
+
+            updateService?.let { update ->
                 val params = createOrientedParam(context)
-                upVersion.getIsOriented(params, object : DataObserver<Oriented> {
+                update.getIsOriented(params, object : DataObserver<Oriented> {
                     override fun onResult(result: Oriented, requestCode: Long) {
                         val hardwareCode: String? = if ("enable".equals(result.oriented))
                             params["hardwareCode"] else ""
@@ -51,11 +57,10 @@ class VersionUpdateContract {
         }
 
         internal fun checkUpVersion(context: Context, versionCode: Int, hardwareCode: String?) {
-            val upVersion = getService<IUpVersion>(CmsServicePresenter.SERVICE_UPVERSTION)
-            if (upVersion != null) {
+            updateService?.let {update->
                 val params = createUpVersionParam(context, versionCode,
                         hardwareCode)
-                upVersion.getUpVersion(params, object : DataObserver<UpVersion> {
+                update.getUpVersion(params, object : DataObserver<UpVersion> {
                     override fun onResult(result: UpVersion, requestCode: Long) {
                         if (TextUtils.isEmpty(result.versionCode) || "null" == result
                                         .versionCode) {

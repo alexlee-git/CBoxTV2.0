@@ -26,9 +26,17 @@ class CornerContract {
 
     class CornerPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
+
+        private var cornerService:ICorner? = null
+
+        init {
+            cornerService = getService(SERVICE_CORNER)
+        }
+
+
         override fun getCorner(appkey: String, channelCode: String) {
-            val corner: ICorner? = getService(SERVICE_CORNER)
-            corner?.getCorner(appkey, channelCode, object : DataObserver<String> {
+
+            cornerService?.getCorner(appkey, channelCode, object : DataObserver<String> {
                 override fun onResult(result: String, requestCode: Long) {
                     result.let {
                         view?.onCornerResult(context, it)

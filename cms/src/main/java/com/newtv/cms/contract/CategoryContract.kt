@@ -23,9 +23,16 @@ class CategoryContract {
 
     class CategoryPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
+
+        private var categoryService:ICategory? = null
+
+        init {
+            categoryService = getService(SERVICE_CATEGORY)
+        }
+
         override fun getCategory() {
-           val category:ICategory?= getService(SERVICE_CATEGORY)
-            category?.getCategoryTree(Libs.get().appKey, Libs.get().channelId,  object : DataObserver<ModelResult<List<CategoryTreeNode>>>{
+
+            categoryService?.getCategoryTree(Libs.get().appKey, Libs.get().channelId,  object : DataObserver<ModelResult<List<CategoryTreeNode>>>{
                 override fun onResult(result: ModelResult<List<CategoryTreeNode>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.onCategoryResult(context, result)
