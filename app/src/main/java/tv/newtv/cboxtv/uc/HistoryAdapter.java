@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.uc;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
@@ -212,12 +214,12 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
 //        }
 
         // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(50);
-        sa.setInterpolator(mSpringInterpolator);
-        view.startAnimation(sa);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator bigx = ObjectAnimator.ofFloat(view, "scaleX", 1.1f, 1f);
+        ObjectAnimator bigy = ObjectAnimator.ofFloat(view, "scaleY", 1.1f, 1f);
+        animatorSet.play(bigx).with(bigy);
+        animatorSet.setDuration(300);
+        animatorSet.start();
     }
 
     private void onItemGetFocus(View view, ImageView focusImageView, int postion) {
@@ -235,13 +237,12 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         if (!mAllowLost) return;
 
         //直接放大view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(50);
-        sa.setInterpolator(mSpringInterpolator);
-        view.bringToFront();
-        view.startAnimation(sa);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator bigx = ObjectAnimator.ofFloat(view, "scaleX", 1f, 1.1f);
+        ObjectAnimator bigy = ObjectAnimator.ofFloat(view, "scaleY", 1f, 1.1f);
+        animatorSet.play(bigx).with(bigy);
+        animatorSet.setDuration(300);
+        animatorSet.start();
     }
 
     private void loadSuperscript(ImageView target, String superscriptId) {

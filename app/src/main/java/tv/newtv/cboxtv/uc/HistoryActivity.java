@@ -264,7 +264,7 @@ public class HistoryActivity extends FragmentActivity implements
 
 
         visibleRect.left -= (mBitmap.getWidth() - w) / 2 + 2;
-        visibleRect.top -= (mBitmap.getHeight() - h) / 2;
+//        visibleRect.top -= (mBitmap.getHeight() - h) / 2;
         focusView.destroyDrawingCache();
         focusView.setDrawingCacheEnabled(false);
 
