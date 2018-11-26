@@ -19,13 +19,14 @@ import retrofit2.http.Query;
  * 修改时间：
  * 修改备注：
  */
-public interface IUserCenterMemberInfoApi {
+public interface IMemberInfoApi {
     //获取用户会员信息
     @Headers("host_type: " + BootGuide.USER)
     @GET("goldenpheasant/api/programRights")
     Observable<ResponseBody> getMemberInfo(@Header("Authorization") String Authorization,
                                            @Query("productId") String productId,
                                            @Query("appKey") String appKey);
+
     //节目集权益信息
     @Headers("host_type: " + BootGuide.USER)
     @POST("goldenpheasant/api/programRights")

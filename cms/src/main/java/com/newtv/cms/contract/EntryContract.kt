@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-
 import com.gridsum.tracker.GridsumWebDissector
 import com.gridsum.videotracker.VideoTracker
 import com.newtv.cms.CmsServicePresenter
@@ -16,7 +15,6 @@ import com.newtv.libs.BootGuide
 import com.newtv.libs.Constant
 import com.newtv.libs.Libs
 import com.newtv.libs.util.CNTVLogUtils
-import com.newtv.libs.util.DeviceUtil
 import com.newtv.libs.util.SPrefUtils
 
 /**
@@ -37,7 +35,10 @@ class EntryContract {
 
     class EntryPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
 
+        private var bootSerice: IBootGuide? = null
+
         init {
+            bootSerice = getService<IBootGuide>(CmsServicePresenter.SERVICE_BOOT_GUIDE)
             getBootGuide()
         }
 
@@ -67,14 +68,13 @@ class EntryContract {
         internal fun getBootGuide() {
             /** 测试用
             if (Libs.get().isDebug) {
-                view?.bootGuildResult()
-                return
+            view?.bootGuildResult()
+            return
             }
-            */
-            val bootGuide = getService<IBootGuide>(CmsServicePresenter.SERVICE_BOOT_GUIDE)
-            if (bootGuide != null) {
+             */
+            bootSerice?.let { boot ->
                 val platform = Libs.get().appKey + Libs.get().channelId
-                bootGuide.getBootGuide(platform, object : DataObserver<String> {
+                boot.getBootGuide(platform, object : DataObserver<String> {
                     override fun onResult(result: String, requestCode: Long) {
                         val cacheValue = SPrefUtils.getValue(context,
                                 SPrefUtils.KEY_SERVER_ADDRESS, "") as String

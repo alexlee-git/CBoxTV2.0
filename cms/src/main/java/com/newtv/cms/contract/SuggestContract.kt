@@ -50,9 +50,18 @@ class SuggestContract {
 
     class SuggestPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
 
+        private var tvProgramService:ITvProgram? = null
+        private var personService:IPerson? = null
+
+        init {
+            tvProgramService = getService<ITvProgram>(CmsServicePresenter.SERVICE_TV_PROGRAM)
+            personService = getService<IPerson>(CmsServicePresenter.SERVICE_PERSON_DETAIL)
+        }
+
+
         override fun getColumnFigures(contentUUID: String) {
-            val tvProgram = getService<ITvProgram>(CmsServicePresenter.SERVICE_TV_PROGRAM)
-            tvProgram?.getTvFigureList(
+
+            tvProgramService?.getTvFigureList(
                     Libs.get().appKey,
                     Libs.get().channelId,
                     contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
@@ -71,8 +80,7 @@ class SuggestContract {
         }
 
         override fun getColumnSuggest(contentUUID: String) {
-            val tvProgram = getService<ITvProgram>(CmsServicePresenter.SERVICE_TV_PROGRAM)
-            tvProgram?.getTvFigureTvList(
+            tvProgramService?.getTvFigureTvList(
                     Libs.get().appKey,
                     Libs.get().channelId,
                     contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
@@ -91,8 +99,7 @@ class SuggestContract {
         }
 
         override fun getPersonFigureList(contentUUID: String) {
-            val content = getService<IPerson>(CmsServicePresenter.SERVICE_PERSON_DETAIL)
-            content?.getPersonFigureList(Libs.get().appKey, Libs.get().channelId, contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
+            personService?.getPersonFigureList(Libs.get().appKey, Libs.get().channelId, contentUUID, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
                 override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.columnPersonFiguresResult(result.data)
