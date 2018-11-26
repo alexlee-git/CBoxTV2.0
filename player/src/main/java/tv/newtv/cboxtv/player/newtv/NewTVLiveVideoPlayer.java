@@ -13,9 +13,10 @@ import com.newtv.libs.util.YSLogUtils;
 
 import java.util.LinkedHashMap;
 
-import tv.icntv.been.IcntvPlayerInfo;
-import tv.icntv.icntvplayersdk.IcntvLive;
-import tv.icntv.icntvplayersdk.iICntvPlayInterface;
+import tv.icntv.icntvplayersdk.BasePlayer;
+import tv.icntv.icntvplayersdk.NewTVPlayerInfo;
+import tv.icntv.icntvplayersdk.NewTVPlayerInterface;
+import tv.icntv.icntvplayersdk.wrapper.NewTvPlayerWrapper;
 import tv.newtv.cboxtv.player.ILiveVideoPlayerInterface;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerUrlConfig;
@@ -30,7 +31,7 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
     private static final String TAG = "NewTVLiveVideoPlayer";
     private static NewTVLiveVideoPlayer mNewTVLiveVideoPlayer;
     private iPlayCallBackEvent mIPlayCallBackEvent;
-    private IcntvLive mIcntvLive;
+    private BasePlayer mIcntvLive;
     private Context mContext;
     private boolean isSuccessful = false;
     private boolean mIsLivePositiveOnPrepared = false;//直播
@@ -38,7 +39,7 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
     private String outSourceId;
     private String liveName;
     private String liveUrl;
-    private iICntvPlayInterface mIcntvPlayerCallback = new iICntvPlayInterface() {
+    private NewTVPlayerInterface mIcntvPlayerCallback = new NewTVPlayerInterface() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> linkedHashMap) {
             Log.i(TAG, "onPrepared: ");
@@ -64,8 +65,8 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         @Override
         public void onCompletion(int type) {
             Log.i(TAG, "onCompletion: " + type);
-            if(type ==  iICntvPlayInterface.VIDEO_COMPLETE_TYPE ||
-                    type == iICntvPlayInterface.AFTER_AD_COMPLETE_TYPE) {
+            if(type ==  NewTVPlayerInterface.CONTENT_TYPE ||
+                    type == NewTVPlayerInterface.POST_AD_TYPE) {
                 if (mIPlayCallBackEvent != null) {
                     mIPlayCallBackEvent.onCompletion();
                 }
@@ -205,25 +206,25 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
             Log.i(TAG, "playVideo: videoDataStruct==null");
             return false;
         }
-        IcntvPlayerInfo icntvPlayerInfo = new IcntvPlayerInfo();
+        NewTVPlayerInfo icntvPlayerInfo = new NewTVPlayerInfo();
         icntvPlayerInfo.setAppKey(Libs.get().getAppKey());
-        icntvPlayerInfo.setChannalId(Libs.get().getChannelId());
-        icntvPlayerInfo.setCdnDispatchUrl(Constant.BASE_URL_CDN);
+        icntvPlayerInfo.setChanneId(Libs.get().getChannelId());
+        icntvPlayerInfo.setCdnDispathURl(Constant.BASE_URL_CDN);
         icntvPlayerInfo.setDynamicKeyUrl(Constant.DYNAMIC_KEY);
         icntvPlayerInfo.setPlayUrl(videoDataStruct.getPlayUrl());
         Log.i(TAG, "playVideo: videoDataStruct playUrl=" + videoDataStruct.getPlayUrl());
-        icntvPlayerInfo.setProgramListID(videoDataStruct.getContentUUID());
+        icntvPlayerInfo.setSeriesID(videoDataStruct.getContentUUID());
 
         icntvPlayerInfo.setDuration(videoDataStruct.getDuration());
-        icntvPlayerInfo.setProgramID(videoDataStruct.getProgramId());
-        icntvPlayerInfo.setKey(videoDataStruct.getKey());
+        icntvPlayerInfo.setProgramId(videoDataStruct.getProgramId());
+        icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
         icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
-        icntvPlayerInfo.setDeviceID(Constant.UUID);
+        icntvPlayerInfo.setDeviceId(Constant.UUID);
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
                 .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), PlayerConfig
                 .getInstance().getTopicId()));
-        mIcntvLive = new IcntvLive(context, frameLayout, icntvPlayerInfo, mIcntvPlayerCallback);
+        mIcntvLive = NewTvPlayerWrapper.getInstance().getPlayer(context, frameLayout, icntvPlayerInfo, mIcntvPlayerCallback);
 
 
         outSourceId = videoDataStruct.getContentUUID();

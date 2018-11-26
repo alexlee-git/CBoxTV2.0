@@ -14,7 +14,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import tv.icntv.been.IcntvPlayerInfo;
+import tv.icntv.icntvplayersdk.NewTVPlayerInfo;
 import tv.newtv.cboxtv.player.model.LivePermissionCheckBean;
 import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
@@ -119,12 +119,12 @@ public class LivePermissionCheckUtil {
         }
     }
 
-    public static void setPermissionCheckToInfo(LivePermissionCheckBean livePermissionCheck, IcntvPlayerInfo icntvPlayerInfo){
+    public static void setPermissionCheckToInfo(LivePermissionCheckBean livePermissionCheck, NewTVPlayerInfo icntvPlayerInfo){
         if(livePermissionCheck != null && livePermissionCheck.getData() != null && livePermissionCheck.getData().isEncryptFlag()){
             String result = Encryptor.decrypt(Constant.APPSECRET,livePermissionCheck.getData().getDecryptKey());
             Log.i(TAG, "livePermissionCheck.getData().getDecryptKey()："+livePermissionCheck.getData().getDecryptKey()
                     +",解密结果："+result);
-            icntvPlayerInfo.setKey(result);
+            icntvPlayerInfo.setDhDecryption(result);
         }
     }
     public static void setPermissionCheckToInfo(LivePermissionCheckBean livePermissionCheck, VideoDataStruct dataStruct){

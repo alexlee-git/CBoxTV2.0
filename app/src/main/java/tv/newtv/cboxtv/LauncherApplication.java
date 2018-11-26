@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
@@ -17,18 +16,14 @@ import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
-import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
-import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.FileUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.PicassoBuilder;
 import com.newtv.libs.util.RxBus;
-import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
-import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,10 +42,6 @@ import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
-import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
-import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
-import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.ottlauncher.db.History;
 
@@ -156,11 +147,20 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                e.onNext(AdSDK.getInstance().init(Constant.BASE_URL_AD,
-                        SystemUtils.getMac(AppContext),
-                        BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
-                        FileUtil.getCacheDirectory(getApplicationContext(), "ad_cache")
-                                .getAbsolutePath()));//广告初始化
+                if (true) {
+                    e.onNext(AdSDK.getInstance().init("http://api.adott.ottcn.org",
+                            "111111111111111",
+                            "111", null,
+                            FileUtil.getCacheDirectory(getApplicationContext(), "ad_cache")
+                                    .getAbsolutePath()));//广告初始化
+                } else {
+                    e.onNext(AdSDK.getInstance().init(Constant.BASE_URL_AD,
+                            SystemUtils.getMac(AppContext),
+                            BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
+                            FileUtil.getCacheDirectory(getApplicationContext(), "ad_cache")
+                                    .getAbsolutePath()));//广告初始化
+                }
+
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
