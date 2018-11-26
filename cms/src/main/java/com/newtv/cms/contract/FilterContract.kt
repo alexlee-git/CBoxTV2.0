@@ -23,9 +23,15 @@ class FilterContract {
 
     class FilterPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
+
+        private var filterService:IFilter? = null
+
+        init {
+            filterService = getService(SERVICE_FILTER)
+        }
+
         override fun getFilter( categoryId: String) {
-            val filter: IFilter? = getService(SERVICE_FILTER)
-            filter?.getFilterKeyWords(Libs.get().appKey, Libs.get().channelId,categoryId, object : DataObserver<ModelResult<List<FilterItem>>> {
+            filterService?.getFilterKeyWords(Libs.get().appKey, Libs.get().channelId,categoryId, object : DataObserver<ModelResult<List<FilterItem>>> {
                 override fun onError(desc: String?) {
                     view?.onError(context, desc)
                 }

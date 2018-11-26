@@ -25,9 +25,17 @@ class DefaultConstract {
 
     class DefaultPresenter(context: Context, view: View)
         : CmsServicePresenter<View>(context, view), Presenter {
+
+        private var defaultService:IDefault? = null
+
+        init {
+            defaultService = getService(SERVICE_DEFAULT);
+        }
+
+
         override fun request(url: String, extends: HashMap<*, *>) {
-            val default: IDefault? = getService(SERVICE_DEFAULT);
-            default?.getJson(url, object : DataObserver<String> {
+
+            defaultService?.getJson(url, object : DataObserver<String> {
                 override fun onResult(result: String, requestCode: Long) {
                     view?.onResult(result,extends)
                 }

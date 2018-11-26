@@ -40,7 +40,7 @@ public class VipCheck {
         String token = SharePreferenceUtils.getToken(context);
         if (!TextUtils.isEmpty(token) && UserStatus.isLogin()) {
 
-            Request.INSTANCE.getUserCenterMemberInfoApi()
+            Request.INSTANCE.getMemberInfoApi()
                     .getBuyFlag("Bearer "+token,productIds, Libs.get().getAppKey(),
                             Libs.get().getChannelId(),contentUUID,"3.1")
                     .subscribeOn(Schedulers.io())

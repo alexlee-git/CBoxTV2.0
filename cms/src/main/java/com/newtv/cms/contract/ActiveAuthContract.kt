@@ -45,12 +45,18 @@ class ActiveAuthContract {
     class ActiveAuthPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
         private var num = 0
 
+        private var activeAuthService: IActiveAuth? = null
+
         private var handler: Handler? = Handler(Handler.Callback { message ->
             when (message.what) {
                 Constract.RETRY_ACTIVE -> active()
             }
             false
         })
+
+        init {
+            activeAuthService = getService<IActiveAuth>(CmsServicePresenter.SERVICE_ACTIVE_AUTH)
+        }
 
         override fun destroy() {
             super.destroy()
@@ -72,15 +78,14 @@ class ActiveAuthContract {
         }
 
         override fun auth() {
-            val activeAuth = getService<IActiveAuth>(CmsServicePresenter.SERVICE_ACTIVE_AUTH)
-            if (activeAuth != null) {
+            activeAuthService?.let { service ->
                 val authBean = AuthBean(SystemUtils.getMac(context),
                         Libs.get().appKey,
                         Libs.get().channelId,
                         Constant.UUID,
                         System.currentTimeMillis().toString() + "")
                 var number = 0
-                activeAuth.auth(authBean, object : DataObserver<String> {
+                service.auth(authBean, object : DataObserver<String> {
                     override fun onResult(result: String, requestCode: Long) {
                         try {
                             val response = JSONObject(result)
@@ -127,15 +132,14 @@ class ActiveAuthContract {
                         Constant.UUID_KEY, "") as String
             }
             if (TextUtils.isEmpty(Constant.UUID)) {
-                val activeAuth = getService<IActiveAuth>(CmsServicePresenter.SERVICE_ACTIVE_AUTH)
-                if (activeAuth != null) {
+                activeAuthService?.let { service ->
 
                     val activateBean = ActivateBean(SystemUtils
                             .getMac(context),
                             Libs.get().appKey,
                             Libs.get().channelId,
                             System.currentTimeMillis().toString() + "")
-                    activeAuth.active(activateBean, object : DataObserver<String> {
+                    service.active(activateBean, object : DataObserver<String> {
                         override fun onResult(result: String, requestCode: Long) {
                             try {
                                 val response = JSONObject(result)
