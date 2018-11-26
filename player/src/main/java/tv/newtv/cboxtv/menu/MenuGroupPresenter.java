@@ -536,17 +536,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                             menuGroup.show();
 
                         }
-                        Log.d(TAG, Constants.vodPlayId);
-//                        if (duration!=null){
-//
-//                        }
-//                        int i = Integer.parseInt(duration);
-                    String    duration = context.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
-                        if (duration !=null)
-                        LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
-
-
-
                         NewTVLauncherPlayerViewManager.getInstance().setShowingView
                                 (NewTVLauncherPlayerView.SHOWING_PROGRAM_TREE);
                         setHintGone();

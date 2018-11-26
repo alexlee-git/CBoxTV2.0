@@ -892,6 +892,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public void show() {
         show(playProgram);
+
     }
 
     public void show(Program playProgram) {
@@ -902,6 +903,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             currentX = -(size * recyclerViewWidth);
             showView(playProgram);
             checkFocus();
+
+
         }
     }
 
@@ -964,6 +967,11 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         float current = currentX;
         currentX = currentX + recyclerViewWidth * VISIBLE_COLUMN;
         startAnim(new AnimEntity(current, currentX));
+        String    duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
+        if (!TextUtils.isEmpty(duration)){
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+        }
     }
 
     private void goneAnimator() {
