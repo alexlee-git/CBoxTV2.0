@@ -33,6 +33,7 @@ open class Content  : Serializable {
     var director: String? = null //导演
     var recentNum:String? = null //已更新集数
     var isFinish:String? = null //是否已更新完  0-未完成  1-已完成
+    var updateDate:String?=null
 
     @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
     var contentID: String? = null //内容Id
