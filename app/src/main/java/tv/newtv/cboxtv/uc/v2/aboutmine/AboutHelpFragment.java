@@ -13,10 +13,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
-import com.newtv.libs.Constant;
+import com.newtv.libs.BootGuide;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 
 
@@ -153,7 +152,8 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
 //                "特别提示：如用户对本条款内容有任何疑问，可拨打未来电视官方客服电话（400 046 3366）。");
         //以上为关于帮助文本写死方案
         //以下为webview加载html页面方案
-        Constant.HTML_PATH_HELPER = Constant.getBaseUrl(AppHeadersInterceptor.HTML_PATH_HELPER);
+        final String pathHelper = BootGuide.getBaseUrl(BootGuide.HTML_PATH_HELPER);
+//        Constant.HTML_PATH_HELPER = Constant.getBaseUrl(AppHeadersInterceptor.HTML_PATH_HELPER);
         mWebView = (WebView) view.findViewById(R.id.id_webView);
         mWebView.clearCache(true);
         mWebView.clearHistory();
@@ -207,8 +207,9 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                if (Constant.HTML_PATH_HELPER.startsWith("http://") || Constant.HTML_PATH_HELPER.startsWith("https://")) {
-                    view.loadUrl(Constant.HTML_PATH_HELPER);
+                if (pathHelper.startsWith("http://") || pathHelper.startsWith
+                        ("https://")) {
+                    view.loadUrl(pathHelper);
                     mWebView.stopLoading();
                     return true;
                 }
@@ -226,8 +227,8 @@ public class AboutHelpFragment extends BaseDetailSubFragment implements ScanScro
                 handler.proceed();
             }
         });
-        if (!TextUtils.isEmpty(Constant.HTML_PATH_HELPER)) {
-            mWebView.loadUrl(Constant.HTML_PATH_HELPER);
+        if (!TextUtils.isEmpty(pathHelper)) {
+            mWebView.loadUrl(pathHelper);
         } else {
             Log.d(TAG, "wqs:html:path==null");
             mWebView.setVisibility(View.GONE);

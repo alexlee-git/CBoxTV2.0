@@ -2,47 +2,51 @@ package tv.newtv.cboxtv.cms.screenList.model;
 
 
 
-import com.google.gson.Gson;
+import android.content.Context;
+
+import com.newtv.cms.bean.CategoryTreeNode;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.contract.CategoryContract;
 
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.cms.screenList.api.LabelApi;
-import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
-import tv.newtv.cboxtv.cms.screenList.manager.RetrofitManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
 
 /**
  * Created by 冯凯 on 2018/9/30.
  */
-public class FirstLabelModelImpl implements FirstLabelModel {
+public class FirstLabelModelImpl implements FirstLabelModel  ,CategoryContract.View{
+    private CategoryContract.CategoryPresenter  categoryPresenter;
+    private FirstLabelCompleteListener completeListener;
+
+    public FirstLabelModelImpl(Context context) {
+        categoryPresenter  = new CategoryContract.CategoryPresenter(context ,this);
+    }
+
     @Override
     public void requestFirstLabel(final FirstLabelCompleteListener completeListener) {
+        this.completeListener =  completeListener;
+        categoryPresenter.getCategory();
+    }
 
-        RetrofitManager retrofitManager = RetrofitManager.getRetrofitManager();
-        Observable<ResponseBody> observable = retrofitManager.create(LabelApi.class).getFirstMenu(1);
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseBody>() {
-                    @Override
-                    public void accept(ResponseBody responseBody) throws Exception {
-                        Gson gson = new Gson();
-                        if (responseBody!=null){
-                            TabBean tabBean = gson.fromJson(responseBody.string(), TabBean.class);
-                            completeListener.sendFirstLabel(tabBean);
-                        }
-
-
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                    }
-                });
-
+    @Override
+    public void onCategoryResult(@NotNull Context context, @NotNull ModelResult<List<CategoryTreeNode>> result) {
+        if (completeListener!=null&& result!=null){
+            completeListener.sendFirstLabel(result);
+        }
 
     }
 
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
+
+    }
 }

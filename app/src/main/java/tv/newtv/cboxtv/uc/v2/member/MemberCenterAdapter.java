@@ -36,6 +36,7 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -73,10 +74,11 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     private Context mContext;
     private Interpolator mSpringInterpolator;
     private OnRecycleItemClickListener<UserCenterPageBean.Bean> listener;
-    private ImageView mMemberHead;
+    private ImageView mMemberHead, mMemberMark;
     private TextView mMemberName, mMemberTime;
     private FrameLayout mBtnLogin, mBtnOpen, mBtnExchange, mBtnOrder, mBtnDrama, mPromotionRecommend;
     private MemberInfoBean mMemberInfoBean;
+    private String mMobileString;
     private String mLoginTokenString;//登录token,用于判断登录状态
     public boolean BtnLoginFocusStatus = false;//登录按钮焦点状态
     private ImageView mRecommendQrCodeImageView;
@@ -134,12 +136,13 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             if (holder instanceof InfoViewHolder) {
                 InfoViewHolder viewHolder = (InfoViewHolder) holder;
                 mMemberHead = viewHolder.mMemberHead;
+                mMemberMark = viewHolder.mMemberMark;
                 mMemberName = viewHolder.mMemberName;
                 mMemberTime = viewHolder.mMemberTime;
                 mBtnLogin = viewHolder.mBtnLogin;
                 mBtnOpen = viewHolder.mBtnOpen;
                 //设置会员信息
-                setMemberStatus(mMemberInfoBean);
+                setMemberStatus(mMobileString, mMemberInfoBean);
             } else if (holder instanceof PromotionRecommendViewHolder) {
                 PromotionRecommendViewHolder viewHolder = (PromotionRecommendViewHolder) holder;
                 mRecommendQrCodeImageView = viewHolder.mQrCodeImageView;
@@ -167,14 +170,24 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
      *
      * @param memberInfoBean
      */
-    public void setMemberStatus(MemberInfoBean memberInfoBean) {
+    public void setMemberStatus(String mobileString, MemberInfoBean memberInfoBean) {
+        String expireFormatTime = "";//格式化之后的会员有效期时间
         try {
             //获取登录状态
             mLoginTokenString = SharePreferenceUtils.getToken(mContext);
+            mMobileString = mobileString;
             TextView mBtnTextView = mBtnOpen.findViewWithTag(TAG_BUTTON_TEXT);
             if (!TextUtils.isEmpty(mLoginTokenString)) {
                 if (mMemberHead != null) {
                     mMemberHead.setBackgroundResource(R.drawable.member_head_login_v2);
+                }
+                if (mMemberName != null) {
+                    if (!TextUtils.isEmpty(mobileString) || !TextUtils.equals(mobileString, "null")) {
+                        mMemberName.setText(mobileString);
+                    } else {
+                        mMemberName.setText("");
+                    }
+
                 }
                 //控制开通会员按钮的向左焦点，防止焦点乱跑
                 if (mBtnOpen != null) {
@@ -195,12 +208,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     if (mMemberHead != null) {
                         mMemberHead.setBackgroundResource(R.drawable.member_head_login_v2);
                     }
-                    if (mMemberName != null) {
-                        mMemberName.setText(memberInfoBean.getUserId() + "");
-                    }
-                    if (mMemberTime != null) {
-                        mMemberTime.setText("会员有效期： " + memberInfoBean.getExpireTime());
-                    }
+
                     //控制开通会员按钮的向左焦点，防止焦点乱跑
                     if (mBtnOpen != null) {
                         mBtnOpen.setNextFocusLeftId(R.id.id_member_center_btn_open);
@@ -214,12 +222,37 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     goneView(mBtnLogin);
                     showView(mMemberName);
                     showView(mMemberTime);
-                } else {
-                    Log.e(TAG, "wqs:setMemberStatus:memberInfoBean==null");
-
-                    if (mMemberName != null) {
-                        mMemberName.setText("");
+                    String expireTimeDate = memberInfoBean.getExpireTime();
+                    if (!TextUtils.isEmpty(expireTimeDate)) {
+                        //有效期截止时间毫秒数
+                        long expireTimeInMillis = TimeUtil.getInstance().getSecondsFromDate(expireTimeDate);
+                        //与当前时间进行对比，判断会员是否到期
+                        long currentTimeInMillis = TimeUtil.getInstance().getCurrentTimeInMillis();
+                        Log.d(TAG, "wqs:setMemberStatus:expireTimeInMillis:" + expireTimeInMillis);
+                        Log.d(TAG, "wqs:setMemberStatus:currentTimeInMillis:" + currentTimeInMillis);
+                        expireFormatTime = TimeUtil.getInstance().getDateFromSeconds(expireTimeInMillis + "");
+                        if (expireTimeInMillis >= currentTimeInMillis) {
+                            //用户会员有效
+                            if (mMemberMark != null) {
+                                showView(mMemberMark);
+                                mMemberMark.setBackgroundResource(R.drawable.uc_head_member_mark_v2);
+                            }
+                        } else {
+                            //用户会员失效
+                            if (mMemberMark != null) {
+                                showView(mMemberMark);
+                                mMemberMark.setBackgroundResource(R.drawable.uc_head_not_member_mark_v2);
+                            }
+                        }
+                    } else {
+                        hideView(mMemberMark);
                     }
+                    if (mMemberTime != null) {
+                        mMemberTime.setText("会员有效期： " + expireFormatTime);
+                    }
+                } else {
+                    hideView(mMemberMark);
+                    Log.e(TAG, "wqs:setMemberStatus:memberInfoBean==null");
                     if (mMemberTime != null) {
                         mMemberTime.setText("");
                     }
@@ -230,11 +263,12 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                             Log.e(TAG, "wqs:setMemberStatus:memberInfoBean == null:mBtnTextView == null");
                         }
                     }
-                    goneView(mMemberName);
+                    showView(mMemberName);
                     goneView(mMemberTime);
                 }
 
             } else {
+                hideView(mMemberMark);
                 if (mMemberHead != null) {
                     mMemberHead.setBackgroundResource(R.drawable.member_head_not_login_v2);
                 }
@@ -693,7 +727,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     class InfoViewHolder extends RecyclerView.ViewHolder implements
             View.OnKeyListener, View.OnFocusChangeListener {
 
-        private ImageView mMemberHead;
+        private ImageView mMemberHead, mMemberMark;
         private TextView mMemberName, mMemberTime;
         private FrameLayout mBtnLogin, mBtnOpen, mBtnExchange, mBtnOrder, mBtnDrama;
 
@@ -702,6 +736,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             itemView.setFocusable(false);
             //会员信息控件
             mMemberHead = (ImageView) itemView.findViewById(R.id.id_member_center_head);
+            mMemberMark = (ImageView) itemView.findViewById(R.id.id_member_center_mark);
             mMemberName = (TextView) itemView.findViewById(R.id.id_member_center_name);
             mMemberTime = (TextView) itemView.findViewById(R.id.id_member_center_time);
             mBtnLogin = (FrameLayout) itemView.findViewById(R.id.id_member_center_btn_login);

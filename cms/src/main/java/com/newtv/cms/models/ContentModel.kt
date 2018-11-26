@@ -31,12 +31,10 @@ internal class ContentModel : BaseModel(), IContent {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(contentId)
-        val right: String = getRight(contentId)
         val executor: Executor<ModelResult<List<SubContent>>> =
                 buildExecutor(Request.content.getSubInfo
                 (appkey,
-                        channelId, left, right,
+                        channelId,
                         contentId), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()

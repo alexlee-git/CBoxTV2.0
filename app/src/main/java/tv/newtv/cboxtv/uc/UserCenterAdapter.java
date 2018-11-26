@@ -359,11 +359,11 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                 mPromptTextView = mBtnlogin.findViewWithTag(TAG_POSTER_PROMPT_LOGIN);
                 if (mHeadImage != null && mPromptTextView != null) {
                     if (!TextUtils.isEmpty(tokenString)) {
-                        mHeadImage.setBackgroundResource(R.drawable.member_head_login_v2);
+                        mHeadImage.setBackgroundResource(R.drawable.uc_head_login_v2);
                         mPromptTextView.setText(context.getResources().getString(R.string.user_already_login));
                     } else {
                         Log.d(TAG, "wqs:setLoginStatus:tokenString==null");
-                        mHeadImage.setBackgroundResource(R.drawable.member_head_not_login_v2);
+                        mHeadImage.setBackgroundResource(R.drawable.uc_head_not_login_v2);
                         mPromptTextView.setText(context.getResources().getString(R.string.user_prompt_login));
                     }
                 } else {

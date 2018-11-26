@@ -25,6 +25,9 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
     private Callback mCallback = new Callback() {
         @Override
         public void onItemClick(int pos, NewTvViewHolder holder) {
+            notifyItemChanged(currentIndex);
+            currentIndex = pos;
+            notifyItemChanged(pos);
             NewTvRecycleAdapter.this.onItemClick(getItem(pos), pos);
         }
 
@@ -126,6 +129,7 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
         }
 
         protected void performClick() {
+
             if (mCallback != null) {
                 mCallback.onItemClick(getAdapterPosition(), this);
             }

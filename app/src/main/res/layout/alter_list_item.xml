@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:focusable="true"
+                android:layout_width="@dimen/width_600px"
+                android:layout_height="@dimen/height_120px">
+    <TextView
+        android:id="@+id/alternate_id"
+        android:layout_width="@dimen/width_63px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/width_32px"
+        android:layout_marginTop="@dimen/height_21px"
+        android:text="112"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_34px"/>
+
+    <TextView
+        android:id="@+id/alternate_title"
+        android:layout_width="@dimen/width_441px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/width_32px"
+        android:layout_marginLeft="@dimen/width_32px"
+        android:layout_marginTop="@dimen/height_22px"
+        android:layout_marginEnd="@dimen/width_32px"
+        android:layout_marginRight="@dimen/width_32px"
+        android:layout_toEndOf="@+id/alternate_id"
+        android:text="获奖大片"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_34px"/>
+
+    <TextView
+        android:id="@+id/alternate_subtitle"
+        android:layout_width="@dimen/width_441px"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/alternate_title"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/width_32px"
+        android:layout_marginLeft="@dimen/width_32px"
+        android:layout_marginEnd="@dimen/width_32px"
+        android:layout_marginRight="@dimen/width_32px"
+        android:layout_toEndOf="@+id/alternate_id"
+        android:text="正义联盟"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_30px"/>
+</RelativeLayout>

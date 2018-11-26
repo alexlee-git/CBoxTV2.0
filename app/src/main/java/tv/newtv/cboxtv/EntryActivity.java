@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.newtv.cms.contract.ActiveAuthContract;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.EntryContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.HeadersInterceptor;
 import com.newtv.libs.ad.AdEventContent;
@@ -93,6 +94,11 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         if (mSplashPresenter != null) {
             mSplashPresenter.destroy();
             mAuthPresenter = null;
+        }
+
+        if(mAdPresenter != null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
         }
 
 
@@ -189,14 +195,16 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     private void initRetryUrls() {
         Constant.activateUrls.clear();
 
-        String activate = !TextUtils.isEmpty(Constant.getBaseUrl(HeadersInterceptor.ACTIVATE))
-                ? Constant.getBaseUrl(HeadersInterceptor.ACTIVATE)
-                : "https://terminal.cloud.ottcn.com/";
+//        String activate = !TextUtils.isEmpty(Constant.getBaseUrl(HeadersInterceptor.ACTIVATE))
+//                ? Constant.getBaseUrl(HeadersInterceptor.ACTIVATE)
+//                : "https://terminal.cloud.ottcn.com/";
+        String activate = BootGuide.getBaseUrl(BootGuide.ACTIVATE);
         Constant.activateUrls.add(activate);
 
-        String activate2 = !TextUtils.isEmpty(Constant.getBaseUrl(HeadersInterceptor.ACTIVATE2))
-                ? Constant.getBaseUrl(HeadersInterceptor.ACTIVATE2)
-                : "https://terminal2.cloud.ottcn.com/";
+        String activate2 = BootGuide.getBaseUrl(BootGuide.ACTIVATE2);
+//        String activate2 = !TextUtils.isEmpty(Constant.getBaseUrl(HeadersInterceptor.ACTIVATE2))
+//                ? Constant.getBaseUrl(HeadersInterceptor.ACTIVATE2)
+//                : "https://terminal2.cloud.ottcn.com/";
         Constant.activateUrls.add(activate2);
     }
 
@@ -343,7 +351,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                     Log.e(TAG, "enterMain: ..2" );
                 }
             } else {
-                boolean jump = JumpUtil.parseExternalJump(getApplicationContext(),
+                boolean jump = JumpScreen.jumpExternal(getApplicationContext(),
                         mExternalAction,
                         mExternalParams);
                 // add log

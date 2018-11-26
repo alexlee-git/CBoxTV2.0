@@ -18,10 +18,6 @@ data class Program(
         val l_focusId: String,
         val l_focusParam: String,
         val grade: String,
-        val lSuperScript: String,
-        val rSuperScript: String,
-        val lSubScript: String,
-        val rSubScript: String,
         val columnPoint: String,
         val rowPoint: String,
         val columnLength: String,
@@ -30,6 +26,7 @@ data class Program(
         val cellCode: String,
         val isAd: Int,
         val sortNum: String,
+        val alternateNumber: String,
         val seriesSubUUID: String,
         val apk: String,
         val apkPageType: String,
@@ -43,4 +40,10 @@ data class Program(
     fun getLiveParam(): LiveParam? {
         return null
     }
+
+    override fun toString(): String {
+        return "Program(dataUrl='$dataUrl', defaultFocus=$defaultFocus, contentId='$contentId', contentType='$contentType', img='$img', title='$title', subTitle='$subTitle', l_id='$l_id', l_uuid='$l_uuid', l_contentType='$l_contentType', l_actionType='$l_actionType', l_actionUri='$l_actionUri', l_focusId='$l_focusId', l_focusParam='$l_focusParam', grade='$grade', columnPoint='$columnPoint', rowPoint='$rowPoint', columnLength='$columnLength', rowHeight='$rowHeight', cellType='$cellType', cellCode='$cellCode', isAd=$isAd, sortNum='$sortNum', alternateNumber='$alternateNumber', seriesSubUUID='$seriesSubUUID', apk='$apk', apkPageType='$apkPageType', apkPageParam='$apkPageParam', specialParam='$specialParam', recommendedType='$recommendedType', recentNum='$recentNum', isFinish='$isFinish', video=$video)"
+    }
+
+
 }

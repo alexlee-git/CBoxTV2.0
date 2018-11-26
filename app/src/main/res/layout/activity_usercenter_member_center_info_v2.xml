@@ -18,6 +18,14 @@
             android:layout_height="@dimen/height_173px"
             android:background="@drawable/member_head_not_login_v2"/>
 
+        <ImageView
+            android:id="@+id/id_member_center_mark"
+            android:layout_width="@dimen/width_32px"
+            android:layout_height="@dimen/height_37px"
+            android:layout_marginLeft="@dimen/width_119px"
+            android:layout_marginTop="@dimen/height_33px"
+            android:visibility="invisible"/>
+
         <FrameLayout
             android:layout_width="@dimen/width_420px"
             android:layout_height="@dimen/height_82px"

@@ -43,8 +43,7 @@ class ContentContract {
          *                  如果设置为true，onContentResult回调结果中Content中data自动获取
          *                  如果设置为false，onContentResult回调结果中data为空
          */
-        fun getContent(uuid: String, autoSub: Boolean)
-
+        fun getContent(uuid: String, autoSub: Boolean):Long
         fun getContent(uuid: String, lock: Boolean, callback: View?)
         fun getContent(uuid: String, autoSub: Boolean, contentType: String)
 
@@ -187,30 +186,34 @@ class ContentContract {
             })
         }
 
-        override fun getContent(uuid: String, autoSub: Boolean) {
+        override fun getContent(uuid: String, autoSub: Boolean):Long {
             val content: IContent? = getService(SERVICE_CONTENT)
             view?.let {
                 if (it is LoadingView) it.onLoading()
             }
-            content?.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false, object
-                : DataObserver<ModelResult<Content>> {
-                override fun onResult(result: ModelResult<Content>, requestCode: Long) {
-                    if (result.isOk()) {
-                        if (!autoSub) {
-                            view?.onContentResult(uuid, result.data);
+            content?.let {
+                return it.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false,
+                        object
+                    : DataObserver<ModelResult<Content>> {
+                    override fun onResult(result: ModelResult<Content>, requestCode: Long) {
+                        if (result.isOk()) {
+                            if (!autoSub) {
+                                view?.onContentResult(uuid, result.data);
+                            } else {
+                                getSubContentsWithCallback(result.data, uuid, "")
+                            }
                         } else {
-                            getSubContentsWithCallback(result.data, uuid, "")
+                            view?.onError(context, result.errorMessage)
                         }
-                    } else {
-                        view?.onError(context, result.errorMessage)
                     }
-                }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
-                }
+                    override fun onError(desc: String?) {
+                        view?.onError(context, desc)
+                    }
 
-            })
+                })
+            }
+            return 0L
         }
     }
 }

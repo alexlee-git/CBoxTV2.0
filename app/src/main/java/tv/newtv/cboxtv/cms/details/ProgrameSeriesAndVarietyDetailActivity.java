@@ -78,7 +78,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
+    protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
 
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
@@ -111,7 +111,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
-                .SetContentUUID(contentUUID)
+                .SetContentUUID(contentUUID,getChildContentUUID())
                 .autoGetSubContents()
                 .setTopView(fromOuter,isPopup)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
