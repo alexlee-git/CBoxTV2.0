@@ -537,7 +537,7 @@ public class PayChannelActivity extends Activity implements PageContract.View {
 //    //读取用户会员信息
 //    private long requestMemberInfo() {
 //        try {
-//            NetClient.INSTANCE.getUserCenterMemberInfoApi()
+//            NetClient.INSTANCE.getMemberInfoApi()
 //                    .getMemberInfo("Bearer " + mToken, "",
 //                            Libs.get().getAppKey())
 //                    .subscribe(new Observer<ResponseBody>() {

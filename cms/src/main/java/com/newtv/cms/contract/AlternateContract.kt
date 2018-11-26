@@ -34,13 +34,20 @@ class AlternateContract {
 
     class AlternatePresenter(context: Context, view: View?) : CmsServicePresenter<View>(context,
             view), Presenter {
+
+        private var alternate:IAlternate? = null
+
+        init {
+            alternate = getService<IAlternate>(SERVICE_ALTERNATE)
+        }
+
         override fun getTodayAlternate(contentId: String) {
-            val alternate = getService<IAlternate>(SERVICE_ALTERNATE)
-            if (alternate != null) {
+
+            alternate?.let { alter ->
                 if(view != null && view is LoadingView){
                     view.onLoading()
                 }
-                alternate.getTodayAlternate(Libs.get().appKey, Libs.get().channelId,
+                alter.getTodayAlternate(Libs.get().appKey, Libs.get().channelId,
                         contentId,
                         object : DataObserver<ModelResult<List<Alternate>>> {
                             override fun onResult(result: ModelResult<List<Alternate>>, requestCode: Long) {

@@ -26,6 +26,7 @@ internal object Model {
     const val MODEL_SEARCH: String = "Search"       //搜索
     const val MODEL_ALTERNATE: String = "Alternate"       //轮播
     const val MODEL_DEFAULT: String = "Default"       //通用
+    const val MODEL_USERCENTER: String = "Usercenter"       //用户中心
 
 
     const val CONTENT_TYPE_PS: String = "PS" //节目集

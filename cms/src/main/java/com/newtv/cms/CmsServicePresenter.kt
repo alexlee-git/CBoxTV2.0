@@ -16,7 +16,12 @@ open class CmsServicePresenter<V : ICmsView>(
 
     override fun destroy() {
         stop()
-        models.forEach { it.destroy() }
+        models.forEach {
+            it.destroy()
+            if(it is BaseModel){
+                ModelFactory.attach(it)
+            }
+        }
         models.clear()
     }
 

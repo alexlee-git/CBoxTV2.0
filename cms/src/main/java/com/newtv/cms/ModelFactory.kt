@@ -2,6 +2,7 @@ package com.newtv.cms
 
 import android.util.Log
 import com.newtv.cms.models.*
+import java.util.*
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -12,24 +13,29 @@ import com.newtv.cms.models.*
  */
 internal object ModelFactory {
 
-    private val modelMap: HashMap<String, BaseModel> = HashMap()
+    private val modelMap: HashMap<String, LinkedList<BaseModel>> = HashMap()
 
     @Suppress("UNCHECKED_CAST")
     fun <T> findModel(type: String): T? {
-        if (!modelMap.containsKey(type)) {
-            synchronized(modelMap) {
-                val model: BaseModel? = buildModel(type)
-                model?.let {
-                    modelMap[type] = it
-                    return model as T
+        if (modelMap.containsKey(type)) {
+            modelMap[type]?.let {
+                if (it.size > 0) {
+                    Log.e("ModuleFactory", "get model from cache type=$type")
+                    return it.pollFirst() as T
                 }
             }
-            return null
+        } else {
+            modelMap[type] = LinkedList()
         }
-        return modelMap[type] as T
+        val model: BaseModel? = buildModel(type)
+        model?.let {
+            return it as T
+        }
+        return null
     }
 
     private fun buildModel(type: String): BaseModel? {
+        Log.e("ModuleFactory", "build model type=$type")
         return when (type) {
             Model.MODEL_NAV -> NavModel()
             Model.MODEL_CONTENT -> ContentModel()
@@ -57,6 +63,10 @@ internal object ModelFactory {
     }
 
     fun attach(model: BaseModel) {
-        modelMap[model.getType()] = model
+        if (!modelMap.containsKey(model.getType())) {
+            modelMap[model.getType()] = LinkedList()
+        }
+        Log.e("ModuleFactory", "put model into cache type=${model.getType()}")
+        modelMap[model.getType()]?.push(model)
     }
 }
