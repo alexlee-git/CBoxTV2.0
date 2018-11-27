@@ -23,15 +23,13 @@ internal class UserCenterModel : BaseModel(), IUserCenter {
     }
 
     override fun getAccessToken(Authorization: String, grant_type: String, device_code: String, client_id: String, observer: DataObserver<String>) {
-        val excutor: Executor<String> = buildExecutor(Request.userCenter.getAccessToken
-        (Authorization, grant_type, device_code, client_id), null)
-        excutor.observer(observer).execute()
+        buildExecutor<String>(Request.userCenter.getAccessToken
+        (Authorization, grant_type, device_code, client_id), null).observer(observer).execute()
     }
 
     override fun refreshToken(Authorization: String, refresh_token: String, client_id: String, grant_type: String, observer: DataObserver<String>) {
-        val executor: Executor<String> = buildExecutor(Request.userCenter.refreshToken
-        (Authorization, refresh_token, client_id, grant_type), null)
-        executor.observer(observer).execute()
+        buildExecutor<String>(Request.userCenter.refreshToken
+        (Authorization, refresh_token, client_id, grant_type), null).observer(observer).execute()
     }
 
     override fun getUser(Authorization: String, observer: DataObserver<String>) {
@@ -98,75 +96,86 @@ internal class UserCenterModel : BaseModel(), IUserCenter {
     }
 
     override fun getPayFlag(Authorization: String, productIds: Array<String>, appKey: String, channelId: String, contentUuid: String, observer: DataObserver<String>) {
-        val executor:Executor<String> = buildExecutor(Request.userCenter.getPayFlag
-        (Authorization, productIds, appKey, channelId, contentUuid),null)
+        val executor: Executor<String> = buildExecutor(Request.userCenter.getPayFlag
+        (Authorization, productIds, appKey, channelId, contentUuid), null)
         executor.observer(observer).execute()
     }
 
     override fun getRefreshOrder(Authorization: String, order: String, observer: DataObserver<String>) {
-        val executor:Executor<String> = buildExecutor(Request.userCenter.getRefreshOrder
-        (Authorization, order),null)
+        val executor: Executor<String> = buildExecutor(Request.userCenter.getRefreshOrder
+        (Authorization, order), null)
         executor.observer(observer).execute()
     }
 
     override fun addHistory(authorization: String, user_id: String, channel_code: String, app_key: String, programset_id: String, programset_name: String, is_program: String, poster: String, program_progress: String, user_name: String, program_dur: String, program_watch_dur: String, is_panda: Boolean, check_record: Boolean, program_child_id: String, grade: String, videoType: String, totalCnt: String, superscript: String, contentType: String, curEpisode: String, actionType: String, observer: DataObserver<String>) {
-        val executor:Executor<String> = buildExecutor(Request.userCenter.addHistory
+        val executor: Executor<String> = buildExecutor(Request.userCenter.addHistory
         (authorization, user_id, channel_code, app_key, programset_id, programset_name,
                 is_program, poster, program_progress, user_name, program_dur, program_watch_dur,
-                is_panda, check_record, program_child_id, grade, videoType, totalCnt, superscript, contentType, curEpisode, actionType),null)
+                is_panda, check_record, program_child_id, grade, videoType, totalCnt, superscript, contentType, curEpisode, actionType), null)
         executor.observer(observer).execute()
     }
 
     override fun deleteHistory(Authorization: String, is_program: String, channel_code: String, app_key: String, program_child_ids: String, programset_ids: String, observer: DataObserver<String>) {
-        val executor:Executor<String> = buildExecutor(Request.userCenter.deleteHistory
-        (Authorization, is_program, channel_code, app_key, program_child_ids, programset_ids),null)
+        val executor: Executor<String> = buildExecutor(Request.userCenter.deleteHistory
+        (Authorization, is_program, channel_code, app_key, program_child_ids, programset_ids), null)
         executor.observer(observer).execute()
     }
 
     override fun getHistoryList(Authorization: String, app_key: String, channel_code: String, user_id: String, offset: String, limit: String, observer: DataObserver<String>) {
-        val executor:Executor<String> = buildExecutor(Request.userCenter.getHistoryList
-        (Authorization, app_key, channel_code, user_id, offset, limit),null)
+        val executor: Executor<String> = buildExecutor(Request.userCenter.getHistoryList
+        (Authorization, app_key, channel_code, user_id, offset, limit), null)
         executor.observer(observer).execute()
     }
 
     override fun addCollect(authorization: String, user_id: String, channel_code: String, app_key: String, programset_id: String, programset_name: String, is_program: String, poster: String, program_child_id: String, score: String, video_type: String, total_count: String, superscript: String, content_type: String, latest_episode: String, action_type: String, observer: DataObserver<String>) {
-        val executor:Executor<String> = buildExecutor(Request.userCenter.addCollect
+        val executor: Executor<String> = buildExecutor(Request.userCenter.addCollect
         (authorization, user_id, channel_code, app_key, programset_id, programset_name,
                 is_program, poster, program_child_id, score, video_type, total_count,
-                superscript, content_type, latest_episode, action_type),null)
+                superscript, content_type, latest_episode, action_type), null)
         executor.observer(observer).execute()
     }
 
     override fun deleteCollect(authorization: String, user_id: String, is_program: String, channel_code: String, app_key: String, programset_ids: Array<String>, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.deleteCollect(authorization, user_id,
+                is_program, channel_code, app_key, programset_ids), null).observer(observer).execute()
     }
 
     override fun getCollectList(Authorization: String, user_id: String, is_program: String, app_key: String, channel_code: String, offset: String, limit: String, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.getCollectList(Authorization, user_id,
+                is_program, app_key, channel_code, offset, limit), null).observer(observer).execute()
     }
 
     override fun addFollow(authorization: String, user_id: String, channel_code: String, app_key: String, programset_id: String, programset_name: String, is_program: String, poster: String, content_type: String, action_type: String, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.addFollow(authorization, user_id, channel_code,
+                app_key, programset_id, programset_name, is_program, poster, content_type,
+                action_type), null).observer(observer).execute()
     }
 
     override fun deleteFollow(authorization: String, user_id: String, is_program: String, channel_code: String, app_key: String, programset_ids: Array<String>, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.deleteFollow(authorization, user_id, is_program,
+                channel_code, app_key, programset_ids), null).observer(observer).execute()
     }
 
     override fun getFollowList(authorization: String, user_id: String, is_program: String, app_key: String, channel_code: String, offset: String, limit: String, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.getFollowList(authorization, user_id,
+                is_program, app_key, channel_code, offset, limit), null).observer(observer).execute()
     }
 
     override fun addSubscribes(authorization: String, user_id: String, channel_code: String, app_key: String, programset_id: String, programset_name: String, is_program: String, poster: String, program_child_id: String, score: String, video_type: String, total_count: String, superscript: String, content_type: String, latest_episode: String, action_type: String, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.addSubscribes(authorization, user_id,
+                channel_code, app_key, programset_id, programset_name, is_program, poster,
+                program_child_id, score, video_type, total_count, superscript, content_type,
+                latest_episode, action_type), null).observer(observer).execute()
     }
 
     override fun deleteSubscribes(authorization: String, user_id: String, is_program: String, channel_code: String, app_key: String, programset_ids: Array<String>, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.deleteSubscribes(authorization, user_id,
+                is_program, channel_code, app_key, programset_ids), null).observer(observer).execute()
     }
 
     override fun getSubscribesList(authorization: String, user_id: String, is_program: String, app_key: String, channel_code: String, offset: String, limit: String, observer: DataObserver<String>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        buildExecutor<String>(Request.userCenter.getSubscribesList(authorization, user_id,
+                is_program, app_key, channel_code, offset, limit), null).observer(observer).execute()
     }
 
     override fun getType(): String {

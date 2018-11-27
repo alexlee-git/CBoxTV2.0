@@ -201,12 +201,15 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                     }
 
                     @Override
-                    public void onItemClick(Object data, int position) {
+                    public boolean onItemClick(Object data, int position) {
                         if (onItemClickListener != null) {
-                            if (!onItemClickListener.onItemClick(position, data)) {
+                            boolean interrupt = onItemClickListener.onItemClick(position, data);
+                            if(!interrupt) {
                                 mAdapter.setSelectedIndex(position);
                             }
+                            return interrupt;
                         }
+                        return false;
                     }
 
                     @Override

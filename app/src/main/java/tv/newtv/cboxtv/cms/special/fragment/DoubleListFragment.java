@@ -181,12 +181,13 @@ public class DoubleListFragment extends BaseSpecialContentFragment {
         }
 
         @Override
-        public void onItemClick(T data, int position) {
+        public boolean onItemClick(T data, int position) {
             if (currentIndex == position) {
-                return;
+                return false;
             }
             currentIndex = position;
             mCallback.onItemClick(data, position);
+            return false;
         }
 
         @Override

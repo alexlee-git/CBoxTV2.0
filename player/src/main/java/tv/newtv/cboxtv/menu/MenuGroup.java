@@ -42,6 +42,7 @@ import tv.newtv.cboxtv.menu.model.LastMenuBean;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.player.R;
 import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -904,7 +905,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             showView(playProgram);
             checkFocus();
 
-
+            NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
+                    .SHOWING_PROGRAM_TREE);
         }
     }
 
@@ -943,6 +945,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         //播放消失动画
         goneAnimator();
 
+        NewTVLauncherPlayerViewManager.getInstance().setShowingView
+                (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
 
         String duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
         if (!TextUtils.isEmpty(duration)){

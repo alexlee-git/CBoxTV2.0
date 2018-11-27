@@ -19,11 +19,11 @@ import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
-import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 
@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.icntv.icntvplayersdk.Constants;
-import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
-import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.menu.model.DBProgram;
 import tv.newtv.cboxtv.menu.model.LastMenuBean;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
+import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -46,12 +46,13 @@ import tv.newtv.player.R;
  * Created by TCP on 2018/5/11.
  */
 
-public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresenter, ScreenInterface {
+public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresenter,
+        ScreenInterface {
+    public static final long GONE_TIME = 5 * 1000L;
     private static final String TAG = "MenuGroupPresenter";
     private static final String COLLECT = "我的收藏";
     private static final String HISTORY = "我的观看记录";
     private static final String SUBSCRIBE = "我的订阅";
-    public static final long GONE_TIME = 5 * 1000L;
     private static final int MESSAGE_GONE = 1;
     /**
      * 获取节目集ID和节目ID 重试标识
@@ -101,40 +102,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
     private int retry = 0;
     private int posotion;
 
-    @Override
-    public void release() {
-        if (handler != null) {
-            handler.removeCallbacksAndMessages(null);
-            handler = null;
-        }
-        if (menuGroup != null) {
-            menuGroup.release();
-            menuGroup = null;
-        }
-
-    }
-
-    class MyHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case MESSAGE_GONE:
-                    gone();
-                    break;
-                case RETRY_DATA:
-                    initData();
-                    break;
-                case SET_LAST_DATA:
-                    setLastData();
-                    break;
-                case WAIT_AD_END:
-                    checkShowHinter();
-                    break;
-            }
-        }
-    }
-
     public MenuGroupPresenter(final Context context) {
         this.context = context;
         rootView = LayoutInflater.from(context).inflate(R.layout.menu_group_presenter, null);
@@ -150,10 +117,22 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         init();
     }
 
+    @Override
+    public void release() {
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+            handler = null;
+        }
+        if (menuGroup != null) {
+            menuGroup.release();
+            menuGroup = null;
+        }
+
+    }
+
     public void init() {
         initData();
         initListener();
-
 
 
     }
@@ -168,7 +147,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 int index = data.getPrograms().indexOf(program);
                 Content programSeriesInfo = program.getParent().getLastMenuBean().getData()
                         .convertProgramSeriesInfo();
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context, programSeriesInfo, false, index, 0);
+                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,
+                        programSeriesInfo, false, index, 0);
                 menuGroup.gone();
                 setPlayerInfo(program);
 //                switch () {
@@ -240,7 +220,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             //节目集
             programSeries = programSeriesInfo.getContentUUID();
             int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-            if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > index && index >= 0) {
+            if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > index
+                    && index >= 0) {
                 contentUUID = programSeriesInfo.getData().get(index).getContentUUID();
 
 
@@ -248,14 +229,16 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
 //                actionType = programSeriesInfo.getData().get(index).getActionType();
 //
 //                String proSeries = programSeriesInfo.getData().get(index).getSeriesSubUUID();
-//                if(TextUtils.isEmpty(programSeries) || (!TextUtils.isEmpty(proSeries) && !proSeries.equals(programSeries))){
+//                if(TextUtils.isEmpty(programSeries) || (!TextUtils.isEmpty(proSeries) &&
+// !proSeries.equals(programSeries))){
 //                    programSeries = proSeries;
 //                }
             }
         }
 
         if (TextUtils.isEmpty(programSeries) || TextUtils.isEmpty(contentUUID)) {
-            Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" + programSeries + ",contentUUID=" + contentUUID
+            Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" +
+                    programSeries + ",contentUUID=" + contentUUID
                     + ",typeIndex=" + typeIndex);
             return false;
         }
@@ -345,7 +328,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         searchInDB(DBConfig.SUBSCRIBE_TABLE_NAME, subscribe);
         searchInDB(DBConfig.HISTORY_TABLE_NAME, history);
 
-        if (menuGroup != null){
+        if (menuGroup != null) {
             menuGroup.addNodeToRoot(root);
         }
     }
@@ -377,7 +360,6 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 }).excute();
     }
 
-
     private List<DBProgram> dataDispose(String result) {
         if (!TextUtils.isEmpty(result)) {
             Gson gson = new Gson();
@@ -393,7 +375,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         if (list != null) {
             for (int i = 0; i < list.size(); i++) {
                 DBProgram program = list.get(i);
-                if (TextUtils.isEmpty(program._title_name) || TextUtils.isEmpty(program._contentuuid))
+                if (TextUtils.isEmpty(program._title_name) || TextUtils.isEmpty(program
+                        ._contentuuid))
                     continue;
 
                 Node node = new Node();
@@ -432,7 +415,8 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             public void success(LastMenuBean lastBean) {
                 if (menuGroup == null) return;
                 MenuGroupPresenter.this.lastMenuBean = lastBean;
-                if (lastBean == null || lastBean.getData() == null || lastBean.getData().getPrograms() == null) {
+                if (lastBean == null || lastBean.getData() == null || lastBean.getData()
+                        .getPrograms() == null) {
                     return;
                 }
                 setLastData();
@@ -536,6 +520,20 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                             menuGroup.show();
 
                         }
+                        Log.d(TAG, Constants.vodPlayId);
+//                        if (duration!=null){
+//
+//                        }
+//                        int i = Integer.parseInt(duration);
+                        String duration = context.getSharedPreferences("durationConfig", Context
+                                .MODE_PRIVATE).getString("duration", "");
+                        if (!TextUtils.isEmpty(duration))
+                            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6," + playProgram
+                                    .getSeriesSubUUID() + "," + playProgram.getContentUUID() + "," +
+                                    "0,0," + Integer.parseInt(duration) * 60 * 1000 + "," +
+                                    NewTVLauncherPlayerViewManager.getInstance()
+                                            .getCurrentPosition() + "," + Constants.vodPlayId);
+
                         NewTVLauncherPlayerViewManager.getInstance().setShowingView
                                 (NewTVLauncherPlayerView.SHOWING_PROGRAM_TREE);
                         setHintGone();
@@ -595,9 +593,9 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
 
     }
 
-
     private void hintAnimator(final View view) {
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0);
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1,
+                0, 1, 0, 1, 0, 1, 0);
         translationX.setDuration(5000);
         translationX.start();
         translationX.addListener(new AnimatorListenerAdapter() {
@@ -628,13 +626,12 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
         }
     }
 
-
     @Override
     public void enterFullScreen() {
         if (menuGroupIsInit) {
             getProgramSeriesAndContentUUID();
 
-            if(!updatePlayProgram(lastMenuBean)){
+            if (!updatePlayProgram(lastMenuBean)) {
                 /**
                  *  更新playProgram失败，说明当前播放的视频不在lastMenuBean中，需要重新请求数据
                  * 复用栏目树前N级，重新请求最后一级列表逻辑
@@ -644,14 +641,14 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 menuGroup.requestLastDataById(programSeries, new MenuGroup.RecreateListener() {
                     @Override
                     public void success(LastMenuBean lastMenuBean) {
-                        if(updatePlayProgram(lastMenuBean)){
+                        if (updatePlayProgram(lastMenuBean)) {
                             menuGroupIsInit = true;
                             menuGroup.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     checkShowHinter();
                                 }
-                            },100);
+                            }, 100);
                         }
                     }
                 });
@@ -666,10 +663,11 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
 
     /**
      * 根据lastMenuBean更新playProgram,从小屏切换大屏的时候需要更新，否则会显示错误
+     *
      * @param lastMenuBean
      * @return
      */
-    public boolean updatePlayProgram(LastMenuBean lastMenuBean){
+    public boolean updatePlayProgram(LastMenuBean lastMenuBean) {
         List<Program> programs = lastMenuBean.getData().getPrograms();
         for (Program program : programs) {
             if (contentUUID.equals(program.getContentUUID())) {
@@ -678,5 +676,26 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
             }
         }
         return false;
+    }
+
+    class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MESSAGE_GONE:
+                    gone();
+                    break;
+                case RETRY_DATA:
+                    initData();
+                    break;
+                case SET_LAST_DATA:
+                    setLastData();
+                    break;
+                case WAIT_AD_END:
+                    checkShowHinter();
+                    break;
+            }
+        }
     }
 }
