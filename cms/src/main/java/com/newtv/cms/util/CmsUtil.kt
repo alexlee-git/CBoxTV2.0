@@ -52,7 +52,7 @@ object CmsUtil {
                 val startTime = parse(alternateList[index].startTime)
                 val endTime = startTime + Integer.parseInt(alternateList[index]
                         .duration) * 1000
-                if (startTime <= now && endTime > now) {
+                if (now in startTime..(endTime - 1)) {
                     return index
                 }
             }

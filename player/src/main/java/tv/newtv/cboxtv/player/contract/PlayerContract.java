@@ -8,6 +8,7 @@ import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScreenUtils;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -41,7 +42,10 @@ public class PlayerContract {
         @Override
         public boolean handleMessage(Message msg) {
             if (mOnViewVisibleChangeList != null && mOnViewVisibleChangeList.size() > 0) {
-                for(NewTVLauncherPlayerView.OnPlayerStateChange stateChange : mOnViewVisibleChangeList) {
+                Iterator<NewTVLauncherPlayerView.OnPlayerStateChange> iterator =
+                        mOnViewVisibleChangeList.iterator();
+                while (iterator.hasNext()) {
+                    NewTVLauncherPlayerView.OnPlayerStateChange stateChange = iterator.next();
                     if (stateChange.onStateChange(isFullScreen, currentShow, isVideoPlaying)) {
                         break;
                     }
@@ -95,7 +99,7 @@ public class PlayerContract {
         LogUtils.d("PlayerContract", "set state = " + getStateType(state));
         currentState = state;
         boolean isPlaying = (state == STATE_VIDEO_PLAYING);
-        if(isPlaying != isVideoPlaying){
+        if (isPlaying != isVideoPlaying) {
             isVideoPlaying = isPlaying;
             notifyToUI();
         }
@@ -137,7 +141,11 @@ public class PlayerContract {
     }
 
     public boolean processKeyEvent(KeyEvent event) {
-        for(NewTVLauncherPlayerView.OnPlayerStateChange stateChange : mOnViewVisibleChangeList) {
+        if(mOnViewVisibleChangeList == null) return false;
+        Iterator<NewTVLauncherPlayerView.OnPlayerStateChange> iterator = mOnViewVisibleChangeList
+                .iterator();
+        while (iterator.hasNext()) {
+            NewTVLauncherPlayerView.OnPlayerStateChange stateChange = iterator.next();
             if (stateChange.processKeyEvent(event)) {
                 return true;
             }
