@@ -14,6 +14,7 @@ import com.newtv.libs.util.YSLogUtils;
 import java.util.LinkedHashMap;
 
 import tv.icntv.icntvplayersdk.BasePlayer;
+import tv.icntv.icntvplayersdk.Constants;
 import tv.icntv.icntvplayersdk.NewTVPlayerInfo;
 import tv.icntv.icntvplayersdk.NewTVPlayerInterface;
 import tv.icntv.icntvplayersdk.wrapper.NewTvPlayerWrapper;
@@ -220,6 +221,7 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
         icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
         icntvPlayerInfo.setDeviceId(Constant.UUID);
+        icntvPlayerInfo.setPlayType(Constants.PLAY_MODEL_LIVE);
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
                 .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), PlayerConfig
