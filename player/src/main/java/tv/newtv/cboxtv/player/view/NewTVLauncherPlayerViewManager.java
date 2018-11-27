@@ -34,6 +34,7 @@ public class NewTVLauncherPlayerViewManager {
 
     private boolean isLive = false;// 是否是直播？
     private List<ScreenListener> pendingListener = new ArrayList<>();
+    private String alternateId;
 
     private NewTVLauncherPlayerViewManager() {
     }
@@ -169,14 +170,14 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
-    public void playProgramSeries(Context context, Content programSeriesInfo, int
-            index, int position) {
-        playProgramSeries(context, programSeriesInfo, true, index, position);
-    }
-
     public void playProgramSeries(Context context, Content programSeriesInfo, boolean
             isNeedStartActivity, int index, int position) {
+        playProgramSeries(context,programSeriesInfo,isNeedStartActivity,index,position,"");
+    }
+    public void playProgramSeries(Context context, Content programSeriesInfo, boolean
+            isNeedStartActivity, int index, int position,String alternateId) {
         Log.i(TAG, "playProgramSeries: ");
+        this.alternateId = alternateId;
         if (programSeriesInfo == null || programSeriesInfo.getData() == null || programSeriesInfo
                 .getData().size() < 1) {
             Log.i(TAG, "playProgramSeries: programSeriesInfo==null");
@@ -201,9 +202,14 @@ public class NewTVLauncherPlayerViewManager {
             Log.i(TAG, "playProgramSeries: mNewTVLauncherPlayerView==null");
         }
     }
-
     public void playProgramSingle(Context context, Content programDetailInfo, int
             position, boolean openActivity) {
+        playProgramSingle(context,programDetailInfo,position,openActivity,"");
+    }
+
+    public void playProgramSingle(Context context, Content programDetailInfo, int
+            position, boolean openActivity,String alternateId) {
+        this.alternateId = alternateId;
         Log.i(TAG, "playProgramSingle: ");
         if (programDetailInfo == null) {
             Log.i(TAG, "playProgramSingle: programDetailInfo==null");
@@ -388,5 +394,9 @@ public class NewTVLauncherPlayerViewManager {
             }
             pendingListener.clear();
         }
+    }
+
+    public String getAlternateId() {
+        return alternateId;
     }
 }

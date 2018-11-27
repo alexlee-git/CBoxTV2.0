@@ -1720,7 +1720,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         VideoFrameLayout videoFrameLayout;
         boolean prepared = false;
         ViewParent parentViewGroup;      //父级容器
-        boolean isAlternate;
+        public boolean isAlternate;
 
         @Override
         public String toString() {
