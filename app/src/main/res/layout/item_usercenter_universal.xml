@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:id="@+id/id_module_view"
-             android:layout_width="@dimen/width_294px"
+             android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:clipChildren="false"
              android:clipToPadding="false"
@@ -71,8 +71,6 @@
         android:layout_marginTop="@dimen/height_399px"
         android:ellipsize="marquee"
         android:enabled="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"/>
 
