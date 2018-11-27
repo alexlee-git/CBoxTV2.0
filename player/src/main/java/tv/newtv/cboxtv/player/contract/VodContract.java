@@ -214,9 +214,11 @@ public class VodContract {
             videoDataStruct.setProgramId(playResult.getContentUUID());
 
             String duration = playResult.getDuration();
+
             if (!TextUtils.isEmpty(duration)) {
                 videoDataStruct.setDuration(Integer.parseInt(playResult
                         .getDuration()));
+                getContext().getSharedPreferences("durationConfig", Context.MODE_PRIVATE).edit().putString("duration", duration).apply();
             }
 
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
