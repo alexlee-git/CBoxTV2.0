@@ -38,6 +38,7 @@ internal abstract class BaseModel {
 
     fun destroy() {
         stop()
+        executors.clear()
     }
 
     abstract fun getType(): String

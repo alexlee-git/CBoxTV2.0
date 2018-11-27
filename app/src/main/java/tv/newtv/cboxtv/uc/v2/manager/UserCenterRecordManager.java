@@ -32,9 +32,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import tv.newtv.cboxtv.player.ProgramSeriesInfo;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectRemoteDataSource;
@@ -218,7 +216,13 @@ public class UserCenterRecordManager {
             //2018.10.23 wqs 避免duration为0导致的除数为0的异常
             String progress = "";
             if (duration > 0) {
-                progress = String.valueOf(position * 100 / duration);
+                //2018.11.25 wqs 规避由于详情页传的进度误差导致的进度没有达到100%问题，误差范围暂定为2000毫秒
+                if (duration > 2000 && position >= duration - 2000) {
+                    progress = "100";
+                } else {
+                    progress = String.valueOf(position * 100 / duration);
+                }
+
             } else {
                 progress = "0";
             }

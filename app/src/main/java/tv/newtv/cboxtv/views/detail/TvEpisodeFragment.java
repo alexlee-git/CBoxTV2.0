@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
@@ -274,6 +275,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
             mFocusView = null;
             mTitleView = null;
             itemView = null;
+            mImageView = null;
         }
 
         void select(){
@@ -297,7 +299,13 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
                 if (mTitleView != null) {
                     mTitleView.setText(programsInfo.getPeriods());
                 }
-
+                //为剧集页添加vip功能  1 单点包月  3vip  4单点
+                int vipFlag = Integer.parseInt(programsInfo.getVipFlag());
+                if (vipFlag == 3){
+                    mImageView.setVisibility(View.VISIBLE);
+                }else {
+                    mImageView.setVisibility(View.GONE);
+                }
             } else {
                 itemView.setVisibility(View.GONE);
             }
@@ -344,6 +352,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
         protected View itemView;
         TextView mTitleView;
         ViewGroup mFocusView;
+        ImageView mImageView;
         T mData;
 
         BaseHolder(View view) {
@@ -356,12 +365,13 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
                         mFocusView.setBackgroundResource(R.drawable.icon_details_series_focus);
                     } else {
                         mFocusView.setBackgroundResource(R.color.color_transparent);
-                        mTitleView.setBackgroundResource(R.drawable.shape_radius_3b446a);
+                        mTitleView.setBackgroundResource(R.drawable.shape_radius_vip);
                     }
                 }
             });
             mFocusView = view.findViewWithTag("tag_img_focus");
             mTitleView = view.findViewWithTag("tag_poster_title");
+            mImageView = view.findViewWithTag("tag_img_vip");
         }
 
         protected void viewFocusChange(View view, boolean b) {

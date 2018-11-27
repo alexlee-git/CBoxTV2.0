@@ -193,6 +193,14 @@ public class JumpUtil {
             LogUtils.i(Constant.TAG, "actionType : " + actionType);
             LogUtils.i(Constant.TAG, "contentType : " + contentType);
             LogUtils.i(Constant.TAG, "uuid:" + contentUUID);
+
+            // 如果是打开链接，uuid、actiontype可能都是空的，所以需要在最开始处判断
+            if (Constant.OPEN_LINK.equals(actionType)) { // 打开链接
+                Toast.makeText(context, R.string.no_link, Toast.LENGTH_LONG)
+                        .show();
+                return null;
+            }
+
             if (TextUtils.isEmpty(actionType)) {
                 Toast.makeText(LauncherApplication.AppContext, "ActionType值为空", Toast.LENGTH_SHORT)
                         .show();
@@ -244,9 +252,6 @@ public class JumpUtil {
                 }
             } else if (Constant.OPEN_FILTER.equals(actionType)) { // 打开列表页
                 jumpIntent = new Intent(context, ScreenListActivity.class);
-            } else if (Constant.OPEN_LINK.equals(actionType)) { // 打开链接
-                Toast.makeText(context, R.string.no_link, Toast.LENGTH_LONG)
-                        .show();
             } else if (Constant.OPEN_USERCENTER.equals(actionType)) { // 打开用户中心
                 Toast.makeText(context, R.string.not_support_direct_type, Toast.LENGTH_LONG)
                         .show();
