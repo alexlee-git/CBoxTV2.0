@@ -25,7 +25,7 @@ internal object Request {
         if (BuildConfig.DEBUG) {
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
         } else {
-            logInterceptor.level = HttpLoggingInterceptor.Level.NONE
+            logInterceptor.level = HttpLoggingInterceptor.Level.BASIC
         }
     }
 
