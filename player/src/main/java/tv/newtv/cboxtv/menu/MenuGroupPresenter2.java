@@ -615,8 +615,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     public void gone() {
-        NewTVLauncherPlayerViewManager.getInstance().setShowingView
-                (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
         handler.removeMessages(MESSAGE_GONE);
         menuGroup.gone();
     }

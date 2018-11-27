@@ -69,6 +69,7 @@ class AdContract {
 
     class AdPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
+
         override fun getCurrentAdItem(): ADHelper.AD.ADItem? {
             return adItem
         }

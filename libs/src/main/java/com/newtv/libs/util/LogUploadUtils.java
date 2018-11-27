@@ -101,14 +101,16 @@ public class LogUploadUtils {
 
     //传入68 外部推荐位跳转
     public static void uploadEnterAppLog(Context context) {
-        StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
-        PackageInfo pckInfo = null;
+//        StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
+
+        //外部跳转命令  终端不会上报两个多余参数：0&版本号
+//        PackageInfo pckInfo = null;
         try {
-            pckInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            dataBuff.append("0,")
-                    .append(pckInfo.versionName)
-                    .trimToSize();
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_JUMP, dataBuff.toString());//外部跳转
+//            pckInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+//            dataBuff.append("0,")
+//                    .append(pckInfo.versionName)
+//                    .trimToSize();
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_JUMP, "");//外部跳转
         } catch (Exception e) {
             e.printStackTrace();
         }

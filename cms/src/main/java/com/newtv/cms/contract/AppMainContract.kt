@@ -57,10 +57,14 @@ class AppMainContract {
             }
         }
 
+        private var clockService:IClock?  = null
+
         init {
             initLogUpload(context)
             syncServiceTime()
             registTimeSync(context)
+
+            clockService = getService<IClock>(CmsServicePresenter.SERVICE_CLOCK)
         }
 
         override fun destroy() {
@@ -72,8 +76,8 @@ class AppMainContract {
         }
 
         override fun syncServiceTime() {
-            val clock = getService<IClock>(CmsServicePresenter.SERVICE_CLOCK)
-            clock?.sync(object : DataObserver<Time> {
+
+            clockService?.sync(object : DataObserver<Time> {
                 override fun onResult(result: Time, requestCode: Long) {
                     if ("1" == result.statusCode) {
                         oldSystemTime = SystemClock.elapsedRealtime()

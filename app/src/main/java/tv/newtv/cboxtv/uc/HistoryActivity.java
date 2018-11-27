@@ -264,7 +264,7 @@ public class HistoryActivity extends FragmentActivity implements
 
 
         visibleRect.left -= (mBitmap.getWidth() - w) / 2 + 2;
-        visibleRect.top -= (mBitmap.getHeight() - h) / 2;
+//        visibleRect.top -= (mBitmap.getHeight() - h) / 2;
         focusView.destroyDrawingCache();
         focusView.setDrawingCacheEnabled(false);
 
@@ -474,7 +474,24 @@ public class HistoryActivity extends FragmentActivity implements
                                             new DBCallback<String>() {
                                                 @Override
                                                 public void onResult(int code, String result) {
-                                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "2," + " ");//清空所有历史记录
+                                                    //清空所有历史记录，上传seriesID字段
+                                                    StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
+                                                    for (int i = 0; i < mCollectBean.size(); i++) {
+                                                        if(i<mCollectBean.size()-1)
+                                                        {
+                                                            dataBuff.append(mCollectBean.get(i)._contentuuid)
+                                                                    .append(",");
+                                                        }
+                                                        if(i==mCollectBean.size()-1)
+                                                        {
+                                                            dataBuff.append(mCollectBean.get(i)._contentuuid)
+                                                                    .trimToSize();
+                                                        }
+                                                    }
+
+                                                    LogUploadUtils.uploadLog(Constant
+                                                            .LOG_NODE_HISTORY, "2," + dataBuff.toString());//清空所有历史记录
+
                                                     mRecyclerView.post(new Runnable() {
                                                         @Override
                                                         public void run() {

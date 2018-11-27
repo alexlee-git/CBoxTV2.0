@@ -26,7 +26,6 @@ internal class PlayChkModel : BaseModel(), IPlayChk {
         executor.observer(observer)
                 .execute()
         return executor.getID()
-
     }
 
     override fun getType(): String {

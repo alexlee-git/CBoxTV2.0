@@ -42,6 +42,7 @@ import tv.newtv.cboxtv.menu.model.LastMenuBean;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.player.R;
 import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -892,6 +893,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public void show() {
         show(playProgram);
+
     }
 
     public void show(Program playProgram) {
@@ -902,6 +904,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             currentX = -(size * recyclerViewWidth);
             showView(playProgram);
             checkFocus();
+
+            NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
+                    .SHOWING_PROGRAM_TREE);
         }
     }
 
@@ -940,6 +945,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         //播放消失动画
         goneAnimator();
 
+        NewTVLauncherPlayerViewManager.getInstance().setShowingView
+                (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
 
         String duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
         if (!TextUtils.isEmpty(duration)){
@@ -964,6 +971,11 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         float current = currentX;
         currentX = currentX + recyclerViewWidth * VISIBLE_COLUMN;
         startAnim(new AnimEntity(current, currentX));
+        String    duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
+        if (!TextUtils.isEmpty(duration)){
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+        }
     }
 
     private void goneAnimator() {

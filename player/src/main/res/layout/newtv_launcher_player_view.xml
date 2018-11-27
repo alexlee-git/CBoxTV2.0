@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:id="@+id/root_view"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+             android:layout_width="match_parent" android:layout_height="match_parent">
     <!--播放容器-->
     <tv.newtv.cboxtv.player.view.VideoFrameLayout
         android:id="@+id/player_view_framelayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <SurfaceView android:layout_width="0px" android:layout_height="0px"/>
+        <SurfaceView android:layout_width="0px"
+                     android:layout_height="0px"/>
     </tv.newtv.cboxtv.player.view.VideoFrameLayout>
 
     <tv.newtv.cboxtv.player.view.NewTVLauncherPlayerLoading
         android:id="@+id/player_loading"
         android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
     <ImageView
         android:id="@+id/player_pause_image"
         android:layout_width="@dimen/width_200px"
@@ -28,41 +30,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
-        />
+    />
 
     <TextView
         android:id="@+id/hint_vip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="right"
         android:layout_marginTop="@dimen/width_20px"
         android:layout_marginRight="@dimen/width_20px"
-        android:layout_gravity="right"
         android:text="按确定键购买VIP可完整观看本片"
         android:visibility="gone"
-        />
-    <!--<tv.newtv.launcher.player.view.NewTVLauncherPlayerExit
-        android:id="@+id/player_exit_area"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/height_800px"
-        android:layout_marginTop="@dimen/height_200px"
-        android:visibility="invisible"/>-->
-    <!--<tv.newtv.cboxtv.player.view.PlayerNumberProgramSelector-->
-        <!--android:id="@+id/player_number_program_selector"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:visibility="invisible"/>-->
+    />
 
-    <!--<tv.newtv.cboxtv.player.view.PlayerNameProgramSelector-->
-        <!--android:id="@+id/player_name_program_selector"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:visibility="invisible"/>-->
-
-    <!--<tv.newtv.cboxtv.player.view.NewTVLauncherPlayerSetting-->
-        <!--android:id="@+id/player_setting"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:visibility="invisible"/>-->
 </FrameLayout>
 
 

@@ -1,20 +1,33 @@
 <Service id="DeviceBoot">
     <addressList>
+        <!--播控鉴权-->
         <address url="https://account.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="PERMISSTION_CHECK"/>
+        <!--搜索-->
         <address url="http://search.cloud.ottcn.com:8080/" debug="http://search.cloud.ottcn.com:8080/" name="SEARCH"/>
+        <!--认证激活-->
         <address url="https://terminal.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="ACTIVATE"/>
+
         <address url="https://bzo.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="IS_ORIENTED"/>
+        <!--CDN-->
         <address url="https://cdndispatchnewtv.ottcn.com" debug="https://cdndispatchnewtv.ottcn.com" name="CDN"/>
+        <!--检测升级-->
         <address url="https://bzo.cloud.ottcn.com/" debug="http://stage-bzo.cloud.ottcn.com/" name="VERSION_UP"/>
+        <!--域名配置-->
         <address url="http://newtv.boot.ottcn.com:8080/" debug="http://111.32.138.57:8080/" name="BOOT_GUIDE"/>
+        <!--服务器时间-->
         <address url="https://bzo.cloud.ottcn.com/" debug="https://bzo.cloud.ottcn.com/" name="SERVER_TIME"/>
+        <!--CMS3.1 搜索域名-->
         <address url="http://searchapi.cloud.ottcn.com/" debug="http://111.32.138.57:80/" name="NEW_SEARCH"/>
+        <!--广告域名-->
         <address url="https://api.adott.ottcn.com/" debug="http://api.adott.ottcn.org/" name="AD"/>
+        <!--LOG域名-->
         <address url="log.cloud.ottcn.com:14630" debug="log.cloud.ottcn.com:14630" name="LOG"/>
+        <!--CMS 域名-->
         <address url="http://epg.cloud.ottcn.com/" debug="http://111.32.132.156/" name="CMS"/>
         <address url="http://stage-bzo.cloud.ottcn.com/" name="USER_BEHAVIOR"/>
         <address url="https://terminal2.cloud.ottcn.com/" name="ACTIVATE2"/>
         <address url="http://stage-bzo.cloud.ottcn.com/" name="PRODUCT"/>
+        <!--CMS3.1 域名-->
         <address url="http://testcms31.ottcn.com:30013/" name="NEW_CMS"/>
         <address url="http://stage-bzo.cloud.ottcn.com/" name="USER"/>
         <address url="https://k.cloud.ottcn.com" name="DYNAMIC_KEY"/>
