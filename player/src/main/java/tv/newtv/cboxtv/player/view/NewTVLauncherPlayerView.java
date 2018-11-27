@@ -655,6 +655,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void release() {
+        if(isReleased) return;
+        isReleased = true;
         addHistory();
         Log.i(TAG, "release: ");
         if (listener != null) {
@@ -681,7 +683,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         hidePauseImage();
 
-        isReleased = true;
+
         if (buyGoodsBusiness != null) {
             buyGoodsBusiness.onDestroy();
             buyGoodsBusiness = null;
@@ -1491,10 +1493,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 && defaultConfig.programSeriesInfo.getData().get(index).getUseSeriesSubUUID()) {
             return;
         }
+
         Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
                 getDuration());
-
-
     }
 
     public boolean isADPlaying() {
