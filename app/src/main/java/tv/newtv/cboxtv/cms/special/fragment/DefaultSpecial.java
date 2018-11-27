@@ -19,6 +19,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.special.viewholder.SpecialUniversalAdapter;
+import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 
 /**
  * 项目名称:         CBoxTV
@@ -87,24 +88,17 @@ public class DefaultSpecial extends BaseSpecialContentFragment {
     }
 
     private void updateUI(){
-//        if (mModuleInfoResult.get() != 0) {
-//            mPageFavoriteButton.setVisibility(View.VISIBLE);
-//        } else {
-//            mPageFavoriteButton.setVisibility(View.GONE);
-//        }
 
         setTitleText(mModuleInfoResult);
         UniversalAdapter adapter = (UniversalAdapter) mRecyclerView.getAdapter();
+        mDatas = mModuleInfoResult.getData();
+        ModuleLayoutManager.getInstance().filterLayoutDatas(mDatas);
         if (adapter == null) {
-            mDatas = mModuleInfoResult.getData();
             adapter = new SpecialUniversalAdapter(getContext(), mDatas);
              LogUtils.e(TAG, "DefaultSpecial_mDatas : "+mDatas);
-
             adapter.setHasStableIds(true);
             mRecyclerView.setAdapter(adapter);
         } else {
-            mDatas.clear();
-            mDatas.addAll(mModuleInfoResult.getData());
             adapter.notifyDataSetChanged();
             adapter.showFirstLineTitle(true);
         }

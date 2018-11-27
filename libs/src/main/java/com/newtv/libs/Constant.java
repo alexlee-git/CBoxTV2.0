@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class Constant {
 
     //是否启用轮播
-    public static final boolean canUseAlternate  = true;
+    public static final boolean canUseAlternate  = false;
 
     public static final boolean isLocalData = false;
     public static final String AdCache = Environment.getExternalStorageDirectory()
