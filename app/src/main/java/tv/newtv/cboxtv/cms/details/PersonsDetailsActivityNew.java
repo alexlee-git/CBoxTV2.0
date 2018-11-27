@@ -117,10 +117,12 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
         taProgramView.setOnItemClick(new onEpisodeItemClick<SubContent>() {
             @Override
             public boolean onItemClick(int position, SubContent data) {
-                if (System.currentTimeMillis() - lastTime >= 2000) {//判断距离上次点击小于2秒
-                    lastTime = System.currentTimeMillis();//记录这次点击时间
-                    JumpUtil.detailsJumpActivity(getApplicationContext(), data.getContentType(), data
-                            .getContentID());
+                if (!TextUtils.isEmpty(data.getContentType())) {
+                    if (System.currentTimeMillis() - lastTime >= 2000) {//判断距离上次点击小于2秒
+                        lastTime = System.currentTimeMillis();//记录这次点击时间
+                        JumpUtil.detailsJumpActivity(getApplicationContext(), data.getContentType(), data
+                                .getContentID());
+                    }
                 }
                 return true;
             }

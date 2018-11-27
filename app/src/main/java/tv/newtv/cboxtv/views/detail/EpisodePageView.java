@@ -491,16 +491,12 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                     mUpTitle.setText("已更新" + seriesContent.getRecentNum() + "集");
                 } else if(seriesContent != null && "1".equals(seriesContent.isFinish())){
                     mUpTitle.setText("共"+seriesContent.getSeriesSum()+"集已剧终");
-                }else {
-                    mUpTitle.setText("没有相关剧集信息");
                 }
             }else {
                 if (seriesContent != null && "0".equals(seriesContent.isFinish())) {//没有更新完
                     mUpTitle.setText("更新到"+seriesContent.getUpdateDate()+"第"+seriesContent.getRecentNum()+"期");
                 } else if(seriesContent != null && "1".equals(seriesContent.isFinish())){
                     mUpTitle.setText("已收官");
-                }else {
-                    mUpTitle.setText("没有相关节目信息");
                 }
             }
             LayoutParams layoutParams = (LayoutParams) TitleView.getLayoutParams();
