@@ -93,7 +93,7 @@ public class UserCenterUtils {
                 bundle.putString(DBConfig.VIDEO_TYPE, mProgramSeriesInfo.getVideoType());
                 bundle.putString(DBConfig.TOTAL_CNT, mProgramSeriesInfo.getSeriesSum());
                 //bundle.putString(DBConfig.SUPERSCRIPT, mProgramSeriesInfo.getrSuperScript());
-                bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentUUID());
+                bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentID());
                 bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
                 bundle.putString(DBConfig.PLAYINDEX, valueOf(index));
                 bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
@@ -129,6 +129,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -142,6 +143,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -208,6 +210,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         } else {
@@ -223,6 +226,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -270,6 +274,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         } else {
@@ -286,6 +291,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -353,6 +359,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     contentType,
+                    null,
                     dbCallback
             );
         } else {
@@ -369,6 +376,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
