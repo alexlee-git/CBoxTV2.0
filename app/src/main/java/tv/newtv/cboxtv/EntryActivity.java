@@ -416,8 +416,9 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
 
         logBuff.append(0 + ",")
+                .append(""+",")
                 .append( "SOFT"+ ",")
-                .append(packageName+",")
+                .append(packageName)
                 .trimToSize();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_AUTH_INFO, logBuff

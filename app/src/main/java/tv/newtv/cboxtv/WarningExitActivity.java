@@ -42,7 +42,6 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
     private AdContract.Presenter mAdPresenter;
     private boolean isAd = false;
     private String eventContent = "";
-    private ModelResult<ArrayList<Page>> page;
     private Program program;
 
     @Override
@@ -154,7 +153,9 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                         @Override
                         public void onSuccess() {
                             ADHelper.AD.ADItem item = mAdPresenter.getCurrentAdItem();
-                            eventContent = item.eventContent;
+                            if (item!=null&&!TextUtils.isEmpty( item.eventContent)){
+                                eventContent = item.eventContent;
+                            }
                             if (item != null && !TextUtils.isEmpty(item.mid) && !TextUtils
                                     .isEmpty(item.aid) && !TextUtils.isEmpty(item.id)) {
                                 AdSDK.getInstance().report((item.mid + ""), item.aid + "", item
@@ -192,9 +193,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void onPageResult(@NotNull ModelResult<ArrayList<Page>> page) {
-        this.page = page;
         program = page.getData().get(0).getPrograms().get(0);
-
         if (program != null && program.isAd() != 1) {
             if (!TextUtils.isEmpty(program.getImg())) {
                 Picasso.get().load(program.getImg()).into(exit_image);
