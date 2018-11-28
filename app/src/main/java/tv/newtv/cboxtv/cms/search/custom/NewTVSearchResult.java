@@ -79,9 +79,9 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     public List<SearchBaseFragment> mFragments;
     private SearchViewPagerAdapter mViewPagerAdapter;
 
-    ColumnFragment mColumnFragment;
-    PersonFragment mPersonFragment;
-    DramaFragment mDramaFragment;
+    public ColumnFragment mColumnFragment;
+    public PersonFragment mPersonFragment;
+    public DramaFragment mDramaFragment;
 
 
     public NewTVSearchResult(Context context) {
