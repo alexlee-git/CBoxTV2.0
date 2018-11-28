@@ -226,7 +226,9 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
             }
             currentPos = -1;
             mIsLoading = false;
-            mSearchPresenter.stop();
+            if (mSearchPresenter != null){
+                mSearchPresenter.stop();
+            }
             inputKeyChange();
             notifyToDataInfoResult(true);
             return;
@@ -337,13 +339,11 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyPresenter(){
         if (mSearchPresenter != null){
-            LogUtils.e("mSearchPresenter","mSearchPresenter 111111111111");
             mSearchPresenter.destroy();
             mSearchPresenter = null;
         }
     }
+
 }

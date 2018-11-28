@@ -224,10 +224,20 @@ public class SearchActivity extends FragmentActivity {
             mSearchViewKeyboard = null;
         }
         if(mSearchResult != null){
+            if (mSearchResult.mColumnFragment != null){
+                mSearchResult.mColumnFragment.onDestroyPresenter();
+            }
+            if (mSearchResult.mDramaFragment != null){
+                mSearchResult.mDramaFragment.onDestroyPresenter();
+            }
+            if (mSearchResult.mPersonFragment != null){
+                mSearchResult.mPersonFragment.onDestroyPresenter();
+            }
             mSearchResult = null;
         }
         if(mRelativeLayout != null){
             mRelativeLayout = null;
         }
+
     }
 }
