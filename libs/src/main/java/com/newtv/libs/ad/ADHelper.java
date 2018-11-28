@@ -191,6 +191,9 @@ public class ADHelper {
             @Override
             protected void error(BaseDownloadTask task, Throwable e) {
                 Log.e("ADHelper", "download error complete:" + e.getMessage());
+                if (mCancel) {
+                    return;
+                }
                 countDownLatch.countDown();
                 int index = (int) task.getTag();
                 AD.ADItem adItem = adItems.get(index);

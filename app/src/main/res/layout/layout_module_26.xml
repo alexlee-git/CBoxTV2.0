@@ -62,13 +62,13 @@
         android:layout_width="@dimen/width_594px"
         android:layout_height="@dimen/height_362px"
         android:layout_below="@id/id_module_3_title"
-        android:layout_marginLeft="@dimen/width_663px"
+        android:layout_marginLeft="@dimen/_width_18px"
         android:layout_marginTop="@dimen/height_15px"
+        android:layout_toRightOf="@id/id_module_3_view1"
         android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
-        android:tag="cell_026_2"
-        android:layout_marginStart="@dimen/width_663px">
+        android:tag="cell_026_2">
 
         <!--海报-->
         <tv.newtv.cboxtv.views.custom.RecycleImageView
@@ -83,13 +83,13 @@
         android:layout_width="@dimen/width_594px"
         android:layout_height="@dimen/height_362px"
         android:layout_below="@id/id_module_3_title"
-        android:layout_marginLeft="@dimen/width_1245px"
+        android:layout_marginLeft="@dimen/_width_18px"
         android:layout_marginTop="@dimen/height_15px"
+        android:layout_toRightOf="@id/id_module_3_view2"
         android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true"
-        android:tag="cell_026_3"
-        android:layout_marginStart="@dimen/width_1245px">
+        android:tag="cell_026_3">
 
         <!--海报-->
         <tv.newtv.cboxtv.views.custom.RecycleImageView

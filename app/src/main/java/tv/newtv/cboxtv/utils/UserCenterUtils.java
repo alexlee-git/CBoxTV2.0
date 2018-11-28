@@ -153,7 +153,7 @@ public class UserCenterUtils {
     }
 
     //添加收藏
-    public static void addCollect(Content mProgramSeriesInfo, DBCallback<String> dbCallback) {
+    public static void addCollect(Content mProgramSeriesInfo, int index, DBCallback<String> dbCallback) {
         /*programset_id 节目ID
             programset_name 节目名称
             is_program 节目类型,是否为节目集(0-节目集，1-普通节目)
@@ -177,6 +177,15 @@ public class UserCenterUtils {
             //bundle.putString(DBConfig.SUPERSCRIPT, mProgramSeriesInfo.getrSuperScript());
             bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
             bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+
+            List<SubContent> subContents = mProgramSeriesInfo.getData();
+            if (subContents != null && subContents.size() > 0) {
+                if (index >= 0 && index < subContents.size()) {
+                    SubContent subContent = subContents.get(index);
+                    bundle.putString(DBConfig.PROGRAM_CHILD_NAME, subContent.getTitle());
+                    bundle.putString(DBConfig.PLAYID, subContent.getContentUUID());
+                }
+            }
 
             UserCenterRecordManager.getInstance().addRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_COLLECT,

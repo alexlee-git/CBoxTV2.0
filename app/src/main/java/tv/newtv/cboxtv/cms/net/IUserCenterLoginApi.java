@@ -199,7 +199,8 @@ public interface IUserCenterLoginApi {
                                         @Field("superscript") String superscript,
                                         @Field("content_type") String content_type,
                                         @Field("latest_episode") String latest_episode,
-                                        @Field("action_type") String action_type);
+                                        @Field("action_type") String action_type,
+                                        @Field("program_child_name") String programChildName);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @DELETE("/gazella/service/collections/del")

@@ -107,12 +107,12 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
 
     private void setItemStatus(int position) {
         if (mSelectIdList.contains(position) && mSpecialData.get(position).isPlay()) {
-            if (null != mCenterHolder.mPlayerIcon && null != mCenterHolder.topicContainer) {
+            if (null != mCenterHolder && null != mCenterHolder.mPlayerIcon && null != mCenterHolder.topicContainer) {
                 mCenterHolder.mPlayerIcon.setVisibility(View.VISIBLE);
                 mCenterHolder.topicContainer.setBackgroundResource(R.drawable.xuanhong);
             }
         } else {
-            if (null != mCenterHolder.mPlayerIcon && null != mCenterHolder.topicContainer) {
+            if (null != mCenterHolder && null != mCenterHolder.mPlayerIcon && null != mCenterHolder.topicContainer) {
                 mCenterHolder.mPlayerIcon.setVisibility(View.GONE);
                 mCenterHolder.topicContainer.setBackgroundColor(Color.parseColor("#00000000"));
             }
