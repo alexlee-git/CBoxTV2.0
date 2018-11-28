@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
-import com.newtv.libs.util.LogUtils;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
  * 修改时间：2018/4/30 0029 18:40
  * 修改备注：新增人物页
  */
-public class PersonFragment extends BaseFragment{
+public class PersonFragment extends SearchBaseFragment {
 
     private SearchRecyclerView mRecyclerView;
     private TextView mEmptyView;
