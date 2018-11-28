@@ -1546,9 +1546,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             hintVip.setVisibility(View.GONE);
         }
 
-        if (defaultConfig.programSeriesInfo != null && Constant.CONTENTTYPE_CG.equals
-                (defaultConfig.programSeriesInfo
-                        .getContentType())) {
+        if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals
+                (defaultConfig.programSeriesInfo.getContentType())
+                || Constant.CONTENTTYPE_TV.equals(defaultConfig.programSeriesInfo.getContentType()))) {
             videoDataStruct.setSeriesId(defaultConfig.programSeriesInfo.getContentID());
             ADConfig.getInstance().setSeriesID(defaultConfig.programSeriesInfo.getContentID(),
                     false);
