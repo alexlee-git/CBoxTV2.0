@@ -33,6 +33,7 @@ import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
+import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
 /**
@@ -326,10 +327,12 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     }
 
 
+
     private void updateRecycleView(@Nullable final List<Page> pageList) {
         mPageList = pageList;
         if (contentView == null || mRecyclerView == null) return;
         if (mPageList != null && mPageList.size() > 0) {
+            ModuleLayoutManager.getInstance().filterLayoutDatas(mPageList);
             adapter = (UniversalAdapter) mRecyclerView.getAdapter();
             if (adapter == null) {
                 ScrollSpeedLinearLayoutManger layoutManager = new ScrollSpeedLinearLayoutManger

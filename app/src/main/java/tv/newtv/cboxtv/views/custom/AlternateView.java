@@ -384,22 +384,24 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (TextUtils.equals(playContentId, uuid)) {
-            if (content != null && content.getData() != null) {
-                ArrayList<SubContent> subContents = new ArrayList<>();
-                for (SubContent sub : content.getData()) {
-                    if (TextUtils.equals(sub.getContentUUID(), playContentUUID)) {
-                        subContents.add(sub);
-                        break;
+            if (content != null) {
+                if(content.getData() != null) {
+                    ArrayList<SubContent> subContents = new ArrayList<>();
+                    for (SubContent sub : content.getData()) {
+                        if (TextUtils.equals(sub.getContentUUID(), playContentUUID)) {
+                            subContents.add(sub);
+                            break;
+                        }
                     }
+                    content.setData(subContents);
                 }
-                content.setData(subContents);
                 prepareMediaPlayer();
                 playerView.setSeriesInfo(content);
 
                 currentStartTime = CmsUtil.parse(currentAlternate.getStartTime());
                 initialize();
                 playerView.playSingleOrSeries(0,
-                        (int) (System.currentTimeMillis() - currentStartTime));
+                        (int) (System.currentTimeMillis() - currentStartTime),mContentUUID);
             }
         }
     }
