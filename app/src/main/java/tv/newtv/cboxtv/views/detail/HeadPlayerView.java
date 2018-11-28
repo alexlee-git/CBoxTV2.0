@@ -383,7 +383,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     }
                                                                 });
                                             } else {
-                                                UserCenterUtils.addCollect(mInfo, new
+                                                UserCenterUtils.addCollect(mInfo, currentPlayIndex, new
                                                         DBCallback<String>() {
                                                             @Override
                                                             public void onResult(int code, String
