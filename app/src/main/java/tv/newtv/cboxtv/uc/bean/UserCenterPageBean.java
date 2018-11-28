@@ -61,6 +61,9 @@ public class UserCenterPageBean {
         @SerializedName("_content_duration")
         public String duration; // 影片时长
 
+        @SerializedName("_program_child_name")
+        public String programChildName;
+
         public String get_contentuuid() {
             return _contentuuid;
         }
@@ -211,6 +214,14 @@ public class UserCenterPageBean {
 
         public void setDuration(String duration) {
             this.duration = duration;
+        }
+
+        public String getProgramChildName() {
+            return programChildName;
+        }
+
+        public void setProgramChildName(String programChildName) {
+            this.programChildName = programChildName;
         }
     }
 }

@@ -154,7 +154,8 @@ public interface IUserCenterLoginApi {
                                         @Field("superscript") String superscript,
                                         @Field("content_type") String contentType,
                                         @Field("latest_episode") String curEpisode,
-                                        @Field("action_type") String actionType);
+                                        @Field("action_type") String actionType,
+                                        @Field("program_child_name") String programChildId);
 
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)

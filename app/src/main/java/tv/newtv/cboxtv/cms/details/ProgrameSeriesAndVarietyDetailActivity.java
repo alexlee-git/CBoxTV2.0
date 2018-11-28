@@ -83,6 +83,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
             //requestData();
             initLoginStatus();
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);

@@ -102,6 +102,8 @@ public class ColumnPageActivity extends DetailPageActivity {
             return;
         }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
+
         ADConfig.getInstance().setSeriesID(contentUUID);
 
         initLoginStatus();
