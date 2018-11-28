@@ -220,5 +220,14 @@ public class SearchActivity extends FragmentActivity {
             mHotRecommend.destroy();
             mHotRecommend = null;
         }
+        if(mSearchViewKeyboard != null){
+            mSearchViewKeyboard = null;
+        }
+        if(mSearchResult != null){
+            mSearchResult = null;
+        }
+        if(mRelativeLayout != null){
+            mRelativeLayout = null;
+        }
     }
 }
