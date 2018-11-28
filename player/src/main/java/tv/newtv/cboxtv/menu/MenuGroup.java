@@ -1124,6 +1124,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
     }
 
+    public void notifyLastAdapter(){
+        getLastAdapter().notifyDataSetChanged();
+    }
+
     public interface RecreateListener{
 
         void success(LastMenuBean lastMenuBean);

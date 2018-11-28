@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,6 +27,8 @@ import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
+import com.newtv.libs.util.SharePreferenceUtils;
+import com.newtv.libs.util.SystemUtils;
 
 import org.json.JSONObject;
 
@@ -40,7 +44,7 @@ import tv.newtv.cboxtv.menu.model.CategoryContent;
 import tv.newtv.cboxtv.menu.model.CategoryTree;
 import tv.newtv.cboxtv.menu.model.Content;
 import tv.newtv.cboxtv.menu.model.DBProgram;
-import tv.newtv.cboxtv.menu.model.LastMenuBean;
+import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.LocalNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
@@ -168,6 +172,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             public void select(Program program) {
                 playProgram = program;
                 if(LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())){
+                    if(program.isCollect()){
+                        deleteLbCollect(program);
+                    }else {
+                        addLbCollect(program);
+                    }
                     return;
                 }
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
@@ -793,5 +802,81 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
         }
         return "";
+    }
+
+
+    private void addLbCollect(final Program program){
+        if(program == null || program.getParent() == null){
+            return;
+        }
+        Node node = program.getParent();
+        if(!(node instanceof LastNode)){
+            return;
+        }
+        LastNode lastNode = (LastNode) node;
+
+        String userId = "";
+        String token = SharePreferenceUtils.getToken(context);
+        if (!TextUtils.isEmpty(token)) {
+            userId = SharePreferenceUtils.getUserId(context);
+        } else {
+            userId = SystemUtils.getDeviceMac(context);
+        }
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBConfig.CONTENTUUID,lastNode.contentUUID);
+        contentValues.put(DBConfig.CONTENT_ID,lastNode.contentId);
+        contentValues.put(DBConfig.TITLE_NAME,lastNode.getTitle());
+        contentValues.put(DBConfig.IS_FINISH,lastNode.isFinish);
+        contentValues.put(DBConfig.REAL_EXCLUSIVE,lastNode.realExclusive);
+        contentValues.put(DBConfig.ISSUE_DATE,lastNode.issuedate);
+        contentValues.put(DBConfig.LAST_PUBLISH_DATE,lastNode.lastPublishDate);
+        contentValues.put(DBConfig.SUB_TITLE,lastNode.subTitle);
+        contentValues.put(DBConfig.UPDATE_TIME,System.currentTimeMillis());
+        contentValues.put(DBConfig.USERID,userId);
+        contentValues.put(DBConfig.V_IMAGE,lastNode.vImage);
+        contentValues.put(DBConfig.H_IMAGE,lastNode.hImage);
+        contentValues.put(DBConfig.VIP_FLAG,lastNode.vipFlag);
+        contentValues.put(DBConfig.CONTENTTYPE,lastNode.getContentType());
+
+        DataSupport.insertOrReplace(DBConfig.LB_COLLECT_TABLE_NAME)
+                .withValue(contentValues)
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if(code == 0) {
+                            Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT).show();
+                            program.setCollect(true);
+                            menuGroup.notifyLastAdapter();
+                        }
+                    }
+                }).excute();
+
+    }
+
+    private void deleteLbCollect(final Program program){
+        if(program == null || program.getParent() == null){
+            return;
+        }
+        Node node = program.getParent();
+        if(!(node instanceof LastNode)){
+            return;
+        }
+        LastNode lastNode = (LastNode) node;
+
+        DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
+                .condition()
+                .eq(DBConfig.CONTENTUUID, lastNode.contentUUID)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if(code == 0) {
+                            Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
+                            program.setCollect(false);
+                            menuGroup.notifyLastAdapter();
+                        }
+                    }
+                }).excute();
     }
 }

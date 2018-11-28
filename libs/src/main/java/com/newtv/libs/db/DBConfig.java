@@ -28,7 +28,7 @@ public final class DBConfig {
     }
 
     /* database version code */
-    public static final int DB_VERSION = 3;  //数据库表添加一列，升级数据库
+    public static final int DB_VERSION = 4;  //数据库表添加一列，升级数据库
 
     /* database table names */
     public static final String COLLECT_TABLE_NAME   = "user_collect_info";//我的收藏
@@ -40,6 +40,8 @@ public final class DBConfig {
     public static final String REMOTE_ATTENTION_TABLE_NAME = "remote_user_attention_info";//我的关注
     public static final String REMOTE_SUBSCRIBE_TABLE_NAME = "remote_user_subscribe_info";//我的订阅
     public static final String REMOTE_HISTORY_TABLE_NAME   = "remote_user_history_info";//历史记录
+
+    public static final String LB_COLLECT_TABLE_NAME = "lb_user_colllect_info";//轮播台收藏
 
 
     /* VideoDetail db fields */
@@ -62,8 +64,35 @@ public final class DBConfig {
     public static final String UPDATE_SUPERSCRIPT = "_update_superscript"; // 是否展示更新角标
     public static final String CONTENT_DURATION = "_content_duration"; // 内容时长
     public static final String EPISODE_NUM   = "_episode_num";
+    public static final String CONTENT_ID = "_contentid";
 
     public static final String ORDER_BY_TIME = UPDATE_TIME + " desc";//排序条件
+    public static final String IS_FINISH = "_is_finish";//是否结束
+    public static final String REAL_EXCLUSIVE = "_real_exclusive";//运营标识
+    public static final String ISSUE_DATE = "_issue_date";
+    public static final String LAST_PUBLISH_DATE = "_last_publish_date";
+    public static final String SUB_TITLE = "_sub_title";//子标题
+    public static final String V_IMAGE = "_v_image";
+    public static final String H_IMAGE = "_h_image";
+    public static final String VIP_FLAG = "_vip_flag";//付费标识
+
+    static final String CREATE_LB_COLLECT_TABLE_SQL =
+            "create table "+ LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
+                    TITLE_NAME + " varchar2(1000)," +
+                    IS_FINISH + " varchar2(1000)," +
+                    REAL_EXCLUSIVE + " varchar2(1000)," +
+                    ISSUE_DATE + " varchar2(1000)," +
+                    LAST_PUBLISH_DATE + " varchar2(1000)," +
+                    SUB_TITLE + " varchar2(1000)," +
+                    UPDATE_TIME + " long," +
+                    USERID + " varchar2(1000)," +
+                    V_IMAGE + " varchar2(1000)," +
+                    H_IMAGE + " varchar2(1000)," +
+                    VIP_FLAG + " varchar2(1000)," +
+                    CONTENTTYPE + " varchar2(1000)" +
+                    ")";
 
     static final String CREATE_REMOTE_COLLECT_TABLE_SQL =
             "create table " + REMOTE_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +

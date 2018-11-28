@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_collect"
-        android:layout_width="@dimen/width_22px"
-        android:layout_height="@dimen/width_22px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:src="@drawable/menu_group_collect_unfocus"
         android:layout_gravity="center_vertical"
         />
