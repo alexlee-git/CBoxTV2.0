@@ -154,7 +154,9 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                         @Override
                         public void onSuccess() {
                             ADHelper.AD.ADItem item = mAdPresenter.getCurrentAdItem();
-                            eventContent = item.eventContent;
+                            if (item!=null && !TextUtils.isEmpty(eventContent)){
+                                eventContent = item.eventContent;
+                            }
                             if (item != null && !TextUtils.isEmpty(item.mid) && !TextUtils
                                     .isEmpty(item.aid) && !TextUtils.isEmpty(item.id)) {
                                 AdSDK.getInstance().report((item.mid + ""), item.aid + "", item
