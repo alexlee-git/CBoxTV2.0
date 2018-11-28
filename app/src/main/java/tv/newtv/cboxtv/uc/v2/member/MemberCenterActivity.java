@@ -696,11 +696,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 return;
             }
             intent.setClass(this, mPageClass);
-            if (!isBackground){
-                ActivityStacks.get().finishAllActivity();
-                startActivity(intent);
-            }
+            startActivity(intent);
             if (mPageClass == MainActivity.class) {
+                if (!isBackground){
+                    ActivityStacks.get().finishAllActivity();
+                }
                 this.finish();
             }
         } catch (Exception e) {

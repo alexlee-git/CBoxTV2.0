@@ -15,7 +15,7 @@ import retrofit2.http.Path
  * 创建日期:          2018/9/26
  */
 internal interface ICornerRetro {
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/corner/corner.json")
     fun getCorner(@Path("appkey") appkey: String, @Path("channelCode") channelid: String):
             Observable<ResponseBody>

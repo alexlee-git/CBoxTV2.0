@@ -98,12 +98,12 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                 case BootGuide.PRODUCT:
                     newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.PRODUCT));
                     break;
-                case BootGuide.NEW_CMS:
-                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.NEW_CMS));
-                    break;
-                case BootGuide.NEW_SEARCH:
-                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.NEW_SEARCH));
-                    break;
+//                case BootGuide.NEW_CMS:
+//                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.NEW_CMS));
+//                    break;
+//                case BootGuide.NEW_SEARCH:
+//                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.NEW_SEARCH));
+//                    break;
                 case BootGuide.USER_BEHAVIOR:
                     newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.USER_BEHAVIOR));
                     break;
