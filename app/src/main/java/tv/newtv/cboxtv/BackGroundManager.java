@@ -11,6 +11,7 @@ import android.view.View;
 import com.newtv.cms.bean.Nav;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -64,30 +65,38 @@ public class BackGroundManager {
      *
      * @param id
      */
-    public void setCurrentNav(String id) {
+    public void setCurrentNav(String id, boolean waitPage) {
         if (backGroundMaps.containsKey(id)) {
             BgItem bgItem = backGroundMaps.get(id);
             if (bgItem.level == 0) {
                 //TODO 显示一级导航背景图
                 NavBgItem = bgItem;
-                return;
             } else if (bgItem.level == 1) {
                 NavBgItem = bgItem;
                 String pid = bgItem.parentId;
                 if (backGroundMaps.containsKey(pid)) {
                     NavBgItem = backGroundMaps.get(pid);
                 }
-                return;
+            }
+        } else {
+            NavBgItem = null;
+        }
+
+        if (!waitPage) {
+            if (NavBgItem == null) {
+                clearBackGround();
+            } else {
+                setShowId(Libs.get().getContext(), id);
             }
         }
-        NavBgItem = null;
+
     }
 
     void registView(BGCallback callback) {
         mBGCallback = callback;
     }
 
-    void clearBackGround() {
+    private void clearBackGround() {
         if (mBGCallback != null && mBGCallback.getTargetView() != null) {
             mBGCallback.getTargetView().setBackground(null);
         }
@@ -102,32 +111,30 @@ public class BackGroundManager {
             } else {
                 setCmsBG(context, current);
             }
+        } else {
+            clearBackGround();
         }
     }
 
     public void setCurrentPageId(Context context, String id, boolean isAd, String background,
                                  boolean isShow) {
-        if (backGroundMaps.containsKey(id) && (isAd || !TextUtils.isEmpty(background))) {
-            BgItem bgItem = backGroundMaps.get(id);
-            if (BgItem.FROM_NAV.equals(bgItem.from)) {
-                backGroundMaps.remove(id);
-                if (bgHashmap.containsKey(id)) {
-                    BGDrawable bgDrawable = bgHashmap.remove(id);
-                    if (bgDrawable.drawable != null && bgDrawable.drawable.getBitmap() != null &&
-                            !bgDrawable.drawable.getBitmap().isRecycled()) {
-                        bgDrawable.drawable.getBitmap().recycle();
-                    }
+        if (isAd || !TextUtils.isEmpty(background)) {
+            if (backGroundMaps.containsKey(id)) {
+                BgItem bgItem = backGroundMaps.get(id);
+                if (BgItem.FROM_NAV.equals(bgItem.from)) {
+                    backGroundMaps.remove(id);
+                    bgHashmap.remove(id);
                 }
+                NavBgItem = null;
             }
-            NavBgItem = null;
-        }
-        if (!backGroundMaps.containsKey(id)) {
-            BgItem bgItem = new BgItem();
-            bgItem.contentId = id;
-            bgItem.isAd = isAd;
-            bgItem.background = background;
-            bgItem.from = BgItem.FROM_PAGE;
-            backGroundMaps.put(id, bgItem);
+            if (!backGroundMaps.containsKey(id)) {
+                BgItem bgItem = new BgItem();
+                bgItem.contentId = id;
+                bgItem.isAd = isAd;
+                bgItem.background = background;
+                bgItem.from = BgItem.FROM_PAGE;
+                backGroundMaps.put(id, bgItem);
+            }
         }
         if (isShow) {
             setShowId(context, id);
