@@ -314,8 +314,11 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             playCenter.setSeriesInfo(seriesInfo);
         }
     }
-
     public void playSingleOrSeries(int mIndex, int position) {
+        playSingleOrSeries(mIndex,position,"");
+    }
+
+    public void playSingleOrSeries(int mIndex, int position,String alternateId) {
         //设置播放的位置
         int index = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(), mIndex);
         playCenter.setCurrentIndex(index);
@@ -324,10 +327,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (dataStruct != null) {
             if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
-                        playCenter.getCurrentSeriesInfo(), false, index, position);
+                        playCenter.getCurrentSeriesInfo(), false, index, position,alternateId);
             } else {
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
-                        playCenter.getCurrentSeriesInfo(), position, false);
+                        playCenter.getCurrentSeriesInfo(), position, false,alternateId);
             }
         }
     }

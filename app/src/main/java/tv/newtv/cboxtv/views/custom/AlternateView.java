@@ -401,7 +401,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
                 currentStartTime = CmsUtil.parse(currentAlternate.getStartTime());
                 initialize();
                 playerView.playSingleOrSeries(0,
-                        (int) (System.currentTimeMillis() - currentStartTime));
+                        (int) (System.currentTimeMillis() - currentStartTime),mContentUUID);
             }
         }
     }

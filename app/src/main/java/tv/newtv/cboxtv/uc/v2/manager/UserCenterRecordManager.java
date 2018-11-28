@@ -330,10 +330,6 @@ public class UserCenterRecordManager {
             }
         }
 
-        // DBUtil.delHistory(userId, contentuuids, callback, tableName);
-        // if (callback != null) {
-        //    callback.onResult(0, "OK");
-        // }
 
         if (TextUtils.equals(contentuuids, "clean")) {
             DataSupport.delete(tableName).condition()
@@ -729,7 +725,6 @@ public class UserCenterRecordManager {
 
         UserCenterPageBean.Bean pageBean = new UserCenterPageBean.Bean();
         pageBean.set_contentuuid(bundle.getString(DBConfig.CONTENTUUID));
-        Log.d("sub", "packageData contentID : " + bundle.get(DBConfig.CONTENTUUID));
         pageBean.set_title_name(bundle.getString(DBConfig.TITLE_NAME));
         pageBean.set_imageurl(bundle.getString(DBConfig.IMAGEURL));
         pageBean.setProgress(bundle.getString(DBConfig.PLAY_PROGRESS));
@@ -742,6 +737,8 @@ public class UserCenterRecordManager {
         pageBean.set_contenttype(bundle.getString(DBConfig.CONTENTTYPE));
         pageBean.setPlayIndex(bundle.getString(DBConfig.PLAYINDEX));
         pageBean.set_actiontype(Constant.OPEN_DETAILS);
+        pageBean.setPlayId(bundle.getString(DBConfig.PLAYID));
+        pageBean.setProgramChildName(bundle.getString(DBConfig.PROGRAM_CHILD_NAME));
         return pageBean;
     }
 
