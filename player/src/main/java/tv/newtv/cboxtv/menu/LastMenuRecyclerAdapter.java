@@ -10,9 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.libs.Constant;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.player.R;
 
@@ -21,6 +24,8 @@ import tv.newtv.player.R;
  */
 
 public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerView.ViewHolder> {
+    private static final String COLLECT = "收藏";
+    public static final String COLLECT_ID = "collect";
 
     private List<Program> data;
     /**
@@ -32,6 +37,8 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
      * 当前正在播放的节目标题
      */
     private String title = "";
+
+    private String contentType;
 
     private Handler handler = new MyHandler(this);
 
@@ -60,24 +67,38 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = null;
-        View view = LayoutInflater.from(context).inflate(R.layout.item_menu, null);
-        holder = new Holder(view);
+        if(0 == viewType){
+            View view = LayoutInflater.from(context).inflate(R.layout.item_menu, null);
+            holder = new Holder(view);
+        }else if(1 == viewType){
+            View view = LayoutInflater.from(context).inflate(R.layout.item_menu_collect,null);
+            holder = new CollectHolder(view);
+        }
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final Program program = data.get(position);
-        Holder h = (Holder) holder;
-        h.itemView.setBackgroundResource(R.color.color_transparent);
-        h.playing.setVisibility(View.GONE);
-        h.tv.setText(program.getTitle());
+        holder.itemView.setBackgroundResource(R.color.color_transparent);
+
+        if(holder instanceof Holder){
+            Holder h = (Holder) holder;
+            h.playing.setVisibility(View.GONE);
+            h.tv.setText(program.getTitle());
+
+            if(isCurrentPlay(program)){
+                h.playing.setVisibility(View.VISIBLE);
+            }
+
+        }else if(holder instanceof CollectHolder){
+            CollectHolder collectHolder = (CollectHolder) holder;
+        }
 
         if (isCurrentPlay(program)) {
             holder.itemView.setBackgroundResource(R.drawable.xuanhong);
-            h.playing.setVisibility(View.VISIBLE);
-            selectView = h.itemView;
-            pathView = h.itemView;
+            selectView = holder.itemView;
+            pathView = holder.itemView;
             if(!init){
                 Message msg = Message.obtain();
                 msg.obj = holder.itemView;
@@ -90,7 +111,11 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    v.setBackgroundResource(R.drawable.one_focus);
+                    if(Constant.CONTENTTYPE_LB.equals(contentType)){
+                        v.setBackgroundResource(R.drawable.menu_group_item_focus);
+                    }else {
+                        v.setBackgroundResource(R.drawable.one_focus);
+                    }
                 } else if (isCurrentPlay(program)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
                 } else {
@@ -100,7 +125,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         });
 
         if(position == 0){
-            firstPositionView = h.itemView;
+            firstPositionView = holder.itemView;
         }
     }
 
@@ -109,16 +134,48 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         return data.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if(COLLECT.equals(data.get(position).getTitle())){
+            return super.getItemViewType(position) + 1;
+        }
+        return super.getItemViewType(position);
+    }
+
     public void setData(List<Program> data){
-        this.data = data;
-        this.selectView = null;
-        notifyDataSetChanged();
+        setData(data,null);
     }
 
     public void setData(List<Program> data,Program program){
+        if(data != null && data.size() > 0 && Constant.CONTENTTYPE_LB.equals(data.get(0).getParent().getContentType())){
+            Node node = data.get(0).getParent();
+            addCollectDataToList(data,node);
+            this.contentType = node.getContentType();
+        }else {
+            this.contentType = "";
+        }
         this.data = data;
         this.selectView = null;
-        setPlayId(program);
+        if(program != null){
+            setPlayId(program);
+        }else {
+            notifyDataSetChanged();
+        }
+    }
+
+    private void addCollectDataToList(List<Program> data,Node node){
+        if(data == null){
+            return;
+        }
+
+        if(COLLECT.equals(data.get(0).getTitle())){
+            return;
+        }
+        Program program = new Program();
+        program.setTitle("收藏");
+        program.setContentUUID(COLLECT_ID);
+        program.setParent(node);
+        data.add(0,program);
     }
 
     public void setPlayId(Program program){
@@ -127,6 +184,17 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             this.title = program.getTitle();
             this.init = false;
             notifyDataSetChanged();
+        }
+    }
+
+    class CollectHolder extends RecyclerView.ViewHolder{
+        public TextView tv;
+        public ImageView collect;
+
+        public CollectHolder(View itemView) {
+            super(itemView);
+            tv = itemView.findViewById(R.id.tv_video_name);
+            collect = itemView.findViewById(R.id.iv_collect);
         }
     }
 

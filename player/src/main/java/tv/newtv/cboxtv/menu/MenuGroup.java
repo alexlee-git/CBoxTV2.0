@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -707,12 +708,16 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     private void getLastData2(final Node node,final RecreateListener l){
         lastListView.setTag(node.getId());
-        final String programSeries = node.getId();
-        String leftString = programSeries.substring(0, 2);
-        String rightString = programSeries.substring(programSeries.length() - 2, programSeries.length());
-        Request.INSTANCE.getContent()
-                .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),programSeries)
-                .subscribeOn(Schedulers.io())
+        String nodeId = node.getId();
+        Observable<ResponseBody> observable = null;
+        if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
+            observable = Request.INSTANCE.getAlternate()
+                    .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), nodeId);
+        }else {
+            observable = Request.INSTANCE.getContent()
+                    .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),nodeId);
+        }
+        observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override

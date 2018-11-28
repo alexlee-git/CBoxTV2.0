@@ -105,6 +105,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      * 当前获取节目集ID和节目ID重试次数
      */
     private int retry = 0;
+    /**
+     * 是否是轮播类型
+     */
+    private boolean isAlternate;
+    private String alternateId;
 
     @Override
     public void release() {
@@ -162,6 +167,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             @Override
             public void select(Program program) {
                 playProgram = program;
+                if(LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())){
+                    return;
+                }
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
                 if(content != null){
                     int index = program.getParent().getPrograms().indexOf(program);
@@ -219,6 +227,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
         int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+        NewTVLauncherPlayerView.PlayerViewConfig defaultConfig = NewTVLauncherPlayerViewManager.getInstance().getDefaultConfig();
+        if(defaultConfig != null){
+            isAlternate = defaultConfig.isAlternate;
+            alternateId = NewTVLauncherPlayerViewManager.getInstance().getAlternateId();
+        }
 
         if (programSeriesInfo == null) {
             Log.e(TAG, "programSeriesInfo == null");
@@ -245,15 +258,20 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 break;
         }
 
-        if (TextUtils.isEmpty(programSeries) || TextUtils.isEmpty(contentUUID)) {
-            Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" + programSeries + ",contentUUID=" + contentUUID
-                    + ",typeIndex=" + typeIndex+","+programSeriesInfo);
-            return false;
+        if(isAlternate){
+            if(TextUtils.isEmpty(alternateId) || TextUtils.isEmpty(contentUUID)){
+                Log.e(TAG, "alternateId or contentUUID can not empty,programSeries=" + alternateId + ",contentUUID=" + contentUUID);
+                return false;
+            }
+        }else {
+            if (TextUtils.isEmpty(programSeries) || TextUtils.isEmpty(contentUUID)) {
+                Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" + programSeries + ",contentUUID=" + contentUUID);
+                return false;
+            }
         }
 
-        Log.i(TAG, "detailColumnUUID=" + programSeries);
-        Log.i(TAG, "contentUUID=" + contentUUID);
-        Log.i(TAG, "categoryId=" + categoryId);
+        Log.i(TAG, "programSeriesUUID=" + programSeries+",contentUUID="+contentUUID
+                +",categoryId="+categoryId+",isAlternate="+isAlternate+",alternateId="+alternateId);
         return true;
     }
 
@@ -266,19 +284,21 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return;
         }
 
-        if(TextUtils.isEmpty(categoryId)){
-            getCategoryId();
+        if(isAlternate){
+            getCategoryId(alternateId);
+        }else if(TextUtils.isEmpty(categoryId)){
+            getCategoryId(contentUUID);
         }else {
             getCategoryTree();
         }
         searchDataInDB();
     }
 
-    private void getCategoryId(){
-        String leftString = contentUUID.substring(0, 2);
-        String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
+    private void getCategoryId(String id){
+        String leftString = id.substring(0, 2);
+        String rightString = id.substring(id.length() - 2, id.length());
         Request.INSTANCE.getContent()
-                .getInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,contentUUID)
+                .getInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
@@ -330,15 +350,40 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         if(categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0){
                             Node node = searchNodeById(categoryId);
                             node.addChild(categoryContent.data);
-                            getSeriesContent();
+                            if(isAlternate){
+                                getAlternateContent();
+                            }else {
+                                getSeriesContent();
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void getAlternateContent(){
+        Request.INSTANCE.getAlternate()
+                .getInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),alternateId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        String result = responseBody.string();
+                        Log.i(TAG, "getAlternateContent: "+result);
+                        SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
+                        if(seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0){
+                            MenuGroupPresenter2.this.seriesContent = seriesContent;
+                            menuGroup.addRootNodes(rootNode);
+                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, alternateId, contentUUID);
+                            playProgram = menuGroup.getPlayProgram();
+                            Log.i(TAG, "accept: "+playProgram);
+                            checkShowHinter();
                         }
                     }
                 });
     }
 
     private void getSeriesContent(){
-        String leftString = programSeries.substring(0, 2);
-        String rightString = programSeries.substring(programSeries.length() - 2, programSeries.length());
         Request.INSTANCE.getContent()
                 .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),programSeries)
                 .subscribeOn(Schedulers.io())
