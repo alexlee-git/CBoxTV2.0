@@ -71,7 +71,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
         init(contentUUID);
         requestData(contentUUID);
 
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
+//        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
     }
 
     private void requestData(String contentUUID) {
@@ -126,7 +126,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             }
         });
 
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
+//        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
     }
 
     @Override
