@@ -192,6 +192,14 @@ public class MyOrderActivity extends BaseActivity {
             if (mDOrdersBeans == null || mDOrdersBeans.size() <= 0) {
                 return;
             }
+            //将状态清空
+            holder.tvResumeContent.setText("");
+            holder.tvBuyDate.setText("");
+            holder.tvVisibleDate.setText("");
+            holder.tvPriceValue.setText("");
+            holder.tvPayResult.setText("");
+            holder.tvOperation.setText("");
+
             final OrderInfoBean.OrdersBean mResultListBean = mDOrdersBeans.get(position);
             String status = mResultListBean.getStatus();
             if (status != null && status.length() > 0) {
