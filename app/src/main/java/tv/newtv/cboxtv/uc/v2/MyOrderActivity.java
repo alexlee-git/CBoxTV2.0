@@ -202,12 +202,20 @@ public class MyOrderActivity extends BaseActivity {
                 }
             }
             holder.tvResumeContent.setText(mResultListBean.getProductName());
-            if (TextUtils.isEmpty(mResultListBean.getPayTime())) {
-                holder.tvBuyDate.setText(transFormatDate(mResultListBean.getCreateTime()));
+            String payTime = mResultListBean.getPayTime();
+            String createTime = mResultListBean.getCreateTime();
+            String expireTime = mResultListBean.getExpireTime();
+            if (TextUtils.isEmpty(payTime)) {
+                //购买时间为空时显示订单生成时间
+                if (!TextUtils.isEmpty(createTime)){
+                    holder.tvBuyDate.setText(transFormatDate(mResultListBean.getCreateTime()));
+                }
             } else {
-                holder.tvBuyDate.setText(transFormatDate(mResultListBean.getPayTime()));
+                holder.tvBuyDate.setText(transFormatDate(payTime));
             }
-            holder.tvVisibleDate.setText(transFormatDate(mResultListBean.getExpireTime()));
+            if (!TextUtils.isEmpty(expireTime)){
+                holder.tvVisibleDate.setText(transFormatDate(expireTime));
+            }
             if (TextUtils.equals(status, "ORDER_SUCCESS")) {
                 //订单为支付且在订单有效期内显示去支付,重新购买不显示不跳转
                 if (IsToday(mResultListBean.getTranExpireTime())) {
@@ -524,9 +532,9 @@ public class MyOrderActivity extends BaseActivity {
      * @return
      */
     private String transFormatDate(String inTime) {
-        if (TextUtils.isEmpty(inTime)) {
-            inTime = "2018-08-23 17:23:02";
-        }
+//        if (TextUtils.isEmpty(inTime)) {
+//            inTime = "2018-08-23 17:23:02";
+//        }
         SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat s2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         Date tempDate = null;
@@ -558,7 +566,7 @@ public class MyOrderActivity extends BaseActivity {
      */
     private boolean IsToday(String day) {
         if (TextUtils.isEmpty(day)) {
-            day = "2018-08-23 17:23:02";
+            return false;
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         // 当前的时刻
