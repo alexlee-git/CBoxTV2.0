@@ -7,11 +7,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
+
+import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
@@ -94,6 +97,15 @@ public class UserCenterUtils {
                 bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
                 bundle.putString(DBConfig.PLAYINDEX, valueOf(index));
                 bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+
+                List<SubContent> subContents = mProgramSeriesInfo.getData();
+                if (subContents != null && subContents.size() > 0) {
+                    if (index >= 0 && index < subContents.size()) {
+                        SubContent subContent = subContents.get(index);
+                        bundle.putString(DBConfig.PROGRAM_CHILD_NAME, subContent.getTitle());
+                        bundle.putString(DBConfig.PLAYID, subContent.getContentUUID());
+                    }
+                }
 
                 UserCenterRecordManager.getInstance().addRecord(
                         UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,

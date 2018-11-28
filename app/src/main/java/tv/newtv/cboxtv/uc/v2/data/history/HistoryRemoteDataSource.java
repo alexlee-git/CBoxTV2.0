@@ -96,7 +96,8 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.getSuperscript(),
                         entity.get_contenttype(),
                         entity.getPlayIndex(),
-                        entity.get_actiontype())
+                        entity.get_actiontype(),
+                        entity.getProgramChildName())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
