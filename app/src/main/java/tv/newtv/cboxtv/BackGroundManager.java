@@ -11,6 +11,7 @@ import android.view.View;
 import com.newtv.cms.bean.Nav;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -43,7 +44,6 @@ public class BackGroundManager {
     private HashMap<String, BgItem> backGroundMaps;
     private BGCallback mBGCallback;
     private List<Target> targetList = new ArrayList<>();
-
     private BgItem NavBgItem;
 
     private BackGroundManager() {
@@ -60,76 +60,83 @@ public class BackGroundManager {
         return manager;
     }
 
-    public void setCurrentNav(String id) {
+    /**
+     * 设置导航ID
+     *
+     * @param id
+     */
+    public void setCurrentNav(String id, boolean waitPage) {
         if (backGroundMaps.containsKey(id)) {
             BgItem bgItem = backGroundMaps.get(id);
             if (bgItem.level == 0) {
                 //TODO 显示一级导航背景图
                 NavBgItem = bgItem;
-                return;
             } else if (bgItem.level == 1) {
                 NavBgItem = bgItem;
                 String pid = bgItem.parentId;
                 if (backGroundMaps.containsKey(pid)) {
                     NavBgItem = backGroundMaps.get(pid);
                 }
-                return;
+            }
+        } else {
+            NavBgItem = null;
+        }
+
+        if (!waitPage) {
+            if (NavBgItem == null) {
+                clearBackGround();
+            } else {
+                setShowId(Libs.get().getContext(), id);
             }
         }
-        NavBgItem = null;
+
     }
 
     void registView(BGCallback callback) {
         mBGCallback = callback;
     }
 
-    void clearBackGround(){
+    private void clearBackGround() {
         if (mBGCallback != null && mBGCallback.getTargetView() != null) {
             mBGCallback.getTargetView().setBackground(null);
         }
     }
 
-    public void setCurrentPageId(Context context,String id){
-        if(TextUtils.isEmpty(id)){
-            clearBackGround();
-            return;
-        }
-        if(backGroundMaps.containsKey(id)){
-            setShowId(context,id);
-        }else{
-            clearBackGround();
-        }
-    }
-
-    private void setShowId(Context context,String id){
+    private void setShowId(Context context, String id) {
         mCurrentId = id;
-        BgItem current = backGroundMaps.get(id);
-        if (current.isAd) {
-            setAdBG(context, current);
+        if (backGroundMaps.containsKey(id)) {
+            BgItem current = backGroundMaps.get(id);
+            if (current.isAd) {
+                setAdBG(context, current);
+            } else {
+                setCmsBG(context, current);
+            }
         } else {
-            setCmsBG(context, current);
+            clearBackGround();
         }
     }
 
     public void setCurrentPageId(Context context, String id, boolean isAd, String background,
                                  boolean isShow) {
-        if (TextUtils.isEmpty(background) && isShow) {
-            if (NavBgItem != null) {
-                setCmsBG(context, NavBgItem);
-            } else {
-                clearBackGround();
+        if (isAd || !TextUtils.isEmpty(background)) {
+            if (backGroundMaps.containsKey(id)) {
+                BgItem bgItem = backGroundMaps.get(id);
+                if (BgItem.FROM_NAV.equals(bgItem.from)) {
+                    backGroundMaps.remove(id);
+                    bgHashmap.remove(id);
+                }
+                NavBgItem = null;
             }
-            return;
+            if (!backGroundMaps.containsKey(id)) {
+                BgItem bgItem = new BgItem();
+                bgItem.contentId = id;
+                bgItem.isAd = isAd;
+                bgItem.background = background;
+                bgItem.from = BgItem.FROM_PAGE;
+                backGroundMaps.put(id, bgItem);
+            }
         }
-        if (!backGroundMaps.containsKey(id)) {
-            BgItem bgItem = new BgItem();
-            bgItem.contentId = id;
-            bgItem.isAd = isAd;
-            bgItem.background = background;
-            bgItem.from = BgItem.FROM_PAGE;
-            backGroundMaps.put(id, bgItem);
-        }
-        if(isShow) {
+        if (isShow) {
             setShowId(context, id);
         }
     }
@@ -138,18 +145,27 @@ public class BackGroundManager {
      * 加载广告背景图 TODO
      */
     private void setAdBG(final Context context, final BgItem bgItem) {
-        mAdPresenter.getAdByType(Constant.AD_TOPIC, bgItem.contentId, "", null, new AdContract
-                .Callback() {
-            @Override
-            public void showAd(@Nullable String type, @Nullable String url, @NotNull HashMap<?,
-                    ?> hashMap) {
-                if (TextUtils.isEmpty(url)) {
-                    setCmsBG(context, bgItem);
-                } else {
-                    loadImage(context, bgItem.contentId, url);
+        if (!bgHashmap.containsKey(bgItem.contentId) || bgHashmap.get(bgItem.contentId).drawable
+                == null) {
+            mAdPresenter.getAdByType(Constant.AD_TOPIC, bgItem.contentId, "", null, new AdContract
+                    .Callback() {
+                @Override
+                public void showAd(@Nullable String type, @Nullable String url, @NotNull HashMap<?,
+                        ?> hashMap) {
+                    if (TextUtils.isEmpty(url)) {
+                        setCmsBG(context, bgItem);
+                    } else {
+                        loadImage(context, bgItem.contentId, url);
+                    }
                 }
+            });
+        } else {
+            if (bgItem.contentId.equals(mCurrentId) && mBGCallback != null && mBGCallback
+                    .getTargetView()
+                    != null) {
+                mBGCallback.getTargetView().setBackground(bgHashmap.get(bgItem.contentId).drawable);
             }
-        });
+        }
     }
 
     // 如果cms设置为专题，加载cms背景图
@@ -217,7 +233,7 @@ public class BackGroundManager {
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
                 if (uuid.equals(mCurrentId) && mBGCallback != null && mBGCallback.getTargetView()
-                 != null) {
+                        != null) {
                     mBGCallback.getTargetView().setBackground(placeHolderDrawable);
                 }
             }
@@ -267,7 +283,7 @@ public class BackGroundManager {
 
         private String background;  //  背景图
         private String contentId;   //  ID
-        private int level;          //  对应 FROM_NAV  0为1级导航，1为2级导航 以此类推
+        private int level;          //  对应 FROM_NAV  0为1级导航，1为2级导航 2为Page 以此类推
         private String parentId;    //  父级ID 对应FROM_NAV 如果该导航存在父级，则该ID对应父级的contentId
         private String from;        //  来源
         private boolean isAd = false; // 是否来源于广告系统

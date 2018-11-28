@@ -402,10 +402,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public PlayerViewConfig getDefaultConfig() {
-
-        defaultConfig.playPosition = getCurrentPosition();
-        defaultConfig.layoutParams = getLayoutParams();
-        defaultConfig.parentViewGroup = getParent();
+        if (defaultConfig != null){
+            defaultConfig.playPosition = getCurrentPosition();
+            defaultConfig.layoutParams = getLayoutParams();
+            defaultConfig.parentViewGroup = getParent();
+        }
         return defaultConfig;
     }
 
