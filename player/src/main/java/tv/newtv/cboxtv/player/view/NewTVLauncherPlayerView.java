@@ -139,7 +139,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             FreeDuration();
 
     private BuyGoodsBusiness buyGoodsBusiness = null;
-    private GetHaveADListener mGetHaveADListener;
     private PlayerLocation mPlayerLocation;
     private LiveListener mLiveListener;
     private PlayerContract mPlayerContract;
@@ -271,15 +270,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 //如果状态等于VideoStartBuffer的时候，设置状态为正片缓冲中
                 setCurrentVideoState(PlayerContract.STATE_VIDEO_BUFFERING);
             }
-            boolean isHaveAD;
-            if (typeString.equals("ad_Prepared")) {
-                isHaveAD = true;
-            } else {
-                isHaveAD = false;
-            }
-            if (null != mGetHaveADListener) {
-                mGetHaveADListener.OnGetHaveADListener(isHaveAD);
-            }
         }
 
         @Override
@@ -287,6 +277,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             Log.i(TAG, "onVideoBufferEnd: typeString=" + typeString);
             if ("702".equals(typeString)) {
                 unshowLoadBack = true;
+            }
+
+            boolean isHaveAD ;
+            if (!TextUtils.isEmpty(typeString)) {
+                if (typeString.equals(AD_END_BUFFER)) {
+                    isHaveAD = true;
+                    RxBus.get().post(Constant.IS_HAVE_AD, isHaveAD);
+                }
             }
 
             if(TextUtils.equals(PIC_AD_END_BUFFER,typeString)){
@@ -1669,17 +1667,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         this.isNextPlay = isNextPlay;
     }
 
-    public void setOnGetHaveADListener(GetHaveADListener getHaveADListener) {
-        mGetHaveADListener = getHaveADListener;
-    }
-
     public void setOnPlayerStateChange(OnPlayerStateChange onViewVisibleChange) {
         mPlayerContract.setOnPlayerStateChange(onViewVisibleChange);
-    }
-
-    public interface GetHaveADListener {
-        // isHavaAD 专题通过判断是否有广告，决定是否显示播放器上的Title和Enter全屏提示
-        void OnGetHaveADListener(boolean isHavaAD);
     }
 
     public interface OnPlayerStateChange {
