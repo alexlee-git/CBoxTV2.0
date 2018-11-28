@@ -64,6 +64,11 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     }
 
     @Override
+    protected boolean isFull(KeyEvent event) {
+        return false;
+    }
+
+    @Override
     protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
         setContentView(R.layout.activity_person_details_new);
         ButterKnife.bind(this);
