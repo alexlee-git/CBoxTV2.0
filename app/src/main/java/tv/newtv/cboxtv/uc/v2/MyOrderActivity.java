@@ -434,11 +434,12 @@ public class MyOrderActivity extends BaseActivity {
             return;
         }
         intent.setClass(MyOrderActivity.this, mPageClass);
-        if (!isBackground){
-            ActivityStacks.get().finishAllActivity();
-            startActivity(intent);
-        }
+        startActivity(intent);
+
         if (mPageClass == MainActivity.class) {
+            if (!isBackground){
+            ActivityStacks.get().finishAllActivity();
+            }
             MyOrderActivity.this.finish();
         }
     }

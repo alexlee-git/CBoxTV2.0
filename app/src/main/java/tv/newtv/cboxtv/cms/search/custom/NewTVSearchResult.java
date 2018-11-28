@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.util.DisplayUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScreenUtils;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.NewTVScroller;
-import tv.newtv.cboxtv.cms.search.fragment.BaseFragment;
+import tv.newtv.cboxtv.cms.search.fragment.SearchBaseFragment;
 import tv.newtv.cboxtv.cms.search.fragment.ColumnFragment;
 import tv.newtv.cboxtv.cms.search.fragment.DramaFragment;
 import tv.newtv.cboxtv.cms.search.fragment.PersonFragment;
@@ -77,7 +76,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
 
     private float SearchViewResultWidth = 0;
 
-    public List<BaseFragment> mFragments;
+    public List<SearchBaseFragment> mFragments;
     private SearchViewPagerAdapter mViewPagerAdapter;
 
     ColumnFragment mColumnFragment;
@@ -137,7 +136,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (tabContainer.hasFocus()) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    BaseFragment mFragment = mFragments.get(mViewpager.getCurrentItem());
+                    SearchBaseFragment mFragment = mFragments.get(mViewpager.getCurrentItem());
                     if(mFragment.getSearchRecyclerView().getChildAt(0)!=null) {
                         mFragment.getSearchRecyclerView().getChildAt(0).requestFocus();
                         return true;
@@ -281,7 +280,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     }
 
     @Override
-    public void updateFragmentList(BaseFragment fragment, boolean isGone) {
+    public void updateFragmentList(SearchBaseFragment fragment, boolean isGone) {
         if (isGone) {
             if (mFragments.contains(fragment)) {
                 mFragments.remove(fragment);
@@ -347,7 +346,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
 
     public void requestDefaultFocus() {
         if (mViewPagerAdapter != null && mViewpager != null) {
-            BaseFragment targetFragment = mViewPagerAdapter.getFragmentByIndex(mViewpager.getCurrentItem());
+            SearchBaseFragment targetFragment = mViewPagerAdapter.getFragmentByIndex(mViewpager.getCurrentItem());
             if (targetFragment != null) {
                 View focusView = targetFragment.findDefaultFocus();
                 if (focusView != null) {

@@ -29,6 +29,7 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -60,7 +61,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private ContentContract.Presenter mContentPresenter;
     private int layoutId;
     private boolean isLogin = false;
-
+    private boolean isFullScreenIng;
 
 
     @Override
@@ -135,6 +136,12 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ProgrameSeriesAndVarietyDetailActivity.this.finish();
                         }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        isFullScreenIng = false;
                     }
                 })
                 .SetPlayerCallback(new PlayerCallback() {
@@ -235,7 +242,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
             @Override
             public void onChange(int index, boolean fromClick) {
-                scrollView.scrollToTop(false);
+                isFullScreenIng = true;
                 headPlayerView.Play(index, 0, fromClick);
             }
         });
@@ -278,6 +285,17 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             }
         }
 
+        return false;
+    }
+
+    @Override
+    protected boolean isFull(KeyEvent event) {
+        if (isFullScreenIng&&event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN){
+            if (isFullScreen()){
+                isFullScreenIng = false;
+            }
+            return true;
+        }
         return false;
     }
 

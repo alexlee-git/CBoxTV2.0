@@ -110,6 +110,11 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     }
 
     @Override
+    protected boolean isFull(KeyEvent event) {
+        return false;
+    }
+
+    @Override
     protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
         setContentView(R.layout.activity_single_detail_page);
         Log.d("ywy y", "onCreate");
@@ -175,6 +180,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                         @Override
                         public void videoEitFullScreen() {
+
 
                         }
                     }).SetClickListener(new View.OnClickListener() {

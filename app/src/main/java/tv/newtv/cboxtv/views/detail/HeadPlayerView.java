@@ -622,7 +622,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     mBuilder.playerCallback.onPlayerClick(playerView);
                 }
             }
-        }, 50);
+        }, 500);
     }
 
     private void parseResult() {

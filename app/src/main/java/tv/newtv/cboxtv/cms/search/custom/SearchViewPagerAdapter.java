@@ -6,27 +6,27 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.cms.search.fragment.BaseFragment;
+import tv.newtv.cboxtv.cms.search.fragment.SearchBaseFragment;
 
 
 public class SearchViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private List<BaseFragment> mDatas;
+    private List<SearchBaseFragment> mDatas;
 
     public SearchViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public SearchViewPagerAdapter(FragmentManager fm, List<BaseFragment> datas) {
+    public SearchViewPagerAdapter(FragmentManager fm, List<SearchBaseFragment> datas) {
         super(fm);
         this.mDatas = datas;
     }
 
-    public BaseFragment getFragmentByIndex(int index){
+    public SearchBaseFragment getFragmentByIndex(int index){
         return this.mDatas.get(index);
     }
 
-    public void  upData(List<BaseFragment> datas){
+    public void  upData(List<SearchBaseFragment> datas){
         if (this.mDatas!=null){
             this.mDatas.clear();
             if (datas!=null){
