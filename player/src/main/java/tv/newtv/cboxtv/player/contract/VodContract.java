@@ -53,7 +53,13 @@ public class VodContract {
     }
 
     public interface Presenter extends ICmsPresenter {
-        void checkVod(String seriesID, String albumId);
+        /**
+         *
+         * @param programId
+         * @param albumId
+         * @param isCarouse
+         */
+        void checkVod(String programId, String albumId,boolean isCarouse);
     }
 
     public static class VodPresenter extends CmsServicePresenter<View> implements Presenter {
@@ -121,13 +127,14 @@ public class VodContract {
          * @param seriesID
          * @return
          */
-        ChkRequest createVodRequestBean(String contentId, String seriesID) {
+        ChkRequest createVodRequestBean(String contentId, String seriesID,boolean isCarouse) {
             ChkRequest playCheckRequestBean = new ChkRequest();
 
             playCheckRequestBean.setAppKey(Libs.get().getAppKey());
             playCheckRequestBean.setChannelId(Libs.get().getChannelId());
             playCheckRequestBean.setSource("NEWTV");
             playCheckRequestBean.setId(contentId);
+            playCheckRequestBean.setCarouselFlag(isCarouse);
             if (!TextUtils.isEmpty(seriesID)) {
                 playCheckRequestBean.setAlbumId(seriesID);
             }
@@ -207,9 +214,11 @@ public class VodContract {
             videoDataStruct.setProgramId(playResult.getContentUUID());
 
             String duration = playResult.getDuration();
+
             if (!TextUtils.isEmpty(duration)) {
                 videoDataStruct.setDuration(Integer.parseInt(playResult
                         .getDuration()));
+                getContext().getSharedPreferences("durationConfig", Context.MODE_PRIVATE).edit().putString("duration", duration).apply();
             }
 
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
@@ -262,12 +271,12 @@ public class VodContract {
         }
 
         @Override
-        public void checkVod(String seriesID, String albumId) {
+        public void checkVod(String programId, String albumId,boolean isCarouse) {
             final IPlayChk playChk = getService(SERVICE_CHK_PLAY);
             String token = SharePreferenceUtils.getToken(getContext());
             String resultToken = TextUtils.isEmpty(token) ? "" : "Bearer " + token;
             if (playChk != null) {
-                ChkRequest request = createVodRequestBean(seriesID, albumId);
+                ChkRequest request = createVodRequestBean(programId, albumId,isCarouse);
                 playChk.check(request,resultToken, new DataObserver<String>() {
                     @Override
                     public void onResult(String result, long requestCode) {

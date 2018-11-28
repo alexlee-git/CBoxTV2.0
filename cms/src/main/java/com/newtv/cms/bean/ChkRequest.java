@@ -13,6 +13,7 @@ public class ChkRequest {
     private String appKey;
     private String albumId;
     private String channelId;
+    private boolean carouselFlag;
     private List<Product> productDTOList;
     private TerminalDTO terminalDTO = new TerminalDTO();
 
@@ -70,6 +71,10 @@ public class ChkRequest {
 
     public String getSource() {
         return source;
+    }
+
+    public void setCarouselFlag(boolean carouselFlag) {
+        this.carouselFlag = carouselFlag;
     }
 
     public void setSource(String source) {

@@ -63,16 +63,17 @@ public class HorizontalRecycleView extends RecyclerView {
     public boolean requestDefaultFocus(int index) {
         LayoutManager layoutManager = getLayoutManager();
         if (layoutManager != null && layoutManager instanceof LinearLayoutManager) {
-            int first = ((LinearLayoutManager) layoutManager)
-                    .findFirstVisibleItemPosition();
-            int last = ((LinearLayoutManager) layoutManager)
-                    .findLastVisibleItemPosition();
-
-            if (index >= first && index <= last) {
-                int pos = index - first;
-                getChildAt(pos).requestFocus();
+            View target = layoutManager.findViewByPosition(index);
+            if (target != null) {
+                target.requestFocus();
             } else {
-                getChildAt(first > 0 ? 1 : 0).requestFocus();
+                target = layoutManager.findViewByPosition(((LinearLayoutManager) layoutManager)
+                        .findFirstCompletelyVisibleItemPosition());
+                if(target != null){
+                    target.requestFocus();
+                }else{
+                    requestFocus();
+                }
             }
             return true;
         }
@@ -157,8 +158,7 @@ public class HorizontalRecycleView extends RecyclerView {
         super.setLayoutManager(layout);
         if (layout instanceof LinearLayoutManager) {
             isHorizontal = ((LinearLayoutManager) layout).getOrientation() ==
-                    LinearLayoutManager
-                            .HORIZONTAL;
+                    LinearLayoutManager.HORIZONTAL;
         }
     }
 

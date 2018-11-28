@@ -41,14 +41,20 @@ class PageContract {
     class ContentPresenter(context: Context, view: ICmsView)
         : CmsServicePresenter<ICmsView>(context, view), Presenter {
 
+        private var pageService:IPage? = null
+
+        init {
+            pageService = getService<IPage>(CmsServicePresenter.SERVICE_PAGE)
+        }
+
+
         override fun getPageContent(contentId: String) {
-            val page = getService<IPage>(CmsServicePresenter.SERVICE_PAGE)
             view?.let {
                 if (it is LoadingView) {
                     it.startLoading()
                 }
             }
-            page?.getPage(
+            pageService?.getPage(
                     Libs.get().appKey,
                     Libs.get().channelId,
                     contentId, object : DataObserver<ModelResult<ArrayList<Page>>> {

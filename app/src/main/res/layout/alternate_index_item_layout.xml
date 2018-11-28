@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="@dimen/width_600px"
+                android:layout_height="@dimen/height_120px"
+                android:background="@drawable/alternate_item_background"
+                android:focusable="true">
+
+    <TextView
+        android:id="@+id/alternate_id"
+        android:layout_width="@dimen/width_63px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/width_32px"
+        android:layout_marginLeft="@dimen/width_32px"
+        android:layout_marginTop="@dimen/height_21px"
+        android:text="666"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_32px"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/alternate_title"
+        android:layout_width="@dimen/width_441px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/width_127px"
+        android:layout_marginLeft="@dimen/width_127px"
+        android:layout_marginTop="@dimen/height_22px"
+        android:layout_marginEnd="@dimen/width_32px"
+        android:layout_marginRight="@dimen/width_32px"
+        android:text="获奖大片"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_32px"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/alternate_subtitle"
+        android:layout_width="@dimen/width_441px"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/width_127px"
+        android:layout_marginLeft="@dimen/width_127px"
+        android:layout_marginTop="@dimen/height_69px"
+        android:layout_marginEnd="@dimen/width_32px"
+        android:layout_marginRight="@dimen/width_32px"
+        android:text="正义联盟"
+        android:textColor="#60FFFFFF"
+        android:textSize="@dimen/height_28px"
+        android:textStyle="bold"/>
+
+</RelativeLayout>

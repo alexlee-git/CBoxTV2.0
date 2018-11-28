@@ -31,6 +31,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 
 public class Constant {
+
+    //是否启用轮播
+    public static final boolean canUseAlternate  = false;
+
     public static final boolean isLocalData = false;
     public static final String AdCache = Environment.getExternalStorageDirectory()
             .getAbsolutePath() +
@@ -122,6 +126,7 @@ public class Constant {
     public static final String ACTION_TYPE = "action_type";
     public static final String ACTION_AD_ENTRY = "action_ad_entry";//判断是不是从广告点击进入
     public static final String CONTENT_UUID = "content_uuid";
+    public static final String CONTENT_CHILD_UUID = "content_child_uuid";
     public static final String DEFAULT_UUID = "default_uuid";
     public static final String FOCUSPARAM = "focusParam";
     public static final String NAV_ID = "nav_id";//导航id
@@ -207,13 +212,13 @@ public class Constant {
     public static final String UC_COLLECTION = "收藏";
     private static final Map<String, String> mServerAddressMap = new HashMap<>();
 
-
     public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH)
             : "http://search.cloud.ottcn.com:8080/";
 
     public static final String CMS_NEW_SEARCH = Libs.get().isDebug() ? "http://111.32.138.57:80/" :
             "http://searchapi.cloud.ottcn.com/";
+
     public static final String BASE_URL_NEW_SEARCH = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.NEW_SEARCH)) ? getBaseUrl(HeadersInterceptor.NEW_SEARCH)
             : CMS_NEW_SEARCH;
@@ -256,23 +261,30 @@ public class Constant {
 
     public static final String BASE_URL_NEW_CMS = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .NEW_CMS)) ? getBaseUrl(HeadersInterceptor.NEW_CMS) : CMS_NEW_ONLINE;
+
     private static final String PERMISSTION_CHECK_URL = Libs.get().isDebug()
             ? "http://stage-bzo.cloud.ottcn.com/" : "https://account.cloud.ottcn" +
             ".com/";
+
     public static final String BASE_PERMISSTION_CHECK = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.PERMISSTION_CHECK)) ? getBaseUrl(HeadersInterceptor
             .PERMISSTION_CHECK) : PERMISSTION_CHECK_URL; //播放鉴权
+
     //public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
     // .AD)) ? getBaseUrl(HeadersInterceptor.AD) : "https://api.adott.ottcn.com/"; //广告正式地址
     private static final String AD_URL = Libs.get().isDebug() ?
             "http://api.adott.ottcn.org/" : "https://api.adott.ottcn.com/";
+
     public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
     ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
+
     private static final String USER = Libs.get().isDebug() ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
+
     //            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_USER = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .USER)
+
     ) ? getBaseUrl(HeadersInterceptor.USER) : USER; //正式地址
     private static final String PAY = Libs.get().isDebug() ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
@@ -359,6 +371,7 @@ public class Constant {
         if (TextUtils.isEmpty(serverInfo)) {
             return;
         }
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();

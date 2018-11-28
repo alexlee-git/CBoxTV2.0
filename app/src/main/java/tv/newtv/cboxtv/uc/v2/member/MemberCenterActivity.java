@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
@@ -48,20 +49,21 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.Player;
+import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
-import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
@@ -92,7 +94,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private MemberHandler mHandler;
     private PopupWindow mPopupWindow;
     private View mPopupView;
-    private Disposable mMemberInfoDisposable;
+    private Disposable mUserInfoDisposable;  //用户信息
+    private Disposable mMemberInfoDisposable;//会员信息
     private Disposable mRecommendDisposable;//推荐位
     private Disposable mQrCodeDisposable;//推荐位
     private MemberInfoBean mMemberInfoBean;
@@ -105,11 +108,14 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private int expires;
     private Bitmap mBitmap;
     private ImageView mFullQrCodeImageView;
+    private boolean isBackground;
+    private String mobileString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usercenter_member_center_v2);
+        isBackground = ActivityStacks.get().isBackGround();
         init();
     }
 
@@ -132,15 +138,61 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         mFullQrCodeImageView = mPopupView.findViewById(R.id.id_member_center_full_screen_qr_code);
         mPopupWindow = new PopupWindow(mPopupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
-        Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
-        if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
+        String idPageNumber = BootGuide.getBaseUrl(BootGuide.PAGE_MEMBER);
+        if (!TextUtils.isEmpty(idPageNumber)) {
             //获取推荐位数据
             mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
-            mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
+            mContentPresenter.getPageContent(idPageNumber);
         } else {
             Log.d(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
         mQrCodeUtil = new QrcodeUtil();
+    }
+
+
+    private void getUserInfo(String Authorization) {
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .getUser(Authorization)
+                    .subscribe(new Observer<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            unUserInfoSubscribe();
+                            mUserInfoDisposable = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String result = responseBody.string();
+                                JSONObject jsonObject = new JSONObject(result);
+                                mobileString = jsonObject.optString("mobile");
+                                if (mobileString.length() == 11) {
+                                    mobileString = mobileString.substring(0, 3) + "xxxx" + mobileString.substring(7, 11);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mobileString = "";
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "wqs:getUserInfo:onError:" + e.toString());
+                            mobileString = "";
+                            unUserInfoSubscribe();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            unUserInfoSubscribe();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //获取用户登录状态
@@ -153,7 +205,12 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 //获取登录状态
                 mLoginTokenString = SharePreferenceUtils.getToken(getApplicationContext());
                 if (!TextUtils.isEmpty(mLoginTokenString)) {
-                    e.onNext(mLoginTokenString);
+                    getUserInfo("Bearer " + mLoginTokenString);
+                    if (!TextUtils.isEmpty(mobileString)) {
+                        e.onNext(mLoginTokenString);
+                    } else {
+                        e.onNext("");
+                    }
                 } else {
                     e.onNext("");
                 }
@@ -208,9 +265,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                             mMemberInfoBean.setAppKey(jsonObject.optString("appKey"));
                             mMemberInfoBean.setUserId(jsonObject.optInt("userId"));
                             mMemberInfoBean.setProductId(jsonObject.optInt("productId"));
-                            long seconds = TimeUtil.getInstance().getSecondsFromDate(jsonObject.optString("expireTime"));
-                            String expireTime = TimeUtil.getInstance().getDateFromSeconds(seconds + "");
-                            mMemberInfoBean.setExpireTime(expireTime);
+                            mMemberInfoBean.setExpireTime(jsonObject.optString("expireTime"));
                         } else {
                             Log.d(TAG, "wqs:requestMemberInfo:next:memberInfo==null");
                         }
@@ -328,8 +383,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         try {
             if (mAdapter != null) {
                 //传递用户会员信息数据
-                mAdapter.setMemberStatus(mMemberInfoBean);
-                mAdapter.notifyItemChanged(position);
+                mAdapter.setMemberStatus(mobileString, mMemberInfoBean);
+//                mAdapter.notifyItemChanged(position);
 //                mAdapter.notifyDataSetChanged();
             } else {
                 Log.d(TAG, "wqs:bindData:mAdapter == null");
@@ -347,6 +402,16 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         if (mMemberInfoDisposable != null && !mMemberInfoDisposable.isDisposed()) {
             mMemberInfoDisposable.dispose();
             mMemberInfoDisposable = null;
+        }
+    }
+
+    /**
+     * 解除获取用户信息绑定
+     */
+    private void unUserInfoSubscribe() {
+        if (mUserInfoDisposable != null && !mUserInfoDisposable.isDisposed()) {
+            mUserInfoDisposable.dispose();
+            mUserInfoDisposable = null;
         }
     }
 
@@ -401,7 +466,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                 mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+//                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                                 mPromotionRecommendBean.add(mProgramInfo);
                             }
                         } else {
@@ -421,7 +486,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                             mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                             mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                             mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+//                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                             mInterestsRecommendBean.add(mProgramInfo);
                         } else {
                             Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0).getDatas()== null");
@@ -442,7 +507,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                                 mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(j).getGrade());
-                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
+//                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
                                 mDramaRecommendBean.add(mProgramInfo);
                             }
                         } else {
@@ -553,6 +618,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         unMemberInfoSubscribe();
         unRecommendSubscribe();
         unQrCodeSubscribe();
+        unUserInfoSubscribe();
     }
 
 
@@ -583,12 +649,12 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     }
                     break;
                 case R.id.id_member_center_btn_drama_library:
-                    Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
-                    if (!TextUtils.isEmpty(Constant.MEMBER_CENTER_PARAMS)) {
+                    String jumpParam = BootGuide.getBaseUrl(BootGuide.MEMBER_CENTER_PARAMS);
+                    if (!TextUtils.isEmpty(jumpParam)) {
                         intent.putExtra("action", "panel");
-                        intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
-                        Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + Constant.MEMBER_CENTER_PARAMS);
-                        mPageClass = SplashActivity.class;
+                        intent.putExtra("params", jumpParam);
+                        Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + jumpParam);
+                        mPageClass = MainActivity.class;
                     } else {
                         Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();
                     }
@@ -630,8 +696,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 return;
             }
             intent.setClass(this, mPageClass);
-            startActivity(intent);
-            if (mPageClass == SplashActivity.class) {
+            if (!isBackground){
+                ActivityStacks.get().finishAllActivity();
+                startActivity(intent);
+            }
+            if (mPageClass == MainActivity.class) {
                 this.finish();
             }
         } catch (Exception e) {

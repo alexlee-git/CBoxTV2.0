@@ -163,16 +163,6 @@ public class MainNavManager implements NavContract.View {
 
                     if (hasFocus) {
                         navLogUpload(position);
-                        SharedPreferences sp = context.getSharedPreferences("secondConfig",
-                                MODE_PRIVATE);
-                        String menu = sp.getString("secondMenu", "");
-                        if (TextUtils.isEmpty(menu)) {
-                            return;
-                        } else {
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
-                                    menu);
-                        }
-
 
                     }
 
@@ -264,15 +254,28 @@ public class MainNavManager implements NavContract.View {
         mExternalParams = params;
         if (action != null) {
             if (action.equals("panel")) {
-                try {
-                    String[] panels = params.split("&");
-                    Log.e("--params----", panels[0] + "----");
-                    if (panels.length > 0) {
-                        Navbarfoused = Integer.parseInt(panels[0]);
+                if (params.contains("&")){
+                    try {
+                        String[] panels = params.split("&");
+                        Log.e("--params----", panels[0] + "----");
+                        if (panels.length > 0) {
+                            Navbarfoused = Integer.parseInt(panels[0]);
+                        }
+                    } catch (Exception e) {
+                        LogUtils.e(e.toString());
+                        Navbarfoused = -1;
                     }
-                } catch (Exception e) {
-                    LogUtils.e(e.toString());
-                    Navbarfoused = -1;
+                }else if (params.contains("|")){//适配 |
+                    try {
+                        String[] panels = params.split("\\|");
+                        Log.e("--params---|-", panels[0] + "----");
+                        if (panels.length > 0) {
+                            Navbarfoused = Integer.parseInt(panels[0]);
+                        }
+                    } catch (Exception e) {
+                        LogUtils.e(e.toString());
+                        Navbarfoused = -1;
+                    }
                 }
             }
         } else {

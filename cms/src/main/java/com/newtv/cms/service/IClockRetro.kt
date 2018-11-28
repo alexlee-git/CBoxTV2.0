@@ -1,6 +1,6 @@
 package com.newtv.cms.service
 
-import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.BootGuide
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -15,7 +15,7 @@ import retrofit2.http.Headers
  */
 interface IClockRetro {
 
-    @Headers("host_type: " + HeadersInterceptor.SERVER_TIME)
+    @Headers("host_type: " + BootGuide.SERVER_TIME)
     @GET("panda/service/current/time")
     abstract fun getClockData(): Observable<ResponseBody>
 }

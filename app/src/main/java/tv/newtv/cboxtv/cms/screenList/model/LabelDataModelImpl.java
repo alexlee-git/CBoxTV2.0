@@ -2,7 +2,6 @@ package tv.newtv.cboxtv.cms.screenList.model;
 
 
 import android.content.Context;
-import android.util.Log;
 
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.SearchContract;
@@ -55,11 +54,7 @@ public class LabelDataModelImpl implements LabelDataModel, SearchContract.View {
         }
         condition.setRows(rows.toString());
         condition.setPage(page.toString());
-        Log.d("LabelDataModelImpl", "condition:" + condition);
-
         currentSearchID = mSearchPresenter.search(condition);
-
-
     }
 
 
@@ -76,7 +71,9 @@ public class LabelDataModelImpl implements LabelDataModel, SearchContract.View {
     @Override
     public void searchResult(long requestID, @Nullable ArrayList<SubContent> result, @Nullable Integer total) {
         if (currentSearchID == requestID) {
-            dataCompleteListener.sendLabelData(result, total);
+            if (dataCompleteListener!=null&&result!=null){
+                dataCompleteListener.sendLabelData(result, total);
+            }
             currentSearchID = 0L;
         }
     }

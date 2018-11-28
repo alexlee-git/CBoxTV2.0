@@ -16,6 +16,8 @@
     <item name="id_detail_type" type="id"/>
     <item name="id_detail_content" type="id"/>
 
+    <item name="block_type_tag" type="id"/>
+
     <item name="id_video_player" type="id"/>
 
     <item name="id_frameLayout_result_label_drama" type="id"/>

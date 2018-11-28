@@ -10,28 +10,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.newtv.cms.bean.FilterItem;
+import com.newtv.cms.bean.FilterValue;
 import com.newtv.libs.util.RxBus;
 
-import org.w3c.dom.Text;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
 
 /**
  * Created by 冯凯 on 2018/9/30.
  */
 public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.SecondMenuViewHolder> {
     private Context context;
-    List<LabelBean.DataBean.FilterValueBean> list;
-    LabelBean.DataBean dataBean;
+    List<FilterValue> list;
+    FilterItem dataBean;
     private int default_record_position = -1;
     private int default_record_position_second = -1;
 
 
-    public secondLabelAdapter(List<LabelBean.DataBean.FilterValueBean> list, Context context, LabelBean.DataBean dataBean) {
+    public secondLabelAdapter(List<FilterValue> list, Context context, FilterItem dataBean) {
         this.context = context;
         this.list = list;
         this.dataBean = dataBean;
@@ -69,7 +69,7 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
                         menuViewHolder.itemView.requestFocus();
 
                     }
-                }, 100);
+                }, 200);
             }
         }
 
@@ -77,6 +77,7 @@ public class secondLabelAdapter extends RecyclerView.Adapter<secondLabelAdapter.
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
+
                     RxBus.get().post("labelKey", dataBean);
                     RxBus.get().post("labelValue", list.get(i));
                     RxBus.get().post("menuRecordView", menuViewHolder.itemView);

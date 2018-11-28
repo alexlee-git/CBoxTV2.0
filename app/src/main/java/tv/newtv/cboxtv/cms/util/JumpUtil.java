@@ -14,16 +14,12 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.NewTVLauncherPlayerActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.details.AlternateActivity;
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
@@ -32,14 +28,10 @@ import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.screenList.ScreenListActivity;
 import tv.newtv.cboxtv.cms.special.SpecialActivity;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
-import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+
 import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
-import tv.newtv.cboxtv.utils.PlayInfoUtil;
 
 public class JumpUtil {
-
-    private static int mPlayPosition;
 
     private static HashMap<String, String> parseParamMap(String paramStr) {
         HashMap<String, String> paramsMap = new HashMap<>();
@@ -66,7 +58,7 @@ public class JumpUtil {
         JumpUtil.activityJump(context, actionType, contentType,
                 parseParamMap(params), true);
         Log.e("Splash", "SplashActivity---> onCreate 接收到外部应用跳转需求, action : "
-                + action + " param : " + params+"============="+ action);
+                + action + " param : " + params + "=============" + action);
         return true;
     }
 
@@ -100,14 +92,16 @@ public class JumpUtil {
     }
 
     //bug YSYY130XM-10
-    public static void activityJump(Context context, boolean isADEntry,String actionType, String contentType,
-                                    String contentUUID, String actionUri) {
-        activityJump(context, actionType, contentType, contentUUID, actionUri, "",false,isADEntry);
+    public static void activityJump(Context context, boolean isADEntry, String actionType, String
+            contentType, String contentUUID, String actionUri) {
+        activityJump(context, actionType, contentType, contentUUID, actionUri, "", false,
+                isADEntry,"");
     }
+
     //bug YSYY130XM-10
     public static void activityJump(Context context, String actionType, String contentType,
                                     String contentUUID, String actionUri, String seriesSubUUID,
-                                    boolean fromOuter,boolean isADEntry) {
+                                    boolean fromOuter, boolean isADEntry,String childContentUUID) {
         // fix bug LETVYSYY-51
         if (!NetworkManager.getInstance().isConnected()) {
             Toast.makeText(context, R.string.net_error, Toast.LENGTH_SHORT).show();
@@ -122,7 +116,7 @@ public class JumpUtil {
             jumpIntent.putExtra(Constant.ACTION_TYPE, actionType);
             jumpIntent.putExtra(Constant.ACTION_URI, actionUri);
             jumpIntent.putExtra(Constant.ACTION_FROM, fromOuter);
-            jumpIntent.putExtra(Constant.ACTION_AD_ENTRY,isADEntry);
+            jumpIntent.putExtra(Constant.ACTION_AD_ENTRY, isADEntry);
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
         }
@@ -131,9 +125,8 @@ public class JumpUtil {
     public static void activityJump(Context context, String actionType, String contentType,
                                     HashMap<String, String> params, boolean fromOuter) {
         Intent jumpIntent = getIntent(context, actionType, contentType, getParamValue
-                (params,
-                        Constant.EXTERNAL_PARAM_CONTENT_UUID), getParamValue(params, Constant
-                .EXTERNAL_PARAM_SERIES_SUB_UUID));
+                (params, Constant.EXTERNAL_PARAM_CONTENT_UUID),
+                getParamValue(params, Constant.EXTERNAL_PARAM_SERIES_SUB_UUID));
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
             jumpIntent.putExtra(Constant.CONTENT_UUID, getParamValue(params,
@@ -153,9 +146,14 @@ public class JumpUtil {
         }
     }
 
-
     public static void activityJump(Context context, String actionType, String contentType,
                                     String contentUUID, String actionUri, boolean fromOuter) {
+        activityJump(context, actionType, contentType, contentUUID, actionUri, "", fromOuter);
+    }
+
+    public static void activityJump(Context context, String actionType, String contentType,
+                                    String contentUUID, String actionUri, boolean fromOuter,
+                                    String childContentUUID) {
         activityJump(context, actionType, contentType, contentUUID, actionUri, "", fromOuter);
     }
 
@@ -181,7 +179,7 @@ public class JumpUtil {
             jumpIntent.putExtra(Constant.PAGE_UUID, contentUUID);
             jumpIntent.putExtra(Constant.ACTION_TYPE, actionType);
             jumpIntent.putExtra(Constant.ACTION_URI, actionUri);
-            jumpIntent.putExtra(Constant.DEFAULT_UUID,seriesSubUUID);
+            jumpIntent.putExtra(Constant.DEFAULT_UUID, seriesSubUUID);
             jumpIntent.putExtra(Constant.ACTION_FROM, fromOuter);
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
@@ -195,6 +193,14 @@ public class JumpUtil {
             LogUtils.i(Constant.TAG, "actionType : " + actionType);
             LogUtils.i(Constant.TAG, "contentType : " + contentType);
             LogUtils.i(Constant.TAG, "uuid:" + contentUUID);
+
+            // 如果是打开链接，uuid、actiontype可能都是空的，所以需要在最开始处判断
+            if (Constant.OPEN_LINK.equals(actionType)) { // 打开链接
+                Toast.makeText(context, R.string.no_link, Toast.LENGTH_LONG)
+                        .show();
+                return null;
+            }
+
             if (TextUtils.isEmpty(actionType)) {
                 Toast.makeText(LauncherApplication.AppContext, "ActionType值为空", Toast.LENGTH_SHORT)
                         .show();
@@ -230,19 +236,22 @@ public class JumpUtil {
                     bundle.putString(Constant.CONTENT_UUID, contentUUID);
                     NewTVLauncherPlayerActivity.play(context, bundle);
                 } else if (Constant.CONTENTTYPE_CG.equals(contentType)) {
-//                    jumpIntent = new Intent(context, ProgramListDetailActiviy.class);
                     jumpIntent = new Intent(context, ProgramCollectionActivity.class);
                 } else if (Constant.CONTENTTYPE_CS.equals(contentType)) {  //节目集合集
                     Toast.makeText(context, "节目集合集正在开发中", Toast.LENGTH_SHORT).show();
+                } else if (Constant.CONTENTTYPE_LB.equals(contentType)) {
+                    //TODO 打开轮播
+                    if(Constant.canUseAlternate) {
+                        jumpIntent = new Intent(context, AlternateActivity.class);
+                    }else{
+                        Toast.makeText(context, "轮播正在开发中", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(context, actionType + ":" + contentType, Toast.LENGTH_SHORT)
                             .show();
                 }
             } else if (Constant.OPEN_FILTER.equals(actionType)) { // 打开列表页
                 jumpIntent = new Intent(context, ScreenListActivity.class);
-            } else if (Constant.OPEN_LINK.equals(actionType)) { // 打开链接
-                Toast.makeText(context, R.string.no_link, Toast.LENGTH_LONG)
-                        .show();
             } else if (Constant.OPEN_USERCENTER.equals(actionType)) { // 打开用户中心
                 Toast.makeText(context, R.string.not_support_direct_type, Toast.LENGTH_LONG)
                         .show();

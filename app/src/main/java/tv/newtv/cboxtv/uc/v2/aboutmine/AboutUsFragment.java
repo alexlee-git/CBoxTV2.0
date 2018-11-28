@@ -11,10 +11,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 
 /**
@@ -52,7 +52,8 @@ public class AboutUsFragment extends BaseDetailSubFragment {
     @Override
     protected void updateUiWidgets(View view) {
         //以下为webview加载html页面方案
-        Constant.HTML_PATH_ABOUT_US = Constant.getBaseUrl(AppHeadersInterceptor.HTML_PATH_ABOUT_US);
+        String aboutUs = BootGuide.getBaseUrl(BootGuide.HTML_PATH_ABOUT_US);
+//        Constant.HTML_PATH_ABOUT_US = Constant.getBaseUrl(AppHeadersInterceptor.HTML_PATH_ABOUT_US);
         mWebView = (WebView) view.findViewById(R.id.id_webView);
         mWebView.clearCache(true);
         mWebView.clearHistory();
@@ -124,8 +125,8 @@ public class AboutUsFragment extends BaseDetailSubFragment {
                 handler.proceed();
             }
         });
-        if (!TextUtils.isEmpty(Constant.HTML_PATH_ABOUT_US)) {
-            mWebView.loadUrl(Constant.HTML_PATH_ABOUT_US);
+        if (!TextUtils.isEmpty(aboutUs)) {
+            mWebView.loadUrl(aboutUs);
         } else {
             Log.d(TAG, "wqs:html:path==null");
             mWebView.setVisibility(View.GONE);

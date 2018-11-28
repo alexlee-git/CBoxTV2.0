@@ -45,7 +45,6 @@ public class GridRecycleView extends RecyclerView {
     }
 
     private void initialize(Context context, AttributeSet attrs, int defStyle) {
-
         TypedArray mTypeArray = context.obtainStyledAttributes(attrs, R.styleable
                 .GridRecycleView);
         if (mTypeArray != null) {
@@ -57,6 +56,9 @@ public class GridRecycleView extends RecyclerView {
             mTypeArray.recycle();
         }
 
+        setPadding(getPaddingLeft(), getPaddingTop() + mTop, getPaddingRight(), getPaddingBottom
+                () + mBottom);
+
         mLayoutManager = new GridLayoutManager(context, spanCount);
         setLayoutManager(mLayoutManager);
         addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -67,11 +69,12 @@ public class GridRecycleView extends RecyclerView {
                 if (index < spanCount) {
                     outRect.top = mTop;
                 }
+                outRect.left = 0;
+                outRect.right = 0;
                 outRect.bottom = mBottom;
             }
         });
     }
-
 
     @Override
     public void onScrolled(int dx, int dy) {
@@ -91,8 +94,7 @@ public class GridRecycleView extends RecyclerView {
         }
         View nextFocus = null;
 
-
-        LogUtils.e(TAG,event.toString());
+        LogUtils.e(TAG, event.toString());
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -116,17 +118,17 @@ public class GridRecycleView extends RecyclerView {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     nextFocus = FocusFinder.getInstance().findNextFocus(this, focusView, View
                             .FOCUS_UP);
-                    LogUtils.e(TAG,"find focus dir=up view="+nextFocus);
+                    LogUtils.e(TAG, "find focus dir=up view=" + nextFocus);
                     if (nextFocus == null) {
                         if (mInvokeScroll) return true;
                         if (canScrollVertically(1) && getScrollState() == SCROLL_STATE_IDLE) {
                             mInvokeScroll = true;
                             mKeyEvent = event;
-                            smoothScrollBy(0, -(mLayoutManager.findViewByPosition(mLayoutManager
-                                    .findFirstVisibleItemPosition()).getMeasuredHeight() + mTop +
-                                    mBottom));
+                            int height = mLayoutManager.findViewByPosition(mLayoutManager
+                                    .findFirstVisibleItemPosition()).getMeasuredHeight();
+                            smoothScrollBy(0, -(height + mTop * 2 + mBottom * 2));
                             return true;
-                        }else{
+                        } else {
                             return true;
                         }
                     }
@@ -136,7 +138,7 @@ public class GridRecycleView extends RecyclerView {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     nextFocus = FocusFinder.getInstance().findNextFocus(this, focusView, View
                             .FOCUS_DOWN);
-                    LogUtils.e(TAG,"find focus dir=down view="+nextFocus);
+                    LogUtils.e(TAG, "find focus dir=down view=" + nextFocus);
                     if (nextFocus == null) {
                         if (canScrollVertically(-1) && getScrollState() == SCROLL_STATE_IDLE) {
                             if (mInvokeScroll) return true;
@@ -146,7 +148,7 @@ public class GridRecycleView extends RecyclerView {
                                     .findFirstVisibleItemPosition()).getMeasuredHeight() + mTop +
                                     mBottom);
                             return true;
-                        }else{
+                        } else {
                             return true;
                         }
                     }

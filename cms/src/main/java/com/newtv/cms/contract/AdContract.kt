@@ -30,9 +30,8 @@ import tv.icntv.adsdk.AdSDK
 class AdContract {
 
     interface Presenter : ICmsPresenter {
-        val adItem: ADHelper.AD.ADItem?
-        val ad: ADHelper.AD?
-        val isAdHasEvent: Boolean
+
+        fun getCurrentAdItem(): ADHelper.AD.ADItem?
 
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?)
 
@@ -64,11 +63,16 @@ class AdContract {
          * @param left 剩余时长
          */
         fun updateTime(total: Int, left: Int)
+
         fun complete()
     }
 
     class AdPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
+
+        override fun getCurrentAdItem(): ADHelper.AD.ADItem? {
+            return adItem
+        }
 
         override fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?) {
             getAdWithType(adType, adLoc, flag, extends, callback)
@@ -76,13 +80,13 @@ class AdContract {
 
         override fun getAdByChannel(adType: String?, adLoc: String?, flag: String?, firstChannel:
         String?, secondChannel: String?, topicId: String?, extends: HashMap<*,
-                        *>?, callback: Callback?) {
+                *>?, callback: Callback?) {
             getAdWithChannel(adType, adLoc, flag, firstChannel, secondChannel, topicId, extends,
                     callback)
         }
 
         fun getAdWithType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?,
-                         callback: Any?) {
+                          callback: Any?) {
             LogUtils.e("AdConstract", "getAdByType")
             val sb = StringBuffer()
             Observable.create(ObservableOnSubscribe<Int> { e ->
@@ -108,7 +112,7 @@ class AdContract {
         }
 
         fun getAdWithChannel(adType: String?, adLoc: String?, flag: String?, firstChannel: String?,
-                           secondChannel: String?, topicId: String?, extends: HashMap<*,
+                             secondChannel: String?, topicId: String?, extends: HashMap<*,
                         *>?, callback: Any?) {
 
             LogUtils.e("AdConstract", "getAdByChannel")
@@ -157,14 +161,14 @@ class AdContract {
         }
 
         private var mDisposable: Disposable? = null
-        override var ad: ADHelper.AD? = null
-        override var adItem: ADHelper.AD.ADItem? = null
+        var ad: ADHelper.AD? = null
+        var adItem: ADHelper.AD.ADItem? = null
 
-        override val isAdHasEvent: Boolean
+        val isAdHasEvent: Boolean
             get() = !(adItem == null
-                    || TextUtils.isEmpty(adItem!!.eventType)
-                    || Constant.EXTERNAL_OPEN_URI != adItem!!.eventType
-                    || TextUtils.isEmpty(adItem!!.eventContent))
+                    || TextUtils.isEmpty(adItem?.eventType)
+                    || Constant.EXTERNAL_OPEN_URI != adItem?.eventType
+                    || TextUtils.isEmpty(adItem?.eventContent))
 
         override fun destroy() {
             super.destroy()
@@ -207,37 +211,40 @@ class AdContract {
                 return
             }
             Log.e("AdHelper", "显示:" + ad!!)
-            ad!!.setCallback(object : ADHelper.ADCallback {
-                override fun showAd(type: String, url: String) {
-                    callback?.let {
-                        if (it is View) {
-                            it.showAd(type, url, extends)
-                        } else if (it is Callback) {
-                            it.showAd(type, url, extends)
+            ad?.let { adItem ->
+                adItem.setCallback(object : ADHelper.ADCallback {
+                    override fun showAd(type: String, url: String) {
+                        callback?.let {
+                            if (it is View) {
+                                it.showAd(type, url, extends)
+                            } else if (it is Callback) {
+                                it.showAd(type, url, extends)
+                            }
                         }
                     }
-                }
 
-                override fun showAdItem(adItem: ADHelper.AD.ADItem) {
-                    this@AdPresenter.adItem = adItem
-                }
+                    override fun showAdItem(adItem: ADHelper.AD.ADItem) {
+                        this@AdPresenter.adItem = adItem
+                    }
 
-                override fun updateTime(total: Int, left: Int) {
-                    callback?.let {
-                        if (it is View) {
-                            it.updateTime(total, left)
+                    override fun updateTime(total: Int, left: Int) {
+                        callback?.let {
+                            if (it is View) {
+                                it.updateTime(total, left)
+                            }
                         }
                     }
-                }
 
-                override fun complete() {
-                    callback?.let {
-                        if (it is View) {
-                            it.complete()
+                    override fun complete() {
+                        callback?.let {
+                            if (it is View) {
+                                it.complete()
+                            }
                         }
                     }
-                }
-            }).start()
+                }).start()
+            }
+
         }
 
         private fun addExtend(result: StringBuilder, key: String, value: String?) {

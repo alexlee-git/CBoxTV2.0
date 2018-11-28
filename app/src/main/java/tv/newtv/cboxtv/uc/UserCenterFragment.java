@@ -24,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.ad.AdEventContent;
@@ -60,7 +61,6 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
@@ -197,11 +197,12 @@ public class UserCenterFragment extends BaseFragment implements
         setAnimRecyclerView(mRecyclerView);
         //获取通栏广告的数据
         getBannerAD();
-        Constant.ID_PAGE_USERCENTER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_USERCENTER);
-        if (!TextUtils.isEmpty(Constant.ID_PAGE_USERCENTER)) {
+        String pageUserCenter = BootGuide.getBaseUrl(BootGuide.PAGE_USERCENTER);
+//        Constant.ID_PAGE_USERCENTER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_USERCENTER);
+        if (!TextUtils.isEmpty(pageUserCenter)) {
             //获取猜你喜欢推荐位的数据
             mContentPresenter = new PageContract.ContentPresenter(getContext(), this);
-            mContentPresenter.getPageContent(Constant.ID_PAGE_USERCENTER);
+            mContentPresenter.getPageContent(pageUserCenter);
         } else {
             Log.e(TAG, "wqs:ID_PAGE_USERCENTER==null");
         }
@@ -973,7 +974,6 @@ public class UserCenterFragment extends BaseFragment implements
     }
 
     private void uploadUserOnline() {
-
         String userid = SharePreferenceUtils.getUserId(getContext());
         if (!TextUtils.isEmpty(userid)) {
             LogUploadUtils.setLogFileds(Constant.USER_ID, userid);

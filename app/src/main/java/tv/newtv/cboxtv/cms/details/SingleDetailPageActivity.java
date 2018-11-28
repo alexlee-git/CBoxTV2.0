@@ -4,16 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
@@ -120,6 +119,9 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         headPlayerView = findViewById(R.id.header_video);
         suggestView = findViewById(R.id.suggest);
 
+        //进入节目详情页上传日志
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "1," + contentUUID);
+
         initHeadPlayerView(contentUUID);
     }
 
@@ -135,7 +137,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetPlayerId(R.id.video_container)
                     .SetDefaultFocusID(R.id.full_screen)
                     .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
-                    .SetContentUUID(contentUUID)
+                    .SetContentUUID(contentUUID,"")
                     .autoGetSubContents()
                     .setTopView(fromOuter,isPopup)
                     .SetOnInfoResult(new HeadPlayerView.InfoResult() {

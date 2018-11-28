@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newtv.cms.bean.Nav;
 import com.newtv.libs.Constant;
@@ -78,16 +79,29 @@ public class MainListPageManager {
         Log.e("--params---|-", action + "----" + params);
         if (action != null) {
             if (action.equals("panel")) {
-                try {
-                    String[] panels = params.split("&");
-//                    Log.e("--params----",panels[0]+"----"+panels[1]) ;
-                    if (panels.length > 1) {
-                        Navbarfoused = Integer.parseInt(panels[1]);
-                    }
+                if (params.contains("&")){
+                    try {
+                        String[] panels = params.split("&");
+                        if (panels.length > 1) {
+                            Navbarfoused = Integer.parseInt(panels[1]);
+                        }
 
-                } catch (Exception e) {
-                    LogUtils.e(e.toString());
-                    Navbarfoused = -1;
+                    } catch (Exception e) {
+                        LogUtils.e(e.toString());
+                        Navbarfoused = -1;
+                    }
+                }else if (params.contains("|")){//适配二级导航
+                    try {
+                        String[] panels = params.split("\\|");
+                        Log.e("--params---|-", panels[1] + "----");
+                        if (panels.length > 1) {
+                            Navbarfoused = Integer.parseInt(panels[1]);
+                        }
+
+                    } catch (Exception e) {
+                        LogUtils.e(e.toString());
+                        Navbarfoused = -1;
+                    }
                 }
             }
         } else {
@@ -162,6 +176,7 @@ public class MainListPageManager {
             if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
                 Nav navInfo = mNavInfos.get(Navbarfoused);
                 currentFocus = navInfo.getId();
+
             }
             int count = mNavInfos.size();
             for (int index = 0; index < count; index++) {
@@ -171,6 +186,7 @@ public class MainListPageManager {
                     if ("1".equals(navInfo.isFocus())) {
                         defaultPageIdx = index;
                         currentFocus = navInfo.getId();
+
                     }
                 } else {
                     if (currentFocus.equals(navInfo.getId())) {
@@ -183,8 +199,8 @@ public class MainListPageManager {
 
         if (TextUtils.isEmpty(currentFocus) && mNavInfos != null && mNavInfos.size() > 0) {
             currentFocus = mNavInfos.get(0).getId();
-        }
 
+        }
         PlayerConfig.getInstance().setSecondChannelId(currentFocus);
         MenuRecycleView.MenuAdapter<Nav> menuAdapter = null;
         mCircleMenuRv.setFocusable(true);
@@ -262,6 +278,7 @@ public class MainListPageManager {
 
                         secondNavLogUpload(position);
                         Log.e("logsdk", "二级 position=" + position);
+
                     }
                 }
             });
@@ -285,7 +302,13 @@ public class MainListPageManager {
             mViewPager.setCurrentItem(defaultIndex, false);
 
             currentPosition = defaultIndex % mNavInfos.size();
+            Nav nav = mNavInfos.get(currentPosition);
+            if (nav!=null){
+                secondNavLogUpload(nav,currentPosition);
+            }
+
             currentFragment = (BaseFragment) mViewPagerAdapter.getItem(defaultIndex);
+
             setContentFragmentRecyclerViewToNavFragment();
 
             mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -306,7 +329,6 @@ public class MainListPageManager {
                         currentTag = mNavInfos.get(currentPosition)
                                 .getId();
                     }
-                    Log.e(Constant.TAG, "viewpager onPageSelected pos : " + currentPosition);
 
                     setContentFragmentRecyclerViewToNavFragment();
                 }
@@ -349,13 +371,12 @@ public class MainListPageManager {
             Nav info = mNavInfos.get(position);
             if (info != null) {
                 String result = info.getId();
+
                 StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_8);
                 logBuff.append(result)
                         .append(",")
                         .append(position)
                         .trimToSize();
-                SharedPreferences sp = mContext.getSharedPreferences("secondConfig", MODE_PRIVATE);
-                sp.edit().putString("secondMenu", logBuff.toString()).commit();
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
                         logBuff.toString());
                 PlayerConfig.getInstance().setSecondChannelId(result);
@@ -487,5 +508,18 @@ public class MainListPageManager {
 //        if(mNavInfos!=null)
 //        mCircleMenuRv.setTwoMenuData(mNavInfos);
 //    }
+private void secondNavLogUpload(Nav nav,int currentPosition) {
+        if (nav != null) {
+            String result = nav.getId();
 
+            StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_8);
+            logBuff.append(result)
+                    .append(",")
+                    .append(currentPosition)
+                    .trimToSize();
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
+                    logBuff.toString());
+            PlayerConfig.getInstance().setSecondChannelId(result);
+        }
+    }
 }

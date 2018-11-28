@@ -1,6 +1,6 @@
 package com.newtv.cms.service
 
-import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.BootGuide
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.GET
@@ -19,46 +19,38 @@ internal interface ITvProgramRetro {
     /**
      * 最新一期电视栏目
      */
-    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
-    @GET("api/v31/{appkey}/{channelCode}/currentlist/{left}/{right}/{contentID}.json")
+    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=currentlist")
     fun getCurrentList(@Path("appkey") appKey: String,
-                  @Path("channelCode") channelid: String,
-                  @Path("left") left: String,
-                  @Path("right") right: String,
-                  @Path("contentID") pageuuid: String): Observable<ResponseBody>
+                       @Path("channelCode") channelid: String,
+                       @Path("contentID") pageuuid: String): Observable<ResponseBody>
 
 
     /**
      * 电视栏目往期内容列表
      */
-    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
-    @GET("api/v31/{appkey}/{channelCode}/historylist/{left}/{right}/{contentID}.json")
+    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=historylist")
     fun getHistoryList(@Path("appkey") appKey: String,
                        @Path("channelCode") channelid: String,
-                       @Path("left") left: String,
-                       @Path("right") right: String,
                        @Path("contentID") pageuuid: String): Observable<ResponseBody>
 
     /**
      * 电视栏目相关人物列表
      */
-    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
-    @GET("api/v31/{appkey}/{channelCode}/tvfigurelist/{left}/{right}/{contentID}.json")
+    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=tvfigurelist")
     fun getTvFigureList(@Path("appkey") appKey: String,
-                       @Path("channelCode") channelid: String,
-                       @Path("left") left: String,
-                       @Path("right") right: String,
-                       @Path("contentID") pageuuid: String): Observable<ResponseBody>
+                        @Path("channelCode") channelid: String,
+                        @Path("contentID") pageuuid: String): Observable<ResponseBody>
 
     /**
      * 同栏目下的电视栏目列表
      */
-    @Headers("host_type: " + HeadersInterceptor.NEW_CMS)
-    @GET("api/v31/{appkey}/{channelCode}/tvfigureoftvlist/{left}/{right}/{contentID}.json")
+    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=tvfigureoftvlist")
     fun getTvFigureTvList(@Path("appkey") appKey: String,
-                        @Path("channelCode") channelid: String,
-                        @Path("left") left: String,
-                        @Path("right") right: String,
-                        @Path("contentID") pageuuid: String): Observable<ResponseBody>
+                          @Path("channelCode") channelid: String,
+                          @Path("contentID") pageuuid: String): Observable<ResponseBody>
 
 }

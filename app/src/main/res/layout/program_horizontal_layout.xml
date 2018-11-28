@@ -23,6 +23,13 @@
             android:layout_height="@dimen/height_214px"
             android:scaleType="fitXY"
             android:tag="tag_poster_image"/>
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:background="#40000000"
+            android:layout_alignBottom="@+id/iv_player"
+            android:layout_width="@dimen/width_390px"
+            android:layout_height="wrap_content"/>
     </tv.newtv.cboxtv.views.detail.FocusRelativeLayout>
 
     <TextView

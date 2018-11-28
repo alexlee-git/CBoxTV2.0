@@ -8,7 +8,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.libs.Constant;
-
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -67,26 +65,21 @@ public class HistoryActivity extends FragmentActivity implements
 
     private static final int UPDATE = 1001;
     private final int COLUMN_COUNT = 6;
+    private final String TAG = "lx";
     public int action_type;
     public String title;
     @BindView(R.id.id_usercenter_fragment_root)
     GridRecycleView mRecyclerView;
-
     @BindView(R.id.user_info_title)
     TextView mPageTitle;
-    private HistoryAdapter mAdapter;
-    private BackgroundTipView deleteView;
-
-    private int selectPostion =0;
-
     @BindView(R.id.id_operation_icon)
     ImageView operationIcon;
-
     @BindView(R.id.id_operation_tip)
     TextView operationText;
-
+    private HistoryAdapter mAdapter;
+    private BackgroundTipView deleteView;
+    private int selectPostion = 0;
     private boolean NeedRefresh = true;
-
     private Interpolator mSpringInterpolator;
     private List<UserCenterPageBean.Bean> mCollectBean;
     private Handler mHandler = new Handler(new Handler.Callback() {
@@ -117,12 +110,9 @@ public class HistoryActivity extends FragmentActivity implements
             return false;
         }
     });
-
     private String tableName;
     private View defaultFocusView;
     private String userId;
-
-    private final String TAG = "lx";
     private String mLoginTokenString;//登录token,用于判断登录状态
 
     @Override
@@ -142,7 +132,8 @@ public class HistoryActivity extends FragmentActivity implements
 //        mRecyclerView.setLayoutManager(layoutManager);
 //        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
 //            @Override
-//            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+// RecyclerView.State state) {
 //                int index = parent.getChildLayoutPosition(view);
 //                if (index < COLUMN_COUNT) {
 //                    outRect.top = 23;
@@ -184,7 +175,8 @@ public class HistoryActivity extends FragmentActivity implements
                         defaultFocusView.requestFocus();
                     }
                     mAdapter.setAllowLostFocus(true);
-                    ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+                    ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id
+                            .content);
                     deleteView.release();
                     contentGroup.removeView(deleteView);
                     deleteView = null;
@@ -243,7 +235,7 @@ public class HistoryActivity extends FragmentActivity implements
         View focusView = mRecyclerView.findFocus();
         if (focusView == null) return;
 
-        TextView textView = focusView.findViewWithTag("tag_poster_title");
+        TextView textView = focusView.findViewById(R.id.id_title);
         if (textView != null) {
             textView.setEllipsize(null);
         }
@@ -262,9 +254,6 @@ public class HistoryActivity extends FragmentActivity implements
         Rect visibleRect = new Rect();
         focusView.getGlobalVisibleRect(visibleRect);
 
-
-        visibleRect.left -= (mBitmap.getWidth() - w) / 2 + 2;
-        visibleRect.top -= (mBitmap.getHeight() - h) / 2;
         focusView.destroyDrawingCache();
         focusView.setDrawingCacheEnabled(false);
 
@@ -282,7 +271,8 @@ public class HistoryActivity extends FragmentActivity implements
             deleteView.setVisibleRect(mBitmap, visibleRect);
             ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
             contentGroup.addView(deleteView);
-            ImageButton ivDeleteSinle = (ImageButton) deleteView.findViewById(R.id.delete_single_btn);
+            ImageButton ivDeleteSinle = (ImageButton) deleteView.findViewById(R.id
+                    .delete_single_btn);
             ivDeleteSinle.requestFocus();
             ivDeleteSinle.setOnFocusChangeListener(this);
             ivDeleteSinle.setOnKeyListener(this);
@@ -367,7 +357,8 @@ public class HistoryActivity extends FragmentActivity implements
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
-                boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(getApplicationContext());
+                boolean status = TokenRefreshUtil.getInstance().isTokenRefresh
+                        (getApplicationContext());
                 Log.d(TAG, "---isTokenRefresh:status:" + status);
                 //获取登录状态
                 mLoginTokenString = SharePreferenceUtils.getToken(getApplicationContext());
@@ -408,8 +399,10 @@ public class HistoryActivity extends FragmentActivity implements
                         Log.e(TAG, "---result = " + result);
                         if (code == 0) {
                             Gson mGson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
-                            final List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson(result, type);
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                            }.getType();
+                            final List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson
+                                    (result, type);
                             Message msg = new Message();
                             msg.what = UPDATE;
                             msg.obj = mCollectBean;
@@ -437,11 +430,13 @@ public class HistoryActivity extends FragmentActivity implements
 
     @Override
     public void onItemClick(View view, int Position, UserCenterPageBean.Bean object) {
-        JumpUtil.activityJump(getApplicationContext(), object._actiontype, object._contenttype, object._contentuuid, "");
+        JumpUtil.activityJump(getApplicationContext(), object._actiontype, object._contenttype,
+                object._contentuuid, "");
     }
 
     @Override
-    public void onItemFocusChange(View view, boolean hasFocus, int Position, UserCenterPageBean.Bean object) {
+    public void onItemFocusChange(View view, boolean hasFocus, int Position, UserCenterPageBean
+            .Bean object) {
 
     }
 
@@ -464,27 +459,55 @@ public class HistoryActivity extends FragmentActivity implements
 
                 switch (v.getId()) {
                     case R.id.delete_all_btn:
+                        mAdapter.setAllowLostFocus(true);
                         if (mCollectBean != null && mCollectBean.size() != 0) {
 
                             UserCenterRecordManager.getInstance()
-                                    .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
+                                    .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE
+                                                    .TYPE_HISTORY,
                                             getApplicationContext(),
                                             "clean",
                                             null,
                                             new DBCallback<String>() {
                                                 @Override
                                                 public void onResult(int code, String result) {
-                                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "2," + " ");//清空所有历史记录
+                                                    //清空所有历史记录，上传seriesID字段
+                                                    StringBuilder dataBuff = new StringBuilder
+                                                            (Constant.BUFFER_SIZE_32);
+                                                    for (int i = 0; i < mCollectBean.size(); i++) {
+                                                        if (i < mCollectBean.size() - 1) {
+                                                            dataBuff.append(mCollectBean.get(i)
+                                                                    ._contentuuid)
+                                                                    .append(",");
+                                                        }
+                                                        if (i == mCollectBean.size() - 1) {
+                                                            dataBuff.append(mCollectBean.get(i)
+                                                                    ._contentuuid)
+                                                                    .trimToSize();
+                                                        }
+                                                    }
+
+                                                    LogUploadUtils.uploadLog(Constant
+                                                            .LOG_NODE_HISTORY, "2," + dataBuff
+                                                            .toString());//清空所有历史记录
+
                                                     mRecyclerView.post(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(getApplicationContext
+                                                                    (), "删除成功", Toast
+                                                                    .LENGTH_SHORT).show();
                                                             if (deleteView != null) {
-                                                                ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+                                                                ViewGroup contentGroup =
+                                                                        getWindow().getDecorView
+                                                                                ().findViewById
+                                                                                (android.R.id
+                                                                                        .content);
                                                                 contentGroup.removeView(deleteView);
                                                                 deleteView = null;
                                                             }
-                                                            RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                                                            RxBus.get().post(Constant
+                                                                    .UPDATE_UC_DATA, true);
                                                         }
                                                     });
                                                 }
@@ -497,17 +520,21 @@ public class HistoryActivity extends FragmentActivity implements
 //                                        @Override
 //                                        public void onResult(int code, final String result) {
 //                                            if (code == 0) {
-//                                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "2," + " ");//清空所有历史记录
+//                                                LogUploadUtils.uploadLog(Constant
+// .LOG_NODE_HISTORY, "2," + " ");//清空所有历史记录
 //                                                mRecyclerView.post(new Runnable() {
 //                                                    @Override
 //                                                    public void run() {
-//                                                        Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+//                                                        Toast.makeText(getApplicationContext(),
+// "删除成功", Toast.LENGTH_SHORT).show();
 //                                                        if (deleteView != null) {
-//                                                            ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+//                                                            ViewGroup contentGroup = getWindow
+// ().getDecorView().findViewById(android.R.id.content);
 //                                                            contentGroup.removeView(deleteView);
 //                                                            deleteView = null;
 //                                                        }
-//                                                        RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+//                                                        RxBus.get().post(Constant
+// .UPDATE_UC_DATA, true);
 //                                                    }
 //                                                });
 //                                            }
@@ -523,38 +550,58 @@ public class HistoryActivity extends FragmentActivity implements
                         break;
 
                     case R.id.delete_single_btn:
+                        mAdapter.setAllowLostFocus(true);
                         if (mCollectBean != null && mCollectBean.size() != 0) {
                             selectPostion = mAdapter.getSelectPostion();
 
                             UserCenterRecordManager.getInstance()
-                                    .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
+                                    .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE
+                                                    .TYPE_HISTORY,
                                             getApplicationContext(),
-                                            mCollectBean.get(mAdapter.getSelectPostion())._contentuuid,
-                                            mCollectBean.get(mAdapter.getSelectPostion())._contenttype,
+                                            mCollectBean.get(mAdapter.getSelectPostion())
+                                                    ._contentuuid,
+                                            mCollectBean.get(mAdapter.getSelectPostion())
+                                                    ._contenttype,
                                             new DBCallback<String>() {
                                                 @Override
                                                 public void onResult(int code, String result) {
                                                     Log.d(TAG, "onResult remove");
-                                                    LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "1," + mCollectBean.get(mAdapter.getSelectPostion())._contentuuid);//删除历史记录
+                                                    LogUploadUtils.uploadLog(Constant
+                                                            .LOG_NODE_HISTORY, "1," +
+                                                            mCollectBean.get(mAdapter
+                                                                    .getSelectPostion())
+                                                                    ._contentuuid);//删除历史记录
                                                     mRecyclerView.post(new Runnable() {
                                                         @Override
                                                         public void run() {
-                                                            Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(getApplicationContext
+                                                                    (), "删除成功", Toast
+                                                                    .LENGTH_SHORT).show();
                                                             if (deleteView != null) {
-                                                                ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+                                                                ViewGroup contentGroup =
+                                                                        getWindow().getDecorView
+                                                                                ().findViewById
+                                                                                (android.R.id
+                                                                                        .content);
                                                                 contentGroup.removeView(deleteView);
                                                                 deleteView = null;
                                                             }
 
                                                             mAdapter.setAllowLostFocus(true);
-                                                            if (mAdapter.getItemCount() > 0 && selectPostion >= 1) {
-                                                                GridLayoutManager layoutManager = (GridLayoutManager) mRecyclerView.getLayoutManager();
+                                                            if (mAdapter.getItemCount() > 0 &&
+                                                                    selectPostion >= 1) {
+                                                                GridLayoutManager layoutManager =
+                                                                        (GridLayoutManager)
+                                                                                mRecyclerView
+                                                                                        .getLayoutManager();
 
-                                                                View focusView = layoutManager.findViewByPosition(selectPostion - 1);
+                                                                View focusView = layoutManager
+                                                                        .findViewByPosition
+                                                                                (selectPostion - 1);
 
-                                                            if (focusView != null) {
-                                                                focusView.requestFocus();
-                                                            }
+                                                                if (focusView != null) {
+                                                                    focusView.requestFocus();
+                                                                }
 
                                                                 mAdapter.removeItem(selectPostion);
                                                             } else {
@@ -568,29 +615,36 @@ public class HistoryActivity extends FragmentActivity implements
 
 
 //                            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME).condition()
-//                                    .eq(DBConfig.CONTENTUUID, mCollectBean.get(mAdapter.getSelectPostion())._contentuuid)
+//                                    .eq(DBConfig.CONTENTUUID, mCollectBean.get(mAdapter
+// .getSelectPostion())._contentuuid)
 //                                    .build()
 //                                    .withCallback(new DBCallback<String>() {
 //                                        @Override
 //                                        public void onResult(int code, final String result) {
 //                                            if (code == 0) {
 //
-//                                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "1," + mCollectBean.get(mAdapter.getSelectPostion())._contentuuid);//删除历史记录
+//                                                LogUploadUtils.uploadLog(Constant
+// .LOG_NODE_HISTORY, "1," + mCollectBean.get(mAdapter.getSelectPostion())._contentuuid);//删除历史记录
 //                                                mRecyclerView.post(new Runnable() {
 //                                                    @Override
 //                                                    public void run() {
-//                                                        Toast.makeText(getApplicationContext(), "删除成功", Toast.LENGTH_SHORT).show();
+//                                                        Toast.makeText(getApplicationContext(),
+// "删除成功", Toast.LENGTH_SHORT).show();
 //                                                        if (deleteView != null) {
-//                                                            ViewGroup contentGroup = getWindow().getDecorView().findViewById(android.R.id.content);
+//                                                            ViewGroup contentGroup = getWindow
+// ().getDecorView().findViewById(android.R.id.content);
 //                                                            contentGroup.removeView(deleteView);
 //                                                            deleteView = null;
 //                                                        }
 //
 //                                                        mAdapter.setAllowLostFocus(true);
-//                                                        if (mAdapter.getItemCount() > 0 && selectPostion >= 1) {
-//                                                            StaggeredGridLayoutManager layoutManager = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
+//                                                        if (mAdapter.getItemCount() > 0 &&
+// selectPostion >= 1) {
+//                                                            StaggeredGridLayoutManager
+// layoutManager = (StaggeredGridLayoutManager) mRecyclerView.getLayoutManager();
 //
-//                                                            View focusView = layoutManager.findViewByPosition(selectPostion - 1);
+//                                                            View focusView = layoutManager
+// .findViewByPosition(selectPostion - 1);
 //
 //                                                            if (focusView != null) {
 //                                                                focusView.requestFocus();

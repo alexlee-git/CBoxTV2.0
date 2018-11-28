@@ -3,9 +3,7 @@ package com.newtv.cms
 import com.newtv.cms.service.*
 import com.newtv.libs.Constant
 import com.newtv.libs.HeadersInterceptor
-import com.newtv.libs.Libs
 import com.newtv.libs.util.HttpsUtils
-import okhttp3.Call
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,7 +25,7 @@ internal object Request {
         if (BuildConfig.DEBUG) {
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
         } else {
-            logInterceptor.level = HttpLoggingInterceptor.Level.NONE
+            logInterceptor.level = HttpLoggingInterceptor.Level.BASIC
         }
     }
 
@@ -64,6 +62,7 @@ internal object Request {
     val search: ISearchRetro by lazy { retrofit.create(ISearchRetro::class.java) }
     val alternate: IAlternateRetro by lazy { retrofit.create(IAlternateRetro::class.java) }
     val default: IDefaultRetro by lazy { retrofit.create(IDefaultRetro::class.java) }
-    val UserCenterMemberInfoApi by lazy { retrofit.create(IUserCenterMemberInfoApi::class.java) }
+    val MemberInfoApi by lazy { retrofit.create(IMemberInfoApi::class.java) }
+    val userCenter by lazy { retrofit.create(IUserCenterRetro::class.java) }
 
 }

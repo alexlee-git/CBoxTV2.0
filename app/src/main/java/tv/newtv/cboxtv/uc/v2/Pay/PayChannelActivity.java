@@ -98,7 +98,7 @@ public class PayChannelActivity extends Activity implements PageContract.View {
         init();
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         if (mExterPayBean != null) {
-            Log.e(TAG, mExterPayBean.toString());
+            Log.i(TAG, mExterPayBean.toString());
             mVipProductId = mExterPayBean.getVipProductId();
             mContentUUID = mExterPayBean.getContentUUID();
             mContentType = mExterPayBean.getContentType();
@@ -107,12 +107,12 @@ public class PayChannelActivity extends Activity implements PageContract.View {
             mFlagAction = mExterPayBean.getAction();
             mVipFlag = mExterPayBean.getVipFlag();
         }
-        Log.e(TAG, "mVipProductId: " + mVipProductId + "---mFlagAction: " + mFlagAction);
+        Log.i(TAG, "mVipProductId: " + mVipProductId + "---mFlagAction: " + mFlagAction);
         if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
             mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
         } else {
-            Log.e(TAG, "wqs:ID_PAGE_MEMBER==null");
+            Log.i(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
         //requestRecommendData();
         initAgreemrntView();
@@ -295,6 +295,7 @@ public class PayChannelActivity extends Activity implements PageContract.View {
                     Intent intent = new Intent(PayChannelActivity.this, PayOrderActivity.class);
                     intent.putExtra("data", (Serializable) mProductPricesInfo);
                     intent.putExtra("Postion", position);
+                    intent.putExtra("VipProductId", mVipProductId);
                     intent.putExtra("payBean", mExterPayBean);
                     startActivity(intent);
                 }
@@ -503,7 +504,7 @@ public class PayChannelActivity extends Activity implements PageContract.View {
                                 JSONObject mJsonObject = new JSONObject(value);
                                 JSONObject jsonObject = mJsonObject.getJSONObject("response");
                                 mVipProductId = String.valueOf(jsonObject.optInt("productId"));
-                                Log.e(TAG, "---mVipProductId:value:" + mVipProductId);
+                                Log.i(TAG, "---mVipProductId:value:" + mVipProductId);
                                 LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
                                 if (mHandler != null) {
                                     mHandler.sendEmptyMessage(MSG_PRODUCT);
@@ -533,70 +534,6 @@ public class PayChannelActivity extends Activity implements PageContract.View {
             e.printStackTrace();
         }
     }
-//
-//    //读取用户会员信息
-//    private long requestMemberInfo() {
-//        try {
-//            NetClient.INSTANCE.getUserCenterMemberInfoApi()
-//                    .getMemberInfo("Bearer " + mToken, "",
-//                            Libs.get().getAppKey())
-//                    .subscribe(new Observer<ResponseBody>() {
-//
-//                        @Override
-//                        public void onSubscribe(Disposable d) {
-//                            mDisposable_time = d;
-//                        }
-//
-//                        @Override
-//                        public void onNext(ResponseBody responseBody) {
-//                            try {
-//                                String data = responseBody.string();
-//                                JSONArray jsonArray = new JSONArray(data);
-//                                if (jsonArray != null && jsonArray.length() > 0) {
-//                                    JSONObject jsonObject = jsonArray.getJSONObject(0);
-//                                    String Exp_time = jsonObject.optString("expireTime");
-//                                    Log.e(TAG, "---expireTime：" + Exp_time);
-//                                    Calendar calendar = Calendar.getInstance();
-//                                    calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(Exp_time));
-//                                    System.out.println("日期[2018-11-12 17:08:12]对应毫秒：" + calendar.getTimeInMillis());
-//                                    expireTime = calendar.getTimeInMillis();
-//                                    Log.e(TAG, "---expireTime：" + expireTime);
-//                                    Log.e(TAG, "---systemTime：" + TimeUtil.getInstance().getCurrentTimeInMillis());
-//                                    if (expireTime <= TimeUtil.getInstance().getCurrentTimeInMillis()) {
-//                                        isVip = false;
-//                                    } else {
-//                                        isVip = true;
-//                                    }
-//                                }
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            Log.e(TAG, "---requestMemberInfo:onError");
-//                            expireTime = TimeUtil.getInstance().getCurrentTimeInMillis();
-//                            if (mDisposable_time != null) {
-//                                mDisposable_time.dispose();
-//                                mDisposable_time = null;
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            if (mDisposable_time != null) {
-//                                mDisposable_time.dispose();
-//                                mDisposable_time = null;
-//                            }
-//                        }
-//                    });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return expireTime;
-//    }
-
 
     /**
      * adapter填充数据

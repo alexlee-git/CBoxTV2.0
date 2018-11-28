@@ -199,7 +199,6 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
             LogUtils.e("MainNavManager", currentFragment.toString());
             currentFragment.dispatchKeyEvent(event);
         }
-
         
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (!BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
@@ -249,6 +248,7 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
                         View topView = FocusFinder.getInstance().findNextFocus((ViewGroup)
                                         currentFragment.getView(),
                                 focusView, View.FOCUS_UP);
+
                         if (topView != null && topView.getParent()
                                 instanceof MenuRecycleView) {
                             ((NavFragment) currentFragment).requestMenuFocus();

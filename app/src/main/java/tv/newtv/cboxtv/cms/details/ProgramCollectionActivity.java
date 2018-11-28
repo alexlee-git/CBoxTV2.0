@@ -124,8 +124,9 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                         new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder
                                 .DB_TYPE_VIPTIP))
                 .SetPlayerId(R.id.video_container)
-                .SetContentUUID(contentUUID)
+                .SetContentUUID(contentUUID,getChildContentUUID())
                 .autoGetSubContents()
+                .setTopView(fromOuter,isPopup)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetClickListener(new View.OnClickListener() {
@@ -201,11 +202,12 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                         }
                     }
                 }));
-        mListView.setOnItemClick(new onEpisodeItemClick() {
+        mListView.setOnItemClick(new onEpisodeItemClick<SubContent>() {
             @Override
-            public void onItemClick(int position, SubContent data) {
+            public boolean onItemClick(int position, SubContent data) {
                 scrollView.scrollToTop(false);
                 headPlayerView.Play(position, 0, true);
+                return false;
             }
         });
     }
