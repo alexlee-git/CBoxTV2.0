@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="tv.newtv.cboxtv.uc.v2.CodeExChangeActivity">
+
+    <LinearLayout
+        android:id="@+id/code_exchange_linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/code_exchange_header"
+            layout="@layout/activity_info_header" />
+
+        <TextView
+            android:id="@+id/code_exchange_input_tip"
+            android:layout_width="@dimen/width_864px"
+            android:layout_height="@dimen/height_44px"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_68px"
+            android:includeFontPadding="false"
+            android:text="@string/code_exchange_input"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_42px" />
+
+        <EditText
+            android:id="@+id/code_exchange_input_edit"
+            android:layout_width="@dimen/width_476px"
+            android:layout_height="@dimen/height_100px"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_24px"
+            android:background="@drawable/shape_user_phone_login_key"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:imeOptions="actionDone"
+            android:maxLength="16"
+            android:paddingLeft="@dimen/width_48px"
+            android:singleLine="true"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_36px" />
+
+        <TextView
+            android:id="@+id/code_exchange_tip"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_42px"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:includeFontPadding="false"
+            android:text="@string/code_exchange_tip"
+            android:textColor="#80FFFFFF"
+            android:textSize="@dimen/height_28px" />
+
+        <TextView
+            android:id="@+id/code_exchange_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_360px"
+            android:layout_marginStart="@dimen/width_360px"
+            android:text="@string/code_exchange_tip"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/height_36px"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</FrameLayout>

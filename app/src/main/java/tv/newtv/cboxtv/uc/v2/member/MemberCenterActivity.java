@@ -58,6 +58,7 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
+import tv.newtv.cboxtv.uc.v2.CodeExChangeActivity;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
@@ -636,6 +637,12 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     }
                     break;
                 case R.id.id_member_center_btn_exchange:
+                    /*if (!TextUtils.isEmpty(mLoginTokenString)) {
+                        mPageClass = MyOrderActivity.class;
+                    } else {
+                        mPageClass = LoginActivity.class;
+                    }*/
+                    //mPageClass = CodeExChangeActivity.class;
                     Toast.makeText(this, "此页面正在开发中", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.id_member_center_btn_order:
