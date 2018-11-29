@@ -51,6 +51,7 @@ import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -184,6 +185,12 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     }
                     return;
                 }
+
+                if(Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())){
+                    Player.get().activityJump(context,Constant.OPEN_DETAILS,program.getContentType(),program.getContentID(),"");
+                    return;
+                }
+
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
                 if(content != null){
                     int index = program.getParent().getPrograms().indexOf(program);

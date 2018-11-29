@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.player;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import com.newtv.cms.bean.Content;
@@ -71,5 +72,10 @@ public class Player implements PlayerObserver {
     @Override
     public boolean isVip() {
         return mObserver.isVip();
+    }
+
+    @Override
+    public void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri) {
+        mObserver.activityJump(context,actionType,contentType,contentUUID,actionUri);
     }
 }

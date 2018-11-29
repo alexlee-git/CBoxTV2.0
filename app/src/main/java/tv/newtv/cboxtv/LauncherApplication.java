@@ -45,6 +45,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
@@ -276,6 +277,11 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public boolean isVip() {
         return false;
+    }
+
+    @Override
+    public void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri) {
+        JumpUtil.activityJump(context,actionType,contentType,contentUUID,actionUri);
     }
 
 }
