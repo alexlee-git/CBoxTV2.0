@@ -206,7 +206,6 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
 
 
     private void initBackground(final ModelResult modelResult) {
-        String templateZT = modelResult.getTemplateZT();
         if (ModelResult.IS_AD_TYPE.equals(modelResult.isAd())) {
             mAdPresenter.getAdByType(Constant.AD_TOPIC, mPageUUid, "", null, new AdContract
                     .Callback() {
