@@ -113,13 +113,14 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     private String Exp_time;
     private int Time = 5;
     private final String prdType = "1";
-    private String mContentUUID, mMAMID, mVipFlag, mTitle, mContentType;
+    private String mContentUUID, mContentID, mMAMID, mVipFlag, mTitle, mContentType;
     private boolean isBuyOnly = false;  //true 单点 ，false显示
     private boolean isVip = false;
     private ExterPayBean mExterPayBean;
     private String message_error;
     private final String ACTTYPE = "DISCOUNT";
     private int price;
+    private long expireTime_All;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,6 +137,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
             Log.i(TAG, mExterPayBean.toString());
             mVipProductId = mExterPayBean.getVipProductId();
             mContentUUID = mExterPayBean.getContentUUID();
+            mContentID = mExterPayBean.getContentId();
             mContentType = mExterPayBean.getContentType();
             mMAMID = mExterPayBean.getMAMID();
             mTitle = mExterPayBean.getTitle();
@@ -535,10 +537,14 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                                     long duration = pricesBean.getRealDuration() * 60 * 60 * 1000;
                                     Log.i(TAG, "duration :" + duration);
                                     Log.i(TAG, "expireTime :" + expireTime);
-                                    long time = duration + expireTime;
-                                    Log.i(TAG, "time :" + time);
-                                    Date date = new Date(time);
-                                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 hh:mm:ss");
+                                    if (isBuyOnly) {
+                                        expireTime_All = duration + TimeUtil.getInstance().getCurrentTimeInMillis();
+                                    } else {
+                                        expireTime_All = duration + expireTime;
+                                    }
+                                    Log.i(TAG, "time :" + expireTime_All);
+                                    Date date = new Date(expireTime_All);
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
                                     tv_time.setText(getResources().getString(R.string.usercenter_pay_time) + format.format(date));
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -564,24 +570,32 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     }
 
     private void setExprefresh() {
-        Observable.create(new ObservableOnSubscribe<Long>() {
-            @Override
-            public void subscribe(ObservableEmitter<Long> e) throws Exception {
-                long time = requestMemberInfo();
-                Log.i(TAG, "setExprefresh : " + time);
-                e.onNext(time);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) throws Exception {
-                        Date date2 = new Date(aLong);
-                        SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-                        tv_dialog_time.setText(getResources().getString(R.string.usercenter_pay_success_time) +
-                                format2.format(date2));
-                    }
-                });
+        if (isBuyOnly) {
+            Date date2 = new Date(expireTime_All);
+            SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+            tv_dialog_time.setText(getResources().getString(R.string.usercenter_pay_success_time) +
+                    format2.format(date2));
+
+        } else {
+            Observable.create(new ObservableOnSubscribe<Long>() {
+                @Override
+                public void subscribe(ObservableEmitter<Long> e) throws Exception {
+                    long time = requestMemberInfo();
+                    Log.i(TAG, "setExprefresh : " + time);
+                    e.onNext(time);
+                }
+            }).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Long>() {
+                        @Override
+                        public void accept(Long aLong) throws Exception {
+                            Date date2 = new Date(aLong);
+                            SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+                            tv_dialog_time.setText(getResources().getString(R.string.usercenter_pay_success_time) +
+                                    format2.format(date2));
+                        }
+                    });
+        }
     }
 
 
@@ -605,7 +619,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
             startActivity(intent);
         }
         finish();
-        Log.d(TAG, "-----------finish");
+        Log.d(TAG, "setStartActivity---finish");
     }
 
     private void getPayQRCode() {
@@ -614,6 +628,8 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         try {
             if (isBuyOnly) {
                 contentDTOForCheckObject.put("id", mContentUUID);
+                contentDTOForCheckObject.put("name", mTitle);
+                contentDTOForCheckObject.put("contentId", mContentID);
                 contentDTOForCheckObject.put("contentType", mContentType);
                 contentDTOForCheckObject.put("source", mMAMID);
             } else {
