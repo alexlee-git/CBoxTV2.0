@@ -298,20 +298,14 @@ public class MyOrderActivity extends BaseActivity {
                         jumpToPay(mResultListBean);
 
                     } else if (TextUtils.equals(payStatus, "PAY_SUCCESS")) {
-                        int productType = mResultListBean.getProductType();//1：会员或单点;3：会员VIP;4：单点
                         String contentType = mResultListBean.getContentType();
-                        String mediaId = mResultListBean.getMediaId();
-                        Log.e(TAG, "---setOnClickListener--productType=" + productType + ";mediaId=" + mediaId + ";contentType =" + contentType);
-                        if (productType == 4) {
-                            //点播详情页
-                            //String contentType = "PS";
-                            //String mediaId = "31133";
-                            JumpUtil.detailsJumpActivity(MyOrderActivity.this, contentType, mediaId);
-
-                        } else if (productType == 1 || productType == 3) {
-                            //与产品商议过1和3跳转到会员Vip列表
-                            jumpToMemberVip();
-                        }
+                        String contntId = mResultListBean.getContentId();
+                        Log.e(TAG, "---setOnClickListener--contntId=" + contntId + ";contentType =" + contentType);
+                       if (TextUtils.isEmpty(contntId)){
+                           jumpToMemberVip();
+                       }else{
+                           JumpUtil.detailsJumpActivity(MyOrderActivity.this, contentType, contntId);
+                       }
                     }
                 }
             });
