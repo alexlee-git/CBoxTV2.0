@@ -59,9 +59,9 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            View view = (View) msg.obj;
-            view.requestFocus();
-            view.setBackgroundResource(R.drawable.one_focus);
+            MessageObj messageObj = (MessageObj) msg.obj;
+            messageObj.view.requestFocus();
+            messageObj.view.setBackgroundResource(messageObj.resId);
         }
     }
 
@@ -111,8 +111,15 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             selectView = holder.itemView;
             pathView = holder.itemView;
             if(!init){
+                MessageObj messageObj = new MessageObj();
+                messageObj.view = holder.itemView;
+                if(Constant.CONTENTTYPE_LB.equals(contentType) && COLLECT_ID.equals(program.getContentUUID())){
+                    messageObj.resId = R.drawable.menu_group_item_focus;
+                }else {
+                    messageObj.resId = R.drawable.one_focus;
+                }
                 Message msg = Message.obtain();
-                msg.obj = holder.itemView;
+                msg.obj = messageObj;
                 handler.sendMessageDelayed(msg, 50);
                 init = true;
             }
@@ -122,7 +129,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if(Constant.CONTENTTYPE_LB.equals(contentType) && isCurrentPlay(program)){
+                    if(Constant.CONTENTTYPE_LB.equals(contentType) && COLLECT_ID.equals(program.getContentUUID())){
                         v.setBackgroundResource(R.drawable.menu_group_item_focus);
                     }else {
                         v.setBackgroundResource(R.drawable.one_focus);
@@ -268,5 +275,10 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             return true;
         }
         return false;
+    }
+
+    private class MessageObj{
+        View view;
+        int resId;
     }
 }
