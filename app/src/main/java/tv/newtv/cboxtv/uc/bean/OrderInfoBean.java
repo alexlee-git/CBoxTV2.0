@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderInfoBean {
 
     /**
-     *{"orders":[{"id":1,"code":"b5d5e3f9we6sd","userId":1,"productId":1,"productName":"测试产品","amount":1,"payChannelId":1,"status":"PAY_SUCCESS","payChannelName":"支付宝","duration":10,"originalPrice":1,"discount":0,"createTime":"2018-08-23 17:23:02","payTime":"2018-08-23 17:23:02","tranExpireTime":"2018-08-23 17:23:02","expireTime":"2018-08-23 17:23:02"}],"total":1}     * total : 1
+     * {"orders":[{"id":1,"code":"b5d5e3f9we6sd","userId":1,"productId":1,"productName":"测试产品","amount":1,"payChannelId":1,"status":"PAY_SUCCESS","payChannelName":"支付宝","duration":10,"originalPrice":1,"discount":0,"createTime":"2018-08-23 17:23:02","payTime":"2018-08-23 17:23:02","tranExpireTime":"2018-08-23 17:23:02","expireTime":"2018-08-23 17:23:02"}],"total":1}     * total : 1
      */
 
     private int total;
@@ -40,24 +40,24 @@ public class OrderInfoBean {
         this.orders = orders;
     }
 
-    public static class OrdersBean implements Comparable<OrdersBean>{
+    public static class OrdersBean implements Comparable<OrdersBean> {
         /**
          * "id":1,
-         "code":"b5d5e3f9we6sd",
-         "userId":1,
-         "productId":1,
-         "productName":"测试产品",
-         "amount":1,
-         "payChannelId":1,
-         "status":"PAY_SUCCESS",
-         "payChannelName":"支付宝",
-         "duration":10,
-         "originalPrice":1,
-         "discount":0,
-         "createTime":"2018-08-23 17:23:02",
-         "payTime":"2018-08-23 17:23:02",
-         "tranExpireTime":"2018-08-23 17:23:02",
-         "expireTime":"2018-08-23 17:23:02"
+         * "code":"b5d5e3f9we6sd",
+         * "userId":1,
+         * "productId":1,
+         * "productName":"测试产品",
+         * "amount":1,
+         * "payChannelId":1,
+         * "status":"PAY_SUCCESS",
+         * "payChannelName":"支付宝",
+         * "duration":10,
+         * "originalPrice":1,
+         * "discount":0,
+         * "createTime":"2018-08-23 17:23:02",
+         * "payTime":"2018-08-23 17:23:02",
+         * "tranExpireTime":"2018-08-23 17:23:02",
+         * "expireTime":"2018-08-23 17:23:02"
          */
         @SerializedName("id")
         private int id;//订单id
@@ -93,6 +93,8 @@ public class OrderInfoBean {
         private int productType;
         @SerializedName("mediaId")
         private String mediaId;
+        @SerializedName("contentId")
+        private String contentId;
         @SerializedName("contentType")
         private String contentType;
         @SerializedName("duration")
@@ -242,6 +244,14 @@ public class OrderInfoBean {
             this.mediaId = mediaId;
         }
 
+        public String getContentId() {
+            return contentId;
+        }
+
+        public void setContentId(String contentId) {
+            this.contentId = contentId;
+        }
+
         public String getContentType() {
             return contentType;
         }
@@ -251,10 +261,10 @@ public class OrderInfoBean {
         }
 
         @Override
-    public int compareTo(OrdersBean o) {
-        int i = this.getId() - o.getId();//先按照年龄排序
-        return i;
-    }
+        public int compareTo(OrdersBean o) {
+            int i = this.getId() - o.getId();//先按照年龄排序
+            return i;
+        }
 
         @Override
         public String toString() {
@@ -274,9 +284,11 @@ public class OrderInfoBean {
                     ", payTime='" + payTime + '\'' +
                     ", expireTime='" + expireTime + '\'' +
                     ", tranExpireTime='" + tranExpireTime + '\'' +
-                    ", productType='" + productType + '\'' +
+                    ", productType=" + productType +
                     ", mediaId='" + mediaId + '\'' +
+                    ", contentId='" + contentId + '\'' +
                     ", contentType='" + contentType + '\'' +
+                    ", duration=" + duration +
                     '}';
         }
     }
