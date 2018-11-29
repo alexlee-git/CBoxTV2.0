@@ -395,5 +395,6 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @Override
     public void loadingComplete() {
         loadingView.setVisibility(View.GONE);
+        setTipVisibility(View.GONE);
     }
 }
