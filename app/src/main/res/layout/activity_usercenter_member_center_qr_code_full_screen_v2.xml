@@ -49,7 +49,7 @@
             android:layout_marginLeft="@dimen/width_160px"
             android:layout_marginTop="@dimen/height_685px"
             android:includeFontPadding="false"
-            android:text="@string/member_qr_full_screen_top_title"/>
+            android:text="@string/member_qr_top_title"/>
         <!-- 会员中心二维码扫描提醒下标题 -->
         <TextView
             android:id="@+id/id_member_center_full_screen_qr_bottom_title"
