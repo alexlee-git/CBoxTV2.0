@@ -43,6 +43,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.menu.model.CategoryContent;
 import tv.newtv.cboxtv.menu.model.CategoryTree;
 import tv.newtv.cboxtv.menu.model.Content;
+import tv.newtv.cboxtv.menu.model.DBLastNode;
 import tv.newtv.cboxtv.menu.model.DBProgram;
 import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.LocalNode;
@@ -64,6 +65,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private static final String COLLECT = "我的收藏";
     private static final String HISTORY = "我的观看记录";
     private static final String SUBSCRIBE = "我的订阅";
+    private static final String MY_TV = "我家电视";
+    private static final String LB_ID_COLLECT = "轮播收藏";
     public static final long GONE_TIME = 5 * 1000L;
     private static final int MESSAGE_GONE = 1;
     /**
@@ -335,6 +338,19 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         if(categoryTree != null && categoryTree.data != null && categoryTree.data.size() > 0){
                             rootNode = categoryTree.data;
                             for(Node node : rootNode){
+                                if(TextUtils.equals(node.getCategoryType(),Constant.CONTENTTYPE_LB)){
+                                    if(node.getChild().size() == 0){
+                                        Node myTvNode = new Node();
+                                        myTvNode.setId(MY_TV);
+                                        myTvNode.setTitle(MY_TV);
+                                        node.getChild().add(myTvNode);
+                                    }
+                                    Node childNode = new Node();
+                                    childNode.setId(LB_ID_COLLECT);
+                                    childNode.setTitle(COLLECT);
+                                    searchLbCollect(childNode,true);
+                                    node.getChild().add(1,childNode);
+                                }
                                 node.initParent();
                             }
                             getCategoryContent();
@@ -875,6 +891,26 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                             Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
                             program.setCollect(false);
                             menuGroup.notifyLastAdapter();
+                        }
+                    }
+                }).excute();
+    }
+
+    private void searchLbCollect(final Node node, final boolean reset){
+        DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
+                .condition()
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0 && !TextUtils.isEmpty(result)) {
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<List<DBLastNode>>() {
+                            }.getType();
+                            List<DBLastNode> list = gson.fromJson(result, type);
+                            List<LastNode> lastNodeList = DBLastNode.converLastNode(list);
+                            node.addChild(lastNodeList,reset);
                         }
                     }
                 }).excute();

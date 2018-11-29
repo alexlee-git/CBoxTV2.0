@@ -26,6 +26,7 @@ public class Node {
      */
     private String contentType;
 
+    private String categoryType;
 
     private Node parent;
     protected List<Node> child = new ArrayList<>();
@@ -104,6 +105,13 @@ public class Node {
     }
 
     public void addChild(List<LastNode> child){
+        addChild(child,false);
+    }
+
+    public void addChild(List<LastNode> child,boolean reset){
+        if(reset){
+            this.child.clear();
+        }
         for(LastNode lastNode : child){
             lastNode.setParent(this);
             this.child.add(lastNode);
@@ -156,6 +164,14 @@ public class Node {
 
     public void setActionUri(String actionUri) {
         this.actionUri = actionUri;
+    }
+
+    public String getCategoryType() {
+        return categoryType;
+    }
+
+    public void setCategoryType(String categoryType) {
+        this.categoryType = categoryType;
     }
 
     public List<Node> getNodes(){

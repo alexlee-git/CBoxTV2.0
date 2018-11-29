@@ -68,14 +68,14 @@ public final class DBConfig {
     public static final String CONTENT_ID = "_contentid";
 
     public static final String ORDER_BY_TIME = UPDATE_TIME + " desc";//排序条件
-    public static final String IS_FINISH = "_is_finish";//是否结束
-    public static final String REAL_EXCLUSIVE = "_real_exclusive";//运营标识
-    public static final String ISSUE_DATE = "_issue_date";
-    public static final String LAST_PUBLISH_DATE = "_last_publish_date";
-    public static final String SUB_TITLE = "_sub_title";//子标题
-    public static final String V_IMAGE = "_v_image";
-    public static final String H_IMAGE = "_h_image";
-    public static final String VIP_FLAG = "_vip_flag";//付费标识
+    public static final String IS_FINISH = "is_finish";//是否结束
+    public static final String REAL_EXCLUSIVE = "real_exclusive";//运营标识
+    public static final String ISSUE_DATE = "issue_date";
+    public static final String LAST_PUBLISH_DATE = "last_publish_date";
+    public static final String SUB_TITLE = "sub_title";//子标题
+    public static final String V_IMAGE = "v_image";
+    public static final String H_IMAGE = "h_image";
+    public static final String VIP_FLAG = "vip_flag";//付费标识
 
     static final String CREATE_LB_COLLECT_TABLE_SQL =
             "create table "+ LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
