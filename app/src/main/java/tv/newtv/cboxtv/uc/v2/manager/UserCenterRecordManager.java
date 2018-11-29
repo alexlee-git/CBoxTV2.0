@@ -170,7 +170,8 @@ public class UserCenterRecordManager {
         TYPE_SUBSCRIBE,
         TYPE_COLLECT,
         TYPE_HISTORY,
-        TYPE_FOLLOW
+        TYPE_FOLLOW,
+        TYPE_LUNBO
     }
 
     private UserCenterRecordManager() {
@@ -187,7 +188,11 @@ public class UserCenterRecordManager {
         return mInstance;
     }
 
-    public void addRecord(final USER_CENTER_RECORD_TYPE type, final Context context, final Bundle bundle, final Content info, final DBCallback<String> dbCallback) {
+    public void addRecord(final USER_CENTER_RECORD_TYPE type,
+                          final Context context,
+                          final Bundle bundle,
+                          final Content info,
+                          final DBCallback<String> dbCallback) {
         if (context == null) {
             return;
         }
@@ -242,6 +247,8 @@ public class UserCenterRecordManager {
                             procAddSubscribe(userId, token, context, bundle, info, dbCallback);
                         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
                             procAddHistoryRecord(userId, context, token, bundle, info, dbCallback);
+                        } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
+                           procAddCarouselPlayRecord(userId, token, bundle, dbCallback);
                         } else {
                             Log.e(TAG, "unresolved record type : " + type);
                         }
@@ -378,6 +385,11 @@ public class UserCenterRecordManager {
 
         DBUtil.addAttention(userId, info, bundle, callback, tableName);
         Log.d(TAG, "proAddFollow add follow complete, tableName : " + tableName + ", userId : " + userId + ", name : " + info.getTitle());
+    }
+
+    private void procAddCarouselPlayRecord(String userId, String token, Bundle bundle, DBCallback<String> callback) {
+        String tableName = DBConfig.LB_COLLECT_TABLE_NAME;
+        DBUtil.addCarouselPlayReord(userId, tableName, bundle, callback);
     }
 
 

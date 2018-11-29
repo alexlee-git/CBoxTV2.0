@@ -9,6 +9,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.Data;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.Utils;
 
@@ -284,5 +285,30 @@ public class DBUtil {
                 .build()
                 .withCallback(callback)
                 .excute();
+    }
+
+    public static void addCarouselPlayReord(String userId, String tableName, Bundle bundle, DBCallback<String> callback) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBConfig.CONTENTUUID, bundle.getString(DBConfig.CONTENTUUID));
+        contentValues.put(DBConfig.CONTENT_ID, bundle.getString(DBConfig.CONTENT_ID));
+        contentValues.put(DBConfig.TITLE_NAME, bundle.getString(DBConfig.TITLE_NAME));
+        contentValues.put(DBConfig.IS_FINISH, bundle.getString(DBConfig.IS_FINISH));
+        contentValues.put(DBConfig.REAL_EXCLUSIVE, bundle.getString(DBConfig.REAL_EXCLUSIVE));
+        contentValues.put(DBConfig.ISSUE_DATE, bundle.getString(DBConfig.ISSUE_DATE));
+        contentValues.put(DBConfig.LAST_PUBLISH_DATE, bundle.getString(DBConfig.LAST_PUBLISH_DATE));
+        contentValues.put(DBConfig.SUB_TITLE, bundle.getString(DBConfig.SUB_TITLE));
+        contentValues.put(DBConfig.UPDATE_TIME, bundle.getString(DBConfig.UPDATE_TIME));
+        contentValues.put(DBConfig.USERID, bundle.getString(DBConfig.USERID));
+        contentValues.put(DBConfig.V_IMAGE, bundle.getString(DBConfig.V_IMAGE));
+        contentValues.put(DBConfig.H_IMAGE, bundle.getString(DBConfig.H_IMAGE));
+        contentValues.put(DBConfig.VIP_FLAG, bundle.getString(DBConfig.VIP_FLAG));
+        contentValues.put(DBConfig.CONTENTTYPE, bundle.getString(DBConfig.CONTENTTYPE));
+
+        DataSupport.insertOrReplace(tableName)
+                .condition()
+                .eq(DBConfig.USERID, userId)
+                .build()
+                .withValue(contentValues)
+                .withCallback(callback).excute();
     }
 }
