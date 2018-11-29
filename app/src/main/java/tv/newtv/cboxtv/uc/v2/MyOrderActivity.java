@@ -192,6 +192,14 @@ public class MyOrderActivity extends BaseActivity {
             if (mDOrdersBeans == null || mDOrdersBeans.size() <= 0) {
                 return;
             }
+            //将状态清空
+            holder.tvResumeContent.setText("");
+            holder.tvBuyDate.setText("");
+            holder.tvVisibleDate.setText("");
+            holder.tvPriceValue.setText("");
+            holder.tvPayResult.setText("");
+            holder.tvOperation.setText("");
+
             final OrderInfoBean.OrdersBean mResultListBean = mDOrdersBeans.get(position);
             String status = mResultListBean.getStatus();
             if (status != null && status.length() > 0) {
@@ -202,12 +210,20 @@ public class MyOrderActivity extends BaseActivity {
                 }
             }
             holder.tvResumeContent.setText(mResultListBean.getProductName());
-            if (TextUtils.isEmpty(mResultListBean.getPayTime())) {
-                holder.tvBuyDate.setText(transFormatDate(mResultListBean.getCreateTime()));
+            String payTime = mResultListBean.getPayTime();
+            String createTime = mResultListBean.getCreateTime();
+            String expireTime = mResultListBean.getExpireTime();
+            if (TextUtils.isEmpty(payTime)) {
+                //购买时间为空时显示订单生成时间
+                if (!TextUtils.isEmpty(createTime)){
+                    holder.tvBuyDate.setText(transFormatDate(mResultListBean.getCreateTime()));
+                }
             } else {
-                holder.tvBuyDate.setText(transFormatDate(mResultListBean.getPayTime()));
+                holder.tvBuyDate.setText(transFormatDate(payTime));
             }
-            holder.tvVisibleDate.setText(transFormatDate(mResultListBean.getExpireTime()));
+            if (!TextUtils.isEmpty(expireTime)){
+                holder.tvVisibleDate.setText(transFormatDate(expireTime));
+            }
             if (TextUtils.equals(status, "ORDER_SUCCESS")) {
                 //订单为支付且在订单有效期内显示去支付,重新购买不显示不跳转
                 if (IsToday(mResultListBean.getTranExpireTime())) {
@@ -282,20 +298,14 @@ public class MyOrderActivity extends BaseActivity {
                         jumpToPay(mResultListBean);
 
                     } else if (TextUtils.equals(payStatus, "PAY_SUCCESS")) {
-                        int productType = mResultListBean.getProductType();//1：会员或单点;3：会员VIP;4：单点
                         String contentType = mResultListBean.getContentType();
-                        String mediaId = mResultListBean.getMediaId();
-                        Log.e(TAG, "---setOnClickListener--productType=" + productType + ";mediaId=" + mediaId + ";contentType =" + contentType);
-                        if (productType == 4) {
-                            //点播详情页
-                            //String contentType = "PS";
-                            //String mediaId = "31133";
-                            JumpUtil.detailsJumpActivity(MyOrderActivity.this, contentType, mediaId);
-
-                        } else if (productType == 1 || productType == 3) {
-                            //与产品商议过1和3跳转到会员Vip列表
-                            jumpToMemberVip();
-                        }
+                        String contntId = mResultListBean.getContentId();
+                        Log.e(TAG, "---setOnClickListener--contntId=" + contntId + ";contentType =" + contentType);
+                       if (TextUtils.isEmpty(contntId)){
+                           jumpToMemberVip();
+                       }else{
+                           JumpUtil.detailsJumpActivity(MyOrderActivity.this, contentType, contntId);
+                       }
                     }
                 }
             });
@@ -434,11 +444,12 @@ public class MyOrderActivity extends BaseActivity {
             return;
         }
         intent.setClass(MyOrderActivity.this, mPageClass);
-        if (!isBackground){
-            ActivityStacks.get().finishAllActivity();
-            startActivity(intent);
-        }
+        startActivity(intent);
+
         if (mPageClass == MainActivity.class) {
+            if (!isBackground){
+            ActivityStacks.get().finishAllActivity();
+            }
             MyOrderActivity.this.finish();
         }
     }
@@ -523,9 +534,9 @@ public class MyOrderActivity extends BaseActivity {
      * @return
      */
     private String transFormatDate(String inTime) {
-        if (TextUtils.isEmpty(inTime)) {
-            inTime = "2018-08-23 17:23:02";
-        }
+//        if (TextUtils.isEmpty(inTime)) {
+//            inTime = "2018-08-23 17:23:02";
+//        }
         SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat s2 = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         Date tempDate = null;
@@ -557,7 +568,7 @@ public class MyOrderActivity extends BaseActivity {
      */
     private boolean IsToday(String day) {
         if (TextUtils.isEmpty(day)) {
-            day = "2018-08-23 17:23:02";
+            return false;
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         // 当前的时刻

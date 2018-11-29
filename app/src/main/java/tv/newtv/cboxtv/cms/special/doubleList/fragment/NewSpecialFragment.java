@@ -91,6 +91,8 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     private String mLeftContentId;
     private Content mProgramSeriesInfo;
     private Observable<Boolean> isVideoEndObservable;
+    private Observable<Boolean> isHaveAdObservable;
+    private boolean isHaveAD;
     private HashMap<String, Content> mCacheSubContents;
 
     private SpecialHandler mSpecialHandler = new SpecialHandler(NewSpecialFragment.this);
@@ -307,6 +309,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         isFristPlay = true;
         videoPlayerView = null;
         RxBus.get().unregister(Constant.IS_VIDEO_END, isVideoEndObservable);
+        RxBus.get().unregister(Constant.IS_HAVE_AD, isHaveAdObservable);
         mSpecialHandler.removeCallbacksAndMessages(null);
     }
 
@@ -596,6 +599,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         mVideoPlayerTitle = view.findViewById(R.id.fragment_newspecial_video_player_title);
         mFullScreenImage = view.findViewById(R.id.fragment_newspecial_video_player_full_tip);
         //setVideoFocus(false);
+        setVideoPlayerVisibility();
         videoPlayerView.setVideoExitCallback(new VideoExitFullScreenCallBack() {
             @Override
             public void videoEitFullScreen() {
@@ -785,24 +789,46 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         }
     }
 
+    @SuppressLint("CheckResult")
     private void setVideoPlayerTipStatus() {
         if (null != videoPlayerView) {
-            videoPlayerView.setOnGetHaveADListener(new NewTVLauncherPlayerView.GetHaveADListener() {
-                @Override
-                public void OnGetHaveADListener(boolean isHavaAD) {
-                    if (isHavaAD) {
-                        if (mVideoPlayerTitle != null && mFullScreenImage != null) {
-                            mVideoPlayerTitle.setVisibility(View.GONE);
-                            mFullScreenImage.setVisibility(View.GONE);
-                        }
-                    }else{
-                        if (mVideoPlayerTitle != null && mFullScreenImage != null) {
-                            mVideoPlayerTitle.setVisibility(View.VISIBLE);
-                            mFullScreenImage.setVisibility(View.VISIBLE);
-                        }
-                    }
+            if (isHaveAD) {
+                if (mVideoPlayerTitle != null && mFullScreenImage != null) {
+                    mVideoPlayerTitle.setVisibility(View.GONE);
+                    mFullScreenImage.setVisibility(View.GONE);
                 }
-            });
+            } else {
+                if (mVideoPlayerTitle != null && mFullScreenImage != null) {
+                    mVideoPlayerTitle.setVisibility(View.VISIBLE);
+                    mFullScreenImage.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private void setVideoPlayerVisibility() {
+        if (null != videoPlayerView) {
+            isHaveAdObservable = RxBus.get().register(Constant.IS_HAVE_AD);
+            isHaveAdObservable.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean isHaveAd) {
+                            Log.d(TAG, "setVideoPlayerVisibility isHaveAd : " + isHaveAd);
+                            isHaveAD = isHaveAd;
+                            if (isHaveAd) {
+                                if (mVideoPlayerTitle != null && mFullScreenImage != null) {
+                                    mVideoPlayerTitle.setVisibility(View.GONE);
+                                    mFullScreenImage.setVisibility(View.GONE);
+                                }
+                            } else {
+                                if (mVideoPlayerTitle != null && mFullScreenImage != null) {
+                                    mVideoPlayerTitle.setVisibility(View.VISIBLE);
+                                    mFullScreenImage.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }
+                    });
         }
     }
 

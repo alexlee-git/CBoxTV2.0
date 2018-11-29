@@ -145,10 +145,11 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         }
 
         @Override
-        public void onItemClick(Program data, int position) {
+        public boolean onItemClick(Program data, int position) {
             if (mListener != null) {
                 mListener.onChange(data, position);
             }
+            return false;
         }
 
         @Override

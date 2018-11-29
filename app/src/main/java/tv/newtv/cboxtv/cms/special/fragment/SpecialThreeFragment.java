@@ -20,6 +20,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.special.viewholder.SpecialUniversalAdapter;
+import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 
 public class SpecialThreeFragment extends BaseSpecialContentFragment {
 
@@ -83,25 +84,18 @@ public class SpecialThreeFragment extends BaseSpecialContentFragment {
     private void updateUI() {
 
         //TODO 判断是不是已经收藏的
-//        if (mModuleInfoResult.getIsCollection() != 0) {
-//            mPageFavoriteButton.setVisibility(View.VISIBLE);
-//        } else {
-//            mPageFavoriteButton.setVisibility(View.GONE);
-//        }
 
         setTitleText(mModuleInfoResult);
         UniversalAdapter adapter = (UniversalAdapter) mRecyclerView.getAdapter();
+        mDatas = mModuleInfoResult.getData();
+        ModuleLayoutManager.getInstance().filterLayoutDatas(mDatas);
         if (adapter == null) {
-            mDatas = mModuleInfoResult.getData();
             adapter = new SpecialUniversalAdapter(getContext(), mDatas);
             Log.e(Constant.TAG, "DefaultSpecial_mDatas : " + mDatas);
-
             adapter.setHasStableIds(true);
             mAdapter = adapter;
             mRecyclerView.setAdapter(mAdapter);
         } else {
-            mDatas.clear();
-            mDatas.addAll(mModuleInfoResult.getData());
             adapter.notifyDataSetChanged();
         }
         adapter.showFirstLineTitle(true);

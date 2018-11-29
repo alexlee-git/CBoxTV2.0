@@ -15,7 +15,7 @@ import retrofit2.http.Path
  * 创建日期:          2018/9/21
  */
 internal interface INavRetro  {
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/navigation/index.json")
     fun getNavInfo(@Path("appkey") appkey: String, @Path("channelCode") channelid: String):
             Observable<ResponseBody>

@@ -13,7 +13,7 @@ import com.newtv.cms.api.IDefault
 internal class DefaultModel : BaseModel(), IDefault {
 
     override fun getType(): String {
-        return Model.MODEL_SEARCH
+        return Model.MODEL_DEFAULT
     }
 
     override fun getJson(url: String, observer: DataObserver<String>): Long {

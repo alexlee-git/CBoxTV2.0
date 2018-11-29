@@ -40,6 +40,10 @@ import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
 import static android.content.Context.MODE_PRIVATE;
 
+
+/**
+ * 主页
+ */
 public class MainNavManager implements NavContract.View {
 
     private static MainNavManager mInstance;
@@ -73,8 +77,6 @@ public class MainNavManager implements NavContract.View {
 
     private void inflateNavigationBar(final List<Nav> navInfos, final Context context, String
             dataFrom) {
-
-        ScreenUtils.initScreen(context);
 
         // 添加导航栏控件
 
@@ -163,16 +165,6 @@ public class MainNavManager implements NavContract.View {
 
                     if (hasFocus) {
                         navLogUpload(position);
-                        SharedPreferences sp = context.getSharedPreferences("secondConfig",
-                                MODE_PRIVATE);
-                        String menu = sp.getString("secondMenu", "");
-                        if (TextUtils.isEmpty(menu)) {
-                            return;
-                        } else {
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
-                                    menu);
-                        }
-
 
                     }
 
@@ -320,11 +312,14 @@ public class MainNavManager implements NavContract.View {
 //        BgChangManager.getInstance().dispatchFirstLevelEvent(mContext, bgEvent);
 
         willShowFragment = (BaseFragment) mFragmentManager.findFragmentByTag(navInfo.getId());
+        boolean waitPage = true;
         if (willShowFragment == null) {
             if (Constant.NAV_SEARCH.equals(navInfo.getTitle())) {
                 willShowFragment = SearchFragment.newInstance(bundle);
+                waitPage = false;
             } else if (Constant.NAV_UC.equals(navInfo.getTitle())) {
                 willShowFragment = UserCenterFragment.newInstance(bundle);
+                waitPage = false;
             } else if (navInfo.getChild() != null && navInfo.getChild().size() > 0) {
                 willShowFragment = NavFragment.newInstance(bundle);
             } else if (Constant.OPEN_PAGE.equals(navInfo.getPageType())
@@ -356,7 +351,7 @@ public class MainNavManager implements NavContract.View {
 
         NavUtil.getNavUtil().navFragment = willShowFragment;
         willShowFragment.setUserVisibleHint(true);
-        BackGroundManager.getInstance().setCurrentNav(navInfo.getId());
+        BackGroundManager.getInstance().setCurrentNav(navInfo.getId(),waitPage);
         mCurrentShowFragment = (BaseFragment) willShowFragment;
     }
 

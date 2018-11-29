@@ -54,6 +54,7 @@ internal object ModelFactory {
             Model.MODEL_SEARCH -> SearchModel()
             Model.MODEL_ALTERNATE -> AlternateModel()
             Model.MODEL_DEFAULT -> DefaultModel()
+            Model.MODEL_USERCENTER -> UserCenterModel()
 
             else -> {
                 Log.e("ModuleFactory", "$type is not registered ! please write it in buildModel")

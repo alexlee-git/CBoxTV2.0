@@ -118,7 +118,7 @@ class SearchContract {
         private var searchService:ISearch? = null
 
         init {
-            searchService = getService<ISearch>(CmsServicePresenter.SERVICE_SEARCH)
+            searchService = getService(CmsServicePresenter.SERVICE_SEARCH)
         }
 
 

@@ -172,12 +172,8 @@ public class SmoothScrollView extends RelativeLayout {
         mScroller = new Scroller(getContext());
     }
 
-    public void scrollToTop(boolean smooth) {
-        if(smooth) {
-            smoothScrollTo(0, getScrollY() * -1, SCROLL_DURATION);
-        }else{
-            scrollTo(0,0);
-        }
+    public void scrollToTop() {
+        smoothScrollTo(0, getScrollY() * -1, SCROLL_DURATION);
     }
 
     public void smoothScrollTo(int dx, int dy, int duration) {

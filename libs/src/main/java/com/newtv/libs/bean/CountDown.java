@@ -19,8 +19,8 @@ public class CountDown {
     private TimerTask mTimerTask;
     private Listen mListen;
 
-    public CountDown(int time) {
-        mTime = time;
+    public CountDown(int seconds) {
+        mTime = seconds;
     }
 
     public void listen(Listen listen) {

@@ -61,6 +61,7 @@ public class ColumnPageActivity extends DetailPageActivity {
     private boolean isCollect = false;
     private boolean isLogin = false;
     private String memberStatus;
+    private boolean isFullScreenIng;
 
     @Override
     public void prepareMediaPlayer() {
@@ -101,6 +102,8 @@ public class ColumnPageActivity extends DetailPageActivity {
             return;
         }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
+
         ADConfig.getInstance().setSeriesID(contentUUID);
 
         initLoginStatus();
@@ -180,6 +183,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen() {
+                        isFullScreenIng = false;
                         if (currentIndex > 8) {
                             playListView.moveToPosition(currentIndex);
                         }
@@ -249,7 +253,7 @@ public class ColumnPageActivity extends DetailPageActivity {
 
             @Override
             public void onChange(int index, boolean fromClick) {
-                scrollView.scrollToTop(false);
+                isFullScreenIng = true;
                 headPlayerView.Play(index, 0, fromClick);
             }
         });
@@ -299,6 +303,17 @@ public class ColumnPageActivity extends DetailPageActivity {
                     ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean isFull(KeyEvent event) {
+        if (isFullScreenIng&&event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN){
+            if (isFullScreen()){
+                isFullScreenIng = false;
+            }
+            return true;
         }
         return false;
     }

@@ -62,6 +62,7 @@ public final class DBConfig {
     public static final String UPDATE_SUPERSCRIPT = "_update_superscript"; // 是否展示更新角标
     public static final String CONTENT_DURATION = "_content_duration"; // 内容时长
     public static final String EPISODE_NUM   = "_episode_num";
+    public static final String PROGRAM_CHILD_NAME = "_program_child_name";
 
     public static final String ORDER_BY_TIME = UPDATE_TIME + " desc";//排序条件
 

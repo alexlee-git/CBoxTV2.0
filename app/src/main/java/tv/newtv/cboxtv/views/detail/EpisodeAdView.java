@@ -7,7 +7,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.newtv.cms.contract.AdContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADHelper;
 import com.newtv.libs.ad.AdEventContent;
@@ -15,13 +14,8 @@ import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Callback;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.cms.details.presenter.adpresenter.ADPresenter;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 import tv.newtv.cboxtv.cms.details.presenter.adpresenter.IAdConstract;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
@@ -33,12 +27,13 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
  * 创建人:           weihaichao
  * 创建日期:          2018/5/8
  */
-public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContract
-        .View, View.OnFocusChangeListener, View.OnClickListener {
+public class EpisodeAdView extends RecycleImageView implements IEpisode, View.OnFocusChangeListener,
+        View.OnClickListener, IAdConstract.IADConstractView {
 
-    private AdContract.AdPresenter mADPresenter;
+    private ADPresenter mADPresenter;
     private int measuredWidth, measuredHeight;
     private boolean isSuccess = false;
+    private ADHelper.AD.ADItem adItem;
 
 
     public EpisodeAdView(Context context) {
@@ -105,13 +100,11 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
 
     public void requestAD() {
         if(mADPresenter == null) {
-            mADPresenter = new AdContract.AdPresenter(getContext(), this);
+            mADPresenter = new ADPresenter(this);
         }
-        //获取广告
-        mADPresenter.getAdByChannel(Constant.AD_DESK, Constant
+        mADPresenter.getAD(Constant.AD_DESK, Constant
                 .AD_DETAILPAGE_BANNER, Constant
-                .AD_DETAILPAGE_BANNER, PlayerConfig.getInstance().getFirstChannelId(), PlayerConfig
-                .getInstance().getSecondChannelId(), PlayerConfig.getInstance().getTopicId(), null);
+                .AD_DETAILPAGE_BANNER);//获取广告
     }
 
     @Override
@@ -141,9 +134,18 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
     }
 
     @Override
-    public void showAd(@Nullable String type, @Nullable String url, @Nullable HashMap<?, ?>
-            hashMap) {
-        if (!TextUtils.isEmpty(url)) {
+    public void onClick(View v) {
+        if(adItem != null && !TextUtils.isEmpty(adItem.eventContent)){
+            AdEventContent adEventContent = GsonUtil.fromjson(adItem.eventContent, AdEventContent.class);
+            JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
+                    adEventContent.contentUUID, adEventContent.actionURI,adEventContent.defaultUUID);
+        }
+    }
+
+    @Override
+    public void showAd(ADHelper.AD.ADItem result) {
+        adItem = result;
+        if (!TextUtils.isEmpty(result.AdUrl)) {
             setVisibility(VISIBLE);
             getParent().requestLayout();
             setImageResource(R.drawable.focus_1680_320);
@@ -168,39 +170,9 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
                             });
                         }
                     })
-                    .load(url);
+                    .load(result.AdUrl);
         } else {
             remove();
-        }
-    }
-
-    @Override
-    public void updateTime(int total, int left) {
-
-    }
-
-    @Override
-    public void complete() {
-
-    }
-
-    @Override
-    public void tip(@NotNull Context context, @NotNull String message) {
-
-    }
-
-    @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        ADHelper.AD.ADItem adItem = mADPresenter.getAdItem();
-        if(adItem != null && !TextUtils.isEmpty(adItem.eventContent)){
-            AdEventContent adEventContent = GsonUtil.fromjson(adItem.eventContent, AdEventContent.class);
-            JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
-                    adEventContent.contentUUID, adEventContent.actionURI,adEventContent.defaultUUID);
         }
     }
 }

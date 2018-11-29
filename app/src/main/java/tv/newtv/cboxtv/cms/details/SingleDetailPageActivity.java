@@ -110,6 +110,11 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     }
 
     @Override
+    protected boolean isFull(KeyEvent event) {
+        return false;
+    }
+
+    @Override
     protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
         setContentView(R.layout.activity_single_detail_page);
         Log.d("ywy y", "onCreate");
@@ -121,6 +126,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
 
         //进入节目详情页上传日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "1," + contentUUID);
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
 
         initHeadPlayerView(contentUUID);
     }
@@ -144,7 +150,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                         @Override
                         public void onResult(Content info) {
                             mProgramSeriesInfo = info;
-                            suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info, null);
+                            suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
                             mAdView.requestAD();
                         }
                     })
@@ -174,6 +180,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                         @Override
                         public void videoEitFullScreen() {
+
 
                         }
                     }).SetClickListener(new View.OnClickListener() {

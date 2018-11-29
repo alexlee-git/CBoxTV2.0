@@ -2,11 +2,13 @@ package com.newtv.cms.util
 
 import android.annotation.SuppressLint
 import android.text.TextUtils
+import com.newtv.cms.bean.Alternate
 import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.LiveParam
 import com.newtv.cms.bean.Video
 import com.newtv.libs.util.CalendarUtil
 import com.newtv.libs.util.LogUtils
+import com.newtv.libs.util.PlayerTimeUtils
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,6 +28,51 @@ object CmsUtil {
         val videoType = content?.videoType
         return TextUtils.equals(videoType, "电视剧")
                 || TextUtils.equals(videoType, "动漫");
+    }
+
+    @JvmStatic
+    fun parse(time: String): Long {
+        return PlayerTimeUtils.parseTime(time, "yyyy-MM-dd HH:mm:ss.S")
+    }
+
+    /**
+     * 查找当前时间段播放的内容
+     *
+     * @param alternateList 播放列表
+     * @param now           当前时间
+     * @param beginIndex    开始查找索引值
+     * @param endIndex      结束查找索引值
+     * @return 返回时间段内播放的index
+     */
+    @JvmStatic
+    fun binarySearch(alternateList: List<Alternate>, now: Long, beginIndex: Int, endIndex: Int): Int {
+        val midIndex = (beginIndex + endIndex) / 2
+        if (endIndex - beginIndex < 20) {
+            for (index in beginIndex until endIndex) {
+                val startTime = parse(alternateList[index].startTime)
+                val endTime = startTime + Integer.parseInt(alternateList[index]
+                        .duration) * 1000
+                if (now in startTime..(endTime - 1)) {
+                    return index
+                }
+            }
+        }
+        val midLong = parse(alternateList[midIndex].startTime)
+        val beginLong = parse(alternateList[beginIndex].startTime)
+        val endLong = parse(alternateList[endIndex].startTime)
+        LogUtils.e("Alternate", "start=$beginIndex time=" + alternateList[beginIndex]
+                .startTime +
+                " end=" + endIndex + " time=" + alternateList[endIndex].startTime)
+        if (now < beginLong || now > endLong || beginIndex > endIndex) {
+            return -1
+        }
+        return if (now < midLong) {
+            binarySearch(alternateList, now, beginIndex, midIndex)
+        } else if (now > midLong) {
+            binarySearch(alternateList, now, midIndex, endIndex)
+        } else {
+            midIndex
+        }
     }
 
 

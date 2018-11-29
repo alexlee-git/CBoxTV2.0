@@ -25,14 +25,17 @@ open class Content  : Serializable {
     var seriesSum: String? = null //总集数
     var seriesType: String? = null //节目集类型 0：显示名称  1：显示集号
     var definition: String? = null //清晰度 SD：标清、HD：高清
-    var vipProductId: String? = null //产品包ID
+    var vipProductId: String? = null //产品包ID BOSS系统的产品包唯一标识
     var contentType: String? = null //内容类型
     var area: String? = null //国家地区
     var priceNum: String? = null //最新付费节目数量 设置最后几集收费
     var videoType: String? = null //一级分类
     var director: String? = null //导演
     var recentNum:String? = null //已更新集数
+    var new_realExclusive:String? = null //内容标识
+    var is4k:String? = null //是否4K
     var isFinish:String? = null //是否已更新完  0-未完成  1-已完成
+    var updateDate:String?=null //旗下节目最新更新至
 
     @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
     var contentID: String? = null //内容Id
