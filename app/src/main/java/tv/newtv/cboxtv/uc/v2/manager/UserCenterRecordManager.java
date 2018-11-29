@@ -431,25 +431,25 @@ public class UserCenterRecordManager {
                         .build()
                         .withCallback(callback).excute();
             } else {
-                if (TextUtils.equals(dataUserId, SystemUtils.getDeviceMac(LauncherApplication.AppContext))) {
+                // if (TextUtils.equals(dataUserId, SystemUtils.getDeviceMac(LauncherApplication.AppContext))) {
                     DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
                             .condition()
-                            .eq(DBConfig.USERID, dataUserId)
+                            .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                             .eq(DBConfig.CONTENTUUID, contentuuids)
                             .build()
                             .withCallback(callback).excute();
                     Log.d(TAG, "单点删除本地数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
-                }
+                // }
 
-                if (TextUtils.equals(dataUserId, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))) {
+                // if (TextUtils.equals(dataUserId, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))) {
                     DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
                             .condition()
-                            .eq(DBConfig.USERID, dataUserId)
+                            .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
                             .eq(DBConfig.CONTENTUUID, contentuuids)
                             .build()
                             .withCallback(callback).excute();
                     Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
-                }
+                // }
             }
         }
 
