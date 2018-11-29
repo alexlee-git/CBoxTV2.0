@@ -66,7 +66,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private static final String HISTORY = "我的观看记录";
     private static final String SUBSCRIBE = "我的订阅";
     private static final String MY_TV = "我家电视";
-    private static final String LB_ID_COLLECT = "轮播收藏";
+    public static final String LB_ID_COLLECT = "轮播收藏";
     public static final long GONE_TIME = 5 * 1000L;
     private static final int MESSAGE_GONE = 1;
     /**
@@ -117,6 +117,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      */
     private boolean isAlternate;
     private String alternateId;
+
+    private Node lbCollectNode;
 
     @Override
     public void release() {
@@ -348,6 +350,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                                     Node childNode = new Node();
                                     childNode.setId(LB_ID_COLLECT);
                                     childNode.setTitle(COLLECT);
+                                    lbCollectNode = childNode;
                                     searchLbCollect(childNode,true);
                                     node.getChild().add(1,childNode);
                                 }
@@ -864,6 +867,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                             Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT).show();
                             program.setCollect(true);
                             menuGroup.notifyLastAdapter();
+                            refreshLbNode();
                         }
                     }
                 }).excute();
@@ -891,6 +895,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                             Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
                             program.setCollect(false);
                             menuGroup.notifyLastAdapter();
+                            refreshLbNode();
                         }
                     }
                 }).excute();
@@ -914,5 +919,12 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         }
                     }
                 }).excute();
+    }
+
+    private void refreshLbNode(){
+        if(lbCollectNode != null){
+            lbCollectNode.getChild().clear();
+            searchLbCollect(lbCollectNode,true);
+        }
     }
 }

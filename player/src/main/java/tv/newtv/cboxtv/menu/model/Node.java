@@ -197,6 +197,20 @@ public class Node {
         return null;
     }
 
+    public Node searchNodeInParent(String id){
+        Node result = null;
+        if(TextUtils.equals(getId(),id)){
+            return this;
+        }
+        if (getParent() != null){
+            result = getParent().searchNodeInParent(id);
+            if(result != null){
+                return result;
+            }
+        }
+        return null;
+    }
+
     public void initParent(){
         for(Node node : child){
             node.initParent();

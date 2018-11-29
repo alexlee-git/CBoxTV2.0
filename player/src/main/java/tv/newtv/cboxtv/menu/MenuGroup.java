@@ -707,7 +707,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     private void getLastData2(final Node node,final RecreateListener l){
-        lastListView.setTag(node.getId());
+        lastListView.setTag(node);
         String nodeId = node.getId();
         Observable<ResponseBody> observable = null;
         if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
@@ -731,7 +731,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                 p.setParent(node);
                             }
 
-                            if (lastListView!=null&&lastListView.getTag().equals(node.getId())) {
+                            if (lastListView!=null && lastListView.getTag() == node) {
                                 lastProgram = seriesContent.data;
                                 LastMenuRecyclerAdapter adapter =
                                         (LastMenuRecyclerAdapter) lastListView.getAdapter();
