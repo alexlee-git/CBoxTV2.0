@@ -40,26 +40,36 @@
             android:id="@id/id_detail_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxEms="18"
+            android:maxLines="1"
             android:textColor="@color/detail_tvcolor"
             android:textSize="@dimen/height_38px"
             android:textStyle="bold"/>
-        <tv.newtv.cboxtv.views.custom.RecycleImageView
+        <ImageView
             android:id="@+id/id_detail_mark1"
-            android:layout_marginTop="@dimen/height_4px"
             android:layout_width="@dimen/width_100px"
             android:layout_height="@dimen/width_30px"
+            android:layout_marginTop="@dimen/width_10px"
             android:textColor="@color/detail_tvcolor"
             android:layout_marginLeft="@dimen/width_20px"
             android:layout_toRightOf="@+id/id_detail_title"/>
 
-        <tv.newtv.cboxtv.views.custom.RecycleImageView
+        <ImageView
             android:id="@+id/id_detail_mark2"
-            android:layout_marginTop="@dimen/height_4px"
             android:layout_width="@dimen/width_100px"
             android:layout_height="@dimen/width_30px"
+            android:layout_marginTop="@dimen/width_10px"
             android:textColor="@color/detail_tvcolor"
             android:layout_marginLeft="@dimen/width_24px"
-            android:layout_toRightOf="@+id/id_detail_type1"/>
+            android:layout_toRightOf="@+id/id_detail_mark1"/>
+        <ImageView
+            android:id="@+id/id_detail_mark3"
+            android:layout_width="@dimen/width_100px"
+            android:layout_height="@dimen/width_30px"
+            android:layout_marginTop="@dimen/width_10px"
+            android:textColor="@color/detail_tvcolor"
+            android:layout_marginLeft="@dimen/width_24px"
+            android:layout_toRightOf="@+id/id_detail_mark2"/>
         <TextView
             android:id="@+id/id_detail_type"
             android:layout_width="match_parent"
