@@ -6026,4 +6026,5 @@
     <dimen name="height_40dp">10px</dimen>
     <dimen name="module_31_height_19px" >-7px</dimen>
     <dimen name="module_25_9px">-3px</dimen>
+    <dimen name="module_height_7px">-2px</dimen>
 </resources>

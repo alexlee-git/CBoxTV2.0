@@ -33,9 +33,9 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final Node node = data.get(position);
-        Holder h = (Holder) holder;
+        final Holder h = (Holder) holder;
         h.itemView.setBackgroundResource(R.color.color_transparent);
         h.tv.setText(node.getTitle());
         if (node.getId().equals(playId)) {
@@ -48,10 +48,14 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     v.setBackgroundResource(R.drawable.one_focus);
+                                        h.tv.setSelected(true);
+
                 } else if (node.getId().equals(playId)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
+                    h.tv.setSelected(false);
                 } else {
                     v.setBackgroundResource(R.color.color_transparent);
+                    h.tv.setSelected(false);
                 }
             }
         });
