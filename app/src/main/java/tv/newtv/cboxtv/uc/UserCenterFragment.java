@@ -21,10 +21,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.bean.UpVersion;
 import com.newtv.cms.contract.PageContract;
-import com.newtv.cms.contract.VersionUpdateContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.ad.AdEventContent;
@@ -42,7 +42,6 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -61,9 +60,7 @@ import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
@@ -96,7 +93,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * 修改备注：收藏节目集和节目、关注人物、订阅CCTV、订阅CCTV
  */
 public class UserCenterFragment extends BaseFragment implements
-        OnRecycleItemClickListener<UserCenterPageBean.Bean> ,VersionUpdateContract.View{
+        OnRecycleItemClickListener<UserCenterPageBean.Bean>, PageContract.View {
 
     public static final int SUBSCRIBE = 3;
     public static final int COLLECT = 4;
@@ -129,6 +126,7 @@ public class UserCenterFragment extends BaseFragment implements
     private String userId;//用户ID
     private DataBaseCompleteReceiver mDataBaseCompleteReceiver;//接收登陆成功数据同步结束广播，用于数据更新
     private PageContract.ContentPresenter mContentPresenter;
+
     public static BaseFragment newInstance(Bundle paramBundle) {
         BaseFragment fragment = new UserCenterFragment();
         fragment.setArguments(paramBundle);
@@ -179,8 +177,6 @@ public class UserCenterFragment extends BaseFragment implements
             actionType = bundle.getString("actionType");
         }
         mHandler = new MyHandler(this);
-//        Log.e(Constant.TAG, "fragment onCreate navText : " + param + ", noData : " +
-//                MainPageManager.getInstance().isNoPageData());
         super.onCreate(savedInstanceState);
     }
 
@@ -201,12 +197,12 @@ public class UserCenterFragment extends BaseFragment implements
         setAnimRecyclerView(mRecyclerView);
         //获取通栏广告的数据
         getBannerAD();
-        Constant.ID_PAGE_USERCENTER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_USERCENTER);
-        if (!TextUtils.isEmpty(Constant.ID_PAGE_USERCENTER)) {
+        String pageUserCenter = BootGuide.getBaseUrl(BootGuide.PAGE_USERCENTER);
+//        Constant.ID_PAGE_USERCENTER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_USERCENTER);
+        if (!TextUtils.isEmpty(pageUserCenter)) {
             //获取猜你喜欢推荐位的数据
-            mContentPresenter = new PageContract.ContentPresenter(getContext(),this);
-            mContentPresenter.getPageContent(Constant.ID_PAGE_USERCENTER);
-            //requestRecommendData();
+            mContentPresenter = new PageContract.ContentPresenter(getContext(), this);
+            mContentPresenter.getPageContent(pageUserCenter);
         } else {
             Log.e(TAG, "wqs:ID_PAGE_USERCENTER==null");
         }
@@ -499,92 +495,52 @@ public class UserCenterFragment extends BaseFragment implements
 
     }
 
-    //获取猜你喜欢推荐位数据
-    private void requestRecommendData() {
+    /**
+     * 推荐位填充数据
+     *
+     * @param
+     */
+    private void inflateRecommendData(List<Page> pageList) {
         try {
-            NetClient.INSTANCE.getPageDataApi().getPageData(Libs.get().getAppKey(), Libs.get().getChannelId(), Constant.ID_PAGE_USERCENTER).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
-
-                @Override
-                public void onSubscribe(Disposable d) {
-                    unRecommendSubscribe();
-                    mRecommendDisposable = d;
-                }
-
-                @Override
-                public void onNext(ResponseBody responseBody) {
-                    ModuleInfoResult mResult = null;
-                    String value = null;
-                    UserCenterPageBean.Bean mProgramInfo = null;
-                    UserCenterPageBean UserCenterPageBean = null;
-                    UserCenterPageBean = mAdapter.getItem(4);
-                    List<UserCenterPageBean.Bean> mRecommendBean = new ArrayList<>();
-                    Gson mGSon = new Gson();
-                    List<Program> programInfoList = null;
-                    try {
-                        value = responseBody.string();
-                        Log.d(TAG, "wqs:requestRecommendData:value:" + value);
-                        mResult = mGSon.fromJson(value, ModuleInfoResult.class);
-                        if (mResult != null) {
-                            if (mResult.getDatas() != null && mResult.getDatas().size() > 0) {
-                                if (mResult.getDatas().get(0) != null) {
-                                    if (mResult.getDatas().get(0).getDatas() != null && mResult.getDatas().get(0).getDatas().size() > 0) {
-                                        programInfoList = mResult.getDatas().get(0).getDatas();
-                                        UserCenterPageBean.title = mResult.getDatas().get(0).getBlockTitle();
-                                        for (int i = 0; i < programInfoList.size(); i++) {
-                                            mProgramInfo = new UserCenterPageBean.Bean();
-                                            mProgramInfo.set_title_name(programInfoList.get(i).getTitle());
-                                            mProgramInfo.set_contentuuid(programInfoList.get(i).getContentId());
-                                            mProgramInfo.set_contenttype(programInfoList.get(i).getContentType());
-                                            mProgramInfo.set_imageurl(programInfoList.get(i).getImg());
-                                            mProgramInfo.set_actiontype(programInfoList.get(i).getL_actionType());
-                                            mProgramInfo.setGrade(programInfoList.get(i).getGrade());
-//                                            mProgramInfo.setSuperscript(programInfoList.get(i).getrSuperScript());
-                                            mRecommendBean.add(mProgramInfo);
-                                        }
-                                    } else {
-                                        Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas().get(0).getDatas()== null");
-                                    }
-                                } else {
-                                    Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas().get(0) == null");
-                                }
-                            } else {
-                                Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas() == null");
-                            }
-                        } else {
-                            Log.d(TAG, "wqs:requestRecommendData：mResult == null");
-                        }
-                        UserCenterPageBean.data = mRecommendBean;
-                        if (mHandler != null) {
-                            mHandler.sendEmptyMessage(RECOMMEND);
-                        } else {
-                            Log.d(TAG, "wqs:requestRecommendData:mHandler==null");
-                        }
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            UserCenterPageBean.Bean mProgramInfo = null;
+            UserCenterPageBean UserCenterPageBean = null;
+            UserCenterPageBean = mAdapter.getItem(4);
+            List<UserCenterPageBean.Bean> mRecommendBean = new ArrayList<>();
+            List<Program> programInfoList = null;
+            if (pageList == null && pageList.size() <= 0) {
+                return;
+            }
+            if (pageList.get(0) != null) {
+                if (pageList.get(0).getPrograms() != null && pageList.get(0).getPrograms().size() > 0) {
+                    programInfoList = pageList.get(0).getPrograms();
+                    UserCenterPageBean.title = pageList.get(0).getBlockTitle();
+                    for (int i = 0; i < programInfoList.size(); i++) {
+                        mProgramInfo = new UserCenterPageBean.Bean();
+                        mProgramInfo.set_title_name(programInfoList.get(i).getTitle());
+                        mProgramInfo.set_contentuuid(programInfoList.get(i).getL_id());
+                        mProgramInfo.set_contenttype(programInfoList.get(i).getL_contentType());
+                        mProgramInfo.set_imageurl(programInfoList.get(i).getImg());
+                        mProgramInfo.set_actiontype(programInfoList.get(i).getL_actionType());
+                        mProgramInfo.setGrade(programInfoList.get(i).getGrade());
+                        mRecommendBean.add(mProgramInfo);
                     }
-                    unRecommendSubscribe();
+                } else {
+                    Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas().get(0).getDatas()== null");
                 }
-
-                @Override
-                public void onError(Throwable e) {
-                    unRecommendSubscribe();
-                }
-
-                @Override
-                public void onComplete() {
-                    unRecommendSubscribe();
-                }
-            });
+            } else {
+                Log.d(TAG, "wqs:requestRecommendData：mResult.getDatas().get(0) == null");
+            }
+            UserCenterPageBean.data = mRecommendBean;
+            if (mHandler != null) {
+                mHandler.sendEmptyMessage(RECOMMEND);
+            } else {
+                Log.d(TAG, "wqs:requestRecommendData:mHandler==null");
+            }
         } catch (Exception e) {
-            unRecommendSubscribe();
             e.printStackTrace();
-            Log.e(TAG, "wqs:requestGuessYouLikeData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:inflateRecommendData:Exception:" + e.toString());
         }
-
     }
-
 
     /**
      * 获取通栏广告
@@ -783,16 +739,6 @@ public class UserCenterFragment extends BaseFragment implements
     }
 
     /**
-     * 解除获取推荐位数据绑定
-     */
-    private void unRecommendSubscribe() {
-        if (mRecommendDisposable != null && !mRecommendDisposable.isDisposed()) {
-            mRecommendDisposable.dispose();
-            mRecommendDisposable = null;
-        }
-    }
-
-    /**
      * 通过获取广告参数跳转相应页面
      *
      * @param eventContentString
@@ -850,6 +796,7 @@ public class UserCenterFragment extends BaseFragment implements
                 case R.id.id_module_8_view5:
                 case R.id.id_module_8_view6:
                     if (entity != null) {
+                        Log.e(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype());
                         JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
                                 entity.get_contentuuid(), "");
                     } else {
@@ -942,8 +889,9 @@ public class UserCenterFragment extends BaseFragment implements
     }
 
     @Override
-    public void versionCheckResult(@org.jetbrains.annotations.Nullable UpVersion versionBeen, boolean isForce) {
-
+    public void onPageResult(@org.jetbrains.annotations.Nullable List<Page> page) {
+        //推荐位填充数据
+        inflateRecommendData(page);
     }
 
     @Override
@@ -955,6 +903,17 @@ public class UserCenterFragment extends BaseFragment implements
     public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
 
     }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
+
+    }
+
 
     public static class MyHandler extends Handler {
         private WeakReference<UserCenterFragment> mReference;
@@ -1015,7 +974,6 @@ public class UserCenterFragment extends BaseFragment implements
     }
 
     private void uploadUserOnline() {
-
         String userid = SharePreferenceUtils.getUserId(getContext());
         if (!TextUtils.isEmpty(userid)) {
             LogUploadUtils.setLogFileds(Constant.USER_ID, userid);

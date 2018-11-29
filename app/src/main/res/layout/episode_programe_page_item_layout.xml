@@ -31,12 +31,25 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor"
                  />
+            <ImageView
+                android:id="@+id/img_vip_30_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--2-->
         <FrameLayout
@@ -57,11 +70,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--3-->
         <FrameLayout
@@ -82,11 +108,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--4-->
         <FrameLayout
@@ -107,11 +146,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--5-->
         <FrameLayout
@@ -132,11 +184,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--6-->
         <FrameLayout
@@ -157,11 +222,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--7-->
         <FrameLayout
@@ -182,11 +260,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--8-->
         <FrameLayout
@@ -207,11 +298,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--9-->
         <FrameLayout
@@ -232,11 +336,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--10-->
         <FrameLayout
@@ -257,11 +374,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--11-->
         <FrameLayout
@@ -282,11 +412,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--12-->
         <FrameLayout
@@ -307,11 +450,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--13-->
         <FrameLayout
@@ -332,11 +488,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--14-->
         <FrameLayout
@@ -357,11 +526,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--15-->
         <FrameLayout
@@ -382,11 +564,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--16-->
         <FrameLayout
@@ -407,11 +602,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--17-->
         <FrameLayout
@@ -430,11 +638,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--18-->
         <FrameLayout
@@ -454,11 +675,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--19-->
         <FrameLayout
@@ -479,11 +713,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--20-->
         <FrameLayout
@@ -504,11 +751,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--21-->
         <FrameLayout
@@ -529,11 +789,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--22-->
         <FrameLayout
@@ -554,11 +827,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--23-->
         <FrameLayout
@@ -579,11 +865,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--24-->
         <FrameLayout
@@ -604,11 +903,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--25-->
         <FrameLayout
@@ -629,11 +941,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--26-->
         <FrameLayout
@@ -654,11 +979,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_26"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--27-->
         <FrameLayout
@@ -679,11 +1017,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--28-->
         <FrameLayout
@@ -703,11 +1054,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--29-->
         <FrameLayout
@@ -728,11 +1092,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_29"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
         <!--30-->
         <FrameLayout
@@ -752,11 +1129,24 @@
                 android:layout_width="@dimen/width_80px"
                 android:layout_height="@dimen/height_80px"
                 android:layout_gravity="center"
-                android:background="@drawable/shape_radius_3b446a"
+                android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:text="1"
                 android:tag="tag_poster_title"
                 android:textColor="@color/detail_tvcolor" />
+            <ImageView
+                android:id="@+id/img_vip_30_30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:scaleType="fitEnd"
+                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginRight="@dimen/height_14px"
+                android:layout_marginEnd="@dimen/height_14px"
+                android:background="@drawable/vip"
+                android:tag="tag_img_vip"
+                android:visibility="visible"
+                />
         </FrameLayout>
     </GridLayout>
 </RelativeLayout>

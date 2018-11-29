@@ -42,7 +42,7 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
 public class UserInfoActivity extends BaseActivity implements View.OnKeyListener {
     private final String TAG = "UserInfoActivity";
     private String[] sexValues = {"男", "女", "未知"};
-    private int sexIndex = 2;
+    private int sexIndex = 0;
     private TextView sexSelector;
     private Disposable disposable_user;
     private String token;
@@ -123,11 +123,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
         });
     }
 
-    private void updateUI() {
-        if (sexSelector != null)
-            sexSelector.setText(sexValues[sexIndex]);
-    }
-
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -159,6 +154,15 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
         if (sexIndex < 0) sexIndex = sexValues.length - 1;
         if (sexIndex > sexValues.length - 1) sexIndex = 0;
         updateUI();
+        SharePreferenceUtils.saveSex(UserInfoActivity.this, sexIndex);
+    }
+
+    private void updateUI() {
+
+        if (sexSelector != null) {
+            sexSelector.setText(sexValues[sexIndex]);
+        }
+
     }
 
     private void getUserInfo(String Authorization) {
@@ -186,15 +190,15 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
                                 }
                                 tv_phone.setText(phone);
                                 tv_id.setText(jsonObject.optString("id"));
-                                int isMale = jsonObject.optInt("isMale");
-                                if (isMale == 0) {
-                                    sexIndex = 2;
-                                } else if (isMale == 1) {
-                                    sexIndex = 0;
+                                sexIndex = jsonObject.optInt("isMale");
+
+                                int status = SharePreferenceUtils.getSex(UserInfoActivity.this);
+                                if (status == -1) {
+                                    updateUI();
                                 } else {
-                                    sexIndex = 1;
+                                    sexIndex = status;
+                                    sexSelector.setText(sexValues[status]);
                                 }
-                                updateUI();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

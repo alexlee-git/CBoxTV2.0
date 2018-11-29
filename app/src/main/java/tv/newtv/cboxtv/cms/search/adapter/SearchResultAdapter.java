@@ -1,10 +1,9 @@
 package tv.newtv.cboxtv.cms.search.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.FocusFinder;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,27 +12,21 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
-import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUtils;
-import com.newtv.libs.util.ScaleUtils;
-import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.search.custom.NewTVSearchResult;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
-import tv.newtv.cboxtv.cms.search.fragment.BaseFragment;
-import tv.newtv.cboxtv.cms.search.listener.ResultViewFocusListener;
-import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
 /**
@@ -93,9 +86,23 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
                     .placeholder(R.drawable.focus_240_360)
                     .error(R.drawable.focus_240_360)
                     .into(holder.mPosterImageView);
+
+            if (!TextUtils.isEmpty(subContent.getContentType()) && subContent.getContentType().equals("PS")){
+
+                if (!TextUtils.isEmpty(subContent.getRecentNum()) && !subContent.getRecentNum().equals("0")){
+                    holder.updateLayout.setVisibility(View.VISIBLE);
+                    holder.updateLeft.setVisibility(View.VISIBLE);
+                    holder.updateRight.setVisibility(View.VISIBLE);
+                    holder.recentNumTv.setText(subContent.getRecentNum());
+                }
+                if (!TextUtils.isEmpty(subContent.getVipFlag()) && subContent.getVipFlag().equals(0)){
+                    holder.isVipImg.setVisibility(View.VISIBLE);
+                }
+            }
+
             holder.mTxtTitle.setText(dataList.get(position).getTitle());
             holder.mPosterTitle.setText(dataList.get(position).getSubTitle());
-            holder.mFrameLayoutResultList.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            holder.mLayoutResultList.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     lastFocusView = view;
@@ -113,7 +120,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
                 }
             });
 
-            holder.mFrameLayoutResultList.setOnKeyListener(new View.OnKeyListener() {
+            holder.mLayoutResultList.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View view, int i, KeyEvent keyEvent) {
 
@@ -164,17 +171,23 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
 
 class ResultHolder extends RecyclerView.ViewHolder {
 
-    public FrameLayout mFrameLayoutResultList;
-    public ImageView mPosterImageView, mFocusImageView;
-    public TextView mTxtTitle, mPosterTitle;
+    public LinearLayout updateLayout;
+    public FrameLayout mLayoutResultList;
+    public ImageView mPosterImageView, mFocusImageView,isVipImg;
+    public TextView mTxtTitle, mPosterTitle,recentNumTv,updateLeft,updateRight;
 
     public ResultHolder(View itemView) {
         super(itemView);
-        mFrameLayoutResultList = itemView.findViewById(R.id.search_result_fl);
+        updateLayout = itemView.findViewById(R.id.update_layout);
+        mLayoutResultList = itemView.findViewById(R.id.search_result_rl);
         mPosterImageView = itemView.findViewById(R.id.result_image_default);
         mFocusImageView = itemView.findViewById(R.id.result_image_focus);
         mTxtTitle = itemView.findViewById(R.id.result_title);
         mPosterTitle = itemView.findViewById(R.id.result_poster_title);
+        recentNumTv = itemView.findViewById(R.id.recentNumTv);
+        isVipImg = itemView.findViewById(R.id.isVipImg);
+        updateLeft = itemView.findViewById(R.id.update_left);
+        updateRight = itemView.findViewById(R.id.update_right);
 
 //            适配
         DisplayUtils.adjustView(LauncherApplication.AppContext, mPosterImageView, mFocusImageView, R.dimen.width_16dp, R.dimen.width_16dp);

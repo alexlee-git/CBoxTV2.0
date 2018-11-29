@@ -11,7 +11,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -79,7 +78,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    protected void buildView(@Nullable Bundle savedInstanceState,String contentUUID) {
+    protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
 
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
@@ -112,7 +111,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
-                .SetContentUUID(contentUUID)
+                .SetContentUUID(contentUUID,getChildContentUUID())
                 .autoGetSubContents()
                 .setTopView(fromOuter,isPopup)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
@@ -235,6 +234,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
             @Override
             public void onChange(int index, boolean fromClick) {
+                scrollView.scrollToTop(false);
                 headPlayerView.Play(index, 0, fromClick);
             }
         });
@@ -271,7 +271,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
                 headPlayerView.hasFocus()) {
             if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
                 return true;
             }
         }

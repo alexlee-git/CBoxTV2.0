@@ -10,12 +10,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+import com.newtv.cms.bean.CategoryTreeNode;
 import com.newtv.libs.util.RxBus;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
+import tv.newtv.cboxtv.cms.MainLooper;
 
 
 /**
@@ -24,9 +25,10 @@ import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
 public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.FirstLabelViewHolder> {
 
     Context context;
-    List<TabBean.DataBean.ChildBean> childBeans;
+    List<CategoryTreeNode> childBeans;
+    private int defaultFocusLab =-1;
 
-    public FirstLabelAdapter(Context context, List<TabBean.DataBean.ChildBean> childBeans) {
+    public FirstLabelAdapter(Context context, List<CategoryTreeNode> childBeans) {
         this.context = context;
         this.childBeans = childBeans;
     }
@@ -40,8 +42,18 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
         return labelViewHolder;
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull final FirstLabelViewHolder labelViewHolder, final int i) {
+
+        if (i==defaultFocusLab){
+            MainLooper.get().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    labelViewHolder.itemView.requestFocus();
+                }
+            },50);
+        }
 
         if (!TextUtils.isEmpty(childBeans.get(i).getTitle()))
         labelViewHolder.textView.setText(childBeans.get(i).getTitle());
@@ -54,12 +66,12 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
                 if (hasFocus) {
                     RxBus.get().post("labelId", childBeans.get(i));
                     RxBus.get().post("labelRecordView",labelViewHolder.itemView);
-
+                    if (defaultFocusLab!=-1){
+                        RxBus.get().post("defaultFocusLab",true);
+                    }
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_select);
-
                 } else {
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_default);
-
                 }
             }
         });
@@ -68,6 +80,10 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
     @Override
     public int getItemCount() {
         return childBeans.size();
+    }
+
+    public void setdefaultFocus(int defaultFocusLab) {
+        this.defaultFocusLab =defaultFocusLab;
     }
 
     class FirstLabelViewHolder extends RecyclerView.ViewHolder {

@@ -18,6 +18,7 @@ import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.Encryptor;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
+import com.newtv.libs.util.SharePreferenceUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +42,9 @@ import tv.newtv.player.R;
  * 创建日期:          2018/10/12
  */
 public class VodContract {
+    public static final String USER_NOT_LOGIN = "60017";
+    public static final String USER_TOKEN_IS_EXPIRED = "60019";
+    public static final String USER_NOT_BUY = "60006";
 
     public interface View extends ICmsView {
         void onVodchkResult(VideoDataStruct videoDataStruct, String contentUUID);
@@ -49,7 +53,13 @@ public class VodContract {
     }
 
     public interface Presenter extends ICmsPresenter {
-        void checkVod(String seriesID, String albumId);
+        /**
+         *
+         * @param programId
+         * @param albumId
+         * @param isCarouse
+         */
+        void checkVod(String programId, String albumId,boolean isCarouse);
     }
 
     public static class VodPresenter extends CmsServicePresenter<View> implements Presenter {
@@ -117,13 +127,14 @@ public class VodContract {
          * @param seriesID
          * @return
          */
-        ChkRequest createVodRequestBean(String contentId, String seriesID) {
+        ChkRequest createVodRequestBean(String contentId, String seriesID,boolean isCarouse) {
             ChkRequest playCheckRequestBean = new ChkRequest();
 
             playCheckRequestBean.setAppKey(Libs.get().getAppKey());
             playCheckRequestBean.setChannelId(Libs.get().getChannelId());
             playCheckRequestBean.setSource("NEWTV");
             playCheckRequestBean.setId(contentId);
+            playCheckRequestBean.setCarouselFlag(isCarouse);
             if (!TextUtils.isEmpty(seriesID)) {
                 playCheckRequestBean.setAlbumId(seriesID);
             }
@@ -152,10 +163,19 @@ public class VodContract {
                             .getString(R.string
                                     .search_fail_agin), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), getContext().getResources()
-                            .getString(R.string
-                                    .check_error) + errorCode, Toast
-                            .LENGTH_SHORT).show();
+                    String toastText = "";
+                    switch (errorCode){
+                        case USER_NOT_LOGIN:
+                        case USER_TOKEN_IS_EXPIRED:
+                        case USER_NOT_BUY:
+                            toastText = "付费内容需购买后才能观看";
+                            break;
+
+                            default:
+                                toastText =  getContext().getResources()
+                                        .getString(R.string.check_error) + errorCode;
+                    }
+                    Toast.makeText(getContext(),toastText, Toast.LENGTH_SHORT).show();
                 }
                 if (getView() != null)
                     getView().onChkError(errorCode, getContext().getResources()
@@ -199,12 +219,19 @@ public class VodContract {
                         .getDuration()));
             }
 
-            videoDataStruct.setSeriesId(playResult.getProgramSeriesUUIDs());
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
             videoDataStruct.setDeviceID(Constant.UUID);
             videoDataStruct.setCategoryIds(playResult.getCategoryIds());
             ADConfig.getInstance().setProgramId(playResult.getContentUUID());
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
+            ADConfig.getInstance().setDuration(playResult.getDuration());
+            if(playResult.getPrograms() != null && playResult.getPrograms().size() > 0){
+                String contentId = playResult.getPrograms().get(0).getProgramSeriesId();
+                ADConfig.getInstance().setSeriesID(contentId,false);
+                videoDataStruct.setSeriesId(contentId);
+            }else {
+                ADConfig.getInstance().setSeriesID("",false);
+            }
 
             if(UserStatus.isVip()){
                 PlayerConfig.getInstance().setJumpAD(true);
@@ -242,11 +269,13 @@ public class VodContract {
         }
 
         @Override
-        public void checkVod(String seriesID, String albumId) {
+        public void checkVod(String programId, String albumId,boolean isCarouse) {
             final IPlayChk playChk = getService(SERVICE_CHK_PLAY);
+            String token = SharePreferenceUtils.getToken(getContext());
+            String resultToken = TextUtils.isEmpty(token) ? "" : "Bearer " + token;
             if (playChk != null) {
-                ChkRequest request = createVodRequestBean(seriesID, albumId);
-                playChk.check(request, new DataObserver<String>() {
+                ChkRequest request = createVodRequestBean(programId, albumId,isCarouse);
+                playChk.check(request,resultToken, new DataObserver<String>() {
                     @Override
                     public void onResult(String result, long requestCode) {
                         if (TextUtils.isEmpty(result)) {

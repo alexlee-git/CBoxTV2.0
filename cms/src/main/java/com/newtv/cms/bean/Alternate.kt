@@ -1,5 +1,6 @@
 package com.newtv.cms.bean
 
+import com.google.gson.annotations.SerializedName
 import com.newtv.libs.util.LogUtils
 import com.newtv.libs.util.PlayerTimeUtils
 
@@ -12,6 +13,7 @@ import com.newtv.libs.util.PlayerTimeUtils
  */
 data class Alternate(
         val alternateListID: String,
+        @SerializedName(value = "contentID",alternate = arrayOf("contentId"))
         val contentID: String,
         val contentType: String,
         val contentUUID: String,
@@ -19,20 +21,4 @@ data class Alternate(
         val hImage: String,
         val startTime: String,
         val title: String
-) {
-    fun getStartTimeValue(): Long {
-        return PlayerTimeUtils.parseTime(startTime, "yyyy-MM-dd HH:mm:ss.S")
-    }
-
-    fun getPlayDuration(): Int {
-        return duration.toInt()
-    }
-
-    fun isInPlayTime(): Boolean {
-        val start: Long = getStartTimeValue()
-        val now: Long = System.currentTimeMillis()
-        val dur: Int = getPlayDuration()
-        LogUtils.d("Alternate", "start=$start now=$now end=${start + dur}")
-        return start > now && start + Integer.parseInt(duration) > now
-    }
-}
+)

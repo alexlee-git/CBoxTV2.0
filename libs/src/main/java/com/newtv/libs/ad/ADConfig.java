@@ -12,6 +12,7 @@ public class ADConfig {
     private String categoryIds;
     private String seriesID;
     private String programId;
+    private String duration;
     private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
@@ -33,9 +34,16 @@ public class ADConfig {
     }
 
     public void setSeriesID(String seriesID) {
+        setSeriesID(seriesID,true);
+
+    }
+
+    public void setSeriesID(String seriesID,boolean reset){
         this.seriesID = seriesID;
-        columnId = "";
-        secondColumnId = "";
+        if(reset){
+            columnId = "";
+            secondColumnId = "";
+        }
     }
 
     public String getCategoryIds() {
@@ -50,6 +58,25 @@ public class ADConfig {
 
     public String getColumnId() {
         return columnId;
+    }
+
+    public int getIntSecondDuration(){
+        int result = 0;
+        if(!TextUtils.isEmpty(duration)){
+            try {
+                int i = Integer.parseInt(duration);
+                result = 60 * i;
+            }catch (Exception e){}
+        }
+        return result;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public void setColumnId(String columnId) {
@@ -144,6 +171,8 @@ public class ADConfig {
                 ", secondColumnId='" + secondColumnId + '\'' +
                 ", categoryIds='" + categoryIds + '\'' +
                 ", seriesID='" + seriesID + '\'' +
+                ", programId='" + programId + '\'' +
+                ", duration='" + duration + '\'' +
                 ", listenerList=" + listenerList +
                 '}';
     }
@@ -154,5 +183,6 @@ public class ADConfig {
         categoryIds = "";
         seriesID = "";
         programId = "";
+        duration = "";
     }
 }

@@ -1,11 +1,17 @@
 package tv.newtv.cboxtv.cms.screenList.presenter;
 
 
+import android.content.Context;
+
+import com.newtv.cms.bean.CategoryTreeNode;
+import com.newtv.cms.bean.FilterItem;
+import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.SubContent;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import tv.newtv.cboxtv.cms.screenList.bean.LabelBean;
-import tv.newtv.cboxtv.cms.screenList.bean.LabelDataBean;
-import tv.newtv.cboxtv.cms.screenList.bean.TabBean;
 import tv.newtv.cboxtv.cms.screenList.model.FirstLabelModel;
 import tv.newtv.cboxtv.cms.screenList.model.FirstLabelModelImpl;
 import tv.newtv.cboxtv.cms.screenList.model.LabelDataModel;
@@ -27,10 +33,10 @@ public class LabelPresenterImpl extends LabelPresenter<LabelView> {
     private LabelView iView;
 
 
-    public LabelPresenterImpl() {
-        firstLabelModel = new FirstLabelModelImpl();
-        secondLabelModel = new SecondLabelModelImpl();
-        dataModel = new LabelDataModelImpl();
+    public LabelPresenterImpl(Context context) {
+        firstLabelModel = new FirstLabelModelImpl(context);
+        secondLabelModel = new SecondLabelModelImpl(context );
+        dataModel = new LabelDataModelImpl(context);
     }
 
 
@@ -44,11 +50,11 @@ public class LabelPresenterImpl extends LabelPresenter<LabelView> {
     public void getFirstLabel() {
         firstLabelModel.requestFirstLabel(new FirstLabelModel.FirstLabelCompleteListener() {
             @Override
-            public void sendFirstLabel(TabBean tabBean) {
+            public void sendFirstLabel(ModelResult<List<CategoryTreeNode>> modelResult) {
                 if (iView == null) {
                     bind();
                 }
-                iView.showFirstMenuData(tabBean);
+                iView.showFirstMenuData(modelResult);
             }
         });
 
@@ -56,14 +62,17 @@ public class LabelPresenterImpl extends LabelPresenter<LabelView> {
     }
 
     public void getSecondLabel() {
-
-        secondLabelModel.requestSecondLabel(new SecondLabelModel.SecondLabelCompleteListener() {
+        if (iView == null) {
+            bind();
+        }
+        String categoryId = iView.getCategoryId();
+        secondLabelModel.requestSecondLabel(categoryId,new SecondLabelModel.SecondLabelCompleteListener() {
             @Override
-            public void sendSecondLabel(LabelBean labelBean) {
+            public void sendSecondLabel(ModelResult<List<FilterItem>> modelResult) {
                 if (iView == null) {
                     bind();
                 }
-                iView.showSecondMenuData(labelBean);
+                iView.showSecondMenuData(modelResult);
             }
         });
 
@@ -77,9 +86,9 @@ public class LabelPresenterImpl extends LabelPresenter<LabelView> {
         Map<String, Object> map = iView.getMap();
         dataModel.requestLabelData(map, new LabelDataModel.DataCompleteListener() {
             @Override
-            public void sendLabelData(LabelDataBean labelDataBean) {
+            public void sendLabelData(ArrayList<SubContent> content,int total) {
 
-                iView.showData(labelDataBean);
+                iView.showData(content ,  total);
 
             }
         });

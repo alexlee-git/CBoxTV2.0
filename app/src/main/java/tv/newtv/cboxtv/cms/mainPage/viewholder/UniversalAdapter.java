@@ -24,7 +24,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
     private List<Page> mDatas;
 
     private int bottomMargin = 0;
-    private BlockBuilder blockBuilder;
+    private IBlockBuilder blockBuilder;
     private List<UniversalViewHolder> holderList = new ArrayList<>();
 
     public UniversalAdapter(Context context, List<Page> datas) {
@@ -79,6 +79,18 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         return holder;
     }
 
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        LogUtils.d(TAG,"onAttachedToRecyclerView");
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        LogUtils.d(TAG,"onDetachedFromRecyclerView");
+    }
+
     public void showFirstLineTitle(boolean value) {
         blockBuilder.showFirstLineTitle(value);
     }
@@ -99,10 +111,26 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
                 holder.itemView.setLayoutParams(layoutParams);
             }
 
+            holder.bind();
+
             blockBuilder.build(moduleItem, holder.itemView, position);
         } catch (Exception e) {
             LogUtils.e(e);
         }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull UniversalViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        LogUtils.d(TAG,"onViewAttachedToWindow");
+        holder.attached();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull UniversalViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        LogUtils.d(TAG,"onViewDetachedFromWindow");
+        holder.detached();
     }
 
     @Override

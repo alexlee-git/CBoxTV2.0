@@ -18,10 +18,6 @@ data class Program(
         val l_focusId: String,
         val l_focusParam: String,
         val grade: String,
-        val lSuperScript: String,
-        val rSuperScript: String,
-        val lSubScript: String,
-        val rSubScript: String,
         val columnPoint: String,
         val rowPoint: String,
         val columnLength: String,
@@ -31,16 +27,23 @@ data class Program(
         val isAd: Int,
         val sortNum: String,
         val seriesSubUUID: String,
+        val realExclusive: String,
+        val alternateNumber: String,
+        val apkParam: String,
+        val specialParam: String,
+        val recommendedType: String,
+        val recentMsg: String,
+        val video: Video?,
         val apk: String,
         val apkPageType: String,
         val apkPageParam: String,
-        val specialParam: String,
-        val recommendedType: String,
         val recentNum: String,
-        val isFinish: String,
-        val video: Video?
+        val isFinish: String
 ) {
     fun getLiveParam(): LiveParam? {
         return null
     }
+
+
+
 }

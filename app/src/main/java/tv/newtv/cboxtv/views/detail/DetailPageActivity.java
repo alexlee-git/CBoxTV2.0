@@ -18,7 +18,6 @@ import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -29,10 +28,15 @@ import tv.newtv.cboxtv.cms.details.PersonsDetailsActivityNew;
  */
 public abstract class DetailPageActivity extends BaseActivity {
 
-    private String contentUUID;
     protected boolean isADEntry = false;
+    private String contentUUID;
+    private String childContentUUID;
 
-    protected abstract void buildView(@Nullable Bundle savedInstanceState,String contentID);
+    protected String getChildContentUUID() {
+        return childContentUUID;
+    }
+
+    protected abstract void buildView(@Nullable Bundle savedInstanceState, String contentID);
 
     @Override
     protected boolean isDetail() {
@@ -50,24 +54,29 @@ public abstract class DetailPageActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = null;
         if (savedInstanceState == null) {
-            contentUUID = getIntent().getStringExtra(Constant.CONTENT_UUID);
+            intent = getIntent();
             isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
         } else {
-            Intent intent = savedInstanceState.getParcelable("intent");
-            if (intent != null) {
-                if (intent.hasExtra(Constant.CONTENT_UUID))
-                    contentUUID = intent.getStringExtra(Constant.CONTENT_UUID);
-            }
+            intent = savedInstanceState.getParcelable("intent");
         }
 
-        if(TextUtils.isEmpty(contentUUID)){
-            ToastUtil.showToast(getApplicationContext(),"节目ID为空");
+        if (intent != null) {
+            if (intent.hasExtra(Constant.CONTENT_UUID))
+                contentUUID = intent.getStringExtra(Constant.CONTENT_UUID);
+
+            if (intent.hasExtra(Constant.CONTENT_CHILD_UUID))
+                childContentUUID = intent.getStringExtra(Constant.CONTENT_CHILD_UUID);
+        }
+
+        if (TextUtils.isEmpty(contentUUID)) {
+            ToastUtil.showToast(getApplicationContext(), "节目ID为空");
             finish();
             return;
         }
 
-        buildView(savedInstanceState,contentUUID);
+        buildView(savedInstanceState, contentUUID);
     }
 
     @Override
@@ -114,7 +123,7 @@ public abstract class DetailPageActivity extends BaseActivity {
             return true;
         }
 
-        if(event.getAction() == KeyEvent.ACTION_UP){
+        if (event.getAction() == KeyEvent.ACTION_UP) {
             if (isBackPressed(event)) {
                 if (isADEntry) {
                     Intent intent = new Intent();

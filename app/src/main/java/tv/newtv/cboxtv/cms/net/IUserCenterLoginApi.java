@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.cms.net;
 
+import com.newtv.libs.BootGuide;
+
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -23,7 +25,7 @@ import retrofit2.http.Query;
  */
 public interface IUserCenterLoginApi {
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/authorization/device_code")
     Observable<ResponseBody> getLoginQRCode(@Header("Authorization") String Authorization,
@@ -32,7 +34,7 @@ public interface IUserCenterLoginApi {
                                             @Field("channel_code") String channel_code);
 
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/token/device_code")
     Observable<ResponseBody> getAccessToken(@Header("Authorization") String Authorization,
@@ -40,7 +42,7 @@ public interface IUserCenterLoginApi {
                                             @Field("device_code") String device_code,
                                             @Field("client_id") String client_id);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/token/refresh_token")
     Observable<ResponseBody> refreshToken(@Header("Authorization") String Authorization,
@@ -48,17 +50,17 @@ public interface IUserCenterLoginApi {
                                           @Field("client_id") String client_id,
                                           @Field("grant_type") String grant_type);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @GET("/kangaroo/user/info")
     Observable<ResponseBody> getUser(@Header("Authorization") String Authorization);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @GET("/goldenpheasant/api/programRights")
     Observable<ResponseBody> getUserTime(@Header("Authorization") String Authorization,
                                          @Query("productId") String productId,
                                          @Query("appKey") String appKey);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/authorization/sms_code")
     Observable<ResponseBody> sendSMSCode(@Header("Authorization") String Authorization,
@@ -66,7 +68,7 @@ public interface IUserCenterLoginApi {
                                          @Field("client_id") String client_id,
                                          @Field("mobile") String mobile);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER)
+    @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/token/sms_code")
     Observable<ResponseBody> verifySMSCode(@Header("Authorization") String Authorization,
@@ -77,33 +79,33 @@ public interface IUserCenterLoginApi {
 
 
     //获取订单
-    @Headers("host_type: " + AppHeadersInterceptor.PAY)
+    @Headers("host_type: " + BootGuide.PAY)
     @POST("/goldenpheasant/api/orders/order")
     Observable<ResponseBody> getPayResponse(@Header("Authorization") String Authorization, @Body RequestBody requestBody);
 
     //获取订单
-    @Headers("host_type: " + AppHeadersInterceptor.PAY)
+    @Headers("host_type: " + BootGuide.PAY)
     @POST("/goldenpheasant/service/orders/scanQrOrder")
     Observable<ResponseBody> getPayResponse_new(@Header("Authorization") String Authorization, @Body RequestBody requestBody);
 
     //渠道
-    @Headers("host_type: " + AppHeadersInterceptor.PAY)
+    @Headers("host_type: " + BootGuide.PAY)
     @GET("/goldenpheasant/api/channels")
     Observable<ResponseBody> getPayChannel();
 
     //获取地址
-    @Headers("host_type: " + AppHeadersInterceptor.PAY)
+    @Headers("host_type: " + BootGuide.PAY)
     @GET("/goldenpheasant/api/orders/queryOrderById")
     Observable<ResponseBody> getPayResult(@Header("Authorization") String Authorization, @Query("orderId") String orderId);
 
 
     //询价3和4
-    @Headers("host_type: " + AppHeadersInterceptor.PRODUCT)
+    @Headers("host_type: " + BootGuide.PRODUCT)
     @GET("/mandrill/service/products/q/price")
     Observable<ResponseBody> getProductPrice(@Query("prdId") String prdId, @Query("channelId") String channelId);
 
     //询价1
-    @Headers("host_type: " + AppHeadersInterceptor.PRODUCT)
+    @Headers("host_type: " + BootGuide.PRODUCT)
     @GET("/mandrill/service/products/{productId}")
     Observable<ResponseBody> getProductPrices(@Path("productId") String productId,
                                               @Query("appKey") String prdId,
@@ -111,24 +113,24 @@ public interface IUserCenterLoginApi {
                                               @Query("channelId") String channelId);
 
     //vip产品包
-    @Headers("host_type: " + AppHeadersInterceptor.PRODUCT)
+    @Headers("host_type: " + BootGuide.PRODUCT)
     @GET("/mandrill/service/products/brief/vip")
     Observable<ResponseBody> getProduct(@Query("appKey") String prdId);
 
     //结果
-    @Headers("host_type: " + AppHeadersInterceptor.PAY)
+    @Headers("host_type: " + BootGuide.PAY)
     @POST("/goldenpheasant/api/programRights")
     Observable<ResponseBody> getPayFlag(@Header("Authorization") String Authorization, @Query("productIds") String[] productIds,
                                         @Query("appKey") String appKey, @Query("channelId") String channelId, @Query("contentUuid") String contentUuid);
 
     //刷新二维码
-    @Headers("host_type: " + AppHeadersInterceptor.PAY)
+    @Headers("host_type: " + BootGuide.PAY)
     @GET("/goldenpheasant/service/orders/refreshQrUrl")
     Observable<ResponseBody> getRefreshOrder(@Header("Authorization") String Authorization,
                                              @Query("orderId") String order);
 
     // 历史
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @FormUrlEncoded
     @POST("/gazella/service/historys")
     Observable<ResponseBody> addHistory(@Header("authorization") String authorization,
@@ -155,7 +157,7 @@ public interface IUserCenterLoginApi {
                                         @Field("action_type") String actionType);
 
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @DELETE("/gazella/service/historys/del")
     Observable<ResponseBody> deleteHistory(@Header("Authorization") String Authorization,
                                            @Query("is_program") String is_program,
@@ -168,7 +170,7 @@ public interface IUserCenterLoginApi {
 //    @POST("content/history/info")
 //    Observable<JsonObject> getHistory(@Header("Authorization") String Authorization, @Field("contentUUid") String contentUUid, @Field("contentType") String contentType);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/historys")
     Observable<ResponseBody> getHistoryList(@Header("Authorization") String Authorization,
                                             @Query("app_key") String app_key,
@@ -178,7 +180,7 @@ public interface IUserCenterLoginApi {
                                             @Query("limit") String limit);
 
     // 收藏
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @FormUrlEncoded
     @POST("/gazella/service/collections")
     Observable<ResponseBody> addCollect(@Header("authorization") String authorization,
@@ -198,8 +200,8 @@ public interface IUserCenterLoginApi {
                                         @Field("latest_episode") String latest_episode,
                                         @Field("action_type") String action_type);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
-    @DELETE("/gazella/service/collections")
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
+    @DELETE("/gazella/service/collections/del")
     Observable<ResponseBody> deleteCollect(@Header("authorization") String authorization,
                                            @Query("user_id") String user_id,
                                            @Query("is_program") String is_program,
@@ -212,7 +214,7 @@ public interface IUserCenterLoginApi {
 //    Observable<JsonObject> getFavorite(@Header("Authorization") String Authorization, @Field("contentUUid") String contentUUid,
 //                                       @Field("contentType") String contentType);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/collections")
     Observable<ResponseBody> getCollectList(@Header("Authorization") String Authorization,
                                             @Query("user_id") String user_id,
@@ -224,7 +226,7 @@ public interface IUserCenterLoginApi {
 
 
     // 关注
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @FormUrlEncoded
     @POST("/gazella/service/concerns")
     Observable<ResponseBody> addFollow(@Header("authorization") String authorization,
@@ -238,8 +240,8 @@ public interface IUserCenterLoginApi {
                                        @Field("content_type") String content_type,
                                        @Field("action_type") String action_type);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
-    @DELETE("/gazella/service/concerns")
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
+    @DELETE("/gazella/service/concerns/del")
     Observable<ResponseBody> deleteFollow(@Header("authorization") String authorization,
                                           @Query("user_id") String user_id,
                                           @Query("is_program") String is_program,
@@ -247,7 +249,7 @@ public interface IUserCenterLoginApi {
                                           @Query("app_key") String app_key,
                                           @Query("programset_ids") String[] programset_ids);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/concerns")
     Observable<ResponseBody> getFollowList(@Header("authorization") String authorization,
                                            @Query("user_id") String user_id,
@@ -258,7 +260,7 @@ public interface IUserCenterLoginApi {
                                            @Query("limit") String limit);
 
     // 订阅
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @FormUrlEncoded
     @POST("/gazella/service/subscribes")
     Observable<ResponseBody> addSubscribes(@Header("authorization") String authorization,
@@ -278,8 +280,8 @@ public interface IUserCenterLoginApi {
                                            @Field("latest_episode") String latest_episode,
                                            @Field("action_type") String action_type);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
-    @DELETE("/gazella/service/subscribes")
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
+    @DELETE("/gazella/service/subscribes/del")
     Observable<ResponseBody> deleteSubscribes(@Header("authorization") String authorization,
                                               @Query("user_id") String user_id,
                                               @Query("is_program") String is_program,
@@ -287,7 +289,7 @@ public interface IUserCenterLoginApi {
                                               @Query("app_key") String app_key,
                                               @Query("programset_ids") String[] programset_ids);
 
-    @Headers("host_type: " + AppHeadersInterceptor.USER_BEHAVIOR)
+    @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/subscribes")
     Observable<ResponseBody> getSubscribesList(@Header("authorization") String authorization,
                                                @Query("user_id") String user_id,

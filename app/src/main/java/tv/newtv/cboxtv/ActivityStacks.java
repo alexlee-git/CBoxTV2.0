@@ -25,6 +25,13 @@ public final class ActivityStacks {
 
     }
 
+    public void lifeCycle(ILifeCycle lifeCycle){
+        BaseActivity activity = getCurrentActivity();
+        if(activity != null){
+            activity.lifeCycle(lifeCycle);
+        }
+    }
+
     public static ActivityStacks get() {
         if (instance == null) {
             synchronized (ActivityStacks.class) {
@@ -64,9 +71,6 @@ public final class ActivityStacks {
     public void onCreate(BaseActivity activity) {
         synchronized (activities) {
             LogUtils.d(TAG, "onCreate->"+activity);
-//            if (activity instanceof MainActivity) {
-//                finishAllActivity();
-//            } else
 
             if (isVideoPlayerActivity(activity)) {
                 finishBfPlayerActivity();

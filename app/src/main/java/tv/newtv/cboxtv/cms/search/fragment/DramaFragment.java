@@ -76,7 +76,7 @@ public class DramaFragment extends BaseFragment {
                 mAdapter.setSearchHolderAction(this);
                 mRecyclerView.setAdapter(mAdapter);
             }else {
-                mAdapter.notifyItemRangeInserted(mAdapter.getItemCount(), mDatas.size() - 1);
+                mAdapter.notifyItemRangeInserted(mAdapter.getItemCount(), mDatas.size());
             }
         } else {
             if(mDatas == null || mDatas.size() == 0) {

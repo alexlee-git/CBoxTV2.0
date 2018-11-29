@@ -34,15 +34,16 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
  */
 
 
-public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterUniversalViewHolder> {
+public class UserCenterUniversalAdapter extends RecyclerView
+        .Adapter<UserCenterUniversalViewHolder> {
 
+    private final String TAG = "universal_adapter";
     private Context mContext;
     private List<UserCenterPageBean.Bean> mDatas;
     private String mContentType; // 用来区分历史 or 收藏 or 关注 or 订阅
 
-    private final String TAG = "universal_adapter";
-
-    public UserCenterUniversalAdapter(Context context, List<UserCenterPageBean.Bean> datas, String contentType) {
+    public UserCenterUniversalAdapter(Context context, List<UserCenterPageBean.Bean> datas,
+                                      String contentType) {
         this.mContext = context;
         this.mDatas = datas;
         this.mContentType = contentType;
@@ -50,7 +51,8 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
 
     @Override
     public UserCenterUniversalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new UserCenterUniversalViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_usercenter_universal, parent, false));
+        return new UserCenterUniversalViewHolder(LayoutInflater.from(mContext).inflate(R.layout
+                .item_usercenter_universal, parent, false));
     }
 
     @Override
@@ -66,9 +68,15 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
             String score = info.getGrade();
             if (!TextUtils.isEmpty(score) && !TextUtils.equals("null", score)) {
                 holder.score.setText(score);
+                holder.score.setVisibility(View.VISIBLE);
+                Log.d("pf", "vv : " + score);
+            } else {
+                holder.score.setVisibility(View.INVISIBLE);
+                Log.d("pf", "haha");
             }
 
-            holder.subTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(info.getPlayPosition(), info.getDuration()));
+            holder.subTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(info
+                    .getPlayPosition(), info.getDuration()));
             holder.episode.setText(getEpisode(info));
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
@@ -76,16 +84,22 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
                     loadSuperscript(holder.superscript, info.getSuperscript());
                 } else {
                     if (TextUtils.equals("1", info.getIsUpdate())) {
-                        Picasso.get().load(R.drawable.superscript_update_episode).into(holder.superscript);
+                        Picasso.get().load(R.drawable.superscript_update_episode).into(holder
+                                .superscript);
                     }
                 }
             }
-        } else if (TextUtils.equals(mContentType, Constant.UC_SUBSCRIBE) || TextUtils.equals(mContentType, Constant.UC_COLLECTION)) {
+        } else if (TextUtils.equals(mContentType, Constant.UC_SUBSCRIBE) || TextUtils.equals
+                (mContentType, Constant.UC_COLLECTION)) {
             // 角标 & 主标 & 海报 & 更新剧集 & 评分
             String score = info.getGrade();
             if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null")) {
+                holder.score.setVisibility(View.VISIBLE);
                 holder.score.setText(score);
+            } else {
+               holder.score.setVisibility(View.INVISIBLE);
             }
+
             holder.episode.setText(getEpisode(info));
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
@@ -93,13 +107,15 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
                     loadSuperscript(holder.superscript, info.getSuperscript());
                 } else {
                     if (TextUtils.equals("1", info.getIsUpdate())) {
-                        Picasso.get().load(R.drawable.superscript_update_episode).into(holder.superscript);
+                        Picasso.get().load(R.drawable.superscript_update_episode).into(holder
+                                .superscript);
                     }
                 }
             }
         } else if (TextUtils.equals(mContentType, Constant.UC_FOLLOW)) {
             // 主标 & 海报 这两个下面统一做,这里只需将衬托剧集信息和评分区域的蒙版隐藏掉
             holder.mask.setVisibility(View.GONE);
+            holder.score.setVisibility(View.GONE);
         }
 
         // 主标题
@@ -107,15 +123,16 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
 
         // 海报
         String posterUrl = info.get_imageurl();
-        if (!TextUtils.isEmpty(posterUrl) && holder.poster != null) {
+        if (!TextUtils.isEmpty(posterUrl) && !TextUtils.isEmpty("null") && holder.poster != null) {
             Picasso.get().load(posterUrl)
                     .placeholder(R.drawable.default_member_center_240_360_v2)
+                    .error(R.drawable.deful_user)
                     .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
                     .transform(new PosterCircleTransform(mContext, 4))
                     .into(holder.poster);
-        }else {
-            if (holder.poster != null){
-                holder.poster.setImageResource(R.drawable.default_member_center_240_360_v2);
+        } else {
+            if (holder.poster != null) {
+                holder.poster.setImageResource(R.drawable.deful_user);
             }
         }
 
@@ -143,8 +160,10 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
-                JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(), info.get_contentuuid(), "");
+                Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info
+                        .get_actiontype());
+                JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
+                        info.get_contentuuid(), "");
             }
         });
     }
@@ -175,12 +194,9 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
     private void loadSuperscript(ImageView target, String superscriptId) {
         Corner info = SuperScriptManager.getInstance().getSuperscriptInfoById(superscriptId);
         if (info != null) {
-            String superType = info.getCornerType();
-            if ("IMG".equals(superType)) {
-                String superUrl = info.getCornerImg();
-                if (superUrl != null) {
-                    Picasso.get().load(superUrl).into(target);
-                }
+            String superUrl = info.getCornerImg();
+            if (superUrl != null) {
+                Picasso.get().load(superUrl).into(target);
             }
         }
     }
@@ -194,7 +210,8 @@ public class UserCenterUniversalAdapter extends RecyclerView.Adapter<UserCenterU
             int episodeNum = Integer.parseInt(episode);
 
             String videoType = entity.getVideoType();
-            Log.d(TAG, "videoType : " + videoType + ", name : " + entity.get_title_name() + ", cnt : " + cnt + ", episode : " + episode);
+            Log.d(TAG, "videoType : " + videoType + ", name : " + entity.get_title_name() + ", " +
+                    "cnt : " + cnt + ", episode : " + episode);
             if (TextUtils.equals(videoType, "电视剧")) {
                 if (episodeNum < cnt) {
                     return ("更新至 " + episode + " 集");

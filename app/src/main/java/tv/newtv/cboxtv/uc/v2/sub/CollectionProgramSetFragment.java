@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.uc.v2.sub;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +14,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
@@ -21,6 +25,9 @@ import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -37,7 +44,6 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
@@ -53,16 +59,18 @@ import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
  */
 
 
-public class CollectionProgramSetFragment extends BaseDetailSubFragment {
+public class CollectionProgramSetFragment extends BaseDetailSubFragment implements PageContract.View {
     private final String TAG = "CollectionProgramSetFragment";
     private RecyclerView mRecyclerView;
     private RecyclerView mHotRecommendRecyclerView;
     private TextView emptyTextView;
+    private TextView mHotRecommendTitle;
     private List<UserCenterPageBean.Bean> mDatas;
     private String mLoginTokenString;//登录token,用于判断登录状态
     private String userId;
     private UserCenterUniversalAdapter mAdapter;
     private final int COLUMN_COUNT = 6;
+    private PageContract.ContentPresenter mContentPresenter;
 
     @Override
     protected int getLayoutId() {
@@ -77,7 +85,8 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment {
     }
 
     @Override
-    protected void updateUiWidgets(View view) {}
+    protected void updateUiWidgets(View view) {
+    }
 
     //获取用户登录状态
     private void requestUserInfo() {
@@ -126,7 +135,8 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment {
                         if (code == 0) {
                             UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
                             Gson gson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                            }.getType();
                             List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
                             userCenterUniversalBean.data = universalBeans;
                             if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
@@ -182,7 +192,15 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment {
         mRecyclerView.setVisibility(View.INVISIBLE);
 
         showEmptyTip();
-        showHotRecommend();
+        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
+        if (!TextUtils.isEmpty(hotRecommendParam)) {
+            mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
+            mContentPresenter.getPageContent(hotRecommendParam);
+        } else {
+            Log.e("collectionFragment", "wqs:PAGE_SUBSCRIPTION==null");
+        }
+
+//        showHotRecommend();
     }
 
     /**
@@ -206,7 +224,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment {
      * 展示热门收藏数据
      */
     private void showHotRecommend() {
-        String hotRecommendParam = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_COLLECTION);
+        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
         NetClient.INSTANCE.getHotSubscribeApi()
                 .getHotSubscribeInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), hotRecommendParam)
                 .subscribeOn(Schedulers.io())
@@ -269,5 +287,66 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment {
 
                     }
                 });
+    }
+
+    @Override
+    public void onPageResult(@Nullable List<Page> page) {
+        try {
+            if (page == null && page.size() <= 0) {
+                return;
+            }
+            List<Program> programInfos = page.get(0).getPrograms();
+
+            ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
+            if (viewStub != null) {
+                View view = viewStub.inflate();
+
+                if (view != null) {
+                    mHotRecommendTitle = view.findViewById(R.id.id_hot_recommend_area_title);
+                    mHotRecommendTitle.setText(page.get(0).getBlockTitle());
+                    mHotRecommendRecyclerView = view.findViewById(R.id.id_hot_recommend_area_rv);
+                    mHotRecommendRecyclerView.setHasFixedSize(true);
+                    mHotRecommendRecyclerView.setItemAnimator(null);
+                    mHotRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false) {
+                        @Override
+                        public boolean canScrollHorizontally() {
+                            return false;
+                        }
+                    });
+                    mHotRecommendRecyclerView.setAdapter(new HotRecommendAreaAdapter(getActivity(), programInfos));
+                    mHotRecommendRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+                        @Override
+                        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                            int index = parent.getChildLayoutPosition(view);
+                            if (index < COLUMN_COUNT) {
+                                outRect.top = 23;
+                            }
+                        }
+                    });
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String desc) {
+
+    }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
+
     }
 }

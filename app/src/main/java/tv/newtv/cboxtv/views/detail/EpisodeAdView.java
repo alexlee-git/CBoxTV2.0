@@ -36,10 +36,9 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
 public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContract
         .View, View.OnFocusChangeListener, View.OnClickListener {
 
-    private AdContract.Presenter mADPresenter;
+    private AdContract.AdPresenter mADPresenter;
     private int measuredWidth, measuredHeight;
     private boolean isSuccess = false;
-    private ADHelper.AD.ADItem adItem;
 
 
     public EpisodeAdView(Context context) {
@@ -197,10 +196,11 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, AdContr
 
     @Override
     public void onClick(View v) {
+        ADHelper.AD.ADItem adItem = mADPresenter.getAdItem();
         if(adItem != null && !TextUtils.isEmpty(adItem.eventContent)){
             AdEventContent adEventContent = GsonUtil.fromjson(adItem.eventContent, AdEventContent.class);
             JumpUtil.activityJump(getContext(), adEventContent.actionType, adEventContent.contentType,
-                    adEventContent.contentUUID, adEventContent.actionURI);
+                    adEventContent.contentUUID, adEventContent.actionURI,adEventContent.defaultUUID);
         }
     }
 }

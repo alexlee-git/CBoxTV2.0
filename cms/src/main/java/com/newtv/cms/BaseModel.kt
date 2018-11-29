@@ -18,21 +18,17 @@ internal abstract class BaseModel {
     private val executors: ConcurrentMap<Long, Executor<*>> = ConcurrentHashMap()
 
     fun stop() {
-        synchronized(executors) {
-            for (iterator: MutableMap.MutableEntry<Long, Executor<*>> in executors.iterator()) {
-                if(!iterator.value.lock) {
-                    iterator.value.cancel()
-                }
+        for (iterator: MutableMap.MutableEntry<Long, Executor<*>> in executors.iterator()) {
+            if (!iterator.value.lock) {
+                iterator.value.cancel()
             }
         }
     }
 
     fun cancel(id: Long) {
         if (id == 0L) return
-        synchronized(executors) {
-            if (executors.containsKey(id)) {
-                executors[id]?.cancel()
-            }
+        if (executors.containsKey(id)) {
+            executors[id]?.cancel()
         }
     }
 
@@ -42,22 +38,21 @@ internal abstract class BaseModel {
 
     fun destroy() {
         stop()
+        executors.clear()
     }
 
     abstract fun getType(): String
 
     fun <T> buildExecutor(observable: Observable<ResponseBody>, type: Type?, lock: Boolean = false):
             Executor<T> {
-        synchronized(executors) {
-            val executor: Executor<T> = Executor(observable, type, getType(),lock, object : Executor
-            .IExecutor<T> {
-                override fun onCancel(executor: Executor<T>) {
-                    executors.remove(executor.getID())
-                }
-            })
-            executors[executor.getID()] = executor
-            return executor
-        }
+        val executor: Executor<T> = Executor(observable, type, getType(), lock, object : Executor
+        .IExecutor<T> {
+            override fun onCancel(executor: Executor<T>) {
+                executors.remove(executor.getID())
+            }
+        })
+        executors[executor.getID()] = executor
+        return executor
     }
 
     fun getLeft(contentId: String): String {

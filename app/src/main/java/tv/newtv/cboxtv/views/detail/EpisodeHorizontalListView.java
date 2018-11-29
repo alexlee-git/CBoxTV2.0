@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.contract.AlternateContract;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.contract.PersonDetailsConstract;
 
@@ -35,32 +37,38 @@ import tv.newtv.cboxtv.views.widget.RecycleFocusItemDecoration;
  * 创建人:           weihaichao
  * 创建日期:          2018/7/27
  */
+@SuppressWarnings("unchecked")
 public class EpisodeHorizontalListView extends RelativeLayout implements IEpisode,
-        PersonDetailsConstract.View, ContentContract.View {
+        PersonDetailsConstract.View, ContentContract.View, AlternateContract.View {
 
     public static final int TYPE_PERSON_HOST_LV = 0;         //主持的栏目列表（人物详情）
     public static final int TYPE_PERSON_RELATION_LV = 1;     //主持相关节目列表（人物详情）
     public static final int TYPE_PROGRAM_SERICE_LV = 2;     //节目合集
+    public static final int TYPE_ALTERNATE_LIST = 3;     //节目合集
 
     private String mContentUuid;
     private HorizontalRecycleView mRecycleView;
-    private List<SubContent> mProgramSeriesInfo;
+    private List<?> mProgramSeriesInfo;
     private TextView mTitleText;
-    private NewTvRecycleAdapter<SubContent, ViewHolder> mAdapter;
+    private NewTvRecycleAdapter mAdapter;
     private onEpisodeItemClick onItemClickListener;
 
+    private View currentFocusView;
 
     private PersonDetailsConstract.PersonDetailPresenter mPersonPresenter;
     private ContentContract.Presenter mContentPresenter;
+    private AlternateContract.Presenter mAlternatePresenter;
     private View controlView;
 
+    private int mHorizontalCount = 4;
+
     private OnSeriesInfoResult mOnSeriesInfoResult;
-    private boolean usePlayNotify = true;
     private int item_layout = R.layout.program_horizontal_layout;
 
     public EpisodeHorizontalListView(Context context) {
         this(context, null);
     }
+
     public EpisodeHorizontalListView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -99,11 +107,13 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     public String setTitleByType(int type) {
         switch (type) {
             case TYPE_PERSON_HOST_LV:
-                return "TA 主持的CCTV+栏目";
-            case TYPE_PERSON_RELATION_LV:
                 return "TA 的节目";
+            case TYPE_PERSON_RELATION_LV:
+                return "TA 主持的CCTV+栏目";
             case TYPE_PROGRAM_SERICE_LV:
                 return "节目合集";
+            case TYPE_ALTERNATE_LIST:
+                return "节目单";
             default:
                 return "详情列表";
         }
@@ -112,86 +122,103 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private void initialize(Context context, AttributeSet attrs) {
         mPersonPresenter = new PersonDetailsConstract.PersonDetailPresenter(getContext(), this);
         mContentPresenter = new ContentContract.ContentPresenter(getContext(), this);
+        mAlternatePresenter = new AlternateContract.AlternatePresenter(getContext(), this);
     }
 
-    private void buildUI(List<SubContent> infos, int type) {
+    private void buildUI(List<?> infos, int type) {
         switch (type) {
             case TYPE_PERSON_HOST_LV:
             case TYPE_PERSON_RELATION_LV:
             case TYPE_PROGRAM_SERICE_LV:
-                buildListView(infos, type);
+            case TYPE_ALTERNATE_LIST:
+                buildSubContentListView(infos, type);
+                break;
+            default:
                 break;
         }
     }
 
-    private void buildListView(List<SubContent> infos, int type) {
+    private void buildSubContentListView(List<?> infos, int type) {
 
         if (mOnSeriesInfoResult != null) {
             mOnSeriesInfoResult.onResult(infos);
         }
 
         if (infos.size() > 0) {
-            removeAllViews();
-
             mProgramSeriesInfo = infos;
+            if (getChildCount() == 0) {
+                LayoutInflater.from(getContext()).inflate(R.layout.episode_horizontal_layout, this,
+                        true);
+                mRecycleView = findViewById(R.id.list_view);
+                mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
+                        LinearLayoutManager
 
-            LayoutInflater.from(getContext()).inflate(R.layout.episode_horizontal_layout, this,
-                    true);
-            mRecycleView = findViewById(R.id.list_view);
-            mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
-                    .HORIZONTAL, false));
-            mRecycleView.setShowCounts(4);
-            mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
-                    .getDimensionPixelOffset(R.dimen.width_48px)));
-            mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id.dir_right));
+                                .HORIZONTAL, false));
+                mRecycleView.setShowCounts(4);
+                mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
+                        .getDimensionPixelOffset(R.dimen.width_48px)));
+                mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id
+                        .dir_right));
 
-            mTitleText = findViewById(R.id.id_title);
-            if (mTitleText != null) {
-                mTitleText.setText(setTitleByType(type));
+                mTitleText = findViewById(R.id.id_title);
+                if (mTitleText != null) {
+                    mTitleText.setText(setTitleByType(type));
+                }
+
+                mAdapter = new NewTvRecycleAdapter<Object, ViewHolder>() {
+                    @Override
+                    public List<Object> getDatas() {
+                        return (List<Object>) mProgramSeriesInfo;
+                    }
+
+                    @Override
+                    public ViewHolder createHolder(ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext()).inflate(item_layout,
+                                parent, false);
+                        return new ViewHolder(view);
+                    }
+
+                    @Override
+                    public void bind(Object data, ViewHolder holder, boolean select) {
+                        String himage = "";
+                        String title = "";
+                        if (data instanceof SubContent) {
+                            himage = ((SubContent) data).getHImage();
+                            title = ((SubContent) data).getTitle();
+                        } else if (data instanceof Alternate) {
+                            himage = ((Alternate) data).getHImage();
+                            title = ((Alternate) data).getTitle();
+                        }
+
+                        holder.posterView.placeHolder(R.drawable.focus_384_216)
+                                .errorHolder(R.drawable.focus_384_216).hasCorner
+                                (true).load(himage);
+                        holder.titleText.setText(title);
+
+                        if (holder.posterView instanceof CurrentPlayImageView) {
+                            holder.posterView.setIsPlaying(select);
+                        }
+                    }
+
+                    @Override
+                    public void onItemClick(Object data, int position) {
+                        if (onItemClickListener != null) {
+                            if (!onItemClickListener.onItemClick(position, data)) {
+                                mAdapter.setSelectedIndex(position);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFocusChange(View view, int position, boolean hasFocus) {
+                        if(hasFocus){
+                            currentFocusView = view;
+                        }
+                    }
+                };
+
+                mRecycleView.setAdapter(mAdapter);
             }
-
-            mAdapter = new NewTvRecycleAdapter<SubContent, ViewHolder>() {
-                @Override
-                public List<SubContent> getDatas() {
-                    return mProgramSeriesInfo;
-                }
-
-                @Override
-                public ViewHolder createHolder(ViewGroup parent, int viewType) {
-                    View view = LayoutInflater.from(parent.getContext()).inflate(item_layout,
-                            parent, false);
-                    return new ViewHolder(view);
-                }
-
-                @Override
-                public void bind(SubContent data, ViewHolder holder, boolean
-                        select) {
-                    holder.posterView.placeHolder(R.drawable.focus_384_216)
-                            .errorHolder(R.drawable.focus_384_216).hasCorner
-                            (true).load(data.getHImage());
-                    holder.titleText.setText(data.getTitle());
-                    if (holder.posterView instanceof CurrentPlayImageView) {
-                        holder.posterView.setIsPlaying(select);
-                    }
-                }
-
-                @Override
-                public void onItemClick(SubContent data, int position) {
-                    if (usePlayNotify) {
-                        mAdapter.setSelectedIndex(position);
-                    }
-                    if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(position, data);
-                    }
-                }
-
-                @Override
-                public void onFocusChange(View view, int position, boolean hasFocus) {
-
-                }
-            };
-            mRecycleView.setAdapter(mAdapter);
-
             mAdapter.notifyDataSetChanged();
         } else {
             onLoadError();
@@ -219,22 +246,21 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     }
 
     public void setCurrentPlay(int index) {
+        if (mAdapter != null) {
+            mAdapter.setSelectedIndex(index);
+        }
         if (!hasFocus() && mRecycleView != null) {
             int first = mRecycleView.getFirstVisiblePosition();
             int last = mRecycleView.getLastVisiblePosition();
             if (index < first || index > last) {
-                mRecycleView.smoothScrollToPosition(index);
+                mRecycleView.scrollToPosition(index);
             }
-        }
-
-        if (mAdapter != null && usePlayNotify) {
-            mAdapter.setSelectedIndex(index);
         }
     }
 
-    public void setHorizontalItemLayout(int layout) {
+    public void setHorizontalItemLayout(int layout, int count) {
         item_layout = layout;
-        usePlayNotify = false;
+        mHorizontalCount = count;
     }
 
     public void setContentUUID(int type, String uuid, View view) {
@@ -252,6 +278,9 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                 //TODO 获取节目合集数据
                 mContentPresenter.getSubContent(mContentUuid);
                 break;
+            case TYPE_ALTERNATE_LIST:
+                mAlternatePresenter.getTodayAlternate(mContentUuid);
+                break;
         }
     }
 
@@ -267,7 +296,6 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
-
 
         if (mAdapter != null && mRecycleView != null) {
             setCurrentPlay(mAdapter.getSelectedIndex());
@@ -316,8 +344,18 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         buildUI(contents, TYPE_PROGRAM_SERICE_LV);
     }
 
-    public interface OnSeriesInfoResult {
-        void onResult(List<SubContent> result);
+    @Override
+    public void onAlternateResult(@Nullable List<Alternate> alternates) {
+        if (alternates == null || alternates.size() <= 0) {
+            onLoadError();
+            return;
+        }
+        buildUI(alternates, TYPE_ALTERNATE_LIST);
+
+    }
+
+    public interface OnSeriesInfoResult<T> {
+        void onResult(List<T> result);
     }
 
     private static class ViewHolder extends NewTvRecycleAdapter.NewTvViewHolder implements
@@ -330,7 +368,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             super(itemView);
 
             modleView = itemView.findViewById(R.id.id_module_view);
-            posterView = itemView.findViewById(R.id.iv_player);
+            posterView = itemView.findViewWithTag("tag_poster_image");
             titleText = itemView.findViewWithTag("tag_poster_title");
 
             modleView.setOnFocusChangeListener(this);

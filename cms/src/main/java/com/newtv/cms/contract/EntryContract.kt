@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-
 import com.gridsum.tracker.GridsumWebDissector
 import com.gridsum.videotracker.VideoTracker
 import com.newtv.cms.CmsServicePresenter
@@ -12,10 +11,10 @@ import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
 import com.newtv.cms.ICmsView
 import com.newtv.cms.api.IBootGuide
+import com.newtv.libs.BootGuide
 import com.newtv.libs.Constant
 import com.newtv.libs.Libs
 import com.newtv.libs.util.CNTVLogUtils
-import com.newtv.libs.util.DeviceUtil
 import com.newtv.libs.util.SPrefUtils
 
 /**
@@ -36,7 +35,10 @@ class EntryContract {
 
     class EntryPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
 
+        private var bootSerice: IBootGuide? = null
+
         init {
+            bootSerice = getService<IBootGuide>(CmsServicePresenter.SERVICE_BOOT_GUIDE)
             getBootGuide()
         }
 
@@ -64,27 +66,29 @@ class EntryContract {
         }
 
         internal fun getBootGuide() {
-            if (DeviceUtil.CBOXTEST != Libs.get().flavor) {
-                val bootGuide = getService<IBootGuide>(CmsServicePresenter.SERVICE_BOOT_GUIDE)
-                if (bootGuide != null) {
-                    val platform = Libs.get().appKey + Libs.get().channelId
-                    bootGuide.getBootGuide(platform, object : DataObserver<String> {
-                        override fun onResult(result: String, requestCode: Long) {
-                            val cacheValue = SPrefUtils.getValue(context,
-                                    SPrefUtils.KEY_SERVER_ADDRESS, "") as String
-                            if (!TextUtils.equals(cacheValue, result)) {
-                                SPrefUtils.setValue(context, SPrefUtils
-                                        .KEY_SERVER_ADDRESS, result)
-                                Constant.parseServerAddress(result)
-                            }
-                            view?.bootGuildResult()
+            /** 测试用
+            if (Libs.get().isDebug) {
+            view?.bootGuildResult()
+            return
+            }
+             */
+            bootSerice?.let { boot ->
+                val platform = Libs.get().appKey + Libs.get().channelId
+                boot.getBootGuide(platform, object : DataObserver<String> {
+                    override fun onResult(result: String, requestCode: Long) {
+                        val cacheValue = SPrefUtils.getValue(context,
+                                SPrefUtils.KEY_SERVER_ADDRESS, "") as String
+                        if (!TextUtils.equals(cacheValue, result)) {
+                            SPrefUtils.setValue(context, SPrefUtils
+                                    .KEY_SERVER_ADDRESS, result)
+                            Constant.parseServerAddress(result)
+                            BootGuide.parse(result)
                         }
+                        view?.bootGuildResult()
+                    }
 
-                        override fun onError(desc: String?) {}
-                    })
-                }
-            } else {
-                view?.bootGuildResult()
+                    override fun onError(desc: String?) {}
+                })
             }
         }
 

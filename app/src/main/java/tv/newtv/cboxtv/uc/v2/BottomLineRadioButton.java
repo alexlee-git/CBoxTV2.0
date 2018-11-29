@@ -50,7 +50,7 @@ public class BottomLineRadioButton extends RadioButton {
     private void initialize() {
         setBackgroundColor(Color.TRANSPARENT);
         setFocusable(true);
-        setTextColor(Color.WHITE);
+        setTextColor(Color.parseColor("#FFFFFFFF"));
         setGravity(Gravity.CENTER);
 
         height = getResources().getDimensionPixelOffset(R.dimen.height_4px);

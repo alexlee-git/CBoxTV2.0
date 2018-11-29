@@ -231,3 +231,4 @@
 -keep class tv.newtv.cboxtv.player.PlayerUrlConfig {*;}
 -keep class tv.newtv.cboxtv.player.PlayerPlayInfoItem{*;}
 -keep class tv.newtv.cboxtv.player.PlayerConfig{*;}
+-keep class tv.newtv.ottlauncher.db.History{*;}

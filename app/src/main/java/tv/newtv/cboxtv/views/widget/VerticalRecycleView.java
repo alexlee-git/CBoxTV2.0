@@ -17,6 +17,7 @@ import android.view.ViewGroup;
  * 创建日期:          2018/11/8
  */
 public class VerticalRecycleView extends RecyclerView {
+
     public VerticalRecycleView(Context context) {
         this(context, null);
     }

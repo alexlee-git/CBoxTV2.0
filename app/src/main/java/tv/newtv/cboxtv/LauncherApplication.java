@@ -90,7 +90,6 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             }
         });
 
-
         if (BuildConfig.DEBUG) {
 //            LeakCanary.install(this);
         }
@@ -196,10 +195,10 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     }
 
     @Override
-    public void onFinish(final Content playInfo, final int index, final int position) {
+    public void onFinish(final Content playInfo, final int index, final int position, final int duration) {
         if (Constant.CONTENTTYPE_CP.equals(playInfo.getContentType())) {
             if (TextUtils.isEmpty(playInfo.getCsContentIDs())) {
-                addHistory(playInfo, index, position);
+                addHistory(playInfo, index, position, duration);
                 return;
             }
             String csId = playInfo.getCsContentIDs().split("\\|")[0];
@@ -211,7 +210,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                                 playInfo.setVImage(content.getVImage());
                                 playInfo.setTitle(content.getTitle());
                             }
-                            addHistory(playInfo, index, position);
+                            addHistory(playInfo, index, position, duration);
                         }
 
                         @Override
@@ -226,43 +225,24 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
                         @Override
                         public void onError(@NotNull Context context, @Nullable String desc) {
-                            addHistory(playInfo, index, position);
+                            addHistory(playInfo, index, position, duration);
                         }
                     });
         } else {
-            addHistory(playInfo, index, position);
+            addHistory(playInfo, index, position, duration);
         }
     }
 
-    private void addHistory(final Content playInfo, final int index, final int position) {
+    private void addHistory(final Content playInfo, final int index, final int position, final int duration) {
         try {
-            QueryUserStatusUtil.getInstance().getLoginStatus(this, new INotifyLoginStatusCallback() {
+            LogUtils.e("receive addHistory...");
+            UserCenterUtils.addHistory(playInfo, index, position, duration, new DBCallback<String>() {
                 @Override
-                public void notifyLoginStatusCallback(boolean login) {
-                    String userId;
-                    String tableName;
-                    if (login) {
-                        userId = SharePreferenceUtils.getUserId(AppContext);
-                        tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
-                    } else {
-                        userId = SystemUtils.getDeviceMac(getApplicationContext());
-                        tableName = DBConfig.HISTORY_TABLE_NAME;
+                public void onResult(int code, String result) {
+                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code);
+                    if (code == 0) {
+                        LogUtils.e("写入历史记录成功");
                     }
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString(DBConfig.PLAYINDEX, String.valueOf(index));
-                    bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(position));
-
-                    DBUtil.addHistory(userId, playInfo, bundle, new DBCallback<String>() {
-                        @Override
-                        public void onResult(int code, String result) {
-                            if (code == 0) {
-                                LogUtils.e("写入历史记录成功");
-                            }
-                        }
-                    }, tableName);
-
-
                 }
             });
 
@@ -280,7 +260,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
     @Override
     public void onExitApp() {
-
+        ActivityStacks.get().ExitApp();
     }
 
     @Override

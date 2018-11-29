@@ -199,11 +199,9 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
 
             // 直接缩小view
-            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
             sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
+            sa.setDuration(150);
             view.startAnimation(sa);
         } catch (Exception e) {
             e.printStackTrace();
@@ -224,11 +222,9 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
 
             //直接放大view
-            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
             sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
+            sa.setDuration(150);
             view.bringToFront();
             view.startAnimation(sa);
         } catch (Exception e) {
@@ -285,10 +281,10 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                     if (data.size() > i) {
                         setViewGVisible(viewHolder.viewList.get(i));
                         Object imageUrl = null;
-                        if (!TextUtils.isEmpty(data.get(i).get_imageurl()) || TextUtils.equals(data.get(i).get_imageurl(), "null")) {
+                        if ((!TextUtils.isEmpty(data.get(i).get_imageurl()) && !TextUtils.equals(data.get(i).get_imageurl(), "null"))) {
                             imageUrl = data.get(i).get_imageurl();
                         } else {
-                            imageUrl = R.drawable.default_member_center_240_360_v2;
+                            imageUrl = R.drawable.deful_user;
                         }
                         setPosterData(viewHolder.viewList.get(i), imageUrl, data.get(i));
                     } else {
@@ -363,11 +359,11 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                 mPromptTextView = mBtnlogin.findViewWithTag(TAG_POSTER_PROMPT_LOGIN);
                 if (mHeadImage != null && mPromptTextView != null) {
                     if (!TextUtils.isEmpty(tokenString)) {
-                        mHeadImage.setBackgroundResource(R.drawable.member_head_login_v2);
+                        mHeadImage.setBackgroundResource(R.drawable.uc_head_login_v2);
                         mPromptTextView.setText(context.getResources().getString(R.string.user_already_login));
                     } else {
                         Log.d(TAG, "wqs:setLoginStatus:tokenString==null");
-                        mHeadImage.setBackgroundResource(R.drawable.member_head_not_login_v2);
+                        mHeadImage.setBackgroundResource(R.drawable.uc_head_not_login_v2);
                         mPromptTextView.setText(context.getResources().getString(R.string.user_prompt_login));
                     }
                 } else {
@@ -602,21 +598,12 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                 if (posterImageview != null && img != null) {
                     if (img instanceof String) {
                         if (!TextUtils.isEmpty((String) img)) {
-                            posterImageview.placeHolder(R.drawable.default_member_center_240_360_v2)
-                                    .errorHolder(R.drawable.default_member_center_240_360_v2)
-                                    .hasCorner(true)
-                                    .load((String) img);
+                            disPlayItemData(posterImageview, img);
                         } else {
-                            posterImageview.placeHolder(R.drawable.default_member_center_240_360_v2)
-                                    .errorHolder(R.drawable.default_member_center_240_360_v2)
-                                    .hasCorner(true)
-                                    .load(R.drawable.default_member_center_240_360_v2);
+                            disPlayItemData(posterImageview, img);
                         }
                     } else {
-                        posterImageview.placeHolder(R.drawable.default_member_center_240_360_v2)
-                                .errorHolder(R.drawable.default_member_center_240_360_v2)
-                                .hasCorner(true)
-                                .load((int) img);
+                        disPlayItemData(posterImageview, img);
                     }
                 }
                 if (bean != null) {
@@ -672,6 +659,20 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wqs:setPosterData:Exception:" + e.toString());
+        }
+    }
+
+    private void disPlayItemData(RecycleImageView imageView, Object img) {
+        if (img instanceof String) {
+            imageView.placeHolder(R.drawable.default_member_center_240_360_v2)
+                    .errorHolder(R.drawable.default_member_center_240_360_v2)
+                    .hasCorner(true)
+                    .load((String) img);
+        } else {
+            imageView.placeHolder(R.drawable.default_member_center_240_360_v2)
+                    .errorHolder(R.drawable.default_member_center_240_360_v2)
+                    .hasCorner(true)
+                    .load((int) img);
         }
     }
 

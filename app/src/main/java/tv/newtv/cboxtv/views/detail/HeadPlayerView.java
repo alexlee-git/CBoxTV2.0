@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.views.detail;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -25,9 +24,11 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
@@ -216,6 +217,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
+            releasePlayer();
+        }
+    }
+
+    public void releasePlayer() {
+        if (playerView != null) {
             playerView.release();
             playerView.destory();
             playerView = null;
@@ -227,10 +234,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             currentPosition = playerView.getCurrentPosition();
             defaultConfig = playerView.getDefaultConfig();
 
-            playerView.stopPlay();
-            playerView.release();
-            playerView.destory();
-            playerView = null;
+            releasePlayer();
         }
     }
 
@@ -251,7 +255,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (playerView != null && mInfo != null) {
             Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
-            startPlayerView();
+            startPlayerView(isPlayLive);
         }
     }
 
@@ -286,14 +290,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
         if (mBuilder.fromOuter && mBuilder.isPopup) {
-                 addView(inflate);
-                  postDelayed(new Runnable() {
-                      @Override
-                      public void run() {
-                          removeView(inflate);
-                      }
-                  },5000);
-
+            addView(inflate);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    removeView(inflate);
+                }
+            },5000);
         }
         addView(contentView);
         checkDataFromDB();
@@ -347,7 +350,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                        {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) collect).isSelect()) {
                                                 UserCenterUtils.deleteSomeCollect(mInfo,
@@ -386,7 +390,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     result) {
                                                                 ((FocusToggleSelect) collect)
                                                                         .setSelect
-                                                                                (code == 0 && !TextUtils
+                                                                                (code == 0 &&
+                                                                                        !TextUtils
                                                                                         .isEmpty(result));
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
@@ -431,7 +436,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                        {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) Subscrip).isSelect()) {
                                                 UserCenterUtils.deleteSomeSubcribet(mInfo,
@@ -552,12 +558,18 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
-        if (historyBean != null && programSeriesInfo.getData() != null) {
-            for (SubContent content : programSeriesInfo.getData()) {
-                if (TextUtils.equals(content.getContentUUID(), historyBean.playId)) {
-                    int index = programSeriesInfo.getData().indexOf(content);
-                    setCurrentPlayIndex("history", index);
-                    break;
+        if (programSeriesInfo.getData() != null) {
+            String playId = mBuilder.childContentUUID;
+            if (TextUtils.isEmpty(playId) && historyBean != null) {
+                playId = historyBean.playId;
+            }
+            if (!TextUtils.isEmpty(playId)) {
+                for (SubContent content : programSeriesInfo.getData()) {
+                    if (TextUtils.equals(content.getContentUUID(), playId)) {
+                        int index = programSeriesInfo.getData().indexOf(content);
+                        setCurrentPlayIndex("history", index);
+                        break;
+                    }
                 }
             }
         }
@@ -578,17 +590,20 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             if (playerView != null) {
                 playerView.setHintTextVisible(View.GONE);
             }
-        } else if (currentPlayIndex == index) {
+        } else if (currentPlayIndex == index && !isPlayLive) {
             if (requestFocus) {
                 requestPlayerFocus();
             }
             return;
         }
 
+        releasePlayer();
+        prepareMediaPlayer();
+
         setCurrentPlayIndex("Play", index);
         currentPosition = postion;
 
-        startPlayerView();
+        startPlayerView(!requestFocus);
 
         if (requestFocus) {
             requestPlayerFocus();
@@ -607,7 +622,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     mBuilder.playerCallback.onPlayerClick(playerView);
                 }
             }
-        }, 500);
+        }, 50);
     }
 
     private void parseResult() {
@@ -675,16 +690,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
-        startPlayerView();
+        startPlayerView(true);
     }
 
-    private void startPlayerView() {
+    private void startPlayerView(boolean checkLive) {
         //TODO 栏目化直播 直播判断
         if (mInfo != null) {
             prepareMediaPlayer();
             if (mInfo.getLiveParam() != null) {
                 final LiveInfo liveInfo = new LiveInfo(mInfo);
-                if (liveInfo.isLiveTime()) {
+                if (liveInfo.isLiveTime() && checkLive) {
                     //需要直播
                     if (!TextUtils.isEmpty(mInfo.getLvID())) {
                         mPresenter.getContent(mInfo.getLvID(), false, new ContentContract.View() {
@@ -851,7 +866,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         //TODO 直播时间改变
 
         if (playerView != null) {
-            playerView.setTipText(String.format("正在直播 %s/%s", current, end));
+            if (Libs.get().isDebug()) {
+                playerView.setTipText(String.format("正在播放 %s/%s", current, end));
+            }
         }
     }
 
@@ -866,7 +883,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (mInfo != null) {
-            startPlayerView();
+            startPlayerView(false);
         }
     }
 
@@ -904,6 +921,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private OnFocusChangeListener focusChangeListener;
         private InfoResult infoResult;
         private String contentUUid;
+        private String childContentUUID;
         private int ProgramType;
         private boolean autoGetSub = false;
         private List<CustomFrame> dbTypes;
@@ -983,8 +1001,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return this;
         }
 
-        public Builder SetContentUUID(String uuid) {
+        public Builder SetContentUUID(String uuid, String subContentUUID) {
             contentUUid = uuid;
+            childContentUUID = subContentUUID;
             return this;
         }
 

@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.uc.v2.member;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,28 +14,28 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.bean.UpVersion;
 import com.newtv.cms.contract.PageContract;
-import com.newtv.cms.contract.PageContract.ContentPresenter;
-import com.newtv.cms.contract.VersionUpdateContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
+import com.newtv.libs.util.Utils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,20 +49,21 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.SplashActivity;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.net.AppHeadersInterceptor;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.Player;
+import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
-import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
@@ -76,13 +79,14 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * 修改日期：
  * 修改备注：
  */
-public class MemberCenterActivity extends Activity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>,VersionUpdateContract.View {
+public class MemberCenterActivity extends Activity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>, PageContract.View {
     private final String TAG = "MemberCenterActivity";
     public static final int HEAD = 0;
     public static final int RECOMMEND_PROMOTION = 1;//会员促销推荐位
     public static final int RECOMMEND_INTERESTS = 2;//会员权益介绍推荐位
     public static final int RECOMMEND_DRAMA = 3;//会员片库推荐
     public static final int RECOMMEND = 4;//推荐位
+    public static final int QR_CODE_INVALID = 5;//推荐位
     private MemberCenterRecyclerView mRecyclerView;
     private TextView mEmptyView;
     private List<UserCenterPageBean> pageData;
@@ -90,15 +94,28 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     private MemberHandler mHandler;
     private PopupWindow mPopupWindow;
     private View mPopupView;
-    private Disposable mMemberInfoDisposable;
+    private Disposable mUserInfoDisposable;  //用户信息
+    private Disposable mMemberInfoDisposable;//会员信息
     private Disposable mRecommendDisposable;//推荐位
+    private Disposable mQrCodeDisposable;//推荐位
     private MemberInfoBean mMemberInfoBean;
     private String mLoginTokenString;//登录token,用于判断登录状态
     private PageContract.ContentPresenter mContentPresenter;
+    private String Authorization;
+    private QrcodeUtil mQrCodeUtil;
+    private String deviceCode;
+    private String qrCode;
+    private int expires;
+    private Bitmap mBitmap;
+    private ImageView mFullQrCodeImageView;
+    private boolean isBackground;
+    private String mobileString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usercenter_member_center_v2);
+        isBackground = ActivityStacks.get().isBackGround();
         init();
     }
 
@@ -111,69 +128,71 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         pageData = new ArrayList<>();
         pageData.add(new UserCenterPageBean(""));
         pageData.add(new UserCenterPageBean(""));
-        pageData.add(new UserCenterPageBean("会员片库"));
+        pageData.add(new UserCenterPageBean(""));
         mAdapter = new MemberCenterAdapter(this, this);
         mAdapter.setHasStableIds(true);
         mAdapter.appendToList(pageData);
         mRecyclerView.setAdapter(mAdapter);
         mPopupView = LayoutInflater.from(this).inflate(R.layout.activity_usercenter_member_center_qr_code_full_screen_v2, null);
+        mBitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        mFullQrCodeImageView = mPopupView.findViewById(R.id.id_member_center_full_screen_qr_code);
         mPopupWindow = new PopupWindow(mPopupView, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT, true);
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
-        Constant.ID_PAGE_MEMBER = Constant.getBaseUrl(AppHeadersInterceptor.PAGE_MEMBER);
-        if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
+        String idPageNumber = BootGuide.getBaseUrl(BootGuide.PAGE_MEMBER);
+        if (!TextUtils.isEmpty(idPageNumber)) {
             //获取推荐位数据
-            mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(),this);
-            mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
-            //requestRecommendData();
+            mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
+            mContentPresenter.getPageContent(idPageNumber);
         } else {
             Log.d(TAG, "wqs:ID_PAGE_MEMBER==null");
         }
+        mQrCodeUtil = new QrcodeUtil();
     }
 
-    //获取推荐位数据
-    private void requestRecommendData() {
+
+    private void getUserInfo(String Authorization) {
         try {
-            NetClient.INSTANCE.getPageDataApi().getPageData(Libs.get().getAppKey(), Libs.get().getChannelId(), Constant.ID_PAGE_MEMBER).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .getUser(Authorization)
+                    .subscribe(new Observer<ResponseBody>() {
 
-                @Override
-                public void onSubscribe(Disposable d) {
-                    unRecommendSubscribe();
-                    mRecommendDisposable = d;
-                }
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            unUserInfoSubscribe();
+                            mUserInfoDisposable = d;
+                        }
 
-                @Override
-                public void onNext(ResponseBody responseBody) {
-                    ModuleInfoResult moduleInfoResult = null;
-                    String value = null;
-                    Gson mGSon = new Gson();
-                    try {
-                        value = responseBody.string();
-                        Log.d(TAG, "wqs:requestRecommendData:value:" + value);
-                        moduleInfoResult = mGSon.fromJson(value, ModuleInfoResult.class);
-                        inflateData(moduleInfoResult);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    unRecommendSubscribe();
-                }
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String result = responseBody.string();
+                                JSONObject jsonObject = new JSONObject(result);
+                                mobileString = jsonObject.optString("mobile");
+                                if (mobileString.length() == 11) {
+                                    mobileString = mobileString.substring(0, 3) + "xxxx" + mobileString.substring(7, 11);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mobileString = "";
+                            }
 
-                @Override
-                public void onError(Throwable e) {
-                    unRecommendSubscribe();
-                }
+                        }
 
-                @Override
-                public void onComplete() {
-                    unRecommendSubscribe();
-                }
-            });
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "wqs:getUserInfo:onError:" + e.toString());
+                            mobileString = "";
+                            unUserInfoSubscribe();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            unUserInfoSubscribe();
+                        }
+                    });
         } catch (Exception e) {
-            unRecommendSubscribe();
             e.printStackTrace();
-            Log.e(TAG, "wqs:requestGuessYouLikeData:Exception:" + e.toString());
         }
-
     }
 
     //获取用户登录状态
@@ -186,7 +205,12 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 //获取登录状态
                 mLoginTokenString = SharePreferenceUtils.getToken(getApplicationContext());
                 if (!TextUtils.isEmpty(mLoginTokenString)) {
-                    e.onNext(mLoginTokenString);
+                    getUserInfo("Bearer " + mLoginTokenString);
+                    if (!TextUtils.isEmpty(mobileString)) {
+                        e.onNext(mLoginTokenString);
+                    } else {
+                        e.onNext("");
+                    }
                 } else {
                     e.onNext("");
                 }
@@ -241,9 +265,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                             mMemberInfoBean.setAppKey(jsonObject.optString("appKey"));
                             mMemberInfoBean.setUserId(jsonObject.optInt("userId"));
                             mMemberInfoBean.setProductId(jsonObject.optInt("productId"));
-                            long seconds = TimeUtil.getInstance().getSecondsFromDate(jsonObject.optString("expireTime"));
-                            String expireTime = TimeUtil.getInstance().getDateFromSeconds(seconds + "");
-                            mMemberInfoBean.setExpireTime(expireTime);
+                            mMemberInfoBean.setExpireTime(jsonObject.optString("expireTime"));
                         } else {
                             Log.d(TAG, "wqs:requestMemberInfo:next:memberInfo==null");
                         }
@@ -280,6 +302,78 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     }
 
     /**
+     * 获取M站购买二维码信息
+     *
+     * @param Authorization
+     * @param response_type
+     * @param client_id
+     */
+    private void requestQrCodeInfo(String Authorization, String response_type, String client_id) {
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .getLoginQRCode(Authorization, response_type, client_id, Libs.get().getChannelId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            unQrCodeSubscribe();
+                            mQrCodeDisposable = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String data = responseBody.string();
+                                Log.i(TAG, "Login Qrcode :" + data.toString());
+                                JSONObject mJsonObject = new JSONObject(data);
+                                deviceCode = mJsonObject.optString("device_code");
+                                qrCode = mJsonObject.optString("veriﬁcation_uri_complete");
+                                expires = mJsonObject.optInt("expires_in");
+                                if (mAdapter != null) {
+                                    mAdapter.setQrCodeImageView(qrCode);
+                                }
+                                if (!TextUtils.isEmpty(qrCode)) {
+                                    mQrCodeUtil.createQRImage(qrCode, getResources().getDimensionPixelOffset(R.dimen.height_617px),
+                                            getResources().getDimensionPixelOffset(R.dimen.height_617px), mBitmap, mFullQrCodeImageView);
+                                } else {
+                                    mFullQrCodeImageView.setBackgroundResource(R.drawable.default_member_center_full_screen_qr_code_v2);
+                                }
+                                if (expires > 0) {
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessageDelayed(QR_CODE_INVALID, expires * 1000);
+                                    }
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i(TAG, "GetToken  onError" + e);
+                            unQrCodeSubscribe();
+                            if (mAdapter != null) {
+                                mAdapter.setQrCodeImageView("");
+                            }
+                            if (mFullQrCodeImageView != null) {
+                                mFullQrCodeImageView.setBackgroundResource(R.drawable.default_member_center_full_screen_qr_code_v2);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            unQrCodeSubscribe();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * adapter刷新头部数据
      *
      * @param
@@ -289,9 +383,9 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         try {
             if (mAdapter != null) {
                 //传递用户会员信息数据
-                mAdapter.setMemberStatus(mMemberInfoBean);
-                mAdapter.notifyItemRemoved(position);
-                mAdapter.notifyDataSetChanged();
+                mAdapter.setMemberStatus(mobileString, mMemberInfoBean);
+//                mAdapter.notifyItemChanged(position);
+//                mAdapter.notifyDataSetChanged();
             } else {
                 Log.d(TAG, "wqs:bindData:mAdapter == null");
             }
@@ -312,6 +406,16 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     }
 
     /**
+     * 解除获取用户信息绑定
+     */
+    private void unUserInfoSubscribe() {
+        if (mUserInfoDisposable != null && !mUserInfoDisposable.isDisposed()) {
+            mUserInfoDisposable.dispose();
+            mUserInfoDisposable = null;
+        }
+    }
+
+    /**
      * 解除获取推荐位数据绑定
      */
     private void unRecommendSubscribe() {
@@ -322,12 +426,22 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     }
 
     /**
+     * 解除获取二维码图片数据绑定
+     */
+    private void unQrCodeSubscribe() {
+        if (mQrCodeDisposable != null && !mQrCodeDisposable.isDisposed()) {
+            mQrCodeDisposable.dispose();
+            mQrCodeDisposable = null;
+        }
+    }
+
+    /**
      * adapter填充数据
      *
      * @param
      */
-    private void inflateData(ModuleInfoResult moduleInfoResult) {
-        Log.d(TAG, "wqs:inflateData");
+    private void inflateRecommendData(List<Page> pageList) {
+        Log.d(TAG, "wqs:inflateRecommendData");
         UserCenterPageBean UserCenterPageBean = null;
         UserCenterPageBean.Bean mProgramInfo = null;
         String title = "";
@@ -335,115 +449,110 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
         List<UserCenterPageBean.Bean> mInterestsRecommendBean = new ArrayList<>();//会员权益介绍推荐数据
         List<UserCenterPageBean.Bean> mDramaRecommendBean = new ArrayList<>();//会员片库推荐数据
         try {
-            if (moduleInfoResult != null) {
-                if (moduleInfoResult.getDatas() != null && moduleInfoResult.getDatas().size() > 0) {
-                    Log.d(TAG, "wqs:inflateData:moduleInfoResult.getDatas().size():" + moduleInfoResult.getDatas().size());
-                    for (int i = 0; i < moduleInfoResult.getDatas().size(); i++) {
-                        List<Program> programInfoList = null;
-                        if (i == 0) {
-                            if (moduleInfoResult.getDatas().get(i) != null) {
-                                if (moduleInfoResult.getDatas().get(i).getDatas() != null && moduleInfoResult.getDatas().get(i).getDatas().size() > 0) {
-                                    programInfoList = moduleInfoResult.getDatas().get(i).getDatas();
-                                    if (programInfoList != null && programInfoList.size() > 0) {
-                                        mProgramInfo = new UserCenterPageBean.Bean();
-                                        mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                                        mProgramInfo.set_contentuuid(programInfoList.get(0).getContentId());
-                                        mProgramInfo.set_contenttype(programInfoList.get(0).getContentType());
-                                        mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
-                                        mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
-                                        mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                        mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
-                                        mPromotionRecommendBean.add(mProgramInfo);
-                                    }
-                                } else {
-                                    Log.d(TAG, "wqs:inflateData：i == 0:moduleInfoResult.getDatas().get(0).getDatas()== null");
-                                }
-                            } else {
-                                Log.d(TAG, "wqs:inflateData：i == 0:moduleInfoResult.getDatas().get(0) == null");
-                            }
-                        } else if (i == 1) {
-                            if (moduleInfoResult.getDatas().get(i) != null) {
-                                if (moduleInfoResult.getDatas().get(i).getDatas() != null && moduleInfoResult.getDatas().get(i).getDatas().size() > 0) {
-                                    programInfoList = moduleInfoResult.getDatas().get(i).getDatas();
-                                    mProgramInfo = new UserCenterPageBean.Bean();
-                                    mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                                    mProgramInfo.set_contentuuid(programInfoList.get(0).getContentId());
-                                    mProgramInfo.set_contenttype(programInfoList.get(0).getContentType());
-                                    mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
-                                    mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
-                                    mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                    mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
-                                    mInterestsRecommendBean.add(mProgramInfo);
-                                } else {
-                                    Log.d(TAG, "wqs:inflateData：i == 1:moduleInfoResult.getDatas().get(0).getDatas()== null");
-                                }
-                            } else {
-                                Log.d(TAG, "wqs:inflateData：i == 1:moduleInfoResult.getDatas().get(0) == null");
-                            }
-                        } else if (i == 2) {
-                            if (moduleInfoResult.getDatas().get(i) != null) {
-                                if (moduleInfoResult.getDatas().get(i).getDatas() != null && moduleInfoResult.getDatas().get(0).getDatas().size() > 0) {
-                                    programInfoList = moduleInfoResult.getDatas().get(i).getDatas();
-                                    title = moduleInfoResult.getDatas().get(i).getBlockTitle();
-                                    for (int j = 0; j < programInfoList.size(); j++) {
-                                        mProgramInfo = new UserCenterPageBean.Bean();
-                                        mProgramInfo.set_title_name(programInfoList.get(j).getTitle());
-                                        mProgramInfo.set_contentuuid(programInfoList.get(j).getContentId());
-                                        mProgramInfo.set_contenttype(programInfoList.get(j).getContentType());
-                                        mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
-                                        mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
-                                        mProgramInfo.setGrade(programInfoList.get(j).getGrade());
-                                        mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
-                                        mDramaRecommendBean.add(mProgramInfo);
-                                    }
-                                } else {
-                                    Log.d(TAG, "wqs:inflateData：i == 2:moduleInfoResult.getDatas().get(0).getDatas()== null");
-                                }
-                            } else {
-                                Log.d(TAG, "wqs:inflateData：i == 2:moduleInfoResult.getDatas().get(0) == null");
+            if (pageList == null && pageList.size() <= 0) {
+                return;
+            }
+            for (int i = 0; i < pageList.size(); i++) {
+                List<Program> programInfoList = null;
+                if (i == 0) {
+                    if (pageList.get(i) != null) {
+                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
+                            programInfoList = pageList.get(i).getPrograms();
+                            if (programInfoList != null && programInfoList.size() > 0) {
+                                mProgramInfo = new UserCenterPageBean.Bean();
+                                mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
+                                mProgramInfo.set_contentuuid(programInfoList.get(0).getL_id());
+                                mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
+                                mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
+                                mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
+                                mProgramInfo.setGrade(programInfoList.get(0).getGrade());
+//                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+                                mPromotionRecommendBean.add(mProgramInfo);
                             }
                         } else {
-                            Log.d(TAG, "wqs:只取三组数据，多余数据不取");
-                            break;
+                            Log.d(TAG, "wqs:inflateRecommendData：i == 0:page.getPrograms().get(0).getDatas()== null");
                         }
+                    } else {
+                        Log.d(TAG, "wqs:inflateRecommendData：i == 0:page.getPrograms().get(0) == null");
+                    }
+                } else if (i == 1) {
+                    if (pageList.get(i) != null) {
+                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
+                            programInfoList = pageList.get(i).getPrograms();
+                            mProgramInfo = new UserCenterPageBean.Bean();
+                            mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
+                            mProgramInfo.set_contentuuid(programInfoList.get(0).getL_id());
+                            mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
+                            mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
+                            mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
+                            mProgramInfo.setGrade(programInfoList.get(0).getGrade());
+//                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
+                            mInterestsRecommendBean.add(mProgramInfo);
+                        } else {
+                            Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0).getDatas()== null");
+                        }
+                    } else {
+                        Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0) == null");
+                    }
+                } else if (i == 2) {
+                    if (pageList.get(i) != null) {
+                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
+                            programInfoList = pageList.get(i).getPrograms();
+                            title = pageList.get(i).getBlockTitle();
+                            for (int j = 0; j < programInfoList.size(); j++) {
+                                mProgramInfo = new UserCenterPageBean.Bean();
+                                mProgramInfo.set_title_name(programInfoList.get(j).getTitle());
+                                mProgramInfo.set_contentuuid(programInfoList.get(j).getL_id());
+                                mProgramInfo.set_contenttype(programInfoList.get(j).getL_contentType());
+                                mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
+                                mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
+                                mProgramInfo.setGrade(programInfoList.get(j).getGrade());
+//                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
+                                mDramaRecommendBean.add(mProgramInfo);
+                            }
+                        } else {
+                            Log.d(TAG, "wqs:inflateRecommendData：i == 2:page.getPrograms().get(0).getDatas()== null");
+                        }
+                    } else {
+                        Log.d(TAG, "wqs:inflateRecommendData：i == 2:page.getPrograms().get(0) == null");
                     }
                 } else {
-                    Log.d(TAG, "wqs:inflateData：moduleInfoResult.getDatas() == null");
+                    Log.d(TAG, "wqs:只取三组数据，多余数据不取");
+                    break;
                 }
-            } else {
-                Log.d(TAG, "wqs:inflateData：moduleInfoResult == null");
             }
+
             if (mAdapter != null) {
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_PROMOTION - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mPromotionRecommendBean;
                 } else {
-                    Log.d(TAG, "wqs:inflateData：PromotionRecommend==null");
+                    Log.d(TAG, "wqs:inflateRecommendData：PromotionRecommend==null");
                 }
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_INTERESTS - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mInterestsRecommendBean;
                 } else {
-                    Log.d(TAG, "wqs:inflateData：mInterestsRecommendBean==null");
+                    Log.d(TAG, "wqs:inflateRecommendData：mInterestsRecommendBean==null");
                 }
                 UserCenterPageBean = mAdapter.getItem(RECOMMEND_DRAMA - 1);
                 if (UserCenterPageBean != null) {
                     UserCenterPageBean.data = mDramaRecommendBean;
                     UserCenterPageBean.title = title;
                 } else {
-                    Log.d(TAG, "wqs:inflateData：mDramaRecommendBean==null");
+                    Log.d(TAG, "wqs:inflateRecommendData：mDramaRecommendBean==null");
                 }
             } else {
-                Log.d(TAG, "wqs:inflateData：mAdapter == null");
+                Log.d(TAG, "wqs:inflateRecommendData：mAdapter == null");
             }
             if (mHandler != null) {
                 mHandler.sendEmptyMessage(RECOMMEND);
             } else {
-                Log.d(TAG, "wqs:inflateData：mHandler == null");
+                Log.d(TAG, "wqs:inflateRecommendData：mHandler == null");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e(TAG, "wqs:inflateData:Exception:" + e.toString());
+            Log.e(TAG, "wqs:inflateRecommendData:Exception:" + e.toString());
         }
     }
 
@@ -470,10 +579,24 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "wqs:onResume");
-        //会员中心首页上报日志
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5,");
-        requestUserInfo();
+        try {
+            Log.d(TAG, "wqs:onResume");
+            //会员中心首页上报日志
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5,");
+            requestUserInfo();
+            //获取M站二维码信息
+            if (TextUtils.isEmpty(Authorization)) {
+                Authorization = Utils.getAuthorization(MemberCenterActivity.this);
+                if (!TextUtils.isEmpty(Authorization)) {
+                    requestQrCodeInfo(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
+                }
+            } else {
+                requestQrCodeInfo(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
+            }
+            Log.d(TAG, "wqs:Authorization?null:" + TextUtils.isEmpty(Authorization));
+        } catch (Exception e) {
+            Log.e(TAG, "wqs:onResume:Exception:" + e.toString());
+        }
     }
 
     @Override
@@ -484,8 +607,18 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
             mHandler.removeCallbacksAndMessages(null);
             mHandler = null;
         }
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+        if (mAdapter != null) {
+            mAdapter.release();
+            mAdapter = null;
+        }
         unMemberInfoSubscribe();
         unRecommendSubscribe();
+        unQrCodeSubscribe();
+        unUserInfoSubscribe();
     }
 
 
@@ -516,12 +649,12 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     }
                     break;
                 case R.id.id_member_center_btn_drama_library:
-                    Constant.MEMBER_CENTER_PARAMS = Constant.getBaseUrl(AppHeadersInterceptor.MEMBER_CENTER_PARAMS);
-                    if (!TextUtils.isEmpty(Constant.MEMBER_CENTER_PARAMS)) {
+                    String jumpParam = BootGuide.getBaseUrl(BootGuide.MEMBER_CENTER_PARAMS);
+                    if (!TextUtils.isEmpty(jumpParam)) {
                         intent.putExtra("action", "panel");
-                        intent.putExtra("params", Constant.MEMBER_CENTER_PARAMS);
-                        Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + Constant.MEMBER_CENTER_PARAMS);
-                        mPageClass = SplashActivity.class;
+                        intent.putExtra("params", jumpParam);
+                        Log.d(TAG, "wqs:MEMBER_CENTER_PARAMS:action:panelwqs:-params:" + jumpParam);
+                        mPageClass = MainActivity.class;
                     } else {
                         Toast.makeText(this, "请配置跳转参数", Toast.LENGTH_LONG).show();
                     }
@@ -563,8 +696,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 return;
             }
             intent.setClass(this, mPageClass);
-            startActivity(intent);
-            if (mPageClass == SplashActivity.class) {
+            if (!isBackground){
+                ActivityStacks.get().finishAllActivity();
+                startActivity(intent);
+            }
+            if (mPageClass == MainActivity.class) {
                 this.finish();
             }
         } catch (Exception e) {
@@ -591,8 +727,8 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     }
 
     @Override
-    public void versionCheckResult(@Nullable UpVersion versionBeen, boolean isForce) {
-
+    public void onPageResult(@Nullable List<Page> page) {
+        inflateRecommendData(page);
     }
 
     @Override
@@ -602,6 +738,16 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
 
     @Override
     public void onError(@NotNull Context context, @Nullable String desc) {
+
+    }
+
+    @Override
+    public void startLoading() {
+
+    }
+
+    @Override
+    public void loadingComplete() {
 
     }
 
@@ -633,6 +779,9 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                     if (activity != null) {
                         activity.bindData();
                     }
+                    break;
+                case QR_CODE_INVALID:
+                    activity.requestQrCodeInfo(activity.Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
                     break;
                 default:
                     break;

@@ -141,7 +141,6 @@ public class RecycleImageView extends AppCompatImageView {
     }
 
     private void init() {
-
         int width = (int) (getContext().getResources().getDimensionPixelOffset(R.dimen.width_90px));
         int height = (int) (getContext().getResources().getDimensionPixelOffset(R.dimen
                 .height_30px));

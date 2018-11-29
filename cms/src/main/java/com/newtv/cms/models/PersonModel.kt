@@ -30,13 +30,10 @@ internal class PersonModel : BaseModel(), IPerson {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(UUID)
-        val right: String = getRight(UUID)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
                 buildExecutor(Request.person
                         .getPersonTvList
-                        (appkey, channelId,
-                                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+                        (appkey, channelId, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()
@@ -52,13 +49,10 @@ internal class PersonModel : BaseModel(), IPerson {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(UUID)
-        val right: String = getRight(UUID)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
                 buildExecutor(Request.person
                         .getPersonProgramList
-                        (appkey, channelId,
-                                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+                        (appkey, channelId, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()
@@ -74,13 +68,10 @@ internal class PersonModel : BaseModel(), IPerson {
             observer.onError("ContentId size is to short")
             return 0
         }
-        val left: String = getLeft(UUID)
-        val right: String = getRight(UUID)
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
                 buildExecutor(Request.person
                         .getPersonFigureList
-                        (appkey, channelId,
-                                left, right, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
+                        (appkey, channelId, UUID), object : TypeToken<ModelResult<List<SubContent>>>() {}.type)
         executor.observer(observer)
                 .execute()
         return executor.getID()

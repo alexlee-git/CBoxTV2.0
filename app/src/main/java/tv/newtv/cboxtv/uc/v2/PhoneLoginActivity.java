@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,16 +33,19 @@ import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.Utils;
 
 import org.json.JSONObject;
+
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import retrofit2.HttpException;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.uc.v2.member.UserAgreementActivity;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
@@ -61,6 +66,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
 
     private RelativeLayout rel_phone, rel_code;
     private TextView tv_code_phone, tv_code_status, tv_code_inval;
+    private TextView tv_agreenment;
     private TextView tv_success;
     private Button btn_refresh;
     private EditText mPhoneCodeInput;
@@ -76,6 +82,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
     private boolean mFlagPay;
     private ExterPayBean mExterPayBean;
     private String mVipFlag;
+    private boolean isSendOK = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,9 +92,9 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
 
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
-        Log.d(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay);
+        Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay);
         if (mExterPayBean != null) {
-            Log.e(TAG, "mExterPayBean = " + mExterPayBean.toString());
+            Log.i(TAG, "mExterPayBean = " + mExterPayBean.toString());
             mVipFlag = mExterPayBean.getVipFlag();
         }
     }
@@ -100,6 +107,22 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
         rel_code.setVisibility(View.INVISIBLE);
 
         tv_success = findViewById(R.id.phone_login_success);
+        tv_agreenment = findViewById(R.id.phone_login_user_agrement);
+        tv_agreenment.setOnClickListener(this);
+        tv_agreenment.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    tv_agreenment.setTextColor(Color.parseColor("#FFFFFF"));
+                    tv_agreenment.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
+                    tv_agreenment.getPaint().setAntiAlias(true);//抗锯齿
+                } else {
+                    tv_agreenment.setTextColor(Color.parseColor("#B3FFFFFF"));
+                    tv_agreenment.getPaint().setFlags(0); // 取消设置的的划线
+                    tv_agreenment.getPaint().setAntiAlias(true);//抗锯齿
+                }
+            }
+        });
         tv_code_phone = findViewById(R.id.phone_login_tip_phone);
         tv_code_status = findViewById(R.id.phone_login_code_status);
         tv_code_inval = findViewById(R.id.phone_login_code_inval);
@@ -190,7 +213,13 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                 sendCodePhone();
                 return;
             } else if (rel_code.getVisibility() == View.VISIBLE) {
-                sendCodeOK();
+                if (isSendOK) {
+                    isSendOK = false;
+                    sendCodeOK();
+                } else {
+                    Log.i(TAG, "no sendCodeOK");
+                }
+
                 return;
             }
         } else {
@@ -205,16 +234,22 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
             case R.id.phone_login_refresh_code:
                 sendCodePhone();
                 break;
+            case R.id.phone_login_user_agrement:
+                startActivity(new Intent(this, UserAgreementActivity.class));
+                break;
         }
     }
 
     private void sendCodeOK() {
+
         if (TextUtils.isEmpty(mPhoneCodeInput.getText().toString().trim())) {
-            Toast.makeText(PhoneLoginActivity.this, getResources().getString(R.string.phone_login_code_err), Toast.LENGTH_LONG).show();
+            Toast.makeText(PhoneLoginActivity.this, getResources().getString(R.string.phone_login_code_err), Toast.LENGTH_SHORT).show();
+            isSendOK = true;
             return;
         }
         getToken(Constant.Authorization, Constant.GRANT_TYPE_SMS,
                 Constant.CLIENT_ID, mMobile, mPhoneCodeInput.getText().toString());
+
     }
 
     private void sendCodePhone() {
@@ -222,7 +257,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
         if (!checkMobile(mMobile)) {
             return;
         }
-        Log.d(TAG, "onClick: mMobile = " + mMobile);
+        Log.i(TAG, "onClick: mMobile = " + mMobile);
         if (TextUtils.isEmpty(Constant.Authorization)) {
             Constant.Authorization = Utils.getAuthorization(PhoneLoginActivity.this);
         }
@@ -261,6 +296,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                     mPhoneLoginInput.requestFocus();
                     break;
                 case CODE_SUCCESS:
+                    isSendOK = false;
                     if (mTime_success > 0) {
                         tv_success.setVisibility(View.VISIBLE);
                         tv_success.setText(getResources().getString(R.string.phone_login_user_success) + mTime_success
@@ -322,6 +358,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                 return true;
             } else {
                 Intent intent = new Intent(PhoneLoginActivity.this, LoginActivity.class);
+                intent.putExtra("location", 1);
                 intent.putExtra("ispay", mFlagPay);
                 intent.putExtra("payBean", mExterPayBean);
                 startActivity(intent);
@@ -409,7 +446,19 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                                 disposable_sendcode.dispose();
                                 disposable_sendcode = null;
                             }
-                            Toast.makeText(PhoneLoginActivity.this, getResources().getString(R.string.send_phone_err), Toast.LENGTH_LONG).show();
+                            String error = getResources().getString(R.string.send_phone_err);
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    error = jsonObject.getString("msg");
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            Toast.makeText(PhoneLoginActivity.this, error, Toast.LENGTH_SHORT).show();
                             if (mHandler != null) {
                                 mHandler.sendEmptyMessage(2);
                             }
@@ -451,8 +500,8 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                                 String refreshToken = mJsonObject.optString("refresh_token");
                                 String expiresTime = mJsonObject.optString("expires_in");
 
-                                Log.d(TAG, "mVerifySMSCodeSubscriber--onSuccess: refreshToken = " + refreshToken);
-                                Log.d(TAG, "mVerifySMSCodeSubscriber--onSuccess: accessToken = " + accessToken);
+                                Log.i(TAG, "mVerifySMSCodeSubscriber--onSuccess: refreshToken = " + refreshToken);
+                                Log.i(TAG, "mVerifySMSCodeSubscriber--onSuccess: accessToken = " + accessToken);
                                 SharePreferenceUtils.saveToken(PhoneLoginActivity.this, accessToken, refreshToken);
 
                                 UserCenterRecordManager.getInstance().getUserBehaviorUtils(getApplicationContext(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
@@ -478,10 +527,22 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                                 disposable_sendok.dispose();
                                 disposable_sendok = null;
                             }
+                            isSendOK = true;
+                            String error = getResources().getString(R.string.send_phone_err);
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    error = jsonObject.getString("msg");
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            Toast.makeText(PhoneLoginActivity.this, error, Toast.LENGTH_SHORT).show();
                             tv_code_status.setText(getResources().getString(R.string.phone_login_status3));
-                            btn_refresh.setText("重新发送");
                             mPhoneCodeInput.setText("");
-                            Toast.makeText(PhoneLoginActivity.this, getResources().getString(R.string.phone_login_status3), Toast.LENGTH_LONG).show();
                         }
 
                         @Override
@@ -490,6 +551,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                                 disposable_sendok.dispose();
                                 disposable_sendok = null;
                             }
+                            isSendOK = true;
                         }
                     });
         } catch (Exception e) {

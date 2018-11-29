@@ -20,8 +20,9 @@ import android.widget.Toast;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.MainLooper;
+import com.newtv.libs.util.LogUtils;
 
-import tv.newtv.cboxtv.player.model.VideoDataStruct;
+import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -102,7 +103,18 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     protected void onError(String code, String messgae) {
         super.onError(code, messgae);
-        setHintText(String.format("%s 错误码:%s", messgae, code));
+        String hint = null;
+        switch (code){
+            case VodContract.USER_NOT_LOGIN:
+            case VodContract.USER_TOKEN_IS_EXPIRED:
+            case VodContract.USER_NOT_BUY:
+                hint = "付费内容需购买后才能观看";
+                break;
+            default:
+               hint = String.format("%s 错误码:%s", messgae, code);
+               break;
+        }
+        setHintText(hint);
     }
 
     //退出全屏
@@ -171,6 +183,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         playerViewConfig.videoFullCallBack = videoFullCallBack;
         playerViewConfig.playCenter = playCenter;
         playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
+
+        LogUtils.d(TAG, playerViewConfig.toString());
         return playerViewConfig;
     }
 
@@ -221,7 +235,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     @Override
     protected void initView(Context context) {
-        startIsFullScreen = false;
+        defaultConfig.startIsFullScreen = false;
         setFocusable(true);
 
         HintTextView = new TextView(getContext());
@@ -273,6 +287,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
      *
      * @param hasFocus
      */
+    @SuppressWarnings("PointlessNullCheck")
     private void resetLayoutParams(boolean hasFocus) {
 
         ViewGroup parent = (ViewGroup) getParent();
@@ -302,7 +317,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void playSingleOrSeries(int mIndex, int position) {
         //设置播放的位置
-        int index = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(),mIndex);
+        int index = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(), mIndex);
         playCenter.setCurrentIndex(index);
         setHintTextVisible(GONE);
         VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
@@ -376,7 +391,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     protected void playIndex(int index) {
         super.playIndex(index);
         if (mPlayerCallback != null && !ProgramIsChange) {
-            int toIndex = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(),index);
+            int toIndex = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(), index);
             mPlayerCallback.onEpisodeChange(toIndex, getCurrentPosition());
         }
     }

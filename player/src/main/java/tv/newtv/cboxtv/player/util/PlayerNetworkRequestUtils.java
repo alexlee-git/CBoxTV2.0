@@ -16,6 +16,7 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Callback;
 import tv.newtv.cboxtv.player.ChkPlayResult;
+import tv.newtv.cboxtv.player.model.Program;
 
 /**
  * Created by wangkun on 2018/2/23.
@@ -162,6 +163,23 @@ public class PlayerNetworkRequestUtils {
                         }
                     }
                 }
+
+                List<Program> programsList = new ArrayList<>();
+                JSONArray programs = dataObject.getJSONArray("programs");
+                if(programs != null && programs.length() > 0){
+                    for(int i = 0; i < programs.length(); i++){
+                        JSONObject obj = programs.getJSONObject(i);
+                        Program program = new Program();
+                        program.setProgramSeriesUUID(obj.optString("programSeriesUUID"));
+                        program.setProgramSeriesId(obj.optString("programSeriesId"));
+                        program.setVipNumber(obj.optString("vipNumber"));
+                        program.setTitle(obj.optString("title"));
+                        program.setVipFlag(obj.optString("vipFlag"));
+                        program.setIsVip(obj.optString("isVip"));
+                        programsList.add(program);
+                    }
+                }
+                mProgramDetailInfo.setPrograms(programsList);
             } catch (Exception e) {
                 LogUtils.e(e.toString());
             }

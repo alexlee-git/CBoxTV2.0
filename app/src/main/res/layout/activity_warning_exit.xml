@@ -2,52 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
     android:background="@drawable/exit_transparent_background"
+    android:clipChildren="false"
     android:clipToPadding="false"
     android:gravity="center_horizontal"
     android:orientation="vertical">
+
     <FrameLayout
         android:id="@+id/focus_layout"
+        android:layout_width="@dimen/width_870px"
+        android:layout_height="@dimen/height_535px"
         android:layout_marginTop="@dimen/height_210px"
-        android:layout_width="@dimen/width_868px"
-        android:layout_height="@dimen/height_526px"
-        android:focusable="true"
-
         android:background="@drawable/selector_pos_background_27px"
-        >
+        android:focusable="true">
 
         <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/exit_image"
             android:layout_width="@dimen/width_816px"
             android:layout_height="@dimen/height_480px"
-            android:scaleType="fitXY"
-            />
-
-
+            android:scaleType="fitXY" />
     </FrameLayout>
-
-
-    <TextView
-        android:id="@+id/like_tv"
-        android:layout_width="@dimen/width_816px"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/height_18px"
-        android:gravity="center_vertical"
-        android:text="@string/guess_like_watch"
-        android:textColor="@color/detail_tvcolor"
-        android:textSize="@dimen/height_32px"
-        android:visibility="gone" />
-
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/guess_like_recyclerview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/width_20px"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:visibility="gone" />
 
     <TextView
         android:id="@+id/ask_to_exit"
@@ -60,38 +34,29 @@
         android:textSize="@dimen/height_36px" />
 
     <RelativeLayout
-        android:layout_width="@dimen/width_976px"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/height_49px"
         android:clipChildren="false"
-        android:clipToPadding="false"
-        >
+        android:clipToPadding="false">
 
         <Button
             android:id="@+id/okButton"
             android:layout_width="@dimen/width_388px"
             android:layout_height="@dimen/height_100px"
             android:layout_alignParentLeft="true"
-            android:layout_marginRight="@dimen/height_20px"
+            android:layout_marginLeft="@dimen/width_472px"
             android:background="@drawable/exit_button_status"
             android:focusable="true" />
 
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/height_60px"
-            android:layout_weight="1"
-            android:background="@android:color/transparent" />
 
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="@dimen/width_388px"
             android:layout_height="@dimen/height_100px"
             android:layout_alignParentRight="true"
-            android:layout_marginLeft="@dimen/height_20px"
-            android:background="@drawable/exit_see_status"
-            />
+            android:layout_marginRight="@dimen/width_472px"
+            android:background="@drawable/exit_see_status" />
 
     </RelativeLayout>
 

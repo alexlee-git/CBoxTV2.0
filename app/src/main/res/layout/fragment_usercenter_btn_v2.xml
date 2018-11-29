@@ -41,7 +41,7 @@
             android:layout_height="@dimen/height_109px"
             android:layout_marginLeft="@dimen/width_92px"
             android:layout_marginTop="@dimen/height_84px"
-            android:background="@drawable/member_head_not_login_v2"
+            android:background="@drawable/uc_head_not_login_v2"
             android:tag="tag_poster_head_image"
             android:visibility="visible"/>
 

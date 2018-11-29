@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
 
 import tv.newtv.cboxtv.IDefaultFocus;
 import tv.newtv.cboxtv.R;
@@ -31,6 +33,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     public static final int ALIGN_AUTO = 4;      //尾对齐
     public static final int ALIGN_AUTO_TWO = 5;
     private static final String TAG = AiyaRecyclerView.class.getSimpleName();
+    private boolean isDown = false;
     private DispatchKeyHandle mDispatchKeyHandle;
     private int mAlign = ALIGN_START;
 
@@ -49,6 +52,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     private int currentDir = View.FOCUS_RIGHT;
 
     private boolean canReverseMove = true;
+    private String mPageUUID;
 
     public AiyaRecyclerView(Context context) {
         super(context);
@@ -64,10 +68,15 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
         setFocusable(false);
     }
 
+
     public AiyaRecyclerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setFocusableInTouchMode(true);
         setFocusable(false);
+    }
+
+    public void setPageUUID(String id) {
+        mPageUUID = id;
     }
 
     public void setCanReversMove(boolean value) {
@@ -151,19 +160,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     public void onScrolled(int dx, int dy) {
         if (dx == 0 && dy == 0) return;
         super.onScrolled(dx, dy);
-        if (isLinear) {
-            LinearLayoutManager layoutManager = (LinearLayoutManager) getLayoutManager();
-            int first = layoutManager.findFirstVisibleItemPosition();
-            int last = layoutManager.findLastVisibleItemPosition();
-            if (first == 0 && isVisible(getChildAt(0))) {
-                if (mStartIndicator != null) mStartIndicator.setVisibility(View.VISIBLE);
-            } else if (last == getAdapter().getItemCount() - 1) {
-                if (mEndIndicator != null) mEndIndicator.setVisibility(View.INVISIBLE);
-            } else {
-                if (mStartIndicator != null) mStartIndicator.setVisibility(View.VISIBLE);
-                if (mEndIndicator != null) mEndIndicator.setVisibility(View.VISIBLE);
-            }
-        }
+
+        dispatchIndexChange();
     }
 
     private boolean isVisible(View view) {
@@ -191,11 +189,14 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
     }
 
     public View getRootView(View view) {
-        if (view.getParent() == null) return null;
-        if (view.getParent() instanceof AiyaRecyclerView) {
+        if (view == null) return null;
+        ViewGroup parentGroup = (ViewGroup) view.getParent();
+        if (parentGroup == null) return null;
+        if (parentGroup instanceof AiyaRecyclerView || parentGroup instanceof
+                RecyclerView) {
             return view;
         }
-        return getRootView((View) view.getParent());
+        return getRootView(parentGroup);
     }
 
     public boolean isSlideToRight() {
@@ -256,7 +257,6 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 } else if (mAlign == ALIGN_START) {
                     smoothScrollBy(0, rootView.getTop() - getScrollY());
                 } else if (mAlign == ALIGN_END) {
-
                 } else {
                     int locationY = rootView.getTop() - getScrollY();
                     if (currentDir == View.FOCUS_UP) {
@@ -293,6 +293,31 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
         if (focusView == null) {
             return result;
         } else {
+            View rootView = getRootView(focusView);
+            if (rootView != null) {
+                if (rootView instanceof RecyclerView && !(rootView instanceof AiyaRecyclerView)) {
+                    if (rootView.dispatchKeyEvent(event)) {
+                        switch (event.getKeyCode()) {
+                            case KeyEvent.KEYCODE_DPAD_LEFT:
+                            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                                if (rootView.canScrollHorizontally(-1) || rootView
+                                        .canScrollHorizontally
+                                                (1)) {
+                                    return true;
+                                }
+                                break;
+                            case KeyEvent.KEYCODE_DPAD_UP:
+                            case KeyEvent.KEYCODE_DPAD_DOWN:
+                                if (rootView.canScrollVertically(-1) || rootView
+                                        .canScrollVertically(1)) {
+                                    return true;
+                                }
+                                break;
+                        }
+                        return true;
+                    }
+                }
+            }
             int dy = 0;
             int dx = 0;
             if (getChildCount() > 0) {
@@ -301,6 +326,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 dx = firstView.getWidth();
             }
             if (event.getAction() == KeyEvent.ACTION_UP) {
+                isDown = false;
                 // 放行back键
                 if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                     return super.dispatchKeyEvent(event);
@@ -320,6 +346,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 }
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_DPAD_RIGHT:
+                        isDown = false;
                         if (!isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         if (ModuleLayoutManager.getInstance().isNeedInterceptRightKeyEvent
                                 (cellCode)) {
@@ -340,6 +367,7 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                         }
 
                     case KeyEvent.KEYCODE_DPAD_LEFT:
+                        isDown = false;
                         if (!isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         View leftView = FocusFinder.getInstance().findNextFocus(this, focusView,
                                 View.FOCUS_LEFT);
@@ -355,6 +383,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                             return true;
                         }
                     case KeyEvent.KEYCODE_DPAD_DOWN:
+                        isDown = true;
+
                         if (isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         View downView = FocusFinder.getInstance().findNextFocus(this, focusView,
                                 View.FOCUS_DOWN);
@@ -370,6 +400,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                             return true;
                         }
                     case KeyEvent.KEYCODE_DPAD_UP:
+                        isDown = false;
+
                         if (isHorizontal && canReverseMove) return super.dispatchKeyEvent(event);
                         View upView = FocusFinder.getInstance().findNextFocus(this, focusView,
                                 View.FOCUS_UP);
@@ -403,6 +435,8 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
 
                         }
                     case KeyEvent.KEYCODE_BACK:
+                        isDown = false;
+
                         return super.dispatchKeyEvent(event);
                 }
 
@@ -412,9 +446,32 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
         return result;
     }
 
+    private void dispatchIndexChange() {
+        LayoutManager layoutManager = getLayoutManager();
+        if(layoutManager == null) return;
+        if (layoutManager instanceof LinearLayoutManager) {
+            int first = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+            int last = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+
+            LogUtils.d(TAG, "first=" + first + " last=" + last);
+
+            if (first == 0 && isVisible(getChildAt(0))) {
+                if (mStartIndicator != null) mStartIndicator.setVisibility(View.VISIBLE);
+            } else if (last == getAdapter().getItemCount() - 1) {
+                if (mEndIndicator != null) mEndIndicator.setVisibility(View.INVISIBLE);
+            } else {
+                if (mStartIndicator != null) mStartIndicator.setVisibility(View.VISIBLE);
+                if (mEndIndicator != null) mEndIndicator.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
+
+        dispatchIndexChange();
+
     }
 
     @Override

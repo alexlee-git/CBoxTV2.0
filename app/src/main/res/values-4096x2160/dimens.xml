@@ -6030,4 +6030,7 @@
     <dimen name="height_18sp">36px</dimen>
     <dimen name="height_22sp">44px</dimen>
     <dimen name="height_40dp">80px</dimen>
+
+    <dimen name="module_31_height_19px" >-40px</dimen>
+    <dimen name="module_25_9px">-19px</dimen>
 </resources>

@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.utils;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
@@ -44,6 +45,7 @@ public class DBUtil {
     public static void AddSubcribe(String userId, Content entity, Bundle bundle, DBCallback<String> callback, String tableName) {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
+        Log.d("sub", "AddSubcribe contentid : " + entity.getContentID());
         if (entity.getContentID() != null) {
             contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
         }

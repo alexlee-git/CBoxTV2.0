@@ -19,7 +19,7 @@
         android:layout_marginTop="@dimen/height_0px"
         android:layout_toRightOf="@id/id_hot_recommend_area_icon"
         android:includeFontPadding="false"
-        android:text="热门收藏"
+        android:text=""
         android:textColor="#ffffff"
         android:textSize="@dimen/width_30px" />
 

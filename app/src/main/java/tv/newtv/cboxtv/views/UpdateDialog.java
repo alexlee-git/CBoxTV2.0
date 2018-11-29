@@ -1,10 +1,13 @@
 package tv.newtv.cboxtv.views;
 
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,12 +18,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.UpVersion;
+import com.newtv.libs.util.SPrefUtils;
 
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.uc.bean.DownloadReceiver;
 import tv.newtv.cboxtv.uc.bean.ProgressListener;
 import tv.newtv.cboxtv.uc.bean.Updater;
 
@@ -32,6 +38,8 @@ import tv.newtv.cboxtv.uc.bean.Updater;
  * 创建日期:          2018/10/11
  */
 public class UpdateDialog {
+    private static final String TAG = UpdateDialog.class.getSimpleName();
+    private static final String APK_SIZE = "apk_size";
     private AlertDialog constraintDialog;
     private RelativeLayout rlUp;
     private LinearLayout linerPrograss;
@@ -90,10 +98,19 @@ public class UpdateDialog {
             public void onClick(View view) {
                 rlUp.setVisibility(View.GONE);
                 linerPrograss.setVisibility(View.VISIBLE);
-                if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getPackageAddr())) {
-                    loadApk(activity, versionBeen.getPackageAddr());
+                if (versionBeen != null && !TextUtils.isEmpty(versionBeen.getPackageAddr())) {//22696530
+                    String spApkSize = String.valueOf(SPrefUtils.getValue(LauncherApplication.AppContext, APK_SIZE, 0L));
+                    if (!TextUtils.isEmpty(spApkSize) && spApkSize.equals(versionBeen.getPackageSize())) {
+                        Intent intent = new Intent(LauncherApplication.AppContext, DownloadReceiver.MyIntentService.class);
+                        intent.setAction("startIntentService");
+                        LauncherApplication.AppContext.startService(intent);
+                        if (constraintDialog != null && constraintDialog.isShowing()) {
+                            constraintDialog.dismiss();
+                        }
+                    } else {
+                        loadApk(activity, versionBeen.getPackageAddr());
+                    }
                 }
-
             }
         });
 
@@ -129,11 +146,15 @@ public class UpdateDialog {
             @Override
             public void onProgressChange(long totalBytes, long curBytes, float progress) {
                 pbUpdate.setProgress((int) progress);
+                SPrefUtils.setValue(LauncherApplication.AppContext, APK_SIZE, curBytes);
                 tvPrograss.setText(String.format(Locale.getDefault(), "努力下载中 %d%%", (int)
                         progress));
                 if ((int) progress == 100) {
                     if (constraintDialog != null && constraintDialog.isShowing()) {
                         constraintDialog.dismiss();
+                        Intent intent = new Intent();
+                        intent.setAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+                        LauncherApplication.AppContext.sendBroadcast(intent);
                     }
                     new Timer().schedule(new TimerTask() {
                         @Override
@@ -141,9 +162,7 @@ public class UpdateDialog {
                             //updater.getDownloadManager().remove(updater.getmTaskId());
                         }
                     }, 1000);
-
                 }
-
             }
         });
     }

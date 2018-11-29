@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
@@ -33,6 +34,7 @@ import tv.newtv.cboxtv.player.IPlayerActivity;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import java.lang.annotation.Annotation;
+import java.util.List;
 
 import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -54,6 +56,12 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     private AdPopupWindow adPopupWindow;
     protected boolean isPopup = false;
 
+    private List<ILifeCycle> lifeCycleList;
+
+    public void lifeCycle(ILifeCycle lifeCycle){
+        lifeCycleList.add(lifeCycle);
+    }
+
     protected boolean isDetail(){
         return false;
     }
@@ -66,6 +74,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        lifeCycleList = new ArrayList<>();
         ActivityStacks.get().onCreate(this);
 
         Intent intent = getIntent();
@@ -92,6 +101,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     @Override
     protected void onStop() {
         super.onStop();
+        for(ILifeCycle lifeCycle : lifeCycleList){
+            lifeCycle.onActivityStop();
+        }
         ActivityStacks.get().onStop(this);
         FrontStage = false;
     }
@@ -110,6 +122,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     @Override
     protected void onResume() {
         ActivityStacks.get().onResume(this);
+        for(ILifeCycle lifeCycle : lifeCycleList){
+            lifeCycle.onActivityResume();
+        }
         if (hasPlayer()) {
             prepareMediaPlayer();
         }
@@ -121,13 +136,13 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             NewTVLauncherPlayerViewManager.getInstance().setVideoSilent(false);
         }
 
-        setBackgroundAD();
+//        setBackgroundAD();
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        setPopupAD();
+//        setPopupAD();
     }
 
     private void setPopupAD() {
@@ -141,18 +156,28 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onDestroy() {
         super.onDestroy();
         ActivityStacks.get().onDestroy(this);
+        for(ILifeCycle lifeCycle : lifeCycleList){
+            lifeCycle.onActivityDestroy();
+        }
         if (adPresenter != null) {
             adPresenter.destroy();
         }
         if (adPopupWindow != null && adPopupWindow.isShowing()) {
             adPopupWindow.dismiss();
         }
+
+
+        lifeCycleList.clear();
+        lifeCycleList = null;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         ActivityStacks.get().onPause(this);
+        for(ILifeCycle lifeCycle : lifeCycleList){
+            lifeCycle.onActivityPause();
+        }
 
         if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO)
                 || Libs.get().getFlavor().equals(DeviceUtil.XUN_MA)) {
@@ -198,7 +223,10 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
 
             if (isBackPressed(event)) {
                 if (fromOuter) {
-                    Player.get().onExitApp();
+//                    Player.get().onExitApp();
+                    startActivityForResult(new Intent().setClass(this, WarningExitActivity.class)
+                                    .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                            , 0x999);
                     return true;
                 }
             }

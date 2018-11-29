@@ -97,7 +97,6 @@ public class NewSpecialCenterAdapter extends RecyclerView.Adapter<NewSpecialCent
             //isFirstClick = true;
         }
         if (isClick) {
-            reSetSelect(selectedId);
             mSpecialData = mOldData.get(mLeftId);
             mOldData.clear();
             notifyDataSetChanged();

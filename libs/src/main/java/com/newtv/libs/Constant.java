@@ -3,7 +3,7 @@ package com.newtv.libs;
 import android.os.Environment;
 import android.text.TextUtils;
 
-import com.newtv.libs.util.DeviceUtil;
+//import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.SPrefUtils;
 
@@ -31,6 +31,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 
 public class Constant {
+
+    //是否启用轮播
+    public static final boolean canUseAlternate  = false;
+
     public static final boolean isLocalData = false;
     public static final String AdCache = Environment.getExternalStorageDirectory()
             .getAbsolutePath() +
@@ -38,7 +42,11 @@ public class Constant {
     public static final String TAG = "CBoxTV";
     public static final String BASE_URL_LISTPAGE = "listPage";
     public static final String CMS_URL = "icms_api/api/";
-    public static final String BOOT_GUIDE_HOST = "http://newtv.boot.ottcn.com:8080/";
+
+    public static final String BOOT_GUIDE_HOST = Libs.get().isDebug()
+            ? "http://111.32.138.57:8080/" : "http://newtv.boot.ottcn.com:8080/";
+
+
     //广告位类型
     public static final String AD_TOPIC = "topic";//专题广告
     public static final String AD_DESK = "desk";//桌面广告
@@ -99,7 +107,7 @@ public class Constant {
     public static final String OPEN_LIVE = "OPEN_LIVE"; //打开直播
     public static final String OPEN_PLAYLIST = "OPEN_PLAYLIST";  //打开连播
     public static final String OPEN_PAGE = "OPEN_PAGE";  //打开页面
-    public static final String OPEN_LISTPAGE = "OPEN_LISTPAGE";   //打开列表页
+    public static final String OPEN_FILTER = "OPEN_FILTER";   //打开列表页
     public static final String OPEN_APK = "OPEN_APK";  //打开APK
     public static final String DOWNLOAD_APK = "DOWNLOAD_APK";   //下载APK
     public static final String OPEN_DETAILS = "OPEN_DETAILS";   //打开详情页
@@ -107,6 +115,7 @@ public class Constant {
     public static final String OPEN_SEARCH = "OPEN_SEARCH";   //执行搜索
     public static final String OPEN_VIDEO = "OPEN_VIDEO";  //打开视频
     public static final String OPEN_USERCENTER = "OPEN_USERCENTER";  //打开个人中心
+    public static final String OPEN_VIPCENTER = "OPEN_VIPCENTER"; //会员中心
     public static final String OPEN_SPECIAL = "OPEN_SPECIAL"; // 打开专题
     public static final String OPEN_APP_LIST = "OPEN_APP_LIST";
     public static final String PAGE_UUID = "page_uuid";
@@ -117,6 +126,7 @@ public class Constant {
     public static final String ACTION_TYPE = "action_type";
     public static final String ACTION_AD_ENTRY = "action_ad_entry";//判断是不是从广告点击进入
     public static final String CONTENT_UUID = "content_uuid";
+    public static final String CONTENT_CHILD_UUID = "content_child_uuid";
     public static final String DEFAULT_UUID = "default_uuid";
     public static final String FOCUSPARAM = "focusParam";
     public static final String NAV_ID = "nav_id";//导航id
@@ -179,11 +189,9 @@ public class Constant {
     public static final String INIT_ADSDK = "init_sdk";//adsdk初始化
     public static final String INIT_LOGSDK = "init_logsdk";//logsdk初始化
     public static final String CHECK_ERROR = "播控鉴权失败：";
-    public static final String VERSION_UP_BASE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor
-            ()) ?
+    public static final String VERSION_UP_BASE = Libs.get().isDebug() ?
             "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
-    public static final String IS_ORIENTED_BASE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor
-            ()) ?
+    public static final String IS_ORIENTED_BASE = Libs.get().isDebug() ?
             "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     //用户中心
     public static final String RESPONSE_TYPE = "device_code";
@@ -193,20 +201,24 @@ public class Constant {
     public static final String CLIENT_ID = Libs.get().getClientId();
     public static final String USER_ID = "USER_ID";
     public static final String UC_HISTORY = "历史记录";
+    //支付
+    public static final String BUY_VIPANDONLY = "1";
+    public static final String BUY_VIP = "3";
+    public static final String BUY_ONLY = "4";
+
     //检查是否是定向升级
     public static final String UC_FOLLOW = "关注";
     public static final String UC_SUBSCRIBE = "订阅";
     public static final String UC_COLLECTION = "收藏";
     private static final Map<String, String> mServerAddressMap = new HashMap<>();
 
-
     public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH)
             : "http://search.cloud.ottcn.com:8080/";
 
-    public static final String CMS_NEW_SEARCH = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
-            ? "http://111.32.138.57:80/":
+    public static final String CMS_NEW_SEARCH = Libs.get().isDebug() ? "http://111.32.138.57:80/" :
             "http://searchapi.cloud.ottcn.com/";
+
     public static final String BASE_URL_NEW_SEARCH = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.NEW_SEARCH)) ? getBaseUrl(HeadersInterceptor.NEW_SEARCH)
             : CMS_NEW_SEARCH;
@@ -233,7 +245,7 @@ public class Constant {
             ".com"; //动态防盗链
 
 
-    private static final String CMS_ONLINE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
+    private static final String CMS_ONLINE = Libs.get().isDebug()
             ? "http://111.32.132.156/"
             : "http://epg.cloud.ottcn.com/";
 
@@ -242,54 +254,64 @@ public class Constant {
             : CMS_ONLINE;
 
 
-    private static final String CMS_NEW_ONLINE = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor())
+    private static final String CMS_NEW_ONLINE = Libs.get().isDebug()
             ? "http://testcms31.ottcn.com:30013/"
             : "http://api31.cloud.ottcn.com/";
 
 
     public static final String BASE_URL_NEW_CMS = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .NEW_CMS)) ? getBaseUrl(HeadersInterceptor.NEW_CMS) : CMS_NEW_ONLINE;
-    private static final String PERMISSTION_CHECK_URL = DeviceUtil.CBOXTEST.equals(Libs.get()
-            .getFlavor()) ? "http://stage-bzo.cloud.ottcn.com/" : "https://account.cloud.ottcn" +
+
+    private static final String PERMISSTION_CHECK_URL = Libs.get().isDebug()
+            ? "http://stage-bzo.cloud.ottcn.com/" : "https://account.cloud.ottcn" +
             ".com/";
+
     public static final String BASE_PERMISSTION_CHECK = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.PERMISSTION_CHECK)) ? getBaseUrl(HeadersInterceptor
             .PERMISSTION_CHECK) : PERMISSTION_CHECK_URL; //播放鉴权
+
     //public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
     // .AD)) ? getBaseUrl(HeadersInterceptor.AD) : "https://api.adott.ottcn.com/"; //广告正式地址
-    private static final String AD_URL = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
+    private static final String AD_URL = Libs.get().isDebug() ?
             "http://api.adott.ottcn.org/" : "https://api.adott.ottcn.com/";
+
     public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
     ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
-    private static final String USER = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
-             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-//            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+
+    private static final String USER = Libs.get().isDebug() ?
+            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
+
+    //            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_USER = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .USER)
+
     ) ? getBaseUrl(HeadersInterceptor.USER) : USER; //正式地址
-    private static final String PAY = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
+    private static final String PAY = Libs.get().isDebug() ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-            // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_PAY = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.PAY)
     ) ? getBaseUrl(HeadersInterceptor.PAY) : PAY; //正式地址
-    private static final String PRODUCT = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
+    private static final String PRODUCT = Libs.get().isDebug() ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-            // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_PRODUCT = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.USER)
     ) ? getBaseUrl(HeadersInterceptor.PRODUCT) : PRODUCT; //正式地址
-    private static final String USER_BEHAVIOR = DeviceUtil.CBOXTEST.equals(Libs.get().getFlavor()) ?
+    private static final String USER_BEHAVIOR = Libs.get().isDebug() ?
             "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-            // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
     public static final String BASE_URL_USER_BEHAVIOR = !TextUtils.isEmpty(getBaseUrl
             (HeadersInterceptor.USER)
     ) ? getBaseUrl(HeadersInterceptor.USER_BEHAVIOR) : USER_BEHAVIOR; //正式地址
     //版本升级状态
     public static boolean VERSION_UPDATE = false;
     // 激活认证接口地址
+
+    private static final String ACTIVATE_URL = Libs.get().isDebug() ?
+            "http://stage-bzo.cloud.ottcn.com/": "https://terminal.cloud.ottcn.com/";
     public static String BASE_URL_ACTIVATE = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .ACTIVATE)) ? getBaseUrl(HeadersInterceptor.ACTIVATE) : "https://terminal.cloud.ottcn" +
-            ".com/"; //激活接口
+            .ACTIVATE)) ? getBaseUrl(HeadersInterceptor.ACTIVATE) : ACTIVATE_URL; //激活接口
+
     //会员中心首页推荐位页面ID
     public static String ID_PAGE_MEMBER = getBaseUrl(HeadersInterceptor.PAGE_MEMBER);
     //热门收藏页面ID
@@ -305,12 +327,15 @@ public class Constant {
     //会员协议html地址
     public static String HTML_PATH_MEMBER_PROTOCOL = getBaseUrl(HeadersInterceptor
             .HTML_PATH_MEMBER_PROTOCOL);
+    //用户协议html地址
+    public static String HTML_PATH_USER_PROTOCOL = getBaseUrl(HeadersInterceptor
+            .HTML_PATH_USER_PROTOCOL);
     //会员中心跳转会员片库params值
     public static String MEMBER_CENTER_PARAMS = getBaseUrl(HeadersInterceptor
             .HTML_PATH_MEMBER_PROTOCOL);
     public static boolean isInitStatus = true;
     public static String UUID_KEY = "uuid";
-    public static String UUID;
+    public static String UUID = "";
     public static String ALREADY_SAVE = "alreadySave";
     // 定义一个全局的静态变量   用于在小屏和大屏两种模式下， 确定当前是否符合直播的条件
     // 开启直播时，将该值置为true   到达直播结束时间，关闭直播时，将该值置为false
@@ -346,6 +371,7 @@ public class Constant {
         if (TextUtils.isEmpty(serverInfo)) {
             return;
         }
+
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();

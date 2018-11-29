@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.uc;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +14,6 @@ import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,7 +21,8 @@ import com.newtv.cms.bean.Corner;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
-import tv.newtv.cboxtv.LauncherApplication;
+import org.jetbrains.annotations.NotNull;
+
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
@@ -34,7 +35,8 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
  * Created by gaoleichao on 2018/3/29.
  */
 
-public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean, RecyclerView.ViewHolder> {
+public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean, RecyclerView
+        .ViewHolder> {
 
     private Context context;
     private Interpolator mSpringInterpolator;
@@ -45,7 +47,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
     private View currentFocusView;
     private OnRecycleItemClickListener<UserCenterPageBean.Bean> listener;
 
-    public HistoryAdapter(Context context, int defaultIcon, OnRecycleItemClickListener<UserCenterPageBean.Bean> listener) {
+    public HistoryAdapter(Context context, int defaultIcon,
+                          OnRecycleItemClickListener<UserCenterPageBean.Bean> listener) {
         this.context = context;
         this.defaultIcon = defaultIcon;
         this.listener = listener;
@@ -77,18 +80,19 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         mAllowLost = allow;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
-        viewHolder = new HistoryViewHolder(LayoutInflater.from(context).inflate(R.layout.item_usercenter_universal, null));
+        viewHolder = new HistoryViewHolder(LayoutInflater.from(context).inflate(R.layout
+                .item_usercenter_universal, parent, false));
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HistoryViewHolder) {
             HistoryViewHolder viewHolder = (HistoryViewHolder) holder;
-            viewHolder = (HistoryViewHolder) holder;
             viewHolder.mImageIv.setVisibility(View.VISIBLE);
             viewHolder.mModuleView.setVisibility(View.VISIBLE);
 
@@ -102,7 +106,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 viewHolder.mTitleTv.setText("");
             }
 
-            Log.d("time", "name : " + entity.get_title_name() + ", time : " + entity.getUpdateTime());
+            Log.d("time", "name : " + entity.get_title_name() + ", time : " + entity
+                    .getUpdateTime());
 
             // 评分
             String score = entity.getGrade();
@@ -111,9 +116,9 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             } else {
                 viewHolder.mScore.setText("0.0");
             }
-
             // 观看进度
-            viewHolder.mSubTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(entity.getPlayPosition(), entity.getDuration()));
+            viewHolder.mSubTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress
+                    (entity.getPlayPosition(), entity.getDuration()));
 
             // 更新剧集
             String episode = entity.getEpisode_num();
@@ -126,15 +131,15 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 String videoType = entity.getVideoType();
                 if (TextUtils.equals(videoType, "电视剧")) {
                     if (episodeNum < cnt) {
-                        viewHolder.mEpisode.setText("更新至 " + episode + " 集");
+                        viewHolder.mEpisode.setText(String.format("更新至 %s 集", episode));
                     } else {
-                        viewHolder.mEpisode.setText(episode + " 集全");
+                        viewHolder.mEpisode.setText(String.format("%s 集全", episode));
                     }
                 } else if (TextUtils.equals(videoType, "综艺")) {
                     if (episodeNum < cnt) {
-                        viewHolder.mEpisode.setText("更新至 " + episode + " 期");
+                        viewHolder.mEpisode.setText(String.format("更新至 %s 期", episode));
                     } else {
-                        viewHolder.mEpisode.setText(episode + " 期全");
+                        viewHolder.mEpisode.setText(String.format("%s 期全", episode));
                     }
                 }
             }
@@ -145,7 +150,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                     loadSuperscript(viewHolder.mSuperscript, entity.getSuperscript());
                 } else {
                     if (TextUtils.equals("1", entity.getIsUpdate())) {
-                        Picasso.get().load(R.drawable.superscript_update_episode).into(viewHolder.mSuperscript);
+                        Picasso.get().load(R.drawable.superscript_update_episode).into(viewHolder
+                                .mSuperscript);
                     }
                 }
             }
@@ -159,7 +165,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                         .priority(Picasso.Priority.HIGH)
                         .stableKey(entity._imageurl)
                         .config(Bitmap.Config.ARGB_8888);
-                picasso = picasso.placeholder(R.drawable.default_member_center_240_360_v2).error(R.drawable.deful_user);
+                picasso = picasso.placeholder(R.drawable.default_member_center_240_360_v2).error
+                        (R.drawable.deful_user);
                 picasso.transform(new PosterCircleTransform(context, 4)).into(viewHolder.mImageIv);
 
             } else {
@@ -169,18 +176,23 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                         .load(R.drawable.deful_user)
                         .priority(Picasso.Priority.HIGH)
                         .config(Bitmap.Config.ARGB_8888);
-                picasso = picasso.placeholder(R.drawable.default_member_center_240_360_v2).error(R.drawable.deful_user);
+                picasso = picasso.placeholder(R.drawable.default_member_center_240_360_v2).error
+                        (R.drawable.deful_user);
                 picasso.transform(new PosterCircleTransform(context, 4)).into(viewHolder.mImageIv);
             }
 
-//            Log.e("MM", "selectPostion=" + selectPostion + ",position=" + position + ",size=" + mList.size());
-//            if (position == selectPostion || (selectPostion == mList.size() && position == mList.size() - 1)) {
-//                Log.e("MM", "if###########selectPostion=" + selectPostion + ",position=" + position + ",size=" + mList.size());
+//            Log.e("MM", "selectPostion=" + selectPostion + ",position=" + position + ",size=" +
+// mList.size());
+//            if (position == selectPostion || (selectPostion == mList.size() && position ==
+// mList.size() - 1)) {
+//                Log.e("MM", "if###########selectPostion=" + selectPostion + ",position=" +
+// position + ",size=" + mList.size());
 //                viewHolder.itemView.requestFocus();
 //            } else {
 //                viewHolder.itemView.clearFocus();
 //                viewHolder.mFocusIv.setVisibility(View.INVISIBLE);
 //            }
+
         }
     }
 
@@ -200,9 +212,10 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
 //        }
 
         // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
+                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         sa.setFillAfter(true);
-        sa.setDuration(400);
+        sa.setDuration(50);
         sa.setInterpolator(mSpringInterpolator);
         view.startAnimation(sa);
     }
@@ -222,9 +235,10 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         if (!mAllowLost) return;
 
         //直接放大view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
+                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         sa.setFillAfter(true);
-        sa.setDuration(400);
+        sa.setDuration(50);
         sa.setInterpolator(mSpringInterpolator);
         view.bringToFront();
         view.startAnimation(sa);
@@ -233,17 +247,15 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
     private void loadSuperscript(ImageView target, String superscriptId) {
         Corner info = SuperScriptManager.getInstance().getSuperscriptInfoById(superscriptId);
         if (info != null) {
-            String superType = info.getCornerType();
-            if ("IMG".equals(superType)) {
-                String superUrl = info.getCornerImg();
-                if (superUrl != null) {
-                    Picasso.get().load(superUrl).into(target);
-                }
+            String superUrl = info.getCornerImg();
+            if (superUrl != null) {
+                Picasso.get().load(superUrl).into(target);
             }
         }
     }
 
-    class HistoryViewHolder extends RecyclerView.ViewHolder implements View.OnFocusChangeListener, View.OnKeyListener {
+    class HistoryViewHolder extends RecyclerView.ViewHolder implements View
+            .OnFocusChangeListener, View.OnKeyListener {
         private View mModuleView;
         private TextView mTitleTv; // 主标
         private ImageView mFocusIv; // 焦点
@@ -253,22 +265,23 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
         private ImageView mSuperscript; // 角标
         private TextView mEpisode; // 剧集
 
-        public HistoryViewHolder(View itemView) {
+        HistoryViewHolder(View itemView) {
             super(itemView);
 
-            mModuleView  = itemView.findViewById(R.id.id_module_view);
-            mTitleTv     = (TextView) itemView.findViewById(R.id.id_title);
-            mImageIv     = (ImageView) itemView.findViewById(R.id.id_poster);
-            mFocusIv     = (ImageView) itemView.findViewById(R.id.id_focus);
-            mSubTitle    = itemView.findViewById(R.id.id_subtitle);
-            mScore       = itemView.findViewById(R.id.id_score);
-            mEpisode     = itemView.findViewById(R.id.id_episode_data);
+            mModuleView = itemView.findViewById(R.id.id_module_view);
+            mTitleTv = (TextView) itemView.findViewById(R.id.id_title);
+            mImageIv = (ImageView) itemView.findViewById(R.id.id_poster);
+            mFocusIv = (ImageView) itemView.findViewById(R.id.id_focus);
+            mSubTitle = itemView.findViewById(R.id.id_subtitle);
+            mScore = itemView.findViewById(R.id.id_score);
+            mEpisode = itemView.findViewById(R.id.id_episode_data);
             mSuperscript = itemView.findViewById(R.id.id_superscript);
 
             mModuleView.setOnFocusChangeListener(this);
             mModuleView.setOnKeyListener(this);
 
-            // DisplayUtils.adjustView(context, mImageIv, mFocusIv, R.dimen.width_27px, R.dimen.height_27px);//UI适配
+            // DisplayUtils.adjustView(context, mImageIv, mFocusIv, R.dimen.width_27px, R.dimen
+            // .height_27px);//UI适配
         }
 
         @Override

@@ -35,6 +35,7 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     private int y;
     private int width;
     private int height;
+    private boolean isDestroy;
 
     @Override
     public void init(Context context,View parent){
@@ -122,6 +123,9 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     }
 
     private void show(int width,int height,int x,int y){
+        if(isDestroy){
+            return;
+        }
         setWidth(width);
         setHeight(height);
         setBackgroundDrawable(new BitmapDrawable());
@@ -147,5 +151,10 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     @Override
     public boolean isShow(){
         return isShowing();
+    }
+
+    @Override
+    public void onDestroy() {
+        isDestroy = true;
     }
 }

@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.uc.v2.member;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -21,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Corner;
+import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.squareup.picasso.Picasso;
 
@@ -33,6 +36,7 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -67,37 +71,42 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     private final String TAG_POSTER_PROGRAM_UPDATE_TITLE_RIGHT = "tag_poster_program_update_title_right";//海报图节目更新状态标题右边部分
     private final String TAG_POSTER_SCORE_TITLE = "tag_poster_score_title";//海报图评分标题
     private final String TAG_BUTTON_TEXT = "tag_member_center_btn_text";//会员中心按钮文本
-    private Context context;
+    private Context mContext;
     private Interpolator mSpringInterpolator;
     private OnRecycleItemClickListener<UserCenterPageBean.Bean> listener;
-    private ImageView mMemberHead;
+    private ImageView mMemberHead, mMemberMark;
     private TextView mMemberName, mMemberTime;
     private FrameLayout mBtnLogin, mBtnOpen, mBtnExchange, mBtnOrder, mBtnDrama, mPromotionRecommend;
     private MemberInfoBean mMemberInfoBean;
+    private String mMobileString;
     private String mLoginTokenString;//登录token,用于判断登录状态
     public boolean BtnLoginFocusStatus = false;//登录按钮焦点状态
+    private ImageView mRecommendQrCodeImageView;
+    private QrcodeUtil mQrcodeUtil;
+    private Bitmap mBitmap;
 
     MemberCenterAdapter(Context context, OnRecycleItemClickListener<UserCenterPageBean.Bean>
             listener) {
-        this.context = context;
+        this.mContext = context;
         this.listener = listener;
         mSpringInterpolator = new OvershootInterpolator(2.2f);
+        mQrcodeUtil = new QrcodeUtil();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         if (viewType == TYPE_MEMBER_INFO) {
-            viewHolder = new InfoViewHolder(LayoutInflater.from(context).inflate(R.layout
+            viewHolder = new InfoViewHolder(LayoutInflater.from(mContext).inflate(R.layout
                     .activity_usercenter_member_center_info_v2, parent, false));
         } else if (viewType == TYPE_MEMBER_RECOMMEND_PROMOTION) {
-            viewHolder = new PromotionRecommendViewHolder(LayoutInflater.from(context).inflate(R.layout
+            viewHolder = new PromotionRecommendViewHolder(LayoutInflater.from(mContext).inflate(R.layout
                     .activity_usercenter_member_center_recommend_promotion_v2, parent, false));
         } else if (viewType == TYPE_MEMBER_RECOMMEND_INTERESTS) {
-            viewHolder = new InterestsRecommendViewHolder(LayoutInflater.from(context).inflate(R.layout
+            viewHolder = new InterestsRecommendViewHolder(LayoutInflater.from(mContext).inflate(R.layout
                     .activity_usercenter_member_center_recommend_interests_v2, parent, false));
         } else {
-            viewHolder = new ContentViewHolder(LayoutInflater.from(context).inflate(R.layout
+            viewHolder = new ContentViewHolder(LayoutInflater.from(mContext).inflate(R.layout
                     .activity_usercenter_member_center_content_v2, parent, false));
         }
         return viewHolder;
@@ -127,14 +136,16 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             if (holder instanceof InfoViewHolder) {
                 InfoViewHolder viewHolder = (InfoViewHolder) holder;
                 mMemberHead = viewHolder.mMemberHead;
+                mMemberMark = viewHolder.mMemberMark;
                 mMemberName = viewHolder.mMemberName;
                 mMemberTime = viewHolder.mMemberTime;
                 mBtnLogin = viewHolder.mBtnLogin;
                 mBtnOpen = viewHolder.mBtnOpen;
                 //设置会员信息
-                setMemberStatus(mMemberInfoBean);
+                setMemberStatus(mMobileString, mMemberInfoBean);
             } else if (holder instanceof PromotionRecommendViewHolder) {
                 PromotionRecommendViewHolder viewHolder = (PromotionRecommendViewHolder) holder;
+                mRecommendQrCodeImageView = viewHolder.mQrCodeImageView;
                 mPromotionRecommend = viewHolder.mPromotionRecommend;
                 UserCenterPageBean UserCenterPageBean = mList.get(0);
                 setRecommendPosterData(viewHolder.mPromotionRecommend, UserCenterPageBean);
@@ -159,14 +170,24 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
      *
      * @param memberInfoBean
      */
-    public void setMemberStatus(MemberInfoBean memberInfoBean) {
+    public void setMemberStatus(String mobileString, MemberInfoBean memberInfoBean) {
+        String expireFormatTime = "";//格式化之后的会员有效期时间
         try {
             //获取登录状态
-            mLoginTokenString = SharePreferenceUtils.getToken(context);
+            mLoginTokenString = SharePreferenceUtils.getToken(mContext);
+            mMobileString = mobileString;
             TextView mBtnTextView = mBtnOpen.findViewWithTag(TAG_BUTTON_TEXT);
             if (!TextUtils.isEmpty(mLoginTokenString)) {
                 if (mMemberHead != null) {
                     mMemberHead.setBackgroundResource(R.drawable.member_head_login_v2);
+                }
+                if (mMemberName != null) {
+                    if (!TextUtils.isEmpty(mobileString) || !TextUtils.equals(mobileString, "null")) {
+                        mMemberName.setText(mobileString);
+                    } else {
+                        mMemberName.setText("");
+                    }
+
                 }
                 //控制开通会员按钮的向左焦点，防止焦点乱跑
                 if (mBtnOpen != null) {
@@ -187,18 +208,13 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     if (mMemberHead != null) {
                         mMemberHead.setBackgroundResource(R.drawable.member_head_login_v2);
                     }
-                    if (mMemberName != null) {
-                        mMemberName.setText(memberInfoBean.getUserId() + "");
-                    }
-                    if (mMemberTime != null) {
-                        mMemberTime.setText("会员有效期： "+memberInfoBean.getExpireTime());
-                    }
+
                     //控制开通会员按钮的向左焦点，防止焦点乱跑
                     if (mBtnOpen != null) {
                         mBtnOpen.setNextFocusLeftId(R.id.id_member_center_btn_open);
 
                         if (mBtnTextView != null) {
-                            mBtnTextView.setText(context.getResources().getString(R.string.user_already_member));
+                            mBtnTextView.setText(mContext.getResources().getString(R.string.user_already_member));
                         } else {
                             Log.e(TAG, "--setMemberStatus:-memberInfoBean != null:mBtnTextView == null");
                         }
@@ -206,27 +222,53 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     goneView(mBtnLogin);
                     showView(mMemberName);
                     showView(mMemberTime);
-                } else {
-                    Log.e(TAG, "wqs:setMemberStatus:memberInfoBean==null");
-
-                    if (mMemberName != null) {
-                        mMemberName.setText("");
+                    String expireTimeDate = memberInfoBean.getExpireTime();
+                    if (!TextUtils.isEmpty(expireTimeDate)) {
+                        //有效期截止时间毫秒数
+                        long expireTimeInMillis = TimeUtil.getInstance().getSecondsFromDate(expireTimeDate);
+                        //与当前时间进行对比，判断会员是否到期
+                        long currentTimeInMillis = TimeUtil.getInstance().getCurrentTimeInMillis();
+                        Log.d(TAG, "wqs:setMemberStatus:expireTimeInMillis:" + expireTimeInMillis);
+                        Log.d(TAG, "wqs:setMemberStatus:currentTimeInMillis:" + currentTimeInMillis);
+                        expireFormatTime = TimeUtil.getInstance().getDateFromSeconds(expireTimeInMillis + "");
+                        if (expireTimeInMillis >= currentTimeInMillis) {
+                            //用户会员有效
+                            if (mMemberMark != null) {
+                                showView(mMemberMark);
+                                mMemberMark.setBackgroundResource(R.drawable.uc_head_member_mark_v2);
+                            }
+                        } else {
+                            //用户会员失效
+                            if (mMemberMark != null) {
+                                showView(mMemberMark);
+                                mMemberMark.setBackgroundResource(R.drawable.uc_head_not_member_mark_v2);
+                            }
+                        }
+                    } else {
+                        hideView(mMemberMark);
                     }
+                    if (mMemberTime != null) {
+                        mMemberTime.setText("会员有效期： " + expireFormatTime);
+                    }
+                } else {
+                    hideView(mMemberMark);
+                    Log.e(TAG, "wqs:setMemberStatus:memberInfoBean==null");
                     if (mMemberTime != null) {
                         mMemberTime.setText("");
                     }
                     if (mBtnOpen != null) {
                         if (mBtnTextView != null) {
-                            mBtnTextView.setText(context.getResources().getString(R.string.member_center_btn_open));
+                            mBtnTextView.setText(mContext.getResources().getString(R.string.member_center_btn_open));
                         } else {
                             Log.e(TAG, "wqs:setMemberStatus:memberInfoBean == null:mBtnTextView == null");
                         }
                     }
-                    goneView(mMemberName);
+                    showView(mMemberName);
                     goneView(mMemberTime);
                 }
 
             } else {
+                hideView(mMemberMark);
                 if (mMemberHead != null) {
                     mMemberHead.setBackgroundResource(R.drawable.member_head_not_login_v2);
                 }
@@ -235,7 +277,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     mBtnOpen.setNextFocusLeftId(R.id.id_member_center_btn_login);
                 }
                 if (mBtnTextView != null) {
-                    mBtnTextView.setText(context.getResources().getString(R.string.member_center_btn_open));
+                    mBtnTextView.setText(mContext.getResources().getString(R.string.member_center_btn_open));
                 } else {
                     Log.e(TAG, "wqs:setMemberStatus:memberInfoBean == null:mBtnTextView == null");
                 }
@@ -414,6 +456,26 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
         }
     }
 
+    /**
+     * 设置二维码图片imageView
+     *
+     * @param qrCodeString
+     */
+    public void setQrCodeImageView(String qrCodeString) {
+        try {
+            Log.d(TAG, "wqs:setQrCodeImageView");
+            mBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
+            if (!TextUtils.isEmpty(qrCodeString)) {
+                mQrcodeUtil.createQRImage(qrCodeString, mContext.getResources().getDimensionPixelOffset(R.dimen.height_617px),
+                        mContext.getResources().getDimensionPixelOffset(R.dimen.height_617px), mBitmap, mRecommendQrCodeImageView);
+            } else {
+                mRecommendQrCodeImageView.setBackgroundResource(R.drawable.default_member_center_qr_code_v2);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "wqs:setQrCodeImageView:Exception:" + e.toString());
+        }
+    }
+
     //设置会员推荐位海报
     private void setRecommendPosterData(View mModuleView, UserCenterPageBean UserCenterPageBean) {
         try {
@@ -518,9 +580,9 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                             showView(programUpdateRoot);
                             programUpdateCenterTitleTextView.setText(bean.getEpisode_num());
                             if (Integer.parseInt(bean.getEpisode_num()) < Integer.parseInt(bean.getTotalCnt())) {
-                                programUpdateLeftTitleTextView.setText(context.getResources().getString(R.string.user_poster_program_update_title_left_being));
+                                programUpdateLeftTitleTextView.setText(mContext.getResources().getString(R.string.user_poster_program_update_title_left_being));
                             } else {
-                                programUpdateLeftTitleTextView.setText(context.getResources().getString(R.string.user_poster_program_update_title_left_end));
+                                programUpdateLeftTitleTextView.setText(mContext.getResources().getString(R.string.user_poster_program_update_title_left_end));
                             }
                         }
                     }
@@ -665,7 +727,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     class InfoViewHolder extends RecyclerView.ViewHolder implements
             View.OnKeyListener, View.OnFocusChangeListener {
 
-        private ImageView mMemberHead;
+        private ImageView mMemberHead, mMemberMark;
         private TextView mMemberName, mMemberTime;
         private FrameLayout mBtnLogin, mBtnOpen, mBtnExchange, mBtnOrder, mBtnDrama;
 
@@ -674,6 +736,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
             itemView.setFocusable(false);
             //会员信息控件
             mMemberHead = (ImageView) itemView.findViewById(R.id.id_member_center_head);
+            mMemberMark = (ImageView) itemView.findViewById(R.id.id_member_center_mark);
             mMemberName = (TextView) itemView.findViewById(R.id.id_member_center_name);
             mMemberTime = (TextView) itemView.findViewById(R.id.id_member_center_time);
             mBtnLogin = (FrameLayout) itemView.findViewById(R.id.id_member_center_btn_login);
@@ -880,6 +943,13 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 Log.e(TAG, "wqs:RecommendViewHolder:onKey:Exception:" + e.toString());
             }
             return false;
+        }
+    }
+
+    public void release() {
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
         }
     }
 }

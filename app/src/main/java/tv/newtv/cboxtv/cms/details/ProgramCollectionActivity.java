@@ -1,23 +1,16 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.ad.ADConfig;
-import com.newtv.libs.util.DeviceUtil;
 
 import java.util.ArrayList;
 
-import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -27,7 +20,6 @@ import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
-import tv.newtv.cboxtv.views.detail.IEpisode;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
@@ -104,7 +96,8 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
                 headPlayerView.hasFocus()) {
             if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
                 return true;
             }
         }
@@ -131,8 +124,9 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                         new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder
                                 .DB_TYPE_VIPTIP))
                 .SetPlayerId(R.id.video_container)
-                .SetContentUUID(contentUUID)
+                .SetContentUUID(contentUUID,getChildContentUUID())
                 .autoGetSubContents()
+                .setTopView(fromOuter,isPopup)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetClickListener(new View.OnClickListener() {
@@ -208,10 +202,12 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                         }
                     }
                 }));
-        mListView.setOnItemClick(new onEpisodeItemClick() {
+        mListView.setOnItemClick(new onEpisodeItemClick<SubContent>() {
             @Override
-            public void onItemClick(int position, SubContent data) {
+            public boolean onItemClick(int position, SubContent data) {
+                scrollView.scrollToTop(false);
                 headPlayerView.Play(position, 0, true);
+                return false;
             }
         });
     }

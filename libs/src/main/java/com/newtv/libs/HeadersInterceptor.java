@@ -35,6 +35,7 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
     public static final String HTML_PATH_HELPER = "HTML_PATH_HELPER";
     public static final String HTML_PATH_ABOUT_US = "HTML_PATH_ABOUT_US";
     public static final String HTML_PATH_MEMBER_PROTOCOL = "HTML_PATH_MEMBER_PROTOCOL";
+    public static final String HTML_PATH_USER_PROTOCOL = "HTML_PATH_USER_PROTOCOL";
     public static final String MEMBER_CENTER_PARAMS = "MEMBER_CENTER_PARAMS";
 
     // cms3.1新增bootguide字段
@@ -42,6 +43,8 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
     public static final String NEW_SEARCH = "NEW_SEARCH";
     public static final String HOTSEARCH_CONTENTID = "HOTSEARCH_CONTENTID"; //搜索id
     public static final String EXIT_CONTENTID = "EXIT_CONTENTID";
+
+    public static final String BOOT_GUIDE = "BOOT_GUIDE";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -53,58 +56,60 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
         if (headerValue != null) {
             builder.removeHeader("host_type");
             switch (headerValue) {
-                case CMS:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_CMS);
+                case BootGuide.CMS:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.CMS));
                     break;
-                case SEARCH:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_SEARCH);
+                case BootGuide.SEARCH:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.SEARCH));
                     break;
-                case SERVER_TIME:
-                    newBaseUrl = HttpUrl.parse(Constant.SERVER_TIME_URL);
+                case BootGuide.SERVER_TIME:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.SERVER_TIME));
                     break;
-                case VERSION_UP:
-                    newBaseUrl = HttpUrl.parse(Constant.VERSION_UP);
+                case BootGuide.VERSION_UP:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.VERSION_UP));
                     break;
-                case ACTIVATE:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_ACTIVATE);
+                case BootGuide.ACTIVATE:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.ACTIVATE));
                     break;
-                case AD:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_AD);
+                case BootGuide.AD:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.AD));
                     break;
-                case LOG:
-                    newBaseUrl = HttpUrl.parse(Constant.LOG_ADDR);
+                case BootGuide.LOG:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.LOG));
                     break;
-                case CDN:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_CDN);
+                case BootGuide.CDN:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.CDN));
                     break;
-                case DYNAMIC_KEY:
-                    newBaseUrl = HttpUrl.parse(Constant.DYNAMIC_KEY);
+                case BootGuide.DYNAMIC_KEY:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.DYNAMIC_KEY));
                     break;
-                case PERMISSTION_CHECK:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_PERMISSTION_CHECK);
+                case BootGuide.PERMISSTION_CHECK:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.PERMISSTION_CHECK));
                     break;
-                case IS_ORIENTED:
-                    newBaseUrl = HttpUrl.parse(Constant.IS_ORIENTED);
+                case BootGuide.IS_ORIENTED:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.IS_ORIENTED));
                     break;
-                case USER:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_USER);
+                case BootGuide.USER:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.USER));
                     break;
-                case PAY:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_PAY);
+                case BootGuide.PAY:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.PAY));
                     break;
-                case PRODUCT:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_PRODUCT);
+                case BootGuide.PRODUCT:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.PRODUCT));
                     break;
-                case NEW_CMS:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_NEW_CMS);
+                case BootGuide.NEW_CMS:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.NEW_CMS));
                     break;
-                case NEW_SEARCH:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_NEW_SEARCH);
+                case BootGuide.NEW_SEARCH:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.NEW_SEARCH));
                     break;
-                case USER_BEHAVIOR:
-                    newBaseUrl = HttpUrl.parse(Constant.BASE_URL_USER_BEHAVIOR);
+                case BootGuide.USER_BEHAVIOR:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.USER_BEHAVIOR));
                     break;
-
+                case BootGuide.BOOT_GUIDE:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.BOOT_GUIDE));
+                    break;
             }
 
             if (newBaseUrl == null) {

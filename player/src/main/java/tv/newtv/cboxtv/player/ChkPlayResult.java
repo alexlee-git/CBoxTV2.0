@@ -5,6 +5,8 @@ import com.newtv.cms.bean.CdnUrl;
 import java.io.Serializable;
 import java.util.List;
 
+import tv.newtv.cboxtv.player.model.Program;
+
 /**
  * Created by Administrator on 2018/2/5 0005.
  * 单节目
@@ -70,6 +72,7 @@ public class ChkPlayResult implements Serializable {
     private String programSeriesUUIDs;          // 节目集id
     private String categoryIds;          // 栏目id  cctv_colum_cctv/CCTV-4/
     private List<CdnUrl> data;
+    private List<Program> programs;
 
     private boolean encryptFlag;
     private String decryptKey;
@@ -149,6 +152,14 @@ public class ChkPlayResult implements Serializable {
         this.bitrateStream = bitrateStream;
         this.periods = periods;
         this.data = data;
+    }
+
+    public List<Program> getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(List<Program> programs) {
+        this.programs = programs;
     }
 
     public String getCategoryIds() {

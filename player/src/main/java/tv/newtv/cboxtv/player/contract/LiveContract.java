@@ -17,6 +17,7 @@ import com.newtv.libs.util.Encryptor;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
+import com.newtv.libs.util.SharePreferenceUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,10 +69,12 @@ public class LiveContract {
         @Override
         public void checkLive(final LiveInfo liveInfo) {
             final IPlayChk playChk = getService(SERVICE_CHK_PLAY);
+            String token = SharePreferenceUtils.getToken(getContext());
+            String resultToken = TextUtils.isEmpty(token) ? "" : "Bearer " + token;
             if (playChk != null) {
                 ChkRequest request = createLiveRequestBean(liveInfo.getContentUUID(), liveInfo
                         .getLiveUrl());
-                playChk.check(request, new DataObserver<String>() {
+                playChk.check(request,resultToken, new DataObserver<String>() {
                     @Override
                     public void onError(@Nullable String desc) {
                         LogUtils.e(TAG, "onFailure: " + desc);

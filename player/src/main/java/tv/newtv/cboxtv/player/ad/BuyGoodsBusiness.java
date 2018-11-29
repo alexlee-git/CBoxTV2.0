@@ -365,6 +365,12 @@ public class BuyGoodsBusiness{
 
     public void onDestroy(){
         dismiss();
+        if(buyGoodsView != null){
+            buyGoodsView.onDestroy();
+        }
+        if(disposable != null ){
+            disposable.dispose();
+        }
         handler.removeCallbacksAndMessages(null);
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;
@@ -550,7 +556,8 @@ public class BuyGoodsBusiness{
                 requestAdParameter.setExtend(stringBuilder.toString());
                 requestAdParameter.setProgram(config.getProgramId());
                 requestAdParameter.setSeriesId(config.getSeriesID());
-                e.onNext(AdSDK.getInstance().getAD(Constant.AD_BUY_GOODS, config.getColumnId(), config.getSeriesID(), "", null, stringBuilder.toString(), sb));
+                e.onNext(AdSDK.getInstance().getAD(Constant.AD_BUY_GOODS, config.getColumnId(), config.getSeriesID(), "",
+                        ADConfig.getInstance().getIntSecondDuration()+"", stringBuilder.toString(), sb));
             }
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

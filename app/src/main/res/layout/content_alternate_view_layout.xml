@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <tv.newtv.cboxtv.views.widget.VerticalRecycleView
+        android:id="@+id/alternate_list"
+        android:layout_width="@dimen/width_600px"
+        android:layout_height="@dimen/height_600px"
+        android:layout_marginStart="@dimen/width_1221px"
+        android:layout_marginLeft="@dimen/width_1221px"
+        android:layout_marginTop="@dimen/height_48px"
+        android:background="#40000000"
+        tools:itemCount="5"
+        tools:listitem="@layout/alternate_index_item_layout">
+
+    </tv.newtv.cboxtv.views.widget.VerticalRecycleView>
+
+    <tv.newtv.cboxtv.views.custom.BlockPosterView
+        android:id="@+id/block_poster"
+        android:layout_marginStart="@dimen/width_87px"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_15px"
+        app:block_poster_width="@dimen/width_1068px"
+        app:block_poster_height="@dimen/height_600px"
+        app:block_poster_type="alternate"
+        app:block_poster_holder="@drawable/focus_528_296"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </tv.newtv.cboxtv.views.custom.BlockPosterView>
+</FrameLayout>

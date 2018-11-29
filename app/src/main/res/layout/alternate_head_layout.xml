@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                android:layout_height="@dimen/height_500px"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:paddingEnd="@dimen/width_87px"
+                android:paddingRight="@dimen/width_87px">
+
+
+    <tv.newtv.cboxtv.views.custom.AlternateView
+        android:id="@+id/video_container"
+        android:layout_width="@dimen/width_736px"
+        android:layout_height="@dimen/height_420px"
+        android:layout_marginStart="@dimen/width_93px"
+        android:layout_marginLeft="@dimen/width_93px"
+        android:layout_marginTop="@dimen/height_62px"
+        android:background="@drawable/selector_pos_background">
+
+    </tv.newtv.cboxtv.views.custom.AlternateView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/width_22px"
+        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginTop="@dimen/height_88px"
+        android:layout_marginRight="@dimen/width_90px"
+        android:layout_toEndOf="@+id/video_container"
+        android:layout_toRightOf="@+id/video_container"
+        tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:id="@id/id_detail_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_38px"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/id_detail_from"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_33px"
+            android:layout_below="@+id/id_detail_title"
+            android:layout_marginTop="@dimen/height_16px"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_30px"/>
+
+
+        <TextView
+            android:id="@+id/id_detail_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/id_detail_from"
+            android:layout_marginTop="@dimen/height_16px"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="@dimen/height_8px"
+            android:maxEms="100"
+            android:maxLines="3"
+            android:textColor="@color/detail_tvcolor"
+            android:textSize="@dimen/height_30px"/>
+
+
+    </RelativeLayout>
+
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
+        android:id="@+id/full_screen"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
+        android:layout_alignBottom="@+id/video_container"
+        android:layout_marginStart="@dimen/width_22px"
+        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginBottom="@dimen/height_26px"
+        android:layout_toEndOf="@+id/video_container"
+        android:layout_toRightOf="@+id/video_container"
+        android:focusable="true"
+        app:type="full_screen"
+    />
+
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
+        android:id="@+id/collect"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
+        android:layout_alignBottom="@+id/video_container"
+        android:layout_marginStart="@dimen/width_22px"
+        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginBottom="@dimen/height_26px"
+        android:layout_toEndOf="@+id/full_screen"
+        android:layout_toRightOf="@+id/video_container"
+        android:focusable="true"
+        app:type="collect"
+    />
+
+    <tv.newtv.cboxtv.views.custom.FocusToggleView2
+        android:id="@+id/vip_pay"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
+        android:layout_alignBottom="@+id/video_container"
+        android:layout_marginStart="@dimen/width_22px"
+        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginBottom="@dimen/height_26px"
+        android:layout_toEndOf="@+id/collect"
+        android:layout_toRightOf="@+id/collect"
+        android:focusable="true"
+        android:visibility="visible"
+        app:type="pay"/>
+
+
+</RelativeLayout>
