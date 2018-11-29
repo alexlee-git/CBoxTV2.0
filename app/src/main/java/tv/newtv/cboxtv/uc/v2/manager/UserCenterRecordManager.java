@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.uc.v2.manager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.VpnService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -292,6 +293,8 @@ public class UserCenterRecordManager {
             procDeleteSubscribeRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
             procDeleteHistoryRecord(dataUserId, context, contentuuids, contentType, dbCallback);
+        } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
+            procDeleteCarouselChannelRecord(context, contentuuids, dbCallback);
         }
     }
 
@@ -389,7 +392,7 @@ public class UserCenterRecordManager {
 
     private void procAddCarouselPlayRecord(String userId, String token, Bundle bundle, DBCallback<String> callback) {
         String tableName = DBConfig.LB_COLLECT_TABLE_NAME;
-        DBUtil.addCarouselPlayReord(userId, tableName, bundle, callback);
+        DBUtil.addCarouselChannelRecord(userId, tableName, bundle, callback);
     }
 
 
@@ -466,6 +469,11 @@ public class UserCenterRecordManager {
         }
 
         Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentuuids);
+    }
+
+    private void procDeleteCarouselChannelRecord(Context context, String contentuuid, DBCallback<String> callback) {
+        Log.d(TAG, "procDeleteCarouselChannelRecord contentid : " + contentuuid);
+        DBUtil.deleteCarouselChannelRecord(DBConfig.LB_COLLECT_TABLE_NAME, contentuuid, callback);
     }
 
     private void procDeleteCollectionRecord(Context context, Bundle bundle, DBCallback<String> callback) {

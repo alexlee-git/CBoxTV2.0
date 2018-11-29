@@ -11,7 +11,10 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.Data;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.Utils;
+
+import tv.newtv.cboxtv.LauncherApplication;
 
 /**
  * 项目名称:         CBoxTV
@@ -287,7 +290,7 @@ public class DBUtil {
                 .excute();
     }
 
-    public static void addCarouselPlayReord(String userId, String tableName, Bundle bundle, DBCallback<String> callback) {
+    public static void addCarouselChannelRecord(String userId, String tableName, Bundle bundle, DBCallback<String> callback) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBConfig.CONTENTUUID, bundle.getString(DBConfig.CONTENTUUID));
         contentValues.put(DBConfig.CONTENT_ID, bundle.getString(DBConfig.CONTENT_ID));
@@ -309,6 +312,15 @@ public class DBUtil {
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withValue(contentValues)
+                .withCallback(callback).excute();
+    }
+
+    public static void deleteCarouselChannelRecord(String tableName, String contentuuid, DBCallback<String> callback) {
+        DataSupport.delete(tableName)
+                .condition()
+                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                .build()
                 .withCallback(callback).excute();
     }
 }
