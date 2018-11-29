@@ -367,6 +367,9 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
         setTipVisibility(View.VISIBLE);
+        if(loadingView!=null) {
+            loadingView.setVisibility(View.GONE);
+        }
         if (mEmptyView != null)
             mEmptyView.setText("暂无数据内容");
     }
@@ -386,6 +389,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @Override
     public void startLoading() {
         loadingView.setVisibility(View.VISIBLE);
+        setTipVisibility(View.GONE);
     }
 
     @Override
