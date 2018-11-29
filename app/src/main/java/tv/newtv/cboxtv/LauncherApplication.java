@@ -239,7 +239,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             UserCenterUtils.addHistory(playInfo, index, position, duration, new DBCallback<String>() {
                 @Override
                 public void onResult(int code, String result) {
-                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code);
+                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code + ", contentId : " + playInfo.getContentID());
                     if (code == 0) {
                         LogUtils.e("写入历史记录成功");
                     }
