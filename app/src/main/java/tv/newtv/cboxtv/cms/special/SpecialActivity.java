@@ -141,14 +141,17 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     @Override
     protected void onStart() {
         super.onStart();
+        Intent intent = getIntent();
+        if (intent != null) {
+            mPageUUid = intent.getStringExtra("page_uuid");
+        }
+
 
         PlayerConfig.getInstance().setTopicId(mPageUUid);
     }
 
     private void uploadEnterLog() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            mPageUUid = intent.getStringExtra("page_uuid");
+
 
             StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
             dataBuff.append("0,")
@@ -158,7 +161,6 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
             Log.e("SpecialActivity", dataBuff.toString());
 
             LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
-        }
     }
 
     private void uploadExitLog() {
