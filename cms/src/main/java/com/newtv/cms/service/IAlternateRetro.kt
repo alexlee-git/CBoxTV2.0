@@ -17,7 +17,7 @@ import retrofit2.http.Path
  * 创建日期:          2018/11/12
  */
 interface IAlternateRetro {
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/alternatelist/{contentID}.json")
     fun getInfo(@Path("appkey") appkey: String,
                 @Path("channelCode") channelId: String,

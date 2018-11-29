@@ -220,5 +220,24 @@ public class SearchActivity extends FragmentActivity {
             mHotRecommend.destroy();
             mHotRecommend = null;
         }
+        if(mSearchViewKeyboard != null){
+            mSearchViewKeyboard = null;
+        }
+        if(mSearchResult != null){
+            if (mSearchResult.mColumnFragment != null){
+                mSearchResult.mColumnFragment.onDestroyPresenter();
+            }
+            if (mSearchResult.mDramaFragment != null){
+                mSearchResult.mDramaFragment.onDestroyPresenter();
+            }
+            if (mSearchResult.mPersonFragment != null){
+                mSearchResult.mPersonFragment.onDestroyPresenter();
+            }
+            mSearchResult = null;
+        }
+        if(mRelativeLayout != null){
+            mRelativeLayout = null;
+        }
+
     }
 }

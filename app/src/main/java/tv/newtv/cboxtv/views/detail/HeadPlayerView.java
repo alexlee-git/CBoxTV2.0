@@ -383,7 +383,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                     }
                                                                 });
                                             } else {
-                                                UserCenterUtils.addCollect(mInfo, new
+                                                UserCenterUtils.addCollect(mInfo, currentPlayIndex, new
                                                         DBCallback<String>() {
                                                             @Override
                                                             public void onResult(int code, String
@@ -622,7 +622,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     mBuilder.playerCallback.onPlayerClick(playerView);
                 }
             }
-        }, 50);
+        }, 500);
     }
 
     private void parseResult() {
@@ -663,7 +663,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         }
 
-        if (content != null) {
+        if (content != null && !TextUtils.isEmpty(mInfo.getDescription())) {
             content.setText(mInfo.getDescription().replace("\r\n", ""));
             int ellipsisCount = content.getLayout().getEllipsisCount(content.getLineCount
                     () - 1);

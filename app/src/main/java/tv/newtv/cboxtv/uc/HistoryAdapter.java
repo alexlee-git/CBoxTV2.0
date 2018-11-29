@@ -183,18 +183,9 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 picasso.transform(new PosterCircleTransform(context, 4)).into(viewHolder.mImageIv);
             }
 
-//            Log.e("MM", "selectPostion=" + selectPostion + ",position=" + position + ",size=" +
-// mList.size());
-//            if (position == selectPostion || (selectPostion == mList.size() && position ==
-// mList.size() - 1)) {
-//                Log.e("MM", "if###########selectPostion=" + selectPostion + ",position=" +
-// position + ",size=" + mList.size());
-//                viewHolder.itemView.requestFocus();
-//            } else {
-//                viewHolder.itemView.clearFocus();
-//                viewHolder.mFocusIv.setVisibility(View.INVISIBLE);
-//            }
-
+            if(!viewHolder.itemView.hasFocus()){
+                viewHolder.mFocusIv.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -291,11 +282,13 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             if (hasFocus) {
                 currentFocusView = mModuleView;
                 onItemGetFocus(v, mFocusIv, getAdapterPosition());
+                mTitleTv.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                 mTitleTv.setSelected(true);
             } else {
                 if (mAllowLost) {
                     onItemLoseFocus(v, mFocusIv);
                 }
+                mTitleTv.setEllipsize(null);
                 mTitleTv.setSelected(false);
             }
         }

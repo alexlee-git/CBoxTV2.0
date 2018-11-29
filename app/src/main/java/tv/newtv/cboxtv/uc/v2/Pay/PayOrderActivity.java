@@ -61,6 +61,7 @@ import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.uc.v2.NetWorkUtils;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
@@ -132,7 +133,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
 
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         if (mExterPayBean != null) {
-            Log.e(TAG, mExterPayBean.toString());
+            Log.i(TAG, mExterPayBean.toString());
             mVipProductId = mExterPayBean.getVipProductId();
             mContentUUID = mExterPayBean.getContentUUID();
             mContentType = mExterPayBean.getContentType();
@@ -140,6 +141,8 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
             mTitle = mExterPayBean.getTitle();
             mFlagAction = mExterPayBean.getAction();
             mVipFlag = mExterPayBean.getVipFlag();
+        } else {
+            mVipProductId = getIntent().getStringExtra("VipProductId");
         }
         init();
         qrcodeUtil = new QrcodeUtil();
@@ -530,10 +533,10 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
 
                                     tv_price.setText(getResources().getString(R.string.usercenter_pay_price) + tranPrices(price) + getResources().getString(R.string.usercenter_pay_price_unit));
                                     long duration = pricesBean.getRealDuration() * 60 * 60 * 1000;
-                                    Log.e(TAG, "duration :" + duration);
-                                    Log.e(TAG, "expireTime :" + expireTime);
+                                    Log.i(TAG, "duration :" + duration);
+                                    Log.i(TAG, "expireTime :" + expireTime);
                                     long time = duration + expireTime;
-                                    Log.e(TAG, "time :" + time);
+                                    Log.i(TAG, "time :" + time);
                                     Date date = new Date(time);
                                     SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 hh:mm:ss");
                                     tv_time.setText(getResources().getString(R.string.usercenter_pay_time) + format.format(date));
@@ -565,7 +568,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
             @Override
             public void subscribe(ObservableEmitter<Long> e) throws Exception {
                 long time = requestMemberInfo();
-                Log.e(TAG, "setExprefresh : " + time);
+                Log.i(TAG, "setExprefresh : " + time);
                 e.onNext(time);
             }
         }).subscribeOn(Schedulers.io())
@@ -623,10 +626,11 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
             e.printStackTrace();
         }
         JSONObject terminalDTOObject = new JSONObject();
+        Log.i(TAG, "IP: " + NetWorkUtils.getClientIP());
         try {
             terminalDTOObject.put("versionNo", DeviceUtil.getAppVersion(PayOrderActivity.this));
             terminalDTOObject.put("mac", SystemUtils.getMac(PayOrderActivity.this));
-            terminalDTOObject.put("ip", "");
+            terminalDTOObject.put("ip", NetWorkUtils.getClientIP());
             terminalDTOObject.put("sourceFrom", "TV");
         } catch (JSONException e) {
             e.printStackTrace();
@@ -902,7 +906,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.e(TAG, "---requestMemberInfo:onError");
+                            Log.i(TAG, "---requestMemberInfo:onError");
                             if (mDisposable_time != null) {
                                 mDisposable_time.dispose();
                                 mDisposable_time = null;
@@ -920,8 +924,8 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.e(TAG, "---expireTime：" + expireTime);
-        Log.e(TAG, "---systemTime：" + TimeUtil.getInstance().getCurrentTimeInMillis());
+        Log.i(TAG, "---expireTime：" + expireTime);
+        Log.i(TAG, "---systemTime：" + TimeUtil.getInstance().getCurrentTimeInMillis());
         if (expireTime <= TimeUtil.getInstance().getCurrentTimeInMillis()) {
             expireTime = TimeUtil.getInstance().getCurrentTimeInMillis();
             isVip = false;

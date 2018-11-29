@@ -44,7 +44,7 @@ public abstract class DetailPageActivity extends BaseActivity {
     }
 
     protected abstract boolean interruptDetailPageKeyEvent(KeyEvent event);
-
+    protected abstract boolean isFull(KeyEvent event);
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -161,8 +161,13 @@ public abstract class DetailPageActivity extends BaseActivity {
                             dir = -1;
                             condition = true;
                         } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                            dir = 1;
-                            condition = true;
+                            if (isFull(event)){
+                                return true;
+                            }else {
+                                dir = 1;
+                                condition = true;
+                            }
+
                         }
                         while (condition) {
                             pos += dir;

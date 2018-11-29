@@ -114,6 +114,7 @@ public class DBUtil {
      * @param callback
      */
     public static void UnCollect(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
+        Log.d("lxl", "userId : " + userId + ", contentuuid : " + contentUuId + ", tableName : " + tableName);
         DataSupport.delete(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)

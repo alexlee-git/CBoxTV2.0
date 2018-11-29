@@ -2,6 +2,9 @@ package tv.newtv.cboxtv.uc.v2.sub;
 
 import android.annotation.SuppressLint;
 import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +24,9 @@ import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -30,6 +35,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
@@ -55,6 +61,16 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
     private String userId;
 
     private UserCenterUniversalAdapter mAdapter;
+
+    private List<UserCenterPageBean.Bean> localData;
+    private List<UserCenterPageBean.Bean> remoteData;
+    private boolean localDataReqComp;
+    private boolean remoteDataReqComp;
+
+    private static final int MSG_SYNC_DATA_COMP = 10033;
+    private static final int MSG_INFLATE_PAGE = 10034;
+
+    private static FollowHandler mHandler;
 
     @Override
     protected int getLayoutId() {
@@ -96,45 +112,83 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
 
     //读取数据库中数据
     private void requestData() {
-        //关注数据表表名
-        String TableNameAttention = DBConfig.ATTENTION_TABLE_NAME;
-        if (!TextUtils.isEmpty(mLoginTokenString)) {
-            TableNameAttention = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
-        }
-        DataSupport.search(TableNameAttention)
-                .condition()
-                .eq(DBConfig.USERID, userId)
-                .OrderBy(DBConfig.ORDER_BY_TIME)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (code == 0) {
-                            UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
-                            Gson gson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                            }.getType();
-                            List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
-                            userCenterUniversalBean.data = universalBeans;
+        localDataReqComp = false;
+        remoteDataReqComp = false;
 
-                            inflate(userCenterUniversalBean);
-                        }
-                    }
-                })
-                .excute();
+        Log.d("follow", "requestData");
+        if (!TextUtils.isEmpty(mLoginTokenString)) {
+            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
+                DataSupport.search(DBConfig.ATTENTION_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, final String result) {
+                                if (code == 0) {
+                                    Gson gson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                                    localData = gson.fromJson(result, type);
+
+                                    if (localData == null) {
+                                        localData = new ArrayList<>(Constant.BUFFER_SIZE_8);
+                                    }
+                                }
+
+                                Log.d("follow", "本地数据库查询完毕");
+                                localDataReqComp = true;
+                                if (mHandler != null) {
+                                    mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
+                                }
+                            }
+                        }).excute();
+
+                DataSupport.search(DBConfig.REMOTE_ATTENTION_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, final String result) {
+                                if (code == 0) {
+                                    Gson gson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                                    remoteData = gson.fromJson(result, type);
+
+                                    if (remoteData == null) {
+                                        remoteData = new ArrayList<>(Constant.BUFFER_SIZE_8);
+                                    }
+                                }
+
+                                Log.d("follow", "远程数据库查询完毕");
+
+                                remoteDataReqComp = true;
+                                if (mHandler != null) {
+                                    mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
+                                }
+                            }
+                        }).excute();
+            } else {
+                requestDataByDB(DBConfig.REMOTE_ATTENTION_TABLE_NAME);
+            }
+        } else {
+            requestDataByDB(DBConfig.ATTENTION_TABLE_NAME);
+        }
     }
 
-    private void inflate(UserCenterPageBean bean) {
+    private void inflate(List<UserCenterPageBean.Bean> bean) {
         if (contentView == null) {
             return;
         }
-        if (bean == null || bean.data == null || bean.data.size() == 0) {
+        if (bean == null || bean.size() == 0) {
             inflatePageWhenNoData();
             return;
         }
 
         if (mDatas == null) {
-            mDatas = bean.data;
+            mDatas = bean;
             mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN_COUNT));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_FOLLOW);
@@ -154,7 +208,7 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
         } else {
             if (mAdapter != null && mDatas != null) {
                 mDatas.clear();
-                mDatas.addAll(bean.data);
+                mDatas.addAll(bean);
                 mAdapter.notifyDataSetChanged();
             }
         }
@@ -191,4 +245,88 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
         requestUserInfo();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHandler = new FollowHandler(this);
+    }
+
+    class FollowHandler extends android.os.Handler {
+        WeakReference<FollowRecordFragment> reference;
+
+        FollowHandler(FollowRecordFragment setFragment) {
+            reference = new WeakReference<>(setFragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_SYNC_DATA_COMP) {
+                checkDataSync();
+            } else if (msg.what == MSG_INFLATE_PAGE) {
+                Log.d("follow", "接收到 MSG_INFLATE_PAGE 消息");
+                List<UserCenterPageBean.Bean> datas = (List<UserCenterPageBean.Bean>) msg.obj;
+                if (datas != null && datas.size() > 0) {
+                    inflate(datas);
+                } else {
+                    inflatePageWhenNoData();
+                }
+            } else {
+                Log.d("collection", "unresolved msg : " + msg.what);
+            }
+        }
+    }
+
+    private void checkDataSync() {
+        Log.d("follow", "checkDataSync");
+        if (remoteDataReqComp && localDataReqComp) {
+            mHandler.removeMessages(MSG_SYNC_DATA_COMP);
+
+            List<UserCenterPageBean.Bean> followRecords = new ArrayList<>();
+            List<UserCenterPageBean.Bean> temp = new ArrayList<>(Constant.BUFFER_SIZE_16);
+            temp.addAll(remoteData);
+            temp.addAll(localData);
+
+            for (UserCenterPageBean.Bean item : temp) {
+                if (!isSameItem(item, followRecords)) {
+                    followRecords.add(item);
+                }
+            }
+
+            Message msg = Message.obtain();
+            msg.what = MSG_INFLATE_PAGE;
+            msg.obj = followRecords;
+            mHandler.sendMessage(msg);
+        } else {
+            mHandler.sendEmptyMessageDelayed(MSG_SYNC_DATA_COMP, 100);
+        }
+    }
+
+    private boolean isSameItem(UserCenterPageBean.Bean item, List<UserCenterPageBean.Bean> datas) {
+        for (UserCenterPageBean.Bean comp : datas) {
+            if (TextUtils.equals(comp.get_contentuuid(), item.get_contentuuid())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void requestDataByDB(String tableName) {
+        DataSupport.search(tableName)
+                .condition()
+                .eq(DBConfig.USERID, userId)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0) {
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                            List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
+                            inflate(universalBeans);
+                        }
+                    }
+                })
+                .excute();
+    }
 }

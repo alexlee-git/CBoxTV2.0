@@ -26,7 +26,7 @@ import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
  * 修改时间：2018/4/30 0029 18:40
  * 修改备注：新增人物页
  */
-public class DramaFragment extends BaseFragment {
+public class DramaFragment extends SearchBaseFragment {
 
     private SearchRecyclerView mRecyclerView;
     private TextView mEmptyView;

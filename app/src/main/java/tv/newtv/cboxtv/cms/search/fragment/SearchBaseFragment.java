@@ -38,7 +38,7 @@ import tv.newtv.cboxtv.cms.search.listener.SearchResultDataInfo;
  * 修改时间：
  * 修改备注：
  */
-public abstract class BaseFragment extends Fragment implements SearchContract.LoadingView,
+public abstract class SearchBaseFragment extends Fragment implements SearchContract.LoadingView,
         SearchResultAdapter.SearchHolderAction {
 
     public View mLabelFocusView;//line
@@ -58,7 +58,7 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
     private View mLoadingLayout;
     private View mLoadingImg;
 
-    public BaseFragment() {
+    public SearchBaseFragment() {
         mSearchPresenter = new SearchContract.SearchPresenter(LauncherApplication.AppContext, this);
     }
 
@@ -226,7 +226,9 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             }
             currentPos = -1;
             mIsLoading = false;
-            mSearchPresenter.stop();
+            if (mSearchPresenter != null){
+                mSearchPresenter.stop();
+            }
             inputKeyChange();
             notifyToDataInfoResult(true);
             return;
@@ -336,4 +338,12 @@ public abstract class BaseFragment extends Fragment implements SearchContract.Lo
             total = size;
         }
     }
+
+    public void onDestroyPresenter(){
+        if (mSearchPresenter != null){
+            mSearchPresenter.destroy();
+            mSearchPresenter = null;
+        }
+    }
+
 }

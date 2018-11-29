@@ -44,6 +44,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
     private static final int REFRESH_CURRENTTIME_AND_PROGRESS = 2002;
     private static final int REFRESH_LEFTTIME = 2003;
     private static final long SEEK_TO_DELAY_TIME = 500;
+    private static final int ACTION_UP = 2004;
 
     private static final long DISMISS_VIEW_DELAY_TIME = 5000;
     private static final int SPLIT_DURATION = 100;
@@ -181,6 +182,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent
                     .KEYCODE_DPAD_RIGHT) {
+                sendActionUpMessageDelay();
                 mIsOnlyShowSeekBar = false;
                 seekSlide = true;
                 mSeekCount++;
@@ -225,6 +227,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
             if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent
                     .KEYCODE_DPAD_RIGHT) {
+                removeActionUpMessage();
                 if (!seekSlide) return true;
                 seekSlide = false;
                 mImgSeekStatus.setImageResource(R.drawable.seek_pause);
@@ -239,6 +242,30 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    private void sendActionUpMessageDelay(){
+        removeActionUpMessage();
+        mHandler.sendEmptyMessageDelayed(ACTION_UP,1000);
+    }
+
+    private void removeActionUpMessage(){
+        mHandler.removeMessages(ACTION_UP);
+    }
+
+    private void handleActionUp(){
+        if (!seekSlide) {
+            return ;
+        }
+
+        seekSlide = false;
+        mImgSeekStatus.setImageResource(R.drawable.seek_pause);
+        if (!mIsOnlyShowSeekBar) {
+            mHandler.sendEmptyMessage(REFRESH_CURRENTTIME_AND_PROGRESS);
+            mHandler.sendEmptyMessage(DISMISS_VIEW);
+        }
+        mSeekCount = 0;
+        mSeekStep = DEFAULT_SEEK_STEP;
     }
 
     public void setDuration() {
@@ -489,6 +516,11 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
                 case REFRESH_LEFTTIME:
 
                     weakReference.get().refreshLeftTime();
+                    break;
+                case ACTION_UP:
+                    if(weakReference.get() != null){
+                        weakReference.get().handleActionUp();
+                    }
                     break;
                 default:
                     break;
