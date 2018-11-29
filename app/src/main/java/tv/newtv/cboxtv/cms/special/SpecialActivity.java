@@ -49,6 +49,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     private BaseSpecialContentFragment mSpecialFragment;
     private SpecialContract.Presenter mSpecialPresenter;
     private AdContract.AdPresenter mAdPresenter;
+    private String templateZT="";
 
     @Override
     protected void onDestroy() {
@@ -140,7 +141,6 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     @Override
     protected void onStart() {
         super.onStart();
-        uploadEnterLog();
 
         PlayerConfig.getInstance().setTopicId(mPageUUid);
     }
@@ -153,11 +153,11 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
             StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
             dataBuff.append("0,")
                     .append(mPageUUid + ",")
-                    .append("")//专题模板
+                    .append(templateZT)//专题模板
                     .trimToSize();
             Log.e("SpecialActivity", dataBuff.toString());
 
-//            LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
         }
     }
 
@@ -165,7 +165,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
         StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
         dataBuff.append("1,")
                 .append(mPageUUid + ",")
-                .append("")//专题模板
+                .append(templateZT)//专题模板
                 .trimToSize();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
@@ -184,6 +184,10 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
 
     @Override
     public void showPageContent(ModelResult<ArrayList<Page>> modelResult) {
+        templateZT = modelResult.getTemplateZT();
+        uploadEnterLog();
+
+
         initBackground(modelResult);
         mSpecialFragment = SpecialLayoutManager.get().GenerateFragment(R.id.content, getIntent()
                         .getExtras(),
@@ -202,6 +206,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
 
 
     private void initBackground(final ModelResult modelResult) {
+        String templateZT = modelResult.getTemplateZT();
         if (ModelResult.IS_AD_TYPE.equals(modelResult.isAd())) {
             mAdPresenter.getAdByType(Constant.AD_TOPIC, mPageUUid, "", null, new AdContract
                     .Callback() {
