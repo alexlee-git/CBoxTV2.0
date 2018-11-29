@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import com.gridsum.videotracker.GSVideoState;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
@@ -205,6 +206,10 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
             Log.i(TAG, "playVideo: videoDataStruct==null");
             return false;
         }
+        if(UserStatus.isVip()){
+            PlayerConfig.getInstance().setJumpAD(true);
+        }
+
         IcntvPlayerInfo icntvPlayerInfo = new IcntvPlayerInfo();
         icntvPlayerInfo.setAppKey(Libs.get().getAppKey());
         icntvPlayerInfo.setChannalId(Libs.get().getChannelId());
