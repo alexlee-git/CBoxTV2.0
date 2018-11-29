@@ -402,9 +402,13 @@ public class UserCenterRecordManager {
         // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            // tableName = DBConfig.HISTORY_TABLE_NAME;
+            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                    .condition()
+                    .eq(DBConfig.USERID, dataUserId)
+                    .eq(DBConfig.CONTENTUUID, contentuuids)
+                    .build()
+                    .withCallback(callback).excute();
         } else {
-            // tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context))
                         .deleteRemoteHistory("Bearer " + token, userId,
@@ -413,42 +417,42 @@ public class UserCenterRecordManager {
                                 Libs.get().getChannelId(),
                                 contentuuids);
             }
-        }
 
-
-        if (TextUtils.equals(contentuuids, "clean")) {
-            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
-                    .condition()
-                    .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
-                    .build()
-                    .withCallback(callback).excute();
-
-            DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
-                    .condition()
-                    .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
-                    .build()
-                    .withCallback(callback).excute();
-        } else {
-            if (TextUtils.equals(dataUserId, SystemUtils.getDeviceMac(LauncherApplication.AppContext))) {
+            if (TextUtils.equals(contentuuids, "clean")) {
                 DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
                         .condition()
-                        .eq(DBConfig.USERID, dataUserId)
-                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                         .build()
                         .withCallback(callback).excute();
-                Log.d(TAG, "单点删除本地数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
-            }
 
-            if (TextUtils.equals(dataUserId, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))) {
                 DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
                         .condition()
-                        .eq(DBConfig.USERID, dataUserId)
-                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
                         .build()
                         .withCallback(callback).excute();
-                Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+            } else {
+                if (TextUtils.equals(dataUserId, SystemUtils.getDeviceMac(LauncherApplication.AppContext))) {
+                    DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                            .condition()
+                            .eq(DBConfig.USERID, dataUserId)
+                            .eq(DBConfig.CONTENTUUID, contentuuids)
+                            .build()
+                            .withCallback(callback).excute();
+                    Log.d(TAG, "单点删除本地数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+                }
+
+                if (TextUtils.equals(dataUserId, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))) {
+                    DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
+                            .condition()
+                            .eq(DBConfig.USERID, dataUserId)
+                            .eq(DBConfig.CONTENTUUID, contentuuids)
+                            .build()
+                            .withCallback(callback).excute();
+                    Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+                }
             }
         }
+
         Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentuuids);
     }
 
