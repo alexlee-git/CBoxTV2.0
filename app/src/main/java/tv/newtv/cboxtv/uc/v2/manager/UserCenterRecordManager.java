@@ -32,6 +32,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
@@ -170,7 +171,7 @@ public class UserCenterRecordManager {
                 });
     }
 
-    public void deleteRecord(USER_CENTER_RECORD_TYPE type, Context context, String contentuuids, String contentType, DBCallback<String> dbCallback) {
+    public void deleteRecord(USER_CENTER_RECORD_TYPE type, Context context, String contentuuids, String contentType, String dataUserId, DBCallback<String> dbCallback) {
         if (context == null) {
             return;
         }
@@ -195,7 +196,7 @@ public class UserCenterRecordManager {
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteSubscribeRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
-            procDeleteHistoryRecord(context, contentuuids, contentType, dbCallback);
+            procDeleteHistoryRecord(dataUserId, context, contentuuids, contentType, dbCallback);
         }
     }
 
@@ -299,7 +300,8 @@ public class UserCenterRecordManager {
      * @param contentuuids 待删除的历史记录的content_uuid值,如果是全部则传"clean", 如果是多个则用逗号将id隔开
      * @param contentType
      */
-    public void procDeleteHistoryRecord(Context context, String contentuuids, String contentType, DBCallback<String> callback) {
+    public void procDeleteHistoryRecord(String dataUserId, Context context, String contentuuids, String contentType, DBCallback<String> callback) {
+        Log.d(TAG, "删除 dataUserId : " + dataUserId + ", contentuuids : " + contentuuids);
         if (TextUtils.isEmpty(contentuuids)) {
             return;
         }
@@ -309,18 +311,13 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String tableName = "";
+        // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            tableName = DBConfig.HISTORY_TABLE_NAME;
+            // tableName = DBConfig.HISTORY_TABLE_NAME;
         } else {
-            tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
+            // tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
-//                String contentTypeParam = "1";
-//                if (TextUtils.equals(contentType, "PG")) {
-//                    contentTypeParam = "0";
-//                }
-
                 HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context))
                         .deleteRemoteHistory("Bearer " + token, userId,
                                 contentType,
@@ -332,18 +329,39 @@ public class UserCenterRecordManager {
 
 
         if (TextUtils.equals(contentuuids, "clean")) {
-            DataSupport.delete(tableName).condition()
-                    .eq(DBConfig.USERID, userId)
+            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                    .condition()
+                    .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                    .build()
+                    .withCallback(callback).excute();
+
+            DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
+                    .condition()
+                    .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
                     .build()
                     .withCallback(callback).excute();
         } else {
-            DataSupport.delete(tableName).condition()
-                    .eq(DBConfig.USERID, userId)
-                    .eq(DBConfig.CONTENTUUID, contentuuids)
-                    .build()
-                    .withCallback(callback).excute();
+            if (TextUtils.equals(dataUserId, SystemUtils.getDeviceMac(LauncherApplication.AppContext))) {
+                DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, dataUserId)
+                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .build()
+                        .withCallback(callback).excute();
+                Log.d(TAG, "单点删除本地数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+            }
+
+            if (TextUtils.equals(dataUserId, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))) {
+                DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, dataUserId)
+                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .build()
+                        .withCallback(callback).excute();
+                Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+            }
         }
-        Log.d(TAG, "procDeleteHistoryRecord delete history complete, tableName : " + tableName + ", userId : " + userId + ", id : " + contentuuids);
+        Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentuuids);
     }
 
     private void procDeleteCollectionRecord(Context context, Bundle bundle, DBCallback<String> callback) {

@@ -213,7 +213,7 @@ public class BackGroundManager {
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 bgDrawable.drawable = new BitmapDrawable(context.getResources(), bitmap);
                 if (uuid.equals(mCurrentId) && mBGCallback != null && mBGCallback.getTargetView()
-                        != null) {
+                        != null && bgHashmap.get(uuid) != null) {
                     mBGCallback.getTargetView().setBackground(bgHashmap.get(uuid).drawable);
                 }
                 targetList.remove(this);
