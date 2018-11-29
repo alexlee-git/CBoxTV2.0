@@ -21,6 +21,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.mainPage.LooperUtil;
 
 /**
@@ -47,6 +48,7 @@ public class MenuRecycleView extends RecyclerView {
     private boolean TransPostion = true;
     private int menuSelectPos = 0;
     private View mFocusView;
+    private long lastTime = 0;
 
 
     public void destroy(){
@@ -266,16 +268,22 @@ public class MenuRecycleView extends RecyclerView {
 
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (mSelectedListener == null) return true;
-                View focusView = mSelectedListener.getNextFocusView();
+                final View focusView = mSelectedListener.getNextFocusView();
                 if (focusView != null) {
                     if (!(focusView instanceof RecyclerView)) {
-                        focusView.requestFocus();
+                        postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                focusView.requestFocus();
+                            }
+                        },200);
                         if (mFocusView != null) {
                             mFocusView.setVisibility(View.GONE);
                         }
                     }
                 } else {
                     Log.e("Menu", "找不到下方移动的焦点");
+                    return true;
                 }
                 Log.e("Menu", "return true");
                 return true;
