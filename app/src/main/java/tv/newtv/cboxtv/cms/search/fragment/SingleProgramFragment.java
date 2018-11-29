@@ -11,11 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
-import com.newtv.libs.util.LogUtils;
-import com.newtv.libs.util.SharePreferenceUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.adapter.SearchResultAdapter;
@@ -27,7 +24,7 @@ import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
  * des : 搜索结果：单片
  */
 
-public class SingleProgramFragment  extends BaseFragment {
+public class SingleProgramFragment  extends SearchBaseFragment {
 
     private View view;
     private SearchRecyclerView mRecyclerView;

@@ -8,17 +8,11 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.newtv.cms.bean.SubContent;
-import com.newtv.libs.util.LogUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.adapter.SearchResultAdapter;
@@ -33,7 +27,7 @@ import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
  * 修改时间：2018/4/30 0029 18:40
  * 修改备注：新增人物页
  */
-public class ColumnFragment extends BaseFragment{
+public class ColumnFragment extends SearchBaseFragment {
 
     private SearchRecyclerView mRecyclerView;
     private TextView mEmptyView;

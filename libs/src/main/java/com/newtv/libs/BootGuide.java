@@ -61,13 +61,15 @@ public final class BootGuide {
     public static final String USER = "USER";
     public static final String USER_BEHAVIOR = "USER_BEHAVIOR";
     public static final String PRODUCT = "PRODUCT";
-    public static final String NEW_CMS = "NEW_CMS";
-    public static final String NEW_SEARCH = "NEW_SEARCH";
+//    public static final String NEW_CMS = "NEW_CMS";
+//    public static final String NEW_SEARCH = "NEW_SEARCH";
     public static final String BOOT_GUIDE = "BOOT_GUIDE";
     public static final String HOTSEARCH_CONTENTID = "HOTSEARCH_CONTENTID";
     public static final String EXIT_CONTENTID = "EXIT_CONTENTID";
     public static final String HTML_PATH_USER_PROTOCOL = "HTML_PATH_USER_PROTOCOL";
-
+    public static final String MARK_IS4K = "MARK_IS4K";
+    public static final String MARK_VIPPRODUCTID = "MARK_VIPPRODUCTID";
+    public static final String MARK_NEW_REALEXCLUSIVE = "MARK_NEW_REALEXCLUSIVE";
     private static HashMap<String, String> mServerAddressMap;
 
     public static void init(Context context){

@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.views.custom;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -14,8 +15,9 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AlternateContract;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.util.LogUtils;
-import com.newtv.libs.util.PlayerTimeUtils;
+import com.newtv.libs.util.SPrefUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,25 +56,21 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  * 4.
  */
 public class AlternateView extends VideoFrameLayout implements ContentContract.View, Navigation
-        .NavigationChange,
+        .NavigationChange, NewTVLauncherPlayerView.OnPlayerStateChange,
         PlayerCallback, AlternateContract.LoadingView, ICustomPlayer {
+    private static final String ALTERNATE_TIP_TAG = "alternate_tip";
     private ContentContract.Presenter mPresenter;                   //内容接口
     private AlternateContract.Presenter mAlternatePresenter;        //轮播接口
     private String playContentId;           //正在播放节目的ID
     private String playContentUUID;         //正在播放的节目的UUID
-
     private boolean isRequesting = false;
-
     private int currentPlayIndex = 0;       //正在播放的节目索引值
     private String mContentUUID;            //当前页面的contentID
-
     private VideoPlayerView playerView;     //播放器
     private List<Alternate> mAlternates;    //当前轮播播放列表
-
     private ViewGroup videoContainer;
     private TextView channelText, titleText;
     private String mChannel, mTitle;
-
     private String mPageUUID;
     private Disposable mDisposable;
     private Long currentStartTime = 0L;
@@ -84,6 +82,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
             Locale.getDefault());
     private AlternateCallback mCallback;
     private ScreenListener mListener;
+    private boolean hasTipAlternate = false;
     private ScreenListener mScreenListener = new ScreenListener() {
         @Override
         public void enterFullScreen() {
@@ -99,6 +98,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
             }
         }
     };
+    private boolean isFullScreen;
 
     public AlternateView(Context context) {
         this(context, null);
@@ -110,12 +110,20 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
 
     public AlternateView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        refreshTipStatus();
+
+        //FIXBUG 为了测试轮播提示，每次创建ALternateView的时候，重置本地提示标识
+        SPrefUtils.setValue(getContext(), ALTERNATE_TIP_TAG, true);
 
         LayoutInflater.from(getContext()).inflate(R.layout.alternate_player_layout, this, true);
 
         videoContainer = findViewById(R.id.video_container);
         channelText = findViewById(R.id.alter_channel);
         titleText = findViewById(R.id.alter_title);
+    }
+
+    private void refreshTipStatus() {
+        hasTipAlternate = (boolean) SPrefUtils.getValue(getContext(), ALTERNATE_TIP_TAG, false);
     }
 
     @Override
@@ -144,49 +152,6 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
 
     public void setCallback(AlternateCallback callback) {
         mCallback = callback;
-    }
-
-    private Long parse(String time) {
-        return PlayerTimeUtils.parseTime(time, "yyyy-MM-dd HH:mm:ss.S");
-    }
-
-    /**
-     * 查找当前时间段播放的内容
-     *
-     * @param alternateList 播放列表
-     * @param now           当前时间
-     * @param beginIndex    开始查找索引值
-     * @param endIndex      结束查找索引值
-     * @return 返回时间段内播放的index
-     */
-    public int binarySearch(List<Alternate> alternateList, Long now, int beginIndex, int endIndex) {
-        int midIndex = (beginIndex + endIndex) / 2;
-        if (endIndex - beginIndex < 20) {
-            for (int index = beginIndex; index < endIndex; index++) {
-                Long startTime = parse(alternateList.get(index).getStartTime());
-                Long endTime = startTime + Integer.parseInt(alternateList.get(index)
-                        .getDuration()) * 1000;
-                if (startTime <= now && endTime > now) {
-                    return index;
-                }
-            }
-        }
-        Long midLong = parse(alternateList.get(midIndex).getStartTime());
-        Long beginLong = parse(alternateList.get(beginIndex).getStartTime());
-        Long endLong = parse(alternateList.get(endIndex).getStartTime());
-        LogUtils.e("Alternate", "start=" + beginIndex + " time=" + alternateList.get(beginIndex)
-                .getStartTime() +
-                " end=" + endIndex + " time=" + alternateList.get(endIndex).getStartTime());
-        if (now < beginLong || now > endLong || beginIndex > endIndex) {
-            return -1;
-        }
-        if (now < midLong) {
-            return binarySearch(alternateList, now, beginIndex, midIndex);
-        } else if (now > midLong) {
-            return binarySearch(alternateList, now, midIndex, endIndex);
-        } else {
-            return midIndex;
-        }
     }
 
     private void setContentUUID(String uuid, boolean compare, String channel, String title) {
@@ -261,6 +226,16 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
             playerView.destory();
             playerView = null;
         }
+
+
+        if (mAlternatePresenter != null) {
+            mAlternatePresenter.stop();
+        }
+
+        if (mPresenter != null) {
+            mPresenter.stop();
+        }
+        isRequesting = false;
 
         if (mDisposable != null) {
             if (!mDisposable.isDisposed()) {
@@ -340,7 +315,6 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
         }
     }
 
-
     /* 准备播放器 */
     public void prepareMediaPlayer() {
         if (playerView != null && playerView.isReleased()) {
@@ -368,6 +342,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
             if (playerView != null) {
                 playerView.setAlternatePlay();
                 playerView.outerControl();
+                playerView.setOnPlayerStateChange(this);
                 playerView.registerScreenListener(mScreenListener);
                 playerView.setPlayerCallback(this);
             }
@@ -409,22 +384,24 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (TextUtils.equals(playContentId, uuid)) {
-            if (content != null && content.getData() != null) {
-                ArrayList<SubContent> subContents = new ArrayList<>();
-                for (SubContent sub : content.getData()) {
-                    if (TextUtils.equals(sub.getContentUUID(), playContentUUID)) {
-                        subContents.add(sub);
-                        break;
+            if (content != null) {
+                if(content.getData() != null) {
+                    ArrayList<SubContent> subContents = new ArrayList<>();
+                    for (SubContent sub : content.getData()) {
+                        if (TextUtils.equals(sub.getContentUUID(), playContentUUID)) {
+                            subContents.add(sub);
+                            break;
+                        }
                     }
+                    content.setData(subContents);
                 }
-                content.setData(subContents);
                 prepareMediaPlayer();
                 playerView.setSeriesInfo(content);
 
-                currentStartTime = parse(currentAlternate.getStartTime());
+                currentStartTime = CmsUtil.parse(currentAlternate.getStartTime());
                 initialize();
                 playerView.playSingleOrSeries(0,
-                        (int) (System.currentTimeMillis() - currentStartTime));
+                        (int) (System.currentTimeMillis() - currentStartTime),mContentUUID);
             }
         }
     }
@@ -453,7 +430,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
             mCallback.onAlternateResult(mAlternates);
         }
         if (mAlternates != null && mAlternates.size() > 0) {
-            currentPlayIndex = binarySearch(mAlternates, System.currentTimeMillis(), 0,
+            currentPlayIndex = CmsUtil.binarySearch(mAlternates, System.currentTimeMillis(), 0,
                     mAlternates.size() - 1);
             if (currentPlayIndex >= 0) {
                 preparePlay();
@@ -461,10 +438,6 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
             }
         }
 
-//        if (playerView != null) {
-//            playerView.setHintText("暂无播放");
-//            playerView.setTipText("");
-//        }
         titleText.setText("暂无播放");
     }
 
@@ -516,8 +489,6 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
         }
     }
 
-
-
     @Override
     public void onWindowVisibleChange(int visible) {
         LogUtils.d("AlternateView", mPageUUID + " visible change = " + visible);
@@ -550,7 +521,46 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
         }
     }
 
+    @Override
+    public boolean onStateChange(boolean fullScreen, int visible, boolean videoPlaying) {
+        isFullScreen = fullScreen;
+        LogUtils.d("AlternateView", "onStateChange = " + fullScreen);
+        LogUtils.d("AlternateView", "visible = " + visible);
+        LogUtils.d("videoPlaying", "videoPlaying = " + videoPlaying);
+        if (isFullScreen && playerView != null && visible == 0 && hasTipAlternate && videoPlaying) {
+            AlternateTipView tipView = new AlternateTipView(getContext());
+            playerView.tip(tipView, 1);
+            hasTipAlternate = false;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean processKeyEvent(KeyEvent keyEvent) {
+        if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+            if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER || keyEvent.getKeyCode() ==
+                    KeyEvent.KEYCODE_DPAD_CENTER) {
+                playerView.dismissTipView();
+            }
+        }
+        switch (keyEvent.getKeyCode()){
+            case KeyEvent.KEYCODE_BACK:
+            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+            case KeyEvent.KEYCODE_MENU:
+                return true;
+            default:
+                break;
+
+        }
+        return false;
+    }
+
     public interface AlternateCallback {
+
         void onAlternateResult(@Nullable List<Alternate> result);
 
         void onPlayIndexChange(int index);

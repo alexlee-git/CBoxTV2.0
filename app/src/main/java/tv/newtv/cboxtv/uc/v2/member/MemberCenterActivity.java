@@ -53,11 +53,8 @@ import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.SplashActivity;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.player.Player;
-import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
@@ -696,11 +693,11 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
                 return;
             }
             intent.setClass(this, mPageClass);
-            if (!isBackground){
-                ActivityStacks.get().finishAllActivity();
-                startActivity(intent);
-            }
+            startActivity(intent);
             if (mPageClass == MainActivity.class) {
+                if (!isBackground){
+                    ActivityStacks.get().finishAllActivity();
+                }
                 this.finish();
             }
         } catch (Exception e) {

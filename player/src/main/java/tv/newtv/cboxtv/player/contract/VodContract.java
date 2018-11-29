@@ -214,9 +214,11 @@ public class VodContract {
             videoDataStruct.setProgramId(playResult.getContentUUID());
 
             String duration = playResult.getDuration();
+
             if (!TextUtils.isEmpty(duration)) {
                 videoDataStruct.setDuration(Integer.parseInt(playResult
                         .getDuration()));
+                getContext().getSharedPreferences("durationConfig", Context.MODE_PRIVATE).edit().putString("duration", duration).apply();
             }
 
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
@@ -233,9 +235,6 @@ public class VodContract {
                 ADConfig.getInstance().setSeriesID("",false);
             }
 
-            if(UserStatus.isVip()){
-                PlayerConfig.getInstance().setJumpAD(true);
-            }
             String vipFlag = playResult.getVipFlag();
 
             if(!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_VIP.equals(vipFlag) && !UserStatus.isVip()){

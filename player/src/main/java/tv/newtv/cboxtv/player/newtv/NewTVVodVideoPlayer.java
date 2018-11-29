@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import com.gridsum.videotracker.GSVideoState;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
@@ -15,6 +16,7 @@ import com.newtv.libs.util.YSLogUtils;
 import java.util.LinkedHashMap;
 
 import tv.icntv.been.IcntvPlayerInfo;
+import tv.icntv.icntvplayersdk.Constants;
 import tv.icntv.icntvplayersdk.IcntvPlayer;
 import tv.icntv.icntvplayersdk.iICntvPlayInterface;
 import tv.newtv.cboxtv.player.IVodVideoPlayerInterface;
@@ -281,7 +283,11 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         icntvPlayerInfo.setProgramListID(videoDataStruct.getSeriesId());
         icntvPlayerInfo.setDuration(videoDataStruct.getDuration() * 60 * 1000);
         icntvPlayerInfo.setProgramID(videoDataStruct.getProgramId());
-        icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        if(UserStatus.isVip()){
+            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
+        }else {
+            icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        }
         icntvPlayerInfo.setKey(videoDataStruct.getKey());
         icntvPlayerInfo.setDeviceID(Constant.UUID);
         //extend字段

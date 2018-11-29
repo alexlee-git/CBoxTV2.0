@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.uc.v2.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -32,6 +34,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
@@ -76,6 +79,92 @@ public class UserCenterRecordManager {
     private Disposable mSubscribeDisposable;
     private Disposable mFollowDisposable;
     private Disposable mCollectionDisposable;
+
+    private boolean collectStatusInLocal;
+    private boolean collectStatusInRemote;
+    private boolean collectStatusLocalReqComp;
+    private boolean collectStatusRemoteReqComp;
+
+
+
+
+    private final int MSG_NOTIFY_COLLECT_STATUS   = 10071;
+    private final int MSG_NOTIFY_SUBSCRIBE_STATUS = 10072;
+    private final int MSG_NOTIFY_FOLLOW_STATUS = 10073;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_NOTIFY_COLLECT_STATUS) {
+                Log.d("col", "接收到 MSG_NOTIFY_COLLECT_STATUS 消息");
+                ICollectionStatusCallback callback = (ICollectionStatusCallback) msg.obj;
+                if (callback == null) {
+                    return;
+                }
+
+                mHandler.removeMessages(MSG_NOTIFY_COLLECT_STATUS);
+
+                if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
+                    if (collectStatusInRemote || collectStatusInLocal) {
+                        Log.d(TAG, "通知该片已订阅");
+                        callback.notifyCollectionStatus(true);
+                    } else {
+                        Log.d(TAG, "通知该片未订阅");
+                        callback.notifyCollectionStatus(false);
+                    }
+                } else {
+                    if (mHandler != null) {
+                        mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_COLLECT_STATUS, 100);
+                    }
+                }
+            } else if (msg.what == MSG_NOTIFY_SUBSCRIBE_STATUS) {
+                ISubscribeStatusCallback callback = (ISubscribeStatusCallback) msg.obj;
+                if (callback == null) {
+                    return;
+                }
+
+                mHandler.removeMessages(MSG_NOTIFY_SUBSCRIBE_STATUS);
+
+                if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
+                    if (collectStatusInRemote || collectStatusInLocal) {
+                        Log.d(TAG, "通知该片已收藏");
+                        callback.notifySubScribeStatus(true);
+                    } else {
+                        Log.d(TAG, "通知该片未收藏");
+                        callback.notifySubScribeStatus(false);
+                    }
+                } else {
+                    if (mHandler != null) {
+                        mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_SUBSCRIBE_STATUS, 100);
+                    }
+                }
+            } else if (msg.what == MSG_NOTIFY_FOLLOW_STATUS) {
+                Log.d("follow", "接收到 MSG_NOTIFY_FOLLOW_STATUS 消息");
+                IFollowStatusCallback callback = (IFollowStatusCallback) msg.obj;
+                if (callback == null) {
+                    return;
+                }
+
+                mHandler.removeMessages(MSG_NOTIFY_FOLLOW_STATUS);
+
+                if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
+                    if (collectStatusInRemote || collectStatusInLocal) {
+                        Log.d(TAG, "通知人物已关注");
+                        callback.notifyFollowStatus(true);
+                    } else {
+                        Log.d(TAG, "通知该人物未关注");
+                        callback.notifyFollowStatus(false);
+                    }
+                } else {
+                    if (mHandler != null) {
+                        mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_FOLLOW_STATUS, 100);
+                    }
+                }
+            } else {
+                Log.d(TAG, "unresolved msg : " + msg.what);
+            }
+        }
+    };
 
     public enum USER_CENTER_RECORD_TYPE {
         TYPE_SUBSCRIBE,
@@ -170,7 +259,7 @@ public class UserCenterRecordManager {
                 });
     }
 
-    public void deleteRecord(USER_CENTER_RECORD_TYPE type, Context context, String contentuuids, String contentType, DBCallback<String> dbCallback) {
+    public void deleteRecord(USER_CENTER_RECORD_TYPE type, Context context, String contentuuids, String contentType, String dataUserId, DBCallback<String> dbCallback) {
         if (context == null) {
             return;
         }
@@ -195,7 +284,7 @@ public class UserCenterRecordManager {
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteSubscribeRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
-            procDeleteHistoryRecord(context, contentuuids, contentType, dbCallback);
+            procDeleteHistoryRecord(dataUserId, context, contentuuids, contentType, dbCallback);
         }
     }
 
@@ -299,7 +388,8 @@ public class UserCenterRecordManager {
      * @param contentuuids 待删除的历史记录的content_uuid值,如果是全部则传"clean", 如果是多个则用逗号将id隔开
      * @param contentType
      */
-    public void procDeleteHistoryRecord(Context context, String contentuuids, String contentType, DBCallback<String> callback) {
+    public void procDeleteHistoryRecord(String dataUserId, Context context, String contentuuids, String contentType, DBCallback<String> callback) {
+        Log.d(TAG, "删除 dataUserId : " + dataUserId + ", contentuuids : " + contentuuids);
         if (TextUtils.isEmpty(contentuuids)) {
             return;
         }
@@ -309,18 +399,17 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String tableName = "";
+        // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            tableName = DBConfig.HISTORY_TABLE_NAME;
+            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                    .condition()
+                    .eq(DBConfig.USERID, dataUserId)
+                    .eq(DBConfig.CONTENTUUID, contentuuids)
+                    .build()
+                    .withCallback(callback).excute();
         } else {
-            tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
-//                String contentTypeParam = "1";
-//                if (TextUtils.equals(contentType, "PG")) {
-//                    contentTypeParam = "0";
-//                }
-
                 HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context))
                         .deleteRemoteHistory("Bearer " + token, userId,
                                 contentType,
@@ -328,26 +417,43 @@ public class UserCenterRecordManager {
                                 Libs.get().getChannelId(),
                                 contentuuids);
             }
+
+            if (TextUtils.equals(contentuuids, "clean")) {
+                DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .build()
+                        .withCallback(callback).excute();
+
+                DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                        .build()
+                        .withCallback(callback).excute();
+            } else {
+                // if (TextUtils.equals(dataUserId, SystemUtils.getDeviceMac(LauncherApplication.AppContext))) {
+                    DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                            .condition()
+                            .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                            .eq(DBConfig.CONTENTUUID, contentuuids)
+                            .build()
+                            .withCallback(callback).excute();
+                    Log.d(TAG, "单点删除本地数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+                // }
+
+                // if (TextUtils.equals(dataUserId, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))) {
+                    DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
+                            .condition()
+                            .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                            .eq(DBConfig.CONTENTUUID, contentuuids)
+                            .build()
+                            .withCallback(callback).excute();
+                    Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+                // }
+            }
         }
 
-        // DBUtil.delHistory(userId, contentuuids, callback, tableName);
-        // if (callback != null) {
-        //    callback.onResult(0, "OK");
-        // }
-
-        if (TextUtils.equals(contentuuids, "clean")) {
-            DataSupport.delete(tableName).condition()
-                    .eq(DBConfig.USERID, userId)
-                    .build()
-                    .withCallback(callback).excute();
-        } else {
-            DataSupport.delete(tableName).condition()
-                    .eq(DBConfig.USERID, userId)
-                    .eq(DBConfig.CONTENTUUID, contentuuids)
-                    .build()
-                    .withCallback(callback).excute();
-        }
-        Log.d(TAG, "procDeleteHistoryRecord delete history complete, tableName : " + tableName + ", userId : " + userId + ", id : " + contentuuids);
+        Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentuuids);
     }
 
     private void procDeleteCollectionRecord(Context context, Bundle bundle, DBCallback<String> callback) {
@@ -356,21 +462,22 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String tableName = "";
+        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
+
+        Log.d("lxl", "userId : " + userId + ", contentuuid : " + contentuuid);
+
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            tableName = DBConfig.COLLECT_TABLE_NAME;
+            DBUtil.UnCollect(userId, contentuuid, callback, DBConfig.COLLECT_TABLE_NAME);
         } else {
-            tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect(packageData(bundle));
+                DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentuuid, callback, DBConfig.COLLECT_TABLE_NAME);
             }
+
+            Log.d("lxl", "登录用户, 两个表的数据都删除, contentuuid : " + contentuuid);
+            DBUtil.UnCollect(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentuuid, callback, DBConfig.REMOTE_COLLECT_TABLE_NAME);
         }
-
-        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
-        DBUtil.UnCollect(userId, contentuuid, callback, tableName);
-
-        Log.d(TAG, "procDeleteCollectionRecord delete collection complete, tableName : " + tableName + ", userId : " + userId + ", name : " + bundle.getString(DBConfig.TITLE_NAME));
     }
 
     private void procDeleteFollowRecord(Context context, Bundle bundle, DBCallback<String> callback) {
@@ -379,22 +486,19 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String tableName = "";
+        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
+
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            tableName = DBConfig.ATTENTION_TABLE_NAME;
+            DBUtil.delAttention(userId, contentuuid, callback, DBConfig.ATTENTION_TABLE_NAME);
         } else {
-            tableName = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
-                FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context)).
-                        deleteRemoteFollow(packageData(bundle));
+                FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context)).deleteRemoteFollow(packageData(bundle));
+                DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentuuid, callback, DBConfig.ATTENTION_TABLE_NAME);
             }
+
+            DBUtil.UnCollect(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentuuid, callback, DBConfig.REMOTE_ATTENTION_TABLE_NAME);
         }
-
-        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
-        DBUtil.delAttention(userId, contentuuid, callback, tableName);
-
-        Log.d(TAG, "procDeleteFollowRecord delete follow complete, tableName : " + tableName + ", userId : " + userId + ", name : " + bundle.get(DBConfig.TITLE_NAME));
     }
 
     private void procDeleteSubscribeRecord(Context context, Bundle bundle, DBCallback<String> callback) {
@@ -403,21 +507,23 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String tableName = "";
+        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
+        // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            tableName = DBConfig.SUBSCRIBE_TABLE_NAME;
+            // tableName = DBConfig.SUBSCRIBE_TABLE_NAME;
+            DBUtil.UnSubcribe(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentuuid, callback, DBConfig.SUBSCRIBE_TABLE_NAME);
         } else {
-            tableName = DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME;
+            // tableName = DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 SubRepository.getInstance(SubRemoteDataSource.getInstance(context)).deleteRemoteSubscribe(packageData(bundle));
+                DBUtil.UnSubcribe(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentuuid, callback, DBConfig.SUBSCRIBE_TABLE_NAME);
             }
+
+            DBUtil.UnSubcribe(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentuuid, callback, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
         }
 
-        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
-        DBUtil.UnSubcribe(userId, contentuuid, callback, tableName);
-
-        Log.d(TAG, "procDeleteSubscribeRecord delete subscribe complete, tableName : " + tableName + ", userId : " + userId + ", name : " + bundle.getString(DBConfig.TITLE_NAME));
+        Log.d(TAG, "procDeleteSubscribeRecord delete subscribe complete, userId : " + userId + ", name : " + bundle.getString(DBConfig.TITLE_NAME));
     }
 
 
@@ -729,7 +835,6 @@ public class UserCenterRecordManager {
 
         UserCenterPageBean.Bean pageBean = new UserCenterPageBean.Bean();
         pageBean.set_contentuuid(bundle.getString(DBConfig.CONTENTUUID));
-        Log.d("sub", "packageData contentID : " + bundle.get(DBConfig.CONTENTUUID));
         pageBean.set_title_name(bundle.getString(DBConfig.TITLE_NAME));
         pageBean.set_imageurl(bundle.getString(DBConfig.IMAGEURL));
         pageBean.setProgress(bundle.getString(DBConfig.PLAY_PROGRESS));
@@ -742,6 +847,8 @@ public class UserCenterRecordManager {
         pageBean.set_contenttype(bundle.getString(DBConfig.CONTENTTYPE));
         pageBean.setPlayIndex(bundle.getString(DBConfig.PLAYINDEX));
         pageBean.set_actiontype(Constant.OPEN_DETAILS);
+        pageBean.setPlayId(bundle.getString(DBConfig.PLAYID));
+        pageBean.setProgramChildName(bundle.getString(DBConfig.PROGRAM_CHILD_NAME));
         return pageBean;
     }
 
@@ -757,6 +864,10 @@ public class UserCenterRecordManager {
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
                 boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(context);
+                collectStatusInLocal       = false;
+                collectStatusInRemote      = false;
+                collectStatusLocalReqComp  = false;
+                collectStatusRemoteReqComp = false;
                 Log.d(TAG, "---queryContentSubscribeStatus:isTokenRefresh:status:" + status);
                 //获取登录状态
                 String mLoginTokenString = SharePreferenceUtils.getToken(context);
@@ -777,37 +888,70 @@ public class UserCenterRecordManager {
 
                     @Override
                     public void onNext(String s) {
-                        String tableName = DBConfig.SUBSCRIBE_TABLE_NAME;
-                        String userId;
                         if (!TextUtils.isEmpty(s)) {
-                            userId = SharePreferenceUtils.getUserId(context);
-                            tableName = DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME;
-                        } else {
-                            userId = SystemUtils.getDeviceMac(context);
-                        }
-                        DataSupport.search(tableName)
-                                .condition()
-                                .eq(DBConfig.CONTENTUUID, contentUUid)
-                                .eq(DBConfig.USERID, userId)
-                                .OrderBy(DBConfig.ORDER_BY_TIME)
-                                .build()
-                                .withCallback(new DBCallback<String>() {
-                                    @Override
-                                    public void onResult(int code, String result) {
-                                        if (code == 0) {
-                                            if (!TextUtils.isEmpty(result)) {
-                                                if (callback != null) {
-                                                    callback.notifySubScribeStatus(true);
+                            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
+                                Log.d("col", "需要两个表都查");
+                                DataSupport.search(DBConfig.SUBSCRIBE_TABLE_NAME)
+                                        .condition()
+                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                                        .build()
+                                        .withCallback(new DBCallback<String>() {
+                                            @Override
+                                            public void onResult(int code, String result) {
+                                                if (code == 0) {
+                                                    if (!TextUtils.isEmpty(result)) {
+                                                        collectStatusInLocal = true;
+                                                    }
                                                 }
-                                            } else {
-                                                if (callback != null) {
-                                                    callback.notifySubScribeStatus(false);
+
+                                                Log.d("col", "查完本地表, 结果为 : " + collectStatusInLocal);
+
+                                                collectStatusLocalReqComp = true;
+
+                                                if (mHandler != null) {
+                                                    Message message = Message.obtain();
+                                                    message.what = MSG_NOTIFY_SUBSCRIBE_STATUS;
+                                                    message.obj = callback;
+                                                    mHandler.sendMessage(message);
                                                 }
                                             }
-                                        }
-                                    }
-                                }).excute();
-                        unSubscribe(mSubscribeDisposable);
+                                        }).excute();
+
+                                DataSupport.search(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME)
+                                        .condition()
+                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                                        .build()
+                                        .withCallback(new DBCallback<String>() {
+                                            @Override
+                                            public void onResult(int code, String result) {
+                                                if (code == 0) {
+                                                    if (!TextUtils.isEmpty(result)) {
+                                                        collectStatusInRemote = true;
+                                                    }
+
+                                                    Log.d("col", "查完远程表, 结果为 : " + collectStatusInRemote);
+                                                    collectStatusRemoteReqComp = true;
+
+                                                    if (mHandler != null) {
+                                                        Message message = Message.obtain();
+                                                        message.what = MSG_NOTIFY_SUBSCRIBE_STATUS;
+                                                        message.obj = callback;
+                                                        mHandler.sendMessage(message);
+                                                    }
+                                                }
+                                            }
+                                        }).excute();
+                            } else {
+                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_COLLECT_TABLE_NAME, callback);
+                            }
+                        } else {
+                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callback);
+                        }
+                        unSubscribe(mCollectionDisposable);
                     }
 
                     @Override
@@ -840,6 +984,12 @@ public class UserCenterRecordManager {
                 boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(context);
                 Log.d(TAG, "---queryContentFollowStatus:isTokenRefresh:status:" + status);
                 //获取登录状态
+
+                collectStatusInLocal       = false;
+                collectStatusInRemote      = false;
+                collectStatusLocalReqComp  = false;
+                collectStatusRemoteReqComp = false;
+
                 String mLoginTokenString = SharePreferenceUtils.getToken(context);
                 if (!TextUtils.isEmpty(mLoginTokenString)) {
                     e.onNext(mLoginTokenString);
@@ -858,37 +1008,70 @@ public class UserCenterRecordManager {
 
                     @Override
                     public void onNext(String s) {
-                        String tableName = DBConfig.ATTENTION_TABLE_NAME;
-                        String userId;
                         if (!TextUtils.isEmpty(s)) {
-                            userId = SharePreferenceUtils.getUserId(context);
-                            tableName = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
-                        } else {
-                            userId = SystemUtils.getDeviceMac(context);
-                        }
-                        DataSupport.search(tableName)
-                                .condition()
-                                .eq(DBConfig.CONTENTUUID, contentUUid)
-                                .eq(DBConfig.USERID, userId)
-                                .OrderBy(DBConfig.ORDER_BY_TIME)
-                                .build()
-                                .withCallback(new DBCallback<String>() {
-                                    @Override
-                                    public void onResult(int code, String result) {
-                                        if (code == 0) {
-                                            if (!TextUtils.isEmpty(result)) {
-                                                if (callback != null) {
-                                                    callback.notifyFollowStatus(true);
+                            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
+                                Log.d("follow", "需要两个表都查");
+                                DataSupport.search(DBConfig.ATTENTION_TABLE_NAME)
+                                        .condition()
+                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                                        .build()
+                                        .withCallback(new DBCallback<String>() {
+                                            @Override
+                                            public void onResult(int code, String result) {
+                                                if (code == 0) {
+                                                    if (!TextUtils.isEmpty(result)) {
+                                                        collectStatusInLocal = true;
+                                                    }
                                                 }
-                                            } else {
-                                                if (callback != null) {
-                                                    callback.notifyFollowStatus(false);
+
+                                                Log.d("follow", "查完本地表, 结果为 : " + collectStatusInLocal);
+
+                                                collectStatusLocalReqComp = true;
+
+                                                if (mHandler != null) {
+                                                    Message message = Message.obtain();
+                                                    message.what = MSG_NOTIFY_FOLLOW_STATUS;
+                                                    message.obj = callback;
+                                                    mHandler.sendMessage(message);
                                                 }
                                             }
-                                        }
-                                    }
-                                }).excute();
-                        unSubscribe(mFollowDisposable);
+                                        }).excute();
+
+                                DataSupport.search(DBConfig.REMOTE_ATTENTION_TABLE_NAME)
+                                        .condition()
+                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                                        .build()
+                                        .withCallback(new DBCallback<String>() {
+                                            @Override
+                                            public void onResult(int code, String result) {
+                                                if (code == 0) {
+                                                    if (!TextUtils.isEmpty(result)) {
+                                                        collectStatusInRemote = true;
+                                                    }
+
+                                                    Log.d("follow", "查完远程表, 结果为 : " + collectStatusInRemote);
+                                                    collectStatusRemoteReqComp = true;
+
+                                                    if (mHandler != null) {
+                                                        Message message = Message.obtain();
+                                                        message.what = MSG_NOTIFY_FOLLOW_STATUS;
+                                                        message.obj = callback;
+                                                        mHandler.sendMessage(message);
+                                                    }
+                                                }
+                                            }
+                                        }).excute();
+                            } else {
+                                queryFollowStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_ATTENTION_TABLE_NAME, callback);
+                            }
+                        } else {
+                            queryFollowStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.ATTENTION_TABLE_NAME, callback);
+                        }
+                        unSubscribe(mCollectionDisposable);
                     }
 
                     @Override
@@ -919,6 +1102,10 @@ public class UserCenterRecordManager {
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
                 boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(context);
+                collectStatusInLocal       = false;
+                collectStatusInRemote      = false;
+                collectStatusLocalReqComp  = false;
+                collectStatusRemoteReqComp = false;
                 Log.d(TAG, "---queryContentCollectionStatus:isTokenRefresh:status:" + status);
                 //获取登录状态
                 String mLoginTokenString = SharePreferenceUtils.getToken(context);
@@ -939,36 +1126,69 @@ public class UserCenterRecordManager {
 
                     @Override
                     public void onNext(String s) {
-                        String tableName = DBConfig.COLLECT_TABLE_NAME;
-                        String userId;
                         if (!TextUtils.isEmpty(s)) {
-                            userId = SharePreferenceUtils.getUserId(context);
-                            tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
-                        } else {
-                            userId = SystemUtils.getDeviceMac(context);
-                        }
-                        DataSupport.search(tableName)
-                                .condition()
-                                .eq(DBConfig.CONTENTUUID, contentUUid)
-                                .eq(DBConfig.USERID, userId)
-                                .OrderBy(DBConfig.ORDER_BY_TIME)
-                                .build()
-                                .withCallback(new DBCallback<String>() {
-                                    @Override
-                                    public void onResult(int code, String result) {
-                                        if (code == 0) {
-                                            if (!TextUtils.isEmpty(result)) {
-                                                if (callback != null) {
-                                                    callback.notifyCollectionStatus(true);
+                            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
+                                Log.d("col", "需要两个表都查");
+                                DataSupport.search(DBConfig.COLLECT_TABLE_NAME)
+                                        .condition()
+                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                                        .build()
+                                        .withCallback(new DBCallback<String>() {
+                                            @Override
+                                            public void onResult(int code, String result) {
+                                                if (code == 0) {
+                                                    if (!TextUtils.isEmpty(result)) {
+                                                        collectStatusInLocal = true;
+                                                    }
                                                 }
-                                            } else {
-                                                if (callback != null) {
-                                                    callback.notifyCollectionStatus(false);
+
+                                                Log.d("col", "查完本地表, 结果为 : " + collectStatusInLocal);
+
+                                                collectStatusLocalReqComp = true;
+
+                                                if (mHandler != null) {
+                                                    Message message = Message.obtain();
+                                                    message.what = MSG_NOTIFY_COLLECT_STATUS;
+                                                    message.obj = callback;
+                                                    mHandler.sendMessage(message);
                                                 }
                                             }
-                                        }
-                                    }
-                                }).excute();
+                                        }).excute();
+
+                                DataSupport.search(DBConfig.REMOTE_COLLECT_TABLE_NAME)
+                                        .condition()
+                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                                        .build()
+                                        .withCallback(new DBCallback<String>() {
+                                            @Override
+                                            public void onResult(int code, String result) {
+                                                if (code == 0) {
+                                                    if (!TextUtils.isEmpty(result)) {
+                                                        collectStatusInRemote = true;
+                                                    }
+
+                                                    Log.d("col", "查完远程表, 结果为 : " + collectStatusInRemote);
+                                                    collectStatusRemoteReqComp = true;
+
+                                                    if (mHandler != null) {
+                                                        Message message = Message.obtain();
+                                                        message.what = MSG_NOTIFY_COLLECT_STATUS;
+                                                        message.obj = callback;
+                                                        mHandler.sendMessage(message);
+                                                    }
+                                                }
+                                            }
+                                        }).excute();
+                            } else {
+                                queryCollectStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_COLLECT_TABLE_NAME, callback);
+                            }
+                        } else {
+                            queryCollectStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callback);
+                        }
                         unSubscribe(mCollectionDisposable);
                     }
 
@@ -987,6 +1207,83 @@ public class UserCenterRecordManager {
                     }
                 });
     }
+
+    private void queryCollectStatusByDB(String userId, String contentuuid, String tableName, final ICollectionStatusCallback callback) {
+        DataSupport.search(tableName)
+                .condition()
+                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.USERID, userId)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0) {
+                            if (!TextUtils.isEmpty(result)) {
+                                if (callback != null) {
+                                    callback.notifyCollectionStatus(true);
+                                }
+                            } else {
+                                if (callback != null) {
+                                    callback.notifyCollectionStatus(false);
+                                }
+                            }
+                        }
+                    }
+                }).excute();
+    }
+
+    private void querySubscribeStatusByDB(String userId, String contentuuid, String tableName, final ISubscribeStatusCallback callback) {
+        DataSupport.search(tableName)
+                .condition()
+                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.USERID, userId)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0) {
+                            if (!TextUtils.isEmpty(result)) {
+                                if (callback != null) {
+                                    callback.notifySubScribeStatus(true);
+                                }
+                            } else {
+                                if (callback != null) {
+                                    callback.notifySubScribeStatus(false);
+                                }
+                            }
+                        }
+                    }
+                }).excute();
+    }
+
+    private void queryFollowStatusByDB(String userId, String contentuuid, String tableName, final IFollowStatusCallback callback) {
+        DataSupport.search(tableName)
+                .condition()
+                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.USERID, userId)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0) {
+                            if (!TextUtils.isEmpty(result)) {
+                                if (callback != null) {
+                                    callback.notifyFollowStatus(true);
+                                }
+                            } else {
+                                if (callback != null) {
+                                    callback.notifyFollowStatus(false);
+                                }
+                            }
+                        }
+                    }
+                }).excute();
+    }
+
+
 
     /**
      * 查询节目是否被收藏

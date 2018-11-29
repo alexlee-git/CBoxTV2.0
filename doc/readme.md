@@ -40,6 +40,10 @@ cboxtest：测试渠道
 1.2 是亚运会版本
 1.3 是二期之前的中间版本
 
+1.4 版本是二期第二阶段版本，主要包括边看边买
+2.0 版本是二期第三阶段版本(11月底完成测试并给厂商)，主要包括用户中心+支付
+2.1 版本是二期第四阶段版本(二期最后一个版本，11月底提测)，主要包括串播、详情页优化、兑换券等
+
 master2.0是二期版本
 测试环境
 ```
@@ -78,6 +82,10 @@ master2.0是二期版本
         <address url="http://111.32.138.57:80/" name="NEW_SEARCH"/>
         <address url="666" name="HOTSEARCH_CONTENTID"/>
         <address url="555" name="EXIT_CONTENTID"/>
+        
+        <address url="http://img.cloud.ottcn.com/n3images/definitionImg/test/4k.png" name="MARK_IS4K"/>
+        <address url="http://img.cloud.ottcn.com/n3images/productImg/prod/%1$s.png" name="MARK_VIPPRODUCTID"/>
+        <address url="http://img.cloud.ottcn.com/n3images/operateImg/prod/%1$s.png" name="MARK_NEW_REALEXCLUSIVE"/>
     </addressList>
 </Service>
 ```

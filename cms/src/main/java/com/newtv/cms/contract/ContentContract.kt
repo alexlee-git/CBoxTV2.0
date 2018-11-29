@@ -119,13 +119,13 @@ class ContentContract {
             return 0L
         }
 
-        fun getSubContentsWithCallback(contentResult: Content?, uuid: String, contentTYpe: String) {
+        fun getSubContentsWithCallback(contentResult: Content?, uuid: String, contentTYpe: String?) {
             if (contentResult != null) {
                 contentService?.let { iContent ->
                     var single = false
                     var suuid: String? = uuid
                     if (Constant.CONTENTTYPE_PG.equals(contentTYpe) || Constant.CONTENTTYPE_CP.equals(contentTYpe)) {
-                        view?.onContentResult("", contentResult)
+                        view?.onContentResult(uuid, contentResult)
                         return
                     }
                     iContent.getSubContent(Libs.get().appKey, Libs.get().channelId, suuid!!,
@@ -199,7 +199,8 @@ class ContentContract {
                                     if (!autoSub) {
                                         view?.onContentResult(uuid, result.data);
                                     } else {
-                                        getSubContentsWithCallback(result.data, uuid, "")
+                                        getSubContentsWithCallback(result.data, uuid, result
+                                                .data?.contentType)
                                     }
                                 } else {
                                     view?.onError(context, result.errorMessage)

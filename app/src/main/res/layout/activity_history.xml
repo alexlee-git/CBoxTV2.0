@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-             android:layout_height="match_parent"
              xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:clipChildren="false"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
              android:clipToPadding="false"
              android:orientation="vertical">
 
     <!-- 标题 -->
     <include
         android:id="@+id/header"
-        layout="@layout/activity_info_header" />
+        layout="@layout/activity_info_header"/>
 
     <!-- 操作提示语 -->
     <TextView
@@ -18,11 +18,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginRight="@dimen/width_105px"
         android:layout_marginTop="@dimen/height_61px"
+        android:layout_marginRight="@dimen/width_105px"
         android:text="@string/usercenter_history_operation_text"
         android:textColor="#33ffffff"
-        android:visibility="visible" />
+        android:visibility="visible"/>
 
     <!-- 操作的按钮 -->
     <ImageView
@@ -30,27 +30,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginRight="@dimen/width_354px"
         android:layout_marginTop="@dimen/height_61px"
-        android:src="@drawable/menu_button" />
+        android:layout_marginRight="@dimen/width_354px"
+        android:src="@drawable/menu_button"/>
 
     <tv.newtv.cboxtv.views.GridRecycleView
-        app:spanCount="6"
-        app:decoration_top="@dimen/height_23px"
-        app:decoration_bottom="@dimen/height_72px"
         android:id="@+id/id_usercenter_fragment_root"
-        android:layout_width="@dimen/width_1762px"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/width_78px"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/width_78px"
+        android:paddingLeft="@dimen/width_78px"
         android:layout_marginTop="@dimen/height_132px"
-        android:paddingStart="@dimen/width_15px" tools:ignore="RtlSymmetry"/>
+        app:decoration_bottom="@dimen/height_72px"
+        app:decoration_top="@dimen/height_23px"
+        app:spanCount="6"
+        tools:ignore="RtlSymmetry"/>
 
     <!-- 提示信息区域(提示没有任何数据等) -->
     <ViewStub
         android:id="@+id/id_empty_view_vs"
-        android:layout="@layout/empty_userinfo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/height_201px" />
+        android:layout_marginTop="@dimen/height_201px"
+        android:layout="@layout/empty_userinfo_view"/>
 
 </FrameLayout>

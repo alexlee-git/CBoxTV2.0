@@ -1,7 +1,6 @@
 package com.newtv.cms
 
 import android.content.Context
-import com.newtv.cms.api.IContent
 import com.newtv.cms.api.IService
 
 /**
@@ -18,7 +17,7 @@ open class CmsServicePresenter<V : ICmsView>(
         stop()
         models.forEach {
             it.destroy()
-            if(it is BaseModel){
+            if (it is BaseModel) {
                 ModelFactory.attach(it)
             }
         }
@@ -48,8 +47,8 @@ open class CmsServicePresenter<V : ICmsView>(
         const val SERVICE_CORNER: String = Model.MODEL_CORNER         // interface-> ICorner
         const val SERVICE_CHK_PLAY: String = Model.MODEL_CHK_PLAY         // interface-> IPlayChk
         const val SERVICE_UPVERSTION: String = Model.MODEL_UP_VERSTION         // interface->
-
-        const val SERVICE_PERSON_DETAIL:String = Model.MODEL_PERSON
+        const val SERVICE_USERCENTER: String = Model.MODEL_USERCENTER
+        const val SERVICE_PERSON_DETAIL: String = Model.MODEL_PERSON
         // IUpVersion
     }
 

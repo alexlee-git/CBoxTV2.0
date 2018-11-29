@@ -11,15 +11,18 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
+import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +32,7 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -60,7 +64,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private ContentContract.Presenter mContentPresenter;
     private int layoutId;
     private boolean isLogin = false;
-
+    private boolean isFullScreenIng;
 
 
     @Override
@@ -82,6 +86,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
             //requestData();
             initLoginStatus();
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
@@ -118,7 +123,38 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                     @Override
                     public void onResult(Content info) {
                         if (info != null) {
+                            ArrayList<String> productId = new ArrayList<>();
                             pageContent = info;
+                            if (pageContent != null && pageContent.getVipFlag() != null) {
+                                int vipState = Integer.parseInt(pageContent.getVipFlag());
+                                if ((vipState == 1||vipState == 3||vipState == 4)&&pageContent.getVipProductId()!=null){
+                                    productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId()));
+                                }
+                                int is4k = Integer.parseInt(pageContent.is4k());
+                                if (is4k == 1){
+                                    productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                }
+                                if (pageContent.getNew_realExclusive()!=null){
+                                    productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),pageContent.getNew_realExclusive()));
+                                }
+                            }
+
+                            switch (productId.size()){
+                                case 1:
+                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
+                                    break;
+                                case 2:
+                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
+                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
+                                    break;
+                                case 3:
+                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
+                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
+                                    Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
+                                    break;
+                                default:
+                                    break;
+                            }
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
                             playListView.setContentUUID(info,mContentPresenter.isTvSeries(content)
                                             ? EpisodeHelper.TYPE_PROGRAME_SERIES : EpisodeHelper
@@ -134,6 +170,12 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             ToastUtil.showToast(getApplicationContext(), "内容信息错误");
                             ProgrameSeriesAndVarietyDetailActivity.this.finish();
                         }
+                    }
+                })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        isFullScreenIng = false;
                     }
                 })
                 .SetPlayerCallback(new PlayerCallback() {
@@ -234,7 +276,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
             @Override
             public void onChange(int index, boolean fromClick) {
-                scrollView.scrollToTop(false);
+                isFullScreenIng = true;
                 headPlayerView.Play(index, 0, fromClick);
             }
         });
@@ -277,6 +319,17 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             }
         }
 
+        return false;
+    }
+
+    @Override
+    protected boolean isFull(KeyEvent event) {
+        if (isFullScreenIng&&event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN){
+            if (isFullScreen()){
+                isFullScreenIng = false;
+            }
+            return true;
+        }
         return false;
     }
 

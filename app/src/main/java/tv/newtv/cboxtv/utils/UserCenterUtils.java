@@ -7,11 +7,14 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
+
+import java.util.List;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
@@ -31,21 +34,21 @@ import static java.lang.String.valueOf;
 public class UserCenterUtils {
     private static final String TAG = UserCenterUtils.class.getSimpleName();
 
-    public static void init(){
+    public static void init() {
         initLoginStatus();
         initMemberStatus();
     }
 
-    public static void setLogin(boolean login){
+    public static void setLogin(boolean login) {
         UserStatus.setIsLogin(login);
-        if(login){
+        if (login) {
             initMemberStatus();
-        }else {
+        } else {
             UserStatus.setMemberSatus(UserStatus.SIGN_MEMBER_OPEN_NOT);
         }
     }
 
-    public static void initLoginStatus(){
+    public static void initLoginStatus() {
         getLoginStatus(new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
@@ -54,7 +57,7 @@ public class UserCenterUtils {
         });
     }
 
-    public static void initMemberStatus(){
+    public static void initMemberStatus() {
         getMemberStatus(new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
@@ -90,10 +93,19 @@ public class UserCenterUtils {
                 bundle.putString(DBConfig.VIDEO_TYPE, mProgramSeriesInfo.getVideoType());
                 bundle.putString(DBConfig.TOTAL_CNT, mProgramSeriesInfo.getSeriesSum());
                 //bundle.putString(DBConfig.SUPERSCRIPT, mProgramSeriesInfo.getrSuperScript());
-                bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentUUID());
+                bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentID());
                 bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
                 bundle.putString(DBConfig.PLAYINDEX, valueOf(index));
                 bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+
+                List<SubContent> subContents = mProgramSeriesInfo.getData();
+                if (subContents != null && subContents.size() > 0) {
+                    if (index >= 0 && index < subContents.size()) {
+                        SubContent subContent = subContents.get(index);
+                        bundle.putString(DBConfig.PROGRAM_CHILD_NAME, subContent.getTitle());
+                        bundle.putString(DBConfig.PLAYID, subContent.getContentUUID());
+                    }
+                }
 
                 UserCenterRecordManager.getInstance().addRecord(
                         UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
@@ -117,6 +129,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -130,6 +143,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -141,7 +155,7 @@ public class UserCenterUtils {
     }
 
     //添加收藏
-    public static void addCollect(Content mProgramSeriesInfo, DBCallback<String> dbCallback) {
+    public static void addCollect(Content mProgramSeriesInfo, int index, DBCallback<String> dbCallback) {
         /*programset_id 节目ID
             programset_name 节目名称
             is_program 节目类型,是否为节目集(0-节目集，1-普通节目)
@@ -166,6 +180,15 @@ public class UserCenterUtils {
             bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
             bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
 
+            List<SubContent> subContents = mProgramSeriesInfo.getData();
+            if (subContents != null && subContents.size() > 0) {
+                if (index >= 0 && index < subContents.size()) {
+                    SubContent subContent = subContents.get(index);
+                    bundle.putString(DBConfig.PROGRAM_CHILD_NAME, subContent.getTitle());
+                    bundle.putString(DBConfig.PLAYID, subContent.getContentUUID());
+                }
+            }
+
             UserCenterRecordManager.getInstance().addRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_COLLECT,
                     LauncherApplication.AppContext,
@@ -187,6 +210,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         } else {
@@ -202,6 +226,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -249,6 +274,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         } else {
@@ -259,12 +285,13 @@ public class UserCenterUtils {
 
     //删除所有关注
     public static void deleteAllAttention(Content mProgramSeriesInfo, DBCallback<String> dbCallback) {
-        if(null != mProgramSeriesInfo) {
+        if (null != mProgramSeriesInfo) {
             UserCenterRecordManager.getInstance().deleteRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_FOLLOW,
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -332,6 +359,7 @@ public class UserCenterUtils {
                     LauncherApplication.AppContext,
                     uuIds,
                     contentType,
+                    null,
                     dbCallback
             );
         } else {
@@ -342,12 +370,13 @@ public class UserCenterUtils {
 
     //删除所有订阅
     public static void deleteAllSubcribe(Content mProgramSeriesInfo, DBCallback<String> dbCallback) {
-        if(null != mProgramSeriesInfo) {
+        if (null != mProgramSeriesInfo) {
             UserCenterRecordManager.getInstance().deleteRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_SUBSCRIBE,
                     LauncherApplication.AppContext,
                     "clean",
                     mProgramSeriesInfo.getContentType(),
+                    null,
                     dbCallback
             );
         }
@@ -389,6 +418,7 @@ public class UserCenterUtils {
         ExterPayBean mExterPayBean = new ExterPayBean();
         mExterPayBean.setContentUUID(mProgramSeriesInfo.getContentUUID());
         mExterPayBean.setContentType(mProgramSeriesInfo.getContentType());
+        mExterPayBean.setContentid(mProgramSeriesInfo.getContentID());
         mExterPayBean.setVipProductId(mProgramSeriesInfo.getVipProductId());
         mExterPayBean.setMAMID(mProgramSeriesInfo.getMAMID());
         mExterPayBean.setVipFlag(mProgramSeriesInfo.getVipFlag());

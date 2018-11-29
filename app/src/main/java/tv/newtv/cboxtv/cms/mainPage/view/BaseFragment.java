@@ -36,7 +36,8 @@ public abstract class BaseFragment extends RxFragment {
         @Override
         public void run() {
             if(getUserVisibleHint()) {
-                BackGroundManager.getInstance().setCurrentPageId(getContext(), getContentUUID());
+                BackGroundManager.getInstance().setCurrentPageId(getContext(), getContentUUID(),
+                        false,"",true);
             }
             lazyLoad();
         }
@@ -45,7 +46,6 @@ public abstract class BaseFragment extends RxFragment {
     private boolean isFinshAnim = true;
 
     protected boolean interruptKeyEvent(){
-
         return false;
     }
 

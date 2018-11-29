@@ -15,6 +15,7 @@ public class ExterPayBean implements Serializable {
     private String vipProductId;
     private String action;
     private String contentUUID;
+    private String contentId;
     private String MAMID;
     private String Title;
     private String vipFlag;
@@ -23,10 +24,11 @@ public class ExterPayBean implements Serializable {
     public ExterPayBean() {
     }
 
-    public ExterPayBean(String vipProductId, String action, String contentUUID, String MAMID, String title, String vipFlag, String contentType) {
+    public ExterPayBean(String vipProductId, String action, String contentUUID, String contentId, String MAMID, String title, String vipFlag, String contentType) {
         this.vipProductId = vipProductId;
         this.action = action;
         this.contentUUID = contentUUID;
+        this.contentId = contentId;
         this.MAMID = MAMID;
         Title = title;
         this.vipFlag = vipFlag;
@@ -55,6 +57,14 @@ public class ExterPayBean implements Serializable {
 
     public void setContentUUID(String contentUUID) {
         this.contentUUID = contentUUID;
+    }
+
+    public String getContentId() {
+        return contentId;
+    }
+
+    public void setContentid(String contentId) {
+        this.contentId = contentId;
     }
 
     public String getMAMID() {
@@ -95,6 +105,7 @@ public class ExterPayBean implements Serializable {
                 "vipProductId='" + vipProductId + '\'' +
                 ", action='" + action + '\'' +
                 ", contentUUID='" + contentUUID + '\'' +
+                ", contentId='" + contentId + '\'' +
                 ", MAMID='" + MAMID + '\'' +
                 ", Title='" + Title + '\'' +
                 ", vipFlag='" + vipFlag + '\'' +

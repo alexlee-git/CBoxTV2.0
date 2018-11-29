@@ -178,13 +178,15 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     public PlayerViewConfig getDefaultConfig() {
         PlayerViewConfig playerViewConfig = super.getDefaultConfig();
-        playerViewConfig.defaultFocusView = defaultFocusView;
-        playerViewConfig.playerCallback = mPlayerCallback;
-        playerViewConfig.videoFullCallBack = videoFullCallBack;
-        playerViewConfig.playCenter = playCenter;
-        playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
+        if(playerViewConfig != null) {
+            playerViewConfig.defaultFocusView = defaultFocusView;
+            playerViewConfig.playerCallback = mPlayerCallback;
+            playerViewConfig.videoFullCallBack = videoFullCallBack;
+            playerViewConfig.playCenter = playCenter;
+            playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
 
-        LogUtils.d(TAG, playerViewConfig.toString());
+            LogUtils.d(TAG, playerViewConfig.toString());
+        }
         return playerViewConfig;
     }
 
@@ -314,8 +316,11 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             playCenter.setSeriesInfo(seriesInfo);
         }
     }
-
     public void playSingleOrSeries(int mIndex, int position) {
+        playSingleOrSeries(mIndex,position,"");
+    }
+
+    public void playSingleOrSeries(int mIndex, int position,String alternateId) {
         //设置播放的位置
         int index = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(), mIndex);
         playCenter.setCurrentIndex(index);
@@ -324,10 +329,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (dataStruct != null) {
             if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
-                        playCenter.getCurrentSeriesInfo(), false, index, position);
+                        playCenter.getCurrentSeriesInfo(), false, index, position,alternateId);
             } else {
                 NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
-                        playCenter.getCurrentSeriesInfo(), position, false);
+                        playCenter.getCurrentSeriesInfo(), position, false,alternateId);
             }
         }
     }
