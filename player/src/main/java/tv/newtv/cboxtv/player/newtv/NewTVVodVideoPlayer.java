@@ -286,6 +286,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
         icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
         icntvPlayerInfo.setDeviceId(Constant.UUID);
+        icntvPlayerInfo.setStartPosition(videoDataStruct.getHistoryPosition());
         //extend字段
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
@@ -384,7 +385,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
             return false;
         try {
             if (mIcntvPlayer.isPlaying() || mIcntvPlayer.isADPlaying()) {
-                // mIcntvPlayer.stopVideo();
+                mIcntvPlayer.release();
                 return true;
             }
         } catch (Exception e) {

@@ -76,6 +76,11 @@ public class VideoDataStruct implements Serializable {
 	private boolean isTrySee;
 	private String freeDuration;
 
+	/**
+	 * 历史记录位置，在开始创建Player的时候传递给player，决定是否要在历史记录位置播放
+	 */
+	private int historyPosition;
+
 	public String getFreeDuration() {
 		return freeDuration;
 	}
@@ -451,6 +456,14 @@ public class VideoDataStruct implements Serializable {
 
 	public void setTencentCid(String tencentCid) {
 		this.tencentCid = tencentCid;
+	}
+
+	public void setHistoryPosition(int historyPosition) {
+		this.historyPosition = historyPosition;
+	}
+
+	public int getHistoryPosition() {
+		return historyPosition;
 	}
 
 	@Override

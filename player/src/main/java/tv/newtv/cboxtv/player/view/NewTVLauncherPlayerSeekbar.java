@@ -327,7 +327,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
             return;
         }
         Log.i(TAG, "show: ");
-        if (mNewTVLauncherPlayer.getDuration() <= 0) {
+        if (mNewTVLauncherPlayer.getDuration() <= 0 || mNewTVLauncherPlayer.isADPlaying()) {
             return;
         }
         mIsOnlyShowSeekBar = true;
