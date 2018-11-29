@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
@@ -43,6 +44,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
     private EpisodeHorizontalListView mListView;
     private boolean isLogin = false;
     private EpisodeAdView mAdView;
+    private boolean isFullScreenIng;
 
     @Override
     protected void onDestroy() {
@@ -100,6 +102,17 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                     ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean isFull(KeyEvent event) {
+        if (isFullScreenIng&&event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN){
+            if (isFullScreen()){
+                isFullScreenIng = false;
+            }
+            return true;
         }
         return false;
     }
@@ -164,6 +177,12 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                         }
                     }
                 })
+                .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
+                    @Override
+                    public void videoEitFullScreen() {
+                        isFullScreenIng = false;
+                    }
+                })
                 .SetPlayerCallback(new PlayerCallback() {
                     @Override
                     public void onEpisodeChange(int index, int position) {
@@ -205,7 +224,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         mListView.setOnItemClick(new onEpisodeItemClick<SubContent>() {
             @Override
             public boolean onItemClick(int position, SubContent data) {
-                scrollView.scrollToTop(false);
+                isFullScreenIng = false;
                 headPlayerView.Play(position, 0, true);
                 return false;
             }

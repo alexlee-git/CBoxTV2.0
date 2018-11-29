@@ -19,7 +19,7 @@ interface IPersonRetro {
     /**
      * 获取主持人主持的电视栏目列表
      */
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=tvlist")
     fun getPersonTvList(@Path("appkey") appkey: String,
                         @Path("channelCode") channel: String,
@@ -28,7 +28,7 @@ interface IPersonRetro {
     /**
      * 获取主持人相关的节目
      */
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=programlist")
     fun getPersonProgramList(@Path("appkey") appkey: String,
                         @Path("channelCode") channel: String,
@@ -38,7 +38,7 @@ interface IPersonRetro {
     /**
      * 获取主持人相关的主持人
      */
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=figurelist")
     fun getPersonFigureList(@Path("appkey") appkey: String,
                              @Path("channelCode") channel: String,

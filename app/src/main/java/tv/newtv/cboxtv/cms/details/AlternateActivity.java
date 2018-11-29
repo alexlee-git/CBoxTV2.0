@@ -101,6 +101,11 @@ public class AlternateActivity extends DetailPageActivity implements AlternateVi
     }
 
     @Override
+    protected boolean isFull(KeyEvent event) {
+        return false;
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }

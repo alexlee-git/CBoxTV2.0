@@ -217,7 +217,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     public void onComplete() {
         mImageView.setVisibility(View.VISIBLE);
         if (mHintText != null) {
-            mHintText.setText("暂时没有直播信息");
+            mHintText.setText("暂无播放");
         }
     }
 }

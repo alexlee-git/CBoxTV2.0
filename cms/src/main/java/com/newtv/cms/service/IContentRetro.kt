@@ -15,7 +15,7 @@ import retrofit2.http.Path
  * 创建日期:          2018/9/25
  */
 internal interface IContentRetro {
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/content/{left}/{right}/{contentID}.json")
     fun getInfo(@Path("appkey") appkey: String,
                          @Path("channelCode") channelId: String,
@@ -23,7 +23,7 @@ internal interface IContentRetro {
                          @Path("right") right: String,
                          @Path("contentID") contentUUID: String): Observable<ResponseBody>
 
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=subcontents")
     fun getSubInfo(@Path("appkey") appkey: String,
                 @Path("channelCode") channelId: String,

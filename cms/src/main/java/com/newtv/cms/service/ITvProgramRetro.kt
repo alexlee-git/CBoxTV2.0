@@ -19,7 +19,7 @@ internal interface ITvProgramRetro {
     /**
      * 最新一期电视栏目
      */
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=currentlist")
     fun getCurrentList(@Path("appkey") appKey: String,
                        @Path("channelCode") channelid: String,
@@ -29,7 +29,7 @@ internal interface ITvProgramRetro {
     /**
      * 电视栏目往期内容列表
      */
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=historylist")
     fun getHistoryList(@Path("appkey") appKey: String,
                        @Path("channelCode") channelid: String,
@@ -38,7 +38,7 @@ internal interface ITvProgramRetro {
     /**
      * 电视栏目相关人物列表
      */
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=tvfigurelist")
     fun getTvFigureList(@Path("appkey") appKey: String,
                         @Path("channelCode") channelid: String,
@@ -47,7 +47,7 @@ internal interface ITvProgramRetro {
     /**
      * 同栏目下的电视栏目列表
      */
-    @Headers("host_type: " + BootGuide.NEW_CMS)
+    @Headers("host_type: " + BootGuide.CMS)
     @GET("api/v31/{appkey}/{channelCode}/detailsubcontents/{contentID}.json?subcontenttype=tvfigureoftvlist")
     fun getTvFigureTvList(@Path("appkey") appKey: String,
                           @Path("channelCode") channelid: String,
