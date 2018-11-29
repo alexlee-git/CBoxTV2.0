@@ -15,6 +15,7 @@ import com.newtv.libs.util.YSLogUtils;
 import java.util.LinkedHashMap;
 
 import tv.icntv.been.IcntvPlayerInfo;
+import tv.icntv.icntvplayersdk.Constants;
 import tv.icntv.icntvplayersdk.IcntvLive;
 import tv.icntv.icntvplayersdk.iICntvPlayInterface;
 import tv.newtv.cboxtv.player.ILiveVideoPlayerInterface;
@@ -222,7 +223,11 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         icntvPlayerInfo.setDuration(videoDataStruct.getDuration());
         icntvPlayerInfo.setProgramID(videoDataStruct.getProgramId());
         icntvPlayerInfo.setKey(videoDataStruct.getKey());
-        icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        if(UserStatus.isVip()){
+            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
+        }else {
+            icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        }
         icntvPlayerInfo.setDeviceID(Constant.UUID);
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()

@@ -235,9 +235,6 @@ public class VodContract {
                 ADConfig.getInstance().setSeriesID("",false);
             }
 
-            if(UserStatus.isVip()){
-                PlayerConfig.getInstance().setJumpAD(true);
-            }
             String vipFlag = playResult.getVipFlag();
 
             if(!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_VIP.equals(vipFlag) && !UserStatus.isVip()){
