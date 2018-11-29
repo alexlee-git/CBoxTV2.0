@@ -722,6 +722,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
+                        if(node.isRequest()){
+                            return;
+                        }
                         String result = responseBody.string();
                         Log.i(TAG, "seriesContent: "+result);
                         SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
