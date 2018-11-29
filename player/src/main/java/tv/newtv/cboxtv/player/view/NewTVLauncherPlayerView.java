@@ -1632,6 +1632,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void goToBuy() {
         ExterPayBean exterPayBean = new ExterPayBean();
         exterPayBean.setContentUUID(defaultConfig.programSeriesInfo.getContentUUID());
+        exterPayBean.setContentid(defaultConfig.programSeriesInfo.getContentID());
         exterPayBean.setContentType(defaultConfig.programSeriesInfo.getContentType());
         exterPayBean.setVipProductId(defaultConfig.programSeriesInfo.getVipProductId());
         exterPayBean.setMAMID(defaultConfig.programSeriesInfo.getMAMID());
