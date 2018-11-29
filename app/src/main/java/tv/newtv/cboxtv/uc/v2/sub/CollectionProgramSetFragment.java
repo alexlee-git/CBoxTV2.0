@@ -463,7 +463,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                     inflatePageWhenNoData();
                 }
             } else {
-
+                Log.d("collection", "unresolved msg : " + msg.what);
             }
         }
     }
