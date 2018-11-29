@@ -59,13 +59,13 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         String subId = "";
 
         String type = entity.get_contenttype();
-        if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
+        if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
+            mType = "1";
+            subId = entity.get_contentuuid();
+        } else {
             mType = "0";
             parentId = entity.get_contentuuid();
             subId = entity.getPlayId();
-        } else if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
-            mType = "1";
-            subId = entity.get_contentuuid();
         }
 
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
