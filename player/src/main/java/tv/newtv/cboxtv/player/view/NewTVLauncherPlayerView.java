@@ -1479,8 +1479,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void addHistory() {
         if (isLiving() || defaultConfig.isAlternate) return;
 
-        if (defaultConfig.programSeriesInfo == null || defaultConfig.programSeriesInfo.getData()
-                == null) {
+        if (defaultConfig.programSeriesInfo == null) {
             return;
         }
 
@@ -1488,11 +1487,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), defaultConfig.programSeriesInfo.getContentUUID()));
-
-        if (defaultConfig.programSeriesInfo.getData().size() > index && index >= 0
-                && defaultConfig.programSeriesInfo.getData().get(index).getUseSeriesSubUUID()) {
-            return;
-        }
 
         Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
                 getDuration());
