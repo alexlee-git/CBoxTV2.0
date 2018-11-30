@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.uc.v2.sub;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,7 +31,9 @@ import com.newtv.libs.util.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -41,6 +45,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
@@ -73,9 +78,25 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     private final int COLUMN_COUNT = 6;
     private PageContract.ContentPresenter mContentPresenter;
 
+    private List<UserCenterPageBean.Bean> localData;
+    private List<UserCenterPageBean.Bean> remoteData;
+    private boolean localDataReqComp;
+    private boolean remoteDataReqComp;
+
+    private static final int MSG_SYNC_DATA_COMP = 10033;
+    private static final int MSG_INFLATE_PAGE = 10034;
+
+    private static SubscribeHandler mHandler;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_history_record;
+    }
+
+    @Override
+    public void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHandler = new SubscribeHandler(this);
     }
 
     @Override
@@ -123,12 +144,84 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
 
     //读取数据库中数据
     private void requestData() {
-        //订阅数据表表名
-        String tableNameSubscribe = DBConfig.SUBSCRIBE_TABLE_NAME;
+        localDataReqComp = false;
+        remoteDataReqComp = false;
+
+        Log.d("sub", "requestData");
         if (!TextUtils.isEmpty(mLoginTokenString)) {
-            tableNameSubscribe = DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME;
+            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
+                DataSupport.search(DBConfig.SUBSCRIBE_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, final String result) {
+                                if (code == 0) {
+                                    Gson gson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                                    localData = gson.fromJson(result, type);
+
+                                    if (localData == null) {
+                                        localData = new ArrayList<>(Constant.BUFFER_SIZE_8);
+                                    }
+                                }
+
+                                Log.d("sub", "本地数据库查询完毕");
+                                localDataReqComp = true;
+                                if (mHandler != null) {
+                                    mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
+                                }
+                            }
+                        }).excute();
+
+                DataSupport.search(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, final String result) {
+                                if (code == 0) {
+                                    Gson gson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                                    remoteData = gson.fromJson(result, type);
+
+                                    if (remoteData == null) {
+                                        remoteData = new ArrayList<>(Constant.BUFFER_SIZE_8);
+                                    }
+                                }
+
+                                Log.d("sub", "远程数据库查询完毕");
+
+                                remoteDataReqComp = true;
+                                if (mHandler != null) {
+                                    mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
+                                }
+                            }
+                        }).excute();
+            } else {
+                requestDataByDB(DBConfig.REMOTE_COLLECT_TABLE_NAME);
+            }
+        } else {
+            requestDataByDB(DBConfig.COLLECT_TABLE_NAME);
         }
-        DataSupport.search(tableNameSubscribe)
+    }
+
+
+    private boolean isSameItem(UserCenterPageBean.Bean item, List<UserCenterPageBean.Bean> datas) {
+        for (UserCenterPageBean.Bean comp : datas) {
+            if (TextUtils.equals(comp.get_contentuuid(), item.get_contentuuid())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void requestDataByDB(String tableName) {
+        DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
@@ -137,13 +230,16 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                     @Override
                     public void onResult(int code, String result) {
                         if (code == 0) {
-                            UserCenterPageBean userCenterPageBean = new UserCenterPageBean("");
+                            UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
                             Gson gson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                            }.getType();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
                             List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
-                            userCenterPageBean.data = universalBeans;
-                            inflatePage(userCenterPageBean);
+                            userCenterUniversalBean.data = universalBeans;
+                            if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
+                                inflatePage(userCenterUniversalBean.data);
+                            } else {
+                                inflatePageWhenNoData();
+                            }
                         } else {
                             inflatePageWhenNoData();
                         }
@@ -151,19 +247,18 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                 }).excute();
     }
 
-    private void inflatePage(UserCenterPageBean bean) {
+    private void inflatePage(List<UserCenterPageBean.Bean> bean) {
         if (contentView == null) {
             return;
         }
 
-        if (bean == null || bean.data == null || bean.data.size() == 0) {
+        if (bean == null || bean.size() == 0) {
             inflatePageWhenNoData();
             return;
         }
 
-
         if (mDatas == null) {
-            mDatas = bean.data;
+            mDatas = bean;
             mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN_COUNT));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_SUBSCRIBE);
@@ -182,7 +277,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         } else {
             if (mAdapter != null) {
                 mDatas.clear();
-                mDatas.addAll(bean.data);
+                mDatas.addAll(bean);
                 mAdapter.notifyDataSetChanged();
             }
         }
@@ -347,5 +442,55 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     @Override
     public void loadingComplete() {
 
+    }
+
+    private void checkDataSync() {
+        Log.d("sub", "checkDataSync");
+        if (remoteDataReqComp && localDataReqComp) {
+            mHandler.removeMessages(MSG_SYNC_DATA_COMP);
+
+            List<UserCenterPageBean.Bean> subscribeRecords = new ArrayList<>();
+            List<UserCenterPageBean.Bean> temp = new ArrayList<>(Constant.BUFFER_SIZE_16);
+            temp.addAll(remoteData);
+            temp.addAll(localData);
+
+            for (UserCenterPageBean.Bean item : temp) {
+                if (!isSameItem(item, subscribeRecords)) {
+                    subscribeRecords.add(item);
+                }
+            }
+
+            Message msg = Message.obtain();
+            msg.what = MSG_INFLATE_PAGE;
+            msg.obj = subscribeRecords;
+            mHandler.sendMessage(msg);
+        } else {
+            mHandler.sendEmptyMessageDelayed(MSG_SYNC_DATA_COMP, 100);
+        }
+    }
+
+    class SubscribeHandler extends android.os.Handler {
+        WeakReference<SubscribeFragment> reference;
+
+        SubscribeHandler(SubscribeFragment setFragment) {
+            reference = new WeakReference<>(setFragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_SYNC_DATA_COMP) {
+                checkDataSync();
+            } else if (msg.what == MSG_INFLATE_PAGE) {
+                Log.d("sub", "接收到 MSG_INFLATE_PAGE 消息");
+                List<UserCenterPageBean.Bean> datas = (List<UserCenterPageBean.Bean>) msg.obj;
+                if (datas != null && datas.size() > 0) {
+                    inflatePage(datas);
+                } else {
+                    inflatePageWhenNoData();
+                }
+            } else {
+                Log.d("collection", "unresolved msg : " + msg.what);
+            }
+        }
     }
 }

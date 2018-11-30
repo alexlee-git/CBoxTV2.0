@@ -245,6 +245,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      * @return
      */
     private boolean getProgramSeriesAndContentUUID() {
+        if(NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+            Log.e(TAG, "isLiving");
+            return false;
+        }
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
         int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();

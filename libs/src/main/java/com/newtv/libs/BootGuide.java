@@ -67,7 +67,9 @@ public final class BootGuide {
     public static final String HOTSEARCH_CONTENTID = "HOTSEARCH_CONTENTID";
     public static final String EXIT_CONTENTID = "EXIT_CONTENTID";
     public static final String HTML_PATH_USER_PROTOCOL = "HTML_PATH_USER_PROTOCOL";
-
+    public static final String MARK_IS4K = "MARK_IS4K";
+    public static final String MARK_VIPPRODUCTID = "MARK_VIPPRODUCTID";
+    public static final String MARK_NEW_REALEXCLUSIVE = "MARK_NEW_REALEXCLUSIVE";
     private static HashMap<String, String> mServerAddressMap;
 
     public static void init(Context context){

@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.uc.v2.sub;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,8 +31,11 @@ import com.newtv.libs.util.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -41,10 +46,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.cms.screenList.tablayout.TabLayout;
 import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
@@ -72,9 +79,25 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private final int COLUMN_COUNT = 6;
     private PageContract.ContentPresenter mContentPresenter;
 
+    private List<UserCenterPageBean.Bean> localData;
+    private List<UserCenterPageBean.Bean> remoteData;
+    private boolean localDataReqComp;
+    private boolean remoteDataReqComp;
+
+    private static final int MSG_SYNC_DATA_COMP = 10033;
+    private static final int MSG_INFLATE_PAGE = 10034;
+
+    private static CollectionHandler mHandler;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_history_record;
+    }
+
+    @Override
+    public void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mHandler = new CollectionHandler(this);
     }
 
     @Override
@@ -119,12 +142,103 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
 
     //读取数据库中数据
     private void requestData() {
-        //收藏数据表表名
-        String tableNameCollect = DBConfig.COLLECT_TABLE_NAME;
         if (!TextUtils.isEmpty(mLoginTokenString)) {
-            tableNameCollect = DBConfig.REMOTE_COLLECT_TABLE_NAME;
+            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
+                DataSupport.search(DBConfig.COLLECT_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, final String result) {
+                                if (code == 0) {
+                                    Gson gson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                                    localData = gson.fromJson(result, type);
+
+                                    if (localData == null) {
+                                        localData = new ArrayList<>(Constant.BUFFER_SIZE_8);
+                                    }
+
+                                    localDataReqComp = true;
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
+                                    }
+                                }
+                            }
+                        }).excute();
+
+                DataSupport.search(DBConfig.REMOTE_COLLECT_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
+                        .OrderBy(DBConfig.ORDER_BY_TIME)
+                        .build()
+                        .withCallback(new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, final String result) {
+                                if (code == 0) {
+                                    Gson gson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                                    remoteData = gson.fromJson(result, type);
+
+                                    if (remoteData == null) {
+                                        remoteData = new ArrayList<>(Constant.BUFFER_SIZE_8);
+                                    }
+
+                                    remoteDataReqComp = true;
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
+                                    }
+                                }
+                            }
+                        }).excute();
+            } else {
+                requestDataByDB(DBConfig.REMOTE_COLLECT_TABLE_NAME);
+            }
+        } else {
+            requestDataByDB(DBConfig.COLLECT_TABLE_NAME);
         }
-        DataSupport.search(tableNameCollect)
+    }
+
+
+    private boolean isSameItem(UserCenterPageBean.Bean item, List<UserCenterPageBean.Bean> datas) {
+        for (UserCenterPageBean.Bean comp : datas) {
+            if (TextUtils.equals(comp.get_contentuuid(), item.get_contentuuid())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void checkDataSync() {
+        if (remoteDataReqComp && localDataReqComp) {
+            mHandler.removeMessages(MSG_SYNC_DATA_COMP);
+
+            List<UserCenterPageBean.Bean> collectionRecords = new ArrayList<>();
+
+            List<UserCenterPageBean.Bean> temp = new ArrayList<>(Constant.BUFFER_SIZE_16);
+            temp.addAll(remoteData);
+            temp.addAll(localData);
+
+            for (UserCenterPageBean.Bean item : temp) {
+                if (!isSameItem(item, collectionRecords)) {
+                    collectionRecords.add(item);
+                }
+            }
+
+            Message msg = Message.obtain();
+            msg.what = MSG_INFLATE_PAGE;
+            msg.obj = collectionRecords;
+            mHandler.sendMessage(msg);
+        } else {
+            mHandler.sendEmptyMessageDelayed(MSG_SYNC_DATA_COMP, 100);
+        }
+    }
+
+    private void requestDataByDB(String tableName) {
+        Log.d("lx", "tableName : " + tableName + ", userId : " + userId);
+        DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
@@ -135,12 +249,11 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                         if (code == 0) {
                             UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
                             Gson gson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                            }.getType();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
                             List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
                             userCenterUniversalBean.data = universalBeans;
                             if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
-                                inflatePage(userCenterUniversalBean);
+                                inflatePage(userCenterUniversalBean.data);
                             } else {
                                 inflatePageWhenNoData();
                             }
@@ -151,18 +264,18 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                 }).excute();
     }
 
-    private void inflatePage(UserCenterPageBean bean) {
+    private void inflatePage(List<UserCenterPageBean.Bean> datas) {
         if (contentView == null) {
             return;
         }
 
-        if (bean == null || bean.data == null || bean.data.size() == 0) {
+        if (datas == null || datas.size() == 0) {
             inflatePageWhenNoData();
             return;
         }
 
         if (mDatas == null) {
-            mDatas = bean.data;
+            mDatas = datas;
             mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_COLLECTION);
@@ -180,7 +293,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         } else {
             if (mAdapter != null && mDatas != null) {
                 mDatas.clear();
-                mDatas.addAll(bean.data);
+                mDatas.addAll(datas);
                 mAdapter.notifyDataSetChanged();
             }
         }
@@ -327,6 +440,31 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    class CollectionHandler extends android.os.Handler {
+
+        WeakReference<CollectionProgramSetFragment> reference;
+
+        CollectionHandler(CollectionProgramSetFragment setFragment) {
+            reference = new WeakReference<>(setFragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_SYNC_DATA_COMP) {
+                checkDataSync();
+            } else if (msg.what == MSG_INFLATE_PAGE) {
+                List<UserCenterPageBean.Bean> datas = (List<UserCenterPageBean.Bean>) msg.obj;
+                if (datas != null && datas.size() > 0) {
+                    inflatePage(datas);
+                } else {
+                    inflatePageWhenNoData();
+                }
+            } else {
+                Log.d("collection", "unresolved msg : " + msg.what);
+            }
         }
     }
 

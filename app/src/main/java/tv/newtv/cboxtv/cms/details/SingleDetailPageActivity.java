@@ -150,7 +150,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                         @Override
                         public void onResult(Content info) {
                             mProgramSeriesInfo = info;
-                            suggestView.setContentUUID(EpisodeHelper.TYPE_SEARCH, info, null);
+                            suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
                             mAdView.requestAD();
                         }
                     })

@@ -35,13 +35,12 @@ public final class DBConfig {
     public static final String ATTENTION_TABLE_NAME = "user_attention_info";//我的关注
     public static final String SUBSCRIBE_TABLE_NAME = "user_subscribe_info";//我的订阅
     public static final String HISTORY_TABLE_NAME   = "user_history_info";//历史记录
+    public static final String LB_COLLECT_TABLE_NAME = "lb_user_colllect_info";//轮播台收藏
 
     public static final String REMOTE_COLLECT_TABLE_NAME   = "remote_user_collect_info";//我的收藏
     public static final String REMOTE_ATTENTION_TABLE_NAME = "remote_user_attention_info";//我的关注
     public static final String REMOTE_SUBSCRIBE_TABLE_NAME = "remote_user_subscribe_info";//我的订阅
     public static final String REMOTE_HISTORY_TABLE_NAME   = "remote_user_history_info";//历史记录
-
-    public static final String LB_COLLECT_TABLE_NAME = "lb_user_colllect_info";//轮播台收藏
 
 
     /* VideoDetail db fields */

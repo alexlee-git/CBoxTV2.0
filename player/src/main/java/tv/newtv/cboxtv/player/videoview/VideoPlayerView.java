@@ -178,13 +178,15 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     public PlayerViewConfig getDefaultConfig() {
         PlayerViewConfig playerViewConfig = super.getDefaultConfig();
-        playerViewConfig.defaultFocusView = defaultFocusView;
-        playerViewConfig.playerCallback = mPlayerCallback;
-        playerViewConfig.videoFullCallBack = videoFullCallBack;
-        playerViewConfig.playCenter = playCenter;
-        playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
+        if(playerViewConfig != null) {
+            playerViewConfig.defaultFocusView = defaultFocusView;
+            playerViewConfig.playerCallback = mPlayerCallback;
+            playerViewConfig.videoFullCallBack = videoFullCallBack;
+            playerViewConfig.playCenter = playCenter;
+            playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
 
-        LogUtils.d(TAG, playerViewConfig.toString());
+            LogUtils.d(TAG, playerViewConfig.toString());
+        }
         return playerViewConfig;
     }
 
