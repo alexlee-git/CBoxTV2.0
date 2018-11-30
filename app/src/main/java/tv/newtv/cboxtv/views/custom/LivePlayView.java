@@ -546,7 +546,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 int count = viewGroup.getChildCount();
                 for (int i = 0; i < count; i++) {
                     View child = viewGroup.getChildAt(i);
-                    if (child instanceof AutoSizeTextView || child instanceof  TextView ) {
+                    if (child instanceof TextView ) {
                         child.bringToFront();
                     }
                 }

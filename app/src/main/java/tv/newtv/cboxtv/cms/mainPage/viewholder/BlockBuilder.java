@@ -671,6 +671,8 @@ class BlockBuilder extends BaseBlockBuilder {
                         titleWidget.setSingleLine();
                         titleWidget.setLines(1);
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
+                        titleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
+                                .SCALE_TYPE_WIDTH),0,0,0);
                         titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
                                 .dimen.height_12sp));
                         titleWidget.setMarqueeRepeatLimit(-1);
