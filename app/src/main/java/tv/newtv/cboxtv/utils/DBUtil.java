@@ -315,8 +315,8 @@ public class DBUtil {
                 .withCallback(callback).excute();
     }
 
-    public static void deleteCarouselChannelRecord(String tableName, String contentuuid, DBCallback<String> callback) {
-        DataSupport.delete(tableName)
+    public static void deleteCarouselChannelRecord(String contentuuid, DBCallback<String> callback) {
+        DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
                 .condition()
                 .eq(DBConfig.CONTENTUUID, contentuuid)
                 .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
