@@ -289,7 +289,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
-        if (mBuilder.fromOuter && mBuilder.isPopup) {
+        if (mBuilder.fromOuter) {
             addView(inflate);
             postDelayed(new Runnable() {
                 @Override
@@ -936,7 +936,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private boolean autoGetSub = false;
         private List<CustomFrame> dbTypes;
         private int defaultFocusID = 0;
-        private boolean isPopup, fromOuter;
+        private boolean fromOuter;
 
         private ExitVideoFullCallBack videoFullCallBack;
 
@@ -1017,7 +1017,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return this;
         }
 
-        public Builder setTopView(boolean fromOuter, boolean isPopup) {
+        public Builder setTopView(boolean fromOuter) {
             return this;
         }
 

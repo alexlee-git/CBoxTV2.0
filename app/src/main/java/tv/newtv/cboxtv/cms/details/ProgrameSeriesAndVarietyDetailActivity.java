@@ -122,7 +122,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetContentUUID(contentUUID, getChildContentUUID())
                 .autoGetSubContents()
-                .setTopView(fromOuter, isPopup)
+                .setTopView(fromOuter)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {

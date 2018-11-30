@@ -108,7 +108,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             personDetailHeadView.setContentUUID(contentUUID);
             ADConfig.getInstance().setSeriesID(contentUUID);
         }
-        if (isPopup&&fromOuter) {
+        if (fromOuter) {
             personDetailHeadView.setTopView();
         }
         hostProgramView.setOnItemClick(new onEpisodeItemClick<SubContent>() {

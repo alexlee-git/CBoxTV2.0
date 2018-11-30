@@ -146,7 +146,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 .SetPlayerId(R.id.video_container)
                 .SetContentUUID(contentUUID,getChildContentUUID())
                 .autoGetSubContents()
-                .setTopView(fromOuter,isPopup)
+                .setTopView(fromOuter)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetClickListener(new View.OnClickListener() {
