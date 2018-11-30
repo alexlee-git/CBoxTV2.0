@@ -2,11 +2,13 @@ package tv.newtv.cboxtv.views.detail;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AlternateContract;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.contract.PersonDetailsConstract;
+import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,6 +64,10 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private View controlView;
 
     private int mHorizontalCount = 4;
+
+    private int mLayoutId;
+    private int mColumnUpdateDateId;
+    private int mScaleView = -1;
 
     private OnSeriesInfoResult mOnSeriesInfoResult;
     private int item_layout = R.layout.program_horizontal_layout;
@@ -151,12 +158,12 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         true);
                 mRecycleView = findViewById(R.id.list_view);
                 mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
-                        LinearLayoutManager
-
-                                .HORIZONTAL, false));
-                mRecycleView.setShowCounts(4);
-                mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
-                        .getDimensionPixelOffset(R.dimen.width_48px)));
+                        LinearLayoutManager.HORIZONTAL, false));
+                mRecycleView.setShowCounts(mHorizontalCount);
+                if(item_layout != R.layout.item_details_horizontal_episode) {
+                    mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
+                            .getDimensionPixelOffset(R.dimen.width_48px)));
+                }
                 mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id
                         .dir_right));
 
@@ -182,9 +189,11 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                     public void bind(Object data, ViewHolder holder, boolean select) {
                         String himage = "";
                         String title = "";
+                        String year = "";
                         if (data instanceof SubContent) {
                             himage = ((SubContent) data).getHImage();
                             title = ((SubContent) data).getTitle();
+//                            year = ((SubContent) data).getYear();
                         } else if (data instanceof Alternate) {
                             himage = ((Alternate) data).getHImage();
                             title = ((Alternate) data).getTitle();
@@ -197,6 +206,37 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
                         if (holder.posterView instanceof CurrentPlayImageView) {
                             holder.posterView.setIsPlaying(select);
+                        }
+
+                        if (item_layout == R.layout.item_details_horizontal_episode) {
+                            if (TextUtils.isEmpty(((SubContent) mProgramSeriesInfo.get(0)).getYear())) {
+                                holder.mUpdateLayout.setVisibility(GONE);
+                            } else {
+                                if (!TextUtils.isEmpty(year)) {
+                                    holder.mUpdateLayout.setVisibility(VISIBLE);
+                                    if (holder.getAdapterPosition() == 0) {
+                                        holder.columnUpdateDateTV.setVisibility(VISIBLE);
+                                        holder.columnUpdateDateTV.setText(year);
+                                    } else {
+                                        int beforePosition = holder.getAdapterPosition() - 1;
+
+                                        String beforeYear = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getYear();
+
+                                        LogUtils.e("getAdapterPosition", "year: " + year
+                                                + " , beforePosition year : " + beforeYear);
+
+                                        if (!year.equals(beforeYear)) {
+                                            holder.columnUpdateDateTV.setVisibility(VISIBLE);
+                                            holder.columnUpdateDateTV.setText(beforeYear);
+                                        } else {
+                                            LogUtils.e("updateGone", "gone year : " + year);
+                                            holder.columnUpdateDateTV.setVisibility(GONE);
+                                        }
+                                    }
+                                } else {
+                                    holder.mUpdateLayout.setVisibility(INVISIBLE);
+                                }
+                            }
                         }
                     }
 
@@ -266,6 +306,14 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         mHorizontalCount = count;
     }
 
+    public void setHorizontalItemLayout(int layout,int count,int scaleLayout,int updateDateId,int layoutId) {
+        item_layout = layout;
+        mHorizontalCount = count;
+        mScaleView = scaleLayout;
+        mColumnUpdateDateId = updateDateId;
+        mLayoutId = layoutId;
+    }
+
     public void setContentUUID(int type, String uuid, View view) {
         controlView = view;
         mContentUuid = uuid;
@@ -312,7 +360,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
     @Override
     public void onError(@NotNull Context context, @Nullable String desc) {
-
+        LogUtils.e("parseDataError","data error : " + desc);
     }
 
     @Override
@@ -326,6 +374,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
     @Override
     public void setPersonProgramList(@Nullable ArrayList<SubContent> contents) {
+        LogUtils.e("setPersonProgramList","content data : " + contents);
         if (contents == null || contents.size() <= 0) {
             onLoadError();
             return;
@@ -361,20 +410,26 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         void onResult(List<T> result);
     }
 
-    private static class ViewHolder extends NewTvRecycleAdapter.NewTvViewHolder implements
+    private class ViewHolder extends NewTvRecycleAdapter.NewTvViewHolder implements
             OnFocusChangeListener {
         private RecycleImageView posterView;
-        private TextView titleText;
+        private TextView titleText,columnUpdateDateTV;//人物详情（栏目最近更新日期）
         private FocusRelativeLayout modleView;
+        private LinearLayout mUpdateLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            mUpdateLayout = itemView.findViewById(mLayoutId);
+            columnUpdateDateTV = itemView.findViewById(mColumnUpdateDateId);
             modleView = itemView.findViewById(R.id.id_module_view);
             posterView = itemView.findViewWithTag("tag_poster_image");
             titleText = itemView.findViewWithTag("tag_poster_title");
 
             modleView.setOnFocusChangeListener(this);
+            if (mScaleView != -1){
+                itemView = itemView.findViewById(mScaleView);
+            }
             modleView.setResizeView(itemView);
             modleView.setOnClickListener(new OnClickListener() {
                 @Override

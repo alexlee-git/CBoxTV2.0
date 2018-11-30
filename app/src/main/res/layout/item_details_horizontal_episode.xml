@@ -3,40 +3,81 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/width_33px"
     android:clipToPadding="false"
     >
 
-    <tv.newtv.cboxtv.views.detail.FocusRelativeLayout
-        android:id="@+id/id_module_view"
-        android:layout_width="@dimen/width_306px"
-        android:layout_height="@dimen/height_426px"
-        android:layout_centerHorizontal="true"
-        android:clickable="true"
-        android:clipChildren="false"
+    <LinearLayout
+        android:layout_width="@dimen/width_288px"
+        android:layout_height="@dimen/width_48px"
+        android:id="@+id/column_update_item"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/height_45px"
+        android:layout_marginBottom="@dimen/height_45px"
+        android:background="#0f0"
+        >
+        <TextView
+            android:id="@+id/column_update_date_tv"
+            android:layout_width="@dimen/width_96px"
+            android:layout_height="@dimen/width_46px"
+            android:textSize="@dimen/width_30px"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/column_online_date_item_bg"
+            android:tag="column_update_date_tv"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="2016"
+            />
+        <View
+            android:id="@+id/column_update_date_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/width_1px"
+            android:background="@color/column_online_date_line_40"
+            android:layout_gravity="center_vertical"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/column_update_date_layout"
+        android:layout_width="@dimen/width_288px"
+        android:layout_height="@dimen/width_457px"
+        android:orientation="vertical"
         android:clipToPadding="false"
-        android:focusable="true"
-        android:tag="tag_focus_layout"
-        android:visibility="visible"
+        android:clipChildren="false"
+        android:gravity="center"
         >
 
-        <tv.newtv.cboxtv.views.custom.RecycleImageView
-            android:layout_width="@dimen/width_306px"
+        <tv.newtv.cboxtv.views.detail.FocusRelativeLayout
+            android:id="@+id/id_module_view"
+            android:layout_width="@dimen/width_288px"
             android:layout_height="@dimen/height_426px"
-            android:scaleType="fitXY"
-            android:tag="tag_poster_image"
-            android:src="@drawable/focus_240_360"
-            />
+            android:clickable="true"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:focusable="true"
+            android:tag="tag_focus_layout"
+            android:visibility="visible"
+            android:layout_gravity="center"
+            >
 
-    </tv.newtv.cboxtv.views.detail.FocusRelativeLayout>
+            <tv.newtv.cboxtv.views.custom.RecycleImageView
+                android:layout_width="@dimen/width_288px"
+                android:layout_height="@dimen/height_426px"
+                android:scaleType="centerCrop"
+                android:tag="tag_poster_image"
+                android:src="@drawable/focus_240_360"
+                />
 
-    <TextView
-        style="@style/ModulePosterBottomTitleStyle"
-        android:layout_width="@dimen/width_240px"
-        android:layout_height="@dimen/height_32px"
-        android:ellipsize="marquee"
-        android:marqueeRepeatLimit="marquee_forever"
-        android:singleLine="true"
-        android:tag="tag_poster_title" />
+        </tv.newtv.cboxtv.views.detail.FocusRelativeLayout>
 
+        <TextView
+            style="@style/ModulePosterBottomTitleStyle"
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_32px"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:layout_marginLeft="@dimen/width_5px"
+            android:singleLine="true"
+            android:tag="tag_poster_title" />
+
+    </LinearLayout>
 </LinearLayout>

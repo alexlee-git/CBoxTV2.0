@@ -15,7 +15,7 @@
     <color name="colorTextTime">#c1c1c1</color>
 
     <color name="color_font">#ededed</color>
-   <color name="color_transparent">#00FFFFFF</color>
+    <color name="color_transparent">#00FFFFFF</color>
     <color name="color_3B446A">#3B446A</color>
     <color name="color_272A3F">#272A3F</color>
     <color name="color_0F3285">#0F3285</color>
@@ -25,7 +25,8 @@
     <color name="color_0b104b">#0b1b4b</color>
     <color name="color_authing">#b3ffffff</color>
     <color name="color_tabIndicator">#ff4a90e2</color>
-     <color name="color_white_20">#33FFFFFF</color>
+    <color name="color_white_20">#33FFFFFF</color>
+    <color name="column_online_date_line_40">#99FFFFFF</color>
     <color name="color_black_90">#e6000000</color>
     <color name="color_black_60">#99000000</color>
     <color name="color_btn_blue">#0087FD</color>
