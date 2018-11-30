@@ -55,6 +55,7 @@ import tv.newtv.cboxtv.uc.bean.OrderInfoBean;
 import tv.newtv.cboxtv.uc.listener.RecScrollListener;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayRefreshOrderActivity;
+import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
 
 
 /**
@@ -100,7 +101,6 @@ public class MyOrderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_order);
         ButterKnife.bind(this);
-        isBackground = ActivityStacks.get().isBackGround();
         initData();
         initView();
     }
@@ -427,6 +427,7 @@ public class MyOrderActivity extends BaseActivity {
      * 跳转到会员Vip列表
      */
     private void jumpToMemberVip() {
+        isBackground = ActivityStacks.get().isBackGround();
         //会员片库
         Intent intent = new Intent();
         Class mPageClass = null;
@@ -445,10 +446,9 @@ public class MyOrderActivity extends BaseActivity {
         }
         intent.setClass(MyOrderActivity.this, mPageClass);
         startActivity(intent);
-
         if (mPageClass == MainActivity.class) {
             if (!isBackground){
-            ActivityStacks.get().finishAllActivity();
+                ActivityStacks.get().finishAllActivity();
             }
             MyOrderActivity.this.finish();
         }
