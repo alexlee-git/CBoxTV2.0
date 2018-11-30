@@ -1,6 +1,8 @@
 package tv.newtv.cboxtv;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -81,6 +83,19 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         if (intent != null) {
             if (intent.hasExtra(Constant.ACTION_FROM)) {
                 fromOuter = intent.getBooleanExtra(Constant.ACTION_FROM, false);
+                if (fromOuter) {
+                    try {
+                        StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
+                        PackageInfo pckInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                        dataBuff.append("0,")
+                                .append(pckInfo.versionName)
+                                .trimToSize();
+                        LogUploadUtils.uploadLog(Constant.LOG_NODE_SWITCH, dataBuff.toString());//进入应用
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                }
             }
         }
     }

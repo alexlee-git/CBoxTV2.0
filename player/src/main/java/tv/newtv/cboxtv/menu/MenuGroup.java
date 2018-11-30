@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.newtv.cms.Request;
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.GsonUtil;
@@ -947,12 +949,31 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
         NewTVLauncherPlayerViewManager.getInstance().setShowingView
                 (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
+        reportLog(mcontext,15);
 
-        String duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
-        if (!TextUtils.isEmpty(duration)){
-            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","
-                    +playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+
+    }
+
+    private void reportLog(Context context, int number) {
+
+        Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+        String definition = programSeriesInfo.getDefinition();
+        if (!TextUtils.isEmpty(definition)){
+            if (TextUtils.equals(definition,"SD")){
+                definition = "1";
+            }else if ( TextUtils.equals(definition,"HD")){
+                definition = "0";
+            }
         }
+
+        SharedPreferences sp = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE);
+        String duration =       sp.  getString("duration", "");
+        String seriesUUID = sp.getString("seriesUUID", "");
+        String vipflag = sp.getString("  vipFlag", "");
+
+        LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, number+","+seriesUUID+","
+                +playProgram.getContentUUID()+","+vipflag+","+ definition+","+  Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
 
     }
 
@@ -971,11 +992,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         float current = currentX;
         currentX = currentX + recyclerViewWidth * VISIBLE_COLUMN;
         startAnim(new AnimEntity(current, currentX));
-        String    duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
-        if (!TextUtils.isEmpty(duration)){
-            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
 
-        }
+        reportLog(mcontext,6);
+
     }
 
     private void goneAnimator() {

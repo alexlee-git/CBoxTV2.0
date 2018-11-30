@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.player.contract;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -214,11 +215,20 @@ public class VodContract {
             videoDataStruct.setProgramId(playResult.getContentUUID());
 
             String duration = playResult.getDuration();
-
+            String seriesUUIDs = playResult.getProgramSeriesUUIDs();
+            String flag = playResult.getVipFlag();
             if (!TextUtils.isEmpty(duration)) {
                 videoDataStruct.setDuration(Integer.parseInt(playResult
                         .getDuration()));
-                getContext().getSharedPreferences("durationConfig", Context.MODE_PRIVATE).edit().putString("duration", duration).apply();
+                SharedPreferences.Editor editor = getContext().getSharedPreferences("durationConfig", Context.MODE_PRIVATE).edit();
+                if (!TextUtils.isEmpty(seriesUUIDs)){
+                    editor.putString("seriesUUID",seriesUUIDs);
+                }
+                if (!TextUtils.isEmpty(flag)){
+                    editor.putString("vipFlag",flag);
+                }
+                editor.putString("duration", duration);
+                editor.apply();
             }
 
             videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
