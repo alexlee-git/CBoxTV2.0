@@ -94,7 +94,6 @@ public class MyOrderActivity extends BaseActivity {
     private int pageNum = 50;
     private int offset = 1;//页数
     private final static int REQUEST_CODE = 1; // 返回的结果码
-    private boolean isBackground;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -427,7 +426,7 @@ public class MyOrderActivity extends BaseActivity {
      * 跳转到会员Vip列表
      */
     private void jumpToMemberVip() {
-        isBackground = ActivityStacks.get().isBackGround();
+        boolean isBackground = ActivityStacks.get().isBackGround();
         //会员片库
         Intent intent = new Intent();
         Class mPageClass = null;
