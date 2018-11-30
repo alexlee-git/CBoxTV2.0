@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/search_layout"
+        android:layout_width="@dimen/width_899px"
+        android:layout_height="@dimen/height_147px"
+        android:layout_marginTop="@dimen/height_100px"
+        android:layout_centerHorizontal="true"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/search_view"
+            android:layout_width="@dimen/width_845px"
+            android:layout_height="@dimen/height_93px"
+            android:background="@drawable/search_button"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/focus_view"
+            android:layout_width="@dimen/width_845px"
+            android:layout_height="@dimen/height_92px"
+            android:background="@drawable/pos_zui"
+            android:scaleType="fitCenter"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+</RelativeLayout>
