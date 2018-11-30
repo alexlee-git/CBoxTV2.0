@@ -147,8 +147,10 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                 int index = data.getPrograms().indexOf(program);
                 Content programSeriesInfo = program.getParent().getLastMenuBean().getData()
                         .convertProgramSeriesInfo();
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,
-                        programSeriesInfo, false, index, 0);
+//                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,
+//                        programSeriesInfo, false, index, 0);
+                NewTVLauncherPlayerViewManager.getInstance().playVod(context,programSeriesInfo,
+                        index,0);
                 menuGroup.gone();
                 setPlayerInfo(program);
 //                switch () {

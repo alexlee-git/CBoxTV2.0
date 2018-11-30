@@ -327,7 +327,6 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     }
 
 
-
     private void updateRecycleView(@Nullable final List<Page> pageList) {
         mPageList = pageList;
         if (contentView == null || mRecyclerView == null) return;
@@ -371,6 +370,8 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
+        if (loadingView != null)
+            loadingView.setVisibility(View.GONE);
         setTipVisibility(View.VISIBLE);
         if(loadingView!=null) {
             loadingView.setVisibility(View.GONE);

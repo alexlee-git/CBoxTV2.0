@@ -49,7 +49,6 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.player.model.LiveInfo;
-import tv.newtv.cboxtv.views.custom.AlternateView;
 import tv.newtv.cboxtv.views.custom.AutoSizeTextView;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -235,9 +234,6 @@ class BlockBuilder extends BaseBlockBuilder {
                         frameLayout.setLayoutParams(params);
                     }
 
-                    // 按需添加角标控件
-                    processSuperscript(layoutCode, info, frameLayout);
-
                     // 按需添加标题控件
                     processTitle(layoutCode, info.getTitle(), info.getSubTitle(), frameLayout);
 
@@ -303,14 +299,22 @@ class BlockBuilder extends BaseBlockBuilder {
                         ((LivePlayView) posterView).setPageUUID(PlayerUUID);
                         recycleImageView = ((LivePlayView) posterView).getPosterImageView();
                         recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
-                    } else if (posterView instanceof AlternateView) {
-                        ((AlternateView) posterView).setContentUUID(info.getContentId());
                     }
 
                     if (recycleImageView != null) {
                         loadPosterToImage(moduleItem, info, recycleImageView, hasCorner);
                     }
                 }
+
+                ViewGroup parentFrameLayout = frameLayout;
+                int postIndex = 0;
+                if(posterView != null){
+                    parentFrameLayout = (ViewGroup) posterView.getParent();
+                    postIndex = parentFrameLayout.indexOfChild(posterView);
+                }
+
+                // 按需添加角标控件
+                processSuperscript(layoutCode,postIndex+1, info, parentFrameLayout);
             }
         } else if (TextUtils.equals("6", moduleItem.getBlockType())) {
             //TODO 自动区块类型
@@ -492,8 +496,8 @@ class BlockBuilder extends BaseBlockBuilder {
     }
 
     @SuppressLint("CheckResult")
-    private void processSuperscript(final String layoutCode, final Program info, final ViewGroup
-            parent) {
+    private void processSuperscript(final String layoutCode, final int posterIndex, final Program info,
+                                    final ViewGroup parent) {
         if (info == null || parent == null) {
             return;
         }
@@ -511,13 +515,13 @@ class BlockBuilder extends BaseBlockBuilder {
                         if (cornerList != null && cornerList.size() > 0) {
                             for (Corner corner : cornerList) {
                                 if (Corner.LEFT_TOP.equals(corner.getCornerPosition())) {
-                                    addLeftTopSuperscript(corner, parent);
+                                    addLeftTopSuperscript(corner, parent,posterIndex);
                                 } else if (Corner.LEFT_BOTTOM.equals(corner.getCornerPosition())) {
-                                    addLeftBottomSuperscript(layoutCode, corner, parent);
+                                    addLeftBottomSuperscript(layoutCode, corner, parent,posterIndex);
                                 } else if (Corner.RIGHT_TOP.equals(corner.getCornerPosition())) {
-                                    addRightTopSuperscript(corner, parent);
+                                    addRightTopSuperscript(corner, parent, posterIndex);
                                 } else if (Corner.RIGHT_BOTTOM.equals(corner.getCornerPosition())) {
-                                    addRightBottomSuperscript(layoutCode, corner, parent);
+                                    addRightBottomSuperscript(layoutCode, corner, parent, posterIndex);
                                 }
                             }
                         }
@@ -525,7 +529,7 @@ class BlockBuilder extends BaseBlockBuilder {
                 });
     }
 
-    private void addLeftTopSuperscript(Corner corner, ViewGroup parent) {
+    private void addLeftTopSuperscript(Corner corner, ViewGroup parent,int postIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_LEFT_TOP");
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
@@ -537,20 +541,19 @@ class BlockBuilder extends BaseBlockBuilder {
             imageView.setLayoutParams(lp);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
             imageView.setTag("CORNER_LEFT_TOP");
-            parent.addView(imageView, lp);
+            parent.addView(imageView,postIndex, lp);
         }
         showCorner(corner, imageView);
     }
 
     private void addLeftBottomSuperscript(String layoutCode, Corner corner,
-                                          ViewGroup parent) {
+                                          ViewGroup parent,int posterIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CENTER_LEFT_BOTTOM");
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                     .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-            if (TextUtils.equals(layoutCode, "layout_008") || TextUtils.equals(layoutCode,
-                    "layout_005")) {
+            if (TextUtils.equals(layoutCode, "layout_005")) {
                 lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
             } else {
                 lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
@@ -560,13 +563,13 @@ class BlockBuilder extends BaseBlockBuilder {
             imageView = new RecycleImageView(mContext);
             imageView.setTag("CENTER_LEFT_BOTTOM");
             imageView.setLayoutParams(lp);
-            parent.addView(imageView, lp);
+            parent.addView(imageView,posterIndex, lp);
         }
 
         showCorner(corner, imageView);
     }
 
-    private void addRightTopSuperscript(Corner corner, ViewGroup parent) {
+    private void addRightTopSuperscript(Corner corner, ViewGroup parent,int posterIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_TOP");
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
@@ -577,18 +580,17 @@ class BlockBuilder extends BaseBlockBuilder {
             imageView = new RecycleImageView(mContext);
             imageView.setTag("CORNER_RIGHT_TOP");
             imageView.setLayoutParams(lp);
-            parent.addView(imageView, lp);
+            parent.addView(imageView,posterIndex, lp);
         }
         showCorner(corner, imageView);
     }
 
-    private void addRightBottomSuperscript(String layoutCode, Corner corner, ViewGroup parent) {
+    private void addRightBottomSuperscript(String layoutCode, Corner corner, ViewGroup parent,int posterIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_BOTTOM");
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
                     .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
-                    "layout_008")) {
+            if (TextUtils.equals(layoutCode, "layout_005")) {
                 lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
             } else {
                 lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
@@ -598,7 +600,7 @@ class BlockBuilder extends BaseBlockBuilder {
             imageView = new RecycleImageView(mContext);
             imageView.setTag("CORNER_RIGHT_BOTTOM");
             imageView.setLayoutParams(lp);
-            parent.addView(imageView, lp);
+            parent.addView(imageView,posterIndex, lp);
         }
 
         // 加载角标x

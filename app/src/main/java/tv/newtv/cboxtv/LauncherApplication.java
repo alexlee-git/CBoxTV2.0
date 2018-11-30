@@ -246,7 +246,6 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                     }
                 }
             });
-
             History mHistory = new History(playInfo.getContentID(), playInfo.getContentType(),
                     playInfo.getTitle(), playInfo.getVImage(), "com.newtv.cboxtv",
                     "tv.newtv.cboxtv.SplashActivity", "", "", System.currentTimeMillis());

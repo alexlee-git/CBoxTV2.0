@@ -196,7 +196,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
                 if(content != null){
                     int index = program.getParent().getPrograms().indexOf(program);
-                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+//                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+                    NewTVLauncherPlayerViewManager.getInstance().playVod(context,content,index,0);
                     menuGroup.gone();
                     setPlayerInfo(program);
                 }else {
@@ -257,7 +258,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         NewTVLauncherPlayerView.PlayerViewConfig defaultConfig = NewTVLauncherPlayerViewManager.getInstance().getDefaultConfig();
         if(defaultConfig != null){
             isAlternate = defaultConfig.isAlternate;
-            alternateId = NewTVLauncherPlayerViewManager.getInstance().getAlternateId();
+            alternateId = defaultConfig.alternateID;
         }
 
         if (programSeriesInfo == null) {
@@ -812,7 +813,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         content.setData(subContents);
 
                         int index = programs.indexOf(program);
-                        NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+//                        NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+                        NewTVLauncherPlayerViewManager.getInstance().playVod(context,content, index,0);
                         menuGroup.gone();
                         setPlayerInfo(program);
                     }

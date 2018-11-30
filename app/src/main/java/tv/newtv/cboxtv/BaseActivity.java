@@ -25,20 +25,18 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.cms.details.ColumnPageActivity;
 import tv.newtv.cboxtv.cms.details.ProgramCollectionActivity;
 import tv.newtv.cboxtv.cms.details.ProgrameSeriesAndVarietyDetailActivity;
 import tv.newtv.cboxtv.cms.details.SingleDetailPageActivity;
 import tv.newtv.cboxtv.player.IPlayerActivity;
-import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import java.lang.annotation.Annotation;
-import java.util.List;
-
-import tv.newtv.cboxtv.annotation.PopupAD;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.AdPopupWindow;
 
@@ -52,22 +50,21 @@ import tv.newtv.cboxtv.views.AdPopupWindow;
  */
 public abstract class BaseActivity extends RxFragmentActivity implements IPlayerActivity {
 
+    protected boolean isADEntry = false;//是否点击广告位跳转过来的
     protected boolean FrontStage = false;//是否已经进入前台
     protected boolean fromOuter = false;//是否是外部跳转进入的
+    protected boolean isPopup = false;
     private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
-    protected boolean isPopup = false;
-
     private List<ILifeCycle> lifeCycleList;
 
-    public void lifeCycle(ILifeCycle lifeCycle){
+    public void lifeCycle(ILifeCycle lifeCycle) {
         lifeCycleList.add(lifeCycle);
     }
 
-    protected boolean isDetail(){
+    protected boolean isDetail() {
         return false;
     }
-
 
     public boolean isFrontStage() {
         return FrontStage;
@@ -76,6 +73,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         lifeCycleList = new ArrayList<>();
         ActivityStacks.get().onCreate(this);
 
@@ -97,6 +95,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
 
                 }
             }
+            if (intent.hasExtra(Constant.ACTION_AD_ENTRY)) {
+                isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
+            }
         }
     }
 
@@ -116,7 +117,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     @Override
     protected void onStop() {
         super.onStop();
-        for(ILifeCycle lifeCycle : lifeCycleList){
+        for (ILifeCycle lifeCycle : lifeCycleList) {
             lifeCycle.onActivityStop();
         }
         ActivityStacks.get().onStop(this);
@@ -137,7 +138,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     @Override
     protected void onResume() {
         ActivityStacks.get().onResume(this);
-        for(ILifeCycle lifeCycle : lifeCycleList){
+        for (ILifeCycle lifeCycle : lifeCycleList) {
             lifeCycle.onActivityResume();
         }
         if (hasPlayer()) {
@@ -161,7 +162,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     }
 
     private void setPopupAD() {
-        if (isDetailActivity() || hasPopoupAD()) {
+        if (isDetail() || hasPopoupAD()) {
             adPopupWindow = new AdPopupWindow();
             adPopupWindow.show(this, findViewById(android.R.id.content));
         }
@@ -171,7 +172,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onDestroy() {
         super.onDestroy();
         ActivityStacks.get().onDestroy(this);
-        for(ILifeCycle lifeCycle : lifeCycleList){
+        for (ILifeCycle lifeCycle : lifeCycleList) {
             lifeCycle.onActivityDestroy();
         }
         if (adPresenter != null) {
@@ -190,7 +191,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void onPause() {
         super.onPause();
         ActivityStacks.get().onPause(this);
-        for(ILifeCycle lifeCycle : lifeCycleList){
+        for (ILifeCycle lifeCycle : lifeCycleList) {
             lifeCycle.onActivityPause();
         }
 
@@ -224,6 +225,10 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
     }
 
+    protected boolean processKeyEvent(KeyEvent keyEvent){
+        return false;
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (!FrontStage) return true;
@@ -234,14 +239,20 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             return false;
         }
 
-        if (event.getAction() == KeyEvent.ACTION_UP) {
-
+        if (isDetail() && event.getAction() == KeyEvent.ACTION_UP) {
             if (isBackPressed(event)) {
                 if (fromOuter) {
-//                    Player.get().onExitApp();
                     startActivityForResult(new Intent().setClass(this, WarningExitActivity.class)
-                                    .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                            , 0x999);
+                                    .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION), 0x999);
+                    return true;
+                }
+                if (isADEntry) {
+                    ActivityStacks.get().finishAllActivity();
+                    Intent intent = new Intent();
+                    intent.setClass(LauncherApplication.AppContext, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    LauncherApplication.AppContext.getApplicationContext().startActivity(intent);
+                    isADEntry = false;
                     return true;
                 }
             }
@@ -281,7 +292,6 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     }
 
 
-
     /**
      * 拦截按键事件，统一处理
      *
@@ -292,7 +302,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             return true;
         }
         boolean isFullScreen = isFullScreen();
-        if (isPopup&&fromOuter) {
+        if (isPopup && fromOuter) {
             checkIsTop(event);
         }
         return isFullScreen;
@@ -337,22 +347,23 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
 
     private boolean isDetailActivity() {
         Class<? extends BaseActivity> clazz = getClass();
-        if(clazz == ProgrameSeriesAndVarietyDetailActivity.class
-                ||clazz == ColumnPageActivity.class
+        if (clazz == ProgrameSeriesAndVarietyDetailActivity.class
+                || clazz == ColumnPageActivity.class
                 || clazz == SingleDetailPageActivity.class
-                || clazz == ProgramCollectionActivity.class){
+                || clazz == ProgramCollectionActivity.class) {
             return true;
         }
         return false;
     }
 
-    private boolean hasPopoupAD(){
+    private boolean hasPopoupAD() {
         return hasAnnotation(PopupAD.class);
     }
-    private boolean hasAnnotation(Class ann){
+
+    private boolean hasAnnotation(Class ann) {
         Class<? extends BaseActivity> clazz = getClass();
         Annotation annotation = clazz.getAnnotation(ann);
-        if(annotation != null) {
+        if (annotation != null) {
             return true;
         }
         return false;

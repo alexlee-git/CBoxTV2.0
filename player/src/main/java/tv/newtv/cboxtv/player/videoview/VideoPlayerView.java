@@ -17,12 +17,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.newtv.cms.bean.Content;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.LogUtils;
 
-import tv.newtv.cboxtv.player.contract.VodContract;
+import tv.newtv.cboxtv.player.PlayerErrorCode;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -37,7 +36,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     private ImageView detailPlayIv;
     private ProgressBar mPlayerProgress;
-    private VPlayCenter playCenter;
     private PlayerCallback mPlayerCallback;
     private ExitVideoFullCallBack videoFullCallBack;
     private View mFocusView;
@@ -65,8 +63,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         this(context, attrs, 0);
     }
 
-    //    private boolean isFullScrenn = false;
-
     public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int
             defStyleAttr) {
         this(context, attrs, defStyleAttr, null);
@@ -89,7 +85,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             defaultFocusView = config.defaultFocusView;
             mPlayerCallback = config.playerCallback;
             videoFullCallBack = config.videoFullCallBack;
-            playCenter = config.playCenter;
             videoExitFullScreenCallBack = config.videoExitFullScreenCallBack;
         }
     }
@@ -99,20 +94,19 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return repeatPlay;
     }
 
-
     @Override
     protected void onError(String code, String messgae) {
         super.onError(code, messgae);
         String hint = null;
-        switch (code){
-            case VodContract.USER_NOT_LOGIN:
-            case VodContract.USER_TOKEN_IS_EXPIRED:
-            case VodContract.USER_NOT_BUY:
+        switch (code) {
+            case PlayerErrorCode.USER_NOT_LOGIN:
+            case PlayerErrorCode.USER_TOKEN_IS_EXPIRED:
+            case PlayerErrorCode.USER_NOT_BUY:
                 hint = "付费内容需购买后才能观看";
                 break;
             default:
-               hint = String.format("%s 错误码:%s", messgae, code);
-               break;
+                hint = String.format("%s 错误码:%s", messgae, code);
+                break;
         }
         setHintText(hint);
     }
@@ -134,13 +128,12 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         }
         super.ExitFullScreen();
 
-        if (ProgramIsChange) {
+        if (defaultConfig.ProgramIsChange) {
             if (mPlayerCallback != null) {
                 mPlayerCallback.ProgramChange();
-
             }
         }
-        ProgramIsChange = false;
+        defaultConfig.ProgramIsChange = false;
 
 
         Log.i("Collection", "退出全屏");
@@ -169,7 +162,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void enterFullScreen(final Activity activity) {
-        if (!playCenter.isReady() && !isLiving()) {
+        if (!defaultConfig.playCenter.isReady() && !isLiving()) {
             return;
         }
         EnterFullScreen(activity, false);
@@ -182,7 +175,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             playerViewConfig.defaultFocusView = defaultFocusView;
             playerViewConfig.playerCallback = mPlayerCallback;
             playerViewConfig.videoFullCallBack = videoFullCallBack;
-            playerViewConfig.playCenter = playCenter;
             playerViewConfig.videoExitFullScreenCallBack = videoExitFullScreenCallBack;
 
             LogUtils.d(TAG, playerViewConfig.toString());
@@ -279,9 +271,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             }
         });
 
-        if (playCenter == null) {
-            playCenter = new VPlayCenter();
-        }
+
     }
 
     /**
@@ -311,32 +301,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         }
     }
 
-    public void setSeriesInfo(Content seriesInfo) {
-        if (playCenter != null && seriesInfo != null) {
-            playCenter.setSeriesInfo(seriesInfo);
-        }
-    }
-    public void playSingleOrSeries(int mIndex, int position) {
-        playSingleOrSeries(mIndex,position,"");
-    }
-
-    public void playSingleOrSeries(int mIndex, int position,String alternateId) {
-        //设置播放的位置
-        int index = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(), mIndex);
-        playCenter.setCurrentIndex(index);
-        setHintTextVisible(GONE);
-        VPlayCenter.DataStruct dataStruct = playCenter.getDataStruct();
-        if (dataStruct != null) {
-            if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(getContext(),
-                        playCenter.getCurrentSeriesInfo(), false, index, position,alternateId);
-            } else {
-                NewTVLauncherPlayerViewManager.getInstance().playProgramSingle(getContext(),
-                        playCenter.getCurrentSeriesInfo(), position, false,alternateId);
-            }
-        }
-    }
-
     public void setHintText(String text) {
         if (HintTextView != null) {
             HintTextView.setVisibility(View.VISIBLE);
@@ -361,10 +325,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         }
     }
 
-    public boolean isReady() {
-        return playCenter != null && playCenter.isReady();
-    }
-
     private void dispatchComplete(final boolean isError, final String desc) {
         MainLooper.get().postDelayed(new Runnable() {
             @Override
@@ -382,7 +342,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         removeAllViews();
         detailPlayIv = null;
         mPlayerProgress = null;
-        playCenter = null;
         mPlayerCallback = null;
         videoFullCallBack = null;
         mFocusView = null;
@@ -395,8 +354,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     protected void playIndex(int index) {
         super.playIndex(index);
-        if (mPlayerCallback != null && !ProgramIsChange) {
-            int toIndex = CmsUtil.translateIndex(playCenter.getCurrentSeriesInfo(), index);
+        if (mPlayerCallback != null && !defaultConfig.ProgramIsChange) {
+            int toIndex = CmsUtil.translateIndex(defaultConfig.playCenter.getCurrentSeriesInfo(),
+                    index);
             mPlayerCallback.onEpisodeChange(toIndex, getCurrentPosition());
         }
     }
@@ -424,7 +384,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             }
         } else {
             //当视频都播放完的时候，就不在去加载首次进入详情页播放的视频
-            ProgramIsChange = false;
+            defaultConfig.ProgramIsChange = false;
             if (isFullScreen()) {
                 ExitFullScreen();
             }
@@ -458,10 +418,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     }
 
-    public boolean hasNext(int index) {
-        return playCenter.hasNext(index);
-    }
-
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -473,16 +429,17 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void setVideoExitCallback(VideoExitFullScreenCallBack callback) {
         videoExitFullScreenCallBack = callback;
-
-    }
-
-    public String getCurrentUuId() {
-        return playCenter.getDataStruct().uuid;
     }
 
     public void setView(TextView videoTitle, ImageView full_screen) {
         this.videoTitle = videoTitle;
         this.full_screen = full_screen;
+    }
+
+    @Override
+    public void playAlternate(String alternateId, String title, String channelId) {
+        super.playAlternate(alternateId, title, channelId);
+        outerControl();
     }
 
     public void outerControl() {

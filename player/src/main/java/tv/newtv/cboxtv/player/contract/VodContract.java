@@ -30,6 +30,7 @@ import java.util.List;
 import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerConstants;
+import tv.newtv.cboxtv.player.PlayerErrorCode;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.util.PlayerNetworkRequestUtils;
 import tv.newtv.cboxtv.player.vip.VipCheck;
@@ -43,9 +44,6 @@ import tv.newtv.player.R;
  * 创建日期:          2018/10/12
  */
 public class VodContract {
-    public static final String USER_NOT_LOGIN = "60017";
-    public static final String USER_TOKEN_IS_EXPIRED = "60019";
-    public static final String USER_NOT_BUY = "60006";
 
     public interface View extends ICmsView {
         void onVodchkResult(VideoDataStruct videoDataStruct, String contentUUID);
@@ -55,12 +53,11 @@ public class VodContract {
 
     public interface Presenter extends ICmsPresenter {
         /**
-         *
          * @param programId
          * @param albumId
          * @param isCarouse
          */
-        void checkVod(String programId, String albumId,boolean isCarouse);
+        void checkVod(String programId, String albumId, boolean isCarouse);
     }
 
     public static class VodPresenter extends CmsServicePresenter<View> implements Presenter {
@@ -95,22 +92,14 @@ public class VodContract {
                         .program_info_no_data), Toast.LENGTH_SHORT).show();
                 LogUtils.e("鉴权接口后没有返回视频地址");
                 if (getView() != null)
-                    getView().onChkError("-5", "视频地址为空");
+                    getView().onChkError(PlayerErrorCode.PROGRAM_CDN_EMPTY, PlayerErrorCode
+                            .getErrorDesc(getContext(), PlayerErrorCode.PROGRAM_CDN_EMPTY));
                 return null;
             }
             for (int j = 0; j < specifiedCDNInfos.size(); j++) {
                 CdnUrl mediaCDNInfo = specifiedCDNInfos.get(j);
                 if (PlayerConstants.SHARPNESS_HD.equals(mediaCDNInfo.getMediaType())) {
-                    String mPlayUrl = mediaCDNInfo.getPlayURL();
-                    if (TextUtils.isEmpty(mPlayUrl)) {
-                        Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                                .program_info_no_data), Toast.LENGTH_SHORT).show();
-                        LogUtils.e("鉴权接口后没有返回视频地址");
-                        if (getView() != null)
-                            getView().onChkError("-5", "视频地址为空");
-                        return null;
-                    }
-                    break;
+                    return mediaCDNInfo.getPlayURL();
                 } else if ("ts".equals(mediaCDNInfo.getMediaType()) || "TS".equals(mediaCDNInfo
                         .getMediaType())) {
                     return mediaCDNInfo.getPlayURL();
@@ -128,7 +117,7 @@ public class VodContract {
          * @param seriesID
          * @return
          */
-        ChkRequest createVodRequestBean(String contentId, String seriesID,boolean isCarouse) {
+        ChkRequest createVodRequestBean(String contentId, String seriesID, boolean isCarouse) {
             ChkRequest playCheckRequestBean = new ChkRequest();
 
             playCheckRequestBean.setAppKey(Libs.get().getAppKey());
@@ -165,18 +154,18 @@ public class VodContract {
                                     .search_fail_agin), Toast.LENGTH_SHORT).show();
                 } else {
                     String toastText = "";
-                    switch (errorCode){
-                        case USER_NOT_LOGIN:
-                        case USER_TOKEN_IS_EXPIRED:
-                        case USER_NOT_BUY:
+                    switch (errorCode) {
+                        case PlayerErrorCode.USER_NOT_LOGIN:
+                        case PlayerErrorCode.USER_TOKEN_IS_EXPIRED:
+                        case PlayerErrorCode.USER_NOT_BUY:
                             toastText = "付费内容需购买后才能观看";
                             break;
 
-                            default:
-                                toastText =  getContext().getResources()
-                                        .getString(R.string.check_error) + errorCode;
+                        default:
+                            toastText = getContext().getResources()
+                                    .getString(R.string.check_error) + errorCode;
                     }
-                    Toast.makeText(getContext(),toastText, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), toastText, Toast.LENGTH_SHORT).show();
                 }
                 if (getView() != null)
                     getView().onChkError(errorCode, getContext().getResources()
@@ -187,18 +176,18 @@ public class VodContract {
             }
             if (playResult.getData().size() < 1) {
                 LogUtils.i(TAG, "onResponse: programDetailInfo.getData().size()<1");
-                Toast.makeText(getContext(), getContext().getResources()
-                        .getString(R.string
-                                .program_info_no_data), Toast.LENGTH_SHORT).show();
                 if (getView() != null)
-                    getView().onChkError("-3", getContext().getResources()
-                            .getString(R.string
-                                    .program_info_no_data));
+                    getView().onChkError(PlayerErrorCode.PROGRAM_SERIES_EMPTY, PlayerErrorCode
+                            .getErrorDesc(getContext(), PlayerErrorCode.PROGRAM_SERIES_EMPTY));
                 LogUtils.e("暂无节目内容");
                 return;
             }
             String playUrl = translateCdnUrl(playResult);
             if (TextUtils.isEmpty(playUrl)) {
+                if (getView() != null) {
+                    getView().onChkError(PlayerErrorCode.PROGRAM_PLAY_URL_EMPTY, PlayerErrorCode
+                            .getErrorDesc(getContext(), PlayerErrorCode.PROGRAM_PLAY_URL_EMPTY));
+                }
                 return;
             }
 
@@ -208,7 +197,7 @@ public class VodContract {
                         playResult.getDecryptKey()));
             }
             LogUtils.i(TAG, "playViewgetEncryptFlag:" + playResult.getEncryptFlag()
-                    +",key=" + Encryptor.decrypt(Constant.APPSECRET, playResult.getDecryptKey()));
+                    + ",key=" + Encryptor.decrypt(Constant.APPSECRET, playResult.getDecryptKey()));
             videoDataStruct.setPlayType(0);
 
             videoDataStruct.setPlayUrl(playUrl);
@@ -237,70 +226,74 @@ public class VodContract {
             ADConfig.getInstance().setProgramId(playResult.getContentUUID());
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
             ADConfig.getInstance().setDuration(playResult.getDuration());
-            if(playResult.getPrograms() != null && playResult.getPrograms().size() > 0){
+            if (playResult.getPrograms() != null && playResult.getPrograms().size() > 0) {
                 String contentId = playResult.getPrograms().get(0).getProgramSeriesId();
-                ADConfig.getInstance().setSeriesID(contentId,false);
+                ADConfig.getInstance().setSeriesID(contentId, false);
                 videoDataStruct.setSeriesId(contentId);
-            }else {
-                ADConfig.getInstance().setSeriesID("",false);
+            } else {
+                ADConfig.getInstance().setSeriesID("", false);
             }
 
             String vipFlag = playResult.getVipFlag();
 
-            if(!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_VIP.equals(vipFlag) && !UserStatus.isVip()){
-                callBack(true,videoDataStruct,playResult);
-            }else if(!TextUtils.isEmpty(vipFlag) && (VipCheck.VIP_FLAG_BUY.equals(vipFlag)
-                    || VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag) && !UserStatus.isVip())){
-                VipCheck.isBuy(playResult.getVipProductId(), playResult.getContentUUID(),getContext(),
+            if (!TextUtils.isEmpty(vipFlag) && VipCheck.VIP_FLAG_VIP.equals(vipFlag) &&
+                    !UserStatus.isVip()) {
+                callBack(true, videoDataStruct, playResult);
+            } else if (!TextUtils.isEmpty(vipFlag) && (VipCheck.VIP_FLAG_BUY.equals(vipFlag)
+                    || VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag) && !UserStatus.isVip())) {
+                VipCheck.isBuy(playResult.getVipProductId(), playResult.getContentUUID(),
+                        getContext(),
                         new VipCheck.BuyFlagListener() {
                             @Override
                             public void buyFlag(boolean buyFlag) {
-                                callBack(!buyFlag,videoDataStruct,playResult);
+                                callBack(!buyFlag, videoDataStruct, playResult);
                             }
                         });
-            }else{
-                callBack(false,videoDataStruct,playResult);
+            } else {
+                callBack(false, videoDataStruct, playResult);
             }
-
-
         }
 
-        private void callBack(boolean isTrySee,VideoDataStruct videoDataStruct,ChkPlayResult playResult){
+        private void callBack(boolean isTrySee, VideoDataStruct videoDataStruct, ChkPlayResult
+                playResult) {
 //            isTrySee = true;
-            if(isTrySee){
+            if (isTrySee) {
                 videoDataStruct.setTrySee(true);
                 videoDataStruct.setFreeDuration(playResult.getFreeDuration());
 //                videoDataStruct.setFreeDuration("300");
             }
-            if (getView() != null){
+            if (getView() != null) {
                 getView().onVodchkResult(videoDataStruct, playResult.getContentUUID());
             }
         }
 
         @Override
-        public void checkVod(String programId, String albumId,boolean isCarouse) {
+        public void checkVod(String programId, String albumId, boolean isCarouse) {
             final IPlayChk playChk = getService(SERVICE_CHK_PLAY);
             String token = SharePreferenceUtils.getToken(getContext());
             String resultToken = TextUtils.isEmpty(token) ? "" : "Bearer " + token;
             if (playChk != null) {
-                ChkRequest request = createVodRequestBean(programId, albumId,isCarouse);
-                playChk.check(request,resultToken, new DataObserver<String>() {
+                ChkRequest request = createVodRequestBean(programId, albumId, isCarouse);
+                playChk.check(request, resultToken, new DataObserver<String>() {
                     @Override
                     public void onResult(String result, long requestCode) {
                         if (TextUtils.isEmpty(result)) {
                             LogUtils.i(TAG, "onResponse: responseBody==null");
                             if (!NetworkManager.getInstance().isConnected()) {
-                                Toast.makeText(getContext(), getContext().getResources()
-                                        .getString(R.string
-                                                .search_fail_agin), Toast.LENGTH_SHORT).show();
+                                if (getView() != null)
+                                    getView().onChkError(PlayerErrorCode.INTERNET_ERROR,
+                                            PlayerErrorCode.getErrorDesc(getContext(),
+                                                    PlayerErrorCode
+                                                            .PERMISSION_CHECK_RESULT_EMPTY));
                             } else {
-                                Toast.makeText(getContext(), getContext().getResources()
-                                        .getString(R.string
-                                                .check_error), Toast.LENGTH_SHORT).show();
+                                if (getView() != null)
+                                    getView().onChkError(PlayerErrorCode
+                                                    .PERMISSION_CHECK_RESULT_EMPTY,
+                                            PlayerErrorCode.getErrorDesc(getContext(),
+                                                    PlayerErrorCode
+                                                    .PERMISSION_CHECK_RESULT_EMPTY));
                             }
-                            if (getView() != null)
-                                getView().onChkError("-2", getContext().getResources()
-                                        .getString(R.string.check_error));
+
                             LogUtils.e(TAG, "调用鉴权接口后没有返回数据");
                             return;
                         }
@@ -312,18 +305,17 @@ public class VodContract {
                     public void onError(@Nullable String desc) {
                         LogUtils.e(TAG, "onFailure: " + desc);
                         if (!NetworkManager.getInstance().isConnected()) {
-                            Toast.makeText(getContext(), getContext().getResources().getString(R
-                                    .string
-                                    .search_fail_agin), Toast.LENGTH_SHORT).show();
+                            if (getView() != null)
+                                getView().onChkError(PlayerErrorCode.INTERNET_ERROR,
+                                        PlayerErrorCode.getErrorDesc(getContext(),
+                                                PlayerErrorCode
+                                                        .PERMISSION_CHECK_RESULT_EMPTY));
                         } else {
-                            Toast.makeText(getContext(), getContext().getResources().getString(R
-                                    .string
-                                    .check_error), Toast.LENGTH_SHORT).show();
+                            if (getView() != null)
+                                getView().onChkError(PlayerErrorCode.PERMISSION_CHECK_RESULT_EMPTY,
+                                        PlayerErrorCode.getErrorDesc(getContext(), PlayerErrorCode
+                                                .PERMISSION_CHECK_RESULT_EMPTY));
                         }
-                        if (getView() != null)
-                            getView().onChkError("-6", getContext().getResources().getString(R
-                                    .string
-                                    .search_fail_agin));
                     }
                 });
             }

@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.AlternateView;
 
 /**
@@ -28,7 +29,8 @@ import tv.newtv.cboxtv.views.custom.AlternateView;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/13
  */
-public class AlterHeaderView extends FrameLayout implements IEpisode, ContentContract.View,View.OnClickListener {
+public class AlterHeaderView extends FrameLayout implements IEpisode, ContentContract.View, View
+        .OnClickListener {
 
     private String mContentUUID;
     private ContentContract.Presenter mPresenter;
@@ -36,11 +38,12 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     private TextView alternateIdText;
     private TextView alternateFromText;
     private TextView alternateDescText;
-    private AlternateView alternateView;
+    private VideoPlayerView alternateView;
 
     private View fullScreenBtn;
     private View collectBtn;
     private View payBtn;
+
 
     public AlterHeaderView(Context context) {
         this(context, null);
@@ -63,22 +66,30 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     public void onResume() {
         if (alternateView != null) {
-            alternateView.onResume();
+//            alternateView.;
         }
+    }
+
+    public boolean isFullScreen() {
+        if (alternateView != null) {
+            alternateView.isFullScreen();
+        }
+        return false;
     }
 
     public void setCallback(AlternateView.AlternateCallback callback) {
-        alternateView.setCallback(callback);
+//        alternateView.setCallback(callback);
     }
 
     public void prepareMediaPlayer() {
-        alternateView.prepareMediaPlayer();
+//        alternateView.prepareMediaPlayer();
     }
 
     public void play(String contentId, String contentUUID) {
-        if (alternateView != null) {
-            alternateView.play(contentId, contentUUID);
-        }
+
+//        if (alternateView != null) {
+//            alternateView.play(contentId, contentUUID);
+//        }
     }
 
     private void initialize(Context context, AttributeSet attrs, int defStyle) {
@@ -97,9 +108,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         collectBtn.setOnClickListener(this);
         payBtn.setOnClickListener(this);
 
-        if (!TextUtils.isEmpty(mContentUUID)) {
-            alternateView.setContentUUID(mContentUUID);
-        }
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
     }
@@ -111,10 +119,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     public void setContentUUID(String contentUUID) {
         mContentUUID = contentUUID;
-
-        if (alternateView != null) {
-            alternateView.setContentUUID(mContentUUID);
-        }
 
         if (mPresenter == null) {
             mPresenter = new ContentContract.ContentPresenter(getContext(), this);
@@ -129,7 +133,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 if (!hasFocus() && alternateView != null) {
                     alternateView.requestFocus();
                     return true;
-                }else return hasFocus();
+                } else return hasFocus();
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 return alternateView != null && alternateView.hasFocus();
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
@@ -161,6 +165,12 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         if (alternateDescText != null) {
             alternateDescText.setText(content.getDescription());
         }
+
+        if (alternateView != null) {
+            alternateView.setSeriesInfo(content);
+            alternateView.playAlternate(mContentUUID, content.getTitle(), content
+                    .getAlternateNumber());
+        }
     }
 
     @Override
@@ -181,9 +191,9 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.full_screen:
-                alternateView.enterFullScreen();
+//                alternateView.enterFullScreen();
                 break;
             case R.id.collect:
 

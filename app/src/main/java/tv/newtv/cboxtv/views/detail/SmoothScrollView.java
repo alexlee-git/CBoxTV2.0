@@ -42,6 +42,7 @@ public class SmoothScrollView extends RelativeLayout {
         initalzie(context, attrs, defStyleAttr);
     }
 
+
     public void destroy() {
         mScroller = null;
         removeAllViews();
@@ -59,8 +60,11 @@ public class SmoothScrollView extends RelativeLayout {
         int childCount = getChildCount();
         for (int index = 0; index < childCount; index++) {
             View child = getChildAt(index);
-            if(child.getVisibility() == View.GONE) continue;
-            measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            if(child.getVisibility() == View.GONE){
+                measureChild(child,0,0);
+            }else {
+                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            }
             height += child.getMeasuredHeight();
         }
         if (height < ScreenUtils.getScreenH()) {
@@ -133,7 +137,6 @@ public class SmoothScrollView extends RelativeLayout {
         if (parentView == null) {
             return;
         }
-
 
         LayoutParams layoutParams = (LayoutParams) parentView.getLayoutParams();
         if (parentView.getTop() - layoutParams.topMargin == 0) {

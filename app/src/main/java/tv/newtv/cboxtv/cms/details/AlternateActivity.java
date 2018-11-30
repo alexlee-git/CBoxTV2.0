@@ -24,6 +24,7 @@ import tv.newtv.cboxtv.views.custom.AlternateView;
 import tv.newtv.cboxtv.views.detail.AlterHeaderView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
+import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
 
 /**
@@ -36,6 +37,7 @@ import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
 public class AlternateActivity extends DetailPageActivity implements AlternateView
         .AlternateCallback, onEpisodeItemClick<Alternate>, ContentContract.LoadingView {
     private String contentUUID;
+    private SmoothScrollView scrollView;
     private AlterHeaderView headerView;
     private EpisodeHorizontalListView mPlayListView;
 
@@ -50,6 +52,11 @@ public class AlternateActivity extends DetailPageActivity implements AlternateVi
         if (headerView != null) {
             headerView.prepareMediaPlayer();
         }
+    }
+
+    @Override
+    protected boolean isDetail() {
+        return true;
     }
 
     @Override
@@ -97,6 +104,18 @@ public class AlternateActivity extends DetailPageActivity implements AlternateVi
 
     @Override
     protected boolean interruptDetailPageKeyEvent(KeyEvent event) {
+        //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
+        if (scrollView != null && scrollView.isComputeScroll() && headerView != null &&
+                headerView.isFullScreen()) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -111,6 +130,7 @@ public class AlternateActivity extends DetailPageActivity implements AlternateVi
     }
 
     private void setUp() {
+        scrollView = findViewById(R.id.root_view);
         headerView = findViewById(R.id.header_view);
         mPlayListView = findViewById(R.id.play_list);
         mPlayListView.setOnItemClick(this);

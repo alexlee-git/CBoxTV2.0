@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.util.CmsUtil;
@@ -43,6 +44,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
@@ -55,8 +57,11 @@ import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerConstants;
+import tv.newtv.cboxtv.player.PlayerErrorCode;
+import tv.newtv.cboxtv.player.VPlayCenter;
 import tv.newtv.cboxtv.player.ad.BuyGoodsBusiness;
 import tv.newtv.cboxtv.player.contract.LiveContract;
+import tv.newtv.cboxtv.player.contract.PlayerAlternateContract;
 import tv.newtv.cboxtv.player.contract.PlayerContract;
 import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.iPlayCallBackEvent;
@@ -66,7 +71,6 @@ import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.model.VideoPlayInfo;
 import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
-import tv.newtv.cboxtv.player.videoview.VPlayCenter;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.player.R;
@@ -78,7 +82,7 @@ import tv.newtv.player.R;
  */
 
 public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract.View, VodContract
-        .View, LiveTimer.LiveTimerCallback {
+        .View, LiveTimer.LiveTimerCallback, PlayerAlternateContract.View {
 
     public static final int SHOWING_NO_VIEW = 0;
     public static final int SHOWING_SEEKBAR_VIEW = 2;
@@ -88,16 +92,18 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public static final int SHOWING_EXIT_VIEW = 6;
     public static final int SHOWING_PROGRAM_TREE = 7;
     public static final int SHOWING_TIP_VIEW = 8;
+    public static final int SHOWING_ALTER_CHANGE_VIEW = 9;
 
+
+    public static final int PLAY_TYPE_SINGLE = 0;
+    public static final int PLAY_TYPE_SERIES = 1;
+    public static final int PLAY_TYPE_LIVE = 2;
+    public static final int PLAY_TYPE_ALTERNATE = 3;
+    private static final String ALTERNATE_TIP_TAG = "alternate_tip";
     private static final String TAG = NewTVLauncherPlayerView.class.getName();
-
     private static final int PROGRAM_SELECTOR_TYPE_NONE = 0; //不显示选集
     private static final int PROGRAM_SELECTOR_TYPE_NUMBER = 1; //显示数字选集
     private static final int PROGRAM_SELECTOR_TYPE_NAME = 2; //显示名称选集
-
-    private static final int PLAY_TYPE_SINGLE = 0;
-    private static final int PLAY_TYPE_SERIES = 1;
-    private static final int PLAY_TYPE_LIVE = 2;
     private static final String SP_ALTERNATE_FIRST = "Alternate_first";
 
 
@@ -109,9 +115,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private static final String START_BUFFER = "701";    //开始缓冲
     private static final String END_BUFFER = "702";    //缓冲结束
 
-
     protected PlayerViewConfig defaultConfig;
-    protected boolean ProgramIsChange = false;          //是否在栏目树切换节目集
     private NewTVLauncherPlayerLoading mLoading;
     private NewTVLauncherPlayerSeekbar mNewTVLauncherPlayerSeekbar;
     private NewTvLauncherPlayerTip mNewTvTipView;
@@ -127,14 +131,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private List<IPlayProgramsCallBackEvent> listener = new ArrayList<>();
     private boolean NeedJumpAd = false;
     private boolean unshowLoadBack = false;
-    private Map<Integer, FocusWidget> widgetMap;
+
     private LiveContract.Presenter mLivePresenter;
     private VodContract.Presenter mVodPresenter;
+    private PlayerAlternateContract.Presenter mAlternatePresenter;
+
     private LiveTimer mLiveTimer;
     private boolean isNextPlay;
     private List<ScreenListener> screenListeners;
     private boolean isTrySee;
-    private TextView hintVip;
+    private TextView hintVip, alterTitle, alterChannel;
+    private View bigScreen;
     private NewTVLauncherPlayerSeekbar.FreeDurationListener freeDurationListener = new
             FreeDuration();
 
@@ -142,6 +149,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private PlayerLocation mPlayerLocation;
     private LiveListener mLiveListener;
     private PlayerContract mPlayerContract;
+
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -253,7 +261,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             // 什么时候会修改Constant.isLiving的值？
             // 3. 大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
             Constant.isLiving = false;
-
             playVodNext();
         }
 
@@ -279,7 +286,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 unshowLoadBack = true;
             }
 
-            boolean isHaveAD ;
+            boolean isHaveAD;
             if (!TextUtils.isEmpty(typeString)) {
                 if (typeString.equals(AD_END_BUFFER)) {
                     isHaveAD = true;
@@ -287,7 +294,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             }
 
-            if(TextUtils.equals(PIC_AD_END_BUFFER,typeString)){
+            if (TextUtils.equals(PIC_AD_END_BUFFER, typeString)) {
                 setCurrentVideoState(PlayerContract.STATE_AD_PLAYING);
             } else if (TextUtils.equals(AD_END_BUFFER, typeString)) {
                 //如果状态等于ad_onPrepared的时候，设置状态为广告播放中
@@ -298,7 +305,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             } else if (TextUtils.equals(END_BUFFER, typeString) &&
                     !mPlayerContract.equalsPlayerState(PlayerContract.STATE_VIDEO_SEEK_START) &&
                     (!mPlayerContract.equalsPlayerState(PlayerContract.STATE_AD_PLAYING) ||
-                            mPlayerContract.equalsPlayerState(PlayerContract.STATE_VIDEO_SEEK_END))) {
+                            mPlayerContract.equalsPlayerState(PlayerContract
+                                    .STATE_VIDEO_SEEK_END))) {
                 //如果当前typeString=702 并且之前状态不等于广告播放状态 并且不等于跳转状态
                 // 或者 当前状态等于 跳转结束 状态的时候，设置当前状态为正片播放状态
                 setCurrentVideoState(PlayerContract.STATE_VIDEO_PLAYING);
@@ -327,6 +335,71 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             LogUtils.i(TAG, "onError: ");
         }
     };
+    private ChangeAlternateListener mChangeAlternateListener;
+
+    private boolean hasTipAlternate = false;
+
+    private OnPlayerStateChange mOnPlayerStateChange = new OnPlayerStateChange() {
+        @Override
+        public boolean onStateChange(boolean fullScreen, int visible, boolean videoPlaying) {
+
+            if (bigScreen != null) {
+                bigScreen.setVisibility(fullScreen ? GONE : VISIBLE);
+            }
+            if (alterTitle != null) {
+                alterTitle.setVisibility(defaultConfig.isAlternate && !fullScreen ? VISIBLE : GONE);
+            }
+            if (alterChannel != null) {
+                alterChannel.setVisibility(defaultConfig.isAlternate && !fullScreen ? VISIBLE :
+                        GONE);
+            }
+
+
+
+            if (defaultConfig.isAlternate) {
+                refreshTipStatus();
+                if(!fullScreen){
+                    View alternate = findViewWithTag("ALTERNATE_MESSAGE");
+                    if(alternate != null){
+                        bringChildToFront(alternate);
+                    }
+                }
+                if (fullScreen && visible == 0 && hasTipAlternate && videoPlaying) {
+                    AlternateTipView tipView = new AlternateTipView(getContext());
+                    tip(tipView, 1);
+                    hasTipAlternate = false;
+                    SPrefUtils.setValue(getContext(), ALTERNATE_TIP_TAG, false);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean processKeyEvent(KeyEvent keyEvent) {
+            if (keyEvent.getAction() == KeyEvent.ACTION_UP && defaultConfig.isAlternate) {
+                if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER || keyEvent.getKeyCode() ==
+                        KeyEvent.KEYCODE_DPAD_CENTER) {
+                    hasTipAlternate = false;
+                    dismissTipView();
+                    return true;
+                }
+            }
+            switch (keyEvent.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                case KeyEvent.KEYCODE_DPAD_UP:
+                case KeyEvent.KEYCODE_DPAD_DOWN:
+                case KeyEvent.KEYCODE_DPAD_LEFT:
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                case KeyEvent.KEYCODE_MENU:
+                    return true;
+                default:
+                    break;
+            }
+            return false;
+        }
+    };
+    private NewTvAlterChangeView mNewTvAlterChange;
 
     public NewTVLauncherPlayerView(PlayerViewConfig config, @NonNull Context context) {
         this(context, null, 0, config);
@@ -352,6 +425,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         initView(context);
     }
 
+    private void refreshTipStatus() {
+        hasTipAlternate = (boolean) SPrefUtils.getValue(getContext(), ALTERNATE_TIP_TAG, false);
+    }
+
     private void setCurrentVideoState(int state) {
         mPlayerContract.setPlayerState(state);
     }
@@ -366,10 +443,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             unregisterWidget(id);
         }
         FocusWidget focusWidget = new FocusWidget(widget);
-        if (widgetMap == null) {
-            widgetMap = new HashMap<>();
+        if (defaultConfig.widgetMap == null) {
+            defaultConfig.widgetMap = new HashMap<>();
         }
-        widgetMap.put(focusWidget.getId(), focusWidget);
+        defaultConfig.widgetMap.put(focusWidget.getId(), focusWidget);
         return focusWidget.getId();
     }
 
@@ -379,12 +456,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * @param id
      */
     public void unregisterWidget(int id) {
-        if (widgetMap != null && widgetMap.containsKey(id)) {
-            FocusWidget focusWidget = widgetMap.get(id);
+        if (defaultConfig.widgetMap != null && defaultConfig.widgetMap.containsKey(id)) {
+            FocusWidget focusWidget = defaultConfig.widgetMap.get(id);
             if (focusWidget != null && focusWidget.isShowing()) {
                 focusWidget.onBackPressed();
             }
-            widgetMap.remove(id);
+            defaultConfig.widgetMap.remove(id);
         }
     }
 
@@ -396,12 +473,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             ((ViewGroup) config.parentViewGroup).addView(this, config.layoutParams);
         } else {
             defaultConfig = new PlayerViewConfig();
+            defaultConfig.playCenter = new VPlayCenter();
         }
     }
 
     public PlayerViewConfig getDefaultConfig() {
         if(isReleased) return null;
         if (defaultConfig != null){
+
             defaultConfig.playPosition = getCurrentPosition();
             defaultConfig.layoutParams = getLayoutParams();
             defaultConfig.parentViewGroup = getParent();
@@ -410,6 +489,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     protected void onError(String code, String messgae) {
+        if (alterTitle != null) {
+            alterTitle.setText("");
+        }
         stopLoading();
     }
 
@@ -456,7 +538,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             menuGroupPresenter.exitFullScreen();
         }
 
-        NeedJumpAd = ProgramIsChange;
+        NeedJumpAd = defaultConfig.ProgramIsChange;
 
         if (mIsPause && mNewTVLauncherPlayer != null) {
             start();
@@ -573,7 +655,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mPlayerLocation = PlayerLocation.build(this, bringFront);
 
-        ProgramIsChange = false;
+        defaultConfig.ProgramIsChange = false;
 
         createMenuGroup();
 
@@ -625,6 +707,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             menuPopupWindow = null;
         }
 
+        if (mAlternatePresenter != null) {
+            mAlternatePresenter.destroy();
+            mAlternatePresenter = null;
+        }
+
         if (mVodPresenter != null) {
             mVodPresenter.destroy();
             mVodPresenter = null;
@@ -655,7 +742,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void release() {
-        if(isReleased) return;
+        if (isReleased) return;
         isReleased = true;
         addHistory();
         Log.i(TAG, "release: ");
@@ -703,13 +790,23 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     protected void initView(Context context) {
         mNewTVLauncherPlayer = new NewTVLauncherPlayer();
         mPlayerContract = new PlayerContract();
+        mPlayerContract.setOnPlayerStateChange(mOnPlayerStateChange);
 
         View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout
                 .newtv_launcher_player_view, this);
+
         defaultConfig.videoFrameLayout = (VideoFrameLayout) view.findViewById(R.id
                 .player_view_framelayout);
         mNewTVLauncherPlayerSeekbar = (NewTVLauncherPlayerSeekbar) view.findViewById(R.id
                 .player_seekbar_area);
+
+
+        mNewTvAlterChange = new NewTvAlterChangeView(context);
+        LayoutParams alterLayoutParams = new LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+        mNewTvAlterChange.setLayoutParams(alterLayoutParams);
+        mNewTvAlterChange.setVisibility(INVISIBLE);
+        addView(mNewTvAlterChange, alterLayoutParams);
 
 //        mNewTvTipView = (NewTvLauncherPlayerTip) view.findViewById(R.id.player_tip_layout);
 
@@ -718,8 +815,24 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         updateUIPropertys(defaultConfig != null ? defaultConfig.isFullScreen : defaultConfig
                 .startIsFullScreen);
-        hintVip = view.findViewById(R.id.hint_vip);
+        hintVip = findViewById(R.id.hint_vip);
         NewTVLauncherPlayerViewManager.getInstance().setPlayerView(this);
+
+        View alternate = LayoutInflater.from(getContext()).inflate(R.layout
+                .player_alternate_layout, this, false);
+        alternate.setTag("ALTERNATE_MESSAGE");
+        ((ViewGroup) view).addView(alternate);
+        alterTitle = alternate.findViewById(R.id.alter_title);
+        alterChannel = alternate.findViewById(R.id.alter_channel);
+        bigScreen = alternate.findViewById(R.id.alter_big_screen);
+
+        if (defaultConfig.isAlternate) {
+            if (alterTitle != null)
+                alterTitle.setVisibility(VISIBLE);
+
+            if (alterChannel != null)
+                alterChannel.setVisibility(VISIBLE);
+        }
 
         mNewTvTipView = new NewTvLauncherPlayerTip(getContext());
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
@@ -727,29 +840,87 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mNewTvTipView.setLayoutParams(layoutParams);
         ((ViewGroup) view).addView(mNewTvTipView, layoutParams);
 
-
         mLivePresenter = new LiveContract.LivePresenter(getContext(), this);
         mVodPresenter = new VodContract.VodPresenter(getContext(), this);
+        mAlternatePresenter = new PlayerAlternateContract.AlternatePresenter(getContext(), this);
+
+        //FIXBUG 为了测试轮播提示，每次创建ALternateView的时候，重置本地提示标识
+        SPrefUtils.setValue(getContext(), ALTERNATE_TIP_TAG, true);
+    }
+
+    public void setSeriesInfo(Content seriesInfo) {
+        if (defaultConfig.playCenter == null) {
+            defaultConfig.playCenter = new VPlayCenter();
+        }
+        if (defaultConfig.playCenter != null && seriesInfo != null) {
+            defaultConfig.playCenter.setSeriesInfo(seriesInfo);
+        }
+    }
+
+    public void playAlternate(String alternateId, String title, String channelId) {
+        if (defaultConfig.isFullScreen) {
+            if (mNewTvAlterChange != null) {
+                mNewTvAlterChange.show();
+                mNewTvAlterChange.setChannelText(String.format(Locale.getDefault(), "%s %s",
+                        channelId, title));
+
+                mNewTvAlterChange.setTitleText("正在准备轮播数据...");
+            }
+        } else {
+            if (alterChannel != null) {
+                alterChannel.setVisibility(VISIBLE);
+                alterChannel.setText(String.format("%s %s", channelId, title));
+            }
+
+            if (alterTitle != null) {
+                alterTitle.setVisibility(VISIBLE);
+                alterTitle.setText("正在准备轮播数据...");
+            }
+        }
+        updatePlayStatus(PLAY_TYPE_ALTERNATE, 0, 0);
+        stop();
+        defaultConfig.alternateID = alternateId;
+        if (mAlternatePresenter != null) {
+            mAlternatePresenter.requestAlternate(alternateId, title, channelId);
+        }
+    }
+
+    public void playSingleOrSeries(int mIndex, int position) {
+        playSingleOrSeries(mIndex, position, true);
+    }
+
+    private void playSingleOrSeries(int mIndex, int position, boolean updateState) {
+        //设置播放的位置
+        int index = CmsUtil.translateIndex(defaultConfig.playCenter.getCurrentSeriesInfo(), mIndex);
+        defaultConfig.playCenter.setCurrentIndex(index);
+        setHintTextVisible(GONE);
+        VPlayCenter.DataStruct dataStruct = defaultConfig.playCenter.getDataStruct();
+        if (dataStruct != null) {
+            if (dataStruct.playType == VPlayCenter.PLAY_SERIES) {
+                playProgramSeries(defaultConfig.playCenter.getCurrentSeriesInfo(), false, index,
+                        position, updateState);
+            } else {
+                playProgramSingle(defaultConfig.playCenter.getCurrentSeriesInfo(), position,
+                        false, updateState);
+            }
+        } else {
+            onError(PlayerErrorCode.PROGRAM_SERIES_EMPTY, PlayerErrorCode.getErrorDesc(getContext
+                    (), PlayerErrorCode.PROGRAM_SERIES_EMPTY));
+        }
+    }
+
+    public boolean isReady() {
+        return defaultConfig.playCenter != null && defaultConfig.playCenter.isReady();
     }
 
     private boolean equalsInfo(Content AInfo, Content BInfo) {
         if (AInfo == null || BInfo == null) return false;
-        if (TextUtils.isEmpty(AInfo.getContentUUID()) || TextUtils.isEmpty(BInfo.getContentUUID()
-        )) {
+        if (TextUtils.isEmpty(AInfo.getContentUUID()) || TextUtils.isEmpty(BInfo.getContentUUID()))
+        {
             return false;
         }
         Log.e(TAG, "AInfo Id=" + AInfo.getContentUUID() + " BInfo Id=" + BInfo.getContentUUID());
         return AInfo.getContentUUID().equals(BInfo.getContentUUID());
-    }
-
-    public void play(Content content, int index, int position, boolean newActivity) {
-        if (content == null) return;
-        if (Constant.CONTENTTYPE_CP.equals(content.getContentType()) || Constant.CONTENTTYPE_PG
-                .equals(content.getContentType())) {
-            playProgramSingle(content, position, newActivity);
-        } else {
-            playProgramSeries(content, newActivity, index, position);
-        }
     }
 
     /*
@@ -759,18 +930,19 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * index 播放第几集
      * position 从什么位置开始播放
      * */
-    public void playProgramSeries(Content programSeriesInfo, boolean
-            isNeedStartActivity, int index, int position) {
+    private void playProgramSeries(Content programSeriesInfo, boolean
+            isNeedStartActivity, int index, int position, boolean updateState) {
         unshowLoadBack = false;
         if (isFullScreen() && !equalsInfo(defaultConfig.programSeriesInfo, programSeriesInfo)) {
-            ProgramIsChange = true;
+            defaultConfig.ProgramIsChange = true;
         }
 
         LogUtils.i(TAG, "playVideo: index=" + index + " position=" + position);
-        updatePlayStatus(2, index, position);
+        if (updateState) {
+            updatePlayStatus(PLAY_TYPE_SERIES, index, position);
+        }
 
         defaultConfig.programSeriesInfo = programSeriesInfo;
-
 
         if (programSeriesInfo != null) {
             List<SubContent> programsInfos = programSeriesInfo.getData();
@@ -806,7 +978,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             } else {
                 LogUtils.i(TAG, "playVideo: programsInfos == null || programsInfos.size() <= " +
                         "index");
-                onError("-8", "播放信息为空");
+                onError(PlayerErrorCode.PROGRAM_SERIES_EMPTY, PlayerErrorCode
+                        .getErrorDesc
+                                (getContext(), PlayerErrorCode.PROGRAM_SERIES_EMPTY));
             }
         }
 
@@ -818,7 +992,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mLiveListener = listener;
         defaultConfig.liveInfo = liveInfo;
         LogUtils.i(TAG, "playlive playVideo");
-        updatePlayStatus(3, 0, 0);
+        updatePlayStatus(PLAY_TYPE_LIVE, 0, 0);
         mLivePresenter.checkLive(liveInfo);
         if (mLoading != null) {
             mLoading.setProgramName(liveInfo.getTitle());
@@ -828,6 +1002,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     private void playAlive(LiveInfo liveInfo) {
+        if (liveInfo == null) {
+            onError(PlayerErrorCode.LIVE_INFO_EMPTY, PlayerErrorCode.getErrorDesc(getContext(),
+                    PlayerErrorCode
+                            .LIVE_INFO_EMPTY));
+            return;
+        }
         VideoDataStruct videoDataStruct = new VideoDataStruct();
         videoDataStruct.setPlayType(PlayerConstants.PLAYTYPE_LIVE);
         if (liveInfo.isTimeShift()) {
@@ -839,9 +1019,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
         videoDataStruct.setDeviceID(Constant.UUID);
         videoDataStruct.setKey(liveInfo.getKey());
-        if (liveInfo != null) {
-            videoDataStruct.setContentUUID(liveInfo.getContentUUID());
-        }
+        videoDataStruct.setContentUUID(liveInfo.getContentUUID());
         mNewTVLauncherPlayer.playAlive(getContext(), defaultConfig.videoFrameLayout, liveInfo,
                 mLiveCallBackEvent,
                 videoDataStruct);
@@ -857,15 +1035,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * programDetailInfo 节目信息
      * position 从什么位置开始播放
      * */
-    public void playProgramSingle(Content programDetailInfo, int position, boolean
-            openActivity) {
+    private void playProgramSingle(Content programDetailInfo, int position, boolean
+            openActivity, boolean updateState) {
         unshowLoadBack = false;
         LogUtils.i(TAG, "playProgram: ");
         if (programDetailInfo == null) {
             return;
         }
 
-        updatePlayStatus(1, 0, position);
+        if (updateState) {
+            updatePlayStatus(PLAY_TYPE_SINGLE, 0, position);
+        }
         defaultConfig.programSeriesInfo = programDetailInfo;
 
         if (mNewTVLauncherPlayerSeekbar != null) {
@@ -884,6 +1064,27 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         isNeedStartActivity(openActivity, programDetailInfo, 0);
     }
 
+    protected void PlayTypeChange(int type) {
+        switch (type) {
+            case PLAY_TYPE_ALTERNATE:
+                if (alterTitle != null) {
+                    alterTitle.setVisibility(VISIBLE);
+                }
+                if (alterChannel != null) {
+                    alterChannel.setVisibility(VISIBLE);
+                }
+                break;
+            default:
+                if (alterTitle != null) {
+                    alterTitle.setVisibility(GONE);
+                }
+                if (alterChannel != null) {
+                    alterChannel.setVisibility(GONE);
+                }
+                break;
+        }
+    }
+
     /**
      * 开始播放时进行状态和行为变更
      * type 1为单节目 2为节目集 3为直播
@@ -893,18 +1094,30 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mIsPrepared = false;
         dismissChildView();
 
+        if (defaultConfig.playType != type) {
+            PlayTypeChange(type);
+        }
+
         switch (type) {
-            case 1:
+            case PLAY_TYPE_SINGLE:
                 defaultConfig.playType = PLAY_TYPE_SINGLE;
+                defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = false;
                 break;
-            case 2:
+            case PLAY_TYPE_SERIES:
                 defaultConfig.playType = PLAY_TYPE_SERIES;
+                defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = false;
                 break;
-            case 3:
+            case PLAY_TYPE_LIVE:
                 defaultConfig.playType = PLAY_TYPE_LIVE;
+                defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = true;
+                break;
+            case PLAY_TYPE_ALTERNATE:
+                defaultConfig.playType = PLAY_TYPE_ALTERNATE;
+                defaultConfig.isAlternate = true;
+                defaultConfig.isLiving = false;
                 break;
         }
 
@@ -1038,8 +1251,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         int current = mShowingChildView;
         mShowingChildView = SHOWING_NO_VIEW;
         boolean interrupt = false;
-        if (widgetMap != null) {
-            for (FocusWidget focusWidget : widgetMap.values()) {
+        if (defaultConfig.widgetMap != null) {
+            for (FocusWidget focusWidget : defaultConfig.widgetMap.values()) {
                 if (current == focusWidget.getId()) {
                     focusWidget.onBackPressed();
                     interrupt = true;
@@ -1123,8 +1336,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             }
         }
 
-        if (widgetMap != null) {
-            Collection<FocusWidget> widgets = widgetMap.values();
+        if (defaultConfig.widgetMap != null) {
+            Collection<FocusWidget> widgets = defaultConfig.widgetMap.values();
             for (FocusWidget widget : widgets) {
                 if (widget.isOverride(event.getKeyCode())) {
                     if (widget.isRegisterKey(event)) {
@@ -1169,8 +1382,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         if (mShowingChildView != SHOWING_NO_VIEW) {
-            if (widgetMap != null && widgetMap.containsKey(mShowingChildView)) {
-                FocusWidget focusWidget = widgetMap.get(mShowingChildView);
+            if (defaultConfig.widgetMap != null && defaultConfig.widgetMap.containsKey
+                    (mShowingChildView)) {
+                FocusWidget focusWidget = defaultConfig.widgetMap.get(mShowingChildView);
                 if (focusWidget != null) {
                     focusWidget.dispatchKeyEvent(event);
                     return true;
@@ -1242,24 +1456,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         return true;
                     }
 
-//<<<<<<<Updated upstream
                     if (isLiving() && defaultConfig.liveInfo != null && !defaultConfig.liveInfo
                             .isTimeShift()) {
-//=======
-//                        if (isFullScreen() && isTrySee) {
-//                            goToBuy();
-//                            return true;
-//                        }
-//
-//                        if (isLiving() && defaultConfig.liveInfo != null && !defaultConfig
-// .liveInfo
-//                                .isTimeShift()) {
-//                            return true;
-//                        }
-//
-//
-//>>>>>>>Stashed changes
-
                         return true;
                     }
 
@@ -1332,7 +1530,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else if (defaultConfig.playType == PLAY_TYPE_SERIES) {
             int next = defaultConfig.playIndex + 1;
             if (next <= defaultConfig.programSeriesInfo.getData().size() - 1) {
-                playProgramSeries(defaultConfig.programSeriesInfo, false, next, 0);
+                playProgramSeries(defaultConfig.programSeriesInfo, false, next, 0, true);
                 if (listener != null && listener.size() > 0) {
                     for (IPlayProgramsCallBackEvent l : listener) {
                         l.onNext(defaultConfig.programSeriesInfo.getData().get(next), next,
@@ -1357,17 +1555,27 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     AllComplete(false, "播放结束");
                 }
             }
+        } else if (defaultConfig.playType == PLAY_TYPE_ALTERNATE) {
+            if (!mAlternatePresenter.playNext()) {
+                AllComplete(false, "播放结束");
+            }
         }
     }
 
     protected void playIndex(int index) {
+
     }
 
     protected void AllComplete(boolean isError, String info) {
-        if (mNewTVLauncherPlayer != null) {
-            mNewTVLauncherPlayer.release();
-            mNewTVLauncherPlayer = null;
+        if (defaultConfig.isAlternate) {
+
+        } else {
+            if (mNewTVLauncherPlayer != null) {
+                mNewTVLauncherPlayer.release();
+                mNewTVLauncherPlayer = null;
+            }
         }
+
     }
 
     public int getShowingView() {
@@ -1395,7 +1603,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public void dismissTipView() {
         if (mNewTvTipView != null && mNewTvTipView.getVisibility() == VISIBLE) {
             mNewTvTipView.dismiss();
-            SPrefUtils.setValue(getContext(), "alternate_tip", true);
+            SPrefUtils.setValue(getContext(), ALTERNATE_TIP_TAG, false);
         }
     }
 
@@ -1479,7 +1687,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void addHistory() {
         if (isLiving() || defaultConfig.isAlternate) return;
 
-        if (defaultConfig.programSeriesInfo == null) {
+        if (defaultConfig.programSeriesInfo == null || defaultConfig.programSeriesInfo.getData()
+                == null) {
             return;
         }
 
@@ -1487,6 +1696,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), defaultConfig.programSeriesInfo.getContentUUID()));
+
+        if (defaultConfig.programSeriesInfo == null
+                || getDuration() <= 0 || getCurrentPosition() <= 0)
+            return;
 
         Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
                 getDuration());
@@ -1508,6 +1721,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mNewTVLauncherPlayer.setVideoSilent(isSilent);
         }
     }
+
 
     @Override
     public void onVodchkResult(VideoDataStruct videoDataStruct, String contentUUID) {
@@ -1542,7 +1756,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals
                 (defaultConfig.programSeriesInfo.getContentType())
-                || Constant.CONTENTTYPE_TV.equals(defaultConfig.programSeriesInfo.getContentType()))) {
+                || Constant.CONTENTTYPE_TV.equals(defaultConfig.programSeriesInfo.getContentType
+                ()))) {
             videoDataStruct.setSeriesId(defaultConfig.programSeriesInfo.getContentID());
             ADConfig.getInstance().setSeriesID(defaultConfig.programSeriesInfo.getContentID(),
                     false);
@@ -1560,9 +1775,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onChkError(String code, String desc) {
         switch (code) {
-            case VodContract.USER_NOT_BUY:
-            case VodContract.USER_NOT_LOGIN:
-            case VodContract.USER_TOKEN_IS_EXPIRED:
+            case PlayerErrorCode.USER_NOT_BUY:
+            case PlayerErrorCode.USER_NOT_LOGIN:
+            case PlayerErrorCode.USER_TOKEN_IS_EXPIRED:
                 isTrySee = true;
                 break;
             default:
@@ -1578,7 +1793,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
-
+        onError("-1", desc);
     }
 
     @Override
@@ -1667,21 +1882,80 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mPlayerContract.setOnPlayerStateChange(onViewVisibleChange);
     }
 
+
+    protected void changeAlternate(String contentId, String title, String channelCode) {
+        if (mChangeAlternateListener != null) {
+            mChangeAlternateListener.changeAlternate(contentId, title, channelCode);
+        }
+        playAlternate(contentId, title, channelCode);
+    }
+
+    public void setChangeAlternateListen(ChangeAlternateListener listen) {
+        mChangeAlternateListener = listen;
+    }
+
+    @Override
+    public void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String
+            title, String channelId) {
+        updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
+
+        if (mAlternatePresenter != null && mAlternatePresenter
+                .getCurrentAlternate() != null) {
+            if (!defaultConfig.isFullScreen) {
+                if (alterTitle != null)
+                    alterTitle.setText(String.format(Locale.getDefault(),
+                            "即将播放 %s",
+                            mAlternatePresenter.getCurrentAlternate().getTitle()));
+            } else {
+                if (mNewTvAlterChange != null) {
+                    mNewTvAlterChange.setTitleText(String.format(Locale.getDefault(),
+                            "%s %s",
+                            mAlternatePresenter.getCurrentAlternate().getStartTime(),
+                            mAlternatePresenter.getCurrentAlternate().getTitle()));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onAlterItemResult(String contentId, Content content) {
+        setSeriesInfo(content);
+
+        if (mNewTvAlterChange != null) {
+            mNewTvAlterChange.dismiss();
+        }
+
+        if (alterTitle != null && !defaultConfig.isFullScreen) {
+            alterTitle.setVisibility(VISIBLE);
+            alterTitle.setText(mAlternatePresenter.getCurrentAlternate().getTitle());
+        }
+
+        Long currentStartTime = CmsUtil.parse(mAlternatePresenter.getCurrentAlternate()
+                .getStartTime());
+        playSingleOrSeries(0, (int) (System.currentTimeMillis() - currentStartTime), false);
+    }
+
+    public interface ChangeAlternateListener {
+        void changeAlternate(String contentId, String title, String channel);
+    }
+
+    public interface GetHaveADListener {
+        // isHavaAD 专题通过判断是否有广告，决定是否显示播放器上的Title和Enter全屏提示
+        void OnGetHaveADListener(boolean isHavaAD);
+    }
+
     public interface OnPlayerStateChange {
         /**
-         *
-         * @param fullScreen       是否为全屏状态
-         * @param visible          当前播放器View显示状态
-         * @param videoPlaying     是否为正片播放状态
-         *
+         * @param fullScreen   是否为全屏状态
+         * @param visible      当前播放器View显示状态
+         * @param videoPlaying 是否为正片播放状态
          * @return true 消化掉当前事件，不再向下传递
-         *          false  不消化该事件，继续向下传递
+         * false  不消化该事件，继续向下传递
          */
         boolean onStateChange(boolean fullScreen, int visible, boolean videoPlaying);
 
         /**
-         *
-         * @param keyEvent  按键事件
+         * @param keyEvent 按键事件
          * @return true 消化掉该按键事件   false 不消化该按键事件
          */
         boolean processKeyEvent(KeyEvent keyEvent);
@@ -1693,10 +1967,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public boolean startIsFullScreen;       //开始时候是不是全屏状态
         public View defaultFocusView;           //进入全屏时候的默认焦点位置
         public PlayerCallback playerCallback;
+        public boolean ProgramIsChange = false;          //是否在栏目树切换节目集
         public int playPosition;
+        public String alternateID;
         public VPlayCenter playCenter;
+        public Map<Integer, FocusWidget> widgetMap;
         public ExitVideoFullCallBack videoFullCallBack;
         public VideoExitFullScreenCallBack videoExitFullScreenCallBack;
+        public boolean isAlternate;
         int defaultWidth;
         int defaultHeight;
         int playIndex;
@@ -1707,7 +1985,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         VideoFrameLayout videoFrameLayout;
         boolean prepared = false;
         ViewParent parentViewGroup;      //父级容器
-        public boolean isAlternate;
+
+        public boolean canUse() {
+            return parentViewGroup != null && layoutParams != null;
+        }
 
         @Override
         public String toString() {
@@ -1739,7 +2020,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 ExitFullScreen();
             } else {
                 stop();
-                onError(VodContract.USER_NOT_BUY, "");
+                onError(PlayerErrorCode.USER_NOT_BUY,
+                        PlayerErrorCode.getErrorDesc(getContext(), PlayerErrorCode.USER_NOT_BUY));
             }
 //            goToBuy();
         }

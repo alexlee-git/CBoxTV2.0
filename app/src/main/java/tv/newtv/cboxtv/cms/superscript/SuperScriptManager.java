@@ -46,7 +46,6 @@ public class SuperScriptManager implements CornerContract.View {
     private Map<String, Corner> mSuperscriptMap;
     private CornerContract.Presenter mPresenter;
 
-
     private SuperScriptManager() {
     }
 
@@ -78,11 +77,6 @@ public class SuperScriptManager implements CornerContract.View {
                         } else if (value instanceof Integer) {
                             result = Integer.toString((Integer) value);
                         }
-                        LogUtils.d("SuperScriptMananger",
-                                String.format("fname=%s fvalue=%s cname=%s cvalue = %s",
-                                        name, result, condition.getFieldName(), condition
-                                                .getFieldValue())
-                        );
                         if (!TextUtils.equals(condition.getFieldValue(), result)) {
                             suit = false;
                             break fieldLoop;
@@ -194,18 +188,20 @@ public class SuperScriptManager implements CornerContract.View {
                 if (item.has("cornerPosition"))
                     info.setCornerPosition(item.optString("cornerPosition"));
                 if (item.has("cornerCondition")) {
-                    JSONArray condition = item.getJSONArray("cornerCondition");
-                    if (condition != null && condition.length() > 0) {
-                        List<CornerCondition> conditionList = new ArrayList<>();
-                        int size = condition.length();
-                        for (int index = 0; index < size; index++) {
-                            JSONObject conditionItem = condition.getJSONObject(index);
-                            conditionList.add(new CornerCondition(
-                                    conditionItem.optString("fieldName"),
-                                    conditionItem.optString("fieldValue")
-                            ));
+                    if (!TextUtils.isEmpty(item.optString("cornerCondition"))) {
+                        JSONArray condition = item.getJSONArray("cornerCondition");
+                        if (condition != null && condition.length() > 0) {
+                            List<CornerCondition> conditionList = new ArrayList<>();
+                            int size = condition.length();
+                            for (int index = 0; index < size; index++) {
+                                JSONObject conditionItem = condition.getJSONObject(index);
+                                conditionList.add(new CornerCondition(
+                                        conditionItem.optString("fieldName"),
+                                        conditionItem.optString("fieldValue")
+                                ));
+                            }
+                            info.setCornerCondition(conditionList);
                         }
-                        info.setCornerCondition(conditionList);
                     }
                 }
 

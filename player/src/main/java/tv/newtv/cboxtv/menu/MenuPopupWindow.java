@@ -25,9 +25,6 @@ public class MenuPopupWindow extends PopupWindow{
         FrameLayout rootView = popView.findViewById(R.id.root_view);
         setContentView(popView);
 
-        if(ScreenUtils.getScreenW() == 0){
-            ScreenUtils.initScreen(context);
-        }
         setWidth(ScreenUtils.getScreenW());
         setHeight(ScreenUtils.getScreenH());
         setBackgroundDrawable(new BitmapDrawable());
