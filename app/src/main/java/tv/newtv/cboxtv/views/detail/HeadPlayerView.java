@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
@@ -285,11 +284,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (mBuilder.focusables != null && mBuilder.focusChangeListener == null) return;
 
         contentView = LayoutInflater.from(getContext()).inflate(mBuilder.mLayout, this, false);
-        final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_nav, null);
+        final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        inflate.layout(0, (int) getResources().getDimension(R.dimen.height_27px),0,0);
         inflate.setLayoutParams(lp);
-        if (mBuilder.fromOuter) {
+//        if (mBuilder.fromOuter) {
+            Log.e("yml", "Build: ..1" );
             addView(inflate);
             postDelayed(new Runnable() {
                 @Override
@@ -297,7 +298,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     removeView(inflate);
                 }
             }, 5000);
-        }
+//        }
         addView(contentView);
         checkDataFromDB();
 

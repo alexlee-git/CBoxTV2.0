@@ -301,9 +301,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             return true;
         }
         boolean isFullScreen = isFullScreen();
-        if ( fromOuter) {
+//        if ( fromOuter) {
             checkIsTop(event);
-        }
+//        }
         return isFullScreen;
     }
 

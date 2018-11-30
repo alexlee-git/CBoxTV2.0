@@ -3,7 +3,7 @@
     android:id="@+id/up_top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/height_12px"
+    android:layout_marginTop="@dimen/height_27px"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -15,7 +15,6 @@
     <ImageView
         android:layout_width="@dimen/width_168px"
         android:layout_height="@dimen/height_24px"
-        android:layout_marginTop="@dimen/height_6px"
         android:src="@drawable/up_to_nav" />
 
 </LinearLayout>
