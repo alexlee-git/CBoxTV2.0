@@ -480,6 +480,7 @@ public class MenuRecycleView extends RecyclerView {
             }
 
             if (mHandler != null) {
+                mHandler.removeMessages(0x997);
                 Message message = mHandler.obtainMessage();
                 message.what = 0x997;
                 message.arg1 = position;
