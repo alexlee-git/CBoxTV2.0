@@ -34,6 +34,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.cms.search.SearchFragment;
+import tv.newtv.cboxtv.cms.search.SearchFragmentNew;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
@@ -315,7 +316,8 @@ public class MainNavManager implements NavContract.View {
         boolean waitPage = true;
         if (willShowFragment == null) {
             if (Constant.NAV_SEARCH.equals(navInfo.getTitle())) {
-                willShowFragment = SearchFragment.newInstance(bundle);
+                willShowFragment = SearchFragmentNew.newInstance(bundle);
+//                willShowFragment = SearchFragment.newInstance(bundle);
                 waitPage = false;
             } else if (Constant.NAV_UC.equals(navInfo.getTitle())) {
                 willShowFragment = UserCenterFragment.newInstance(bundle);

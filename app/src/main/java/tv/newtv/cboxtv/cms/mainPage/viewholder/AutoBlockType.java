@@ -163,7 +163,9 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
         if (blockData.getRows() != null && blockData.getRows().size() > 0) {
 
             for (int i = 0; i < posSize; i++) {
-
+                if (i >= blockData.getRows().size()) {
+                    break;
+                }
                 final Row info = blockData.getRows().get(i);
 
                 // viewId是形如 "1", "2"这样的字符串

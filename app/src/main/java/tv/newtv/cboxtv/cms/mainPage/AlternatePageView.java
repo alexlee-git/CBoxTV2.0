@@ -6,18 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.libs.util.GlideUtil;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.player.listener.ScreenListener;
-import tv.newtv.cboxtv.views.custom.BlockPosterView;
-import tv.newtv.cboxtv.views.custom.ICustomPlayer;
+import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.widget.NewTvRecycleAdapter;
 import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
 
@@ -30,10 +29,11 @@ import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
  */
 public class AlternatePageView extends FrameLayout implements IProgramChange {
 
-    private BlockPosterView mBlockPosterView;
+    private LivePlayView mBlockPosterView;
     private VerticalRecycleView mRecycleView;
     private int curPlayIndex = 0;
     private Page mPage;
+    private ImageView posterView;
     private String mPageUUID;
 
     public AlternatePageView(Context context) {
@@ -49,7 +49,6 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         initialize(context, attrs, defStyle);
     }
 
-
     public void setPageUUID(String uuid) {
         mPageUUID = uuid;
         mBlockPosterView.setPageUUID(mPageUUID);
@@ -64,6 +63,13 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         LayoutInflater.from(context).inflate(R.layout.content_alternate_view_layout, this, true);
         mBlockPosterView = findViewById(R.id.block_poster);
         mRecycleView = findViewById(R.id.alternate_list);
+        posterView = findViewWithTag("poster_view");
+        findViewById(R.id.focus_layout).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBlockPosterView.dispatchClick();
+            }
+        });
 
         setUp();
     }
@@ -75,12 +81,17 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         if (mPage.getPrograms() != null && mPage.getPrograms().size() > 0) {
             setRecycleView();
             Program program = mPage.getPrograms().get(curPlayIndex);
+            if (posterView != null) {
+                GlideUtil.loadImage(getContext(), posterView, program.getImg(), R.drawable
+                                .focus_528_296,
+                        R.drawable.focus_528_296, true);
+            }
             play(program);
         }
     }
 
     private void play(Program program) {
-        mBlockPosterView.setData(program);
+        mBlockPosterView.setProgramInfo(program, false);
     }
 
     private void setRecycleView() {

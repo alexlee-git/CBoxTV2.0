@@ -144,9 +144,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                             mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
                         } else {
                             if (mLeftData != null) {
-                                printLogAndToast("Handler", "video next play data: " + mLeftData.toString(), false);
+                                printLogAndToast("Handler", "video next playVod data: " + mLeftData.toString(), false);
                             } else {
-                                printLogAndToast("Handler", "video next play data is null ", false);
+                                printLogAndToast("Handler", "video next playVod data is null ", false);
                             }
                         }
                         if (mCenterFocusedData != null && mCenterFocusedData.size() > 0) {
@@ -721,7 +721,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     @Override
                     public void accept(Boolean aBoolean) {
                         if (aBoolean) {
-                            printLogAndToast("playNextProgram", "play next program ", true);
+                            printLogAndToast("playNextProgram", "playVod next program ", true);
                             isPlayNextProgram = aBoolean;
                             centerPosition = 0;
                             leftPosition += 1;
@@ -749,9 +749,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                             mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
                         } else {
                             if (mLeftData != null) {
-                                printLogAndToast("Handler", "video next play data: " + mLeftData.toString(), false);
+                                printLogAndToast("Handler", "video next playVod data: " + mLeftData.toString(), false);
                             } else {
-                                printLogAndToast("Handler", "video next play data is null ", false);
+                                printLogAndToast("Handler", "video next playVod data is null ", false);
                             }
                         }
                         if (info != null) {

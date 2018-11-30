@@ -81,7 +81,8 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
 
     private void requestData(String contentUUID) {
 
-        hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6);
+        hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6,R.id.column_update_date_layout
+                ,R.id.column_update_date_tv,R.id.column_update_item);
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
                 contentUUID, hostProgramView);// 获取主持列表
 
@@ -107,7 +108,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             personDetailHeadView.setContentUUID(contentUUID);
             ADConfig.getInstance().setSeriesID(contentUUID);
         }
-        if (isPopup&&fromOuter) {
+        if (fromOuter) {
             personDetailHeadView.setTopView();
         }
         hostProgramView.setOnItemClick(new onEpisodeItemClick<SubContent>() {

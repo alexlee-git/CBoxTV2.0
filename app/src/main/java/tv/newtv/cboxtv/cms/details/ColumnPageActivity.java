@@ -101,7 +101,7 @@ public class ColumnPageActivity extends DetailPageActivity {
             finish();
             return;
         }
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
+        LogUploadUtils.uploadLog(Constant.LOG_COLUMN_INTO, "1," + contentUUID);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
 
         ADConfig.getInstance().setSeriesID(contentUUID);
@@ -111,21 +111,24 @@ public class ColumnPageActivity extends DetailPageActivity {
         final SuggestView sameType = findViewById(R.id.same_type);
         headPlayerView = findViewById(R.id.header_video);
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.video_layout)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView.Builder.DB_TYPE_SUBSCRIP),
-                        new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder.DB_TYPE_VIPPAY),
-                        new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder.DB_TYPE_VIPTIP))
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.subscibe, HeadPlayerView.Builder
+                                .DB_TYPE_SUBSCRIP),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder
+                                .DB_TYPE_VIPPAY),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay_tip, HeadPlayerView.Builder
+                                .DB_TYPE_VIPTIP))
                 .autoGetSubContents()
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
-                .SetContentUUID(contentUUID,getChildContentUUID())
-                .setTopView(fromOuter,isPopup)
+                .SetContentUUID(contentUUID, getChildContentUUID())
+                .setTopView(fromOuter)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
                         if (info != null) {
                             pageContent = info;
-                            playListView.setContentUUID(info,EpisodeHelper.TYPE_COLUMN_DETAIL,
+                            playListView.setContentUUID(info, EpisodeHelper.TYPE_COLUMN_DETAIL,
                                     info.getVideoType(),
                                     getSupportFragmentManager(),
                                     contentUUID, null);
@@ -138,7 +141,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                             starView.setContentUUID(SuggestView.TYPE_COLUMN_FIGURES, info,
                                     null);
 
-                            if(mAdView != null){
+                            if (mAdView != null) {
                                 mAdView.requestAD();
                             }
                         } else {
@@ -213,11 +216,13 @@ public class ColumnPageActivity extends DetailPageActivity {
                                     }
                                 });
                                 mPaiseView.startDiverges(0);
-                                LogUploadUtils.uploadLog(Constant.LOG_NODE_LIKE,"0,"+pageContent.getContentUUID());
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_LIKE, "0," +
+                                        pageContent.getContentUUID());
                                 break;
 
                             case R.id.full_screen:
-                                if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
+                                if (System.currentTimeMillis() - lastClickTime >= 2000)
+                                {//判断距离上次点击小于2秒
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen(ColumnPageActivity.this);
                                 }
@@ -228,14 +233,18 @@ public class ColumnPageActivity extends DetailPageActivity {
                                     if (isLogin) {
                                         //1 单点包月  3vip  4单点
                                         if (vipState == 1) {
-                                            UserCenterUtils.startVIP1(ColumnPageActivity.this, pageContent, ACTION);
+                                            UserCenterUtils.startVIP1(ColumnPageActivity.this,
+                                                    pageContent, ACTION);
                                         } else if (vipState == 3) {
-                                            UserCenterUtils.startVIP3(ColumnPageActivity.this, pageContent, ACTION);
+                                            UserCenterUtils.startVIP3(ColumnPageActivity.this,
+                                                    pageContent, ACTION);
                                         } else if (vipState == 4) {
-                                            UserCenterUtils.startVIP4(ColumnPageActivity.this, pageContent, ACTION);
+                                            UserCenterUtils.startVIP4(ColumnPageActivity.this,
+                                                    pageContent, ACTION);
                                         }
                                     } else {
-                                        UserCenterUtils.startLoginActivity(ColumnPageActivity.this,pageContent,ACTION,true);
+                                        UserCenterUtils.startLoginActivity(ColumnPageActivity
+                                                .this, pageContent, ACTION, true);
                                     }
                                 }
                                 break;
@@ -266,8 +275,9 @@ public class ColumnPageActivity extends DetailPageActivity {
             headPlayerView.onActivityPause();
         }
     }
+
     //获取登陆状态
-    private void initLoginStatus(){
+    private void initLoginStatus() {
         UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
@@ -298,9 +308,11 @@ public class ColumnPageActivity extends DetailPageActivity {
         //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
                 headPlayerView.hasFocus()) {
-            if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                    ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 return true;
             }
         }
@@ -309,8 +321,8 @@ public class ColumnPageActivity extends DetailPageActivity {
 
     @Override
     protected boolean isFull(KeyEvent event) {
-        if (isFullScreenIng&&event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN){
-            if (isFullScreen()){
+        if (isFullScreenIng && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+            if (isFullScreen()) {
                 isFullScreenIng = false;
             }
             return true;

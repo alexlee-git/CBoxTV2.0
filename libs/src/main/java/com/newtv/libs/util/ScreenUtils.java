@@ -2,6 +2,7 @@ package com.newtv.libs.util;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.newtv.libs.Libs;
 
@@ -19,56 +20,71 @@ public class ScreenUtils {
     private static float screenDensity;
 
     private static long lastClickTime;
+
     /**
      * 是否快速点击
+     *
      * @return
      */
     public static boolean isFastWork() {
         long curTime = System.currentTimeMillis();
         long timeD = curTime - lastClickTime;
-        if ( 0 < timeD && timeD < 200) {
+        if (0 < timeD && timeD < 200) {
             return true;
         }
         lastClickTime = curTime;
         return false;
     }
 
-    public static void initScreen(Context context){
-        DisplayMetrics metric = context.getResources().getDisplayMetrics();
+    public static void initScreen(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metric = new DisplayMetrics();
+        if (wm != null) {
+            wm.getDefaultDisplay().getMetrics(metric);
+        } else {
+            metric = context.getResources().getDisplayMetrics();
+        }
         screenW = metric.widthPixels;
         screenH = metric.heightPixels;
         screenDensity = metric.density;
+
+        LogUtils.d("ScreenUtils", "width=" + screenW + " height=" + screenH + " density=" +
+                screenDensity);
     }
 
-    private static void checkInit(int size){
-        if(size <= 0){
+    private static void checkInit(int size) {
+        if (size <= 0) {
             initScreen(Libs.get().getContext());
         }
     }
 
-    public static int getScreenW(){
+    public static int getScreenW() {
         checkInit(screenW);
         return screenW;
     }
 
     public static int getScreenH() {
         checkInit(screenH);
-        if (screenH == 1024){
+        if (screenH == 1024) {
             screenH = 1080;
         }
         return screenH;
     }
 
-    public static float getScreenDensity(){
+    public static float getScreenDensity() {
         return screenDensity;
     }
 
-    /** 根据手机的分辨率从 dp 的单位 转成为 px(像素) */
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
     public static int dp2px(float dpValue) {
         return (int) (dpValue * getScreenDensity() + 0.5f);
     }
 
-    /** 根据手机的分辨率从 px(像素) 的单位 转成为 dp */
+    /**
+     * 根据手机的分辨率从 px(像素) 的单位 转成为 dp
+     */
     public static int px2dp(float pxValue) {
         return (int) (pxValue / getScreenDensity() + 0.5f);
     }

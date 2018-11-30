@@ -235,8 +235,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
     private void doPlay(Content content) {
         initListener();
-        NewTVLauncherPlayerViewManager.getInstance().play(this, content, mIndexPlay, playPostion,
-                false);
+        NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay, playPostion);
         NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
                 (mPlayerFrameLayoutContainer, this);
         mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();

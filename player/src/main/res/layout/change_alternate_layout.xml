@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+    <ImageView
+        android:src="@drawable/normalplayer_bg"
+        android:id="@+id/background_ad"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <RelativeLayout
+        android:layout_width="@dimen/width_952px"
+        android:layout_height="@dimen/height_158px"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/height_200px"
+        android:background="@drawable/alternate_tip_large_background">
+        <RelativeLayout
+            android:id="@+id/tip_message_box"
+            android:layout_width="@dimen/width_713px"
+            android:layout_height="@dimen/height_158px"
+            android:background="@drawable/alternate_tip_little_background">
+            <TextView
+                android:id="@+id/alter_channel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="@dimen/width_48px"
+                android:layout_marginLeft="@dimen/width_48px"
+                android:layout_marginTop="@dimen/height_32px"
+                android:layout_marginEnd="@dimen/width_48px"
+                android:text="测试标题测试标题测试标题测试"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/height_36px"/>
+
+            <TextView
+                android:id="@+id/alter_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="@dimen/width_48px"
+                android:layout_marginLeft="@dimen/width_48px"
+                android:layout_marginEnd="@dimen/width_48px"
+                android:layout_marginBottom="@dimen/height_32px"
+                android:text="测试标题测试标题测试标题测试标题"
+                android:textColor="#70FFFFFF"
+                android:textSize="@dimen/height_28px"/>
+        </RelativeLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_190px"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/tip_message_box"
+            android:layout_toRightOf="@+id/tip_message_box"
+            android:padding="@dimen/width_30px"
+            android:src="@drawable/alternate_change_tip">
+
+        </ImageView>
+    </RelativeLayout>
+</FrameLayout>

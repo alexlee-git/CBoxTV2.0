@@ -45,6 +45,8 @@ class DataHelper extends SQLiteOpenHelper {
         db.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
         db.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
         db.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
+
+        db.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
     }
 
     @Override
@@ -117,6 +119,13 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
+        }
+
+        switch (oldVersion){
+            case 1:
+            case 2:
+            case 3:
+                sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
         }
     }
 }

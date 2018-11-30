@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.SPrefUtils;
+import com.newtv.libs.util.ScreenUtils;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -48,6 +49,7 @@ public class Libs {
                 if (instance == null) {
                     instance = new Libs(context, appkey, channelId, flavor, isDebug, clientId);
                     BootGuide.init(context);
+                    ScreenUtils.initScreen(context);
                 }
             }
     }

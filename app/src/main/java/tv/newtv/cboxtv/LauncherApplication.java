@@ -45,6 +45,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
@@ -245,7 +246,6 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                     }
                 }
             });
-
             History mHistory = new History(playInfo.getContentID(), playInfo.getContentType(),
                     playInfo.getTitle(), playInfo.getVImage(), "com.newtv.cboxtv",
                     "tv.newtv.cboxtv.SplashActivity", "", "", System.currentTimeMillis());
@@ -276,6 +276,23 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public boolean isVip() {
         return false;
+    }
+
+    @Override
+    public void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri) {
+        JumpUtil.activityJump(context,actionType,contentType,contentUUID,actionUri);
+    }
+
+    @Override
+    public void addLbCollect(Bundle bundle, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this,bundle,null,dbCallback);
+    }
+
+    @Override
+    public void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this,contentUUID,"","",dbCallback);
     }
 
 }

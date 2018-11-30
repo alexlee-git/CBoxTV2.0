@@ -28,7 +28,6 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
@@ -253,7 +253,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (playerView != null && mInfo != null) {
-            Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
+            Log.e(TAG, "player view is builded, playVod vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
             startPlayerView(isPlayLive);
         }
@@ -289,14 +289,14 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
-        if (mBuilder.fromOuter && mBuilder.isPopup) {
+        if (mBuilder.fromOuter) {
             addView(inflate);
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     removeView(inflate);
                 }
-            },5000);
+            }, 5000);
         }
         addView(contentView);
         checkDataFromDB();
@@ -392,7 +392,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         .setSelect
                                                                                 (code == 0 &&
                                                                                         !TextUtils
-                                                                                        .isEmpty(result));
+                                                                                                .isEmpty(result));
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
                                                                         true);
@@ -610,6 +610,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    public boolean isFullScreen() {
+        if (playerView != null) {
+            return playerView.getDefaultConfig().isFullScreen;
+        }
+        return false;
+    }
+
     private void requestPlayerFocus() {
         if (playerView == null) {
             return;
@@ -623,6 +630,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 }
             }
         }, 500);
+//=======
+//        playerView.delayEnterFullScreen(ActivityStacks.get().getCurrentActivity(), false, 450);
+//>>>>>>> Stashed changes
     }
 
     private void parseResult() {
@@ -926,7 +936,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private boolean autoGetSub = false;
         private List<CustomFrame> dbTypes;
         private int defaultFocusID = 0;
-        private boolean isPopup, fromOuter;
+        private boolean fromOuter;
 
         private ExitVideoFullCallBack videoFullCallBack;
 
@@ -1007,7 +1017,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return this;
         }
 
-        public Builder setTopView(boolean fromOuter, boolean isPopup) {
+        public Builder setTopView(boolean fromOuter) {
             return this;
         }
 

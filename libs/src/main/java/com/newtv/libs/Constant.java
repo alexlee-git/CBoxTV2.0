@@ -33,7 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class Constant {
 
     //是否启用轮播
-    public static final boolean canUseAlternate  = false;
+    public static final boolean canUseAlternate  = true;
 
     public static final boolean isLocalData = false;
     public static final String AdCache = Environment.getExternalStorageDirectory()
@@ -52,6 +52,8 @@ public class Constant {
     public static final String AD_DESK = "desk";//桌面广告
     //详情页通栏广告
     public static final String AD_DETAILPAGE_BANNER = "cbox_detailpage_banner";
+    //轮播台广告
+    public static final String AD_CAROUSEL_CORNER = "cbox_carousel_corner";
     //详情页背景广告
     public static final String AD_DETAILPAGE_BACKGROUND = "cbox_detailpage_background";
     //详情页内容列表广告

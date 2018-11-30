@@ -202,7 +202,7 @@ public class UserCenterRecordManager {
             return;
         }
 
-        if (info == null) {
+        if (type != USER_CENTER_RECORD_TYPE.TYPE_LUNBO && info == null) {
             return;
         }
 
@@ -294,7 +294,7 @@ public class UserCenterRecordManager {
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
             procDeleteHistoryRecord(dataUserId, context, contentuuids, contentType, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
-            procDeleteCarouselChannelRecord(context, contentuuids, dbCallback);
+            procDeleteCarouselChannelRecord(contentuuids, dbCallback);
         }
     }
 
@@ -471,9 +471,9 @@ public class UserCenterRecordManager {
         Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentuuids);
     }
 
-    private void procDeleteCarouselChannelRecord(Context context, String contentuuid, DBCallback<String> callback) {
+    private void procDeleteCarouselChannelRecord(String contentuuid, DBCallback<String> callback) {
         Log.d(TAG, "procDeleteCarouselChannelRecord contentid : " + contentuuid);
-        DBUtil.deleteCarouselChannelRecord(DBConfig.LB_COLLECT_TABLE_NAME, contentuuid, callback);
+        DBUtil.deleteCarouselChannelRecord(contentuuid, callback);
     }
 
     private void procDeleteCollectionRecord(Context context, Bundle bundle, DBCallback<String> callback) {

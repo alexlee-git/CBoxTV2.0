@@ -92,7 +92,7 @@
     <!-- 错误信息-->
     <string name="no_video_url">视频没有播放地址</string>
     <string name="logo">logo</string>
-    <string name="check_error">播控鉴权失败：</string>
+    <string name="check_error">播放鉴权失败：</string>
 
     <string name="auth_ing">正在认证</string>
     <string name="collect_success">收藏成功,请到我的收藏中查看</string>

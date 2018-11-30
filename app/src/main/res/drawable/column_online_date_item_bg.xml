@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <solid android:color="@color/column_online_date_line_40"/>
+    <corners android:topRightRadius="@dimen/width_30px"
+        android:topLeftRadius="@dimen/width_30px"
+        android:bottomRightRadius="@dimen/width_30px"
+        android:bottomLeftRadius="@dimen/width_30px"
+        />
+
+</shape>

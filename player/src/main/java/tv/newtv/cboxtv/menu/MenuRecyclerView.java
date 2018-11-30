@@ -124,9 +124,7 @@ public class MenuRecyclerView extends RecyclerView{
                         return true;
                     case KeyEvent.KEYCODE_DPAD_CENTER:
                     case KeyEvent.KEYCODE_ENTER:
-                        if(level == MAX_LEVEL){
-                            keyEventListener.keyEvent(level,KeyEvent.KEYCODE_DPAD_CENTER,position,focusView);
-                        }
+                        keyEventListener.keyEvent(level,KeyEvent.KEYCODE_DPAD_CENTER,position,focusView);
                         break;
                 }
             }

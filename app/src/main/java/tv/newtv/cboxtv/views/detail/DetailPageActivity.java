@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.newtv.libs.Constant;
-import com.newtv.libs.Libs;
 import com.newtv.libs.util.BitmapUtil;
-import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.ToastUtil;
 
 import tv.newtv.cboxtv.BaseActivity;
@@ -28,7 +26,6 @@ import tv.newtv.cboxtv.R;
  */
 public abstract class DetailPageActivity extends BaseActivity {
 
-    protected boolean isADEntry = false;
     private String contentUUID;
     private String childContentUUID;
 
@@ -52,12 +49,17 @@ public abstract class DetailPageActivity extends BaseActivity {
     }
 
     @Override
+    public boolean isFullScreen() {
+        return super.isFullScreen();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = null;
         if (savedInstanceState == null) {
             intent = getIntent();
-            isADEntry = getIntent().getBooleanExtra(Constant.ACTION_AD_ENTRY, false);
+
         } else {
             intent = savedInstanceState.getParcelable("intent");
         }
@@ -111,32 +113,9 @@ public abstract class DetailPageActivity extends BaseActivity {
         if (interruptKeyEvent(event)) {
             return super.dispatchKeyEvent(event);
         }
-        if (Libs.get().getFlavor().equals(DeviceUtil.XUN_MA) && event.getAction() == KeyEvent
-                .ACTION_UP) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_ESCAPE:
-                    finish();
-                    return super.dispatchKeyEvent(event);
-            }
-        }
         if (interruptDetailPageKeyEvent(event)) {
             return true;
         }
-
-        if (event.getAction() == KeyEvent.ACTION_UP) {
-            if (isBackPressed(event)) {
-                if (isADEntry) {
-                    Intent intent = new Intent();
-                    intent.setClass(LauncherApplication.AppContext, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    LauncherApplication.AppContext.getApplicationContext().startActivity(intent);
-                    isADEntry = false;
-                }
-                finish();
-                return true;
-            }
-        }
-
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             ViewGroup viewGroup = findViewById(R.id.root_view);
             if (viewGroup == null) {

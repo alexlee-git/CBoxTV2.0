@@ -65,8 +65,7 @@ public class LiveInfo {
         mTitle = title;
         setLiveUrl(video.getLiveUrl());
         setContentUUID(video.getContentId());
-
-        mLiveParam = CmsUtil.isLive(video);
+            mLiveParam = CmsUtil.isLive(video);
         if (mLiveParam == null) return;
 
         parseLiveParam();

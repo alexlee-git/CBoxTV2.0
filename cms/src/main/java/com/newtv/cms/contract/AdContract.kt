@@ -148,7 +148,6 @@ class AdContract {
                     })
         }
 
-
         override fun getAdByChannel(adType: String?, adLoc: String?, flag: String?, firstChannel:
         String?, secondChannel: String?, topicId: String?, extends: HashMap<*, *>?) {
             getAdWithChannel(adType, adLoc, flag, firstChannel, secondChannel, topicId, extends, view)

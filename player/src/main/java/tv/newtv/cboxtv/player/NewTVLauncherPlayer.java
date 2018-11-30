@@ -41,14 +41,14 @@ public class NewTVLauncherPlayer {
             release();
         }
         int type = videoDataStruct.getPlayType();
-        Log.i(TAG, "play: type=" + type);
+        Log.i(TAG, "playVod: type=" + type);
         if (type == PlayerConstants.PLAYTYPE_VOD) {
             mVideoPlayerControl = VodVideoPlayerControl.getInstance();
         } else if (type == PlayerConstants.PLAYTYPE_LIVE) {
             mVideoPlayerControl = LiveVideoPlayerControl.getInstance();
             ((LiveVideoPlayerControl) mVideoPlayerControl).setLiveInfo(liveInfo);
         } else {
-            Log.i(TAG, "play: playType is undefined");
+            Log.i(TAG, "playVod: playType is undefined");
             return false;
         }
         return mVideoPlayerControl.playVideo(context, frameLayout, callback, videoDataStruct);
@@ -62,13 +62,13 @@ public class NewTVLauncherPlayer {
             release();
         }
         int type = videoDataStruct.getPlayType();
-        Log.i(TAG, "play: type=" + type);
+        Log.i(TAG, "playVod: type=" + type);
         if (type == PlayerConstants.PLAYTYPE_VOD) {
             mVideoPlayerControl = VodVideoPlayerControl.getInstance();
         } else if (type == PlayerConstants.PLAYTYPE_LIVE) {
             mVideoPlayerControl = LiveVideoPlayerControl.getInstance();
         } else {
-            Log.i(TAG, "play: playType is undefined");
+            Log.i(TAG, "playVod: playType is undefined");
             return false;
         }
         return mVideoPlayerControl.playVideo(context, frameLayout, callback, videoDataStruct);

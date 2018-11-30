@@ -1,9 +1,12 @@
 package tv.newtv.cboxtv.player;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.libs.db.DBCallback;
 
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
@@ -71,5 +74,20 @@ public class Player implements PlayerObserver {
     @Override
     public boolean isVip() {
         return mObserver.isVip();
+    }
+
+    @Override
+    public void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri) {
+        mObserver.activityJump(context,actionType,contentType,contentUUID,actionUri);
+    }
+
+    @Override
+    public void addLbCollect(Bundle bundle, DBCallback<String> dbCallback) {
+        mObserver.addLbCollect(bundle,dbCallback);
+    }
+
+    @Override
+    public void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback) {
+        mObserver.deleteLbCollect(contentUUID,dbCallback);
     }
 }

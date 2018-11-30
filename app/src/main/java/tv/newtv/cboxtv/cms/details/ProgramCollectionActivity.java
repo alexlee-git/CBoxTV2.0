@@ -7,7 +7,9 @@ import android.view.View;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.util.LogUploadUtils;
 
 import java.util.ArrayList;
 
@@ -97,9 +99,11 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
                 headPlayerView.hasFocus()) {
-            if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                    ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 return true;
             }
         }
@@ -120,9 +124,12 @@ public class ProgramCollectionActivity extends DetailPageActivity {
     @Override
     protected void buildView(@Nullable Bundle savedInstanceState, final String contentUUID) {
         setContentView(R.layout.activity_program_collec_page);
+        //进入节目详情页上传日志
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
 
         ADConfig.getInstance().setSeriesID(contentUUID);
         initLoginStatus();
+
 
         headPlayerView = findViewById(R.id.header_video);
         mAdView = findViewById(R.id.column_detail_ad_fl);
@@ -139,7 +146,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 .SetPlayerId(R.id.video_container)
                 .SetContentUUID(contentUUID,getChildContentUUID())
                 .autoGetSubContents()
-                .setTopView(fromOuter,isPopup)
+                .setTopView(fromOuter)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetClickListener(new View.OnClickListener() {

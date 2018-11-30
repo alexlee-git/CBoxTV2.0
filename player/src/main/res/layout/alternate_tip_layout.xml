@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#60000000">
+    <View
+        android:id="@+id/tip_background"
+        android:layout_width="@dimen/width_611px"
+        android:layout_height="@dimen/height_1080px"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/alternate_help"/>
+
+
+    <TextView
+        android:focusable="true"
+        android:id="@+id/tip_button"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:textSize="@dimen/height_38px"
+        android:layout_width="@dimen/width_297px"
+        android:layout_marginBottom="@dimen/height_100px"
+        android:layout_height="@dimen/height_100px"
+        android:layout_alignStart="@+id/tip_background"
+        android:layout_alignLeft="@+id/tip_background"
+        android:layout_alignBottom="@+id/tip_background"
+        android:layout_marginStart="@dimen/width_157px"
+        android:layout_marginLeft="@dimen/width_157px"
+        android:background="#FF0087FD"/>
+</RelativeLayout>

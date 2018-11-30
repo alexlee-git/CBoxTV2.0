@@ -31,6 +31,7 @@ public class Program {
     private String seriesSubUUID;
 
     private Node parent;
+    private boolean isCollect = false;
 
     public Node getParent() {
         return parent;
@@ -185,6 +186,14 @@ public class Program {
 
     public void setPremiereTime(String premiereTime) {
         this.premiereTime = premiereTime;
+    }
+
+    public boolean isCollect() {
+        return isCollect;
+    }
+
+    public void setCollect(boolean collect) {
+        isCollect = collect;
     }
 
     public Content convertProgramInfo(){

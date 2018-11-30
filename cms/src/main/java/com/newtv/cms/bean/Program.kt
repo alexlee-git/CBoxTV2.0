@@ -2,6 +2,7 @@
 
 package com.newtv.cms.bean
 
+
 data class Program(
         val dataUrl: String,
         val defaultFocus: Int,
@@ -43,7 +44,4 @@ data class Program(
     fun getLiveParam(): LiveParam? {
         return null
     }
-
-
-
 }
