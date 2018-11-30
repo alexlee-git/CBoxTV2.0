@@ -91,15 +91,15 @@ class BlockBuilder extends BaseBlockBuilder {
             // 根据viewType获取相应的布局文件
             int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType
                     (viewType);
-            if(layoutResId == R.layout.layout_module_32 && !Constant.canUseAlternate){
+            if (layoutResId == R.layout.layout_module_32 && !Constant.canUseAlternate) {
                 //不允许使用轮播
                 layoutResId = R.layout.layout_module_1;
             }
             holder = new UniversalViewHolder(LayoutInflater.from(parent
                     .getContext()).inflate
-                    (layoutResId, parent, false),PlayerUUID);
+                    (layoutResId, parent, false), PlayerUUID);
         } else if (viewType == 0) {
-            holder = new UniversalViewHolder(new AutoBlockType(parent.getContext()),PlayerUUID);
+            holder = new UniversalViewHolder(new AutoBlockType(parent.getContext()), PlayerUUID);
         }
         return holder;
     }
@@ -637,7 +637,7 @@ class BlockBuilder extends BaseBlockBuilder {
             Log.d(TAG, title);
             if (!TextUtils.equals(layoutCode, "layout_030") && !TextUtils.equals(layoutCode,
                     "layout_005") && !TextUtils.equals(layoutCode,
-            "layout_008")){
+                    "layout_008")) {
                 TextView titleWidget = (TextView) framelayout.getTag(R.id
                         .tag_title);
 
@@ -655,6 +655,18 @@ class BlockBuilder extends BaseBlockBuilder {
                     if (TextUtils.equals(layoutCode, "layout_006")) {
                         lp = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
                                 .SCALE_TYPE_WIDTH), FrameLayout.LayoutParams.WRAP_CONTENT);
+                        titleWidget = new TextView(mContext);
+                        titleWidget.setSingleLine();
+                        titleWidget.setLines(1);
+                        titleWidget.setTextColor(Color.parseColor("#ededed"));
+                        titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
+                                .dimen.height_12sp));
+                        titleWidget.setMarqueeRepeatLimit(-1);
+                        titleWidget.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                        titleWidget.setIncludeFontPadding(false);
+                        titleWidget.setGravity(Gravity.CENTER_VERTICAL);
+                    } else if (TextUtils.equals(layoutCode, "layout_017")) {
+                        lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                         titleWidget = new TextView(mContext);
                         titleWidget.setSingleLine();
                         titleWidget.setLines(1);
