@@ -284,4 +284,16 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         JumpUtil.activityJump(context,actionType,contentType,contentUUID,actionUri);
     }
 
+    @Override
+    public void addLbCollect(Bundle bundle, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this,bundle,null,dbCallback);
+    }
+
+    @Override
+    public void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this,contentUUID,"","",dbCallback);
+    }
+
 }

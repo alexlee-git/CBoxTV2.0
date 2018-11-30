@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.gridsum.videotracker.play.Play;
 import com.newtv.cms.Request;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
@@ -845,44 +847,33 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
         LastNode lastNode = (LastNode) node;
 
-        String userId = "";
-        String token = SharePreferenceUtils.getToken(context);
-        if (!TextUtils.isEmpty(token)) {
-            userId = SharePreferenceUtils.getUserId(context);
-        } else {
-            userId = SystemUtils.getDeviceMac(context);
-        }
+        Bundle bundle = new Bundle();
+        bundle.putString(DBConfig.CONTENTUUID,lastNode.contentUUID);
+        bundle.putString(DBConfig.CONTENT_ID,lastNode.contentId);
+        bundle.putString(DBConfig.TITLE_NAME,lastNode.getTitle());
+        bundle.putString(DBConfig.IS_FINISH,lastNode.isFinish);
+        bundle.putString(DBConfig.REAL_EXCLUSIVE,lastNode.realExclusive);
+        bundle.putString(DBConfig.ISSUE_DATE,lastNode.issuedate);
+        bundle.putString(DBConfig.LAST_PUBLISH_DATE,lastNode.lastPublishDate);
+        bundle.putString(DBConfig.SUB_TITLE,lastNode.subTitle);
+        bundle.putString(DBConfig.UPDATE_TIME,System.currentTimeMillis()+"");
+        bundle.putString(DBConfig.USERID,SystemUtils.getDeviceMac(context));
+        bundle.putString(DBConfig.V_IMAGE,lastNode.vImage);
+        bundle.putString(DBConfig.H_IMAGE,lastNode.hImage);
+        bundle.putString(DBConfig.VIP_FLAG,lastNode.vipFlag);
+        bundle.putString(DBConfig.CONTENTTYPE,lastNode.getContentType());
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(DBConfig.CONTENTUUID,lastNode.contentUUID);
-        contentValues.put(DBConfig.CONTENT_ID,lastNode.contentId);
-        contentValues.put(DBConfig.TITLE_NAME,lastNode.getTitle());
-        contentValues.put(DBConfig.IS_FINISH,lastNode.isFinish);
-        contentValues.put(DBConfig.REAL_EXCLUSIVE,lastNode.realExclusive);
-        contentValues.put(DBConfig.ISSUE_DATE,lastNode.issuedate);
-        contentValues.put(DBConfig.LAST_PUBLISH_DATE,lastNode.lastPublishDate);
-        contentValues.put(DBConfig.SUB_TITLE,lastNode.subTitle);
-        contentValues.put(DBConfig.UPDATE_TIME,System.currentTimeMillis());
-        contentValues.put(DBConfig.USERID,userId);
-        contentValues.put(DBConfig.V_IMAGE,lastNode.vImage);
-        contentValues.put(DBConfig.H_IMAGE,lastNode.hImage);
-        contentValues.put(DBConfig.VIP_FLAG,lastNode.vipFlag);
-        contentValues.put(DBConfig.CONTENTTYPE,lastNode.getContentType());
-
-        DataSupport.insertOrReplace(DBConfig.LB_COLLECT_TABLE_NAME)
-                .withValue(contentValues)
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if(code == 0) {
-                            Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT).show();
-                            program.setCollect(true);
-                            menuGroup.notifyLastAdapter();
-                            refreshLbNode();
-                        }
-                    }
-                }).excute();
-
+        Player.get().addLbCollect(bundle, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if(code == 0) {
+                    Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT).show();
+                    program.setCollect(true);
+                    menuGroup.notifyLastAdapter();
+                    refreshLbNode();
+                }
+            }
+        });
     }
 
     private void deleteLbCollect(final Program program){
@@ -894,22 +885,18 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return;
         }
         LastNode lastNode = (LastNode) node;
+        Player.get().deleteLbCollect(lastNode.contentUUID, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if(code == 0) {
+                    Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
+                    program.setCollect(false);
+                    menuGroup.notifyLastAdapter();
+                    refreshLbNode();
+                }
+            }
+        });
 
-        DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTUUID, lastNode.contentUUID)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if(code == 0) {
-                            Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
-                            program.setCollect(false);
-                            menuGroup.notifyLastAdapter();
-                            refreshLbNode();
-                        }
-                    }
-                }).excute();
     }
 
     private void searchLbCollect(final Node node, final boolean reset){

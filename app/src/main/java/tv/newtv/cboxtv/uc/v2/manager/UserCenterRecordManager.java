@@ -202,7 +202,7 @@ public class UserCenterRecordManager {
             return;
         }
 
-        if (info == null) {
+        if (type != USER_CENTER_RECORD_TYPE.TYPE_LUNBO && info == null) {
             return;
         }
 
