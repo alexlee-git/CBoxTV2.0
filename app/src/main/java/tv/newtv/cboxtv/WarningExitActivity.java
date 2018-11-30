@@ -3,6 +3,7 @@ package tv.newtv.cboxtv;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,8 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 public class WarningExitActivity extends BaseActivity implements View.OnClickListener,
         View.OnFocusChangeListener, PageContract.ModelView {
+    private static final String TAG = WarningExitActivity.class.getSimpleName();
+
     private RecycleImageView exit_image;
     private FrameLayout focus_layout;
     private Button okButton;
@@ -152,6 +155,9 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                     Picasso.get().load(url).into(exit_image, new Callback() {
                         @Override
                         public void onSuccess() {
+                            if (mAdPresenter == null) {
+                                return;
+                            }
                             ADHelper.AD.ADItem item = mAdPresenter.getCurrentAdItem();
                             if (item!=null&&!TextUtils.isEmpty( item.eventContent)){
                                 eventContent = item.eventContent;
@@ -167,7 +173,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
 
                         @Override
                         public void onError(Exception e) {
-
+                            Log.e(TAG, e.toString());
                         }
                     });
                 } else {

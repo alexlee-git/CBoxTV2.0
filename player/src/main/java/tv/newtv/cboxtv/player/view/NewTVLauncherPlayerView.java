@@ -1427,6 +1427,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void start() {
+        hidePauseImage();
         if (mNewTVLauncherPlayer != null)
             mNewTVLauncherPlayer.start();
 
@@ -1435,6 +1436,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void pause() {
+        showPauseImage();
         if (mNewTVLauncherPlayer != null)
             mNewTVLauncherPlayer.pause();
 
@@ -1538,6 +1540,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
+            mNewTVLauncherPlayerSeekbar.setFreeDuration(0,null);
         }
 
         if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals

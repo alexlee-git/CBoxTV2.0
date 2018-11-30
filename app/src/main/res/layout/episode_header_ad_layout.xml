@@ -32,7 +32,7 @@
     <TextView
         android:id="@+id/up_title"
         style="@style/ModuleTitleStyle"
-        android:layout_width="@dimen/width_374px"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/height_34px"
         android:layout_marginLeft="@dimen/width_6px"
         android:layout_marginStart="@dimen/width_6px"
