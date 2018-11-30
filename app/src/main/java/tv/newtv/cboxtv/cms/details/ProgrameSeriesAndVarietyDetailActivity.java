@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -125,33 +126,31 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                         if (info != null) {
                             ArrayList<String> productId = new ArrayList<>();
                             pageContent = info;
-                            if (pageContent != null && pageContent.getVipFlag() != null) {
-                                int vipState = Integer.parseInt(pageContent.getVipFlag());
-                                if ((vipState == 1||vipState == 3||vipState == 4)&&pageContent.getVipProductId()!=null){
-                                    productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId()));
+                            if (pageContent != null ) {
+                                if (!TextUtils.isEmpty(pageContent.getVipFlag())){
+                                    int vipState = Integer.parseInt(pageContent.getVipFlag());
+                                    if ((vipState == 1||vipState == 3||vipState == 4)&&pageContent.getVipProductId()!=null){
+                                        productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId()));
+                                    }
                                 }
-                                int is4k = Integer.parseInt(pageContent.is4k());
-                                if (is4k == 1){
-                                    productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                if (!TextUtils.isEmpty(pageContent.is4k())){
+                                    int is4k = Integer.parseInt(pageContent.is4k());
+                                    if (is4k == 1){
+                                        productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                    }
                                 }
-                                if (pageContent.getNew_realExclusive()!=null){
+                                if (!TextUtils.isEmpty(pageContent.getNew_realExclusive())){
                                     productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),pageContent.getNew_realExclusive()));
                                 }
                             }
 
                             switch (productId.size()){
+                                case 3:
+                                    Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
+                                case 2:
+                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
                                 case 1:
                                     Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
-                                    break;
-                                case 2:
-                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
-                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
-                                    break;
-                                case 3:
-                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
-                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
-                                    Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
-                                    break;
                                 default:
                                     break;
                             }

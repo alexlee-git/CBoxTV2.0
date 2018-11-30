@@ -56,6 +56,7 @@ import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.ISubscribeStatusCallback;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.cboxtv.views.TimeDialog;
 import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
@@ -874,8 +875,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onComplete() {
-        //TODO 栏目化直播结束，继续播放点播视频
+        //栏目化直播结束，继续播放点播视频
+        TimeDialog.showBuilder(getContext(),this);
 
+    }
+    public void continuePlayVideo(){
         if (playerView != null) {
             playerView.release();
             playerView.destory();

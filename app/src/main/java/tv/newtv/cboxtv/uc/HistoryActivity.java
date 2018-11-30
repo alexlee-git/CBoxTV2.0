@@ -294,7 +294,7 @@ public class HistoryActivity extends FragmentActivity implements
     }
 
     private void showDeleteDialog() {
-        if (mCollectBean == null || mCollectBean.size() < 0) return;
+        if (mCollectBean == null || mCollectBean.size() < 1) return;
         if (mAdapter.getSelectPostion() < 0) return;
         mAdapter.setAllowLostFocus(false);
 
