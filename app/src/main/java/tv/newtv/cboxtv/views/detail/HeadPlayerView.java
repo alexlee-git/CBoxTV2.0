@@ -663,7 +663,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         }
 
-        if (content != null) {
+        if (content != null && !TextUtils.isEmpty(mInfo.getDescription())) {
             content.setText(mInfo.getDescription().replace("\r\n", ""));
             int ellipsisCount = content.getLayout().getEllipsisCount(content.getLineCount
                     () - 1);

@@ -34,21 +34,21 @@ import static java.lang.String.valueOf;
 public class UserCenterUtils {
     private static final String TAG = UserCenterUtils.class.getSimpleName();
 
-    public static void init(){
+    public static void init() {
         initLoginStatus();
         initMemberStatus();
     }
 
-    public static void setLogin(boolean login){
+    public static void setLogin(boolean login) {
         UserStatus.setIsLogin(login);
-        if(login){
+        if (login) {
             initMemberStatus();
-        }else {
+        } else {
             UserStatus.setMemberSatus(UserStatus.SIGN_MEMBER_OPEN_NOT);
         }
     }
 
-    public static void initLoginStatus(){
+    public static void initLoginStatus() {
         getLoginStatus(new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
@@ -57,7 +57,7 @@ public class UserCenterUtils {
         });
     }
 
-    public static void initMemberStatus(){
+    public static void initMemberStatus() {
         getMemberStatus(new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
@@ -285,7 +285,7 @@ public class UserCenterUtils {
 
     //删除所有关注
     public static void deleteAllAttention(Content mProgramSeriesInfo, DBCallback<String> dbCallback) {
-        if(null != mProgramSeriesInfo) {
+        if (null != mProgramSeriesInfo) {
             UserCenterRecordManager.getInstance().deleteRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_FOLLOW,
                     LauncherApplication.AppContext,
@@ -370,7 +370,7 @@ public class UserCenterUtils {
 
     //删除所有订阅
     public static void deleteAllSubcribe(Content mProgramSeriesInfo, DBCallback<String> dbCallback) {
-        if(null != mProgramSeriesInfo) {
+        if (null != mProgramSeriesInfo) {
             UserCenterRecordManager.getInstance().deleteRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_SUBSCRIBE,
                     LauncherApplication.AppContext,
@@ -418,6 +418,7 @@ public class UserCenterUtils {
         ExterPayBean mExterPayBean = new ExterPayBean();
         mExterPayBean.setContentUUID(mProgramSeriesInfo.getContentUUID());
         mExterPayBean.setContentType(mProgramSeriesInfo.getContentType());
+        mExterPayBean.setContentid(mProgramSeriesInfo.getContentID());
         mExterPayBean.setVipProductId(mProgramSeriesInfo.getVipProductId());
         mExterPayBean.setMAMID(mProgramSeriesInfo.getMAMID());
         mExterPayBean.setVipFlag(mProgramSeriesInfo.getVipFlag());
