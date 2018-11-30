@@ -7,7 +7,9 @@ import android.view.View;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.util.LogUploadUtils;
 
 import java.util.ArrayList;
 
@@ -120,9 +122,12 @@ public class ProgramCollectionActivity extends DetailPageActivity {
     @Override
     protected void buildView(@Nullable Bundle savedInstanceState, final String contentUUID) {
         setContentView(R.layout.activity_program_collec_page);
+        //进入节目详情页上传日志
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
 
         ADConfig.getInstance().setSeriesID(contentUUID);
         initLoginStatus();
+
 
         headPlayerView = findViewById(R.id.header_video);
         mAdView = findViewById(R.id.column_detail_ad_fl);

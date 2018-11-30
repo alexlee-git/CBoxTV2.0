@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.uc.v2.manager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.VpnService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -170,7 +171,8 @@ public class UserCenterRecordManager {
         TYPE_SUBSCRIBE,
         TYPE_COLLECT,
         TYPE_HISTORY,
-        TYPE_FOLLOW
+        TYPE_FOLLOW,
+        TYPE_LUNBO
     }
 
     private UserCenterRecordManager() {
@@ -187,7 +189,11 @@ public class UserCenterRecordManager {
         return mInstance;
     }
 
-    public void addRecord(final USER_CENTER_RECORD_TYPE type, final Context context, final Bundle bundle, final Content info, final DBCallback<String> dbCallback) {
+    public void addRecord(final USER_CENTER_RECORD_TYPE type,
+                          final Context context,
+                          final Bundle bundle,
+                          final Content info,
+                          final DBCallback<String> dbCallback) {
         if (context == null) {
             return;
         }
@@ -242,6 +248,8 @@ public class UserCenterRecordManager {
                             procAddSubscribe(userId, token, context, bundle, info, dbCallback);
                         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
                             procAddHistoryRecord(userId, context, token, bundle, info, dbCallback);
+                        } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
+                           procAddCarouselPlayRecord(userId, token, bundle, dbCallback);
                         } else {
                             Log.e(TAG, "unresolved record type : " + type);
                         }
@@ -285,6 +293,8 @@ public class UserCenterRecordManager {
             procDeleteSubscribeRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
             procDeleteHistoryRecord(dataUserId, context, contentuuids, contentType, dbCallback);
+        } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
+            procDeleteCarouselChannelRecord(contentuuids, dbCallback);
         }
     }
 
@@ -380,6 +390,11 @@ public class UserCenterRecordManager {
         Log.d(TAG, "proAddFollow add follow complete, tableName : " + tableName + ", userId : " + userId + ", name : " + info.getTitle());
     }
 
+    private void procAddCarouselPlayRecord(String userId, String token, Bundle bundle, DBCallback<String> callback) {
+        String tableName = DBConfig.LB_COLLECT_TABLE_NAME;
+        DBUtil.addCarouselChannelRecord(userId, tableName, bundle, callback);
+    }
+
 
     /**
      * 删除历史记录数据
@@ -454,6 +469,11 @@ public class UserCenterRecordManager {
         }
 
         Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentuuids);
+    }
+
+    private void procDeleteCarouselChannelRecord(String contentuuid, DBCallback<String> callback) {
+        Log.d(TAG, "procDeleteCarouselChannelRecord contentid : " + contentuuid);
+        DBUtil.deleteCarouselChannelRecord(contentuuid, callback);
     }
 
     private void procDeleteCollectionRecord(Context context, Bundle bundle, DBCallback<String> callback) {
