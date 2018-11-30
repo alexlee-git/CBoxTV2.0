@@ -955,25 +955,31 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     }
 
-    private void reportLog(Context context, int number) {
+    private void reportLog(Context  context , int number) {
 
-        Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
-        String definition = programSeriesInfo.getDefinition();
-        if (!TextUtils.isEmpty(definition)){
-            if (TextUtils.equals(definition,"SD")){
-                definition = "1";
-            }else if ( TextUtils.equals(definition,"HD")){
-                definition = "0";
+        try{
+            Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+            String definition = programSeriesInfo.getDefinition();
+            if (!TextUtils.isEmpty(definition)){
+                if (TextUtils.equals(definition,"SD")){
+                    definition = "1";
+                }else if ( TextUtils.equals(definition,"HD")){
+                    definition = "0";
+                }
             }
+
+            SharedPreferences sp = context.getSharedPreferences("durationConfig", Context.MODE_PRIVATE);
+            String duration =       sp.  getString("duration", "");
+            String seriesUUID = sp.getString("seriesUUID", "");
+            String vipflag = sp.getString("  vipFlag", "");
+
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, number+","+seriesUUID+","
+                    +playProgram.getContentUUID()+","+vipflag+","+ definition+","+  Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+        }catch(Exception e){
+            e.printStackTrace();
         }
 
-        SharedPreferences sp = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE);
-        String duration =       sp.  getString("duration", "");
-        String seriesUUID = sp.getString("seriesUUID", "");
-        String vipflag = sp.getString("  vipFlag", "");
-
-        LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, number+","+seriesUUID+","
-                +playProgram.getContentUUID()+","+vipflag+","+ definition+","+  Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
 
     }
 
