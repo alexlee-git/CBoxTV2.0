@@ -365,4 +365,14 @@ public class SearchFragmentNew extends BaseFragment implements PageContract.View
         }
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mPresenter != null){
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+        mRecyclerView = null;
+    }
 }
