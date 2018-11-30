@@ -82,6 +82,10 @@ master2.0是二期版本
         <address url="http://111.32.138.57:80/" name="NEW_SEARCH"/>
         <address url="666" name="HOTSEARCH_CONTENTID"/>
         <address url="555" name="EXIT_CONTENTID"/>
+        
+        <address url="http://img.cloud.ottcn.com/n3images/definitionImg/test/4k.png" name="MARK_IS4K"/>
+        <address url="http://img.cloud.ottcn.com/n3images/productImg/prod/%1$s.png" name="MARK_VIPPRODUCTID"/>
+        <address url="http://img.cloud.ottcn.com/n3images/operateImg/prod/%1$s.png" name="MARK_NEW_REALEXCLUSIVE"/>
     </addressList>
 </Service>
 ```
