@@ -966,10 +966,10 @@ public class UserCenterRecordManager {
                                             }
                                         }).excute();
                             } else {
-                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_COLLECT_TABLE_NAME, callback);
+                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME, callback);
                             }
                         } else {
-                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callback);
+                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.SUBSCRIBE_TABLE_NAME, callback);
                         }
                         unSubscribe(mCollectionDisposable);
                     }
