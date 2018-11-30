@@ -493,7 +493,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                     inflatePageWhenNoData();
                 }
             } else {
-                Log.d("collection", "unresolved msg : " + msg.what);
+                Log.d("sub", "unresolved msg : " + msg.what);
             }
         }
     }

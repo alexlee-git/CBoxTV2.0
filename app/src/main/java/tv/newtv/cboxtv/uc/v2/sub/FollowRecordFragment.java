@@ -271,7 +271,7 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
                     inflatePageWhenNoData();
                 }
             } else {
-                Log.d("collection", "unresolved msg : " + msg.what);
+                Log.d("sub", "unresolved msg : " + msg.what);
             }
         }
     }
