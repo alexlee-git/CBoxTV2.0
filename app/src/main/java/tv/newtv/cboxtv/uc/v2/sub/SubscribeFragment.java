@@ -203,10 +203,10 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                             }
                         }).excute();
             } else {
-                requestDataByDB(DBConfig.REMOTE_COLLECT_TABLE_NAME);
+                requestDataByDB(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
             }
         } else {
-            requestDataByDB(DBConfig.COLLECT_TABLE_NAME);
+            requestDataByDB(DBConfig.SUBSCRIBE_TABLE_NAME);
         }
     }
 
@@ -221,6 +221,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     }
 
     private void requestDataByDB(String tableName) {
+        Log.d("sub", "requestDataByDB tableName : " + tableName + ", userId : " + userId);
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
@@ -248,9 +249,12 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     }
 
     private void inflatePage(List<UserCenterPageBean.Bean> bean) {
+        Log.d("sub", "inflatePage");
         if (contentView == null) {
             return;
         }
+
+        Log.d("sub", "size : " + bean.size());
 
         if (bean == null || bean.size() == 0) {
             inflatePageWhenNoData();
