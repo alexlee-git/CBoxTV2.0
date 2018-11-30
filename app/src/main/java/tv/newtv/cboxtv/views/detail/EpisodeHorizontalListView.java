@@ -193,7 +193,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         if (data instanceof SubContent) {
                             himage = ((SubContent) data).getHImage();
                             title = ((SubContent) data).getTitle();
-//                            year = ((SubContent) data).getYear();
+                            year = ((SubContent) data).getYear();
                         } else if (data instanceof Alternate) {
                             himage = ((Alternate) data).getHImage();
                             title = ((Alternate) data).getTitle();
@@ -221,15 +221,18 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                                         int beforePosition = holder.getAdapterPosition() - 1;
 
                                         String beforeYear = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getYear();
+                                        String beforeTitle = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getTitle();
 
-                                        LogUtils.e("getAdapterPosition", "year: " + year
-                                                + " , beforePosition year : " + beforeYear);
+                                        LogUtils.d("getAdapterPosition", "current year: " + year
+                                                + ",current title : " + title
+                                                + " , before year : " + beforeYear
+                                                + " , before Title : " + beforeTitle
+                                        );
 
                                         if (!year.equals(beforeYear)) {
                                             holder.columnUpdateDateTV.setVisibility(VISIBLE);
-                                            holder.columnUpdateDateTV.setText(beforeYear);
+                                            holder.columnUpdateDateTV.setText(year);
                                         } else {
-                                            LogUtils.e("updateGone", "gone year : " + year);
                                             holder.columnUpdateDateTV.setVisibility(GONE);
                                         }
                                     }
