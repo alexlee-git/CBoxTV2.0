@@ -15,7 +15,9 @@
         android:layout_marginLeft="@dimen/width_269px"
         android:layout_marginRight="@dimen/width_263px"
         android:clipChildren="false"
-        android:clipToPadding="false"></tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView>
+        android:clipToPadding="false">
+
+    </tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView>
 
 
 </LinearLayout>

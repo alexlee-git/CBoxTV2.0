@@ -210,6 +210,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     protected void checkIsTop(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent
                 .KEYCODE_DPAD_UP) {
+            if(isFullScreen()) return;
             View rootView = getWindow().getDecorView();
             if (rootView instanceof ViewGroup) {
                 View focusView = rootView.findFocus();

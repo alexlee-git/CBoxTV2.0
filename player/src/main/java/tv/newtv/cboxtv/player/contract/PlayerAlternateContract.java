@@ -41,7 +41,7 @@ public class PlayerAlternateContract {
         void requestAlternate(String alternateId, String title, String channelId);
 
         Alternate getCurrentAlternate();
-
+        int getCurrentPlayIndex();
         boolean playNext();
 
         void playAlternateItem(String contentId, String contentUUID);
@@ -61,6 +61,8 @@ public class PlayerAlternateContract {
         private Alternate currentAlternate;
         private int currentPlayIndex = 0;
 
+        private Long requestID = 0L;
+
         public AlternatePresenter(@NotNull Context context, @Nullable View view) {
             super(context, view);
             mAlternate = getService(SERVICE_ALTERNATE);
@@ -76,6 +78,11 @@ public class PlayerAlternateContract {
             }
             mAlternates = null;
             currentAlternate = null;
+        }
+
+        @Override
+        public int getCurrentPlayIndex() {
+            return currentPlayIndex;
         }
 
         @Override
@@ -101,21 +108,28 @@ public class PlayerAlternateContract {
         }
 
         @Override
-        public void requestAlternate(String alternateId, final String title, final String
+        public void requestAlternate(final String alternateId, final String title, final String
                 channelId) {
-            if (TextUtils.equals(currentAlternateId, alternateId) && mAlternates != null){
+            if(requestID != 0L){
+                mAlternate.cancel(requestID);
+            }
+            currentAlternateId = alternateId;
+            mAlternates = Cache.getInstance().get(Cache.CACHE_TYPE_ALTERNATE, alternateId);
+            if (mAlternates != null) {
                 parseAlternate(title, channelId);
                 return;
             }
             if (mAlternate != null) {
-                currentAlternateId = alternateId;
-                mAlternate.getTodayAlternate(Libs.get().getAppKey(), Libs.get().getChannelId(),
+                requestID = mAlternate.getTodayAlternate(Libs.get().getAppKey(), Libs.get()
+                                .getChannelId(),
                         alternateId, new DataObserver<ModelResult<List<Alternate>>>() {
                             @Override
                             public void onResult(ModelResult<List<Alternate>> result, long
                                     requestCode) {
                                 if (result.isOk()) {
                                     mAlternates = result.getData();
+                                    Cache.getInstance().put(Cache.CACHE_TYPE_ALTERNATE,
+                                            alternateId,mAlternates);
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
@@ -132,7 +146,7 @@ public class PlayerAlternateContract {
             }
         }
 
-        private void parseAlternate(String title,String channelId){
+        private void parseAlternate(String title, String channelId) {
             if (mAlternates != null && mAlternates.size() > 0) {
                 currentPlayIndex = CmsUtil.binarySearch(mAlternates,
                         System.currentTimeMillis(), 0,

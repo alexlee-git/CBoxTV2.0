@@ -20,6 +20,7 @@ import java.util.List;
 
 import tv.newtv.cboxtv.JumpScreen;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.player.AlternateCallback;
 import tv.newtv.cboxtv.views.custom.AlternateView;
 import tv.newtv.cboxtv.views.detail.AlterHeaderView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -34,8 +35,8 @@ import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/13
  */
-public class AlternateActivity extends DetailPageActivity implements AlternateView
-        .AlternateCallback, onEpisodeItemClick<Alternate>, ContentContract.LoadingView {
+public class AlternateActivity extends DetailPageActivity implements
+        AlternateCallback, onEpisodeItemClick<Alternate>, ContentContract.LoadingView {
     private String contentUUID;
     private SmoothScrollView scrollView;
     private AlterHeaderView headerView;
@@ -136,7 +137,7 @@ public class AlternateActivity extends DetailPageActivity implements AlternateVi
         mPlayListView.setOnItemClick(this);
 
         headerView.setCallback(this);
-        headerView.setContentUUID(contentUUID);
+        headerView.setContentUUID("11488346");
     }
 
     @Override

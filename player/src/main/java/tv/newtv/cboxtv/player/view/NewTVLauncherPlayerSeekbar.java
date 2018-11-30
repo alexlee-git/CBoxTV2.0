@@ -447,15 +447,16 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
     public void setSeekPauseIcon() {
         if (mImgSeekStatus != null) {
             mImgSeekStatus.setImageResource(R.drawable.seek_pause);
-            mImgSeekStatus.postInvalidate();
-
+            mImgSeekStatus.invalidate();
+            requestLayout();
         }
     }
 
     public void setSeekPlayIcon() {
         if (mImgSeekStatus != null) {
             mImgSeekStatus.setImageResource(R.drawable.seek_play);
-            mImgSeekStatus.postInvalidate();
+            mImgSeekStatus.invalidate();
+            requestLayout();
         }
     }
 

@@ -17,18 +17,14 @@ import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
-import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
-import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.FileUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.PicassoBuilder;
 import com.newtv.libs.util.RxBus;
-import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
-import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -48,10 +44,7 @@ import tv.icntv.adsdk.AdSDK;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
-import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
-import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.ottlauncher.db.History;
 
@@ -196,9 +189,13 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     }
 
     @Override
-    public void onFinish(final Content playInfo, final int index, final int position, final int duration) {
+    public void onFinish(final Content playInfo, final int index, final int position, final int
+            duration) {
         if (Constant.CONTENTTYPE_CP.equals(playInfo.getContentType())) {
             if (TextUtils.isEmpty(playInfo.getCsContentIDs())) {
+                addHistory(playInfo, index, position, duration);
+                return;
+            } else if (Constant.CONTENTTYPE_PG.equals(playInfo.getContentType())) {
                 addHistory(playInfo, index, position, duration);
                 return;
             }
@@ -206,7 +203,8 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             mContentPresenter.getContent(csId, true, new
                     ContentContract.View() {
                         @Override
-                        public void onContentResult(@NotNull String uuid, @Nullable Content content) {
+                        public void onContentResult(@NotNull String uuid, @Nullable Content
+                                content) {
                             if (content != null) {
                                 playInfo.setVImage(content.getVImage());
                                 playInfo.setTitle(content.getTitle());
@@ -215,7 +213,8 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                         }
 
                         @Override
-                        public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
+                        public void onSubContentResult(@NotNull String uuid, @Nullable
+                                ArrayList<SubContent> result) {
 
                         }
 
@@ -234,13 +233,16 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         }
     }
 
-    private void addHistory(final Content playInfo, final int index, final int position, final int duration) {
+    private void addHistory(final Content playInfo, final int index, final int position, final
+    int duration) {
         try {
             LogUtils.e("receive addHistory...");
-            UserCenterUtils.addHistory(playInfo, index, position, duration, new DBCallback<String>() {
+            UserCenterUtils.addHistory(playInfo, index, position, duration, new
+                    DBCallback<String>() {
                 @Override
                 public void onResult(int code, String result) {
-                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code + ", contentId : " + playInfo.getContentID());
+                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code + "," +
+                            " contentId : " + playInfo.getContentID());
                     if (code == 0) {
                         LogUtils.e("写入历史记录成功");
                     }
@@ -279,20 +281,23 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     }
 
     @Override
-    public void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri) {
-        JumpUtil.activityJump(context,actionType,contentType,contentUUID,actionUri);
+    public void activityJump(Context context, String actionType, String contentType, String
+            contentUUID, String actionUri) {
+        JumpUtil.activityJump(context, actionType, contentType, contentUUID, actionUri);
     }
 
     @Override
     public void addLbCollect(Bundle bundle, DBCallback<String> dbCallback) {
-        UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
-                this,bundle,null,dbCallback);
+        UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager
+                        .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this, bundle, null, dbCallback);
     }
 
     @Override
     public void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback) {
-        UserCenterRecordManager.getInstance().deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
-                this,contentUUID,"","",dbCallback);
+        UserCenterRecordManager.getInstance().deleteRecord(UserCenterRecordManager
+                        .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this, contentUUID, "", "", dbCallback);
     }
 
 }

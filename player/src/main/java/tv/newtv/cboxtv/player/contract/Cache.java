@@ -1,5 +1,11 @@
 package tv.newtv.cboxtv.player.contract;
 
+import android.annotation.SuppressLint;
+
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            tv.newtv.cboxtv.player.contract
@@ -9,13 +15,35 @@ package tv.newtv.cboxtv.player.contract;
  */
 class Cache {
 
+    public static final int CACHE_TYPE_ALTERNATE = 0x001;
     private static final Cache ourInstance = new Cache();
+    private HashMap<Integer, HashMap<String, Object>> cacheMaps;
+
+    @SuppressLint("UseSparseArrays")
+    private Cache() {
+        cacheMaps = new HashMap<>();
+    }
 
     static Cache getInstance() {
         return ourInstance;
     }
 
-    private Cache() {
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <T> T get(int type,String key){
+        if(cacheMaps.containsKey(type) && cacheMaps.get(type).containsKey(key)){
+            Object result = cacheMaps.get(type).get(key);
+            if(result != null){
+                return (T) result;
+            }
+        }
+        return null;
+    }
 
+    public <T> void put(int type, String key, T value) {
+        if (!cacheMaps.containsKey(type)) {
+            cacheMaps.put(type, new HashMap<String, Object>());
+        }
+        cacheMaps.get(type).put(key, value);
     }
 }

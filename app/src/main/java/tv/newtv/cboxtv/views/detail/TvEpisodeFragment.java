@@ -298,13 +298,11 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
         public void update(SubContent programsInfo) {
             if (programsInfo != null) {
                 itemView.setVisibility(View.VISIBLE);
-
                 if (mTitleView != null) {
                     mTitleView.setText(programsInfo.getPeriods());
                 }
                 //为剧集页添加vip功能  1 单点包月  3vip  4单点
-//                int vipFlag = Integer.parseInt(programsInfo.getVipFlag());
-                if (TextUtils.equals("3",programsInfo.getVipFlag())){
+                if ("3".equals(programsInfo.getVipFlag())){
                     mImageView.setVisibility(View.VISIBLE);
                 }else {
                     mImageView.setVisibility(View.GONE);

@@ -138,7 +138,7 @@ public class VPlayCenter {
             return;
         }
 
-        if (CmsUtil.isVideoTv(seriesInfo)) {
+        if (CmsUtil.isVideoTv(seriesInfo) && !TextUtils.isEmpty(seriesInfo.isFinish())) {
             final boolean isDesc = "1".equals(seriesInfo.getPlayOrder());
             if (seriesInfo.getData() != null && seriesInfo.getData().size() > 0) {
                 Collections.sort(seriesInfo.getData(), new Comparator<SubContent>() {
