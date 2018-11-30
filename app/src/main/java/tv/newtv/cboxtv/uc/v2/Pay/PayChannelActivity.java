@@ -27,35 +27,25 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.SharePreferenceUtils;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
-import tv.newtv.cboxtv.uc.v2.TimeUtil;
-import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.member.MemberAgreementActivity;
 
 /**
@@ -84,8 +74,7 @@ public class PayChannelActivity extends Activity implements PageContract.View {
     private String mFlagAction;
     private ModuleInfoResult moduleInfoResult;
     private final String prdType = "3";
-    private String mContentUUID, mMAMID, mVipFlag, mTitle, mContentType;
-    private String mToken;
+    private String mVipFlag, mContentType;
     private ExterPayBean mExterPayBean;
     private PageContract.ContentPresenter mContentPresenter;
     private final String ACTTYPE = "DISCOUNT";
@@ -100,10 +89,7 @@ public class PayChannelActivity extends Activity implements PageContract.View {
         if (mExterPayBean != null) {
             Log.i(TAG, mExterPayBean.toString());
             mVipProductId = mExterPayBean.getVipProductId();
-            mContentUUID = mExterPayBean.getContentUUID();
             mContentType = mExterPayBean.getContentType();
-            mMAMID = mExterPayBean.getMAMID();
-            mTitle = mExterPayBean.getTitle();
             mFlagAction = mExterPayBean.getAction();
             mVipFlag = mExterPayBean.getVipFlag();
         }

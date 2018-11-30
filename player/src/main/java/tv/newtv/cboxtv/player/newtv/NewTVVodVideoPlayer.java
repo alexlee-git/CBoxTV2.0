@@ -8,14 +8,15 @@ import android.widget.FrameLayout;
 import com.gridsum.videotracker.GSVideoState;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
 
 import java.util.LinkedHashMap;
 
-
 import tv.icntv.icntvplayersdk.BasePlayer;
+import tv.icntv.icntvplayersdk.Constants;
 import tv.icntv.icntvplayersdk.NewTVPlayerInfo;
 import tv.icntv.icntvplayersdk.NewTVPlayerInterface;
 import tv.icntv.icntvplayersdk.wrapper.NewTvPlayerWrapper;
@@ -283,10 +284,14 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         icntvPlayerInfo.setSeriesID(videoDataStruct.getSeriesId());
         icntvPlayerInfo.setDuration(videoDataStruct.getDuration() * 60 * 1000);
         icntvPlayerInfo.setProgramId(videoDataStruct.getProgramId());
-        icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
         icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
         icntvPlayerInfo.setDeviceId(Constant.UUID);
         icntvPlayerInfo.setStartPosition(videoDataStruct.getHistoryPosition());
+        if(UserStatus.isVip()){
+            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
+        }else {
+            icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        }
         //extend字段
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()

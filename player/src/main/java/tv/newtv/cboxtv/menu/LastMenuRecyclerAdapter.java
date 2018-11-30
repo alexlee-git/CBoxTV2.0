@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -66,9 +67,9 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final Program program = data.get(position);
-        Holder h = (Holder) holder;
+        final Holder h = (Holder) holder;
         h.itemView.setBackgroundResource(R.color.color_transparent);
         h.playing.setVisibility(View.GONE);
         h.tv.setText(program.getTitle());
@@ -91,10 +92,16 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     v.setBackgroundResource(R.drawable.one_focus);
+                    h.tv.setSelected(true);
                 } else if (isCurrentPlay(program)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
+                    h.tv.setSelected(false);
+
+
                 } else {
                     v.setBackgroundResource(R.color.color_transparent);
+                    h.tv.setSelected(false);
+
                 }
             }
         });

@@ -413,10 +413,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_16);
         String packageName = packageName(this);
 
-
-
         logBuff.append(0 + ",")
-                .append(""+",")
                 .append( "SOFT"+ ",")
                 .append(packageName)
                 .trimToSize();

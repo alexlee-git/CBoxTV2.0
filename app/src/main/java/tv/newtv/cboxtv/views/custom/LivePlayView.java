@@ -253,9 +253,11 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 Log.e(TAG, "dispatchClick: " + mProgramInfo);
                 JumpUtil.activityJump(getContext(), mPlayInfo.actionType, mProgramInfo
                                 .getL_contentType(),
-                        mPlayInfo.ContentUUID, mProgramInfo.getL_actionUri());
+                        mProgramInfo.getL_id(), mProgramInfo.getL_actionUri());
                 return;
             }
+        } else if (currentMode == MODE_LIVE) {
+            return;
         }
         if (mVideoPlayerView != null) {
             mVideoPlayerView.EnterFullScreen(MainNavManager.getInstance().getCurrentFragment()
@@ -275,6 +277,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void doPlay() {
+        Log.d(TAG, "currentMode : " + currentMode);
         if (currentMode == MODE_LIVE) {
             if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
                 playLiveVideo(0);
@@ -391,10 +394,12 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
 
             if (liveInfo.isLiveTime()) {
-
                 mLiveInfo = liveInfo;
                 currentMode = MODE_LIVE;
                 playLiveVideo(2000);
+                return;
+            } else if (mProgramInfo != null && mProgramInfo.getVideo() != null && mProgramInfo.getVideo().getVideoType().equals("LIVE")) {
+                currentMode = MODE_LIVE;
                 return;
             } else if (isVod()) {
                 currentMode = MODE_OPEN_VIDEO;
@@ -486,7 +491,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void destroy() {
-        
+
     }
 
     @Override

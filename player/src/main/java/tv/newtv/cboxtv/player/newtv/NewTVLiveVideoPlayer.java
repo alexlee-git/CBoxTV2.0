@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import com.gridsum.videotracker.GSVideoState;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.Utils;
 import com.newtv.libs.util.YSLogUtils;
@@ -207,6 +208,10 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
             Log.i(TAG, "playVideo: videoDataStruct==null");
             return false;
         }
+
+        if(UserStatus.isVip()){
+            PlayerConfig.getInstance().setJumpAD(true);
+        }
         NewTVPlayerInfo icntvPlayerInfo = new NewTVPlayerInfo();
         icntvPlayerInfo.setAppKey(Libs.get().getAppKey());
         icntvPlayerInfo.setChanneId(Libs.get().getChannelId());
@@ -219,9 +224,13 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         icntvPlayerInfo.setDuration(videoDataStruct.getDuration());
         icntvPlayerInfo.setProgramId(videoDataStruct.getProgramId());
         icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
-        icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
         icntvPlayerInfo.setDeviceId(Constant.UUID);
         icntvPlayerInfo.setPlayType(Constants.PLAY_MODEL_LIVE);
+        if(UserStatus.isVip()){
+            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
+        }else {
+            icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        }
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
                 .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), PlayerConfig
