@@ -441,12 +441,23 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 break;
             case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_DPAD_CENTER:
-                Program program = lastProgram.get(position);
-                playProgram = program;
-                setPlayId(program);
-                if (onSelectListenerList.size() > 0) {
-                    for (OnSelectListener l : onSelectListenerList) {
-                        l.select(program);
+                if(level == MenuRecyclerView.MAX_LEVEL){
+                    Program program = lastProgram.get(position);
+                    playProgram = program;
+                    setPlayId(program);
+                    if (onSelectListenerList.size() > 0) {
+                        for (OnSelectListener l : onSelectListenerList) {
+                            l.select(program);
+                        }
+                    }
+                } else {
+                    MenuRecyclerView menuRecyclerViewRight = getMenuRecyclerViewByLevel(level);
+                    MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerViewRight.getAdapter();
+                    Node item = adapter.getItem(position);
+                    if (onSelectListenerList.size() > 0) {
+                        for (OnSelectListener l : onSelectListenerList) {
+                            l.select(item);
+                        }
                     }
                 }
                 break;
@@ -1165,6 +1176,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     public interface OnSelectListener {
 
         void select(Program program);
+
+        void select(Node node);
     }
 
     private static class MyHandler extends android.os.Handler {

@@ -160,6 +160,11 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
 //                    DBUtil.addHistory(programSeriesInfo,index,0, Utils.getSysTime(),null);
 //                }
             }
+
+            @Override
+            public void select(Node node) {
+
+            }
         });
 
         NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
