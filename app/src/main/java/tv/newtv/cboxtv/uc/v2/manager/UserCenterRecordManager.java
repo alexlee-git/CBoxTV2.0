@@ -1373,18 +1373,18 @@ public class UserCenterRecordManager {
             if (duration > 0) {
                 resultTmp = position * 100 / duration;
             }
-            if (resultTmp < 1) {
-                result = "观看不足1%";
+            if (position==0&&duration==0) {
+                result = "已看完";
             } else {
-                if (position < duration) {
+                if (resultTmp<1) {
+                    result = "观看不足1%";
+                } else if (position < duration){
                     result = "已观看" + resultTmp + "%";
-                } else {
-                    result = "已看完";
                 }
             }
         }
 
-        Log.d(TAG, "getWatchProgress, pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
+        Log.d(TAG, ", pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
 
         return result;
     }
