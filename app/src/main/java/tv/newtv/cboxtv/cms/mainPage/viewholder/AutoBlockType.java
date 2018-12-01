@@ -192,6 +192,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                 final FrameLayout frameLayout = (FrameLayout) holder.itemView.findViewWithTag
                         (frameLayoutId);
                 if (frameLayout != null) {
+                    frameLayout.setFocusable(true);
                     //屏幕适配
                     if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();

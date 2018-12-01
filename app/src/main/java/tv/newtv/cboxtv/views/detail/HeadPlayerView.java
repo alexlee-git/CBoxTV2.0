@@ -183,6 +183,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
                         }
                     }
+
+                    @Override
+                    public void onError() {
+                        if (isRequest) {
+                            mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
+                        }
+                    }
                 });
     }
 

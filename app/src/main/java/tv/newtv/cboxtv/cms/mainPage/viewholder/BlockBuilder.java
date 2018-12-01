@@ -221,6 +221,7 @@ class BlockBuilder extends BaseBlockBuilder {
                 final FrameLayout frameLayout = (FrameLayout) itemView.findViewWithTag
                         (frameLayoutId);
                 if (frameLayout != null) {
+                    frameLayout.setFocusable(true);
                     if (frameLayout instanceof AlternatePageView) {
                         ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID);
                         ((AlternatePageView) frameLayout).setProgram(moduleItem);
@@ -375,6 +376,7 @@ class BlockBuilder extends BaseBlockBuilder {
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
             focusTextView.setSelected(true);
 
+            Log.e("yml", "onItemGetFocus: "+layoutId );
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {
