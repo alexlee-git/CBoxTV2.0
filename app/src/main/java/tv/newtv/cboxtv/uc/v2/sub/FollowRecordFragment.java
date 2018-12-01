@@ -198,12 +198,6 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setHasFixedSize(true);
 
-
-
-
-
-
-
             mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
                 public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
