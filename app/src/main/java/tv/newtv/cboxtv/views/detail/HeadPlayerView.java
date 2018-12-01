@@ -50,6 +50,7 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
@@ -89,6 +90,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     private long lastClickTime = 0;
     private View vipPay;
+    private TextView vipTip;
 
     //检测全屏退出回调
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new
@@ -103,18 +105,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public HeadPlayerView(Context context) {
         this(context, null);
-        getMemberStatus();
     }
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
-        getMemberStatus();
     }
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-        getMemberStatus();
     }
 
     private void setCurrentPlayIndex(String tag, int index) {
@@ -199,14 +198,26 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         setClipToPadding(false);
     }
 
-    private void getMemberStatus() {
-        UserCenterUtils.getMemberStatus(new INotifyMemberStatusCallback() {
+    private void getMemberStatus(String UUid) {
+        UserCenterUtils.getMemberStatus(UUid, new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
                 memberStatus = status;
                 if (memberBundle != null) {
+                    Log.d(TAG, "bundle : " + memberBundle.get(QueryUserStatusUtil.expireTime));
                     expireTime = (String) memberBundle.get(QueryUserStatusUtil.expireTime);
                 }
+
+                Log.d(TAG, "memberStatus : " + memberStatus + "time : " + expireTime);
+                if (!TextUtils.isEmpty(memberStatus) &&
+                        (memberStatus.equals(QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) && vipTip != null) {
+                    vipTip.setVisibility(View.VISIBLE);
+                    String time = TimeUtil.getInstance().getDateFromSeconds(
+                            String.valueOf(TimeUtil.getInstance().getSecondsFromDate(expireTime)));
+
+                    vipTip.setText(String.format(vipTip.getText().toString(), time));
+                }
+
             }
         });
     }
@@ -252,7 +263,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public void onActivityResume() {
-        getMemberStatus();
+        if (mInfo != null) {
+            getMemberStatus(mInfo.getContentUUID());
+        }
         if (playerView != null && !playerView.isReleased() && playerView.isReady() && (playerView
                 .isADPlaying() || playerView.isPlaying())) {
             Log.e(TAG, "player view is working....");
@@ -309,7 +322,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 public void run() {
                     removeView(inflate);
                 }
-            },5000);
+            }, 5000);
         }
         addView(contentView);
         checkDataFromDB();
@@ -363,8 +376,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) collect).isSelect()) {
                                                 UserCenterUtils.deleteSomeCollect(mInfo,
@@ -405,7 +417,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         .setSelect
                                                                                 (code == 0 &&
                                                                                         !TextUtils
-                                                                                        .isEmpty(result));
+                                                                                                .isEmpty(result));
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
                                                                         true);
@@ -449,8 +461,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) Subscrip).isSelect()) {
                                                 UserCenterUtils.deleteSomeSubcribet(mInfo,
@@ -523,13 +534,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         vipPay = contentView.findViewById(value.viewId);
                         break;
                     case Builder.DB_TYPE_VIPTIP:
-                        TextView vipTip = contentView.findViewById
+                        vipTip = contentView.findViewById
                                 (value.viewId);
-                        if (!TextUtils.isEmpty(memberStatus) && (memberStatus ==
-                                QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) {
-                            vipTip.setVisibility(View.VISIBLE);
-                            vipTip.setText(String.format(vipTip.getText().toString(), expireTime));
-                        }
                         break;
                 }
             }
@@ -589,6 +595,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         mInfo = programSeriesInfo;
         setVipPayStatus(mInfo);
+        getMemberStatus(mInfo.getContentUUID());
         parseResult();
     }
 

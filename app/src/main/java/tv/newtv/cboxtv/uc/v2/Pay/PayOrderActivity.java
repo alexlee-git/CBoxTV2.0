@@ -895,7 +895,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         try {
             NetClient.INSTANCE.getUserCenterMemberInfoApi()
                     .getMemberInfo("Bearer " + mToken, "",
-                            Libs.get().getAppKey())
+                            Libs.get().getAppKey(),"")
                     .subscribe(new Observer<ResponseBody>() {
 
                         @Override

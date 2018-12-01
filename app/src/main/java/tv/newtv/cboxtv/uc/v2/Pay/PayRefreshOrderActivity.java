@@ -496,7 +496,7 @@ public class PayRefreshOrderActivity extends Activity implements View.OnClickLis
         try {
             NetClient.INSTANCE.getUserCenterMemberInfoApi()
                     .getMemberInfo("Bearer " + mToken, "",
-                            Libs.get().getAppKey())
+                            Libs.get().getAppKey(),"")
                     .subscribe(new Observer<ResponseBody>() {
 
                         @Override

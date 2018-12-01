@@ -24,5 +24,6 @@ public interface IUserCenterMemberInfoApi {
     @GET("goldenpheasant/api/programRights")
     Observable<ResponseBody> getMemberInfo(@Header("Authorization") String Authorization,
                                            @Query("productId") String productId,
-                                           @Query("appKey") String appKey);
+                                           @Query("appKey") String appKey,
+                                           @Query("contentUuid") String contentUuid);
 }
