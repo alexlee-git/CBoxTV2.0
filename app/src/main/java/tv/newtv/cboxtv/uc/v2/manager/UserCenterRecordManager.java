@@ -1346,6 +1346,8 @@ public class UserCenterRecordManager {
                                     if (null != callback) {
                                         callback.getHistoryStatus(data.get(0));
                                     }
+                                } else {
+                                    callback.onError();
                                 }
                             }
                         }).excute();

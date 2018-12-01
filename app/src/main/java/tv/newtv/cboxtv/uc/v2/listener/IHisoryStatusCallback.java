@@ -13,4 +13,5 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
  */
 public interface IHisoryStatusCallback {
      void getHistoryStatus(UserCenterPageBean.Bean bean);
+     void onError();
 }
