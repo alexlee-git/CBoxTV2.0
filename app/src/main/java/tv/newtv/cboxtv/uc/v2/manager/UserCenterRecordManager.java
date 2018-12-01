@@ -417,12 +417,20 @@ public class UserCenterRecordManager {
         // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
-                    .condition()
-                    .eq(DBConfig.USERID, dataUserId)
-                    .eq(DBConfig.CONTENTUUID, contentuuids)
-                    .build()
-                    .withCallback(callback).excute();
+            if (TextUtils.equals(contentuuids, "clean")) {
+                DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .build()
+                        .withCallback(callback).excute();
+            } else {
+                DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .build()
+                        .withCallback(callback).excute();
+            }
         } else {
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context))
@@ -966,10 +974,10 @@ public class UserCenterRecordManager {
                                             }
                                         }).excute();
                             } else {
-                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_COLLECT_TABLE_NAME, callback);
+                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME, callback);
                             }
                         } else {
-                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callback);
+                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.SUBSCRIBE_TABLE_NAME, callback);
                         }
                         unSubscribe(mCollectionDisposable);
                     }

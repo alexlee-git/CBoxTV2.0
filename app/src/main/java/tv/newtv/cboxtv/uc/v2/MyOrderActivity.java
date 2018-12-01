@@ -55,6 +55,7 @@ import tv.newtv.cboxtv.uc.bean.OrderInfoBean;
 import tv.newtv.cboxtv.uc.listener.RecScrollListener;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayRefreshOrderActivity;
+import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
 
 
 /**
@@ -93,14 +94,12 @@ public class MyOrderActivity extends BaseActivity {
     private int pageNum = 50;
     private int offset = 1;//页数
     private final static int REQUEST_CODE = 1; // 返回的结果码
-    private boolean isBackground;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_order);
         ButterKnife.bind(this);
-        isBackground = ActivityStacks.get().isBackGround();
         initData();
         initView();
     }
@@ -427,6 +426,7 @@ public class MyOrderActivity extends BaseActivity {
      * 跳转到会员Vip列表
      */
     private void jumpToMemberVip() {
+        boolean isBackground = ActivityStacks.get().isBackGround();
         //会员片库
         Intent intent = new Intent();
         Class mPageClass = null;
@@ -445,10 +445,9 @@ public class MyOrderActivity extends BaseActivity {
         }
         intent.setClass(MyOrderActivity.this, mPageClass);
         startActivity(intent);
-
         if (mPageClass == MainActivity.class) {
             if (!isBackground){
-            ActivityStacks.get().finishAllActivity();
+                ActivityStacks.get().finishAllActivity();
             }
             MyOrderActivity.this.finish();
         }
