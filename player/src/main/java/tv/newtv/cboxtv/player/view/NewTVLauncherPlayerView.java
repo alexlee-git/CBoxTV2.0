@@ -230,7 +230,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
-            LogUtils.i(TAG, "onPrepared: ");
+            LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
             //stopLoading();
             mNewTVLauncherPlayerSeekbar.setDuration();
@@ -889,6 +889,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * type 1为单节目 2为节目集 3为直播
      */
     private void updatePlayStatus(int type, int index, int position) {
+        Log.i(TAG, "updatePlay position="  + position + "   ====" + type + ":" + index);
         setHintTextVisible(GONE);
         mIsPrepared = false;
         dismissChildView();
@@ -1427,6 +1428,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void start() {
+        hidePauseImage();
         if (mNewTVLauncherPlayer != null)
             mNewTVLauncherPlayer.start();
 
@@ -1435,6 +1437,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void pause() {
+        showPauseImage();
         if (mNewTVLauncherPlayer != null)
             mNewTVLauncherPlayer.pause();
 
