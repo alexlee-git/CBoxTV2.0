@@ -40,12 +40,6 @@ public class Constant {
             .getAbsolutePath() +
             "/ad_cache";
     public static final String TAG = "CBoxTV";
-    public static final String BASE_URL_LISTPAGE = "listPage";
-    public static final String CMS_URL = "icms_api/api/";
-
-    public static final String BOOT_GUIDE_HOST = Libs.get().isDebug()
-            ? "http://111.32.138.57:8080/" : "http://newtv.boot.ottcn.com:8080/";
-
 
     //广告位类型
     public static final String AD_TOPIC = "topic";//专题广告
@@ -191,11 +185,7 @@ public class Constant {
     public static final String INIT_SDK = "init_sdk";//sdk初始化
     public static final String INIT_ADSDK = "init_sdk";//adsdk初始化
     public static final String INIT_LOGSDK = "init_logsdk";//logsdk初始化
-    public static final String CHECK_ERROR = "播控鉴权失败：";
-    public static final String VERSION_UP_BASE = Libs.get().isDebug() ?
-            "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
-    public static final String IS_ORIENTED_BASE = Libs.get().isDebug() ?
-            "http://stage-bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
+
     //用户中心
     public static final String RESPONSE_TYPE = "device_code";
 
@@ -214,25 +204,7 @@ public class Constant {
     public static final String UC_SUBSCRIBE = "订阅";
     public static final String UC_COLLECTION = "收藏";
     private static final Map<String, String> mServerAddressMap = new HashMap<>();
-
-    public static final String BASE_URL_SEARCH = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .SEARCH)) ? getBaseUrl(HeadersInterceptor.SEARCH)
-            : "http://search.cloud.ottcn.com:8080/";
-
-    public static final String CMS_NEW_SEARCH = Libs.get().isDebug() ? "http://111.32.138.57:80/" :
-            "http://searchapi.cloud.ottcn.com/";
-
-    public static final String BASE_URL_NEW_SEARCH = !TextUtils.isEmpty(getBaseUrl
-            (HeadersInterceptor.NEW_SEARCH)) ? getBaseUrl(HeadersInterceptor.NEW_SEARCH)
-            : CMS_NEW_SEARCH;
-
-    public static final String SERVER_TIME_URL = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .SERVER_TIME)) ? getBaseUrl(HeadersInterceptor.SERVER_TIME) : "https://bzo.cloud" +
-            ".ottcn.com/";
-    public static final String VERSION_UP = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .VERSION_UP)) ? getBaseUrl(HeadersInterceptor.VERSION_UP) : VERSION_UP_BASE; //版本升级
-    public static final String IS_ORIENTED = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .IS_ORIENTED)) ? getBaseUrl(HeadersInterceptor.IS_ORIENTED) : IS_ORIENTED_BASE;
+    
     /**
      * log服务器地址
      */
@@ -250,7 +222,7 @@ public class Constant {
 
     private static final String CMS_ONLINE = Libs.get().isDebug()
             ? "http://111.32.132.156/"
-            : "http://epg.cloud.ottcn.com/";
+            : "http://api31.cloud.ottcn.com/";
 
     public static final String BASE_URL_CMS = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.CMS))
             ? getBaseUrl(HeadersInterceptor.CMS)
@@ -265,13 +237,6 @@ public class Constant {
     public static final String BASE_URL_NEW_CMS = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
             .NEW_CMS)) ? getBaseUrl(HeadersInterceptor.NEW_CMS) : CMS_NEW_ONLINE;
 
-    private static final String PERMISSTION_CHECK_URL = Libs.get().isDebug()
-            ? "http://stage-bzo.cloud.ottcn.com/" : "https://account.cloud.ottcn" +
-            ".com/";
-
-    public static final String BASE_PERMISSTION_CHECK = !TextUtils.isEmpty(getBaseUrl
-            (HeadersInterceptor.PERMISSTION_CHECK)) ? getBaseUrl(HeadersInterceptor
-            .PERMISSTION_CHECK) : PERMISSTION_CHECK_URL; //播放鉴权
 
     //public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
     // .AD)) ? getBaseUrl(HeadersInterceptor.AD) : "https://api.adott.ottcn.com/"; //广告正式地址
@@ -281,31 +246,7 @@ public class Constant {
     public static final String BASE_URL_AD = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.AD)
     ) ? getBaseUrl(HeadersInterceptor.AD) : AD_URL; //广告正式地址
 
-    private static final String USER = Libs.get().isDebug() ?
-            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
 
-    //            "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
-    public static final String BASE_URL_USER = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor
-            .USER)
-
-    ) ? getBaseUrl(HeadersInterceptor.USER) : USER; //正式地址
-    private static final String PAY = Libs.get().isDebug() ?
-            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
-    public static final String BASE_URL_PAY = !TextUtils.isEmpty(getBaseUrl(HeadersInterceptor.PAY)
-    ) ? getBaseUrl(HeadersInterceptor.PAY) : PAY; //正式地址
-    private static final String PRODUCT = Libs.get().isDebug() ?
-            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
-    public static final String BASE_URL_PRODUCT = !TextUtils.isEmpty(getBaseUrl
-            (HeadersInterceptor.USER)
-    ) ? getBaseUrl(HeadersInterceptor.PRODUCT) : PRODUCT; //正式地址
-    private static final String USER_BEHAVIOR = Libs.get().isDebug() ?
-            "http://stage-bzo.cloud.ottcn.com/" : "http://stage-bzo.cloud.ottcn.com/";
-    // "https://bzo.cloud.ottcn.com/" : "https://bzo.cloud.ottcn.com/";
-    public static final String BASE_URL_USER_BEHAVIOR = !TextUtils.isEmpty(getBaseUrl
-            (HeadersInterceptor.USER)
-    ) ? getBaseUrl(HeadersInterceptor.USER_BEHAVIOR) : USER_BEHAVIOR; //正式地址
     //版本升级状态
     public static boolean VERSION_UPDATE = false;
     // 激活认证接口地址

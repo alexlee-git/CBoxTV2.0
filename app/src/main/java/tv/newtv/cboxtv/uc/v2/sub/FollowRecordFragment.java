@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -21,6 +20,7 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
@@ -71,6 +71,9 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
     private static final int MSG_INFLATE_PAGE = 10034;
 
     private static FollowHandler mHandler;
+    private int move =-1;
+    private Observable<Integer> observable;
+
 
     @Override
     protected int getLayoutId() {
@@ -194,22 +197,35 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_FOLLOW);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setHasFixedSize(true);
+
+
+
+
+
+
+
             mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
                 public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                     outRect.bottom = 72;
-
+                    outRect.top = 23;
                     int index = parent.getChildLayoutPosition(view);
-                    if (index < COLUMN_COUNT) {
-                        outRect.top = 23;
+
+                    if (index <=COLUMN_COUNT) {
+
                     }
                 }
             });
         } else {
             if (mAdapter != null && mDatas != null) {
+                boolean refresh=(bean.size() ==mDatas.size());
+                mAdapter.setRefresh(refresh);
                 mDatas.clear();
                 mDatas.addAll(bean);
-                mAdapter.notifyDataSetChanged();
+                if (!refresh){
+                        mAdapter.notifyItemRemoved(move);
+                    }
+
             }
         }
     }
@@ -239,16 +255,28 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
     @Override
     public void onResume() {
         super.onResume();
+        observable = RxBus.get().register("recordPosition");
+        observable.observeOn(AndroidSchedulers .mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        move = integer;
+                    }
+                });
+
+
         //关注页面上报日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,4");
         //获取用户登录状态
         requestUserInfo();
+
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mHandler = new FollowHandler(this);
+
     }
 
     class FollowHandler extends android.os.Handler {
@@ -265,14 +293,17 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
             } else if (msg.what == MSG_INFLATE_PAGE) {
                 Log.d("follow", "接收到 MSG_INFLATE_PAGE 消息");
                 List<UserCenterPageBean.Bean> datas = (List<UserCenterPageBean.Bean>) msg.obj;
+
+
                 if (datas != null && datas.size() > 0) {
                     inflate(datas);
                 } else {
                     inflatePageWhenNoData();
                 }
             } else {
-                Log.d("collection", "unresolved msg : " + msg.what);
+                Log.d("sub", "unresolved msg : " + msg.what);
             }
+
         }
     }
 
@@ -328,5 +359,12 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
                     }
                 })
                 .excute();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        RxBus.get().unregister("recordPosition",observable);
     }
 }

@@ -55,6 +55,7 @@ import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.ISubscribeStatusCallback;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.cboxtv.views.TimeDialog;
 import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
@@ -163,7 +164,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         return mInfo;
     }
 
-    private void initData() {
+    //数据库是异步查询，网络快于数据库查询的时候导致历史进度还没渠道就开始播放视频
+    private void initData(final boolean isRequest) {
         UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, mBuilder.contentUUid, "", new
                 IHisoryStatusCallback() {
                     @Override
@@ -175,6 +177,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             } else {
                                 currentPosition = 0;
                             }
+                        }
+
+                        if (isRequest) {
+                            mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
                         }
                     }
                 });
@@ -259,7 +265,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public void resetSeriesInfo(final Content content) {
-        initData();
+        initData(false);
         postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -275,7 +281,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public void Build(Builder builder) {
         mBuilder = builder;
-        initData();
+        initData(true);
         if (mBuilder.playerCallback == null) return;
         if (mBuilder.contentUUid == null) return;
         if (mBuilder.mPlayerId == -1) return;
@@ -328,7 +334,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
-        mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
+        //mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
     }
 
     private void checkDataFromDB() {
@@ -885,8 +891,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onComplete() {
-        //TODO 栏目化直播结束，继续播放点播视频
+        //栏目化直播结束，继续播放点播视频
+        TimeDialog.showBuilder(getContext(),this);
 
+    }
+    public void continuePlayVideo(){
         if (playerView != null) {
             playerView.release();
             playerView.destory();

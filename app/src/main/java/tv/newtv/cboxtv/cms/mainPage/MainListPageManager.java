@@ -201,6 +201,12 @@ public class MainListPageManager {
             currentFocus = mNavInfos.get(0).getId();
 
         }
+        if (Navbarfoused >= 0) {
+            defaultPageIdx = Navbarfoused;
+            Nav nav = mNavInfos.get(defaultPageIdx % mNavInfos.size());
+            currentFocus = nav.getId();
+        }
+
         PlayerConfig.getInstance().setSecondChannelId(currentFocus);
         MenuRecycleView.MenuAdapter<Nav> menuAdapter = null;
         mCircleMenuRv.setFocusable(true);
@@ -284,9 +290,6 @@ public class MainListPageManager {
             });
 
             mCircleMenuRv.setAdapter(menuAdapter);
-            if (Navbarfoused != -1) {
-                defaultPageIdx = Navbarfoused;
-            }
             Log.e("--params---", "inflateListPage: "+defaultPageIdx );
             menuAdapter.setMenuItems(mNavInfos, defaultPageIdx);
         }

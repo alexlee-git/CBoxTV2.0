@@ -7,17 +7,22 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
@@ -127,8 +132,37 @@ public class ColumnPageActivity extends DetailPageActivity {
                     @Override
                     public void onResult(Content info) {
                         if (info != null) {
+                            ArrayList<String> productId = new ArrayList<>();
                             pageContent = info;
-                            playListView.setContentUUID(info, EpisodeHelper.TYPE_COLUMN_DETAIL,
+                            if (pageContent != null ) {
+                                if (!TextUtils.isEmpty(pageContent.getVipFlag())){
+                                    int vipState = Integer.parseInt(pageContent.getVipFlag());
+                                    if ((vipState == 1||vipState == 3||vipState == 4)&&!TextUtils.isEmpty(pageContent.getVipProductId())){
+                                        productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId()));
+                                    }
+                                }
+                                if (!TextUtils.isEmpty(pageContent.is4k())){
+                                    int is4k = Integer.parseInt(pageContent.is4k());
+                                    if (is4k == 1){
+                                        productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                    }
+                                }
+                                if (!TextUtils.isEmpty(pageContent.getNew_realExclusive())){
+                                    productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),pageContent.getNew_realExclusive()));
+                                }
+                            }
+
+                            switch (productId.size()){
+                                case 3:
+                                    Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
+                                case 2:
+                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
+                                case 1:
+                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
+                                default:
+                                    break;
+                            }
+                            playListView.setContentUUID(info,EpisodeHelper.TYPE_COLUMN_DETAIL,
                                     info.getVideoType(),
                                     getSupportFragmentManager(),
                                     contentUUID, null);

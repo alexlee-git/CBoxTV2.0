@@ -13,12 +13,14 @@ import android.widget.ImageView;
 
 import com.newtv.cms.bean.Corner;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.RxBus;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
@@ -41,6 +43,8 @@ public class UserCenterUniversalAdapter extends RecyclerView
     private Context mContext;
     private List<UserCenterPageBean.Bean> mDatas;
     private String mContentType; // 用来区分历史 or 收藏 or 关注 or 订阅
+    int recordPosition = -1;
+    Boolean refresh = true;
 
     public UserCenterUniversalAdapter(Context context, List<UserCenterPageBean.Bean> datas,
                                       String contentType) {
@@ -56,8 +60,31 @@ public class UserCenterUniversalAdapter extends RecyclerView
     }
 
     @Override
-    public void onBindViewHolder(final UserCenterUniversalViewHolder holder, int position) {
+    public void onBindViewHolder(final UserCenterUniversalViewHolder holder, final int position) {
+
         final UserCenterPageBean.Bean info = mDatas.get(position);
+        if (refresh) {
+            if (recordPosition != -1 && recordPosition == position) {
+                MainLooper.get().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.itemView.requestFocus();
+
+                    }
+                },50);
+            }
+        } else {
+            if (recordPosition != -1 && recordPosition == position + 1) {
+                MainLooper.get().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.itemView.requestFocus();
+
+                    }
+                },50);
+            }
+        }
+
         if (info == null) {
             Log.d(TAG, "recommend info is null");
             return;
@@ -97,7 +124,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 holder.score.setVisibility(View.VISIBLE);
                 holder.score.setText(score);
             } else {
-               holder.score.setVisibility(View.INVISIBLE);
+                holder.score.setVisibility(View.INVISIBLE);
             }
 
             holder.episode.setText(getEpisode(info));
@@ -141,15 +168,14 @@ public class UserCenterUniversalAdapter extends RecyclerView
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
+
                     doBigAnimation(view);
                     // title 设置selected为true
-
                     holder.title.setSelected(true);
                     holder.focus.setVisibility(View.VISIBLE);
 
                 } else {
                     doSmallAnimation(view);
-
                     // title 设置selected为false
                     holder.title.setSelected(false);
                     holder.focus.setVisibility(View.INVISIBLE);
@@ -160,6 +186,9 @@ public class UserCenterUniversalAdapter extends RecyclerView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                recordPosition = position;
+                RxBus.get().post("recordPosition",holder.getLayoutPosition());
+
                 Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info
                         .get_actiontype());
                 JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
@@ -228,6 +257,10 @@ public class UserCenterUniversalAdapter extends RecyclerView
             }
         }
         return "";
+    }
+
+    public void setRefresh(boolean b) {
+        this.refresh = b;
     }
 }
 

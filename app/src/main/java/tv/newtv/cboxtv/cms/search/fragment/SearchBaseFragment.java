@@ -233,12 +233,14 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
             notifyToDataInfoResult(true);
             return;
         }
+
         if (!TextUtils.equals(currentkey, key)) {
             currentPos = -1;
             inputKeyChange();
-        } else {
-            return;
         }
+//        else {
+//            return;
+//        }
 
         SearchContract.SearchCondition conditionTV = SearchContract.SearchCondition
                 .Companion
