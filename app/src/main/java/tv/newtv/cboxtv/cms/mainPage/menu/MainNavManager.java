@@ -306,6 +306,8 @@ public class MainNavManager implements NavContract.View {
         if (navInfo.getChild() != null && navInfo.getChild().size() > 0) {
             bundle.putParcelableArrayList("child", navInfo.getChild());
         }
+        mExternalAction = "";
+        mExternalParams = "";
 
 //        BGEvent bgEvent = new BGEvent(navInfo.getId(), navInfo.getIsAd() == 1,
 //                navInfo.getLogo());
