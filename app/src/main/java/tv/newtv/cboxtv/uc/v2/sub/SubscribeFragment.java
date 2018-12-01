@@ -25,6 +25,7 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
@@ -87,6 +88,8 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     private static final int MSG_INFLATE_PAGE = 10034;
 
     private static SubscribeHandler mHandler;
+    private int move = -1;
+    private Observable<Integer> observable;
 
     @Override
     protected int getLayoutId() {
@@ -102,6 +105,14 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     @Override
     public void onResume() {
         super.onResume();
+        observable = RxBus.get().register("subscribesPosition");
+        observable.observeOn(AndroidSchedulers .mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        move = integer;
+                    }
+                });
         Log.e(TAG, "---onResume");
         //订阅页面上报日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,3");
@@ -280,9 +291,13 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
             });
         } else {
             if (mAdapter != null) {
+                boolean refresh=(bean.size() ==mDatas.size());
+                mAdapter.setRefresh(refresh);
                 mDatas.clear();
                 mDatas.addAll(bean);
-                mAdapter.notifyDataSetChanged();
+                if (!refresh){
+                    mAdapter.notifyItemRemoved(move);
+                }
             }
         }
     }
@@ -496,5 +511,11 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                 Log.d("sub", "unresolved msg : " + msg.what);
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.get().unregister("subscribesPosition",observable);
     }
 }
