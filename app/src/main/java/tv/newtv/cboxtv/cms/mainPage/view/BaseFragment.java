@@ -173,7 +173,7 @@ public abstract class BaseFragment extends RxFragment {
 
     protected void onVisible() {
 
-        invokeLazyLoad();
+//        invokeLazyLoad();
     }
 
     protected void lazyLoad() {

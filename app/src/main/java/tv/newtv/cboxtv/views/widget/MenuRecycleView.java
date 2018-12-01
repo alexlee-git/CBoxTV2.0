@@ -271,12 +271,7 @@ public class MenuRecycleView extends RecyclerView {
                 final View focusView = mSelectedListener.getNextFocusView();
                 if (focusView != null) {
                     if (!(focusView instanceof RecyclerView)) {
-                        postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                focusView.requestFocus();
-                            }
-                        },200);
+                        focusView.requestFocus();
                         if (mFocusView != null) {
                             mFocusView.setVisibility(View.GONE);
                         }
