@@ -128,6 +128,6 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
     public void onDestroy() {
         super.onDestroy();
 
-        RxBus.get().unregister("recordPosition",observable);
+        RxBus.get().unregister("historyPosition",observable);
     }
 }
