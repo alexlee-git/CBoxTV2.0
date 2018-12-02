@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -35,7 +36,9 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -91,6 +94,13 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     private int move = -1;
     private Observable<Integer> observable;
 
+    private ImageView mHotRecommendTitleIcon;
+    private View mHotRecommendArea;
+
+    private Observable<Map<String, String>> operationObs;
+    private String operationType;
+    private String operationId;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_history_record;
@@ -113,6 +123,18 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                         move = integer;
                     }
                 });
+
+        operationObs = RxBus.get().register("operation_param");
+        operationObs.observeOn(AndroidSchedulers .mainThread())
+                .subscribe(new Consumer<Map<String, String>>() {
+                    @Override
+                    public void accept(Map<String, String> map) throws Exception {
+                        operationType = map.get("operation_type");
+                        operationId = map.get("operation_id");
+                        Log.d(TAG, "type : " + operationType + ", id : " + operationId);
+                    }
+                });
+
         Log.e(TAG, "---onResume");
         //订阅页面上报日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,3");
@@ -272,6 +294,13 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
             return;
         }
 
+        hideView(emptyTextView);
+        hideView(mHotRecommendTitle);
+        hideView(mHotRecommendTitleIcon);
+        hideView(mHotRecommendRecyclerView);
+
+        showView(mRecyclerView);
+
         if (mDatas == null) {
             mDatas = bean;
             mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
@@ -291,12 +320,19 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
             });
         } else {
             if (mAdapter != null) {
-                boolean refresh=(bean.size() ==mDatas.size());
-                mAdapter.setRefresh(refresh);
-                mDatas.clear();
-                mDatas.addAll(bean);
-                if (!refresh){
-                    mAdapter.notifyItemRemoved(move);
+                if (TextUtils.equals(operationType, "delete")) {
+                    boolean refresh = (bean.size() == mDatas.size());
+                    mAdapter.setRefresh(refresh);
+                    mDatas.clear();
+                    mDatas.addAll(bean);
+                    if (!refresh) {
+                        mAdapter.notifyItemRemoved(move);
+                    }
+
+                } else if (TextUtils.equals(operationType, "add")) {
+                    mDatas.clear();
+                    mDatas.addAll(bean);
+                    mAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -304,9 +340,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
 
 
     private void inflatePageWhenNoData() {
-        mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
-        mRecyclerView.setVisibility(View.INVISIBLE);
-
+        hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_SUBSCRIPTION);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
@@ -315,8 +349,6 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         } else {
             Log.e(TAG, "wqs:PAGE_SUBSCRIPTION==null");
         }
-
-//        showHotRecommend();
     }
 
     /**
@@ -336,71 +368,6 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         }
     }
 
-    /**
-     * 展示热门订阅数据
-     */
-    private void showHotRecommend() {
-        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_SUBSCRIPTION);
-        NetClient.INSTANCE.getHotSubscribeApi()
-                .getHotSubscribeInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), hotRecommendParam)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody result) {
-                        try {
-                            ModuleInfoResult infoResult = ModuleUtils.getInstance().parseJsonForModuleInfo(result.string());
-                            if (infoResult == null) {
-                                return;
-                            }
-
-                            List<ModuleItem> moduleItems = infoResult.getDatas();
-                            List<Program> programInfos = moduleItems.get(0).getDatas();
-
-                            ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
-                            if (viewStub != null) {
-                                View view = viewStub.inflate();
-
-                                if (view != null) {
-                                    mHotRecommendRecyclerView = view.findViewById(R.id.id_hot_recommend_area_rv);
-                                    mHotRecommendRecyclerView.setHasFixedSize(true);
-                                    mHotRecommendRecyclerView.setItemAnimator(null);
-                                    mHotRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false) {
-                                        @Override
-                                        public boolean canScrollHorizontally() {
-                                            return false;
-                                        }
-                                    });
-                                    mHotRecommendRecyclerView.setAdapter(new HotRecommendAreaAdapter(getActivity(), programInfos));
-                                    mHotRecommendRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                                        @Override
-                                        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                                            int index = parent.getChildLayoutPosition(view);
-                                            if (index < COLUMN_COUNT) {
-                                                outRect.top = 23;
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
-    }
 
     @Override
     public void onPageResult(@Nullable List<Page> page) {
@@ -415,9 +382,11 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                 View view = viewStub.inflate();
 
                 if (view != null) {
-                    mHotRecommendTitle = view.findViewById(R.id.id_hot_recommend_area_title);
+                    mHotRecommendArea = view;
+                    mHotRecommendTitleIcon = mHotRecommendArea.findViewById(R.id.id_hot_recommend_area_icon);
+                    mHotRecommendTitle = mHotRecommendArea.findViewById(R.id.id_hot_recommend_area_title);
                     mHotRecommendTitle.setText(page.get(0).getBlockTitle());
-                    mHotRecommendRecyclerView = view.findViewById(R.id.id_hot_recommend_area_rv);
+                    mHotRecommendRecyclerView = mHotRecommendArea.findViewById(R.id.id_hot_recommend_area_rv);
                     mHotRecommendRecyclerView.setHasFixedSize(true);
                     mHotRecommendRecyclerView.setItemAnimator(null);
                     mHotRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false) {
@@ -438,6 +407,10 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                     });
                 }
             }
+
+            showView(mHotRecommendTitle);
+            showView(mHotRecommendTitleIcon);
+            showView(mHotRecommendRecyclerView);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -517,5 +490,17 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     public void onDestroy() {
         super.onDestroy();
         RxBus.get().unregister("recordPosition",observable);
+    }
+
+    private void hideView(View view) {
+        if (view != null) {
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void showView(View view) {
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 }

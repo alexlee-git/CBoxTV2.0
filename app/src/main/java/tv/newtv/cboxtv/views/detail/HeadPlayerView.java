@@ -35,7 +35,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
@@ -491,6 +493,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                                     .getApplicationContext(), "取消订阅成功",
                                                                                             Toast.LENGTH_SHORT)
                                                                                     .show();
+
+                                                                            Map<String, String> param = new HashMap<>();
+                                                                            param.put("operation_type", "delete");
+                                                                            param.put("operation_id", mInfo.getContentID());
+                                                                            RxBus.get().post("operation_param", param);
                                                                         }
                                                                     }
                                                                 });
@@ -519,6 +526,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         RxBus.get().post(Constant
                                                                                         .UPDATE_UC_DATA,
                                                                                 true);
+
+                                                                        Map<String, String> param = new HashMap<>();
+                                                                        param.put("operation_type", "add");
+                                                                        param.put("operation_id", mInfo.getContentID());
+                                                                        RxBus.get().post("operation_param", param);
                                                                     }
                                                                 }
                                                             });
