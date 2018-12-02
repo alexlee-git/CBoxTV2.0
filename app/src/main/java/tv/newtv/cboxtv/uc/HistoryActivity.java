@@ -104,7 +104,9 @@ public class HistoryActivity extends FragmentActivity implements
                 mCollectBean = (List<UserCenterPageBean.Bean>) message.obj;
                 if (mCollectBean != null && mCollectBean.size() != 0) {
                     mAdapter.appendToList(mCollectBean);
+                    mRecyclerView.smoothScrollToPosition(0);
                     mAdapter.notifyDataSetChanged();
+
                 } else {
                     // 展示无观看记录的提示
                     ViewStub viewStub = findViewById(R.id.id_empty_view_vs);

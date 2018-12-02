@@ -106,7 +106,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     @Override
     public void onResume() {
         super.onResume();
-        observable = RxBus.get().register("subscribesPosition");
+        observable = RxBus.get().register("recordPosition");
         observable.observeOn(AndroidSchedulers .mainThread())
                 .subscribe(new Consumer<Integer>() {
                     @Override
@@ -505,6 +505,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.get().unregister("subscribesPosition",observable);
+        RxBus.get().unregister("recordPosition",observable);
     }
 }

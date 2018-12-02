@@ -53,7 +53,7 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
     protected void init() {
         super.init();
 
-        observable = RxBus.get().register("historyPosition");
+        observable = RxBus.get().register("recordPosition");
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Integer>() {
                     @Override
@@ -103,7 +103,8 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
 
         mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
-        mRecyclerView.setAdapter(new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_HISTORY));
+        UserCenterUniversalAdapter universalAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_HISTORY);
+        mRecyclerView.setAdapter(universalAdapter);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -128,6 +129,6 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
     public void onDestroy() {
         super.onDestroy();
 
-        RxBus.get().unregister("historyPosition",observable);
+        RxBus.get().unregister("recordPosition",observable);
     }
 }

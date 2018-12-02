@@ -262,6 +262,12 @@ public class UserCenterUniversalAdapter extends RecyclerView
     public void setRefresh(boolean b) {
         this.refresh = b;
     }
+
+
+    @Override
+    public long getItemId(int position) {
+        return  position;
+    }
 }
 
 
