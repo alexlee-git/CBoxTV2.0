@@ -129,9 +129,10 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
         if (TextUtils.isEmpty(Authorization)) {
             Authorization = Utils.getAuthorization(LoginActivity.this);
             Constant.Authorization = Authorization;
-        } else {
-            getQrcode(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
         }
+
+        getQrcode(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
+
     }
 
     @Override
