@@ -25,6 +25,7 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
@@ -88,6 +89,8 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private static final int MSG_INFLATE_PAGE = 10034;
 
     private static CollectionHandler mHandler;
+    private int move = -1;
+    private Observable<Integer> observable;
 
     @Override
     protected int getLayoutId() {
@@ -103,6 +106,14 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     @Override
     public void onResume() {
         super.onResume();
+        observable = RxBus.get().register("subscribesPosition");
+        observable.observeOn(AndroidSchedulers .mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        move = integer;
+                    }
+                });
         //获取用户登录状态
         requestUserInfo();
     }
@@ -292,9 +303,13 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             });
         } else {
             if (mAdapter != null && mDatas != null) {
+                boolean refresh=(datas.size() ==mDatas.size());
+                mAdapter.setRefresh(refresh);
                 mDatas.clear();
                 mDatas.addAll(datas);
-                mAdapter.notifyDataSetChanged();
+                if (!refresh){
+                    mAdapter.notifyItemRemoved(move);
+                }
             }
         }
     }
@@ -486,5 +501,10 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     @Override
     public void loadingComplete() {
 
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.get().unregister("subscribesPosition",observable);
     }
 }
