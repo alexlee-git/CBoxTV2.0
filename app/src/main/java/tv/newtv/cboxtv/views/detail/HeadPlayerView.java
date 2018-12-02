@@ -397,6 +397,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         RxBus.get().post(Constant
                                                                                         .UPDATE_UC_DATA,
                                                                                 true);
+                                                                        Map<String, String> map = new HashMap<>();
+                                                                        map.put("col_operation_type", "delete");
+                                                                        map.put("col_operation_id", mInfo.getContentID());
+                                                                        RxBus.get().post("col_operation_map", map);
+
                                                                         if (code == 0) {
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
@@ -423,6 +428,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
                                                                         true);
+
+                                                                Map<String, String> map = new HashMap<>();
+                                                                map.put("col_operation_type", "add");
+                                                                map.put("col_operation_id", mInfo.getContentID());
+                                                                RxBus.get().post("col_operation_map", map);
                                                                 if (code == 0) {
                                                                     LogUploadUtils.uploadLog
                                                                             (Constant

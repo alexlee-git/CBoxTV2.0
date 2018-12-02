@@ -492,16 +492,4 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         RxBus.get().unregister("recordPosition",observable);
         RxBus.get().unregister("operation_param", operationObs);
     }
-
-    private void hideView(View view) {
-        if (view != null) {
-            view.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void showView(View view) {
-        if (view != null) {
-            view.setVisibility(View.VISIBLE);
-        }
-    }
 }
