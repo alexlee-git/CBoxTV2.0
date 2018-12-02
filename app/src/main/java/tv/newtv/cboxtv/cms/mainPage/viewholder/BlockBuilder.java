@@ -659,6 +659,7 @@ class BlockBuilder extends BaseBlockBuilder {
                                 .SCALE_TYPE_WIDTH), FrameLayout.LayoutParams.WRAP_CONTENT);
                         titleWidget = new TextView(mContext);
                         titleWidget.setSingleLine();
+                        titleWidget.setMaxEms(12);
                         titleWidget.setLines(1);
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
                         titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
@@ -672,6 +673,7 @@ class BlockBuilder extends BaseBlockBuilder {
                         titleWidget = new TextView(mContext);
                         titleWidget.setSingleLine();
                         titleWidget.setLines(1);
+                        titleWidget.setMaxEms(12);
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
                         titleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                                 .SCALE_TYPE_WIDTH),0,0,0);
