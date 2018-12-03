@@ -18,6 +18,7 @@ public class TimeDialog {
     private static final int TIME_MSG = 1;
     private static AlertDialog ad;
     private static int time = 5;
+    public static Boolean isDisMiss = true;
     private static TextView textView = null;
     private static TextView ensure = null;
     private static TextView notificationView = null;
@@ -80,6 +81,7 @@ public class TimeDialog {
                     if(listener != null){
                         listener.onClick(v);
                     }
+                    isDisMiss = false;
                 }
             }
         });
