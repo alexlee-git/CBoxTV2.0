@@ -793,6 +793,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void play() {
+        if (TimeDialog.isDisMiss){
+            TimeDialog.dismiss();
+        }
         playerView.beginChange();
         playerView.setSeriesInfo(mInfo);
         playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
