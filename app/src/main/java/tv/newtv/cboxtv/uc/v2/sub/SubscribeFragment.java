@@ -408,6 +408,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                 }
             }
 
+            showView(emptyTextView);
             showView(mHotRecommendTitle);
             showView(mHotRecommendTitleIcon);
             showView(mHotRecommendRecyclerView);
