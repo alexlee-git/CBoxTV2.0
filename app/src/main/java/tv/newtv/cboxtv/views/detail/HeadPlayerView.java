@@ -217,7 +217,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     String time = TimeUtil.getInstance().getDateFromSeconds(
                             String.valueOf(TimeUtil.getInstance().getSecondsFromDate(expireTime)));
 
-                    vipTip.setText(String.format(vipTip.getText().toString(), time));
+                    StringBuffer str = new StringBuffer();
+                    str.append(getResources().getString(R.string.vip_tip1));
+                    str.append(time);
+                    str.append(getResources().getString(R.string.vip_tip2));
+                    Log.d(TAG, "str : " + str.toString());
+                    vipTip.setText(str.toString());
+
                 }
 
             }
