@@ -155,6 +155,7 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                     Picasso.get().load(url).into(exit_image, new Callback() {
                         @Override
                         public void onSuccess() {
+                            if(WarningExitActivity.this.isDestroyed()) return;
                             if (mAdPresenter == null) {
                                 return;
                             }

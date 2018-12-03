@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView;
 
@@ -33,7 +34,8 @@ import tv.newtv.cboxtv.uc.v2.aboutmine.ScanScrollView;
  * 修改日期：
  * 修改备注：
  */
-public class MemberAgreementActivity extends Activity implements ScanScrollView.IScanScrollChangedListener {
+public class MemberAgreementActivity extends BaseActivity implements ScanScrollView
+        .IScanScrollChangedListener {
     private final String TAG = "MemberAgreementActivity";
     private ScanScrollView mScrollView;
     private ImageView mBottomArrow;

@@ -2,6 +2,7 @@ package tv.newtv.cboxtv;
 
 import android.app.Activity;
 
+import com.newtv.libs.MainLooper;
 import com.newtv.libs.ServerTime;
 import com.newtv.libs.util.LogUtils;
 
@@ -67,10 +68,17 @@ public final class ActivityStacks {
         synchronized (activities) {
             activityCount--;
         }
-        if(activityCount == 0){
-            ServerTime.get().onEnterBackground();
-        }
+
         LogUtils.d(TAG, "onStop-> count="+activityCount);
+        MainLooper.get().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(activityCount == 0){
+                    ServerTime.get().onEnterBackground();
+                }
+            }
+        },3000);
+
     }
 
     public void onCreate(BaseActivity activity) {

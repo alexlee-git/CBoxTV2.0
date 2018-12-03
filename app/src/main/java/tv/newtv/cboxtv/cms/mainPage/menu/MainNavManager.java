@@ -97,6 +97,32 @@ public class MainNavManager implements NavContract.View {
         }
         int defaultPageIdx = 0;
 
+        if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
+            defaultPageIdx = Navbarfoused;
+            Nav navInfo = mNavInfos.get(defaultPageIdx);
+            if (navInfo != null) {
+                currentFocus = navInfo.getId();
+            }
+        }
+        int count = mNavInfos.size();
+        for (int index = 0; index < count; index++) {
+            Nav navInfo = mNavInfos.get(index);
+            if (!TextUtils.isEmpty(currentFocus)) {
+                if (currentFocus.equals(navInfo.getId())) {
+                    defaultPageIdx = index;
+                }
+            } else {
+                if ("1".equals(navInfo.isFocus())) {
+                    defaultPageIdx = index;
+                    currentFocus = navInfo.getId();
+                }
+            }
+        }
+
+        if (TextUtils.isEmpty(currentFocus) && mNavInfos != null && mNavInfos.size() > 0) {
+            currentFocus = mNavInfos.get(0).getId();
+        }
+
         if (menuAdapter != null) {
             mFirMenu.setMenuFactory(new MenuRecycleView.MenuFactory<Nav>() {
                 @Override
@@ -171,32 +197,6 @@ public class MainNavManager implements NavContract.View {
                 }
             });
             mFirMenu.setAdapter(menuAdapter);
-
-            if (Navbarfoused != -1 && Navbarfoused < mNavInfos.size()) {
-                defaultPageIdx = Navbarfoused;
-                Nav navInfo = mNavInfos.get(defaultPageIdx);
-                if (navInfo != null) {
-                    currentFocus = navInfo.getId();
-                }
-            }
-            int count = mNavInfos.size();
-            for (int index = 0; index < count; index++) {
-                Nav navInfo = mNavInfos.get(index);
-                if (!TextUtils.isEmpty(currentFocus)) {
-                    if (currentFocus.equals(navInfo.getId())) {
-                        defaultPageIdx = index;
-                    }
-                } else {
-                    if ("1".equals(navInfo.isFocus())) {
-                        defaultPageIdx = index;
-                        currentFocus = navInfo.getId();
-                    }
-                }
-            }
-
-            if (TextUtils.isEmpty(currentFocus) && mNavInfos != null && mNavInfos.size() > 0) {
-                currentFocus = mNavInfos.get(0).getId();
-            }
 
 
             Log.e("--defaultPageIdx-------", Navbarfoused + "----" + defaultPageIdx);

@@ -48,6 +48,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
@@ -61,7 +62,7 @@ import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
  * 创建人:       caolonghe
  * 创建日期:     2018/9/12 0012
  */
-public class PayRefreshOrderActivity extends Activity implements View.OnClickListener {
+public class PayRefreshOrderActivity extends BaseActivity implements View.OnClickListener {
 
     private final String TAG = "PayRefreshOrderActivity";
     private TextView tv_wx, tv_wx_fouse;
