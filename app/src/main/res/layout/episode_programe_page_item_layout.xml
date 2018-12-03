@@ -7,7 +7,7 @@
         android:layout_marginLeft="@dimen/width_120px"
         android:layout_marginRight="@dimen/width_120px"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_254px"
+        android:layout_height="wrap_content"
         android:columnCount="15"
         android:rowCount="2"
         android:layout_centerInParent="true"

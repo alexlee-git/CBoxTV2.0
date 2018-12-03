@@ -176,8 +176,10 @@ public class ResizeViewPager extends ViewPager {
             }
 
             if (getCurrentItem() == getAdapter().getCount() - 1) {
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec((userResize ? lastHeight : height)
-                                + margin,
+//                heightMeasureSpec = MeasureSpec.makeMeasureSpec((userResize ? lastHeight : height)
+//                                + margin,
+//                        MeasureSpec.EXACTLY);
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(lastHeight + margin,
                         MeasureSpec.EXACTLY);
             } else {
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec(height + margin,

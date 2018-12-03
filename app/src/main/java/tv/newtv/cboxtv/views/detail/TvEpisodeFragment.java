@@ -93,7 +93,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     @Override
     public void setViewPager(ResizeViewPager viewPager, int position, EpisodeChange change) {
         mWeakViewPager = new WeakReference<ResizeViewPager>(viewPager);
-        mWeakViewPager.get().setUseResize(false);
+//        mWeakViewPager.get().setUseResize(false);
         mChange = change;
         mPosition = position;
     }
