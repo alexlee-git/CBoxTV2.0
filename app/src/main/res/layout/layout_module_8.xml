@@ -35,7 +35,7 @@
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="@dimen/height_15px"
         android:clickable="true"
-        android:focusable="false"
+        android:focusable="true"
         android:tag="cell_008_1">
 
         <FrameLayout
@@ -97,7 +97,7 @@
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_8_view1"
         android:clickable="true"
-        android:focusable="false"
+        android:focusable="true"
         android:tag="cell_008_2">
 
         <FrameLayout
@@ -154,7 +154,7 @@
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_8_view2"
         android:clickable="true"
-        android:focusable="false"
+        android:focusable="true"
         android:tag="cell_008_3">
 
         <FrameLayout
@@ -214,7 +214,7 @@
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_8_view3"
         android:clickable="true"
-        android:focusable="false"
+        android:focusable="true"
         android:tag="cell_008_4">
 
         <FrameLayout
@@ -267,7 +267,7 @@
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_8_view4"
         android:clickable="true"
-        android:focusable="false"
+        android:focusable="true"
         android:tag="cell_008_5">
 
         <FrameLayout
@@ -317,7 +317,7 @@
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_8_view5"
         android:clickable="true"
-        android:focusable="false"
+        android:focusable="true"
         android:tag="cell_008_6">
 
         <FrameLayout
