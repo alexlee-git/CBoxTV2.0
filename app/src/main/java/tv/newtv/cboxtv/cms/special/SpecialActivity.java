@@ -180,6 +180,14 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        if (fromOuter) {
+            uploadExitLog();
+        }
+    }
+
+    @Override
     public boolean isActive() {
         return false;
     }
