@@ -194,6 +194,10 @@ class BlockBuilder extends BaseBlockBuilder {
             LogUtils.i(TAG, layoutCode);
             int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
             Log.i(TAG, "layoutCode=" + layoutCode);
+            List<String> layoutList = ModuleLayoutManager.getInstance().getWidgetLayoutList
+                    (layoutCode);
+            Log.i(TAG, "layoutList=" + layoutList);
+
             for (int i = 0; i < posSize; ++i) {
                 if (moduleItem.getPrograms() == null || moduleItem.getPrograms().size() - 1 < i)
                     break;
@@ -228,7 +232,8 @@ class BlockBuilder extends BaseBlockBuilder {
                 final FrameLayout frameLayout = (FrameLayout) itemView.findViewWithTag
                         (frameLayoutId);
                 if (frameLayout != null) {
-                    frameLayout.setFocusable(true);
+                    layoutList.remove(frameLayoutId);
+                    frameLayout.setVisibility(View.VISIBLE);
                     if (frameLayout instanceof AlternatePageView) {
                         ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID);
                         ((AlternatePageView) frameLayout).setProgram(moduleItem);
@@ -316,6 +321,15 @@ class BlockBuilder extends BaseBlockBuilder {
 
                     if (recycleImageView != null) {
                         loadPosterToImage(moduleItem, info, recycleImageView, hasCorner);
+                    }
+                }
+            }
+
+            if (layoutList.size() > 0) {
+                for (String layout : layoutList) {
+                    View target = itemView.findViewWithTag(layout);
+                    if(target != null){
+                        target.setVisibility(View.GONE);
                     }
                 }
             }
