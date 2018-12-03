@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
-import android.os.SystemClock
-import android.util.Log
-
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
@@ -15,7 +12,7 @@ import com.newtv.cms.ICmsView
 import com.newtv.cms.api.IClock
 import com.newtv.cms.bean.Time
 import com.newtv.libs.Constant
-import com.newtv.libs.util.CalendarUtil
+import com.newtv.libs.ServerTime
 import com.newtv.libs.util.LogUploadUtils
 import com.newtv.libs.util.LogUtils
 
@@ -33,38 +30,39 @@ class AppMainContract {
 
     interface Presenter : ICmsPresenter {
         fun syncServiceTime()
+        fun onResume()
     }
 
-    class MainPresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
-        var oldSystemTime: Long= 0
-        var newSystemTime: Long = 0
-        var mServiceTime: Long = 0
-        var mCurrentTime: Long = 0
-        var mNowTime: Long = 0
+    class MainPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view)
+            , Presenter {
+
+        override fun onResume() {
+            if(clockService != null && ServerTime.get().isNeedSyncTime) {
+                syncServiceTime()
+            }
+        }
+
         //广播显示系统时间
         private val mTimeRefreshReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (Intent.ACTION_TIME_TICK == intent.action) {
-                    mCurrentTime = System.currentTimeMillis()
-                    newSystemTime = SystemClock.elapsedRealtime()
-                    mNowTime = newSystemTime-oldSystemTime+mServiceTime
-                    if (Math.abs(mCurrentTime-mNowTime)/1000>1){
+                    if (ServerTime.get().isNeedSyncTime) {
                         syncServiceTime()
-                    }else{
-                        view?.syncServerTime(mNowTime)
+                    } else {
+                        view?.syncServerTime(ServerTime.currentTimeMillis())
                     }
                 }
             }
         }
 
-        private var clockService:IClock?  = null
+        private var clockService: IClock? = null
 
         init {
+            clockService = getService<IClock>(CmsServicePresenter.SERVICE_CLOCK)
+
             initLogUpload(context)
             syncServiceTime()
             registTimeSync(context)
-
-            clockService = getService<IClock>(CmsServicePresenter.SERVICE_CLOCK)
         }
 
         override fun destroy() {
@@ -76,12 +74,10 @@ class AppMainContract {
         }
 
         override fun syncServiceTime() {
-
             clockService?.sync(object : DataObserver<Time> {
                 override fun onResult(result: Time, requestCode: Long) {
                     if ("1" == result.statusCode) {
-                        oldSystemTime = SystemClock.elapsedRealtime()
-                        mServiceTime = result.response
+                        ServerTime.get().setServerTime(result.response)
                         view?.syncServerTime(result.response)
                     } else {
                         view?.syncServerTime(null)
