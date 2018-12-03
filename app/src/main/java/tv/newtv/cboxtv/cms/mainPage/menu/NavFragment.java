@@ -47,6 +47,13 @@ public class NavFragment extends BaseFragment {
         return fragment;
     }
 
+    public boolean useMenuRecycleView(){
+        if(mainListPageManager != null) {
+            return mainListPageManager.isUseMenuRecycleView();
+        }
+        return false;
+    }
+
     @Override
     protected String getContentUUID() {
         return contentId;
