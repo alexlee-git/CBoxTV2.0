@@ -11,6 +11,7 @@
         android:layout_width="@dimen/width_170px"
         android:layout_height="@dimen/height_206px"
         android:layout_margin="@dimen/height_27px"
+        android:scaleType="fitXY"
         android:src="@drawable/paychannel_item_product" />
 
     <ImageView
@@ -50,7 +51,6 @@
             android:layout_centerHorizontal="true"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="888"
             android:textColor="#E6D38E"
             android:textSize="@dimen/height_48px" />
 
@@ -77,7 +77,6 @@
         android:layout_marginTop="@dimen/height_8px"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text="包月30天"
         android:textColor="#FFC8A56D"
         android:textSize="@dimen/height_24px" />
 
@@ -100,7 +99,6 @@
         android:layout_marginTop="@dimen/height_192px"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text="88元"
         android:textColor="#FFC8A56D"
         android:textSize="@dimen/height_20px" />
 </RelativeLayout>
