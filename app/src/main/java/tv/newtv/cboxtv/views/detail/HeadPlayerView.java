@@ -916,6 +916,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onComplete() {
+        defaultConfig = playerView.getDefaultConfig();
         //栏目化直播结束，继续播放点播视频
         TimeDialog.showBuilder(getContext(),this);
 

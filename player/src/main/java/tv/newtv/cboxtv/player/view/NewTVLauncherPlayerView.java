@@ -1588,10 +1588,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onChange(String current, String start, String end, boolean isComplete) {
         if (isComplete) {
-            release();
             if (mLiveListener != null) {
                 mLiveListener.onComplete();
             }
+            release();
         }
         if (mLiveListener != null) {
             mLiveListener.onTimeChange(current, end);
