@@ -59,6 +59,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.NetWorkUtils;
@@ -73,7 +74,8 @@ import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
  * 创建人:       caolonghe
  * 创建日期:     2018/9/12 0012
  */
-public class PayOrderActivity extends Activity implements View.OnFocusChangeListener, View.OnClickListener {
+public class PayOrderActivity extends BaseActivity implements View.OnFocusChangeListener, View
+        .OnClickListener {
 
     private final String TAG = "PayOrderActivity";
     private RelativeLayout rel_pay;

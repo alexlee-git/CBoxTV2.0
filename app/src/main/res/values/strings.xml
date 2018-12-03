@@ -181,5 +181,7 @@
 
     <!-- 会员到期提醒 -->
     <string name="vip_tip">已购买，将于%s到期</string>
+    <string name="vip_tip1">已购买，将于</string>
+    <string name="vip_tip2">到期</string>
 
 </resources>

@@ -8,9 +8,10 @@ import android.view.View;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 
-public class AboutMineActivity extends AppCompatActivity implements View.OnClickListener,
+public class AboutMineActivity extends BaseActivity implements View.OnClickListener,
         View.OnFocusChangeListener {
 
     @Override

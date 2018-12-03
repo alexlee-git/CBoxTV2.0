@@ -41,6 +41,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
@@ -56,7 +57,8 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
  * 创建人:           weihaichao
  * 创建日期:          2018/8/24
  */
-public class LoginActivity extends Activity implements View.OnClickListener, View.OnFocusChangeListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener, View
+        .OnFocusChangeListener {
 
     private final String TAG = "LoginActivity";
     private ImageView img_login;

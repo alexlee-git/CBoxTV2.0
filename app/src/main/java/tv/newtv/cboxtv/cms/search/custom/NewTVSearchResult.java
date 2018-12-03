@@ -7,6 +7,7 @@ import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -108,8 +109,18 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     public void resetLoadingLayout(boolean keyboardIsHidden){
         int loadingLeftMargin;
         int loadingTopMargin;
+        final int[] loadingLayoutWidth = new int[1];
+        final int[] loadingLayoutHeight = new int[1];
         if (mLoadingLayout != null) {
             LayoutParams loadingParams = (LayoutParams) mLoadingLayout.getLayoutParams();
+
+            mLoadingLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    loadingLayoutWidth[0] = mLoadingLayout.getMeasuredWidth();
+                    loadingLayoutHeight[0] = mLoadingLayout.getMeasuredHeight();
+                }
+            });
 
             if (keyboardIsHidden){
                 loadingLeftMargin = (ScreenUtils.getScreenW()
@@ -120,13 +131,19 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
                         - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_90px))//SearchViewPager marginLeft
                         - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_100px))//SearchRecyclerView paddingRight
                 )/2;
+
             }else {
-                loadingLeftMargin = (ScreenUtils.getScreenW() - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_654px)))/2;
+                loadingLeftMargin = (ScreenUtils.getScreenW() - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_654px))
+                        -ScreenUtils.dp2px(loadingLayoutWidth[0]/2)
+                )/2;
             }
+
             loadingTopMargin = (ScreenUtils.getScreenH() - ScreenUtils.dp2px(getResources().getDimension(R.dimen.height_43px)))/2;
             loadingParams.leftMargin = loadingLeftMargin;
             loadingParams.topMargin = loadingTopMargin;
+
             mLoadingLayout.setLayoutParams(loadingParams);
+
         }
     }
 

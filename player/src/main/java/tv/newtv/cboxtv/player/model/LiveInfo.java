@@ -45,9 +45,7 @@ public class LiveInfo {
      */
     private String isTimeShift;
 
-    public LiveInfo() {
-
-    }
+    public LiveInfo() { }
 
     public LiveInfo(@Nullable Content content) {
         if (content == null) return;
@@ -70,7 +68,6 @@ public class LiveInfo {
         if (mLiveParam == null) return;
 
         parseLiveParam();
-
     }
 
     private void parseLiveParam() {

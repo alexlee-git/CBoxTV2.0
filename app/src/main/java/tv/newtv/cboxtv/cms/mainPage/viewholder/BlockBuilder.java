@@ -71,10 +71,16 @@ class BlockBuilder extends BaseBlockBuilder {
     private Interpolator mSpringInterpolator;
     private boolean showFirstTitle = false;
 
+    private int CORNER_WIDTH = 0;
+    private int CORNER_HEIGHT = 0;
+
 
     BlockBuilder(Context context) {
         super(context);
         mContext = context;
+
+        CORNER_WIDTH = context.getResources().getDimensionPixelSize(R.dimen.width_75px);
+        CORNER_HEIGHT = context.getResources().getDimensionPixelSize(R.dimen.height_30px);
 
         mSpringInterpolator = new OvershootInterpolator(2.2f);
 
@@ -530,8 +536,7 @@ class BlockBuilder extends BaseBlockBuilder {
     private void addLeftTopSuperscript(Corner corner, ViewGroup parent) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_LEFT_TOP");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
-                    .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
 
@@ -548,8 +553,7 @@ class BlockBuilder extends BaseBlockBuilder {
                                           ViewGroup parent) {
         RecycleImageView imageView = parent.findViewWithTag("CENTER_LEFT_BOTTOM");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             if (TextUtils.equals(layoutCode, "layout_008") || TextUtils.equals(layoutCode,
                     "layout_005")) {
@@ -571,8 +575,7 @@ class BlockBuilder extends BaseBlockBuilder {
     private void addRightTopSuperscript(Corner corner, ViewGroup parent) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_TOP");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
             lp.gravity = Gravity.RIGHT | Gravity.END;
@@ -587,8 +590,7 @@ class BlockBuilder extends BaseBlockBuilder {
     private void addRightBottomSuperscript(String layoutCode, Corner corner, ViewGroup parent) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_BOTTOM");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
                     "layout_008")) {
                 lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);

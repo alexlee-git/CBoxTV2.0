@@ -42,6 +42,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.net.NetClient;
@@ -55,7 +56,7 @@ import tv.newtv.cboxtv.uc.v2.member.MemberAgreementActivity;
  * 创建人:       caolonghe
  * 创建日期:     2018/9/12 0012
  */
-public class PayChannelActivity extends Activity implements PageContract.View {
+public class PayChannelActivity extends BaseActivity implements PageContract.View {
 
     private final String TAG = "PayChannelActivity";
     private RecyclerView mRecyclerView;
