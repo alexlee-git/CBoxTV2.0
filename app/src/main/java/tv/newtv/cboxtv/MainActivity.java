@@ -238,6 +238,13 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
                             .processKeyEvent(event, "status_bar");
                     if (result) {
                         return true;
+                    } else {
+                        View firstFocus = ((NavFragment) currentFragment).mainListPageManager
+                                .getFirstFocusView();
+                        if (firstFocus != null) {
+                            firstFocus.requestFocus();
+                            return true;
+                        }
                     }
                 }
                 return true;
@@ -252,9 +259,16 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
                                         currentFragment.getView(),
                                 focusView, View.FOCUS_UP);
 
-                        if (topView != null && topView.getParent()
-                                instanceof MenuRecycleView) {
-                            ((NavFragment) currentFragment).requestMenuFocus();
+                        if (topView != null) {
+                            if (topView.getParent() instanceof MenuRecycleView) {
+                                if (((NavFragment) currentFragment).useMenuRecycleView()) {
+                                    ((NavFragment) currentFragment).requestMenuFocus();
+                                }
+                                return true;
+                            }
+                        } else {
+                            if (mFirMenuRv.hasFocus()) return true;
+                            mFirMenuRv.mCurrentCenterChildView.requestFocus();
                             return true;
                         }
                     }
