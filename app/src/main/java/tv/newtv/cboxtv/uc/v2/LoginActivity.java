@@ -299,7 +299,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                                 if (mFlagPay) {
                                     if (mVipFlag != null) {
                                         Intent mIntent = new Intent();
-                                        if (mVipFlag.equals("3")) {
+                                        if (mVipFlag.equals(Constant.BUY_ONLY)) {
                                             mIntent.setClass(LoginActivity.this, PayOrderActivity.class);
                                         } else {
                                             mIntent.setClass(LoginActivity.this, PayChannelActivity.class);

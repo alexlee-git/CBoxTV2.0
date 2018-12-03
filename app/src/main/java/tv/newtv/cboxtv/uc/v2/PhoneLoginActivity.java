@@ -309,7 +309,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                         if (mFlagPay) {
                             if (mVipFlag != null) {
                                 Intent mIntent = new Intent();
-                                if (mVipFlag.equals("3")) {
+                                if (mVipFlag.equals(Constant.BUY_ONLY)) {
                                     mIntent.setClass(PhoneLoginActivity.this, PayOrderActivity.class);
                                 } else {
                                     mIntent.setClass(PhoneLoginActivity.this, PayChannelActivity.class);
