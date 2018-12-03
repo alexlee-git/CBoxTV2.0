@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -406,6 +407,20 @@ public class ModuleLayoutManager {
      */
     public int getSubWidgetSizeById(String layoutId) {
         return mWidgetCounter.get(layoutId);
+    }
+
+
+    public List<String> getWidgetLayoutList(String layoutId) {
+        List<String> layoutList = new ArrayList<>();
+        int count = mWidgetCounter.get(layoutId);
+        int pos = layoutId.indexOf("_");
+        if (pos >= 0) {
+            String code = layoutId.substring(pos + 1);
+            for (int index = 1; index <= count; index++) {
+                layoutList.add(String.format(Locale.getDefault(), "cell_%s_%d", code, index));
+            }
+        }
+        return layoutList;
     }
 
 
