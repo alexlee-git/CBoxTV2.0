@@ -112,8 +112,8 @@
         android:id="@+id/id_search_result_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/width_409px"
-        android:layout_marginTop="@dimen/height_465px"
+        android:layout_marginLeft="@dimen/width_506px"
+        android:layout_marginTop="@dimen/height_510px"
         android:drawableTop="@drawable/empty_icon"
         android:text="@string/search_result_empty"
         android:textColor="#ededed"
@@ -138,8 +138,8 @@
 
         <ImageView
             android:id="@+id/search_loading_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/width_532px"
+            android:layout_height="@dimen/height_175px"
             android:background="@drawable/loading_gif" />
 
         <TextView
