@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 
 import tv.newtv.cboxtv.R;
@@ -45,7 +46,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     private EpisodeAdView mAdView;
     private SmoothScrollView scrollView;
     private SuggestView suggestView;
-    private boolean isLogin = false;
     private Content mProgramSeriesInfo;
 
     @Override
@@ -74,7 +74,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
     protected void onResume() {
         super.onResume();
         Log.d("ywy y", "onResume");
-        initLoginStatus();
         if (headPlayerView != null) {
             headPlayerView.onActivityResume();
         }
@@ -218,7 +217,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                             .getVipFlag() != null) {
                                         final int vipState = Integer.parseInt(mProgramSeriesInfo
                                                 .getVipFlag());
-                                        if (isLogin) {
+                                        if (UserStatus.isLogin()) {
                                             //1 单点包月  3vip  4单点
                                             if (vipState == 1) {
                                                 UserCenterUtils.startVIP1
@@ -248,13 +247,4 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         }
     }
 
-    //获取登陆状态
-    private void initLoginStatus() {
-        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
-            @Override
-            public void notifyLoginStatusCallback(boolean status) {
-                isLogin = status;
-            }
-        });
-    }
 }
