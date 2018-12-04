@@ -1085,7 +1085,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             return true;
         }
 
-        if (mPlayerContract.processKeyEvent(event) && mShowingChildView == SHOWING_TIP_VIEW) {
+        if (mPlayerContract != null && mPlayerContract.processKeyEvent(event) && mShowingChildView == SHOWING_TIP_VIEW) {
             return true;
         }
 
