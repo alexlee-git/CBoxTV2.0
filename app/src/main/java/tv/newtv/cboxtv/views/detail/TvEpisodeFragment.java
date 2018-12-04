@@ -24,6 +24,7 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.vip.VipCheck;
 
 
 /**
@@ -301,7 +302,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
                 }
                 //为剧集页添加vip功能  1 单点包月  3vip  4单点
 //                int vipFlag = Integer.parseInt(programsInfo.getVipFlag());
-                if (TextUtils.equals("3",programsInfo.getVipFlag())){
+                if (VipCheck.isPay(programsInfo.getVipFlag())){
                     mImageView.setVisibility(View.VISIBLE);
                 }else {
                     mImageView.setVisibility(View.GONE);
