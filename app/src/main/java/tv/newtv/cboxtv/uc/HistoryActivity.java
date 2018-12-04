@@ -306,7 +306,8 @@ public class HistoryActivity extends BaseActivity implements
 
         TextView textView = focusView.findViewById(R.id.id_title);
         if (textView != null) {
-            textView.setEllipsize(null);
+           // textView.setEllipsize(null);
+            textView.setSelected(false);
         }
 
         focusView.destroyDrawingCache();
