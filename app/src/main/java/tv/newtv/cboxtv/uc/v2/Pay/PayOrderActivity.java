@@ -915,6 +915,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     //读取用户会员信息
     private long requestMemberInfo(String mContentUUID) {
         try {
+            expireTime = 0;
             NetClient.INSTANCE.getUserCenterMemberInfoApi()
                     .getMemberInfo("Bearer " + mToken, "",
                             Libs.get().getAppKey(), mContentUUID)
