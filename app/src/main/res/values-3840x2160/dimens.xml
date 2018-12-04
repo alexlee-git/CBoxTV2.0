@@ -6015,6 +6015,7 @@
     <dimen name="dp153">153dp</dimen>
     <dimen name="_width_18px">-36px</dimen>
     <dimen name="_width_8px">-16px</dimen>
+    <dimen name="_width_7px">-14px</dimen>
     <dimen name="_width_5px">-10px</dimen>
     <dimen name="_width_11px">-22px</dimen>
     <dimen name="_width_12px">-24px</dimen>

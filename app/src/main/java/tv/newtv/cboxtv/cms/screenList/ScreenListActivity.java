@@ -207,7 +207,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     @Override
                     public void accept(FilterValue filterValue) throws Exception {
                         if (filterValue != null) {
-                            map.put(key, filterValue.getTitle());
+                            map.put(key, filterValue.getKey());
                         }
                         int childCount = container.getChildCount();
                         for (int i = 0; i < childCount; i++) {

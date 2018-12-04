@@ -4,6 +4,7 @@
     <item name="tag_imageview" type="id"/>
     <item name="tag_title" type="id"/>
     <item name="tag_sub_title" type="id"/>
+    <item name="tag_title_background" type="id"/>
     <item name="view_first_measure" type="id"/>
 
     <item name="tag_glide_id" type="id"/>
