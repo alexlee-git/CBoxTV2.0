@@ -487,7 +487,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             }
         } else {
             NewTVLauncherPlayerViewManager.getInstance().release();
-            addHistory();
         }
         return true;
     }
@@ -664,7 +663,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (isReleased) return;
         isReleased = true;
         addHistory();
-        Log.e("yml", "release: ..1");
         Log.i(TAG, "release: ");
         if (listener != null) {
             listener.clear();
@@ -918,7 +916,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (!defaultConfig.isLiving) {
             addHistory();
-            Log.e("yml", "release: ..2");
             PlayerConfig.getInstance().setJumpAD(NeedJumpAd);
             NeedJumpAd = false;
             if (defaultConfig.isFullScreen) {
@@ -1330,7 +1327,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 PLAY_TYPE_LIVE) {
             if (defaultConfig.playType != PLAY_TYPE_LIVE) {
                 addHistory();
-                Log.e("yml", "release: ..3");
             }
             Toast.makeText(getContext(), getContext().getResources().getString(R.string
                     .play_complete), Toast.LENGTH_SHORT).show();
@@ -1351,7 +1347,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             } else {
                 addHistory();
-                Log.e("yml", "release: ..4");
                 if (listener != null && listener.size() > 0) {
                     for (IPlayProgramsCallBackEvent l : listener) {
                         l.onNext(null, next, false);
