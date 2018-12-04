@@ -61,7 +61,11 @@ public class CalendarUtil {
     }
 
     public int getWeek() {
-        return Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
+        int week = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)-1;
+        if(week == 0){
+            week = 7;
+        }
+        return week;
     }
 
     public int getYear() {

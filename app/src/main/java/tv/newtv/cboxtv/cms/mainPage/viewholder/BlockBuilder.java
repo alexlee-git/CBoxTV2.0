@@ -70,10 +70,16 @@ class BlockBuilder extends BaseBlockBuilder {
     private Interpolator mSpringInterpolator;
     private boolean showFirstTitle = false;
 
+    private int CORNER_WIDTH = 0;
+    private int CORNER_HEIGHT = 0;
+
 
     BlockBuilder(Context context) {
         super(context);
         mContext = context;
+
+        CORNER_WIDTH = context.getResources().getDimensionPixelSize(R.dimen.width_75px);
+        CORNER_HEIGHT = context.getResources().getDimensionPixelSize(R.dimen.height_30px);
 
         mSpringInterpolator = new OvershootInterpolator(2.2f);
 
@@ -190,6 +196,7 @@ class BlockBuilder extends BaseBlockBuilder {
             List<String> layoutList = ModuleLayoutManager.getInstance().getWidgetLayoutList
                     (layoutCode);
             Log.i(TAG, "layoutList=" + layoutList);
+
             for (int i = 0; i < posSize; ++i) {
                 if (moduleItem.getPrograms() == null || moduleItem.getPrograms().size() - 1 < i) {
                     break;
@@ -228,7 +235,6 @@ class BlockBuilder extends BaseBlockBuilder {
                 if (frameLayout != null) {
                     layoutList.remove(frameLayoutId);
                     frameLayout.setVisibility(View.VISIBLE);
-//                    frameLayout.setFocusable(true);
                     if (frameLayout instanceof AlternatePageView) {
                         ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID);
                         ((AlternatePageView) frameLayout).setProgram(moduleItem);
@@ -333,7 +339,6 @@ class BlockBuilder extends BaseBlockBuilder {
                     }
                 }
             }
-
         } else if (TextUtils.equals("6", moduleItem.getBlockType())) {
             //TODO 自动区块类型
             ((AutoBlockType) itemView).build(moduleItem);
@@ -554,8 +559,7 @@ class BlockBuilder extends BaseBlockBuilder {
     private void addLeftTopSuperscript(Corner corner, ViewGroup parent, int postIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_LEFT_TOP");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
-                    .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
 
@@ -572,8 +576,7 @@ class BlockBuilder extends BaseBlockBuilder {
                                           ViewGroup parent, int posterIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CENTER_LEFT_BOTTOM");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             if (TextUtils.equals(layoutCode, "layout_005")) {
                 lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
@@ -594,8 +597,7 @@ class BlockBuilder extends BaseBlockBuilder {
     private void addRightTopSuperscript(Corner corner, ViewGroup parent, int posterIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_TOP");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
             lp.gravity = Gravity.RIGHT | Gravity.END;
@@ -611,9 +613,8 @@ class BlockBuilder extends BaseBlockBuilder {
                                            int posterIndex) {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_BOTTOM");
         if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams
-                    .WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            if (TextUtils.equals(layoutCode, "layout_005")) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
+            if (TextUtils.equals(layoutCode, "layout_005") ) {
                 lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
             } else {
                 lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
@@ -681,6 +682,7 @@ class BlockBuilder extends BaseBlockBuilder {
                                 .SCALE_TYPE_WIDTH), FrameLayout.LayoutParams.WRAP_CONTENT);
                         titleWidget = new TextView(mContext);
                         titleWidget.setSingleLine();
+                        //titleWidget.setMaxEms(12);
                         titleWidget.setLines(1);
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
                         titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
@@ -695,6 +697,7 @@ class BlockBuilder extends BaseBlockBuilder {
                         titleWidget = new TextView(mContext);
                         titleWidget.setSingleLine();
                         titleWidget.setLines(1);
+                        titleWidget.setMaxEms(12);
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
                         titleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                                 .SCALE_TYPE_WIDTH), 0, 0, 0);
@@ -770,6 +773,7 @@ class BlockBuilder extends BaseBlockBuilder {
                 }
                 subTitleWidget = new TextView(mContext);
                 subTitleWidget.setLayoutParams(lp);
+                subTitleWidget.setMaxEms(12);
                 subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                         .SCALE_TYPE_WIDTH), 0, 0, 0);
                 subTitleWidget.setSingleLine();

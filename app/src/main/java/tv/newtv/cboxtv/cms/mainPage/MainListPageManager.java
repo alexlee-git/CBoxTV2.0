@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.newtv.cms.bean.Nav;
 import com.newtv.libs.Constant;
@@ -31,8 +30,6 @@ import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
-
-import static android.content.Context.MODE_PRIVATE;
 
 
 public class MainListPageManager {
@@ -79,7 +76,7 @@ public class MainListPageManager {
         Log.e("--params---|-", action + "----" + params);
         if (action != null) {
             if (action.equals("panel")) {
-                if (params.contains("&")){
+                if (params.contains("&")) {
                     try {
                         String[] panels = params.split("&");
                         if (panels.length > 1) {
@@ -90,7 +87,7 @@ public class MainListPageManager {
                         LogUtils.e(e.toString());
                         Navbarfoused = -1;
                     }
-                }else if (params.contains("|")){//适配二级导航
+                } else if (params.contains("|")) {//适配二级导航
                     try {
                         String[] panels = params.split("\\|");
                         Log.e("--params---|-", panels[1] + "----");
@@ -122,6 +119,10 @@ public class MainListPageManager {
         return mNavInfos == null || mNavInfos.size() == 0;
     }
 
+    public boolean isUseMenuRecycleView() {
+        return mNavInfos != null && mNavInfos.size() > 1;
+    }
+
     public boolean onBackPressed() {
         BaseFragment currentFragment = mViewPagerAdapter.getCurrentFragment();
         if (currentFragment == null) {
@@ -132,7 +133,7 @@ public class MainListPageManager {
             return false;
         }
 
-        if (!mCircleMenuRv.hasFocus()) {
+        if (!mCircleMenuRv.hasFocus() && mNavInfos != null && mNavInfos.size() > 1) {
             if (mCircleMenuRv.mCurrentCenterChildView != null) {
                 mCircleMenuRv.mCurrentCenterChildView.requestFocus();
             }
@@ -234,7 +235,7 @@ public class MainListPageManager {
                     }
                     mViewPagerAdapter.setShowItem(position);
                     mViewPager.setCurrentItem(position);
-                    BackGroundManager.getInstance().setCurrentNav(uuid,true);
+                    BackGroundManager.getInstance().setCurrentNav(uuid, true);
                     currentFocus = value.getId();
 
                     if (!TextUtils.isEmpty(uuid)) {
@@ -290,7 +291,7 @@ public class MainListPageManager {
             });
 
             mCircleMenuRv.setAdapter(menuAdapter);
-            Log.e("--params---", "inflateListPage: "+defaultPageIdx );
+            Log.e("--params---", "inflateListPage: " + defaultPageIdx);
             menuAdapter.setMenuItems(mNavInfos, defaultPageIdx);
         }
 
@@ -306,8 +307,8 @@ public class MainListPageManager {
 
             currentPosition = defaultIndex % mNavInfos.size();
             Nav nav = mNavInfos.get(currentPosition);
-            if (nav!=null){
-                secondNavLogUpload(nav,currentPosition);
+            if (nav != null) {
+                secondNavLogUpload(nav, currentPosition);
             }
 
             currentFragment = (BaseFragment) mViewPagerAdapter.getItem(defaultIndex);
@@ -360,6 +361,10 @@ public class MainListPageManager {
             // .getCurrentItem());
             currentFragment = mViewPagerAdapter.getCurrentFragment();
             setContentFragmentRecyclerViewToNavFragment();
+        }
+
+        if (mNavInfos == null || mNavInfos.size() <= 1) {
+            mCircleMenuRv.setVisibility(View.GONE);
         }
     }
 
@@ -415,10 +420,6 @@ public class MainListPageManager {
                 , 500));
         mViewPager.setOffscreenPageLimit(1);
 
-        if (navData == null || navData.size() == 1) {
-            mCircleMenuRv.setVisibility(View.GONE);
-        }
-
         //创建共享参数，存储一些需要的信息
         initSharedPreferences();
 
@@ -439,10 +440,11 @@ public class MainListPageManager {
     }
 
     public View getFirstFocusView() {
-        if(mCircleMenuRv != null && mCircleMenuRv.getVisibility() == View.VISIBLE) return
-                mCircleMenuRv;
+        if (mCircleMenuRv != null && mNavInfos != null && mNavInfos.size() > 1)
+            return mCircleMenuRv;
+
         ContentFragment fragment = (ContentFragment) mViewPagerAdapter.getCurrentFragment();
-        if (fragment != null){
+        if (fragment != null) {
             return fragment.getFirstFocusView();
         }
         return null;
@@ -463,7 +465,7 @@ public class MainListPageManager {
                 .KEYCODE_DPAD_DOWN) ||
                 TextUtils.equals(from, "content_fragment") && keyEvent.getKeyCode() == KeyEvent
                         .KEYCODE_DPAD_UP) {
-            if (!mCircleMenuRv.hasFocus()) {
+            if (!mCircleMenuRv.hasFocus() && isUseMenuRecycleView()) {
                 mCircleMenuRv.requestDefaultFocus(true);
                 return true;
             }
@@ -475,6 +477,25 @@ public class MainListPageManager {
     public boolean isDataFromServer() {
         Log.e(Constant.TAG, "当前导航数据来自 : " + mCurNavDataFrom);
         return TextUtils.equals(mCurNavDataFrom, "server");
+    }
+
+    //    public void setTwoMenuData(){
+//        if(mNavInfos!=null)
+//        mCircleMenuRv.setTwoMenuData(mNavInfos);
+//    }
+    private void secondNavLogUpload(Nav nav, int currentPosition) {
+        if (nav != null) {
+            String result = nav.getId();
+
+            StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_8);
+            logBuff.append(result)
+                    .append(",")
+                    .append(currentPosition)
+                    .trimToSize();
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
+                    logBuff.toString());
+            PlayerConfig.getInstance().setSecondChannelId(result);
+        }
     }
 
     static class ListPageMenuViewHolder extends RecyclerView.ViewHolder {
@@ -504,25 +525,6 @@ public class MainListPageManager {
 //                        .load(url)
 //                        .into(icon);
             }
-        }
-    }
-
-//    public void setTwoMenuData(){
-//        if(mNavInfos!=null)
-//        mCircleMenuRv.setTwoMenuData(mNavInfos);
-//    }
-private void secondNavLogUpload(Nav nav,int currentPosition) {
-        if (nav != null) {
-            String result = nav.getId();
-
-            StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_8);
-            logBuff.append(result)
-                    .append(",")
-                    .append(currentPosition)
-                    .trimToSize();
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_NAVIGATION_SELECT,
-                    logBuff.toString());
-            PlayerConfig.getInstance().setSecondChannelId(result);
         }
     }
 }

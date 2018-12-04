@@ -135,7 +135,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
         }
     }
 
-    public void setContentUUID(int type, @Nullable Content content, View controllView) {
+    public void setContentUUID(int type, @Nullable Content content, View controllView, String contentType) {
         if(content == null || TextUtils.isEmpty(content.getContentID())){
             onError(getContext(),"数据ID不正确");
             return;
@@ -152,10 +152,14 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                 mSuggestPresenter.getColumnSuggest(contentUUID);
                 break;
             case TYPE_COLUMN_SEARCH:
+                String conType = content.getContentType();
+                if (!TextUtils.isEmpty(contentType)) {
+                    conType = contentType;
+                }
                 SearchContract.SearchCondition searchCondition = SearchContract.SearchCondition
                         .Builder()
                         .setRows("6")
-                        .setContentType(content.getContentType())
+                        .setContentType(conType)
                         .setVideoType(content.getVideoType());
                 mSearchPresenter.search(searchCondition);
                 break;
@@ -165,6 +169,10 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
 
                 break;
         }
+    }
+
+    public void setContentUUID(int type, @Nullable Content content, View controllView) {
+        setContentUUID(type, content, controllView, null);
 
     }
 

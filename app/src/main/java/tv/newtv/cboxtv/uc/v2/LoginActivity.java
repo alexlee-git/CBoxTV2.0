@@ -41,6 +41,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
@@ -56,7 +57,8 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
  * 创建人:           weihaichao
  * 创建日期:          2018/8/24
  */
-public class LoginActivity extends Activity implements View.OnClickListener, View.OnFocusChangeListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener, View
+        .OnFocusChangeListener {
 
     private final String TAG = "LoginActivity";
     private ImageView img_login;
@@ -129,9 +131,10 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
         if (TextUtils.isEmpty(Authorization)) {
             Authorization = Utils.getAuthorization(LoginActivity.this);
             Constant.Authorization = Authorization;
-        } else {
-            getQrcode(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
         }
+
+        getQrcode(Authorization, Constant.RESPONSE_TYPE, Constant.CLIENT_ID);
+
     }
 
     @Override
@@ -298,7 +301,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Vie
                                 if (mFlagPay) {
                                     if (mVipFlag != null) {
                                         Intent mIntent = new Intent();
-                                        if (mVipFlag.equals("3")) {
+                                        if (mVipFlag.equals(Constant.BUY_ONLY)) {
                                             mIntent.setClass(LoginActivity.this, PayOrderActivity.class);
                                         } else {
                                             mIntent.setClass(LoginActivity.this, PayChannelActivity.class);

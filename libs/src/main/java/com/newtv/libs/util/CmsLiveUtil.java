@@ -71,7 +71,7 @@ public final class CmsLiveUtil {
     }
 
     private static boolean isTodayInWeeks(String weeks) {
-        String day = Integer.toString(CalendarUtil.getInstance().getWeek() - 1);
+        String day = Integer.toString(CalendarUtil.getInstance().getWeek());
         return !TextUtils.isEmpty(weeks) && weeks.contains(day);
     }
 

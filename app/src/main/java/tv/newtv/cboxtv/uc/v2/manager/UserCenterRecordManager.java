@@ -1383,8 +1383,9 @@ public class UserCenterRecordManager {
             if (duration > 0) {
                 resultTmp = position * 100 / duration;
             }
+
             if (position==0&&duration==0) {
-                result = "已看完";
+                result = "观看不足1%";
             } else {
                 if (resultTmp<1) {
                     result = "观看不足1%";
@@ -1394,7 +1395,7 @@ public class UserCenterRecordManager {
             }
         }
 
-        Log.d(TAG, ", pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
+        Log.d(TAG, "pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
 
         return result;
     }

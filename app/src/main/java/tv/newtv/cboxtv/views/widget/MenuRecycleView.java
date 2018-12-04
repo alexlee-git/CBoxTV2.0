@@ -148,9 +148,9 @@ public class MenuRecycleView extends RecyclerView {
 
     @Override
     public boolean hasFocus() {
-        if (mCurrentCenterChildView != null) {
-            return mCurrentCenterChildView.hasFocus();
-        }
+//        if (mCurrentCenterChildView != null) {
+//            return mCurrentCenterChildView.hasFocus();
+//        }
         return super.hasFocus();
     }
 

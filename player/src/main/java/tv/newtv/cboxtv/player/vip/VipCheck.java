@@ -30,11 +30,11 @@ public class VipCheck {
     /**
      * Vip才能看
      */
-    public static final String VIP_FLAG_VIP = "4";
+    public static final String VIP_FLAG_VIP = "3";
     /**
      *  单点才能看
      */
-    public static final String VIP_FLAG_BUY = "3";
+    public static final String VIP_FLAG_BUY = "4";
 
     public static void isBuy(String productIds,String contentUUID,Context context,final BuyFlagListener listener){
         String token = SharePreferenceUtils.getToken(context);

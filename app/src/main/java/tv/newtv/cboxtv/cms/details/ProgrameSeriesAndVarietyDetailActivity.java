@@ -113,10 +113,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
-                                .DB_TYPE_COLLECT),
-                        new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder
-                                .DB_TYPE_VIPPAY))
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
+                new HeadPlayerView.CustomFrame(R.id.vip_pay,HeadPlayerView.Builder.DB_TYPE_VIPPAY),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay_tip,HeadPlayerView.Builder.DB_TYPE_VIPTIP))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)

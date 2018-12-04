@@ -163,6 +163,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
         List<String> layoutList = ModuleLayoutManager.getInstance().getWidgetLayoutList
                 (layoutId);
         Log.i(TAG, "layoutList=" + layoutList);
+
         if (blockData.getRows() != null && blockData.getRows().size() > 0) {
             for (int i = 0; i < posSize; i++) {
                 if (i >= blockData.getRows().size()) {
@@ -197,7 +198,9 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                         (frameLayoutId);
                 if (frameLayout != null) {
 //                    frameLayout.setFocusable(true);
+                    layoutList.remove(frameLayoutId);
                     frameLayout.setVisibility(VISIBLE);
+
                     //屏幕适配
                     if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();

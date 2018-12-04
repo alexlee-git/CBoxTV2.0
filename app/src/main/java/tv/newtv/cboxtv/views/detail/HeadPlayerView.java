@@ -28,13 +28,16 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
@@ -49,6 +52,7 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
@@ -88,6 +92,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     private long lastClickTime = 0;
     private View vipPay;
+    private TextView vipTip;
 
     //检测全屏退出回调
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new
@@ -102,18 +107,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public HeadPlayerView(Context context) {
         this(context, null);
-        getMemberStatus();
     }
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
-        getMemberStatus();
     }
 
     public HeadPlayerView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
-        getMemberStatus();
     }
 
     private void setCurrentPlayIndex(String tag, int index) {
@@ -198,14 +200,32 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         setClipToPadding(false);
     }
 
-    private void getMemberStatus() {
-        UserCenterUtils.getMemberStatus(new INotifyMemberStatusCallback() {
+    private void getMemberStatus(String UUid) {
+        UserCenterUtils.getMemberStatus(UUid, new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
                 memberStatus = status;
                 if (memberBundle != null) {
+                    Log.d(TAG, "bundle : " + memberBundle.get(QueryUserStatusUtil.expireTime));
                     expireTime = (String) memberBundle.get(QueryUserStatusUtil.expireTime);
                 }
+
+                Log.d(TAG, "memberStatus : " + memberStatus + "time : " + expireTime);
+                if (!TextUtils.isEmpty(memberStatus) &&
+                        (memberStatus.equals(QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) && vipTip != null) {
+                    vipTip.setVisibility(View.VISIBLE);
+                    String time = TimeUtil.getInstance().getDateFromSeconds(
+                            String.valueOf(TimeUtil.getInstance().getSecondsFromDate(expireTime)));
+
+                    StringBuffer str = new StringBuffer();
+                    str.append(getResources().getString(R.string.vip_tip1));
+                    str.append(time);
+                    str.append(getResources().getString(R.string.vip_tip2));
+                    Log.d(TAG, "str : " + str.toString());
+                    vipTip.setText(str.toString());
+
+                }
+
             }
         });
     }
@@ -251,7 +271,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public void onActivityResume() {
-        getMemberStatus();
+        if (mInfo != null) {
+            getMemberStatus(mInfo.getContentUUID());
+        }
         if (playerView != null && !playerView.isReleased() && playerView.isReady() && (playerView
                 .isADPlaying() || playerView.isPlaying())) {
             Log.e(TAG, "player view is working....");
@@ -364,8 +386,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (collect instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) collect).isSelect()) {
                                                 UserCenterUtils.deleteSomeCollect(mInfo,
@@ -384,6 +405,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         RxBus.get().post(Constant
                                                                                         .UPDATE_UC_DATA,
                                                                                 true);
+                                                                        Map<String, String> map = new HashMap<>();
+                                                                        map.put("col_operation_type", "delete");
+                                                                        map.put("col_operation_id", mInfo.getContentID());
+                                                                        RxBus.get().post("col_operation_map", map);
+
                                                                         if (code == 0) {
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
@@ -410,6 +436,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
                                                                         true);
+
+                                                                Map<String, String> map = new HashMap<>();
+                                                                map.put("col_operation_type", "add");
+                                                                map.put("col_operation_id", mInfo.getContentID());
+                                                                RxBus.get().post("col_operation_map", map);
                                                                 if (code == 0) {
                                                                     LogUploadUtils.uploadLog
                                                                             (Constant
@@ -450,8 +481,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                 @Override
                                 public void onClick(View view) {
                                     if (Subscrip instanceof FocusToggleSelect) {
-                                        if (System.currentTimeMillis() - lastClickTime >= 2000)
-                                        {//判断距离上次点击小于2秒
+                                        if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                             if (((FocusToggleSelect) Subscrip).isSelect()) {
                                                 UserCenterUtils.deleteSomeSubcribet(mInfo,
@@ -481,6 +511,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                                     .getApplicationContext(), "取消订阅成功",
                                                                                             Toast.LENGTH_SHORT)
                                                                                     .show();
+
+                                                                            Map<String, String> param = new HashMap<>();
+                                                                            param.put("operation_type", "delete");
+                                                                            param.put("operation_id", mInfo.getContentID());
+                                                                            RxBus.get().post("operation_param", param);
                                                                         }
                                                                     }
                                                                 });
@@ -509,6 +544,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         RxBus.get().post(Constant
                                                                                         .UPDATE_UC_DATA,
                                                                                 true);
+
+                                                                        Map<String, String> param = new HashMap<>();
+                                                                        param.put("operation_type", "add");
+                                                                        param.put("operation_id", mInfo.getContentID());
+                                                                        RxBus.get().post("operation_param", param);
                                                                     }
                                                                 }
                                                             });
@@ -524,13 +564,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         vipPay = contentView.findViewById(value.viewId);
                         break;
                     case Builder.DB_TYPE_VIPTIP:
-                        TextView vipTip = contentView.findViewById
+                        vipTip = contentView.findViewById
                                 (value.viewId);
-                        if (!TextUtils.isEmpty(memberStatus) && (memberStatus ==
-                                QueryUserStatusUtil.SIGN_MEMBER_OPEN_GOOD)) {
-                            vipTip.setVisibility(View.VISIBLE);
-                            vipTip.setText(String.format(vipTip.getText().toString(), expireTime));
-                        }
                         break;
                 }
             }
@@ -590,6 +625,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         mInfo = programSeriesInfo;
         setVipPayStatus(mInfo);
+        getMemberStatus(mInfo.getContentUUID());
         parseResult();
     }
 
@@ -644,9 +680,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 }
             }
         }, 500);
-//=======
-//        playerView.delayEnterFullScreen(ActivityStacks.get().getCurrentActivity(), false, 450);
-//>>>>>>> Stashed changes
     }
 
     private void parseResult() {
@@ -769,6 +802,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void play() {
+        if (TimeDialog.isDisMiss){
+            TimeDialog.dismiss();
+        }
         playerView.beginChange();
         playerView.setSeriesInfo(mInfo);
         playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
@@ -898,6 +934,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onComplete() {
+        defaultConfig = playerView.getDefaultConfig();
         //栏目化直播结束，继续播放点播视频
         TimeDialog.showBuilder(getContext(),this);
 

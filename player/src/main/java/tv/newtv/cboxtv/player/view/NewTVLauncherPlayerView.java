@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newtv.cms.BuildConfig;
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
@@ -241,7 +243,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
             LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
-            //stopLoading();
+//            stopLoading();//注释掉该行代码会在乐视上导致在播放某些视频时一直显示加载  但是视频已经播放的问题
+            if(BuildConfig.FLAVOR.equals(DeviceUtil.LETV))
+            {
+                stopLoading();
+            }
             mNewTVLauncherPlayerSeekbar.setDuration();
             if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
                     * 1000) {
@@ -1807,10 +1813,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onChange(String current, String start, String end, boolean isComplete) {
         if (isComplete) {
-            release();
             if (mLiveListener != null) {
                 mLiveListener.onComplete();
             }
+            release();
         }
         if (mLiveListener != null) {
             mLiveListener.onTimeChange(current, end);

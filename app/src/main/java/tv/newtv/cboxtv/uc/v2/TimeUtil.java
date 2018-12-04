@@ -112,7 +112,7 @@ public class TimeUtil {
             try {
                 date.setTime(Long.parseLong(seconds));
             } catch (NumberFormatException nfe) {
-
+                nfe.printStackTrace();
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
             return sdf.format(date);

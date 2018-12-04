@@ -59,4 +59,16 @@ public abstract class BaseDetailSubFragment extends Fragment {
         super.onDestroyView();
         contentView = null;
     }
+
+    protected void hideView(View view) {
+        if (view != null) {
+            view.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    protected void showView(View view) {
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
+    }
 }

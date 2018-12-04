@@ -40,6 +40,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
@@ -56,7 +57,7 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
  * 创建日期:          2018/9/10
  */
 
-public class PhoneLoginActivity extends Activity implements View.OnClickListener {
+public class PhoneLoginActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = PhoneLoginActivity.class.getSimpleName();
 
     public static final String PHONE_LOGIN_ACTION = "android.intent.action.PHONE_LOGIN";
@@ -309,7 +310,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                         if (mFlagPay) {
                             if (mVipFlag != null) {
                                 Intent mIntent = new Intent();
-                                if (mVipFlag.equals("3")) {
+                                if (mVipFlag.equals(Constant.BUY_ONLY)) {
                                     mIntent.setClass(PhoneLoginActivity.this, PayOrderActivity.class);
                                 } else {
                                     mIntent.setClass(PhoneLoginActivity.this, PayChannelActivity.class);

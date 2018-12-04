@@ -299,7 +299,7 @@ public class UserCenterFragment extends BaseFragment implements
     //读取用户会员信息
     private void requestMemberInfo() {
         try {
-            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey()).subscribeOn(Schedulers.io())
+            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(),"").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
 
                 @Override

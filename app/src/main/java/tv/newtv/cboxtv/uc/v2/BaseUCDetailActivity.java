@@ -23,6 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 
 
@@ -34,7 +35,8 @@ import tv.newtv.cboxtv.R;
  * 创建日期:          2018/8/27
  */
 @SuppressLint("Registered")
-public abstract class BaseUCDetailActivity<T> extends FragmentActivity implements CompoundButton.OnCheckedChangeListener, DetailCallback<T> {
+public abstract class BaseUCDetailActivity<T> extends BaseActivity implements CompoundButton
+        .OnCheckedChangeListener, DetailCallback<T> {
     public static final int DETAIL_TYPE_NOTHING = -1;
     public static final int DETAIL_TYPE_HISTORY = 0;//历史记录
     public static final int DETAIL_TYPE_COLLECTION = 1;//收藏

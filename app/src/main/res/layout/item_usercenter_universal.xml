@@ -55,8 +55,7 @@
         style="@style/ModulePosterScoreTitleStyle"
         android:layout_width="@dimen/width_40px"
         android:layout_height="@dimen/height_24px"
-        android:layout_gravity="right"
-        android:layout_marginRight="@dimen/width_39px"
+        android:layout_marginLeft="@dimen/width_215px"
         android:layout_marginTop="@dimen/width_347px"
         android:background="#99000000"
         android:gravity="center"
@@ -72,7 +71,9 @@
         android:ellipsize="marquee"
         android:enabled="true"
         android:marqueeRepeatLimit="marquee_forever"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:textSize="@dimen/width_25px"
+        />
 
     <!-- 观看进度 -->
     <TextView

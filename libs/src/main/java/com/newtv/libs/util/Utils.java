@@ -225,8 +225,13 @@ public class Utils {
     }
 
     public static String getAuthorization(Context context) {
+        String icntvId;
+        if (!TextUtils.isEmpty(Constant.UUID)) {
+            icntvId = Constant.UUID;
+        } else {
+            icntvId = (String) SPrefUtils.getValue(context, Constant.UUID_KEY, "");
+        }
 
-        String icntvId = Constant.UUID;
         Log.e(TAG, "icntvId---is:" + icntvId);
 //        String MAC = getWireMacAddr();
         String MAC = SystemUtils.getMac(context);
