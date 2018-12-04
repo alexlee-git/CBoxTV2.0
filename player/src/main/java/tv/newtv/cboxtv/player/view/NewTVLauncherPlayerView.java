@@ -235,8 +235,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
 //            stopLoading();//注释掉该行代码会在乐视上导致在播放某些视频时一直显示加载  但是视频已经播放的问题
-            if(BuildConfig.FLAVOR.equals(DeviceUtil.LETV))
-            {
+            if (BuildConfig.FLAVOR.equals(DeviceUtil.LETV)) {
                 stopLoading();
             }
             mNewTVLauncherPlayerSeekbar.setDuration();
@@ -285,7 +284,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 unshowLoadBack = true;
             }
 
-            boolean isHaveAD ;
+            boolean isHaveAD;
             if (!TextUtils.isEmpty(typeString)) {
                 if (typeString.equals(AD_END_BUFFER)) {
                     isHaveAD = true;
@@ -293,7 +292,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             }
 
-            if(TextUtils.equals(PIC_AD_END_BUFFER,typeString)){
+            if (TextUtils.equals(PIC_AD_END_BUFFER, typeString)) {
                 setCurrentVideoState(PlayerContract.STATE_AD_PLAYING);
             } else if (TextUtils.equals(AD_END_BUFFER, typeString)) {
                 //如果状态等于ad_onPrepared的时候，设置状态为广告播放中
@@ -406,8 +405,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public PlayerViewConfig getDefaultConfig() {
-        if(isReleased) return null;
-        if (defaultConfig != null){
+        if (isReleased) return null;
+        if (defaultConfig != null) {
             defaultConfig.playPosition = getCurrentPosition();
             defaultConfig.layoutParams = getLayoutParams();
             defaultConfig.parentViewGroup = getParent();
@@ -488,6 +487,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             }
         } else {
             NewTVLauncherPlayerViewManager.getInstance().release();
+            addHistory();
         }
         return true;
     }
@@ -661,9 +661,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void release() {
-        if(isReleased) return;
+        if (isReleased) return;
         isReleased = true;
         addHistory();
+        Log.e("yml", "release: ..1");
         Log.i(TAG, "release: ");
         if (listener != null) {
             listener.clear();
@@ -895,7 +896,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * type 1为单节目 2为节目集 3为直播
      */
     private void updatePlayStatus(int type, int index, int position) {
-        Log.i(TAG, "updatePlay position="  + position + "   ====" + type + ":" + index);
+        Log.i(TAG, "updatePlay position=" + position + "   ====" + type + ":" + index);
         setHintTextVisible(GONE);
         mIsPrepared = false;
         dismissChildView();
@@ -917,6 +918,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (!defaultConfig.isLiving) {
             addHistory();
+            Log.e("yml", "release: ..2");
             PlayerConfig.getInstance().setJumpAD(NeedJumpAd);
             NeedJumpAd = false;
             if (defaultConfig.isFullScreen) {
@@ -1328,6 +1330,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 PLAY_TYPE_LIVE) {
             if (defaultConfig.playType != PLAY_TYPE_LIVE) {
                 addHistory();
+                Log.e("yml", "release: ..3");
             }
             Toast.makeText(getContext(), getContext().getResources().getString(R.string
                     .play_complete), Toast.LENGTH_SHORT).show();
@@ -1348,6 +1351,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             } else {
                 addHistory();
+                Log.e("yml", "release: ..4");
                 if (listener != null && listener.size() > 0) {
                     for (IPlayProgramsCallBackEvent l : listener) {
                         l.onNext(null, next, false);
@@ -1497,8 +1501,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), defaultConfig.programSeriesInfo.getContentUUID()));
 
-        Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
-                getDuration());
+        if (getDuration() != 0) {
+            Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
+                    getDuration());
+        }
     }
 
     public boolean isADPlaying() {
@@ -1547,7 +1553,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
-            mNewTVLauncherPlayerSeekbar.setFreeDuration(0,null);
+            mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
         }
 
         if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals
@@ -1665,7 +1671,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.LoginActivity");
             intent.putExtra("ispay", true);
             intent.putExtra("payBean", exterPayBean);
-            intent.putExtra("isAuth",true);
+            intent.putExtra("isAuth", true);
             getContext().startActivity(intent);
         }
     }
@@ -1680,19 +1686,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     public interface OnPlayerStateChange {
         /**
-         *
-         * @param fullScreen       是否为全屏状态
-         * @param visible          当前播放器View显示状态
-         * @param videoPlaying     是否为正片播放状态
-         *
+         * @param fullScreen   是否为全屏状态
+         * @param visible      当前播放器View显示状态
+         * @param videoPlaying 是否为正片播放状态
          * @return true 消化掉当前事件，不再向下传递
-         *          false  不消化该事件，继续向下传递
+         * false  不消化该事件，继续向下传递
          */
         boolean onStateChange(boolean fullScreen, int visible, boolean videoPlaying);
 
         /**
-         *
-         * @param keyEvent  按键事件
+         * @param keyEvent 按键事件
          * @return true 消化掉该按键事件   false 不消化该按键事件
          */
         boolean processKeyEvent(KeyEvent keyEvent);
