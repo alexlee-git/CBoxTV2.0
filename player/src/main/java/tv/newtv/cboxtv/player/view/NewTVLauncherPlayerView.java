@@ -1665,6 +1665,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.LoginActivity");
             intent.putExtra("ispay", true);
             intent.putExtra("payBean", exterPayBean);
+            intent.putExtra("isAuth",true);
             getContext().startActivity(intent);
         }
     }
