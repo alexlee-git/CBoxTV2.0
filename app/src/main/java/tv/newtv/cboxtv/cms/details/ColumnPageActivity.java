@@ -106,7 +106,6 @@ public class ColumnPageActivity extends DetailPageActivity {
             finish();
             return;
         }
-        LogUploadUtils.uploadLog(Constant.LOG_COLUMN_INTO, "1," + contentUUID);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
 
         ADConfig.getInstance().setSeriesID(contentUUID);
@@ -131,6 +130,10 @@ public class ColumnPageActivity extends DetailPageActivity {
                         if (info != null) {
                             ArrayList<String> productId = new ArrayList<>();
                             pageContent = info;
+                            if (!TextUtils.isEmpty(info.getCategoryIDs())){
+                                LogUploadUtils.uploadLog(Constant.LOG_COLUMN_INTO, "1," + info.getCategoryIDs());
+
+                            }
                             if (pageContent != null ) {
                                 if (!TextUtils.isEmpty(pageContent.getVipFlag())){
                                     int vipState = Integer.parseInt(pageContent.getVipFlag());
