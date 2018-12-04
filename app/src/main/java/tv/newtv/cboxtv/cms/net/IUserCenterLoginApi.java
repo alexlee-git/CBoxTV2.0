@@ -129,6 +129,16 @@ public interface IUserCenterLoginApi {
     Observable<ResponseBody> getRefreshOrder(@Header("Authorization") String Authorization,
                                              @Query("orderId") String order);
 
+    //节目集权益信息
+    @Headers("host_type: " + BootGuide.PAY)
+    @POST("goldenpheasant/api/programRights")
+    Observable<ResponseBody> getBuyFlag(@Header("Authorization") String authorization,
+                                        @Query("productIds") String productIds,
+                                        @Query("appKey") String appKey,
+                                        @Query("channelId") String channelId,
+                                        @Query("contentUuid") String contentUuid,
+                                        @Query("version") String version);
+
     // 历史
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @FormUrlEncoded
