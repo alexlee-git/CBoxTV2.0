@@ -153,7 +153,7 @@ public class VodContract {
          *
          * @param result
          */
-        private void parseResult(String result) {
+        private void parseResult(String result,String albumId) {
             final ChkPlayResult playResult = PlayerNetworkRequestUtils.getInstance()
                     .parsePlayPermissionCheckResult(result);
             if (playResult == null) {
@@ -251,7 +251,7 @@ public class VodContract {
                 callBack(true,videoDataStruct,playResult);
             }else if(!TextUtils.isEmpty(vipFlag) && (VipCheck.VIP_FLAG_BUY.equals(vipFlag)
                     || VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag) && !UserStatus.isVip())){
-                VipCheck.isBuy(playResult.getVipProductId(), playResult.getContentUUID(),getContext(),
+                VipCheck.isBuy(playResult.getVipProductId(), albumId,getContext(),
                         new VipCheck.BuyFlagListener() {
                             @Override
                             public void buyFlag(boolean buyFlag) {
@@ -278,7 +278,7 @@ public class VodContract {
         }
 
         @Override
-        public void checkVod(String programId, String albumId,boolean isCarouse) {
+        public void checkVod(String programId, final String albumId, boolean isCarouse) {
             final IPlayChk playChk = getService(SERVICE_CHK_PLAY);
             String token = SharePreferenceUtils.getToken(getContext());
             String resultToken = TextUtils.isEmpty(token) ? "" : "Bearer " + token;
@@ -305,7 +305,7 @@ public class VodContract {
                             return;
                         }
 
-                        parseResult(result);
+                        parseResult(result,albumId);
                     }
 
                     @Override
