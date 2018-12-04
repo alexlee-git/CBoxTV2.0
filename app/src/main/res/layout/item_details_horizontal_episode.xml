@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="@dimen/width_33px"
     android:clipToPadding="false"
+    android:layout_marginTop="@dimen/width_45px"
     >
 
     <tv.newtv.cboxtv.views.detail.FocusRelativeLayout

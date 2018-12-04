@@ -21,6 +21,7 @@ import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
@@ -64,7 +65,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private FragmentTransaction transaction;
     private ContentContract.Presenter mContentPresenter;
     private int layoutId;
-    private boolean isLogin = false;
     private boolean isFullScreenIng;
 
 
@@ -89,7 +89,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
             LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
             //requestData();
-            initLoginStatus();
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getContent(contentUUID, true);
         } else {
@@ -246,7 +245,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             case R.id.vip_pay:
                                 if (pageContent != null && pageContent.getVipFlag() != null) {
                                     final int vipState = Integer.parseInt(pageContent.getVipFlag());
-                                    if (isLogin) {
+                                    if (UserStatus.isLogin()) {
                                         //1 单点包月  3vip  4单点
                                         if (vipState == 1) {
                                             UserCenterUtils.startVIP1(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
@@ -284,15 +283,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
     }
 
-    //获取登陆状态
-    private void initLoginStatus(){
-        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
-            @Override
-            public void notifyLoginStatusCallback(boolean status) {
-                isLogin = status;
-            }
-        });
-    }
 
     @Override
     protected void onDestroy() {
