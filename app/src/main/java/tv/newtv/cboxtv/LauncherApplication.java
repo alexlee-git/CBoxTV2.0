@@ -239,15 +239,16 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             LogUtils.e("receive addHistory...");
             UserCenterUtils.addHistory(playInfo, index, position, duration, new
                     DBCallback<String>() {
-                @Override
-                public void onResult(int code, String result) {
-                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code + "," +
-                            " contentId : " + playInfo.getContentID());
-                    if (code == 0) {
-                        LogUtils.e("写入历史记录成功");
-                    }
-                }
-            });
+                        @Override
+                        public void onResult(int code, String result) {
+                            Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " +
+                                    code + "," +
+                                    " contentId : " + playInfo.getContentID());
+                            if (code == 0) {
+                                LogUtils.e("写入历史记录成功");
+                            }
+                        }
+                    });
             History mHistory = new History(playInfo.getContentID(), playInfo.getContentType(),
                     playInfo.getTitle(), playInfo.getVImage(), "com.newtv.cboxtv",
                     "tv.newtv.cboxtv.SplashActivity", "", "", System.currentTimeMillis());
@@ -278,6 +279,36 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public boolean isVip() {
         return false;
+    }
+
+    @Override
+    public void addLBHistory(String alternateID) {
+        if(TextUtils.isEmpty(alternateID)){
+            LogUtils.e("LauncherApplication","addLBHistory alternateID is Empty");
+            return;
+        }
+        mContentPresenter.getContent(alternateID, true, new ContentContract.View() {
+            @Override
+            public void onContentResult(@NotNull String uuid, @Nullable Content content) {
+                addHistory(content, 0, 0, 0);
+            }
+
+            @Override
+            public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent>
+                    result) {
+
+            }
+
+            @Override
+            public void tip(@NotNull Context context, @NotNull String message) {
+
+            }
+
+            @Override
+            public void onError(@NotNull Context context, @Nullable String desc) {
+
+            }
+        });
     }
 
     @Override

@@ -225,7 +225,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 //                if (mLiveInfo.getLiveUrl().equals(playUrl)) {
 //                    return;
 //                }
-//                mNewTVLauncherPlayer.release();
+//                mNewTVLauncherPlayer.addHistory();
 //                mLiveInfo.setLiveUrl(playUrl);
 //                PlayerConfig.getInstance().setScreenChange(true);
 //                PlayerConfig.getInstance().setJumpAD(true);
@@ -751,7 +751,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (isReleased) return;
         isReleased = true;
         addHistory();
-        Log.i(TAG, "release: ");
+        Log.i(TAG, "addHistory: ");
         if (listener != null) {
             listener.clear();
         }
@@ -1699,7 +1699,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * 保存播放记录  在播放单节目和节目集的时候调用
      */
     private void addHistory() {
-        if (isLiving() || defaultConfig.isAlternate) return;
+        if (isLiving()) return;
+
+        if(defaultConfig.isAlternate){
+            if(mAlternatePresenter != null){
+                mAlternatePresenter.addHistory();
+            }
+            return;
+        }
 
         if (defaultConfig.programSeriesInfo == null) {
             return;

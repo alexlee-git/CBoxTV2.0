@@ -614,7 +614,7 @@ class BlockBuilder extends BaseBlockBuilder {
         RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_BOTTOM");
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
-            if (TextUtils.equals(layoutCode, "layout_005") ) {
+            if (TextUtils.equals(layoutCode, "layout_005")) {
                 lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
             } else {
                 lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);

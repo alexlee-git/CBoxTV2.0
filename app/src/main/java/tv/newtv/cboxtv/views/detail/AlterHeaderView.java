@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.views.detail;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -9,11 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.libs.db.DBCallback;
+import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.util.SystemUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,8 +33,7 @@ import tv.newtv.cboxtv.player.AlternateCallback;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
-import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
-import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 
 /**
@@ -39,8 +43,8 @@ import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/13
  */
-public class AlterHeaderView extends FrameLayout implements IEpisode, ContentContract.View, View
-        .OnClickListener, AlternateCallback, PlayerCallback {
+public class AlterHeaderView extends FrameLayout implements IEpisode, ContentContract.View,
+        AlternateCallback, PlayerCallback {
 
     private Content mContent;
     private String mContentUUID;
@@ -138,14 +142,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         if (collect != null) {
             collect.setOnClickListener(new MultipleClickListener() {
                 @Override
-                public void onMultipleClick(View view) {
-                    if (collect instanceof FocusToggleSelect) {
-
-                    } else {
-
-                    }
-
-
+                protected void onMultipleClick(View view) {
+                    onViewClick(view);
                 }
             });
         }
@@ -155,8 +153,18 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         fullScreenBtn = findViewById(R.id.full_screen);
         payBtn = findViewById(R.id.vip_pay);
 
-        fullScreenBtn.setOnClickListener(this);
-        payBtn.setOnClickListener(this);
+        fullScreenBtn.setOnClickListener(new MultipleClickListener() {
+            @Override
+            protected void onMultipleClick(View view) {
+                onViewClick(view);
+            }
+        });
+        payBtn.setOnClickListener(new MultipleClickListener() {
+            @Override
+            protected void onMultipleClick(View view) {
+                onViewClick(view);
+            }
+        });
 
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
@@ -244,14 +252,40 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     }
 
 
-    @Override
-    public void onClick(View view) {
+    public void onViewClick(View view) {
         switch (view.getId()) {
             case R.id.full_screen:
                 alternateView.enterFullScreen(ActivityStacks.get().getCurrentActivity());
                 break;
             case R.id.collect:
-
+                Bundle bundle = new Bundle();
+                bundle.putString(DBConfig.CONTENTUUID, mContent.getContentUUID());
+                bundle.putString(DBConfig.CONTENT_ID, mContent.getContentID());
+                bundle.putString(DBConfig.TITLE_NAME, mContent.getTitle());
+                bundle.putString(DBConfig.IS_FINISH, mContent.isFinish());
+                bundle.putString(DBConfig.REAL_EXCLUSIVE, mContent.getNew_realExclusive());
+//                bundle.putString(DBConfig.ISSUE_DATE, lastNode.issuedate);
+//                bundle.putString(DBConfig.LAST_PUBLISH_DATE, mContent.get);
+                bundle.putString(DBConfig.SUB_TITLE, mContent.getSubTitle());
+                bundle.putString(DBConfig.UPDATE_TIME, System.currentTimeMillis() + "");
+                bundle.putString(DBConfig.USERID, SystemUtils.getDeviceMac(getContext()));
+                bundle.putString(DBConfig.V_IMAGE, mContent.getVImage());
+                bundle.putString(DBConfig.H_IMAGE, mContent.getHImage());
+                bundle.putString(DBConfig.VIP_FLAG, mContent.getVipFlag());
+                bundle.putString(DBConfig.CONTENTTYPE, mContent.getContentType());
+                UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager
+                                .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                        getContext(),
+                        bundle,
+                        mContent,
+                        new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                if (code == 0) {
+                                    Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                 break;
             case R.id.vip_pay:
 

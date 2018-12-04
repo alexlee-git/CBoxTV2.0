@@ -77,6 +77,11 @@ public class Player implements PlayerObserver {
     }
 
     @Override
+    public void addLBHistory(String alternateID) {
+        mObserver.addLBHistory(alternateID);
+    }
+
+    @Override
     public void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri) {
         mObserver.activityJump(context,actionType,contentType,contentUUID,actionUri);
     }

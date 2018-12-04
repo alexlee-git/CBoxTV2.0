@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
 
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
@@ -21,6 +22,7 @@ import java.util.List;
 import tv.newtv.cboxtv.JumpScreen;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.AlternateCallback;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.views.custom.AlternateView;
 import tv.newtv.cboxtv.views.detail.AlterHeaderView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -214,6 +216,7 @@ public class AlternateActivity extends DetailPageActivity implements
     @Override
     public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable
             ArrayList<SubContent> result) {
+
 
     }
 

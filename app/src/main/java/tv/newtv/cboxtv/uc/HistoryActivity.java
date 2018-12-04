@@ -454,6 +454,7 @@ public class HistoryActivity extends BaseActivity implements
     private void requestDataByDB(String tableName) {
         DataSupport.search(tableName)
                 .condition()
+                .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -484,6 +485,7 @@ public class HistoryActivity extends BaseActivity implements
             if (SharePreferenceUtils.getSyncStatus(getApplicationContext()) == 0) {
                 DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
                         .condition()
+                        .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(getApplicationContext()))
                         .OrderBy(DBConfig.ORDER_BY_TIME)
                         .build()
@@ -512,6 +514,7 @@ public class HistoryActivity extends BaseActivity implements
                 DataSupport.search(DBConfig.REMOTE_HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, userId)
+                        .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
                         .OrderBy(DBConfig.ORDER_BY_TIME)
                         .build()
                         .withCallback(new DBCallback<String>() {

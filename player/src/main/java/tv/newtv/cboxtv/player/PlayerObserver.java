@@ -21,6 +21,7 @@ public interface PlayerObserver {
     Activity getCurrentActivity();
     Intent getPlayerActivityIntent();
     boolean isVip();
+    void addLBHistory(String alternateID);
     void activityJump(Context context, String actionType, String contentType,
                                     String contentUUID, String actionUri);
     void addLbCollect(Bundle bundle,DBCallback<String> dbCallback);

@@ -446,6 +446,7 @@ public class UserCenterFragment extends BaseFragment implements
             }).excute();
             DataSupport.search(tableNameHistory).condition()
                     .eq(DBConfig.USERID, userId)
+                    .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
                 @Override

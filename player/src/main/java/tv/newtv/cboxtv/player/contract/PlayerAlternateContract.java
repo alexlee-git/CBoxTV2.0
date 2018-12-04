@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.player.Player;
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            tv.newtv.cboxtv.player.contract
@@ -43,7 +45,7 @@ public class PlayerAlternateContract {
         Alternate getCurrentAlternate();
         int getCurrentPlayIndex();
         boolean playNext();
-
+        void addHistory();
         void playAlternateItem(String contentId, String contentUUID);
     }
 
@@ -105,6 +107,11 @@ public class PlayerAlternateContract {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public void addHistory() {
+            Player.get().addLBHistory(currentAlternateId);
         }
 
         @Override
