@@ -423,20 +423,6 @@ public class ModuleLayoutManager {
         return layoutList;
     }
 
-    public List<String> getWidgetLayoutList(String layoutId) {
-        List<String> layoutList = new ArrayList<>();
-        int count = mWidgetCounter.get(layoutId);
-        int pos = layoutId.indexOf("_");
-        if (pos >= 0) {
-            String code = layoutId.substring(pos + 1);
-            for (int index = 1; index <= count; index++) {
-                layoutList.add(String.format(Locale.getDefault(), "cell_%s_%d", code, index));
-            }
-        }
-        return layoutList;
-    }
-
-
     public boolean isNeedInterceptKeyEvent(String layoutId, String cellCode) {
         if (mFirstLineModules == null) {
             return false;
