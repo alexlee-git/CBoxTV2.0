@@ -409,7 +409,6 @@ public class BlockBuilder extends BaseBlockBuilder {
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
             focusTextView.setSelected(true);
 
-            Log.e("yml", "onItemGetFocus: "+layoutId );
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {
