@@ -133,9 +133,6 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     @Override
     public View getFirstFocusView() {
-        LogUtils.d("ContentFragment", "mRecycleView =" + mRecyclerView);
-        LogUtils.d("ContentFragment", "mRecycleView.getAdapter =" + mRecyclerView.getAdapter());
-        LogUtils.d("ContentFragment", "loadingView visible =" + loadingView.getVisibility());
         if (mRecyclerView != null && mRecyclerView.getAdapter() != null && mRecyclerView
                 .getChildAt(0) != null && loadingView.getVisibility() == View.GONE) {
             String tag = ((UniversalAdapter) mRecyclerView.getAdapter()).getFirstViewId();
@@ -347,9 +344,9 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
                 mRecyclerView.setAdapter(adapter);
             } else {
-                if (!mRecyclerView.hasFocus()) {
+//                if (!mRecyclerView.hasFocus()) {
                     adapter.notifyDataSetChanged();
-                }
+//                }
             }
 
             Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);

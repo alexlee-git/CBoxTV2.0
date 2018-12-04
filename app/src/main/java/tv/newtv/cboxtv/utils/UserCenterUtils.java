@@ -58,7 +58,7 @@ public class UserCenterUtils {
     }
 
     public static void initMemberStatus() {
-        getMemberStatus(new INotifyMemberStatusCallback() {
+        getMemberStatus("", new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
                 UserStatus.setMemberSatus(status);
@@ -72,8 +72,8 @@ public class UserCenterUtils {
     }
 
     //会员状态
-    public static void getMemberStatus(INotifyMemberStatusCallback callBack) {
-        QueryUserStatusUtil.getInstance().getMemberStatus(LauncherApplication.AppContext, callBack);
+    public static void getMemberStatus(String UUid, INotifyMemberStatusCallback callBack) {
+        QueryUserStatusUtil.getInstance().getMemberStatus(LauncherApplication.AppContext,UUid, callBack);
     }
 
     public static void getHistoryState(final String field, final String value, final String order, IHisoryStatusCallback callack) {
@@ -417,6 +417,7 @@ public class UserCenterUtils {
     private static ExterPayBean setExterPayBean(Content mProgramSeriesInfo, String action) {
         ExterPayBean mExterPayBean = new ExterPayBean();
         mExterPayBean.setContentUUID(mProgramSeriesInfo.getContentUUID());
+        Log.d(TAG,"UUID : "+mProgramSeriesInfo.getContentUUID());
         mExterPayBean.setContentType(mProgramSeriesInfo.getContentType());
         mExterPayBean.setContentid(mProgramSeriesInfo.getContentID());
         mExterPayBean.setVipProductId(mProgramSeriesInfo.getVipProductId());

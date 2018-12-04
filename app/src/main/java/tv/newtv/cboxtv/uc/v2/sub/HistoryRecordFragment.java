@@ -12,10 +12,14 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.RxBus;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
@@ -37,6 +41,9 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
 
     private static final int MSG_INFLATE_CONTENT = 10001;
 
+    private int move =-1;
+    private Observable<Integer> observable;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_history_record;
@@ -46,6 +53,14 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
     protected void init() {
         super.init();
 
+        observable = RxBus.get().register("recordPosition");
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        move = integer;
+                    }
+                });
 
     }
 
@@ -88,7 +103,8 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
 
         mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
-        mRecyclerView.setAdapter(new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_HISTORY));
+        UserCenterUniversalAdapter universalAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_HISTORY);
+        mRecyclerView.setAdapter(universalAdapter);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -107,5 +123,12 @@ public class HistoryRecordFragment extends BaseDetailSubFragment {
                 emptyTextView.setText("您好");
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        RxBus.get().unregister("recordPosition",observable);
     }
 }

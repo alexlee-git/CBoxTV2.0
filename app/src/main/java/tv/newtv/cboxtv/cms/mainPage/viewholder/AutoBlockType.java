@@ -160,6 +160,10 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
 
         int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
         Log.i(TAG, "layoutCode=" + layoutCode);
+        List<String> layoutList = ModuleLayoutManager.getInstance().getWidgetLayoutList
+                (layoutId);
+        Log.i(TAG, "layoutList=" + layoutList);
+
         if (blockData.getRows() != null && blockData.getRows().size() > 0) {
 
             for (int i = 0; i < posSize; i++) {
@@ -190,6 +194,9 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                 final FrameLayout frameLayout = (FrameLayout) holder.itemView.findViewWithTag
                         (frameLayoutId);
                 if (frameLayout != null) {
+                    layoutList.remove(frameLayoutId);
+                    frameLayout.setVisibility(VISIBLE);
+
                     //屏幕适配
                     if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
@@ -264,6 +271,15 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                 if (recycleImageView != null) {
                     blockBuilder.showPosterByCMS(recycleImageView, info.getVImage(),
                             hasCorner);
+                }
+            }
+        }
+
+        if (layoutList.size() > 0) {
+            for (String layout : layoutList) {
+                View target = holder.itemView.findViewWithTag(layout);
+                if(target != null){
+                    target.setVisibility(View.GONE);
                 }
             }
         }

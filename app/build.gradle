@@ -27,8 +27,8 @@ android {
         applicationId "com.newtv.cboxtv"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1008
-        versionName "2.0.8"
+        versionCode 1012
+        versionName "2.0.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
@@ -100,6 +100,19 @@ android {
             ]
         }
         xiaomi {
+
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"600001\""
+            buildConfigField "String", "CLIENT_ID", "\"12\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "600001"
+            ]
+        }
+
+        xiaomi_stage {
 
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""

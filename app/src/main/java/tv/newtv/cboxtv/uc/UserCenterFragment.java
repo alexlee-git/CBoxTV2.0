@@ -299,7 +299,7 @@ public class UserCenterFragment extends BaseFragment implements
     //读取用户会员信息
     private void requestMemberInfo() {
         try {
-            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey()).subscribeOn(Schedulers.io())
+            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(),"").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
 
                 @Override
@@ -835,7 +835,12 @@ public class UserCenterFragment extends BaseFragment implements
                     }
                     break;
                 case R.id.id_user_btn_member:
-                    clazz = MemberCenterActivity.class;
+                    if (!TextUtils.isEmpty(mLoginTokenString)) {
+                        intent.putExtra("member_status", memberStatusString);
+                        clazz = MemberCenterActivity.class;
+                    } else {
+                        clazz = LoginActivity.class;
+                    }
                     break;
                 case R.id.id_user_btn_order:
                     if (!TextUtils.isEmpty(mLoginTokenString)) {

@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.uc.v2.sub;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -25,6 +27,7 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
@@ -35,6 +38,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Handler;
 
 import io.reactivex.Observable;
@@ -67,8 +71,10 @@ import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 
 
 public class CollectionProgramSetFragment extends BaseDetailSubFragment implements PageContract.View {
-    private final String TAG = "CollectionProgramSetFragment";
+    private final String TAG = "ColProgramSetFragment";
     private RecyclerView mRecyclerView;
+    private View mHotRecommendArea;
+    private ImageView mHotRecommendTitleIcon;
     private RecyclerView mHotRecommendRecyclerView;
     private TextView emptyTextView;
     private TextView mHotRecommendTitle;
@@ -88,6 +94,12 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private static final int MSG_INFLATE_PAGE = 10034;
 
     private static CollectionHandler mHandler;
+    private int move = -1;
+    private Observable<Integer> observable;
+
+    private Observable<Map<String, String>> operationObs;
+    private String operationType;
+    private String operationId;
 
     @Override
     protected int getLayoutId() {
@@ -103,6 +115,26 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     @Override
     public void onResume() {
         super.onResume();
+        observable = RxBus.get().register("recordPosition");
+        observable.observeOn(AndroidSchedulers .mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        move = integer;
+                    }
+                });
+
+        operationObs = RxBus.get().register("col_operation_map");
+        operationObs.observeOn(AndroidSchedulers .mainThread())
+                .subscribe(new Consumer<Map<String, String>>() {
+                    @Override
+                    public void accept(Map<String, String> map) throws Exception {
+                        operationType = map.get("col_operation_type");
+                        operationId = map.get("col_operation_id");
+                        Log.d("lx", "type : " + operationType + ", id : " + operationId);
+                    }
+                });
+
         //获取用户登录状态
         requestUserInfo();
     }
@@ -274,6 +306,17 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             return;
         }
 
+        hideView(emptyTextView);
+        hideView(mHotRecommendTitle);
+        hideView(mHotRecommendTitleIcon);
+        hideView(mHotRecommendRecyclerView);
+
+        showView(mRecyclerView);
+
+        for (UserCenterPageBean.Bean item : datas) {
+            Log.d("lx", "name : " + item.get_title_name());
+        }
+
         if (mDatas == null) {
             mDatas = datas;
             mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
@@ -291,19 +334,27 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                 }
             });
         } else {
-            if (mAdapter != null && mDatas != null) {
-                mDatas.clear();
-                mDatas.addAll(datas);
-                mAdapter.notifyDataSetChanged();
+            if (mAdapter != null) {
+                if (TextUtils.equals(operationType, "delete")) {
+                    boolean refresh = (datas.size() == mDatas.size());
+                    mAdapter.setRefresh(refresh);
+                    mDatas.clear();
+                    mDatas.addAll(datas);
+                    if (!refresh) {
+                        mAdapter.notifyItemRemoved(move);
+                    }
+                } else if (TextUtils.equals(operationType, "add")) {
+                    mDatas.clear();
+                    mDatas.addAll(datas);
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         }
     }
 
 
     private void inflatePageWhenNoData() {
-        mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
-        mRecyclerView.setVisibility(View.INVISIBLE);
-
+        hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
@@ -312,8 +363,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         } else {
             Log.e("collectionFragment", "wqs:PAGE_SUBSCRIPTION==null");
         }
-
-//        showHotRecommend();
     }
 
     /**
@@ -333,75 +382,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         }
     }
 
-    /**
-     * 展示热门收藏数据
-     */
-    private void showHotRecommend() {
-        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
-        NetClient.INSTANCE.getHotSubscribeApi()
-                .getHotSubscribeInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), hotRecommendParam)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(ResponseBody result) {
-                        try {
-                            ModuleInfoResult infoResult = ModuleUtils.getInstance().parseJsonForModuleInfo(result.string());
-                            if (infoResult == null) {
-                                return;
-                            }
-
-                            List<ModuleItem> moduleItems = infoResult.getDatas();
-                            List<Program> programInfos = moduleItems.get(0).getDatas();
-
-                            ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
-                            if (viewStub != null) {
-                                View view = viewStub.inflate();
-
-                                if (view != null) {
-                                    mHotRecommendRecyclerView = view.findViewById(R.id.id_hot_recommend_area_rv);
-                                    mHotRecommendRecyclerView.setHasFixedSize(true);
-                                    mHotRecommendRecyclerView.setItemAnimator(null);
-                                    mHotRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false) {
-                                        @Override
-                                        public boolean canScrollHorizontally() {
-                                            return false;
-                                        }
-                                    });
-                                    mHotRecommendRecyclerView.setAdapter(new HotRecommendAreaAdapter(getActivity(), programInfos));
-                                    mHotRecommendRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                                        @Override
-                                        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                                            int index = parent.getChildLayoutPosition(view);
-                                            if (index < COLUMN_COUNT) {
-                                                outRect.top = 23;
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
     @Override
     public void onPageResult(@Nullable List<Page> page) {
         try {
@@ -413,10 +393,11 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
             if (viewStub != null) {
                 View view = viewStub.inflate();
-
                 if (view != null) {
+                    mHotRecommendArea = view;
                     mHotRecommendTitle = view.findViewById(R.id.id_hot_recommend_area_title);
                     mHotRecommendTitle.setText(page.get(0).getBlockTitle());
+                    mHotRecommendTitleIcon = view.findViewById(R.id.id_hot_recommend_area_icon);
                     mHotRecommendRecyclerView = view.findViewById(R.id.id_hot_recommend_area_rv);
                     mHotRecommendRecyclerView.setHasFixedSize(true);
                     mHotRecommendRecyclerView.setItemAnimator(null);
@@ -438,6 +419,11 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                     });
                 }
             }
+
+            showView(emptyTextView);
+            showView(mHotRecommendTitle);
+            showView(mHotRecommendTitleIcon);
+            showView(mHotRecommendRecyclerView);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -486,5 +472,11 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     @Override
     public void loadingComplete() {
 
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RxBus.get().unregister("recordPosition", observable);
+        RxBus.get().unregister("col_operation_map", operationObs);
     }
 }

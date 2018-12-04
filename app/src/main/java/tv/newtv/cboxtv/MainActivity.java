@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,11 +12,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.newtv.cms.bean.Time;
 import com.newtv.cms.bean.UpVersion;
 import com.newtv.cms.contract.AppMainContract;
 import com.newtv.cms.contract.VersionUpdateContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.ServerTime;
 import com.newtv.libs.ad.AdEventContent;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
@@ -29,7 +27,6 @@ import com.newtv.libs.util.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,8 +43,9 @@ import tv.newtv.cboxtv.views.UpdateDialog;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
 @BuyGoodsAD
-public class MainActivity extends BaseActivity implements BackGroundManager.BGCallback , AppMainContract
-        .View, VersionUpdateContract.View {
+public class MainActivity extends BaseActivity implements BackGroundManager.BGCallback,
+        AppMainContract
+                .View, VersionUpdateContract.View {
 
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -122,6 +120,11 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
     @Override
     protected void onResume() {
         // 上报进入首页日志
+
+        if (mPresenter != null) {
+            mPresenter.onResume();
+        }
+
         LogUploadUtils.uploadLog(Constant.LOG_NODE_HOME_PAGE, "0");
         BackGroundManager.getInstance().registView(this);
         super.onResume();
@@ -199,7 +202,7 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
             LogUtils.e("MainNavManager", currentFragment.toString());
             currentFragment.dispatchKeyEvent(event);
         }
-        
+
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (!BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)) {
                 if (SystemUtils.isFastDoubleClick()) {
@@ -235,6 +238,13 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
                             .processKeyEvent(event, "status_bar");
                     if (result) {
                         return true;
+                    } else {
+                        View firstFocus = ((NavFragment) currentFragment).mainListPageManager
+                                .getFirstFocusView();
+                        if (firstFocus != null) {
+                            firstFocus.requestFocus();
+                            return true;
+                        }
                     }
                 }
                 return true;
@@ -249,9 +259,16 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
                                         currentFragment.getView(),
                                 focusView, View.FOCUS_UP);
 
-                        if (topView != null && topView.getParent()
-                                instanceof MenuRecycleView) {
-                            ((NavFragment) currentFragment).requestMenuFocus();
+                        if (topView != null) {
+                            if (topView.getParent() instanceof MenuRecycleView) {
+                                if (((NavFragment) currentFragment).useMenuRecycleView()) {
+                                    ((NavFragment) currentFragment).requestMenuFocus();
+                                }
+                                return true;
+                            }
+                        } else {
+                            if (mFirMenuRv.hasFocus()) return true;
+                            mFirMenuRv.mCurrentCenterChildView.requestFocus();
                             return true;
                         }
                     }
@@ -296,7 +313,8 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
             AdEventContent adEventContent = GsonUtil.fromjson(eventContentString, AdEventContent
                     .class);
             JumpUtil.activityJump(this, adEventContent.actionType, adEventContent.contentType,
-                    adEventContent.contentUUID, adEventContent.actionURI,adEventContent.defaultUUID);
+                    adEventContent.contentUUID, adEventContent.actionURI, adEventContent
+                            .defaultUUID);
 
         } catch (Exception e) {
             Log.e(TAG, e.toString());
@@ -320,13 +338,7 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
 
     @Override
     public void syncServerTime(Long result) {
-        if (result != null) {
-            CharSequence sysTimeStr = DateFormat.format("HH:mm", new Date(result));
-            timeTV.setText(sysTimeStr); //更新时间
-        } else {
-            long sysTime = System.currentTimeMillis();//获取系统时间
-            CharSequence sysTimeStr = DateFormat.format("HH:mm", sysTime);//时间显示格式
-            timeTV.setText(sysTimeStr); //更新时间
-        }
+        String sysTimeStr = ServerTime.get().formatCurrentTime("HH:mm");
+        timeTV.setText(sysTimeStr); //更新时间
     }
 }

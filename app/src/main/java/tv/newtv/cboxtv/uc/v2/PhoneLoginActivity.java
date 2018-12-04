@@ -40,6 +40,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
@@ -56,7 +57,7 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
  * 创建日期:          2018/9/10
  */
 
-public class PhoneLoginActivity extends Activity implements View.OnClickListener {
+public class PhoneLoginActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = PhoneLoginActivity.class.getSimpleName();
 
     public static final String PHONE_LOGIN_ACTION = "android.intent.action.PHONE_LOGIN";
@@ -309,7 +310,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
                         if (mFlagPay) {
                             if (mVipFlag != null) {
                                 Intent mIntent = new Intent();
-                                if (mVipFlag.equals("3")) {
+                                if (mVipFlag.equals(Constant.BUY_ONLY)) {
                                     mIntent.setClass(PhoneLoginActivity.this, PayOrderActivity.class);
                                 } else {
                                     mIntent.setClass(PhoneLoginActivity.this, PayChannelActivity.class);
@@ -336,7 +337,7 @@ public class PhoneLoginActivity extends Activity implements View.OnClickListener
             //验证手机号码格式是否正确
             tv_code_status.setText(getResources().getString(R.string.phone_login_status2));
             return false;
-        } else if (!mobile.matches("^1[3|4|5|7|8][0-9]\\d{4,8}$")) {
+        } else if (!mobile.matches("^1[3|4|5|7|8|9][0-9]\\d{4,8}$")) {
             Toast.makeText(PhoneLoginActivity.this, "手机号输入有误，请重新输入!", Toast.LENGTH_LONG).show();
             mPhoneLoginInput.setText("");
             mPhoneLoginInput.requestFocus();

@@ -50,6 +50,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.ActivityStacks;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
@@ -76,7 +77,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * 修改日期：
  * 修改备注：
  */
-public class MemberCenterActivity extends Activity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>, PageContract.View {
+public class MemberCenterActivity extends BaseActivity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>, PageContract.View {
     private final String TAG = "MemberCenterActivity";
     public static final int HEAD = 0;
     public static final int RECOMMEND_PROMOTION = 1;//会员促销推荐位
@@ -239,7 +240,7 @@ public class MemberCenterActivity extends Activity implements OnRecycleItemClick
     //读取用户会员信息
     private void requestMemberInfo() {
         try {
-            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey()).subscribeOn(Schedulers.io())
+            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(),"").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
 
                 @Override

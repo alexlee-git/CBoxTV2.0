@@ -12,11 +12,13 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 
 public class TimeDialog {
     private static final int TIME_MSG = 1;
     private static AlertDialog ad;
     private static int time = 5;
+    public static Boolean isDisMiss = true;
     private static TextView textView = null;
     private static TextView ensure = null;
     private static TextView notificationView = null;
@@ -45,11 +47,11 @@ public class TimeDialog {
         }
     }
 
-    public static void showBuilder(Context context){
-        showBuilder(context,"",null);
+    public static void showBuilder(Context context, HeadPlayerView headPlayerView){
+        showBuilder(context,"",null,headPlayerView);
     }
 
-    public static void showBuilder(Context context, String notification, final View.OnClickListener listener) {
+    public static void showBuilder(Context context, String notification, final View.OnClickListener listener, final HeadPlayerView headPlayerView) {
         if (context == null) {
             return;
         }
@@ -74,10 +76,12 @@ public class TimeDialog {
             @Override
             public void onClick(View v) {
                 if (time <= 0) {
+                    headPlayerView.continuePlayVideo();
                     TimeDialog.dismiss();
                     if(listener != null){
                         listener.onClick(v);
                     }
+                    isDisMiss = false;
                 }
             }
         });

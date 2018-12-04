@@ -78,8 +78,6 @@ master2.0是二期版本
         <address url="http://stage-bzo.cloud.ottcn.com/" name="USER_BEHAVIOR"/>
         <address url="http://stage-bzo.cloud.ottcn.com/" name="PRODUCT"/>
         
-        <address url="http://testcms31.ottcn.com:30013/" name="NEW_CMS"/>
-        <address url="http://111.32.138.57:80/" name="NEW_SEARCH"/>
         <address url="666" name="HOTSEARCH_CONTENTID"/>
         <address url="555" name="EXIT_CONTENTID"/>
         

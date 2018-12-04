@@ -109,7 +109,7 @@ public class QueryUserStatusUtil {
 
 
     //获取会员状态
-    public void getMemberStatus(final Context context, final INotifyMemberStatusCallback callback) {
+    public void getMemberStatus(final Context context, final String UUid, final INotifyMemberStatusCallback callback) {
         try {
             final Bundle mMemberBundle = new Bundle();
             getLoginStatus(context, new INotifyLoginStatusCallback() {
@@ -117,7 +117,7 @@ public class QueryUserStatusUtil {
                 public void notifyLoginStatusCallback(boolean status) {
                     if (status) {
                         String token = SharePreferenceUtils.getToken(context);
-                        NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + token, "", Libs.get().getAppKey()).subscribeOn(Schedulers.io())
+                        NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + token, "", Libs.get().getAppKey(),UUid).subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
 
                             @Override

@@ -93,7 +93,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     @Override
     public void setViewPager(ResizeViewPager viewPager, int position, EpisodeChange change) {
         mWeakViewPager = new WeakReference<ResizeViewPager>(viewPager);
-        mWeakViewPager.get().setUseResize(false);
+//        mWeakViewPager.get().setUseResize(false);
         mChange = change;
         mPosition = position;
     }
@@ -300,8 +300,8 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
                     mTitleView.setText(programsInfo.getPeriods());
                 }
                 //为剧集页添加vip功能  1 单点包月  3vip  4单点
-                int vipFlag = Integer.parseInt(programsInfo.getVipFlag());
-                if (vipFlag == 3){
+//                int vipFlag = Integer.parseInt(programsInfo.getVipFlag());
+                if (TextUtils.equals("3",programsInfo.getVipFlag())){
                     mImageView.setVisibility(View.VISIBLE);
                 }else {
                     mImageView.setVisibility(View.GONE);

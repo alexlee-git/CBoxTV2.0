@@ -232,7 +232,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
-            LogUtils.i(TAG, "onPrepared: ");
+            LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
 //            stopLoading();//注释掉该行代码会在乐视上导致在播放某些视频时一直显示加载  但是视频已经播放的问题
             if(BuildConfig.FLAVOR.equals(DeviceUtil.LETV))
@@ -895,6 +895,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * type 1为单节目 2为节目集 3为直播
      */
     private void updatePlayStatus(int type, int index, int position) {
+        Log.i(TAG, "updatePlay position="  + position + "   ====" + type + ":" + index);
         setHintTextVisible(GONE);
         mIsPrepared = false;
         dismissChildView();
@@ -1433,6 +1434,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void start() {
+        hidePauseImage();
         if (mNewTVLauncherPlayer != null)
             mNewTVLauncherPlayer.start();
 
@@ -1441,6 +1443,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void pause() {
+        showPauseImage();
         if (mNewTVLauncherPlayer != null)
             mNewTVLauncherPlayer.pause();
 
@@ -1485,8 +1488,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void addHistory() {
         if (isLiving() || defaultConfig.isAlternate) return;
 
-        if (defaultConfig.programSeriesInfo == null || defaultConfig.programSeriesInfo.getData()
-                == null) {
+        if (defaultConfig.programSeriesInfo == null) {
             return;
         }
 
@@ -1494,11 +1496,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
                 getCurrentPosition(), defaultConfig.programSeriesInfo.getContentUUID()));
-
-        if (defaultConfig.programSeriesInfo.getData().size() > index && index >= 0
-                && defaultConfig.programSeriesInfo.getData().get(index).getUseSeriesSubUUID()) {
-            return;
-        }
 
         Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
                 getDuration());
@@ -1550,6 +1547,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
+            mNewTVLauncherPlayerSeekbar.setFreeDuration(0,null);
         }
 
         if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals
@@ -1596,10 +1594,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onChange(String current, String start, String end, boolean isComplete) {
         if (isComplete) {
-            release();
             if (mLiveListener != null) {
                 mLiveListener.onComplete();
             }
+            release();
         }
         if (mLiveListener != null) {
             mLiveListener.onTimeChange(current, end);

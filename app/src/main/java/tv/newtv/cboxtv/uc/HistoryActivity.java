@@ -56,6 +56,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
@@ -69,7 +70,7 @@ import tv.newtv.cboxtv.views.GridRecycleView;
  * Created by gaoleichao on 2018/3/29.
  */
 
-public class HistoryActivity extends FragmentActivity implements
+public class HistoryActivity extends BaseActivity implements
         OnRecycleItemClickListener<UserCenterPageBean.Bean>, View.OnFocusChangeListener, View
         .OnKeyListener {
 
@@ -104,7 +105,9 @@ public class HistoryActivity extends FragmentActivity implements
                 mCollectBean = (List<UserCenterPageBean.Bean>) message.obj;
                 if (mCollectBean != null && mCollectBean.size() != 0) {
                     mAdapter.appendToList(mCollectBean);
+                    mRecyclerView.smoothScrollToPosition(0);
                     mAdapter.notifyDataSetChanged();
+
                 } else {
                     // 展示无观看记录的提示
                     ViewStub viewStub = findViewById(R.id.id_empty_view_vs);
@@ -294,7 +297,7 @@ public class HistoryActivity extends FragmentActivity implements
     }
 
     private void showDeleteDialog() {
-        if (mCollectBean == null || mCollectBean.size() < 0) return;
+        if (mCollectBean == null || mCollectBean.size() < 1) return;
         if (mAdapter.getSelectPostion() < 0) return;
         mAdapter.setAllowLostFocus(false);
 

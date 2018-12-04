@@ -59,6 +59,7 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.NetWorkUtils;
@@ -73,7 +74,8 @@ import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
  * 创建人:       caolonghe
  * 创建日期:     2018/9/12 0012
  */
-public class PayOrderActivity extends Activity implements View.OnFocusChangeListener, View.OnClickListener {
+public class PayOrderActivity extends BaseActivity implements View.OnFocusChangeListener, View
+        .OnClickListener {
 
     private final String TAG = "PayOrderActivity";
     private RelativeLayout rel_pay;
@@ -93,6 +95,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     private final String pay_success = "PAY_SUCCESS";
     private String status = "";
     private final int MSG_QRCODE = 1;
+    private final int MSG_BUY_ONLY = 2;
     private final int MSG_ERROR = 3;
     private final int MSG_RESULT = 4;
     private final int MSG_RESULT_OK_TIME = 5;
@@ -158,8 +161,7 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                     if (isRefresh) {
                         Log.i(TAG, "isToken is ture");
                         mToken = SharePreferenceUtils.getToken(PayOrderActivity.this);
-                        time = requestMemberInfo();
-
+                        time = requestMemberInfo("");
                     } else {
                         Log.i(TAG, "isToken is false");
                     }
@@ -181,10 +183,8 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                                 finish();
                                 return;
                             }
-                            if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
-                                getProductPrice(mVipProductId, Libs.get().getAppKey(), Libs.get().getChannelId());
-                            } else {
-                                getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
+                            if (mHandler != null) {
+                                mHandler.sendEmptyMessage(MSG_BUY_ONLY);
                             }
                         } else {
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
@@ -265,6 +265,30 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                 break;
         }
 
+    }
+
+    private void setBuyOnly() {
+        Observable.create(new ObservableOnSubscribe<Long>() {
+            @Override
+            public void subscribe(ObservableEmitter<Long> emitter) throws Exception {
+
+                time = requestMemberInfo(mContentUUID);
+
+                emitter.onNext(time);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+
+                        if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
+                            getProductPrice(mVipProductId, Libs.get().getAppKey(), Libs.get().getChannelId());
+                        } else {
+                            getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
+                        }
+                    }
+                });
     }
 
     private void getProductPrice(String prdId, String appkey, String channelId) {
@@ -445,6 +469,9 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                     uploadUnPayLog(0);
                     break;
                 }
+                case MSG_BUY_ONLY:
+                    setBuyOnly();
+                    break;
                 case MSG_ERROR: {
                     Toast.makeText(PayOrderActivity.this, message_error, Toast.LENGTH_LONG).show();
                     finish();
@@ -537,15 +564,9 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
                                     long duration = pricesBean.getRealDuration() * 60 * 60 * 1000;
                                     Log.i(TAG, "duration :" + duration);
                                     Log.i(TAG, "expireTime :" + expireTime);
-                                    if (isBuyOnly) {
-                                        expireTime_All = duration + TimeUtil.getInstance().getCurrentTimeInMillis();
-                                    } else {
-                                        expireTime_All = duration + expireTime;
-                                    }
-                                    Log.i(TAG, "time :" + expireTime_All);
-                                    Date date = new Date(expireTime_All);
-                                    SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-                                    tv_time.setText(getResources().getString(R.string.usercenter_pay_time) + format.format(date));
+                                    expireTime_All = duration + expireTime;
+                                    setTime(expireTime_All, tv_time, getResources().getString(R.string.usercenter_pay_time));
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                     return true;
@@ -569,35 +590,36 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         return strprice;
     }
 
-    private void setExprefresh() {
-        if (isBuyOnly) {
-            Date date2 = new Date(expireTime_All);
-            SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-            tv_dialog_time.setText(getResources().getString(R.string.usercenter_pay_success_time) +
-                    format2.format(date2));
+    long time;
 
-        } else {
-            Observable.create(new ObservableOnSubscribe<Long>() {
-                @Override
-                public void subscribe(ObservableEmitter<Long> e) throws Exception {
-                    long time = requestMemberInfo();
-                    Log.i(TAG, "setExprefresh : " + time);
-                    e.onNext(time);
+    private void setExprefresh() {
+        Observable.create(new ObservableOnSubscribe<Long>() {
+            @Override
+            public void subscribe(ObservableEmitter<Long> e) throws Exception {
+                if (isBuyOnly) {
+                    time = requestMemberInfo(mContentUUID);
+                } else {
+                    time = requestMemberInfo("");
                 }
-            }).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Long>() {
-                        @Override
-                        public void accept(Long aLong) throws Exception {
-                            Date date2 = new Date(aLong);
-                            SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
-                            tv_dialog_time.setText(getResources().getString(R.string.usercenter_pay_success_time) +
-                                    format2.format(date2));
-                        }
-                    });
-        }
+                Log.i(TAG, "setExprefresh : " + time);
+                e.onNext(time);
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                        setTime(aLong, tv_dialog_time, getResources().getString(R.string.usercenter_pay_success_time));
+                    }
+                });
+
     }
 
+    private void setTime(long time, TextView tv, String str) {
+        Date date2 = new Date(time);
+        SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+        tv.setText(str + format2.format(date2));
+    }
 
     private void setStartActivity() {
         Intent intent = new Intent();
@@ -891,11 +913,11 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
     }
 
     //读取用户会员信息
-    private long requestMemberInfo() {
+    private long requestMemberInfo(String mContentUUID) {
         try {
             NetClient.INSTANCE.getUserCenterMemberInfoApi()
                     .getMemberInfo("Bearer " + mToken, "",
-                            Libs.get().getAppKey())
+                            Libs.get().getAppKey(), mContentUUID)
                     .subscribe(new Observer<ResponseBody>() {
 
                         @Override
@@ -942,12 +964,20 @@ public class PayOrderActivity extends Activity implements View.OnFocusChangeList
         }
         Log.i(TAG, "---expireTime：" + expireTime);
         Log.i(TAG, "---systemTime：" + TimeUtil.getInstance().getCurrentTimeInMillis());
+
         if (expireTime <= TimeUtil.getInstance().getCurrentTimeInMillis()) {
             expireTime = TimeUtil.getInstance().getCurrentTimeInMillis();
-            isVip = false;
+            if (TextUtils.isEmpty(mContentUUID)) {
+                isVip = false;
+            }
+
         } else {
-            isVip = true;
+            if (TextUtils.isEmpty(mContentUUID)) {
+                isVip = true;
+            }
+
         }
+
         return expireTime;
     }
 

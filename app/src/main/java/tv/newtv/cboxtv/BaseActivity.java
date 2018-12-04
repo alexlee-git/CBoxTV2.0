@@ -74,6 +74,11 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     }
 
     @Override
+    public void finish() {
+        super.finish();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lifeCycleList = new ArrayList<>();
@@ -214,8 +219,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             if (rootView instanceof ViewGroup) {
                 View focusView = rootView.findFocus();
                 View nextFocus = FocusFinder.getInstance().findNextFocus((ViewGroup) rootView,
-                        focusView, View
-                                .FOCUS_UP);
+                        focusView, View.FOCUS_UP);
                 if (isDetail() && nextFocus == null) {
                     NavPopuView navPopuView = new NavPopuView();
                     navPopuView.showPopup(this, rootView);
