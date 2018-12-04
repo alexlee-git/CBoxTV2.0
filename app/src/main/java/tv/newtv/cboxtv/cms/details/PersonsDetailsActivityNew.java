@@ -81,11 +81,13 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
 
     private void requestData(String contentUUID) {
 
-        hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6);
+        hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6,R
+                .drawable.focus_240_360,EpisodeHorizontalListView.DIRECTION_VERTICAL);
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
                 contentUUID, hostProgramView);// 获取主持列表
 
-        taProgramView.setHorizontalItemLayout(R.layout.program_horizontal_normal_land_layout,4);
+        taProgramView.setHorizontalItemLayout(R.layout.program_horizontal_normal_land_layout,4,R
+                .drawable.focus_384_216,EpisodeHorizontalListView.DIRECTION_HORIZONTAL);
         taProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_RELATION_LV,
                 contentUUID, taProgramView);// 获取相关节目列表
 
