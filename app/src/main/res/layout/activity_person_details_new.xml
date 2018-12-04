@@ -7,7 +7,6 @@
     
 
     <tv.newtv.cboxtv.views.detail.PersonDetailHeadView
-        android:layout_below="@+id/up_top"
         android:id="@+id/person_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

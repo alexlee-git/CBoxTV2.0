@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.player.videoview;
+package tv.newtv.cboxtv.player;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -29,7 +29,7 @@ public class VPlayCenter {
     private int currentIndex = 0;
     private int currentType;
 
-    VPlayCenter() {
+    public VPlayCenter() {
     }
 
     public int getCurrentType() {
@@ -58,7 +58,7 @@ public class VPlayCenter {
                     dataStruct.playType = PLAY_SINGLE;
                     currentType = PLAY_SINGLE;
                 } else {
-                    if (seriesInfo.getData() != null) {
+                    if (seriesInfo.getData() != null && seriesInfo.getData().size() > 0) {
                         if (index >= seriesInfo.getData().size()) {
                             index = seriesInfo.getData().size() - 1;
                         }
@@ -67,7 +67,7 @@ public class VPlayCenter {
                         dataStruct.title = programsInfo.getTitle();
                         dataStruct.uuid = programsInfo.getContentUUID();
                         dataStruct.img = programsInfo.getHImage();
-                        dataStruct.albumId = seriesInfo.getContentUUID();
+                        dataStruct.albumId = seriesInfo.getContentID();
                         dataStruct.playType = PLAY_SERIES;
                         currentType = PLAY_SERIES;
                     }
@@ -105,10 +105,10 @@ public class VPlayCenter {
      */
     public boolean hasNext() {
         if (currentType == PLAY_SINGLE) return false;
-        return hasNext(currentIndex + 1);
+        return contains(currentIndex + 1);
     }
 
-    boolean hasNext(int index) {
+    private boolean contains(int index) {
         if (currentType == PLAY_SINGLE) return false;
         DataStruct dataStruct = getDataStruct(index);
         if (dataStruct == null) {
@@ -138,14 +138,15 @@ public class VPlayCenter {
             return;
         }
 
-        if(CmsUtil.isVideoTv(seriesInfo)) {
+        if (CmsUtil.isVideoTv(seriesInfo) && !TextUtils.isEmpty(seriesInfo.isFinish())) {
             final boolean isDesc = "1".equals(seriesInfo.getPlayOrder());
             if (seriesInfo.getData() != null && seriesInfo.getData().size() > 0) {
                 Collections.sort(seriesInfo.getData(), new Comparator<SubContent>() {
                     @Override
                     public int compare(SubContent t1, SubContent t2) {
                         try {
-                            String valueA = TextUtils.isEmpty(t1.getPeriods()) ? "0" : t1.getPeriods();
+                            String valueA = TextUtils.isEmpty(t1.getPeriods()) ? "0" :
+                                    t1.getPeriods();
                             String valueB = TextUtils.isEmpty(t2.getPeriods()) ? "0" :
                                     t2.getPeriods();
                             if (isDesc) {

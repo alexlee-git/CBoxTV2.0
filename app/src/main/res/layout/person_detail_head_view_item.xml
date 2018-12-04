@@ -8,7 +8,7 @@
         layout="@layout/left_top_logo"/>
 
     <include
-        layout="@layout/up_top_nav"
+        layout="@layout/up_top_"
         android:visibility="gone" />
 
     <FrameLayout

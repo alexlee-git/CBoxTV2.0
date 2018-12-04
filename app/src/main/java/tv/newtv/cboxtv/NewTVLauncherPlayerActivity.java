@@ -230,13 +230,19 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         mProgramSeriesInfo = content;
+        if (content == null || !(Constant.CONTENTTYPE_CP.equals(content.getContentType()) || Constant.CONTENTTYPE_PG
+                .equals(content.getContentType())) && (content.getData() == null
+                || content.getData().size() == 0)) {
+            Toast.makeText(this,"节目内容为空",Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
         doPlay(content);
     }
 
     private void doPlay(Content content) {
         initListener();
-        NewTVLauncherPlayerViewManager.getInstance().play(this, content, mIndexPlay, playPostion,
-                false);
+        NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay, playPostion);
         NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
                 (mPlayerFrameLayoutContainer, this);
         mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();

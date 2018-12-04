@@ -24,6 +24,7 @@ import com.newtv.libs.util.UsefulBitmapFactory;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -37,7 +38,6 @@ public class BlockPosterView extends FrameLayout implements Navigation
     private static final String TAG = BlockPosterView.class.getSimpleName();
     private static final int BLOCK_TYPE_IMAGE = 0;
     private static final int BLOCK_TYPE_VIDEO = 1;
-    private static final int BLOCK_TYPE_ALTERNAT = 2;
     private View focusBackground;
     private RecycleImageView mPosterImage;
     private TextView mPosterTitle;
@@ -57,7 +57,7 @@ public class BlockPosterView extends FrameLayout implements Navigation
     private String mPageUUID;
 
     private LivePlayView mLivePlayView;
-    private AlternateView mAlternateView;
+//    private AlternateView mAlternateView;
 
     private boolean isVideoMode = false;
 
@@ -81,10 +81,6 @@ public class BlockPosterView extends FrameLayout implements Navigation
         if(mLivePlayView != null){
             mLivePlayView.dispatchWindowVisibilityChanged(visibility);
         }
-
-        if(mAlternateView != null){
-            mAlternateView.dispatchWindowVisibilityChanged(visibility);
-        }
     }
 
     public RecycleImageView getPosterImageView() {
@@ -103,9 +99,7 @@ public class BlockPosterView extends FrameLayout implements Navigation
         if(mLivePlayView != null){
             mLivePlayView.setPageUUID(uuid);
         }
-        if(mAlternateView != null){
-            mAlternateView.setPageUUID(uuid);
-        }
+
     }
 
     @Override
@@ -120,11 +114,6 @@ public class BlockPosterView extends FrameLayout implements Navigation
     public void setData(Program program) {
         if (mLivePlayView != null) {
             mLivePlayView.setProgramInfo(program);
-        }
-
-        if (mAlternateView != null) {
-            mAlternateView.setContentUUID(program.getL_id(), program.getAlternateNumber(),
-                    program.getTitle());
         }
 
         GlideUtil.loadImage(getContext(), mPosterImage, program.getImg(), poster_resource_holder,
@@ -170,18 +159,13 @@ public class BlockPosterView extends FrameLayout implements Navigation
             mLivePlayView.layout(marginSpace, marginSpace, getBlockWidth() - marginSpace * 2,
                     getBlockHeight() - marginSpace * 2 - titleHeight);
         }
-
-        if (block_type == BLOCK_TYPE_ALTERNAT && mAlternateView != null) {
-            mAlternateView.layout(marginSpace, marginSpace, getBlockWidth() - marginSpace * 2,
-                    getBlockHeight() - marginSpace * 2 - titleHeight);
-        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if ((block_type == BLOCK_TYPE_VIDEO || block_type == BLOCK_TYPE_ALTERNAT)
+        if ((block_type == BLOCK_TYPE_VIDEO)
                 && isInEditMode()) {
             canvas.drawBitmap(bitmap, (getWidth() - bitmap.getWidth()) / 2, (getHeight
                     () - bitmap.getHeight()) / 2, mPaint);
@@ -213,7 +197,7 @@ public class BlockPosterView extends FrameLayout implements Navigation
             typedArray.recycle();
         }
 
-        if (block_type == BLOCK_TYPE_VIDEO || block_type == BLOCK_TYPE_ALTERNAT) {
+        if (block_type == BLOCK_TYPE_VIDEO) {
             mPaint = new Paint();
 
             int width = (int) (getContext().getResources().getDimensionPixelOffset(R.dimen
@@ -287,16 +271,6 @@ public class BlockPosterView extends FrameLayout implements Navigation
                     addView(mLivePlayView, 2, layoutParams);
                 }
                 break;
-            case BLOCK_TYPE_ALTERNAT:
-                isVideoMode = true;
-                if (mAlternateView == null) {
-                    mAlternateView = new AlternateView(getContext());
-                    mAlternateView.setLayoutParams(layoutParams);
-                    mAlternateView.attachScreenListener(this);
-                    mAlternateView.setPageUUID(mPageUUID);
-                    addView(mAlternateView, 2, layoutParams);
-                }
-                break;
             default:
                 break;
         }
@@ -304,10 +278,6 @@ public class BlockPosterView extends FrameLayout implements Navigation
 
     @Override
     public void onClick(View view) {
-        if (mAlternateView != null) {
-            mAlternateView.onClick();
-            return;
-        }
         if (mLivePlayView != null) {
             mLivePlayView.dispatchClick();
         }

@@ -2,23 +2,30 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-                android:layout_height="@dimen/height_500px"
+                android:layout_height="@dimen/height_550px"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:paddingEnd="@dimen/width_87px"
                 android:paddingRight="@dimen/width_87px">
 
 
-    <tv.newtv.cboxtv.views.custom.AlternateView
+    <FrameLayout
         android:id="@+id/video_container"
         android:layout_width="@dimen/width_736px"
         android:layout_height="@dimen/height_420px"
         android:layout_marginStart="@dimen/width_93px"
         android:layout_marginLeft="@dimen/width_93px"
-        android:layout_marginTop="@dimen/height_62px"
+        android:layout_marginTop="@dimen/height_30px"
         android:background="@drawable/selector_pos_background">
+        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
+            android:focusable="true"
+            android:id="@+id/video_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+        >
+        </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
+    </FrameLayout>
 
-    </tv.newtv.cboxtv.views.custom.AlternateView>
 
     <RelativeLayout
         android:layout_width="wrap_content"

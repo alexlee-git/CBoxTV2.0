@@ -133,7 +133,9 @@ public class PlayerNameProgramSelector extends FrameLayout{
                     Log.i(TAG, "onClick: ");
                     mPlayingIndex = position;
                     mNameProgramSelectorAdapter.notifyDataSetChanged();
-                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(null,mProgramSeriesInfo,false,position,0);
+//                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(null,mProgramSeriesInfo,false,position,0);
+                    NewTVLauncherPlayerViewManager.getInstance().playVod(null,mProgramSeriesInfo,
+                            position,0);
                     dismiss();
                 }
             });

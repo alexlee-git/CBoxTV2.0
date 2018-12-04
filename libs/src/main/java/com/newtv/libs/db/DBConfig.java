@@ -28,7 +28,7 @@ public final class DBConfig {
     }
 
     /* database version code */
-    public static final int DB_VERSION = 3;  //数据库表添加一列，升级数据库
+    public static final int DB_VERSION = 4;  //数据库表添加一列，升级数据库
 
     /* database table names */
     public static final String COLLECT_TABLE_NAME   = "user_collect_info";//我的收藏
@@ -64,11 +64,9 @@ public final class DBConfig {
     public static final String CONTENT_DURATION = "_content_duration"; // 内容时长
     public static final String EPISODE_NUM   = "_episode_num";
     public static final String PROGRAM_CHILD_NAME = "_program_child_name";
-    public static final String CONTENT_ID = "_content_id";
+    public static final String CONTENT_ID = "_contentid";
 
     public static final String ORDER_BY_TIME = UPDATE_TIME + " desc";//排序条件
-
-
     public static final String IS_FINISH = "is_finish";//是否结束
     public static final String REAL_EXCLUSIVE = "real_exclusive";//运营标识
     public static final String ISSUE_DATE = "issue_date";

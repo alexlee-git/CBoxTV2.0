@@ -31,8 +31,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import tv.newtv.cboxtv.ActivityStacks;
-import tv.newtv.cboxtv.ILifeCycle;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
@@ -58,6 +56,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
+    public static final int MODE_ALTERNATE = 4;
+
+
     private static final String M3U8 = "http://s003.test.vod06.icntvcdn.com/live/sscntv63.m3u8";
     private static final String TimeFormat = "yyyy-MM-dd HH:mm:ss";
     private static String TAG = "LivePlayView";
@@ -107,6 +108,14 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         public void run() {
             prepareVideoPlayer();
             mVideoPlayerView.playLive(mLiveInfo, false, LivePlayView.this);
+        }
+    };
+    private Runnable playAlternateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            prepareVideoPlayer();
+            mVideoPlayerView.playAlternate(mProgramInfo.getL_id(), mProgramInfo.getTitle(),
+                    mProgramInfo.getAlternateNumber());
         }
     };
     private ScreenListener mListener;
@@ -168,7 +177,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             removeCallbacks(playLiveRunnable);
             removeCallbacks(playRunnable);
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
-            if (mVideoPlayerView != null) {
+            if (mVideoPlayerView != null && !mVideoPlayerView.isReleased()) {
                 mPlayerViewConfig = mVideoPlayerView.getDefaultConfig();
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
@@ -280,7 +289,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         Log.d(TAG, "currentMode : " + currentMode);
         if (currentMode == MODE_LIVE) {
             if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
-                playLiveVideo(0);
+                playLiveVideo(mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ? 0 :
+                        2000);
             } else {
                 if (centerTextView != null) {
                     centerTextView.setVisibility(View.VISIBLE);
@@ -289,7 +299,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 }
             }
         } else if (currentMode == MODE_OPEN_VIDEO) {
-            playVideo(0);
+            playVideo(mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ? 0 : 2000);
+        } else if (currentMode == MODE_ALTERNATE) {
+            playAlternate(mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ? 0 : 2000);
         }
     }
 
@@ -372,17 +384,23 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     public void setProgramInfo(Program programInfo) {
+        setProgramInfo(programInfo, true);
+    }
+
+    public void setProgramInfo(Program programInfo, boolean useDelay) {
         if (programInfo == null) return;
         if (mProgramInfo != null) {
             if (TextUtils.equals(mProgramInfo.toString(), programInfo.toString())) return;
         }
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
-        mPlayInfo.contentType = programInfo.getContentType();
+        mPlayInfo.contentType = programInfo.getL_contentType();
         mPlayInfo.actionType = programInfo.getL_actionType();
         if (programInfo.getVideo() != null) {
             mPlayInfo.ContentUUID = programInfo.getVideo().getContentId();
             mPlayInfo.playUrl = programInfo.getVideo().getLiveUrl();
+        } else if (Constant.CONTENTTYPE_LB.equals(mPlayInfo.contentType)) {
+            mPlayInfo.ContentUUID = programInfo.getL_id();
         }
         mPlayInfo.title = programInfo.getTitle();
 
@@ -392,18 +410,23 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (mProgramInfo.getRecommendedType().equals("2")) {
             //如果有playurl并且在直播的时间段内，则判断是直播
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
-
             if (liveInfo.isLiveTime()) {
                 mLiveInfo = liveInfo;
                 currentMode = MODE_LIVE;
-                playLiveVideo(2000);
+                playLiveVideo(useDelay ? 2000 : 0);
                 return;
             } else if (mProgramInfo != null && mProgramInfo.getVideo() != null && mProgramInfo.getVideo().getVideoType().equals("LIVE")) {
                 currentMode = MODE_LIVE;
                 return;
             } else if (isVod()) {
                 currentMode = MODE_OPEN_VIDEO;
-                playVideo(2000);
+                playVideo(useDelay ? 2000 : 0);
+                return;
+            }
+        } else {
+            if (isAlternate()) {
+                currentMode = MODE_ALTERNATE;
+                playAlternate(useDelay ? 2000 : 0);
                 return;
             }
         }
@@ -411,19 +434,31 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         releaseVideoPlayer();
     }
 
+    private void playAlternate(int delay) {
+        if (!Navigation.get().isCurrentPage(mUUID)) return;
+        removeCallbacks(playAlternateRunnable);
+        postDelayed(playAlternateRunnable, delay);
+    }
+
     private void playVideo(int delay) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playRunnable);
-        postDelayed(playRunnable, mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ? 0 :
-                2000);
+        postDelayed(playRunnable, delay);
     }
 
     private void playLiveVideo(int delay) {
         if (!Navigation.get().isCurrentPage(mUUID)) return;
         removeCallbacks(playLiveRunnable);
-        postDelayed(playLiveRunnable, mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ?
-                0 :
-                2000);
+        postDelayed(playLiveRunnable, delay);
+    }
+
+
+    private boolean isAlternate() {
+        if (mProgramInfo == null) return false;
+        if (Constant.CONTENTTYPE_LB.equals(mProgramInfo.getL_contentType())) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isVod() {
@@ -498,12 +533,12 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
 
-        setVisibleChange(visibility,true);
+        setVisibleChange(visibility, true);
     }
 
     @Override
     public void onWindowVisibleChange(int visible) {
-        LogUtils.d(TAG,"visible change = "+visible+" contentID="+mUUID);
+        LogUtils.d(TAG, "visible change = " + visible + " contentID=" + mUUID);
         setVisibleChange(visible, true);
     }
 
@@ -551,7 +586,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 int count = viewGroup.getChildCount();
                 for (int i = 0; i < count; i++) {
                     View child = viewGroup.getChildAt(i);
-                    if (child instanceof AutoSizeTextView) {
+                    if (child instanceof TextView ) {
                         child.bringToFront();
                     }
                 }

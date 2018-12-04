@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -13,9 +15,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.gridsum.videotracker.play.Play;
 import com.newtv.cms.Request;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
@@ -25,6 +29,8 @@ import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
+import com.newtv.libs.util.SharePreferenceUtils;
+import com.newtv.libs.util.SystemUtils;
 
 import org.json.JSONObject;
 
@@ -39,13 +45,15 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.menu.model.CategoryContent;
 import tv.newtv.cboxtv.menu.model.CategoryTree;
 import tv.newtv.cboxtv.menu.model.Content;
+import tv.newtv.cboxtv.menu.model.DBLastNode;
 import tv.newtv.cboxtv.menu.model.DBProgram;
-import tv.newtv.cboxtv.menu.model.LastMenuBean;
+import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.LocalNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -60,6 +68,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private static final String COLLECT = "我的收藏";
     private static final String HISTORY = "我的观看记录";
     private static final String SUBSCRIBE = "我的订阅";
+    private static final String MY_TV = "我家电视";
+    public static final String LB_ID_COLLECT = "轮播收藏";
     public static final long GONE_TIME = 5 * 1000L;
     private static final int MESSAGE_GONE = 1;
     /**
@@ -105,6 +115,13 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      * 当前获取节目集ID和节目ID重试次数
      */
     private int retry = 0;
+    /**
+     * 是否是轮播类型
+     */
+    private boolean isAlternate;
+    private String alternateId;
+
+    private Node lbCollectNode;
 
     @Override
     public void release() {
@@ -162,14 +179,37 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             @Override
             public void select(Program program) {
                 playProgram = program;
+                if (LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())) {
+                    if (program.isCollect()) {
+                        deleteLbCollect(program);
+                    } else {
+                        addLbCollect(program);
+                    }
+                    return;
+                }
+
+                if (Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())) {
+                    Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                    return;
+                }
+
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
-                if(content != null){
+                if (content != null) {
                     int index = program.getParent().getPrograms().indexOf(program);
-                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+//                    NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+                    NewTVLauncherPlayerViewManager.getInstance().playVod(context, content, index, 0);
                     menuGroup.gone();
                     setPlayerInfo(program);
-                }else {
+                } else {
                     getSeries(program);
+                }
+            }
+
+            @Override
+            public void select(Node node) {
+                if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
+                    LastNode lastNode = (LastNode) node;
+                    NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId,"11488346",lastNode.getTitle());
                 }
             }
         });
@@ -213,35 +253,41 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     /**
      * 从播放器中获取节目集id和节目id
+     *
      * @return
      */
     private boolean getProgramSeriesAndContentUUID() {
-        if(NewTVLauncherPlayerViewManager.getInstance().isLiving()){
+        if (NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             Log.e(TAG, "isLiving");
             return false;
         }
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
         int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+        NewTVLauncherPlayerView.PlayerViewConfig defaultConfig = NewTVLauncherPlayerViewManager.getInstance().getDefaultConfig();
+        if (defaultConfig != null) {
+            isAlternate = defaultConfig.isAlternate;
+            alternateId = defaultConfig.alternateID;
+        }
 
         if (programSeriesInfo == null) {
             Log.e(TAG, "programSeriesInfo == null");
             return false;
         }
 
-        switch (programSeriesInfo.getContentType()){
+        switch (programSeriesInfo.getContentType()) {
             case Constant.CONTENTTYPE_PG:
                 Log.i(TAG, "单节目不显示栏目树");
                 break;
             case Constant.CONTENTTYPE_CP:
-                programSeries = mySplit(getStringByPriority(programSeriesInfo.getTvContentIDs(), programSeriesInfo.getCsContentIDs(),programSeriesInfo.getCgContentIDs()));
+                programSeries = mySplit(getStringByPriority(programSeriesInfo.getTvContentIDs(), programSeriesInfo.getCsContentIDs(), programSeriesInfo.getCgContentIDs()));
                 contentUUID = programSeriesInfo.getContentID();
                 categoryId = mySplit(programSeriesInfo.getCategoryIDs());
                 break;
 //            case Constant.CONTENTTYPE_PS:
 //            case Constant.CONTENTTYPE_CG:
             default:
-                if(index != -1 && programSeriesInfo.getData() != null && index < programSeriesInfo.getData().size()){
+                if (index != -1 && programSeriesInfo.getData() != null && index < programSeriesInfo.getData().size()) {
                     programSeries = programSeriesInfo.getContentID();
                     contentUUID = programSeriesInfo.getData().get(index).getContentID();
                     categoryId = mySplit(programSeriesInfo.getCategoryIDs());
@@ -249,15 +295,20 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 break;
         }
 
-        if (TextUtils.isEmpty(programSeries) || TextUtils.isEmpty(contentUUID)) {
-            Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" + programSeries + ",contentUUID=" + contentUUID
-                    + ",typeIndex=" + typeIndex+","+programSeriesInfo);
-            return false;
+        if (isAlternate) {
+            if (TextUtils.isEmpty(alternateId) || TextUtils.isEmpty(contentUUID)) {
+                Log.e(TAG, "alternateId or contentUUID can not empty,programSeries=" + alternateId + ",contentUUID=" + contentUUID);
+                return false;
+            }
+        } else {
+            if (TextUtils.isEmpty(programSeries) || TextUtils.isEmpty(contentUUID)) {
+                Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" + programSeries + ",contentUUID=" + contentUUID);
+                return false;
+            }
         }
 
-        Log.i(TAG, "detailColumnUUID=" + programSeries);
-        Log.i(TAG, "contentUUID=" + contentUUID);
-        Log.i(TAG, "categoryId=" + categoryId);
+        Log.i(TAG, "programSeriesUUID=" + programSeries + ",contentUUID=" + contentUUID
+                + ",categoryId=" + categoryId + ",isAlternate=" + isAlternate + ",alternateId=" + alternateId);
         return true;
     }
 
@@ -270,27 +321,29 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return;
         }
 
-        if(TextUtils.isEmpty(categoryId)){
-            getCategoryId();
-        }else {
+        if (isAlternate) {
+            getCategoryId(alternateId);
+        } else if (TextUtils.isEmpty(categoryId)) {
+            getCategoryId(contentUUID);
+        } else {
             getCategoryTree();
         }
         searchDataInDB();
     }
 
-    private void getCategoryId(){
-        String leftString = contentUUID.substring(0, 2);
-        String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
+    private void getCategoryId(String id) {
+        String leftString = id.substring(0, 2);
+        String rightString = id.substring(id.length() - 2, id.length());
         Request.INSTANCE.getContent()
-                .getInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,contentUUID)
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         Log.i(TAG, "content: ");
-                        Content content = GsonUtil.fromjson(responseBody.string(),Content.class);
-                        if(content != null && content.data != null){
+                        Content content = GsonUtil.fromjson(responseBody.string(), Content.class);
+                        if (content != null && content.data != null) {
                             categoryId = mySplit(content.data.categoryIDs);
                             getCategoryTree();
                         }
@@ -299,17 +352,31 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void getCategoryTree() {
-        Request.INSTANCE.getCategory().getCategoryTree(Libs.get().getAppKey(),Libs.get().getChannelId())
+        Request.INSTANCE.getCategory().getCategoryTree(Libs.get().getAppKey(), Libs.get().getChannelId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         Log.i(TAG, "CategoryTree: ");
-                        CategoryTree categoryTree = GsonUtil.fromjson(responseBody.string(),CategoryTree.class);
-                        if(categoryTree != null && categoryTree.data != null && categoryTree.data.size() > 0){
+                        CategoryTree categoryTree = GsonUtil.fromjson(responseBody.string(), CategoryTree.class);
+                        if (categoryTree != null && categoryTree.data != null && categoryTree.data.size() > 0) {
                             rootNode = categoryTree.data;
-                            for(Node node : rootNode){
+                            for (Node node : rootNode) {
+                                if (TextUtils.equals(node.getCategoryType(), Constant.CONTENTTYPE_LB)) {
+                                    if (node.getChild().size() == 0) {
+                                        Node myTvNode = new Node();
+                                        myTvNode.setId(MY_TV);
+                                        myTvNode.setTitle(MY_TV);
+                                        node.getChild().add(myTvNode);
+                                    }
+                                    Node childNode = new Node();
+                                    childNode.setId(LB_ID_COLLECT);
+                                    childNode.setTitle(COLLECT);
+                                    lbCollectNode = childNode;
+                                    searchLbCollect(childNode, true);
+                                    node.getChild().add(1, childNode);
+                                }
                                 node.initParent();
                             }
                             getCategoryContent();
@@ -323,52 +390,77 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         String leftString = contentUUID.substring(0, 2);
         String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
         Request.INSTANCE.getCategory()
-                .getCategoryContent(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,contentUUID)
+                .getCategoryContent(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, contentUUID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         Log.i(TAG, "CategoryContent: ");
-                        CategoryContent categoryContent = GsonUtil.fromjson(responseBody.string(),CategoryContent.class);
-                        if(categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0){
+                        CategoryContent categoryContent = GsonUtil.fromjson(responseBody.string(), CategoryContent.class);
+                        if (categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0) {
                             Node node = searchNodeById(categoryId);
                             node.addChild(categoryContent.data);
-                            getSeriesContent();
+                            if (isAlternate) {
+                                getAlternateContent();
+                            } else {
+                                getSeriesContent();
+                            }
                         }
                     }
                 });
     }
 
-    private void getSeriesContent(){
-        String leftString = programSeries.substring(0, 2);
-        String rightString = programSeries.substring(programSeries.length() - 2, programSeries.length());
-        Request.INSTANCE.getContent()
-                .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),programSeries)
+    private void getAlternateContent() {
+        Request.INSTANCE.getAlternate()
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), alternateId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         String result = responseBody.string();
-                        Log.i(TAG, "seriesContent: "+result);
+                        Log.i(TAG, "getAlternateContent: " + result);
                         SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
-                        if(seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0){
+                        if (seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0) {
                             MenuGroupPresenter2.this.seriesContent = seriesContent;
                             menuGroup.addRootNodes(rootNode);
-                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, programSeries, contentUUID);
+                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, alternateId, contentUUID);
                             playProgram = menuGroup.getPlayProgram();
-                            Log.i(TAG, "accept: "+playProgram);
+                            Log.i(TAG, "accept: " + playProgram);
                             checkShowHinter();
                         }
                     }
                 });
     }
 
-    private Node searchNodeById(String id){
-        for(Node node : rootNode){
+    private void getSeriesContent() {
+        Request.INSTANCE.getContent()
+                .getSubInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), programSeries)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        String result = responseBody.string();
+                        Log.i(TAG, "seriesContent: " + result);
+                        SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
+                        if (seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0) {
+                            MenuGroupPresenter2.this.seriesContent = seriesContent;
+                            menuGroup.addRootNodes(rootNode);
+                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, programSeries, contentUUID);
+                            playProgram = menuGroup.getPlayProgram();
+                            Log.i(TAG, "accept: " + playProgram);
+                            checkShowHinter();
+                        }
+                    }
+                });
+    }
+
+    private Node searchNodeById(String id) {
+        for (Node node : rootNode) {
             Node result = node.searchNode(id);
-            if(result != null){
+            if (result != null) {
                 return result;
             }
         }
@@ -479,7 +571,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
         com.newtv.cms.bean.Content content = new com.newtv.cms.bean.Content();
         List<SubContent> data = new ArrayList<>();
-        for(Program program : list){
+        for (Program program : list) {
             SubContent subContent = program.convertProgramsInfo();
             subContent.setUseSeriesSubUUID(true);
             data.add(subContent);
@@ -692,11 +784,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         setHintGone();
     }
 
-    public boolean updatePlayProgram(){
-        if(seriesContent != null && seriesContent.data != null
-                && seriesContent.data.size() > 0){
-            for(Program program : seriesContent.data){
-                if(contentUUID.equals(program.getContentID())){
+    public boolean updatePlayProgram() {
+        if (seriesContent != null && seriesContent.data != null
+                && seriesContent.data.size() > 0) {
+            for (Program program : seriesContent.data) {
+                if (contentUUID.equals(program.getContentID())) {
                     playProgram = program;
                     return true;
                 }
@@ -705,52 +797,143 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         return false;
     }
 
-    private void getSeries(final Program program){
+    private void getSeries(final Program program) {
         String contentId = program.getParent().getId();
         String leftString = contentId.substring(0, 2);
         String rightString = contentId.substring(contentId.length() - 2, contentId.length());
         Request.INSTANCE.getContent()
-                .getInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),leftString,rightString,contentId)
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, contentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
                         String result = responseBody.string();
-                        Log.i(TAG, "accept: "+result);
+                        Log.i(TAG, "accept: " + result);
                         JSONObject jsonObject = new JSONObject(result);
                         String data = jsonObject.getString("data");
                         com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
                         program.getParent().setContent(content);
                         List<Program> programs = program.getParent().getPrograms();
                         List<SubContent> subContents = new ArrayList<>();
-                        for(Program p : programs){
+                        for (Program p : programs) {
                             subContents.add(p.convertProgramsInfo());
                         }
                         content.setData(subContents);
 
                         int index = programs.indexOf(program);
-                        NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+//                        NewTVLauncherPlayerViewManager.getInstance().playProgramSeries(context,content,false,index,0);
+                        NewTVLauncherPlayerViewManager.getInstance().playVod(context, content, index, 0);
                         menuGroup.gone();
                         setPlayerInfo(program);
                     }
                 });
     }
 
-    private String mySplit(String str){
-        if(TextUtils.isEmpty(str)){
-           return "";
+    private String mySplit(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return "";
         }
         String[] split = str.split("\\|");
         return split[0];
     }
 
-    private String getStringByPriority(String... str){
-        for(String s : str){
-            if(!TextUtils.isEmpty(s)){
+    private String getStringByPriority(String... str) {
+        for (String s : str) {
+            if (!TextUtils.isEmpty(s)) {
                 return s;
             }
         }
         return "";
+    }
+
+
+    private void addLbCollect(final Program program) {
+        if (program == null || program.getParent() == null) {
+            return;
+        }
+        Node node = program.getParent();
+        if (!(node instanceof LastNode)) {
+            return;
+        }
+        LastNode lastNode = (LastNode) node;
+
+        Bundle bundle = new Bundle();
+        bundle.putString(DBConfig.CONTENTUUID, lastNode.contentUUID);
+        bundle.putString(DBConfig.CONTENT_ID, lastNode.contentId);
+        bundle.putString(DBConfig.TITLE_NAME, lastNode.getTitle());
+        bundle.putString(DBConfig.IS_FINISH, lastNode.isFinish);
+        bundle.putString(DBConfig.REAL_EXCLUSIVE, lastNode.realExclusive);
+        bundle.putString(DBConfig.ISSUE_DATE, lastNode.issuedate);
+        bundle.putString(DBConfig.LAST_PUBLISH_DATE, lastNode.lastPublishDate);
+        bundle.putString(DBConfig.SUB_TITLE, lastNode.subTitle);
+        bundle.putString(DBConfig.UPDATE_TIME, System.currentTimeMillis() + "");
+        bundle.putString(DBConfig.USERID, SystemUtils.getDeviceMac(context));
+        bundle.putString(DBConfig.V_IMAGE, lastNode.vImage);
+        bundle.putString(DBConfig.H_IMAGE, lastNode.hImage);
+        bundle.putString(DBConfig.VIP_FLAG, lastNode.vipFlag);
+        bundle.putString(DBConfig.CONTENTTYPE, lastNode.getContentType());
+
+        Player.get().addLbCollect(bundle, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT).show();
+                    program.setCollect(true);
+                    menuGroup.notifyLastAdapter();
+                    refreshLbNode();
+                }
+            }
+        });
+    }
+
+    private void deleteLbCollect(final Program program) {
+        if (program == null || program.getParent() == null) {
+            return;
+        }
+        Node node = program.getParent();
+        if (!(node instanceof LastNode)) {
+            return;
+        }
+        LastNode lastNode = (LastNode) node;
+        Player.get().deleteLbCollect(lastNode.contentUUID, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0) {
+                    Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
+                    program.setCollect(false);
+                    menuGroup.notifyLastAdapter();
+                    refreshLbNode();
+                }
+            }
+        });
+
+    }
+
+    private void searchLbCollect(final Node node, final boolean reset) {
+        DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
+                .condition()
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        if (code == 0 && !TextUtils.isEmpty(result)) {
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<List<DBLastNode>>() {
+                            }.getType();
+                            List<DBLastNode> list = gson.fromJson(result, type);
+                            List<LastNode> lastNodeList = DBLastNode.converLastNode(list);
+                            node.addChild(lastNodeList, reset);
+                        }
+                    }
+                }).excute();
+    }
+
+    private void refreshLbNode() {
+        if (lbCollectNode != null) {
+            lbCollectNode.getChild().clear();
+            searchLbCollect(lbCollectNode, true);
+        }
     }
 }

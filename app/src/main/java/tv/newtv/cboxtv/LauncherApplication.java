@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
@@ -40,8 +41,10 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerObserver;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.ottlauncher.db.History;
 
@@ -195,9 +198,13 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     }
 
     @Override
-    public void onFinish(final Content playInfo, final int index, final int position, final int duration) {
+    public void onFinish(final Content playInfo, final int index, final int position, final int
+            duration) {
         if (Constant.CONTENTTYPE_CP.equals(playInfo.getContentType())) {
             if (TextUtils.isEmpty(playInfo.getCsContentIDs())) {
+                addHistory(playInfo, index, position, duration);
+                return;
+            } else if (Constant.CONTENTTYPE_PG.equals(playInfo.getContentType())) {
                 addHistory(playInfo, index, position, duration);
                 return;
             }
@@ -205,7 +212,8 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             mContentPresenter.getContent(csId, true, new
                     ContentContract.View() {
                         @Override
-                        public void onContentResult(@NotNull String uuid, @Nullable Content content) {
+                        public void onContentResult(@NotNull String uuid, @Nullable Content
+                                content) {
                             if (content != null) {
                                 playInfo.setVImage(content.getVImage());
                                 playInfo.setTitle(content.getTitle());
@@ -214,7 +222,8 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                         }
 
                         @Override
-                        public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
+                        public void onSubContentResult(@NotNull String uuid, @Nullable
+                                ArrayList<SubContent> result) {
 
                         }
 
@@ -233,19 +242,21 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         }
     }
 
-    private void addHistory(final Content playInfo, final int index, final int position, final int duration) {
+    private void addHistory(final Content playInfo, final int index, final int position, final
+    int duration) {
         try {
             LogUtils.e("receive addHistory...");
-            UserCenterUtils.addHistory(playInfo, index, position, duration, new DBCallback<String>() {
+            UserCenterUtils.addHistory(playInfo, index, position, duration, new
+                    DBCallback<String>() {
                 @Override
                 public void onResult(int code, String result) {
-                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code + ", contentId : " + playInfo.getContentID());
+                    Log.d("LauncherApplication", "UserCenterUtils.addHistory code : " + code + "," +
+                            " contentId : " + playInfo.getContentID());
                     if (code == 0) {
                         LogUtils.e("写入历史记录成功");
                     }
                 }
             });
-
             History mHistory = new History(playInfo.getContentID(), playInfo.getContentType(),
                     playInfo.getTitle(), playInfo.getVImage(), "com.newtv.cboxtv",
                     "tv.newtv.cboxtv.SplashActivity", "", "", System.currentTimeMillis());
@@ -276,6 +287,26 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public boolean isVip() {
         return false;
+    }
+
+    @Override
+    public void activityJump(Context context, String actionType, String contentType, String
+            contentUUID, String actionUri) {
+        JumpUtil.activityJump(context, actionType, contentType, contentUUID, actionUri);
+    }
+
+    @Override
+    public void addLbCollect(Bundle bundle, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager
+                        .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this, bundle, null, dbCallback);
+    }
+
+    @Override
+    public void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().deleteRecord(UserCenterRecordManager
+                        .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                this, contentUUID, "", "", dbCallback);
     }
 
 }

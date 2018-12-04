@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/width_24px">
 
         <include
-            layout="@layout/up_top_nav"
+            layout="@layout/up_top_"
             android:visibility="gone" />
 
         <View

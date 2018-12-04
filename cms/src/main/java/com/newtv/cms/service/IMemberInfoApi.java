@@ -20,6 +20,7 @@ import retrofit2.http.Query;
  * 修改备注：
  */
 public interface IMemberInfoApi {
+
     //获取用户会员信息
     @Headers("host_type: " + BootGuide.USER)
     @GET("goldenpheasant/api/programRights")

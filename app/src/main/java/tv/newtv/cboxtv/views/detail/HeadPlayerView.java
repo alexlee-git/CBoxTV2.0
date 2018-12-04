@@ -28,7 +28,6 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +55,7 @@ import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.ISubscribeStatusCallback;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
+import tv.newtv.cboxtv.views.TimeDialog;
 import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
@@ -164,7 +164,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         return mInfo;
     }
 
-    private void initData() {
+    //数据库是异步查询，网络快于数据库查询的时候导致历史进度还没渠道就开始播放视频
+    private void initData(final boolean isRequest) {
         UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, mBuilder.contentUUid, "", new
                 IHisoryStatusCallback() {
                     @Override
@@ -176,6 +177,17 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             } else {
                                 currentPosition = 0;
                             }
+                        }
+
+                        if (isRequest) {
+                            mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
+                        }
+                    }
+
+                    @Override
+                    public void onError() {
+                        if (isRequest) {
+                            mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
                         }
                     }
                 });
@@ -253,14 +265,14 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         if (playerView != null && mInfo != null) {
-            Log.e(TAG, "player view is builded, play vod video....index=" + currentPlayIndex + " " +
+            Log.e(TAG, "player view is builded, playVod vod video....index=" + currentPlayIndex + " " +
                     "pos=" + currentPosition);
             startPlayerView(isPlayLive);
         }
     }
 
     public void resetSeriesInfo(final Content content) {
-        initData();
+        initData(false);
         postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -276,7 +288,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public void Build(Builder builder) {
         mBuilder = builder;
-        initData();
+        initData(true);
         if (mBuilder.playerCallback == null) return;
         if (mBuilder.contentUUid == null) return;
         if (mBuilder.mPlayerId == -1) return;
@@ -285,19 +297,21 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (mBuilder.focusables != null && mBuilder.focusChangeListener == null) return;
 
         contentView = LayoutInflater.from(getContext()).inflate(mBuilder.mLayout, this, false);
-        final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_nav, null);
+        final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        inflate.layout(0, (int) getResources().getDimension(R.dimen.height_27px),0,0);
         inflate.setLayoutParams(lp);
-        if (mBuilder.fromOuter && mBuilder.isPopup) {
+//        if (mBuilder.fromOuter) {
+            Log.e("yml", "Build: ..1" );
             addView(inflate);
             postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     removeView(inflate);
                 }
-            },5000);
-        }
+            }, 5000);
+//        }
         addView(contentView);
         checkDataFromDB();
 
@@ -327,7 +341,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
-        mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
+        //mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
     }
 
     private void checkDataFromDB() {
@@ -392,7 +406,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         .setSelect
                                                                                 (code == 0 &&
                                                                                         !TextUtils
-                                                                                        .isEmpty(result));
+                                                                                                .isEmpty(result));
                                                                 RxBus.get().post(Constant
                                                                                 .UPDATE_UC_DATA,
                                                                         true);
@@ -610,6 +624,13 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
     }
 
+    public boolean isFullScreen() {
+        if (playerView != null) {
+            return playerView.getDefaultConfig().isFullScreen;
+        }
+        return false;
+    }
+
     private void requestPlayerFocus() {
         if (playerView == null) {
             return;
@@ -623,6 +644,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 }
             }
         }, 500);
+//=======
+//        playerView.delayEnterFullScreen(ActivityStacks.get().getCurrentActivity(), false, 450);
+//>>>>>>> Stashed changes
     }
 
     private void parseResult() {
@@ -874,8 +898,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     @Override
     public void onComplete() {
-        //TODO 栏目化直播结束，继续播放点播视频
+        //栏目化直播结束，继续播放点播视频
+        TimeDialog.showBuilder(getContext(),this);
 
+    }
+    public void continuePlayVideo(){
         if (playerView != null) {
             playerView.release();
             playerView.destory();
@@ -926,7 +953,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private boolean autoGetSub = false;
         private List<CustomFrame> dbTypes;
         private int defaultFocusID = 0;
-        private boolean isPopup, fromOuter;
+        private boolean fromOuter;
 
         private ExitVideoFullCallBack videoFullCallBack;
 
@@ -1007,7 +1034,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return this;
         }
 
-        public Builder setTopView(boolean fromOuter, boolean isPopup) {
+        public Builder setTopView(boolean fromOuter) {
             return this;
         }
 

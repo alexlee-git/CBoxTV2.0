@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -21,6 +22,7 @@ import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
 
@@ -34,6 +36,8 @@ import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
@@ -42,8 +46,7 @@ import tv.newtv.cboxtv.views.detail.EpisodePageView;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
-import tv.newtv.cboxtv.utils.UserCenterUtils;
+
 /**
  * Created by weihaichao on 2018/10/19.
  */
@@ -51,8 +54,8 @@ import tv.newtv.cboxtv.utils.UserCenterUtils;
 public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity implements
         ContentContract.LoadingView {
 
-    Content pageContent;
     private static final String ACTION = ProgrameSeriesAndVarietyDetailActivity.class.getName();
+    Content pageContent;
     private HeadPlayerView headPlayerView;
     private DivergeView mPaiseView;
     private EpisodePageView playListView;
@@ -65,7 +68,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private int layoutId;
     private boolean isLogin = false;
     private boolean isFullScreenIng;
-
 
     @Override
     public boolean hasPlayer() {
@@ -111,59 +113,59 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
 
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
-                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
-                new HeadPlayerView.CustomFrame(R.id.vip_pay,HeadPlayerView.Builder.DB_TYPE_VIPPAY))
+                .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder
+                                .DB_TYPE_COLLECT),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay, HeadPlayerView.Builder
+                                .DB_TYPE_VIPPAY))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
-                .SetContentUUID(contentUUID,getChildContentUUID())
+                .SetContentUUID(contentUUID, getChildContentUUID())
                 .autoGetSubContents()
-                .setTopView(fromOuter,isPopup)
+                .setTopView(fromOuter)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
                         if (info != null) {
                             ArrayList<String> productId = new ArrayList<>();
                             pageContent = info;
-                            if (pageContent != null && pageContent.getVipFlag() != null) {
-                                int vipState = Integer.parseInt(pageContent.getVipFlag());
-                                if ((vipState == 1||vipState == 3||vipState == 4)&&pageContent.getVipProductId()!=null){
-                                    productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId()));
+                            if (pageContent != null ) {
+                                if (!TextUtils.isEmpty(pageContent.getVipFlag())){
+                                    int vipState = Integer.parseInt(pageContent.getVipFlag());
+                                    if ((vipState == 1||vipState == 3||vipState == 4)&&pageContent.getVipProductId()!=null){
+                                        productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId()));
+                                    }
                                 }
-                                int is4k = Integer.parseInt(pageContent.is4k());
-                                if (is4k == 1){
-                                    productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                if (!TextUtils.isEmpty(pageContent.is4k())){
+                                    int is4k = Integer.parseInt(pageContent.is4k());
+                                    if (is4k == 1){
+                                        productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                    }
                                 }
-                                if (pageContent.getNew_realExclusive()!=null){
+                                if (!TextUtils.isEmpty(pageContent.getNew_realExclusive())){
                                     productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),pageContent.getNew_realExclusive()));
                                 }
                             }
 
                             switch (productId.size()){
+                                case 3:
+                                    Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
+                                case 2:
+                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
                                 case 1:
                                     Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
-                                    break;
-                                case 2:
-                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
-                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
-                                    break;
-                                case 3:
-                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
-                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
-                                    Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
-                                    break;
                                 default:
                                     break;
                             }
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null);
-                            playListView.setContentUUID(info,mContentPresenter.isTvSeries(content)
+                            playListView.setContentUUID(info, mContentPresenter.isTvSeries(content)
                                             ? EpisodeHelper.TYPE_PROGRAME_SERIES : EpisodeHelper
                                             .TYPE_VARIETY_SHOW,
                                     content.getVideoType(),
                                     getSupportFragmentManager(),
                                     contentUUID, null);
 
-                            if(mAdView != null){
+                            if (mAdView != null) {
                                 mAdView.requestAD();
                             }
                         } else {
@@ -197,8 +199,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                     public void onPlayerClick(VideoPlayerView videoPlayerView) {
                         if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                             lastClickTime = System.currentTimeMillis();//记录这次点击时间
-                            if (videoPlayerView != null){
-                                videoPlayerView.EnterFullScreen(ProgrameSeriesAndVarietyDetailActivity
+                            if (videoPlayerView != null) {
+                                videoPlayerView.EnterFullScreen
+                                        (ProgrameSeriesAndVarietyDetailActivity
                                         .this, false);
                             }
                         }
@@ -249,14 +252,22 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                     if (isLogin) {
                                         //1 单点包月  3vip  4单点
                                         if (vipState == 1) {
-                                            UserCenterUtils.startVIP1(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                            UserCenterUtils.startVIP1
+                                                    (ProgrameSeriesAndVarietyDetailActivity.this,
+                                                            pageContent, ACTION);
                                         } else if (vipState == 3) {
-                                            UserCenterUtils.startVIP3(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                            UserCenterUtils.startVIP3
+                                                    (ProgrameSeriesAndVarietyDetailActivity.this,
+                                                            pageContent, ACTION);
                                         } else if (vipState == 4) {
-                                            UserCenterUtils.startVIP4(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION);
+                                            UserCenterUtils.startVIP4
+                                                    (ProgrameSeriesAndVarietyDetailActivity.this,
+                                                            pageContent, ACTION);
                                         }
                                     } else {
-                                        UserCenterUtils.startLoginActivity(ProgrameSeriesAndVarietyDetailActivity.this, pageContent, ACTION, true);
+                                        UserCenterUtils.startLoginActivity
+                                                (ProgrameSeriesAndVarietyDetailActivity.this,
+                                                        pageContent, ACTION, true);
                                     }
                                 }
                                 break;
@@ -285,7 +296,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     //获取登陆状态
-    private void initLoginStatus(){
+    private void initLoginStatus() {
         UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
@@ -311,10 +322,12 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     protected boolean interruptDetailPageKeyEvent(KeyEvent event) {
         //TODO 防止视频列表项快速点击时候，焦点跳至播放器，进入大屏时候，播放器顶部出现大片空白
         if (scrollView != null && scrollView.isComputeScroll() && headPlayerView != null &&
-                headPlayerView.hasFocus()) {
-            if (event.getKeyCode() == KeyEvent
-                    .KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
-                    ||event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN) {
+                headPlayerView.isFullScreen()) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_ENTER
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                    || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 return true;
             }
         }
@@ -378,11 +391,12 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         //这里跳转不同详情页 综艺、电视剧
         setContentView(R.layout.fragment_new_variety_show);
         ADConfig.getInstance().setSeriesID(uuid);
-        initView(content,uuid);
+        initView(content, uuid);
     }
 
     @Override
-    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable
+            ArrayList<SubContent> result) {
 
     }
 

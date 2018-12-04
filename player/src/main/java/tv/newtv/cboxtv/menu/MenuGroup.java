@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.newtv.cms.Request;
+import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.util.GsonUtil;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -438,12 +441,23 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 break;
             case KeyEvent.KEYCODE_ENTER:
             case KeyEvent.KEYCODE_DPAD_CENTER:
-                Program program = lastProgram.get(position);
-                playProgram = program;
-                setPlayId(program);
-                if (onSelectListenerList.size() > 0) {
-                    for (OnSelectListener l : onSelectListenerList) {
-                        l.select(program);
+                if(level == MenuRecyclerView.MAX_LEVEL){
+                    Program program = lastProgram.get(position);
+                    playProgram = program;
+                    setPlayId(program);
+                    if (onSelectListenerList.size() > 0) {
+                        for (OnSelectListener l : onSelectListenerList) {
+                            l.select(program);
+                        }
+                    }
+                } else {
+                    MenuRecyclerView menuRecyclerViewRight = getMenuRecyclerViewByLevel(level);
+                    MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerViewRight.getAdapter();
+                    Node item = adapter.getItem(position);
+                    if (onSelectListenerList.size() > 0) {
+                        for (OnSelectListener l : onSelectListenerList) {
+                            l.select(item);
+                        }
                     }
                 }
                 break;
@@ -706,17 +720,24 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     private void getLastData2(final Node node,final RecreateListener l){
-        lastListView.setTag(node.getId());
-        final String programSeries = node.getId();
-        String leftString = programSeries.substring(0, 2);
-        String rightString = programSeries.substring(programSeries.length() - 2, programSeries.length());
-        Request.INSTANCE.getContent()
-                .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),programSeries)
-                .subscribeOn(Schedulers.io())
+        lastListView.setTag(node);
+        String nodeId = node.getId();
+        Observable<ResponseBody> observable = null;
+        if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
+            observable = Request.INSTANCE.getAlternate()
+                    .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), nodeId);
+        }else {
+            observable = Request.INSTANCE.getContent()
+                    .getSubInfo(Libs.get().getAppKey(),Libs.get().getChannelId(),nodeId);
+        }
+        observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
+                        if(node.isRequest()){
+                            return;
+                        }
                         String result = responseBody.string();
                         Log.i(TAG, "seriesContent: "+result);
                         SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
@@ -726,7 +747,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                 p.setParent(node);
                             }
 
-                            if (lastListView!=null&&lastListView.getTag().equals(node.getId())) {
+                            if (lastListView!=null && lastListView.getTag() == node) {
                                 lastProgram = seriesContent.data;
                                 LastMenuRecyclerAdapter adapter =
                                         (LastMenuRecyclerAdapter) lastListView.getAdapter();
@@ -947,12 +968,37 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
         NewTVLauncherPlayerViewManager.getInstance().setShowingView
                 (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
+        reportLog(mcontext,15);
 
-        String duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
-        if (!TextUtils.isEmpty(duration)){
-            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "15,"+playProgram.getSeriesSubUUID()+","
-                    +playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+
+    }
+
+    private void reportLog(Context  context , int number) {
+
+        try{
+            Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+            String definition = programSeriesInfo.getDefinition();
+            if (!TextUtils.isEmpty(definition)){
+                if (TextUtils.equals(definition,"SD")){
+                    definition = "1";
+                }else if ( TextUtils.equals(definition,"HD")){
+                    definition = "0";
+                }
+            }
+
+            SharedPreferences sp = context.getSharedPreferences("durationConfig", Context.MODE_PRIVATE);
+            String duration =       sp.  getString("duration", "");
+            String seriesUUID = sp.getString("seriesUUID", "");
+            String vipflag = sp.getString("  vipFlag", "");
+
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, number+","+seriesUUID+","
+                    +playProgram.getContentUUID()+","+vipflag+","+ definition+","+  Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
+
+        }catch(Exception e){
+            e.printStackTrace();
         }
+
 
     }
 
@@ -971,11 +1017,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         float current = currentX;
         currentX = currentX + recyclerViewWidth * VISIBLE_COLUMN;
         startAnim(new AnimEntity(current, currentX));
-        String    duration = mcontext.getSharedPreferences("durationConfig", Context.MODE_PRIVATE).getString("duration", "");
-        if (!TextUtils.isEmpty(duration)){
-            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6,"+playProgram.getSeriesSubUUID()+","+playProgram.getContentUUID()+",0,0,"+   Integer.parseInt(duration)*60*1000+","+NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition()+","+Constants.vodPlayId);
 
-        }
+        reportLog(mcontext,6);
+
     }
 
     private void goneAnimator() {
@@ -1119,6 +1163,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
     }
 
+    public void notifyLastAdapter(){
+        getLastAdapter().notifyDataSetChanged();
+    }
+
     public interface RecreateListener{
 
         void success(LastMenuBean lastMenuBean);
@@ -1128,6 +1176,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     public interface OnSelectListener {
 
         void select(Program program);
+
+        void select(Node node);
     }
 
     private static class MyHandler extends android.os.Handler {

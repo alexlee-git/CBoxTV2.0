@@ -2,8 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             xmlns:app="http://schemas.android.com/apk/res-auto">
+             android:layout_height="wrap_content">
 
     <tv.newtv.cboxtv.views.widget.VerticalRecycleView
         android:id="@+id/alternate_list"
@@ -18,17 +17,29 @@
 
     </tv.newtv.cboxtv.views.widget.VerticalRecycleView>
 
-    <tv.newtv.cboxtv.views.custom.BlockPosterView
-        android:id="@+id/block_poster"
+    <FrameLayout
+        android:id="@+id/focus_layout"
         android:layout_marginStart="@dimen/width_87px"
         android:layout_marginLeft="@dimen/width_87px"
         android:layout_marginTop="@dimen/height_15px"
-        app:block_poster_width="@dimen/width_1068px"
-        app:block_poster_height="@dimen/height_600px"
-        app:block_poster_type="alternate"
-        app:block_poster_holder="@drawable/focus_528_296"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="@dimen/width_1136px"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/selector_pos_background"
+        android:layout_height="@dimen/height_666px">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tag="poster_view"
+            android:src="@drawable/focus_528_296">
+        </ImageView>
+        <tv.newtv.cboxtv.views.custom.LivePlayView
+            android:id="@+id/block_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+        </tv.newtv.cboxtv.views.custom.LivePlayView>
+    </FrameLayout>
 
-    </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
 </FrameLayout>

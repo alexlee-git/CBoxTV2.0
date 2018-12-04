@@ -9,12 +9,16 @@ import android.widget.FrameLayout;
 
 import com.newtv.cms.bean.Content;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
+import tv.newtv.cboxtv.player.model.LiveInfo;
 
 /**
  * Created by wangkun on 2018/1/16.
@@ -27,14 +31,11 @@ public class NewTVLauncherPlayerViewManager {
     private NewTVLauncherPlayerView mNewTVLauncherPlayerView;
     private Context mPlayerPageContext; //播放activity实例
 
-    private Content programSeriesInfo;
     private int typeIndex = -1;
 
-    private long currentPlayer = 0;
+    private long mCurrentPlayerID = 0;
 
-    private boolean isLive = false;// 是否是直播？
     private List<ScreenListener> pendingListener = new ArrayList<>();
-    private String alternateId;
 
     private NewTVLauncherPlayerViewManager() {
     }
@@ -84,22 +85,18 @@ public class NewTVLauncherPlayerViewManager {
         return false;
     }
 
-    public long setPlayerView(NewTVLauncherPlayerView playerView) {
-
+    void setPlayerView(NewTVLauncherPlayerView playerView) {
         if (mNewTVLauncherPlayerView != null && mNewTVLauncherPlayerView != playerView) {
-//            mNewTVLauncherPlayerView.buildPlayerViewConfig();
             release();
         }
-
-        currentPlayer = System.currentTimeMillis();
+        mCurrentPlayerID = System.currentTimeMillis();
         mNewTVLauncherPlayerView = playerView;
         setPendingListener();
-        return currentPlayer;
     }
 
     public void init(Context context) {
         if (mNewTVLauncherPlayerView == null) {
-            mNewTVLauncherPlayerView = new NewTVLauncherPlayerView(null, context);
+            mNewTVLauncherPlayerView = new NewTVLauncherPlayerView(context);
             setPendingListener();
         }
     }
@@ -117,124 +114,20 @@ public class NewTVLauncherPlayerViewManager {
         mNewTVLauncherPlayerView.updateUIPropertys(true);
         frameLayout.addView(mNewTVLauncherPlayerView, -1);
 
-
         mPlayerPageContext = context;
     }
 
-
-    // add by lxf for living streaming
-    public void playLive(String liveUrl, Context context, Content programSeriesInfo, int
-            index, int position) {
-        isLive = true;
-        this.programSeriesInfo = programSeriesInfo;
-        this.typeIndex = index;
-        playLive(liveUrl, context, programSeriesInfo, true, index, position);
-    }
-
-    public void play(Context context, Content content, int index, int position, boolean
-            newActivity) {
-        if (mNewTVLauncherPlayerView == null) {
-            init(context);
-        }
-        this.programSeriesInfo = content;
-
-
-        mNewTVLauncherPlayerView.play(content, index, position, newActivity);
-    }
-
-
-    // add by lxf for living streaming
-    public void playLive(String liveUrl, Context context, Content programSeriesInfo,
-                         boolean isNeedStartActivity, int index, int position) {
-        playLive(liveUrl, "", context, programSeriesInfo, isNeedStartActivity, index, position);
-    }
-
-    public void playLive(String liveUrl, String contentUUid, Context context, Content
-            programSeriesInfo, boolean
-                                 isNeedStartActivity, int index, int position) {
-        Log.i(TAG, "playLive: ");
-//        liveUrl = "http://test.live2.cloud.vod02.icntvcdn
-// .com/live/fc3d9d396ac14f0f8e8cf8ce66d2b309/9e1e4708e25946508f96d73a96c8e09c.m3u8";
-        this.programSeriesInfo = programSeriesInfo;
-        this.typeIndex = index;
-        if (mNewTVLauncherPlayerViewManager != null) {
+    public void playVod(Context context, Content content, int index, int position) {
+        if(mNewTVLauncherPlayerViewManager != null){
             mNewTVLauncherPlayerViewManager.init(context);
         }
-        if (mNewTVLauncherPlayerView != null) {
-//            mNewTVLauncherPlayerView.playLive(liveUrl, contentUUid, programSeriesInfo,
-//                    isNeedStartActivity,
-//                    index, position);
-        } else {
-            Log.i(TAG, "playLive: mNewTVLauncherPlayerView==null");
-
+        if(mNewTVLauncherPlayerView != null){
+            mNewTVLauncherPlayerView.setSeriesInfo(content);
+            mNewTVLauncherPlayerView.playSingleOrSeries(index,position);
+        }else{
+            Log.e(TAG, "playVod: mNewTVLauncherPlayerView==null");
         }
     }
-
-    public void playProgramSeries(Context context, Content programSeriesInfo, boolean
-            isNeedStartActivity, int index, int position) {
-        playProgramSeries(context,programSeriesInfo,isNeedStartActivity,index,position,"");
-    }
-    public void playProgramSeries(Context context, Content programSeriesInfo, boolean
-            isNeedStartActivity, int index, int position,String alternateId) {
-        Log.i(TAG, "playProgramSeries: ");
-        this.alternateId = alternateId;
-        if (programSeriesInfo == null || programSeriesInfo.getData() == null || programSeriesInfo
-                .getData().size() < 1) {
-            Log.i(TAG, "playProgramSeries: programSeriesInfo==null");
-            return;
-        }
-        if (isNeedStartActivity) {
-            if (mNewTVLauncherPlayerView != null) {
-//                mNewTVLauncherPlayerView.buildPlayerViewConfig();
-                release();
-            }
-        }
-        isLive = false;
-        this.programSeriesInfo = programSeriesInfo;
-        this.typeIndex = index;
-        if (mNewTVLauncherPlayerViewManager != null) {
-            mNewTVLauncherPlayerViewManager.init(context);
-        }
-        if (mNewTVLauncherPlayerView != null) {
-            mNewTVLauncherPlayerView.playProgramSeries(programSeriesInfo, isNeedStartActivity,
-                    index, position);
-        } else {
-            Log.i(TAG, "playProgramSeries: mNewTVLauncherPlayerView==null");
-        }
-    }
-    public void playProgramSingle(Context context, Content programDetailInfo, int
-            position, boolean openActivity) {
-        playProgramSingle(context,programDetailInfo,position,openActivity,"");
-    }
-
-    public void playProgramSingle(Context context, Content programDetailInfo, int
-            position, boolean openActivity,String alternateId) {
-        this.alternateId = alternateId;
-        Log.i(TAG, "playProgramSingle: ");
-        if (programDetailInfo == null) {
-            Log.i(TAG, "playProgramSingle: programDetailInfo==null");
-            return;
-        }
-        if (openActivity) {
-            if (mNewTVLauncherPlayerView != null) {
-//                mNewTVLauncherPlayerView.buildPlayerViewConfig();
-                release();
-            }
-        }
-        isLive = false;
-        this.programSeriesInfo = programDetailInfo;
-        this.typeIndex = -1;
-        if (mNewTVLauncherPlayerViewManager != null) {
-            mNewTVLauncherPlayerViewManager.init(context);
-        }
-        if (mNewTVLauncherPlayerView != null) {
-            mNewTVLauncherPlayerView.playProgramSingle(programDetailInfo, position, openActivity);
-        } else {
-            Log.i(TAG, "playProgramSingle: mNewTVLauncherPlayerView==null");
-
-        }
-    }
-
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         Log.i(TAG, "onKeyDown: ");
@@ -281,17 +174,18 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
+    public void playLive(LiveInfo liveInfo, LiveListener listener) {
+        if (mNewTVLauncherPlayerView != null) {
+            mNewTVLauncherPlayerView.playLive(liveInfo, false, listener);
+        }
+    }
+
     public void release() {
         Log.i(TAG, "release: ");
-//        NewTVLauncherPlayer.getInstance().release();
-
         releasePlayer();
 
-//        mNewTVLauncherPlayerViewManager = null;
-//        mContext = null;
         closePlayerActivity();
         mPlayerPageContext = null;
-//        VideoDataService.getInstance().stop();
         PlayerConfig.getInstance().cleanColumnId();
     }
 
@@ -301,6 +195,7 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
+    @SuppressWarnings("PointlessNullCheck")
     private void closePlayerActivity() {
         Log.i(TAG, "closePlayerActivity: ");
         if (mPlayerPageContext != null && mPlayerPageContext instanceof Activity) {
@@ -309,15 +204,10 @@ public class NewTVLauncherPlayerViewManager {
     }
 
     public int getCurrentPosition() {
-//        Log.i(TAG, "getCurrentPosition: ");
         if (mNewTVLauncherPlayerView != null) {
             return mNewTVLauncherPlayerView.getCurrentPosition();
         }
         return -1;
-    }
-
-    public boolean isLive() {
-        return this.isLive;
     }
 
     public int getIndex() {
@@ -328,8 +218,12 @@ public class NewTVLauncherPlayerViewManager {
         return -1;
     }
 
+    @Nullable
     public Content getProgramSeriesInfo() {
-        return programSeriesInfo;
+        if (mNewTVLauncherPlayerView != null) {
+            return mNewTVLauncherPlayerView.defaultConfig.programSeriesInfo;
+        }
+        return null;
     }
 
     public int getTypeIndex() {
@@ -344,25 +238,15 @@ public class NewTVLauncherPlayerViewManager {
 
     public boolean isLiving() {
         if (mNewTVLauncherPlayerView != null) {
-            return mNewTVLauncherPlayerView.isLiving();
+            return mNewTVLauncherPlayerView.defaultConfig.isLiving;
         }
         return false;
     }
 
-    public void setContinuePlay(Context context, Content mProgramSeriesInfo,
-                                NewTVLauncherPlayerView
-                                        .PlayerViewConfig config,
-                                int position) {
-        Log.i(TAG, "setContinuePlay: ");
-        if (mNewTVLauncherPlayerView == null) {
-            mNewTVLauncherPlayerView = new NewTVLauncherPlayerView(config, context);
-            setPendingListener();
-        }
-        if (typeIndex == -1) {
-            playProgramSingle(context, mProgramSeriesInfo, position, false);
-        } else {
-            playProgramSeries(context, mProgramSeriesInfo, false, typeIndex,
-                    position);
+
+    public void changeAlternate(String contentId,String channel,String title){
+        if(mNewTVLauncherPlayerView != null){
+            mNewTVLauncherPlayerView.changeAlternate(contentId,title,channel);
         }
     }
 
@@ -396,7 +280,4 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
-    public String getAlternateId() {
-        return alternateId;
-    }
 }

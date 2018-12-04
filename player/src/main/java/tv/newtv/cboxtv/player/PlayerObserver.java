@@ -1,10 +1,12 @@
 package tv.newtv.cboxtv.player;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.libs.db.DBCallback;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -19,4 +21,8 @@ public interface PlayerObserver {
     Activity getCurrentActivity();
     Intent getPlayerActivityIntent();
     boolean isVip();
+    void activityJump(Context context, String actionType, String contentType,
+                                    String contentUUID, String actionUri);
+    void addLbCollect(Bundle bundle,DBCallback<String> dbCallback);
+    void deleteLbCollect(String contentUUID,DBCallback<String> dbCallback);
 }

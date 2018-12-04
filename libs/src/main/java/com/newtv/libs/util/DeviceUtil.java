@@ -16,6 +16,7 @@ import com.newtv.libs.Libs;
 
 public class DeviceUtil {
     private static final String XIAO_MI = "xiaomi";
+    private static final String XIAO_MI_STAGE = "xiaomi_stage";
     private static final String LETV = "letv";
     public static final String XIONG_MAO = "panda";
     public static final String XUN_MA = "xunma";
@@ -32,7 +33,7 @@ public class DeviceUtil {
             return true;
         }
 
-        if (Libs.get().getFlavor().equals(XIAO_MI)) {
+        if (Libs.get().getFlavor().equals(XIAO_MI) || Libs.get().getFlavor().equals(XIAO_MI_STAGE)) {
             String brand = Build.BRAND;
             Log.i("device", brand);
             return !TextUtils.isEmpty(brand) && XIAO_MI.equalsIgnoreCase(brand);

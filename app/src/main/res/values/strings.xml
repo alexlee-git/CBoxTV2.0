@@ -92,7 +92,7 @@
     <!-- 错误信息-->
     <string name="no_video_url">视频没有播放地址</string>
     <string name="logo">logo</string>
-    <string name="check_error">播控鉴权失败：</string>
+    <string name="check_error">播放鉴权失败：</string>
 
     <string name="auth_ing">正在认证</string>
     <string name="collect_success">收藏成功,请到我的收藏中查看</string>
@@ -182,4 +182,17 @@
     <!-- 会员到期提醒 -->
     <string name="vip_tip">已购买，将于%s到期</string>
 
+    <!--兑换码-->
+    <string name="code_exchange_title">兑换码</string>
+    <string name="code_exchange_input">请输入兑换码</string>
+    <string name="code_exchange_success">激活成功。</string>
+    <string name="code_exchange_fail">兑换码错误，请重新输入。</string>
+    <string name="code_exchange_fail_0">您输入的兑换码无效，请重新输入。</string>
+    <string name="code_exchange_fail_1">该点卡已被激活，不可重复激活。</string>
+    <string name="code_exchange_fail_2">该点卡已过期。</string>
+    <string name="code_exchange_fail_3">您输入的兑换码无效，请联系硬件厂商。</string>
+    <string name="code_exchange_fail_4">该产品包已下线，请联系未来电视客服。</string>
+    <string name="code_exchange_fail_5">您已输入5次兑换码，请2个小时后再试。</string>
+    <string name="code_exchange_fail_6">兑换码未在有效期内使用。</string>
+    <string name="code_exchange_tip">说明：兑换码为16位，只能使用1次，兑换记录请到订单管理中查看，最终解释全归公司所有</string>
 </resources>

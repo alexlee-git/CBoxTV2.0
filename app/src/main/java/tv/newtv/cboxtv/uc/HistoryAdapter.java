@@ -121,6 +121,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             // 观看进度
             viewHolder.mSubTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress
                     (entity.getPlayPosition(), entity.getDuration()));
+            Log.e("yml", "onBindViewHolder: "+entity.getProgress() );
 
             // 更新剧集
             String episode = entity.getEpisode_num();

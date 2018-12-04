@@ -81,7 +81,8 @@ object CmsUtil {
      */
     @JvmStatic
     fun translateIndex(content: Content?, index: Int): Int {
-        if (isVideoTv(content)) {
+        if (isVideoTv(content) && !TextUtils.isEmpty(content?.isFinish) && !TextUtils.isEmpty
+                (content?.playOrder)) {
             content?.let {
                 val isUiDesc: Boolean = isUIDataDesc(it)
                 val isPlayerDesc: Boolean = isPlayDesc(it)

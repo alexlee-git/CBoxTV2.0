@@ -133,9 +133,6 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     @Override
     public View getFirstFocusView() {
-        LogUtils.d("ContentFragment", "mRecycleView =" + mRecyclerView);
-        LogUtils.d("ContentFragment", "mRecycleView.getAdapter =" + mRecyclerView.getAdapter());
-        LogUtils.d("ContentFragment", "loadingView visible =" + loadingView.getVisibility());
         if (mRecyclerView != null && mRecyclerView.getAdapter() != null && mRecyclerView
                 .getChildAt(0) != null && loadingView.getVisibility() == View.GONE) {
             String tag = ((UniversalAdapter) mRecyclerView.getAdapter()).getFirstViewId();
@@ -327,7 +324,6 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     }
 
 
-
     private void updateRecycleView(@Nullable final List<Page> pageList) {
         mPageList = pageList;
         if (contentView == null || mRecyclerView == null) return;
@@ -347,9 +343,9 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
                 mRecyclerView.setAdapter(adapter);
             } else {
-                if (!mRecyclerView.hasFocus()) {
+//                if (!mRecyclerView.hasFocus()) {
                     adapter.notifyDataSetChanged();
-                }
+//                }
             }
 
             Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
@@ -371,6 +367,8 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     @Override
     public void onError(@NotNull Context context, @NotNull String desc) {
+        if (loadingView != null)
+            loadingView.setVisibility(View.GONE);
         setTipVisibility(View.VISIBLE);
         if(loadingView!=null) {
             loadingView.setVisibility(View.GONE);

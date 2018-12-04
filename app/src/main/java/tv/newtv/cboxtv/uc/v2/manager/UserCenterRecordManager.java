@@ -202,7 +202,7 @@ public class UserCenterRecordManager {
             return;
         }
 
-        if (info == null) {
+        if (type != USER_CENTER_RECORD_TYPE.TYPE_LUNBO && info == null) {
             return;
         }
 
@@ -417,12 +417,20 @@ public class UserCenterRecordManager {
         // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
-                    .condition()
-                    .eq(DBConfig.USERID, dataUserId)
-                    .eq(DBConfig.CONTENTUUID, contentuuids)
-                    .build()
-                    .withCallback(callback).excute();
+            if (TextUtils.equals(contentuuids, "clean")) {
+                DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .build()
+                        .withCallback(callback).excute();
+            } else {
+                DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
+                        .condition()
+                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .build()
+                        .withCallback(callback).excute();
+            }
         } else {
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context))
@@ -966,10 +974,10 @@ public class UserCenterRecordManager {
                                             }
                                         }).excute();
                             } else {
-                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_COLLECT_TABLE_NAME, callback);
+                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME, callback);
                             }
                         } else {
-                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callback);
+                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.SUBSCRIBE_TABLE_NAME, callback);
                         }
                         unSubscribe(mCollectionDisposable);
                     }
@@ -1338,6 +1346,8 @@ public class UserCenterRecordManager {
                                     if (null != callback) {
                                         callback.getHistoryStatus(data.get(0));
                                     }
+                                } else {
+                                    callback.onError();
                                 }
                             }
                         }).excute();
@@ -1373,18 +1383,18 @@ public class UserCenterRecordManager {
             if (duration > 0) {
                 resultTmp = position * 100 / duration;
             }
-            if (resultTmp < 1) {
-                result = "观看不足1%";
+            if (position==0&&duration==0) {
+                result = "已看完";
             } else {
-                if (position < duration) {
+                if (resultTmp<1) {
+                    result = "观看不足1%";
+                } else if (position < duration){
                     result = "已观看" + resultTmp + "%";
-                } else {
-                    result = "已看完";
                 }
             }
         }
 
-        Log.d(TAG, "getWatchProgress, pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
+        Log.d(TAG, ", pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
 
         return result;
     }

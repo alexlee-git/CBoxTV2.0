@@ -110,10 +110,10 @@ public class ADPlayerView extends FrameLayout implements IADPlayer, SurfaceHolde
             }
             SurfaceView surfaceView = findViewWithTag("SURFACE");
             if (findViewWithTag("SURFACE") != null) {
-                Log.e(TAG, "play: reset old surface tag to old_surface");
+                Log.e(TAG, "playVod: reset old surface tag to old_surface");
                 surfaceView.setTag("OLD_SURFACE");
                 cachePlayer.put("OLD_SURFACE", mMediaPlayer);
-                Log.e(TAG, "play: cache player=" + mMediaPlayer);
+                Log.e(TAG, "playVod: cache player=" + mMediaPlayer);
             }
 
             SurfaceView second = new SurfaceView(getContext());
@@ -124,7 +124,7 @@ public class ADPlayerView extends FrameLayout implements IADPlayer, SurfaceHolde
             addView(second);
             isPrepared = false;
             mSurfaceHolder = null;
-            Log.e(TAG, "play: source = " + mDataSource);
+            Log.e(TAG, "playVod: source = " + mDataSource);
             cachePlayer.put("SURFACE", mediaPlayer);
             mediaPlayer.prepareAsync();
         } catch (IOException e) {

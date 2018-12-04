@@ -46,7 +46,7 @@ public class VideoDataStruct implements Serializable {
 	private String tencentCid = "";// 节目集ID 只限腾讯使用，为节目集ID 节目ID 为vid
 
 	/**
-	 * icntv play SDK param
+	 * icntv playVod SDK param
 	 */
 	private String deviceID = "";// 设备ID
 	// private String usrID = ""; // 用户ID

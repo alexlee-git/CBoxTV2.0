@@ -117,7 +117,10 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             intent.putExtra(Constant.ACTION_FROM, false);
                             intent.setClass(context, MainActivity.class);
                             context.startActivity(intent);
-                            
+                            boolean isBackground = ActivityStacks.get().isBackGround();
+                            if (!isBackground){
+                                ActivityStacks.get().finishAllActivity();
+                            }
                         }
                     }
                     return true;

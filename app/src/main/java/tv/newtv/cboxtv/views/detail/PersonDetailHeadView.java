@@ -221,7 +221,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         }
     }
 
-    private void delAttention(String contentUuId) {
+    private void delAttention(final String contentUuId) {
 
         UserCenterUtils.deleteSomeAttention(dataInfo, contentUuId, new DBCallback<String>() {
             @Override
@@ -232,6 +232,8 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                         public void run() {
                             isAttention = false;
                             attentionView.setSelect(false);
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION,"1,"+contentUuId);
+
                             Toast.makeText(mContext, "取消关注成功", Toast.LENGTH_SHORT).show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
@@ -241,20 +243,21 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         });
     }
 
-    private void updateAttention(Content entity) {
+    private void updateAttention(final Content entity) {
         if (entity == null) {
             LogUtils.e("update Attention is null");
             return;
         }
         UserCenterUtils.addAttention(entity, new DBCallback<String>() {
             @Override
-            public void onResult(int code, String result) {
+            public void onResult(int code, final String result) {
                 if (code == 0) {
                     attentionView.post(new Runnable() {
                         @Override
                         public void run() {
                             isAttention = true;
                             attentionView.setSelect(true);
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION,"0,"+contentUUID);
                             Toast.makeText(mContext, R.string.attention_success, Toast.LENGTH_SHORT).show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }

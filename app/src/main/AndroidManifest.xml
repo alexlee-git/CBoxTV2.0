@@ -163,6 +163,7 @@
         <activity android:name=".uc.v2.VersionUpdateOneActivity" />
         <activity android:name=".uc.v2.member.MemberAgreementActivity" />
         <activity android:name=".uc.v2.member.UserAgreementActivity" />
+        <activity android:name=".uc.v2.CodeExChangeActivity" />
 
         <meta-data
             android:name="appKey"

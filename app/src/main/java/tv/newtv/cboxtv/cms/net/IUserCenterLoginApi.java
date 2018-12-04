@@ -300,4 +300,10 @@ public interface IUserCenterLoginApi {
                                                @Query("channel_code") String channel_code,
                                                @Query("offset") String offset,
                                                @Query("limit") String limit);
+
+    //兑换码
+    @Headers("host_type: " + BootGuide.USER)
+    @POST("/goldenpheasant/service/exchangeCards/exchange")
+    Observable<ResponseBody> getCodeExChange(@Header("Authorization") String Authorization,
+                                             @Body RequestBody requestBody);
 }

@@ -32,7 +32,7 @@
         <address url="http://stage-bzo.cloud.ottcn.com/" name="USER"/>
         <address url="https://k.cloud.ottcn.com" name="DYNAMIC_KEY"/>
         <address url="http://stage-bzo.cloud.ottcn.com" name="PAY"/>
-        <address url="http://img.cloud.ottcn.com/n3images/definitionImg/test/4k.png" name="MARK_IS4K"/>
+        <address url="http://img.cloud.ottcn.com/n3images/definitionImg/prod/4k.png" name="MARK_IS4K"/>
         <address url="http://img.cloud.ottcn.com/n3images/productImg/prod/%1$s.png" name="MARK_VIPPRODUCTID"/>
         <address url="http://img.cloud.ottcn.com/n3images/operateImg/prod/%1$s.png" name="MARK_NEW_REALEXCLUSIVE"/>
     </addressList>

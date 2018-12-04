@@ -388,8 +388,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         }
         try {
             mContentList = new ArrayList<>(results);
-
-            if (CmsUtil.isVideoTv(seriesContent)) {
+            if (CmsUtil.isVideoTv(seriesContent) && !TextUtils.isEmpty(seriesContent.isFinish())) {
                 final boolean sortDesc = "0".equals(seriesContent.isFinish());
                 Collections.sort(mContentList, new Comparator<SubContent>() {
                     @Override
