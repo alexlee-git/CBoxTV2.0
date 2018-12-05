@@ -15,10 +15,11 @@ import com.newtv.libs.util.YSLogUtils;
 
 import java.util.LinkedHashMap;
 
-import tv.icntv.been.IcntvPlayerInfo;
+import tv.icntv.icntvplayersdk.BasePlayer;
 import tv.icntv.icntvplayersdk.Constants;
-import tv.icntv.icntvplayersdk.IcntvPlayer;
-import tv.icntv.icntvplayersdk.iICntvPlayInterface;
+import tv.icntv.icntvplayersdk.NewTVPlayerInfo;
+import tv.icntv.icntvplayersdk.NewTVPlayerInterface;
+import tv.icntv.icntvplayersdk.wrapper.NewTvPlayerWrapper;
 import tv.newtv.cboxtv.player.IVodVideoPlayerInterface;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerUrlConfig;
@@ -34,7 +35,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
     private static final String TAG = "NewTVVodVideoPlayer";
     private static NewTVVodVideoPlayer mNewTVVodVideoPlayer;
     private iPlayCallBackEvent mIPlayCallBackEvent;
-    private IcntvPlayer mIcntvPlayer;
+    private BasePlayer mIcntvPlayer;
     private Context mContext;
 
 //    private VideoTracker mVideoTracker;
@@ -51,7 +52,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
     private String videoName;
     // 判断正片是否开始启播，目的是与前贴片广告播放分离
     private boolean mIsPositiveOnPrepared = false;
-    private iICntvPlayInterface mIcntvPlayerCallback = new iICntvPlayInterface() {
+    private NewTVPlayerInterface mIcntvPlayerCallback = new NewTVPlayerInterface() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> linkedHashMap) {
             Log.i(TAG, "onPrepared: ");
@@ -103,8 +104,8 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         @Override
         public void onCompletion(int type) {
             Log.i(TAG, "onCompletion: " + type);
-            if(type ==  iICntvPlayInterface.VIDEO_COMPLETE_TYPE ||
-                    type == iICntvPlayInterface.AFTER_AD_COMPLETE_TYPE) {
+            if(type ==  NewTVPlayerInterface.CONTENT_TYPE ||
+                    type == NewTVPlayerInterface.POST_AD_TYPE) {
                 // 点播结束日志上传
                 if (mIcntvPlayer != null) {
 
@@ -274,22 +275,23 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
             return false;
         }
         Log.i(TAG, "playVideo: " + videoDataStruct);
-        IcntvPlayerInfo icntvPlayerInfo = new IcntvPlayerInfo();
+        NewTVPlayerInfo icntvPlayerInfo = new NewTVPlayerInfo();
         icntvPlayerInfo.setAppKey(Libs.get().getAppKey());
-        icntvPlayerInfo.setChannalId(Libs.get().getChannelId());
-        icntvPlayerInfo.setCdnDispatchUrl(Constant.BASE_URL_CDN);
+        icntvPlayerInfo.setChanneId(Libs.get().getChannelId());
+        icntvPlayerInfo.setCdnDispatchURl(Constant.BASE_URL_CDN);
         icntvPlayerInfo.setDynamicKeyUrl(Constant.DYNAMIC_KEY);
         icntvPlayerInfo.setPlayUrl(videoDataStruct.getPlayUrl());
-        icntvPlayerInfo.setProgramListID(videoDataStruct.getSeriesId());
+        icntvPlayerInfo.setSeriesID(videoDataStruct.getSeriesId());
         icntvPlayerInfo.setDuration(videoDataStruct.getDuration() * 60 * 1000);
-        icntvPlayerInfo.setProgramID(videoDataStruct.getProgramId());
+        icntvPlayerInfo.setProgramId(videoDataStruct.getProgramId());
+        icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
+        icntvPlayerInfo.setDeviceId(Constant.UUID);
+        icntvPlayerInfo.setStartPosition(videoDataStruct.getHistoryPosition());
         if(UserStatus.isVip()){
             icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
         }else {
             icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
         }
-        icntvPlayerInfo.setKey(videoDataStruct.getKey());
-        icntvPlayerInfo.setDeviceID(Constant.UUID);
         //extend字段
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
@@ -315,11 +317,11 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         YSLogUtils.getInstance(mContext).setOutSourceId(videoDataStruct.getProgramId());
         YSLogUtils.getInstance(mContext).setVideoName(videoDataStruct.getTitle());
         YSLogUtils.getInstance(mContext).setOutSourcePlayUrl(videoDataStruct.getPlayUrl());
-        mIcntvPlayer = new IcntvPlayer(context, frameLayout, icntvPlayerInfo, mIcntvPlayerCallback);
+        mIcntvPlayer = NewTvPlayerWrapper.getInstance().getPlayer(context, frameLayout, icntvPlayerInfo, mIcntvPlayerCallback);
         return true;
     }
 
-    private void addExtend(IcntvPlayerInfo info, String key, String value) {
+    private void addExtend(NewTVPlayerInfo info, String key, String value) {
         if (TextUtils.isEmpty(value)) {
             return;
         }
@@ -338,7 +340,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
      * @param info
      * @return
      */
-    private String parseCategoryIds(String categoryIds, IcntvPlayerInfo info) {
+    private String parseCategoryIds(String categoryIds, NewTVPlayerInfo info) {
         if(TextUtils.isEmpty(categoryIds)){
             return "";
         }
@@ -388,7 +390,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
             return false;
         try {
             if (mIcntvPlayer.isPlaying() || mIcntvPlayer.isADPlaying()) {
-                mIcntvPlayer.stopVideo();
+                mIcntvPlayer.release();
                 return true;
             }
         } catch (Exception e) {

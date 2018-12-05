@@ -31,9 +31,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
-import tv.icntv.been.AdInfo;
-import tv.icntv.been.AdInfos;
-import tv.icntv.been.MaterialInfo;
+import tv.icntv.icntvplayersdk.been.MaterialInfo;
+import tv.icntv.icntvplayersdk.been.PlayerAdInfo;
+import tv.icntv.icntvplayersdk.been.PlayerAdInfos;
+
 
 /**
  * 项目名称:         CBoxTV
@@ -72,19 +73,19 @@ public class ADHelper {
         if (TextUtils.isEmpty(jsonResult)){
             return null;
         }
-        List<AdInfos> adInfosList = AdJsonUtil.parseAdInfo(jsonResult);
+        List<PlayerAdInfos> adInfosList = AdJsonUtil.parseAdInfo(jsonResult);
 
         if (adInfosList == null || adInfosList.size() == 0 || adInfosList.get(0) == null ||
                 adInfosList.get(0).m_info == null || adInfosList.get(0).m_info.size() ==
                 0) {
             return null;
         }
-        AdInfo adInfo = adInfosList.get(0).m_info.get(0);
+        PlayerAdInfo adInfo = adInfosList.get(0).m_info.get(0);
         if (adInfo == null || adInfo.m_material == null || adInfo.m_material
                 .size() == 0) {
             return null;
         }
-        List<MaterialInfo> materialInfosList = adInfo.m_material;
+        List<tv.icntv.icntvplayersdk.been.MaterialInfo> materialInfosList = adInfo.m_material;
         int adTime = 0;
         AD result = new AD();
         final List<AD.ADItem> paths = new ArrayList<>();

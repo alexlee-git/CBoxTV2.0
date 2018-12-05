@@ -249,12 +249,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 stopLoading();
             }
             mNewTVLauncherPlayerSeekbar.setDuration();
-            if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
-                    * 1000) {
-                mNewTVLauncherPlayer.seekTo(mHistoryPostion);
-                mPlayerContract.setPlayerState(PlayerContract.STATE_VIDEO_SEEK_START);
-            }
-            mHistoryPostion = 0;
+//            if (mHistoryPostion > 0 && mHistoryPostion < mNewTVLauncherPlayer.getDuration() - 30
+////                    * 1000) {
+////                mNewTVLauncherPlayer.seekTo(mHistoryPostion);
+////                mPlayerContract.setPlayerState(PlayerContract.STATE_VIDEO_SEEK_START);
+////            }
+////            mHistoryPostion = 0;
             showSeekBar(mIsPause, true);
         }
 
@@ -1718,10 +1718,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 getCurrentPosition(), defaultConfig.programSeriesInfo.getContentUUID()));
 
         if (defaultConfig.programSeriesInfo == null
-                || getDuration() <= 0 || getCurrentPosition() <= 0)
+                || getDuration() <= 0 || getCurrentPosition() <= 0) {
             return;
+        }
+        int historyPosition = 0;
+        if (getCurrentPosition() < getDuration() - 30 * 1000) {
+            historyPosition = getCurrentPosition();
+        } else {
+            Log.i(TAG, "History postion reach the end, ignore");
+        }
 
-        Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
+        Player.get().onFinish(defaultConfig.programSeriesInfo, index, historyPosition,
                 getDuration());
     }
 
@@ -1783,6 +1790,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             ADConfig.getInstance().setSeriesID(defaultConfig.programSeriesInfo.getContentID(),
                     false);
         }
+        videoDataStruct.setHistoryPosition(mHistoryPostion);
         mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
                 videoDataStruct);
     }

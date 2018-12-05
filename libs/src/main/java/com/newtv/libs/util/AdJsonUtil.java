@@ -8,9 +8,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.icntv.been.AdInfo;
-import tv.icntv.been.AdInfos;
-import tv.icntv.been.MaterialInfo;
+import tv.icntv.icntvplayersdk.been.MaterialInfo;
+import tv.icntv.icntvplayersdk.been.PlayerAdInfo;
+import tv.icntv.icntvplayersdk.been.PlayerAdInfos;
+
 
 public class AdJsonUtil {
     private static final String LOG_TAG = "adsdk";
@@ -19,7 +20,7 @@ public class AdJsonUtil {
     public AdJsonUtil() {
     }
 
-    public static List<AdInfos> parseAdInfo(String jsonInfo) {
+    public static List<PlayerAdInfos> parseAdInfo(String jsonInfo) {
         if (jsonInfo == null) {
             Log.e("adsdk", "parseAdInfo: param jsonInfo is null");
             return null;
@@ -45,7 +46,7 @@ public class AdJsonUtil {
                     JSONArray adinfoArray = adspaceoObject.optJSONArray(adTypes[i]);
                     if (adinfoArray != null) {
                         Log.d("adsdk", adTypes[i] + " is not null");
-                        AdInfos adInfos = new AdInfos();
+                        PlayerAdInfos adInfos = new PlayerAdInfos();
                         adInfos.m_info = new ArrayList();
                         adInfos.m_type = adTypes[i];
 
@@ -53,7 +54,7 @@ public class AdJsonUtil {
                             Log.d("adsdk", "########j=" + j);
                             JSONObject adspaceObject = adinfoArray.optJSONObject(j);
                             if (adspaceObject != null) {
-                                AdInfo adInfo = new AdInfo();
+                                PlayerAdInfo adInfo = new PlayerAdInfo();
                                 adInfo.m_material = new ArrayList();
                                 adInfo.m_aid = adspaceObject.optString("aid");
                                 adInfo.m_mid = adspaceObject.optString("mid");

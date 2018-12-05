@@ -15,7 +15,7 @@ import com.gridsum.videotracker.provider.IVodInfoProvider;
 
 import java.math.BigDecimal;
 
-import tv.icntv.icntvplayersdk.IcntvPlayer;
+import tv.icntv.icntvplayersdk.BasePlayer;
 /**
  * Created by Administrator on 2018/6/6.
  */
@@ -40,7 +40,7 @@ public class YSLogUtils {
     private LivePlay mLivePlay;
     private ILiveInfoProvider mILiveInfoProvider;
 
-    private IcntvPlayer mIcntvPlayer;
+    private BasePlayer mIcntvPlayer;
 
     private YSLogUtils(Context context) {
         this.mContext = context;
@@ -203,11 +203,11 @@ public class YSLogUtils {
     }
 
 
-    public IcntvPlayer getmIcntvPlayer() {
+    public BasePlayer getmIcntvPlayer() {
         return mIcntvPlayer;
     }
 
-    public void setmIcntvPlayer(IcntvPlayer mIcntvPlayer) {
+    public void setmIcntvPlayer(BasePlayer mIcntvPlayer) {
 
         this.mIcntvPlayer = mIcntvPlayer;
 
