@@ -27,8 +27,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.Utils;
 
@@ -43,6 +45,7 @@ import retrofit2.HttpException;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
@@ -78,12 +81,14 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private int mTime = 5 * 60;
     private int mTime_success = 3;
     private String mMobile;
-    private Disposable disposable_sendcode, disposable_sendok;
+    private Disposable disposable_sendcode, disposable_sendok, disposable_buyFlag;
     private String[] key = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "后退", "0", "完成"};
     private boolean mFlagPay;
     private ExterPayBean mExterPayBean;
     private String mVipFlag;
+    private boolean mFlagAuth;
     private boolean isSendOK = true;
+    private String mContentUUID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,11 +97,14 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         initView();
 
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
+        mFlagAuth = getIntent().getBooleanExtra("isAuth", false);
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay);
         if (mExterPayBean != null) {
             Log.i(TAG, "mExterPayBean = " + mExterPayBean.toString());
             mVipFlag = mExterPayBean.getVipFlag();
+            Log.i(TAG, mExterPayBean.toString());
+            mContentUUID = mExterPayBean.getContentUUID();
         }
     }
 
@@ -307,19 +315,24 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                             mHandler.sendEmptyMessageDelayed(CODE_SUCCESS, 1000);
                         }
                     } else {
-                        if (mFlagPay) {
-                            if (mVipFlag != null) {
-                                Intent mIntent = new Intent();
-                                if (mVipFlag.equals(Constant.BUY_ONLY)) {
-                                    mIntent.setClass(PhoneLoginActivity.this, PayOrderActivity.class);
-                                } else {
-                                    mIntent.setClass(PhoneLoginActivity.this, PayChannelActivity.class);
+                        Log.i(TAG, "mContentUUID: " + mContentUUID);
+                        if (mFlagAuth) {
+                            isBuy("", mContentUUID);
+                        } else {
+                            if (mFlagPay) {
+                                if (mVipFlag != null) {
+                                    Intent mIntent = new Intent();
+                                    if (mVipFlag.equals(Constant.BUY_ONLY)) {
+                                        mIntent.setClass(PhoneLoginActivity.this, PayOrderActivity.class);
+                                    } else {
+                                        mIntent.setClass(PhoneLoginActivity.this, PayChannelActivity.class);
+                                    }
+                                    mIntent.putExtra("payBean", mExterPayBean);
+                                    startActivity(mIntent);
                                 }
-                                mIntent.putExtra("payBean", mExterPayBean);
-                                startActivity(mIntent);
                             }
+                            finish();
                         }
-                        finish();
                     }
                     break;
             }
@@ -509,12 +522,11 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 
                                 uploadUserExterLog();
                                 uploadUserExter();
-
+                                UserCenterUtils.setLogin(true);
                                 if (mHandler != null) {
                                     mTime_success = 3;
                                     mHandler.sendEmptyMessage(CODE_SUCCESS);
                                 }
-                                UserCenterUtils.setLogin(true);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -559,4 +571,67 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             e.printStackTrace();
         }
     }
+
+    public void isBuy(String productIds, String contentUUID) {
+        String token = SharePreferenceUtils.getToken(PhoneLoginActivity.this);
+
+        NetClient.INSTANCE.getUserCenterLoginApi()
+                .getBuyFlag("Bearer " + token, productIds, Libs.get().getAppKey(),
+                        Libs.get().getChannelId(), contentUUID, "3.1")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable_buyFlag = d;
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String result = responseBody.string();
+                            LogUtils.i(TAG, result);
+                            JSONObject jsonObject = new JSONObject(result);
+                            boolean buyFlag = jsonObject.optBoolean("buyFlag");
+                            Log.i(TAG, "buyFlag :" + buyFlag);
+                            if (!buyFlag) {
+                                if (mFlagPay) {
+                                    if (mVipFlag != null) {
+                                        Intent mIntent = new Intent();
+                                        if (mVipFlag.equals(Constant.BUY_ONLY)) {
+                                            mIntent.setClass(PhoneLoginActivity.this, PayOrderActivity.class);
+                                        } else {
+                                            mIntent.setClass(PhoneLoginActivity.this, PayChannelActivity.class);
+                                        }
+                                        mIntent.putExtra("payBean", mExterPayBean);
+                                        startActivity(mIntent);
+                                    }
+                                }
+                            }
+                            finish();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (disposable_buyFlag != null) {
+                            disposable_buyFlag.dispose();
+                            disposable_buyFlag = null;
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (disposable_buyFlag != null) {
+                            disposable_buyFlag.dispose();
+                            disposable_buyFlag = null;
+                        }
+                    }
+                });
+
+    }
+
 }

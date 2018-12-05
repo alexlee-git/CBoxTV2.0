@@ -49,7 +49,6 @@ import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 public class NewTVSearchHotRecommend extends RelativeLayout implements PageContract.View {
 
     private final String TAG = this.getClass().getSimpleName();
-    private String mSearchId = "420";
     private StaggeredGridLayoutManager mLayoutManager;
     private PageContract.ContentPresenter mContentPresenter;
     private SearchHotRecommendAdapter mAdapter;
@@ -101,9 +100,9 @@ public class NewTVSearchHotRecommend extends RelativeLayout implements PageContr
         mContentPresenter = new PageContract.ContentPresenter(getContext(), this);
         String hotSearchId = Constant.getBaseUrl("HOTSEARCH_CONTENTID");
         if (!TextUtils.isEmpty(hotSearchId)){
-            mSearchId = hotSearchId;
+            mContentPresenter.getPageContent(hotSearchId);
         }
-        mContentPresenter.getPageContent(mSearchId);
+
     }
 
     public SearchRecyclerView getRecyclerView() {

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
+import tv.newtv.cboxtv.cms.mainPage.viewholder.BlockBuilder;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
@@ -52,7 +54,8 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  * 创建日期:          2018/4/29
  */
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
-        ContentContract.View, LiveListener, ICustomPlayer {
+        ContentContract.View, LiveListener, ICustomPlayer, NewTVLauncherPlayerView
+                .OnPlayerStateChange {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -157,6 +160,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 mVideoPlayer.addView(mVideoPlayerView, layoutParams);
                 mVideoPlayerView.registerScreenListener(new MyScreenListener());
             }
+
+            mVideoPlayerView.setOnPlayerStateChange(this);
         }
     }
 
@@ -415,7 +420,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 currentMode = MODE_LIVE;
                 playLiveVideo(useDelay ? 2000 : 0);
                 return;
-            } else if (mProgramInfo != null && mProgramInfo.getVideo() != null && mProgramInfo.getVideo().getVideoType().equals("LIVE")) {
+            } else if (mProgramInfo != null && mProgramInfo.getVideo() != null && mProgramInfo
+                    .getVideo().getVideoType().equals("LIVE")) {
                 currentMode = MODE_LIVE;
                 return;
             } else if (isVod()) {
@@ -555,6 +561,45 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             mVideoPlayerView.unregisterScreenListener(listener);
     }
 
+    private void bringChildWithTag(String tag, ViewGroup parent) {
+        if (parent == null || TextUtils.isEmpty(tag)) return;
+        View view = parent.findViewWithTag(tag);
+        if (view != null) {
+            parent.bringChildToFront(view);
+        }
+    }
+
+    private void bringChildTagWithId(int id, ViewGroup parent) {
+        if (parent == null) return;
+        View view = (View) parent.getTag(id);
+        if (view != null) {
+            parent.bringChildToFront(view);
+        }
+    }
+
+    @Override
+    public boolean onStateChange(boolean fullScreen, int visible, boolean videoPlaying) {
+        if (!fullScreen) {
+            ViewGroup parent = (ViewGroup) getParent();
+            if (parent != null) {
+                bringChildWithTag(BlockBuilder.BLOCK_CORNER_RIGHT_BOTTOM, parent);
+                bringChildWithTag(BlockBuilder.BLOCK_CORNER_RIGHT_TOP, parent);
+                bringChildWithTag(BlockBuilder.BLOCK_CORNER_LEFT_BOTTOM, parent);
+                bringChildWithTag(BlockBuilder.BLOCK_CORNER_LEFT_TOP, parent);
+
+                bringChildTagWithId(R.id.tag_title_background, parent);
+                bringChildTagWithId(R.id.tag_title, parent);
+                bringChildTagWithId(R.id.tag_sub_title, parent);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean processKeyEvent(KeyEvent keyEvent) {
+        return false;
+    }
+
     private static class PlayInfo {
         String actionType;
         String playUrl;
@@ -581,16 +626,16 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             if (mListener != null) {
                 mListener.exitFullScreen();
             }
-            if (getParent() != null && getParent() instanceof ViewGroup) {
-                ViewGroup viewGroup = (ViewGroup) getParent();
-                int count = viewGroup.getChildCount();
-                for (int i = 0; i < count; i++) {
-                    View child = viewGroup.getChildAt(i);
-                    if (child instanceof TextView ) {
-                        child.bringToFront();
-                    }
-                }
-            }
+//            if (getParent() != null && getParent() instanceof ViewGroup) {
+//                ViewGroup viewGroup = (ViewGroup) getParent();
+//                int count = viewGroup.getChildCount();
+//                for (int i = 0; i < count; i++) {
+//                    View child = viewGroup.getChildAt(i);
+//                    if (child instanceof TextView) {
+//                        child.bringToFront();
+//                    }
+//                }
+//            }
         }
     }
 }

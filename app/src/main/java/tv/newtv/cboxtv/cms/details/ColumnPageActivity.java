@@ -18,6 +18,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
@@ -63,9 +64,6 @@ public class ColumnPageActivity extends DetailPageActivity {
     private SmoothScrollView scrollView;
     private Content pageContent;
     private int currentIndex = -1;
-    private boolean isCollect = false;
-    private boolean isLogin = false;
-    private String memberStatus;
     private boolean isFullScreenIng;
 
     @Override
@@ -109,8 +107,6 @@ public class ColumnPageActivity extends DetailPageActivity {
         LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
 
         ADConfig.getInstance().setSeriesID(contentUUID);
-
-        initLoginStatus();
 
         final SuggestView sameType = findViewById(R.id.same_type);
         headPlayerView = findViewById(R.id.header_video);
@@ -267,7 +263,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                             case R.id.vip_pay:
                                 if (pageContent != null && pageContent.getVipFlag() != null) {
                                     final int vipState = Integer.parseInt(pageContent.getVipFlag());
-                                    if (isLogin) {
+                                    if (UserStatus.isLogin()) {
                                         //1 单点包月  3vip  4单点
                                         if (vipState == 1) {
                                             UserCenterUtils.startVIP1(ColumnPageActivity.this,
@@ -313,15 +309,6 @@ public class ColumnPageActivity extends DetailPageActivity {
         }
     }
 
-    //获取登陆状态
-    private void initLoginStatus() {
-        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
-            @Override
-            public void notifyLoginStatusCallback(boolean status) {
-                isLogin = status;
-            }
-        });
-    }
 
     @Override
     protected void onStop() {

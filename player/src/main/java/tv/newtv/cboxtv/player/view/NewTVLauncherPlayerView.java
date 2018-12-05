@@ -244,8 +244,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
 //            stopLoading();//注释掉该行代码会在乐视上导致在播放某些视频时一直显示加载  但是视频已经播放的问题
-            if(BuildConfig.FLAVOR.equals(DeviceUtil.LETV))
-            {
+            if (BuildConfig.FLAVOR.equals(DeviceUtil.LETV)) {
                 stopLoading();
             }
             mNewTVLauncherPlayerSeekbar.setDuration();
@@ -979,7 +978,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 if (program.getUseSeriesSubUUID()) {
                     seriesUUID = program.getSeriesSubUUID();
                 } else {
-                    seriesUUID = programSeriesInfo.getContentID();
+                    seriesUUID = programSeriesInfo.getContentUUID();
                 }
                 mVodPresenter.checkVod(program.getContentUUID(), seriesUUID, defaultConfig
                         .isAlternate);
@@ -1303,7 +1302,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             return true;
         }
 
-        if (mPlayerContract.processKeyEvent(event) && mShowingChildView == SHOWING_TIP_VIEW) {
+        if (mPlayerContract != null && mPlayerContract.processKeyEvent(event) && mShowingChildView == SHOWING_TIP_VIEW) {
             return true;
         }
 
@@ -1728,8 +1727,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             Log.i(TAG, "History postion reach the end, ignore");
         }
 
-        Player.get().onFinish(defaultConfig.programSeriesInfo, index, historyPosition,
-                getDuration());
+        if (getDuration() != 0) {
+            Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
+                    getDuration());
+        }
     }
 
     public boolean isADPlaying() {
@@ -1779,7 +1780,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
-            mNewTVLauncherPlayerSeekbar.setFreeDuration(0,null);
+            mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
         }
 
         if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals
@@ -1899,6 +1900,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.LoginActivity");
             intent.putExtra("ispay", true);
             intent.putExtra("payBean", exterPayBean);
+            intent.putExtra("isAuth", true);
             getContext().startActivity(intent);
         }
     }

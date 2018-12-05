@@ -2,12 +2,14 @@
 <tv.newtv.cboxtv.views.detail.SmoothScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_view"
+    android:clipToPadding="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     
 
     <tv.newtv.cboxtv.views.detail.PersonDetailHeadView
         android:id="@+id/person_head"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -17,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/person_head"
-        android:clipChildren="false"
         android:clipToPadding="false" />
 
     <tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView
@@ -25,7 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/hostProgramView"
-        android:clipChildren="false"
         android:clipToPadding="false" />
 
     <tv.newtv.cboxtv.views.detail.SuggestView
@@ -33,7 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/taProgramView"
-        android:clipChildren="false"
         android:clipToPadding="false" />
 
     <tv.newtv.cboxtv.views.detail.EpisodeAdView
