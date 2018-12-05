@@ -67,6 +67,7 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                     break;
                 case BootGuide.VERSION_UP:
                     newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.VERSION_UP));
+                    //newBaseUrl = HttpUrl.parse("http://stage-bzo.cloud.ottcn.com/");
                     break;
                 case BootGuide.ACTIVATE:
                     newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.ACTIVATE));
