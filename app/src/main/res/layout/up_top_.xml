@@ -3,11 +3,11 @@
     android:id="@+id/up_top"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/height_27px"
     android:gravity="center"
     android:orientation="vertical">
 
     <ImageView
+        android:layout_marginTop="@dimen/height_27px"
         android:layout_width="@dimen/height_34px"
         android:layout_height="@dimen/height_20px"
         android:src="@drawable/icon_prompt" />

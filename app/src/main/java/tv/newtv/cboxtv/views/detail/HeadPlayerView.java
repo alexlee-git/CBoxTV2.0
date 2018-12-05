@@ -324,10 +324,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        inflate.layout(0, (int) getResources().getDimension(R.dimen.height_27px),0,0);
         inflate.setLayoutParams(lp);
-//        if (mBuilder.fromOuter) {
-            Log.e("yml", "Build: ..1" );
             addView(inflate);
             postDelayed(new Runnable() {
                 @Override
@@ -335,7 +332,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     removeView(inflate);
                 }
             }, 5000);
-//        }
         addView(contentView);
         checkDataFromDB();
 
