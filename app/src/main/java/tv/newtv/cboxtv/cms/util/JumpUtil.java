@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.util;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -69,8 +70,8 @@ public class JumpUtil {
             return;
         }
 
-        Intent jumpIntent = getIntent(context, info.getL_actionType(), info.getL_contentType(), info
-                .getL_id(), info.getSeriesSubUUID());
+        Intent jumpIntent = getIntent(context, info.getL_actionType(), info.getL_contentType(),
+                info.getL_id(), info.getSeriesSubUUID(), info.getL_actionUri());
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, info.getL_contentType());
             jumpIntent.putExtra(Constant.CONTENT_UUID, info.getL_id());
@@ -108,7 +109,7 @@ public class JumpUtil {
             return;
         }
 
-        Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID);
+        Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID, actionUri);
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
             jumpIntent.putExtra(Constant.CONTENT_UUID, contentUUID);
@@ -126,7 +127,7 @@ public class JumpUtil {
                                     HashMap<String, String> params, boolean fromOuter) {
         Intent jumpIntent = getIntent(context, actionType, contentType, getParamValue
                 (params, Constant.EXTERNAL_PARAM_CONTENT_UUID),
-                getParamValue(params, Constant.EXTERNAL_PARAM_SERIES_SUB_UUID));
+                getParamValue(params, Constant.EXTERNAL_PARAM_SERIES_SUB_UUID), null);
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
             jumpIntent.putExtra(Constant.CONTENT_UUID, getParamValue(params,
@@ -172,7 +173,7 @@ public class JumpUtil {
             return;
         }
 
-        Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID);
+        Intent jumpIntent = getIntent(context, actionType, contentType, contentUUID, seriesSubUUID, actionUri);
         if (jumpIntent != null) {
             jumpIntent.putExtra(Constant.CONTENT_TYPE, contentType);
             jumpIntent.putExtra(Constant.CONTENT_UUID, contentUUID);
@@ -187,7 +188,7 @@ public class JumpUtil {
     }
 
     private static Intent getIntent(final Context context, String actionType, String contentType,
-                                    final String contentUUID, String seriesSubUUID) {
+                                    final String contentUUID, String seriesSubUUID, String actionUri) {
         Intent jumpIntent = null;
         try {
             LogUtils.i(Constant.TAG, "actionType : " + actionType);
@@ -241,9 +242,9 @@ public class JumpUtil {
                     Toast.makeText(context, "节目集合集正在开发中", Toast.LENGTH_SHORT).show();
                 } else if (Constant.CONTENTTYPE_LB.equals(contentType)) {
                     //TODO 打开轮播
-                    if(Constant.canUseAlternate) {
+                    if (Constant.canUseAlternate) {
                         jumpIntent = new Intent(context, AlternateActivity.class);
-                    }else{
+                    } else {
                         Toast.makeText(context, "轮播正在开发中", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -261,7 +262,16 @@ public class JumpUtil {
             } else if (Constant.OPEN_SPECIAL.equals(actionType)) { // 打开专题页
                 jumpIntent = new Intent(context, SpecialActivity.class);
             } else if (Constant.OPEN_APK.equals(actionType)) { // 打开apk
-                Toast.makeText(context, R.string.not_support_direct_type, Toast.LENGTH_LONG)
+                // 打开apk "#Intent;component=com.newtv.cboxtv/tv.newtv.cboxtv.SplashActivity;S.action=panel;S.params=4;end"
+                if (!TextUtils.isEmpty(actionUri)) {
+                    context.startActivity(Intent.parseUri(actionUri, 0));
+                } else {
+                    Toast.makeText(context, R.string.actionuri_is_null, Toast.LENGTH_LONG)
+                            .show();
+                }
+            } else if (Constant.DOWNLOAD_APK.equals(actionType)) {
+                // TODO download
+                Toast.makeText(context, R.string.downloading, Toast.LENGTH_LONG)
                         .show();
             } else if (Constant.OPEN_PAGE.equals(actionType)) { // 打开apk
                 Toast.makeText(context, R.string.not_support_direct_type, Toast.LENGTH_LONG)
@@ -279,6 +289,9 @@ public class JumpUtil {
                 Toast.makeText(context, R.string.not_support_direct_type, Toast.LENGTH_LONG)
                         .show();
             }
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, R.string.open_apk_fail, Toast.LENGTH_LONG)
+                    .show();
         } catch (Exception e) {
             LogUtils.e(e);
         } finally {

@@ -65,6 +65,9 @@
     <string name="list_area">地区</string>
 
     <string name="not_support_direct_type">暂不支持的跳转类型</string>
+    <string name="downloading">正在下载</string>
+    <string name="open_apk_fail">没有找到相关的应用</string>
+    <string name="actionuri_is_null">actionUri is null</string>
     <string name="no_link">暂无链接</string>
     <string name="auth_error">认证失败, 请稍后再试</string>
     <string name="btn_ok">确定</string>
