@@ -217,39 +217,39 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                             holder.posterView.setIsPlaying(select);
                         }
 
-                        if (item_layout == R.layout.item_details_horizontal_episode) {
-                            if (TextUtils.isEmpty(((SubContent) mProgramSeriesInfo.get(0)).getYear())) {
-                                holder.mUpdateLayout.setVisibility(GONE);
-                            } else {
-                                if (!TextUtils.isEmpty(year)) {
-                                    holder.mUpdateLayout.setVisibility(VISIBLE);
-                                    if (holder.getAdapterPosition() == 0) {
-                                        holder.columnUpdateDateTV.setVisibility(VISIBLE);
-                                        holder.columnUpdateDateTV.setText(year);
-                                    } else {
-                                        int beforePosition = holder.getAdapterPosition() - 1;
-
-                                        String beforeYear = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getYear();
-                                        String beforeTitle = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getTitle();
-
-                                        LogUtils.d("getAdapterPosition", "current year: " + year
-                                                + ",current title : " + title
-                                                + " , before year : " + beforeYear
-                                                + " , before Title : " + beforeTitle
-                                        );
-
-                                        if (!year.equals(beforeYear)) {
-                                            holder.columnUpdateDateTV.setVisibility(VISIBLE);
-                                            holder.columnUpdateDateTV.setText(year);
-                                        } else {
-                                            holder.columnUpdateDateTV.setVisibility(GONE);
-                                        }
-                                    }
-                                } else {
-                                    holder.mUpdateLayout.setVisibility(INVISIBLE);
-                                }
-                            }
-                        }
+//                        if (item_layout == R.layout.item_details_horizontal_episode) {
+//                            if (TextUtils.isEmpty(((SubContent) mProgramSeriesInfo.get(0)).getYear())) {
+//                                holder.mUpdateLayout.setVisibility(GONE);
+//                            } else {
+//                                if (!TextUtils.isEmpty(year)) {
+//                                    holder.mUpdateLayout.setVisibility(VISIBLE);
+//                                    if (holder.getAdapterPosition() == 0) {
+//                                        holder.columnUpdateDateTV.setVisibility(VISIBLE);
+//                                        holder.columnUpdateDateTV.setText(year);
+//                                    } else {
+//                                        int beforePosition = holder.getAdapterPosition() - 1;
+//
+//                                        String beforeYear = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getYear();
+//                                        String beforeTitle = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getTitle();
+//
+//                                        LogUtils.d("getAdapterPosition", "current year: " + year
+//                                                + ",current title : " + title
+//                                                + " , before year : " + beforeYear
+//                                                + " , before Title : " + beforeTitle
+//                                        );
+//
+//                                        if (!year.equals(beforeYear)) {
+//                                            holder.columnUpdateDateTV.setVisibility(VISIBLE);
+//                                            holder.columnUpdateDateTV.setText(year);
+//                                        } else {
+//                                            holder.columnUpdateDateTV.setVisibility(GONE);
+//                                        }
+//                                    }
+//                                } else {
+//                                    holder.mUpdateLayout.setVisibility(INVISIBLE);
+//                                }
+//                            }
+//                        }
                     }
 
                     @Override
@@ -434,8 +434,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         public ViewHolder(View itemView) {
             super(itemView);
 
-            mUpdateLayout = itemView.findViewById(mLayoutId);
-            columnUpdateDateTV = itemView.findViewById(mColumnUpdateDateId);
+//            mUpdateLayout = itemView.findViewById(mLayoutId);
+//            columnUpdateDateTV = itemView.findViewById(mColumnUpdateDateId);
             modleView = itemView.findViewById(R.id.id_module_view);
             posterView = itemView.findViewWithTag("tag_poster_image");
             titleText = itemView.findViewWithTag("tag_poster_title");
