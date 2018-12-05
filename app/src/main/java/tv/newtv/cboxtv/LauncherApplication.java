@@ -150,20 +150,11 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                if (true) {
-                    e.onNext(AdSDK.getInstance().init("http://api.adott.ottcn.org",
-                            "111111111111111",
-                            "111", null,
-                            FileUtil.getCacheDirectory(getApplicationContext(), "ad_cache")
-                                    .getAbsolutePath()));//广告初始化
-                } else {
-                    e.onNext(AdSDK.getInstance().init(Constant.BASE_URL_AD,
-                            SystemUtils.getMac(AppContext),
-                            BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
-                            FileUtil.getCacheDirectory(getApplicationContext(), "ad_cache")
-                                    .getAbsolutePath()));//广告初始化
-                }
-
+                e.onNext(AdSDK.getInstance().init(Constant.BASE_URL_AD,
+                        SystemUtils.getMac(AppContext),
+                        BuildConfig.APP_KEY, BuildConfig.CHANNEL_ID,
+                        FileUtil.getCacheDirectory(getApplicationContext(), "ad_cache")
+                                .getAbsolutePath()));//广告初始化
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
