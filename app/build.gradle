@@ -129,19 +129,29 @@ android {
                     CHANNEL_ID_VALUE: "600001"
             ]
         }
-/*
         letv {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600002\""
-            buildConfigField "String", "CLIENT_ID", "\"17\""
+            buildConfigField "String", "CLIENT_ID", "\"13\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
                     CHANNEL_ID_VALUE: "600002"
             ]
         }
-*/
+
+        letv_stage {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"600002\""
+            buildConfigField "String", "CLIENT_ID", "\"18\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "600002"
+            ]
+        }
         /*
         xsj {
             buildConfigField "int", "LOG_DEBUG", "5"

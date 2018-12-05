@@ -18,6 +18,7 @@ public class DeviceUtil {
     private static final String XIAO_MI = "xiaomi";
     private static final String XIAO_MI_STAGE = "xiaomi_stage";
     public static final String LETV = "letv";
+    private static final String LETV_STAGE ="letv_stage";
     public static final String XIONG_MAO = "panda";
     public static final String XUN_MA = "xunma";
     public static final String XSJ = "xsj";
@@ -37,7 +38,7 @@ public class DeviceUtil {
             String brand = Build.BRAND;
             Log.i("device", brand);
             return !TextUtils.isEmpty(brand) && XIAO_MI.equalsIgnoreCase(brand);
-        } else if (Libs.get().getFlavor().equals(LETV)) {
+        } else if (LETV.equals(Libs.get().getFlavor()) || LETV_STAGE.equals(Libs.get().getFlavor())) {
             LogUtils.i("device", "letv=" + LetvDeviceUtil.isLetvDevice());
             return LetvDeviceUtil.isLetvDevice();
         } else if (Libs.get().getFlavor().equals(XIONG_MAO)) {
