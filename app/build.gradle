@@ -20,9 +20,9 @@ android {
 
         release {
             storePassword "CBoxTV~123"
-            keyAlias "addHistory.keystore"
+            keyAlias "release.keystore"
             keyPassword "CBoxTV~123"
-            storeFile file('addHistory.keystore')
+            storeFile file('release.keystore')
         }
     }
 
