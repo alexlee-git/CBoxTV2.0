@@ -95,7 +95,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
                     holder.updateRight.setVisibility(View.VISIBLE);
                     holder.recentNumTv.setText(subContent.getRecentNum());
                 }
-                if (!TextUtils.isEmpty(subContent.getVipFlag()) && subContent.getVipFlag().equals(0)){
+                if (!TextUtils.isEmpty(subContent.getVipFlag()) && subContent.getVipFlag().equals(4)){//节目集vip
                     holder.isVipImg.setVisibility(View.VISIBLE);
                 }
             }
