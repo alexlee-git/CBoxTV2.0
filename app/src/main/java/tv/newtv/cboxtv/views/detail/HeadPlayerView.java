@@ -1093,10 +1093,6 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return this;
         }
 
-        public Builder setTopView(boolean fromOuter) {
-            return this;
-        }
-
         public Builder setIntType(int type) {
             ProgramType = type;
             return this;

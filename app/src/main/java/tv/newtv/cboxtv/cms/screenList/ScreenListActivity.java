@@ -635,7 +635,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     presenter.getLabelData();
                     return true;
                 }
-                if (tab.hasFocus() && fromOuter) {
+                if (tab.hasFocus()) {
                     super.checkIsTop(event);
                 }
                 break;

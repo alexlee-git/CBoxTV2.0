@@ -144,7 +144,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                     .SetContentUUID(contentUUID,"")
                     .autoGetSubContents()
-                    .setTopView(fromOuter)
                     .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                         @Override
                         public void onResult(Content info) {

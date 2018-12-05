@@ -122,7 +122,6 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetContentUUID(contentUUID, getChildContentUUID())
-                .setTopView(fromOuter)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
