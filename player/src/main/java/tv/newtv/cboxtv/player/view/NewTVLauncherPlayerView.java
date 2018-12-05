@@ -1728,7 +1728,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         if (getDuration() != 0) {
-            Player.get().onFinish(defaultConfig.programSeriesInfo, index, getCurrentPosition(),
+            Player.get().onFinish(defaultConfig.programSeriesInfo, index, historyPosition,
                     getDuration());
         }
     }
