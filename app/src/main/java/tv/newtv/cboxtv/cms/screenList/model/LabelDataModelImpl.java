@@ -44,7 +44,7 @@ public class LabelDataModelImpl implements LabelDataModel, SearchContract.View {
             condition.setCategoryId(categoryId.toString());
         }
         if (classTypes != null) {
-            condition.setKeywordType(classTypes.toString());
+            condition.setVideoClass(classTypes.toString());
         }
         if (areas != null) {
             condition.setArea(areas.toString());

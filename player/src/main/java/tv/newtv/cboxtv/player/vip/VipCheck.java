@@ -85,6 +85,14 @@ public class VipCheck {
         }
     }
 
+    public static boolean isPay(String vipFlag){
+        if(VIP_FLAG_VIP_BUY.equals(vipFlag) || VIP_FLAG_VIP.equals(vipFlag)
+                || VIP_FLAG_BUY.equals(vipFlag)){
+            return true;
+        }
+        return false;
+    }
+
     public interface BuyFlagListener{
         void buyFlag(boolean buyFlag);
     }

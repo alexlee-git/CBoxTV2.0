@@ -59,7 +59,8 @@ public class GlideUtil {
         };
 
         RequestOptions options = new RequestOptions()
-                .format(DecodeFormat.PREFER_RGB_565);
+                .format(DecodeFormat.PREFER_RGB_565).override(imageView.getWidth(),imageView
+                        .getHeight()).fitCenter();
         if (placeHolderResId > 0) {
             options = options.placeholder(placeHolderResId);
         }

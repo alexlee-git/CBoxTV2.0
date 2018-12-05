@@ -35,6 +35,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -604,6 +606,30 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         if (TextUtils.isEmpty(programSeriesInfo.getContentType())) {
             if (mInfo != null) {
                 programSeriesInfo.setContentType(mInfo.getContentType());
+            }
+        }
+
+        if(CmsUtil.isVideoTv(programSeriesInfo)) {
+            final boolean isDesc = "1".equals(programSeriesInfo.getPlayOrder());
+            if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > 0) {
+                Collections.sort(programSeriesInfo.getData(), new Comparator<SubContent>() {
+                    @Override
+                    public int compare(SubContent t1, SubContent t2) {
+                        try {
+                            String valueA = TextUtils.isEmpty(t1.getPeriods()) ? "0" : t1.getPeriods();
+                            String valueB = TextUtils.isEmpty(t2.getPeriods()) ? "0" :
+                                    t2.getPeriods();
+                            if (isDesc) {
+                                return Integer.parseInt(valueB) - Integer.parseInt
+                                        (valueA);
+                            }
+                            return Integer.parseInt(valueA) - Integer.parseInt(valueB);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return 0;
+                        }
+                    }
+                });
             }
         }
 

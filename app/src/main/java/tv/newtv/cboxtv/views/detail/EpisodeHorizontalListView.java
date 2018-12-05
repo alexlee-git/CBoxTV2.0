@@ -49,6 +49,9 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     public static final int TYPE_PROGRAM_SERICE_LV = 2;     //节目合集
     public static final int TYPE_ALTERNATE_LIST = 3;     //节目合集
 
+    public static final int DIRECTION_HORIZONTAL = 1;
+    public static final int DIRECTION_VERTICAL = 2;
+
     private String mContentUuid;
     private HorizontalRecycleView mRecycleView;
     private List<?> mProgramSeriesInfo;
@@ -71,6 +74,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
     private OnSeriesInfoResult mOnSeriesInfoResult;
     private int item_layout = R.layout.program_horizontal_layout;
+    private int place_holder = R.drawable.focus_384_216;
+    private int direction = DIRECTION_HORIZONTAL;
 
     public EpisodeHorizontalListView(Context context) {
         this(context, null);
@@ -187,21 +192,25 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
                     @Override
                     public void bind(Object data, ViewHolder holder, boolean select) {
-                        String himage = "";
+                        String image = "";
                         String title = "";
                         String year = "";
                         if (data instanceof SubContent) {
-                            himage = ((SubContent) data).getHImage();
+                            if (direction == DIRECTION_HORIZONTAL) {
+                                image = ((SubContent) data).getHImage();
+                            } else {
+                                image = ((SubContent) data).getVImage();
+                            }
                             title = ((SubContent) data).getTitle();
                             year = ((SubContent) data).getYear();
                         } else if (data instanceof Alternate) {
-                            himage = ((Alternate) data).getHImage();
+                            image = ((Alternate) data).getHImage();
                             title = ((Alternate) data).getTitle();
                         }
 
-                        holder.posterView.placeHolder(R.drawable.focus_384_216)
-                                .errorHolder(R.drawable.focus_384_216).hasCorner
-                                (true).load(himage);
+                        holder.posterView.placeHolder(place_holder)
+                                .errorHolder(place_holder).hasCorner
+                                (true).load(image);
                         holder.titleText.setText(title);
 
                         if (holder.posterView instanceof CurrentPlayImageView) {
@@ -247,7 +256,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                     public boolean onItemClick(Object data, int position) {
                         if (onItemClickListener != null) {
                             boolean interrupt = onItemClickListener.onItemClick(position, data);
-                            if(!interrupt) {
+                            if (!interrupt) {
                                 mAdapter.setSelectedIndex(position);
                             }
                             return interrupt;
@@ -257,7 +266,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
                     @Override
                     public void onFocusChange(View view, int position, boolean hasFocus) {
-                        if(hasFocus){
+                        if (hasFocus) {
                             currentFocusView = view;
                         }
                     }
@@ -304,9 +313,11 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         }
     }
 
-    public void setHorizontalItemLayout(int layout, int count) {
+    public void setHorizontalItemLayout(int layout, int count, int placeHolder, int dir) {
         item_layout = layout;
         mHorizontalCount = count;
+        place_holder = placeHolder;
+        direction = dir;
     }
 
     public void setHorizontalItemLayout(int layout,int count,int scaleLayout,int updateDateId,int layoutId) {

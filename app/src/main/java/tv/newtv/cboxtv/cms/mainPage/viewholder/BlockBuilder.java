@@ -60,11 +60,18 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 创建人:           weihaichao
  * 创建日期:          2018/10/18
  */
-class BlockBuilder extends BaseBlockBuilder {
+public class BlockBuilder extends BaseBlockBuilder {
 
     public static final String TAG = BlockBuilder.class.getSimpleName();
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
+
+    public static final String BLOCK_CORNER_LEFT_TOP = "CORNER_LEFT_TOP";
+    public static final String BLOCK_CORNER_LEFT_BOTTOM = "CORNER_LEFT_BOTTOM";
+    public static final String BLOCK_CORNER_RIGHT_TOP = "CORNER_RIGHT_TOP";
+    public static final String BLOCK_CORNER_RIGHT_BOTTOM = "CORNER_RIGHT_BOTTOM";
+
+
     private Context mContext;
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
@@ -248,6 +255,9 @@ class BlockBuilder extends BaseBlockBuilder {
                         frameLayout.setLayoutParams(params);
                     }
 
+                    // 按需添加角标控件
+//                    processSuperscript(layoutCode, info, frameLayout);
+
                     // 按需添加标题控件
                     processTitle(layoutCode, info.getTitle(), info.getSubTitle(), frameLayout);
 
@@ -398,7 +408,7 @@ class BlockBuilder extends BaseBlockBuilder {
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
             focusTextView.setSelected(true);
 
-            Log.e("yml", "onItemGetFocus: " + layoutId);
+            Log.e("yml", "onItemGetFocus: "+layoutId );
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {
@@ -521,8 +531,7 @@ class BlockBuilder extends BaseBlockBuilder {
 
     @SuppressLint("CheckResult")
     private void processSuperscript(final String layoutCode, final int posterIndex, final Program
-            info,
-                                    final ViewGroup parent) {
+            info, final ViewGroup parent) {
         if (info == null || parent == null) {
             return;
         }
@@ -551,13 +560,30 @@ class BlockBuilder extends BaseBlockBuilder {
                                             posterIndex);
                                 }
                             }
+                        }else{
+                            ImageView leftTop = parent.findViewWithTag(BLOCK_CORNER_LEFT_TOP);
+                            ImageView leftBottom = parent.findViewWithTag(BLOCK_CORNER_LEFT_BOTTOM);
+                            ImageView rightTop = parent.findViewWithTag(BLOCK_CORNER_RIGHT_TOP);
+                            ImageView rightBottom = parent.findViewWithTag(BLOCK_CORNER_RIGHT_BOTTOM);
+                            if(leftTop != null){
+                                leftTop.setImageDrawable(null);
+                            }
+                            if(leftBottom != null){
+                                leftBottom.setImageDrawable(null);
+                            }
+                            if(rightTop != null){
+                                rightTop.setImageDrawable(null);
+                            }
+                            if(rightBottom != null){
+                                rightBottom.setImageDrawable(null);
+                            }
                         }
                     }
                 });
     }
 
     private void addLeftTopSuperscript(Corner corner, ViewGroup parent, int postIndex) {
-        RecycleImageView imageView = parent.findViewWithTag("CORNER_LEFT_TOP");
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_LEFT_TOP);
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
@@ -566,7 +592,7 @@ class BlockBuilder extends BaseBlockBuilder {
             imageView = new RecycleImageView(mContext);
             imageView.setLayoutParams(lp);
             imageView.setScaleType(ImageView.ScaleType.CENTER);
-            imageView.setTag("CORNER_LEFT_TOP");
+            imageView.setTag(BLOCK_CORNER_LEFT_TOP);
             parent.addView(imageView, postIndex, lp);
         }
         showCorner(corner, imageView);
@@ -574,7 +600,7 @@ class BlockBuilder extends BaseBlockBuilder {
 
     private void addLeftBottomSuperscript(String layoutCode, Corner corner,
                                           ViewGroup parent, int posterIndex) {
-        RecycleImageView imageView = parent.findViewWithTag("CENTER_LEFT_BOTTOM");
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_LEFT_BOTTOM);
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
@@ -586,7 +612,7 @@ class BlockBuilder extends BaseBlockBuilder {
 
             lp.gravity = Gravity.BOTTOM;
             imageView = new RecycleImageView(mContext);
-            imageView.setTag("CENTER_LEFT_BOTTOM");
+            imageView.setTag(BLOCK_CORNER_LEFT_BOTTOM);
             imageView.setLayoutParams(lp);
             parent.addView(imageView, posterIndex, lp);
         }
@@ -595,14 +621,14 @@ class BlockBuilder extends BaseBlockBuilder {
     }
 
     private void addRightTopSuperscript(Corner corner, ViewGroup parent, int posterIndex) {
-        RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_TOP");
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_RIGHT_TOP);
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
             lp.gravity = Gravity.RIGHT | Gravity.END;
             imageView = new RecycleImageView(mContext);
-            imageView.setTag("CORNER_RIGHT_TOP");
+            imageView.setTag(BLOCK_CORNER_RIGHT_TOP);
             imageView.setLayoutParams(lp);
             parent.addView(imageView, posterIndex, lp);
         }
@@ -611,7 +637,7 @@ class BlockBuilder extends BaseBlockBuilder {
 
     private void addRightBottomSuperscript(String layoutCode, Corner corner, ViewGroup parent,
                                            int posterIndex) {
-        RecycleImageView imageView = parent.findViewWithTag("CORNER_RIGHT_BOTTOM");
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_RIGHT_BOTTOM);
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             if (TextUtils.equals(layoutCode, "layout_005")) {
@@ -622,7 +648,7 @@ class BlockBuilder extends BaseBlockBuilder {
             lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
             imageView = new RecycleImageView(mContext);
-            imageView.setTag("CORNER_RIGHT_BOTTOM");
+            imageView.setTag(BLOCK_CORNER_RIGHT_BOTTOM);
             imageView.setLayoutParams(lp);
             parent.addView(imageView, posterIndex, lp);
         }
@@ -635,8 +661,7 @@ class BlockBuilder extends BaseBlockBuilder {
     private void showCorner(Corner corner, RecycleImageView target) {
         String superUrl = corner.getCornerImg();
         if (!TextUtils.isEmpty(superUrl)) {
-            target.hasCorner(false).useResize(false).load(superUrl);
-//            GlideUtil.loadImage(mContext, target, superUrl, -1, -1, false);
+            target.hasCorner(false).useResize(true).load(superUrl);
         }
     }
 
@@ -646,8 +671,7 @@ class BlockBuilder extends BaseBlockBuilder {
      * 1.如果是5和8号组件, 只在海报上面添加一个标题, 展示subtitle
      * 2.对于其余组件, 在海报上添加两个TextView,负责展示Title和SubTitles
      */
-    void processTitle(String layoutCode, String title, String subTitle, ViewGroup
-            framelayout) {
+    void processTitle(String layoutCode, String title, String subTitle, ViewGroup framelayout) {
         if (TextUtils.isEmpty(layoutCode)) {
             return;
         }
@@ -659,12 +683,11 @@ class BlockBuilder extends BaseBlockBuilder {
         int pxSize2 = mContext.getResources().getDimensionPixelSize(R.dimen.height_40px);
         int width = mContext.getResources().getDimensionPixelSize(R.dimen.width_168px);
 
+        TextView titleWidget = (TextView) framelayout.getTag(R.id.tag_title);
         if (!TextUtils.isEmpty(title) && !TextUtils.equals(title, "null")) {
             if (!TextUtils.equals(layoutCode, "layout_030") && !TextUtils.equals(layoutCode,
                     "layout_005") && !TextUtils.equals(layoutCode,
                     "layout_008")) {
-                TextView titleWidget = (TextView) framelayout.getTag(R.id
-                        .tag_title);
 
                 if (titleWidget == null) {
                     FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup
@@ -673,6 +696,7 @@ class BlockBuilder extends BaseBlockBuilder {
                     layoutParams.gravity = Gravity.BOTTOM;
                     layoutParams.bottomMargin = pxheight_1px;
                     background = new ImageView(mContext);
+                    framelayout.setTag(R.id.tag_title_background,background);
                     background.setBackgroundResource(R.drawable.gradient_white_to_black);
                     background.setLayoutParams(layoutParams);
                     framelayout.addView(background);
@@ -728,10 +752,14 @@ class BlockBuilder extends BaseBlockBuilder {
                 titleWidget.setText(title);
                 titleWidget.setVisibility(View.VISIBLE);
             }
+        }else{
+            if(titleWidget != null){
+                titleWidget.setText("");
+            }
         }
 
+        TextView subTitleWidget = (TextView) framelayout.getTag(R.id.tag_sub_title);
         if (!TextUtils.isEmpty(subTitle) && !TextUtils.equals(subTitle, "null")) {
-            TextView subTitleWidget = (TextView) framelayout.getTag(R.id.tag_sub_title);
             if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
                     "layout_008")) {
                 if (subTitleWidget == null) {
@@ -787,6 +815,10 @@ class BlockBuilder extends BaseBlockBuilder {
             }
 
             subTitleWidget.setText(subTitle);
+        }else{
+            if(subTitleWidget != null) {
+                subTitleWidget.setText("");
+            }
         }
     }
 

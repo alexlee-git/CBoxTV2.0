@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.uc.v2;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,9 +25,9 @@ import android.widget.Toast;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.Utils;
@@ -44,6 +43,8 @@ import retrofit2.HttpException;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.player.vip.VipCheck;
+import tv.newtv.cboxtv.player.vip.VipCheck.BuyFlagListener;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
@@ -69,7 +70,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private String Authorization;
     private final int MSG_RESULT_TOKEN = 1;
     private final int MSG_RESULT_INVALID = 2;
-    private Disposable disposable_Qrcode, disposable_token;
+    private final int MSG_AUTH = 3;
+    private Disposable disposable_Qrcode, disposable_token, disposable_buyFlag;
     private PopupWindow mPopupWindow;
     private View mPopupView;
     private TextView tv_title_full;
@@ -78,9 +80,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private String mQRcode;
     private int expires;
     private boolean mFlagPay;
+    private boolean mFlagAuth;
     private ExterPayBean mExterPayBean;
     private String mVipFlag;
     private int location = -1;
+    private String mContentUUID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -90,12 +94,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         init();
         location = getIntent().getIntExtra("location", -1);
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
+        mFlagAuth = getIntent().getBooleanExtra("isAuth", false);
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         if (mExterPayBean != null) {
             Log.i(TAG, "mExterPayBean: " + mExterPayBean);
             mVipFlag = mExterPayBean.getVipFlag();
+            Log.i(TAG, mExterPayBean.toString());
+            mContentUUID = mExterPayBean.getContentUUID();
         }
         Log.i(TAG, "mFlagPay: " + mFlagPay);
+        Log.i(TAG, "mFlagAuth: " + mFlagAuth);
         if (TextUtils.isEmpty(Authorization)) {
             Authorization = Utils.getAuthorization(LoginActivity.this);
             Constant.Authorization = Authorization;
@@ -143,6 +151,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case R.id.mobile_login_btn:
                 Intent intent = new Intent(LoginActivity.this, PhoneLoginActivity.class);
                 intent.putExtra("ispay", mFlagPay);
+                intent.putExtra("isAuth", mFlagAuth);
                 intent.putExtra("payBean", mExterPayBean);
                 startActivity(intent);
                 finish();
@@ -298,20 +307,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "8,0,1");
                                 // LogUploadUtils.uploadKey(Constant.USER_ID, SharePreferenceUtils.getUserId(LoginActivity.this));
                                 LogUploadUtils.setLogFileds(Constant.USER_ID, SharePreferenceUtils.getUserId(LoginActivity.this));
-                                if (mFlagPay) {
-                                    if (mVipFlag != null) {
-                                        Intent mIntent = new Intent();
-                                        if (mVipFlag.equals(Constant.BUY_ONLY)) {
-                                            mIntent.setClass(LoginActivity.this, PayOrderActivity.class);
-                                        } else {
-                                            mIntent.setClass(LoginActivity.this, PayChannelActivity.class);
-                                        }
-                                        mIntent.putExtra("payBean", mExterPayBean);
-                                        startActivity(mIntent);
-                                    }
-                                }
                                 UserCenterUtils.setLogin(true);
-                                finish();
+                                if (mFlagAuth) {
+                                    isBuy("", mContentUUID);
+                                } else {
+                                    if (mFlagPay) {
+                                        if (mVipFlag != null) {
+                                            Intent mIntent = new Intent();
+                                            if (mVipFlag.equals(Constant.BUY_ONLY)) {
+                                                mIntent.setClass(LoginActivity.this, PayOrderActivity.class);
+                                            } else {
+                                                mIntent.setClass(LoginActivity.this, PayChannelActivity.class);
+                                            }
+                                            mIntent.putExtra("payBean", mExterPayBean);
+                                            startActivity(mIntent);
+                                        }
+                                    }
+                                    finish();
+                                }
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -376,4 +389,66 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         view.startAnimation(sa);
     }
 
+    public void isBuy(String productIds, String contentUUID) {
+        String token = SharePreferenceUtils.getToken(LoginActivity.this);
+
+        NetClient.INSTANCE.getUserCenterLoginApi()
+                .getBuyFlag("Bearer " + token, productIds, Libs.get().getAppKey(),
+                        Libs.get().getChannelId(), contentUUID, "3.1")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable_buyFlag = d;
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String result = responseBody.string();
+                            LogUtils.i(TAG, result);
+                            JSONObject jsonObject = new JSONObject(result);
+                            boolean buyFlag = jsonObject.optBoolean("buyFlag");
+                            Log.i(TAG, "buyFlag :" + buyFlag);
+
+                            if (!buyFlag) {
+                                if (mFlagPay) {
+                                    if (mVipFlag != null) {
+                                        Intent mIntent = new Intent();
+                                        if (mVipFlag.equals(Constant.BUY_ONLY)) {
+                                            mIntent.setClass(LoginActivity.this, PayOrderActivity.class);
+                                        } else {
+                                            mIntent.setClass(LoginActivity.this, PayChannelActivity.class);
+                                        }
+                                        mIntent.putExtra("payBean", mExterPayBean);
+                                        startActivity(mIntent);
+                                    }
+                                }
+                            }
+                            finish();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (disposable_buyFlag != null) {
+                            disposable_buyFlag.dispose();
+                            disposable_buyFlag = null;
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (disposable_buyFlag != null) {
+                            disposable_buyFlag.dispose();
+                            disposable_buyFlag = null;
+                        }
+                    }
+                });
+
+    }
 }

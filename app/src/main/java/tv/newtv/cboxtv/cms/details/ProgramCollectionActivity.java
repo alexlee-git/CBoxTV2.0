@@ -9,6 +9,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
+import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 
 import java.util.ArrayList;
@@ -44,7 +45,6 @@ public class ProgramCollectionActivity extends DetailPageActivity {
     private SmoothScrollView scrollView;
     private Content mContent;
     private EpisodeHorizontalListView mListView;
-    private boolean isLogin = false;
     private EpisodeAdView mAdView;
     private boolean isFullScreenIng;
 
@@ -128,8 +128,6 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
 
         ADConfig.getInstance().setSeriesID(contentUUID);
-        initLoginStatus();
-
 
         headPlayerView = findViewById(R.id.header_video);
         mAdView = findViewById(R.id.column_detail_ad_fl);
@@ -160,7 +158,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                             case R.id.vip_pay:
                                 if (mContent != null && mContent.getVipFlag() != null) {
                                     final int vipState = Integer.parseInt(mContent.getVipFlag());
-                                    if (isLogin) {
+                                    if (UserStatus.isLogin()) {
                                         //1 单点包月  3vip  4单点
                                         if (vipState == 1) {
                                             UserCenterUtils.startVIP1(ProgramCollectionActivity
@@ -238,13 +236,4 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         });
     }
 
-    //获取登陆状态
-    private void initLoginStatus() {
-        UserCenterUtils.getLoginStatus(new INotifyLoginStatusCallback() {
-            @Override
-            public void notifyLoginStatusCallback(boolean status) {
-                isLogin = status;
-            }
-        });
-    }
 }
