@@ -39,13 +39,10 @@ public class popupMenuWidget implements IFocusWidget {
     private ViewGroup parentView;
     private ViewGroup.LayoutParams layoutParams;
     private int mGravity;
+    private int parentIndex = 0;
     private IPopupWidget mPopupWidget;
 
-    public interface IPopupWidget{
-        KeyAction[] getRegisterKeyActions();
-    }
-
-    public popupMenuWidget(Context context, View outView, int gravity,IPopupWidget popupWidget) {
+    public popupMenuWidget(Context context, View outView, int gravity, IPopupWidget popupWidget) {
         outerView = outView;
         mGravity = gravity;
         mPopupWidget = popupWidget;
@@ -64,6 +61,7 @@ public class popupMenuWidget implements IFocusWidget {
         if (outerView.getParent() != null) {
             parentView = (ViewGroup) outerView.getParent();
             layoutParams = outerView.getLayoutParams();
+            parentIndex = parentView.indexOfChild(outerView);
             parentView.removeView(outerView);
         }
 
@@ -92,11 +90,11 @@ public class popupMenuWidget implements IFocusWidget {
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
         int width = 0;
         int height = 0;
-        if(mGravity == Gravity.RIGHT || mGravity == Gravity.END){
+        if (mGravity == Gravity.RIGHT || mGravity == Gravity.END) {
             width = outerView.getWidth();
             height = outerView.getHeight();
             popupWindow.setAnimationStyle(R.style.anim_x_right_side);
-        }else if (mGravity == Gravity.LEFT || mGravity == Gravity.START) {
+        } else if (mGravity == Gravity.LEFT || mGravity == Gravity.START) {
             width = outerView.getWidth();
             height = outerView.getHeight();
             popupWindow.setAnimationStyle(R.style.anim_x_side);
@@ -153,7 +151,7 @@ public class popupMenuWidget implements IFocusWidget {
         }
 
         if (parentView != null) {
-            parentView.addView(outerView, layoutParams);
+            parentView.addView(outerView, parentIndex, layoutParams);
         }
         mIsShowing = false;
         return true;
@@ -185,6 +183,10 @@ public class popupMenuWidget implements IFocusWidget {
     public boolean dispatchKeyEvent(KeyEvent event) {
         Log.e(TAG, "dispatchKeyEvent()" + event.toString());
         return contentView.dispatchKeyEvent(event);
+    }
+
+    public interface IPopupWidget {
+        KeyAction[] getRegisterKeyActions();
     }
 
 
