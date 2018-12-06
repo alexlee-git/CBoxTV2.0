@@ -2,6 +2,7 @@ package tv.newtv.cboxtv;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import io.reactivex.Observable;
@@ -69,10 +71,37 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         }
     }
 
+    private String getProcessName() {
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (am == null) {
+            return "";
+        }
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        if (runningApps == null) {
+            return "";
+        }
+        for (ActivityManager.RunningAppProcessInfo proInfo : runningApps) {
+            if (proInfo.pid == android.os.Process.myPid()) {
+                if (proInfo.processName != null) {
+                    return proInfo.processName;
+                }
+            }
+        }
+        return "";
+    }
+
+
     @SuppressLint("CheckResult")
     @Override
     public void onCreate() {
         super.onCreate();
+        //多进程防止多次初始化
+        String processName = getProcessName();
+        if (!TextUtils.isEmpty(processName)
+                && !BuildConfig.APPLICATION_ID.equals(getProcessName())) {
+            return;
+        }
+
 
         ViewTarget.setTagId(R.id.tag_glide_id);
 
