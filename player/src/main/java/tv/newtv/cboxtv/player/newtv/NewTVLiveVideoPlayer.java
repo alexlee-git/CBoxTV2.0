@@ -171,11 +171,6 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
                 mIPlayCallBackEvent.onTimeout(i);
             }
         }
-
-        @Override
-        public void onAdStateChange(boolean b) {
-
-        }
     };
 
     private NewTVLiveVideoPlayer(Context context) {
