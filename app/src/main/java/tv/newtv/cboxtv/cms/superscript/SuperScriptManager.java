@@ -16,6 +16,7 @@ import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.CornerCondition;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.CornerContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
@@ -72,7 +73,6 @@ public class SuperScriptManager implements CornerContract.View {
     private CornerContract.Presenter mPresenter;
 
     private SuperScriptManager() {
-
     }
 
     public static SuperScriptManager getInstance() {
@@ -84,6 +84,19 @@ public class SuperScriptManager implements CornerContract.View {
             }
         }
         return mInstance;
+    }
+
+    public void processVipSuperScript(Context context, SubContent info, final String layoutCode,
+                                      final int posterIndex, final ViewGroup parent) {
+        if (info == null || parent == null || TextUtils.isEmpty(info.getVipFlag())) {
+            return;
+        }
+//        if ("1|3|4".contains(info.getVipFlag())) {
+            Corner corner = new Corner();
+            corner.setCornerImg("vip");
+            addRightTopSuperscript(context, corner, parent, posterIndex);
+//        }
+
     }
 
     @SuppressLint("CheckResult")
@@ -181,7 +194,7 @@ public class SuperScriptManager implements CornerContract.View {
             if (matcher.find()) {
                 String value = matcher.group(0);
                 if (!TextUtils.isEmpty(value)) {
-                    if(!TextUtils.equals("0",value)) {
+                    if (!TextUtils.equals("0", value)) {
                         message = message.replace(value, String.format("<font " +
                                 "color='#ff0000'>%s</font>", value));
                         CharSequence charSequence = Html.fromHtml(message);
@@ -190,7 +203,7 @@ public class SuperScriptManager implements CornerContract.View {
                     return;
                 }
                 recentText.setText(message);
-            }else {
+            } else {
                 recentText.setText(message);
             }
         } else {
@@ -231,7 +244,7 @@ public class SuperScriptManager implements CornerContract.View {
                     "color='#ff0000'>%s</font>", message);
             CharSequence charSequence = Html.fromHtml(message);
             gradeText.setText(charSequence);
-        }else{
+        } else {
             gradeText.setText("");
             gradeText.setVisibility(View.GONE);
         }
@@ -305,7 +318,7 @@ public class SuperScriptManager implements CornerContract.View {
                                            int posterIndex) {
 
         TextView gradeText = parent.findViewWithTag("TEXT_GRADE_MSG");
-        if(gradeText != null){
+        if (gradeText != null) {
             gradeText.setText("");
             gradeText.setVisibility(View.GONE);
         }
@@ -333,6 +346,11 @@ public class SuperScriptManager implements CornerContract.View {
     private void showCorner(Corner corner, RecycleImageView target) {
         String superUrl = corner.getCornerImg();
         if (!TextUtils.isEmpty(superUrl)) {
+            if ("2".equals(corner.getCornerPosition()) && TextUtils.equals("vip", corner
+                    .getCornerImg())) {
+                target.load(R.drawable.vip);
+                return;
+            }
             target.hasCorner(false).useResize(true).load(superUrl);
         }
     }
