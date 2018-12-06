@@ -48,6 +48,8 @@ public class FocusToggleView2 extends android.support.v7.widget.AppCompatImageVi
                 hasFocusNormalId = resId[type][2];
                 hasFocusSelectId = resId[type][3];
             }
+
+            typedArray.recycle();
         }
 
         setFocusable(true);

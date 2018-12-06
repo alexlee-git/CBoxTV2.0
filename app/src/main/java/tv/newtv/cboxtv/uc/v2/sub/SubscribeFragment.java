@@ -87,10 +87,6 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     private boolean localDataReqComp;
     private boolean remoteDataReqComp;
 
-    private static final int MSG_SYNC_DATA_COMP = 10033;
-    private static final int MSG_INFLATE_PAGE = 10034;
-
-    private static SubscribeHandler mHandler;
     private int move = -1;
     private Observable<Integer> observable;
 
@@ -109,7 +105,6 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     @Override
     public void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new SubscribeHandler(this);
     }
 
     @Override
@@ -203,9 +198,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
 
                                 Log.d("sub", "本地数据库查询完毕");
                                 localDataReqComp = true;
-                                if (mHandler != null) {
-                                    mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                                }
+                                sendEmptyMessage(MSG_SYNC_DATA_COMP);
                             }
                         }).excute();
 
@@ -230,9 +223,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                                 Log.d("sub", "远程数据库查询完毕");
 
                                 remoteDataReqComp = true;
-                                if (mHandler != null) {
-                                    mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                                }
+                                sendEmptyMessage(MSG_SYNC_DATA_COMP);
                             }
                         }).excute();
             } else {
@@ -338,8 +329,8 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         }
     }
 
-
-    private void inflatePageWhenNoData() {
+    @Override
+    public void inflatePageWhenNoData() {
         hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_SUBSCRIPTION);
@@ -437,10 +428,11 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
 
     }
 
-    private void checkDataSync() {
+    @Override
+    protected void checkDataSync() {
         Log.d("sub", "checkDataSync");
         if (remoteDataReqComp && localDataReqComp) {
-            mHandler.removeMessages(MSG_SYNC_DATA_COMP);
+            removeMessages(MSG_SYNC_DATA_COMP);
 
             List<UserCenterPageBean.Bean> subscribeRecords = new ArrayList<>();
             List<UserCenterPageBean.Bean> temp = new ArrayList<>(Constant.BUFFER_SIZE_16);
@@ -456,34 +448,9 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
             Message msg = Message.obtain();
             msg.what = MSG_INFLATE_PAGE;
             msg.obj = subscribeRecords;
-            mHandler.sendMessage(msg);
+            sendMessage(msg);
         } else {
-            mHandler.sendEmptyMessageDelayed(MSG_SYNC_DATA_COMP, 100);
-        }
-    }
-
-    class SubscribeHandler extends android.os.Handler {
-        WeakReference<SubscribeFragment> reference;
-
-        SubscribeHandler(SubscribeFragment setFragment) {
-            reference = new WeakReference<>(setFragment);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == MSG_SYNC_DATA_COMP) {
-                checkDataSync();
-            } else if (msg.what == MSG_INFLATE_PAGE) {
-                Log.d("sub", "接收到 MSG_INFLATE_PAGE 消息");
-                List<UserCenterPageBean.Bean> datas = (List<UserCenterPageBean.Bean>) msg.obj;
-                if (datas != null && datas.size() > 0) {
-                    inflatePage(datas);
-                } else {
-                    inflatePageWhenNoData();
-                }
-            } else {
-                Log.d("sub", "unresolved msg : " + msg.what);
-            }
+            sendEmptyMessageDelayed(MSG_SYNC_DATA_COMP, 100);
         }
     }
 

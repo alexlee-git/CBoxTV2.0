@@ -182,12 +182,15 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         if (adPresenter != null) {
             adPresenter.destroy();
         }
+        adPresenter = null;
         if (adPopupWindow != null && adPopupWindow.isShowing()) {
             adPopupWindow.dismiss();
         }
+        adPopupWindow = null;
 
-
-        lifeCycleList.clear();
+        if(lifeCycleList != null) {
+            lifeCycleList.clear();
+        }
         lifeCycleList = null;
     }
 

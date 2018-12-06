@@ -54,6 +54,23 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private ImageView full_screen;
     private boolean isEnd;
 
+    public void destory() {
+        super.destroy();
+
+        removeAllViews();
+        defaultFocusView = null;
+        detailPlayIv = null;
+        mPlayerProgress = null;
+        mPlayerCallback = null;
+        videoFullCallBack = null;
+        mFocusView = null;
+        videoExitFullScreenCallBack = null;
+
+        if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)) {
+            NewTVLauncherPlayerViewManager.getInstance().release();
+        }
+    }
+
     public VideoPlayerView(@NonNull Context context) {
         this(context, null);
     }
@@ -334,21 +351,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 }
             }
         }, 1000);
-    }
-
-    public void destory() {
-        super.destroy();
-
-        removeAllViews();
-        detailPlayIv = null;
-        mPlayerProgress = null;
-        mPlayerCallback = null;
-        videoFullCallBack = null;
-        mFocusView = null;
-
-        if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)) {
-            NewTVLauncherPlayerViewManager.getInstance().release();
-        }
     }
 
     @Override

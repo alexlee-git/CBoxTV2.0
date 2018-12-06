@@ -121,6 +121,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             mDisposable.dispose();
             mDisposable = null;
         }
+        if(smallWindowView != null){
+            smallWindowView.destroy();
+            smallWindowView = null;
+        }
         if (aiyaRecyclerView != null) {
             aiyaRecyclerView = null;
         }
@@ -129,6 +133,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             ListPager = null;
         }
         mOnEpisodeChange = null;
+        mCurrentPlayImage = null;
         if (pageItemAdapter != null) {
             pageItemAdapter.release();
         }
@@ -141,6 +146,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         }
         fragments = null;
         mControlView = null;
+        mContentList = null;
+        mLinearLayoutManager = null;
         removeAllViews();
     }
 

@@ -23,10 +23,8 @@ import java.util.List;
  */
 public abstract class AbsEpisodeFragment extends Fragment {
 
-    private boolean hasAD = false;
-    private ADHelper.AD.ADItem adItem;
 
-    private View contentView;
+    protected View contentView;
 
     protected View findViewById(int id){
         if(contentView != null){
@@ -59,7 +57,9 @@ public abstract class AbsEpisodeFragment extends Fragment {
                                   @Nullable Bundle savedInstanceState);
     public abstract void setAdItem(ADHelper.AD.ADItem adItem);
     public abstract int getPageSize();
-    public abstract void destroy();
+    public void destroy(){
+        contentView = null;
+    }
     public abstract void clear();
     public abstract void setViewPager(ResizeViewPager viewPager, int position, EpisodeChange
             change);

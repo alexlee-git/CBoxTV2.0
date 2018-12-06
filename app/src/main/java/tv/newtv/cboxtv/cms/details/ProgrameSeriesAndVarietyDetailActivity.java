@@ -69,6 +69,24 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private int layoutId;
     private boolean isFullScreenIng;
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mContentPresenter != null) {
+            mContentPresenter.destroy();
+            mContentPresenter = null;
+        }
+
+        scrollView = null;
+        mAdView = null;
+        playListView = null;
+        headPlayerView = null;
+        mPaiseView = null;
+    }
+
+
     @Override
     public boolean hasPlayer() {
         return true;
@@ -91,7 +109,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
             //requestData();
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
-            mContentPresenter.getContent(contentUUID, true);
+            mContentPresenter.getContent(contentUUID, false);
         } else {
             onError(getApplicationContext(), "节目集信息有误");
         }
@@ -294,18 +312,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        if (mContentPresenter != null) {
-            mContentPresenter.destroy();
-            mContentPresenter = null;
-        }
-
-
-        mPaiseView = null;
-    }
 
     @Override
     protected boolean interruptDetailPageKeyEvent(KeyEvent event) {

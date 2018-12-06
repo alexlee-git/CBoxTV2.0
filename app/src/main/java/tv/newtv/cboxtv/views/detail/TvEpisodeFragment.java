@@ -42,7 +42,6 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     private boolean hasAD = false;
     private ADHelper.AD.ADItem adItem;
     private List<SubContent> mData;
-    private View contentView;
     private View firstView;
     private View lastView;
     private WeakReference<ResizeViewPager> mWeakViewPager;
@@ -75,6 +74,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
         firstView = null;
         lastView = null;
         mWeakViewPager.clear();
+        mWeakViewPager = null;
         mChange = null;
         if (viewHolders != null && !viewHolders.isEmpty()) {
             for (ViewHolder viewholder : viewHolders) {
@@ -280,6 +280,8 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
             mTitleView = null;
             itemView = null;
             mImageView = null;
+            mChange = null;
+
         }
 
         void select(){

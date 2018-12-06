@@ -64,6 +64,10 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
             mSpecialPresenter.destroy();
             mSpecialPresenter = null;
         }
+        if(mAdPresenter != null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
         mSpecialFragment = null;
 
         PlayerConfig.getInstance().setTopicId(null);
@@ -136,7 +140,6 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
         }
         return super.dispatchKeyEvent(event);
     }
-
 
     @Override
     protected void onStart() {

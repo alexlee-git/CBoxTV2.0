@@ -59,6 +59,7 @@ import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.ISubscribeStatusCallback;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.uc.v2.sub.QueryUserStatusUtil;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.TimeDialog;
@@ -95,6 +96,41 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private long lastClickTime = 0;
     private View vipPay;
     private TextView vipTip;
+
+    private List<Long> reqIdList;
+
+    @Override
+    public void destroy() {
+
+        if (mPresenter != null) {
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+
+        if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(playerView)) {
+            NewTVLauncherPlayerViewManager.getInstance().release();
+        }
+        defaultConfig = null;
+        if (playerView != null) {
+            playerView.release();
+            playerView.destory();
+            playerView = null;
+        }
+
+        if(reqIdList != null && reqIdList.size() > 0){
+            for(Long id : reqIdList){
+                UserCenterRecordManager.getInstance().removeCallback(id);
+            }
+            reqIdList.clear();
+        }
+        reqIdList = null;
+
+        contentView = null;
+        if (mBuilder != null) {
+            mBuilder.release();
+            mBuilder = null;
+        }
+    }
 
     //检测全屏退出回调
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new
@@ -200,6 +236,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private void init() {
         setClipChildren(false);
         setClipToPadding(false);
+        reqIdList = new ArrayList<>();
     }
 
     private void getMemberStatus(String UUid) {
@@ -372,14 +409,17 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         //TODO
                         final View collect = contentView.findViewById(value.viewId);
                         if (collect != null) {
-                            UserCenterUtils.getCollectState(mBuilder.contentUUid, new
+                            Long id = UserCenterUtils.getCollectState(mBuilder.contentUUid, new
                                     ICollectionStatusCallback() {
-                                        public void notifyCollectionStatus(boolean status) {
+                                        public void notifyCollectionStatus(boolean status,Long id) {
                                             if (collect instanceof FocusToggleSelect) {
                                                 ((FocusToggleSelect) collect).setSelect(status);
                                             }
+                                            reqIdList.remove(id);
                                         }
                                     });
+                            reqIdList.add(id);
+
                             collect.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -465,15 +505,18 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         final View Subscrip = contentView.findViewById
                                 (value.viewId);
                         if (Subscrip != null) {
-                            UserCenterUtils.getSuncribeState(mBuilder.contentUUid, new
+                            Long id = UserCenterUtils.getSuncribeState(mBuilder.contentUUid, new
                                     ISubscribeStatusCallback() {
                                         @Override
-                                        public void notifySubScribeStatus(boolean status) {
+                                        public void notifySubScribeStatus(boolean status,Long
+                                                reqId) {
                                             if (Subscrip instanceof FocusToggleSelect) {
                                                 ((FocusToggleSelect) Subscrip).setSelect(status);
                                             }
+                                            reqIdList.remove(reqId);
                                         }
                                     });
+                            reqIdList.add(id);
 
                             Subscrip.setOnClickListener(new OnClickListener() {
                                 @Override
@@ -889,29 +932,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         return false;
     }
 
-    @Override
-    public void destroy() {
 
-        if (mPresenter != null) {
-            mPresenter.destroy();
-            mPresenter = null;
-        }
-
-        if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(playerView)) {
-            NewTVLauncherPlayerViewManager.getInstance().release();
-        }
-        defaultConfig = null;
-        if (playerView != null) {
-            playerView.release();
-            playerView.destory();
-            playerView = null;
-        }
-        contentView = null;
-        if (mBuilder != null) {
-            mBuilder.release();
-            mBuilder = null;
-        }
-    }
 
     @Override
     public void onClick(View view) {
@@ -1033,6 +1054,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             focusables = null;
             clickables = null;
             infoResult = null;
+            videoFullCallBack = null;
             videoExitFullScreenCallBack = null;
         }
 

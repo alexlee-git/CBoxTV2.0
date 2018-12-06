@@ -46,8 +46,6 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     @BindView(R.id.root_view)
     SmoothScrollView scrollView;
 
-//    @BindView(R.id.up_top)
-//    LinearLayout upTop;
 
     @BindView(R.id.person_detail_ad_fl)
     EpisodeAdView mAdView;

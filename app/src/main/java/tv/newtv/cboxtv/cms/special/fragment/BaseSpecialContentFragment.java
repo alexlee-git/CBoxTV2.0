@@ -116,9 +116,11 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
 
             mPlayIndex = videoPlayerView.getIndex();
             mPlayPosition = videoPlayerView.getCurrentPosition();
-            videoPlayerView.stopPlay();
+
+
             videoPlayerView.release();
             videoPlayerView.destory();
+            videoPlayerView = null;
         }
 
         super.onStop();
@@ -127,6 +129,12 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if(mPresenter != null){
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+
         contentView = null;
         RxBus.get().unregister(Constant.UPDATE_VIDEO_PLAY_INFO, mUpdateVideoInfoObservable);
         mUpdateVideoInfoObservable = null;

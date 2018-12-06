@@ -77,6 +77,34 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private int place_holder = R.drawable.focus_384_216;
     private int direction = DIRECTION_HORIZONTAL;
 
+    @Override
+    public void destroy() {
+        mRecycleView = null;
+        mProgramSeriesInfo = null;
+        mOnSeriesInfoResult =  null;
+        controlView = null;
+        onItemClickListener = null;
+        if(mAdapter != null){
+            mAdapter.destroy();
+        }
+        mAdapter = null;
+
+        if(mAlternatePresenter != null){
+            mAlternatePresenter.destroy();
+            mAlternatePresenter = null;
+        }
+
+        if (mPersonPresenter != null) {
+            mPersonPresenter.destroy();
+            mPersonPresenter = null;
+        }
+
+        if (mContentPresenter != null) {
+            mContentPresenter.destroy();
+            mContentPresenter = null;
+        }
+    }
+
     public EpisodeHorizontalListView(Context context) {
         this(context, null);
     }
@@ -95,22 +123,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         mOnSeriesInfoResult = infoResult;
     }
 
-    @Override
-    public void destroy() {
-        controlView = null;
-        onItemClickListener = null;
-        mAdapter = null;
 
-        if (mPersonPresenter != null) {
-            mPersonPresenter.destroy();
-            mPersonPresenter = null;
-        }
-
-        if (mContentPresenter != null) {
-            mContentPresenter.destroy();
-            mContentPresenter = null;
-        }
-    }
 
     public void setOnItemClick(onEpisodeItemClick listener) {
         onItemClickListener = listener;
@@ -159,9 +172,11 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         if (infos.size() > 0) {
             mProgramSeriesInfo = infos;
             if (getChildCount() == 0) {
-                LayoutInflater.from(getContext()).inflate(R.layout.episode_horizontal_layout, this,
+                LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.episode_horizontal_layout,
+                        this,
                         true);
                 mRecycleView = findViewById(R.id.list_view);
+
                 mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
                         LinearLayoutManager.HORIZONTAL, false));
                 mRecycleView.setShowCounts(mHorizontalCount);
@@ -169,6 +184,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                     mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
                             .getDimensionPixelOffset(R.dimen.width_48px)));
                 }
+
                 mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id
                         .dir_right));
 

@@ -10,5 +10,5 @@ package tv.newtv.cboxtv.uc.v2.listener;
  * 修改备注：
  */
 public interface  IFollowStatusCallback {
-     void notifyFollowStatus(boolean status);
+     void notifyFollowStatus(boolean status,Long id);
 }

@@ -153,6 +153,104 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private LiveListener mLiveListener;
     private PlayerContract mPlayerContract;
 
+
+    public void destroy() {
+
+        if (listener != null) {
+            listener.clear();
+        }
+
+        if (menuPopupWindow != null) {
+            menuPopupWindow.dismiss();
+            menuPopupWindow = null;
+        }
+
+        if(mPlayerLocation != null){
+            mPlayerLocation.destroy();
+            mPlayerLocation = null;
+        }
+
+        if (mVodPresenter != null) {
+            mVodPresenter.destroy();
+            mVodPresenter = null;
+        }
+
+        if (mLivePresenter != null) {
+            mLivePresenter.destroy();
+            mLivePresenter = null;
+        }
+
+        if (menuGroupPresenter != null) {
+            menuGroupPresenter.release();
+            menuGroupPresenter = null;
+        }
+
+        mLiveCallBackEvent = null;
+        mCallBackEvent = null;
+        freeDurationListener = null;
+
+        if (mPlayerContract != null) {
+            mPlayerContract.destroy();
+            mPlayerContract = null;
+        }
+
+        mLiveListener = null;
+
+        mNewTVLauncherPlayer = null;
+        mNewTVLauncherPlayerSeekbar = null;
+
+        onDetachedFromWindow();
+    }
+
+    public void release() {
+        if (isReleased) return;
+        isReleased = true;
+        addHistory();
+        Log.i(TAG, "release: ");
+        if (listener != null) {
+            listener.clear();
+            listener = null;
+        }
+
+        if(screenListeners != null){
+            screenListeners.clear();
+            screenListeners = null;
+        }
+        defaultConfig = null;
+
+        if (mLiveTimer != null && mLiveTimer.isRunning()) {
+            mLiveTimer.cancel();
+        }
+        mLiveTimer = null;
+
+        if (mNewTVLauncherPlayer != null) {
+            mNewTVLauncherPlayer.release();
+        }
+        if (mNewTVLauncherPlayerSeekbar != null) {
+            mNewTVLauncherPlayerSeekbar.release();
+        }
+
+        stopLoading();
+        if (mLoading != null) {
+            mLoading.release();
+            mLoading = null;
+        }
+
+        hidePauseImage();
+
+
+        if (buyGoodsBusiness != null) {
+            buyGoodsBusiness.onDestroy();
+            buyGoodsBusiness = null;
+        }
+
+        destroy();
+    }
+
+
+
+
+
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
         @Override
         public void onPrepared(LinkedHashMap<String, String> definitionDatas) {
@@ -701,88 +799,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 .getScreenH();
     }
 
-    public void destroy() {
-
-        if (listener != null) {
-            listener.clear();
-        }
-
-        if (menuPopupWindow != null) {
-            menuPopupWindow.dismiss();
-            menuPopupWindow = null;
-        }
-
-        if (mAlternatePresenter != null) {
-            mAlternatePresenter.destroy();
-            mAlternatePresenter = null;
-        }
-
-        if (mVodPresenter != null) {
-            mVodPresenter.destroy();
-            mVodPresenter = null;
-        }
-
-        if (mLivePresenter != null) {
-            mLivePresenter.destroy();
-            mLivePresenter = null;
-        }
-
-        if (menuGroupPresenter != null) {
-            menuGroupPresenter.release();
-            menuGroupPresenter = null;
-        }
-
-        mLiveCallBackEvent = null;
-        mCallBackEvent = null;
-
-        if (mPlayerContract != null) {
-            mPlayerContract.destroy();
-            mPlayerContract = null;
-        }
-
-        mNewTVLauncherPlayer = null;
-        mNewTVLauncherPlayerSeekbar = null;
-
-        onDetachedFromWindow();
-    }
-
-    public void release() {
-        if (isReleased) return;
-        isReleased = true;
-        addHistory();
-        Log.i(TAG, "addHistory: ");
-        if (listener != null) {
-            listener.clear();
-        }
-
-        if (mLiveTimer != null && mLiveTimer.isRunning()) {
-            mLiveTimer.cancel();
-            mLiveTimer = null;
-        }
-
-        if (mNewTVLauncherPlayer != null) {
-            mNewTVLauncherPlayer.release();
-        }
-        if (mNewTVLauncherPlayerSeekbar != null) {
-            mNewTVLauncherPlayerSeekbar.release();
-        }
-
-        stopLoading();
-        if (mLoading != null) {
-            mLoading.release();
-            mLoading = null;
-        }
-
-        hidePauseImage();
-
-
-        if (buyGoodsBusiness != null) {
-            buyGoodsBusiness.onDestroy();
-            buyGoodsBusiness = null;
-        }
-
-        destroy();
-    }
 
     public boolean isReleased() {
         return isReleased;
@@ -823,8 +839,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         hintVip = findViewById(R.id.hint_vip);
         NewTVLauncherPlayerViewManager.getInstance().setPlayerView(this);
 
-        View alternate = LayoutInflater.from(getContext()).inflate(R.layout
-                .player_alternate_layout, this, false);
+        View alternate = LayoutInflater.from(getContext()).inflate(R.layout.player_alternate_layout, this, false);
         alternate.setTag("ALTERNATE_MESSAGE");
         ((ViewGroup) view).addView(alternate);
         alterTitle = alternate.findViewById(R.id.alter_title);
@@ -1353,7 +1368,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 if (widget.isOverride(event.getKeyCode())) {
                     if (widget.isRegisterKey(event)) {
                         if (!widget.isShowing()) {
-                            widget.show(this, Gravity.LEFT);
+                            widget.show(this);
                             widget.requestDefaultFocus();
                             NewTVLauncherPlayerViewManager.getInstance().setShowingView(widget
                                     .getId());
@@ -1761,7 +1776,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         if (buyGoodsBusiness == null) {
-            buyGoodsBusiness = new BuyGoodsBusiness(getContext(), this);
+            buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
         }
         buyGoodsBusiness.getAd();
 

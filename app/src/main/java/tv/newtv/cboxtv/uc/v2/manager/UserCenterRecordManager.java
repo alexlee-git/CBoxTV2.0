@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.uc.v2.manager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.VpnService;
@@ -25,6 +26,7 @@ import com.newtv.libs.util.SystemUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,15 +79,28 @@ public class UserCenterRecordManager {
 
     // private String tableName;
     private final String TAG = "UserCenterRecordManager";
-    private Disposable mSubscribeDisposable;
-    private Disposable mFollowDisposable;
-    private Disposable mCollectionDisposable;
 
     private boolean collectStatusInLocal;
     private boolean collectStatusInRemote;
     private boolean collectStatusLocalReqComp;
     private boolean collectStatusRemoteReqComp;
 
+    private HashMap<Long,CallbackForm> callbackHashMap;
+
+    private static class CallbackForm{
+        private Object callback;
+        private Disposable mDisposable;
+
+        public void destroy() {
+            callback = null;
+            if(mDisposable != null){
+                if(!mDisposable.isDisposed()) {
+                    mDisposable.dispose();
+                }
+                mDisposable = null;
+            }
+        }
+    }
 
 
 
@@ -98,8 +113,9 @@ public class UserCenterRecordManager {
         public void handleMessage(Message msg) {
             if (msg.what == MSG_NOTIFY_COLLECT_STATUS) {
                 Log.d("col", "接收到 MSG_NOTIFY_COLLECT_STATUS 消息");
-                ICollectionStatusCallback callback = (ICollectionStatusCallback) msg.obj;
-                if (callback == null) {
+                Long callbackId = (Long) msg.obj;
+                CallbackForm callbackForm = callbackHashMap.get(callbackId);
+                if (callbackForm == null || callbackForm.callback == null) {
                     return;
                 }
 
@@ -108,19 +124,23 @@ public class UserCenterRecordManager {
                 if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
                     if (collectStatusInRemote || collectStatusInLocal) {
                         Log.d(TAG, "通知该片已订阅");
-                        callback.notifyCollectionStatus(true);
+                        ((ICollectionStatusCallback) callbackForm.callback)
+                                .notifyCollectionStatus(true,callbackId);
                     } else {
                         Log.d(TAG, "通知该片未订阅");
-                        callback.notifyCollectionStatus(false);
+                        ((ICollectionStatusCallback) callbackForm.callback)
+                                .notifyCollectionStatus(false,callbackId);
                     }
+                    removeCallback(callbackId);
                 } else {
                     if (mHandler != null) {
                         mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_COLLECT_STATUS, 100);
                     }
                 }
             } else if (msg.what == MSG_NOTIFY_SUBSCRIBE_STATUS) {
-                ISubscribeStatusCallback callback = (ISubscribeStatusCallback) msg.obj;
-                if (callback == null) {
+                Long callbackId = (Long) msg.obj;
+                CallbackForm callbackForm = callbackHashMap.get(callbackId);
+                if (callbackForm == null || callbackForm.callback == null) {
                     return;
                 }
 
@@ -129,11 +149,14 @@ public class UserCenterRecordManager {
                 if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
                     if (collectStatusInRemote || collectStatusInLocal) {
                         Log.d(TAG, "通知该片已收藏");
-                        callback.notifySubScribeStatus(true);
+                        ((ISubscribeStatusCallback)callbackForm.callback).notifySubScribeStatus
+                                (true,callbackId);
                     } else {
                         Log.d(TAG, "通知该片未收藏");
-                        callback.notifySubScribeStatus(false);
+                        ((ISubscribeStatusCallback)callbackForm.callback).notifySubScribeStatus
+                                (false,callbackId);
                     }
+                    removeCallback(callbackId);
                 } else {
                     if (mHandler != null) {
                         mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_SUBSCRIBE_STATUS, 100);
@@ -141,8 +164,9 @@ public class UserCenterRecordManager {
                 }
             } else if (msg.what == MSG_NOTIFY_FOLLOW_STATUS) {
                 Log.d("follow", "接收到 MSG_NOTIFY_FOLLOW_STATUS 消息");
-                IFollowStatusCallback callback = (IFollowStatusCallback) msg.obj;
-                if (callback == null) {
+                Long callbackId = (Long) msg.obj;
+                CallbackForm callbackForm = callbackHashMap.get(callbackId);
+                if (callbackForm == null || callbackForm.callback == null) {
                     return;
                 }
 
@@ -151,11 +175,12 @@ public class UserCenterRecordManager {
                 if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
                     if (collectStatusInRemote || collectStatusInLocal) {
                         Log.d(TAG, "通知人物已关注");
-                        callback.notifyFollowStatus(true);
+                        ((IFollowStatusCallback)callbackForm.callback).notifyFollowStatus(true,callbackId);
                     } else {
                         Log.d(TAG, "通知该人物未关注");
-                        callback.notifyFollowStatus(false);
+                        ((IFollowStatusCallback)callbackForm.callback).notifyFollowStatus(false,callbackId);
                     }
+                    removeCallback(callbackId);
                 } else {
                     if (mHandler != null) {
                         mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_FOLLOW_STATUS, 100);
@@ -175,7 +200,9 @@ public class UserCenterRecordManager {
         TYPE_LUNBO
     }
 
+    @SuppressLint("UseSparseArrays")
     private UserCenterRecordManager() {
+        callbackHashMap = new HashMap<>();
     }
 
     private static UserCenterRecordManager mInstance;
@@ -887,7 +914,14 @@ public class UserCenterRecordManager {
      * @param contentUUid 节目id
      * @param callback    查询状态回调
      */
-    public void queryContentSubscribeStatus(final Context context, final String contentUUid, final ISubscribeStatusCallback callback) {
+    public Long queryContentSubscribeStatus(final Context context, final String contentUUid,
+    ISubscribeStatusCallback callback) {
+
+        final Long callbackId = System.currentTimeMillis();
+        final CallbackForm callbackForm = new CallbackForm();
+        callbackForm.callback = callback;
+        callbackHashMap.put(callbackId,callbackForm);
+
         io.reactivex.Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
@@ -910,8 +944,7 @@ public class UserCenterRecordManager {
                 .subscribe(new Observer<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        unSubscribe(mSubscribeDisposable);
-                        mSubscribeDisposable = d;
+                        callbackForm.mDisposable = d;
                     }
 
                     @Override
@@ -941,7 +974,7 @@ public class UserCenterRecordManager {
                                                 if (mHandler != null) {
                                                     Message message = Message.obtain();
                                                     message.what = MSG_NOTIFY_SUBSCRIBE_STATUS;
-                                                    message.obj = callback;
+                                                    message.obj = callbackId;
                                                     mHandler.sendMessage(message);
                                                 }
                                             }
@@ -967,35 +1000,51 @@ public class UserCenterRecordManager {
                                                     if (mHandler != null) {
                                                         Message message = Message.obtain();
                                                         message.what = MSG_NOTIFY_SUBSCRIBE_STATUS;
-                                                        message.obj = callback;
+                                                        message.obj = callbackId;
                                                         mHandler.sendMessage(message);
                                                     }
                                                 }
                                             }
                                         }).excute();
                             } else {
-                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME, callback);
+                                querySubscribeStatusByDB(SharePreferenceUtils.getUserId
+                                        (LauncherApplication.AppContext), contentUUid, DBConfig
+                                        .REMOTE_SUBSCRIBE_TABLE_NAME, callbackId);
                             }
                         } else {
-                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.SUBSCRIBE_TABLE_NAME, callback);
+                            querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication
+                                    .AppContext), contentUUid, DBConfig.SUBSCRIBE_TABLE_NAME, callbackId);
                         }
-                        unSubscribe(mCollectionDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "---queryContentSubscribeStatus:onError:" + e.toString());
-                        if (callback != null) {
-                            callback.notifySubScribeStatus(false);
+                        CallbackForm sendCallbackForm = callbackHashMap.get(callbackId);
+                        if (sendCallbackForm != null) {
+                            if(sendCallbackForm.callback != null) {
+                                ((ISubscribeStatusCallback) sendCallbackForm.callback)
+                                        .notifySubScribeStatus(false,callbackId);
+                            }
+                            if(sendCallbackForm.mDisposable != null){
+                                unSubscribe(sendCallbackForm.mDisposable);
+                            }
+                            removeCallback(callbackId);
                         }
-                        unSubscribe(mSubscribeDisposable);
                     }
 
                     @Override
                     public void onComplete() {
-                        unSubscribe(mSubscribeDisposable);
+                        CallbackForm sendCallbackForm = callbackHashMap.get(callbackId);
+                        if (sendCallbackForm != null) {
+                            if(sendCallbackForm.mDisposable != null){
+                                unSubscribe(sendCallbackForm.mDisposable);
+                            }
+                            removeCallback(callbackId);
+                        }
                     }
                 });
+        return callbackId;
     }
 
     /**
@@ -1005,7 +1054,12 @@ public class UserCenterRecordManager {
      * @param contentUUid 节目id
      * @param callback    查询状态回调
      */
-    public void queryContentFollowStatus(final Context context, final String contentUUid, final IFollowStatusCallback callback) {
+    public Long queryContentFollowStatus(final Context context, final String contentUUid,
+                                         IFollowStatusCallback callback) {
+        final Long callbackId = System.currentTimeMillis();
+        final CallbackForm callbackForm = new CallbackForm();
+        callbackForm.callback = callback;
+        callbackHashMap.put(callbackId,callbackForm);
         io.reactivex.Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
@@ -1030,8 +1084,9 @@ public class UserCenterRecordManager {
                 .subscribe(new Observer<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        unSubscribe(mFollowDisposable);
-                        mFollowDisposable = d;
+//                        unSubscribe(mFollowDisposable);
+//                        mFollowDisposable = d;
+                        callbackForm.mDisposable = d;
                     }
 
                     @Override
@@ -1061,7 +1116,7 @@ public class UserCenterRecordManager {
                                                 if (mHandler != null) {
                                                     Message message = Message.obtain();
                                                     message.what = MSG_NOTIFY_FOLLOW_STATUS;
-                                                    message.obj = callback;
+                                                    message.obj = callbackId;
                                                     mHandler.sendMessage(message);
                                                 }
                                             }
@@ -1087,35 +1142,46 @@ public class UserCenterRecordManager {
                                                     if (mHandler != null) {
                                                         Message message = Message.obtain();
                                                         message.what = MSG_NOTIFY_FOLLOW_STATUS;
-                                                        message.obj = callback;
+                                                        message.obj = callbackId;
                                                         mHandler.sendMessage(message);
                                                     }
                                                 }
                                             }
                                         }).excute();
                             } else {
-                                queryFollowStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_ATTENTION_TABLE_NAME, callback);
+                                queryFollowStatusByDB(SharePreferenceUtils.getUserId
+                                        (LauncherApplication.AppContext), contentUUid, DBConfig
+                                        .REMOTE_ATTENTION_TABLE_NAME, callbackId);
                             }
                         } else {
-                            queryFollowStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.ATTENTION_TABLE_NAME, callback);
+                            queryFollowStatusByDB(SystemUtils.getDeviceMac(LauncherApplication
+                                    .AppContext), contentUUid, DBConfig.ATTENTION_TABLE_NAME, callbackId);
                         }
-                        unSubscribe(mCollectionDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "---queryContentFollowStatus:onError:" + e.toString());
-                        if (callback != null) {
-                            callback.notifyFollowStatus(false);
+                        CallbackForm sendCallback = callbackHashMap.get(callbackId);
+                        if (sendCallback != null && sendCallback.callback != null) {
+                            ((IFollowStatusCallback) sendCallback.callback).notifyFollowStatus
+                                    (false,callbackId);
+                            if(sendCallback.mDisposable != null) {
+                                unSubscribe(sendCallback.mDisposable);
+                            }
                         }
-                        unSubscribe(mFollowDisposable);
                     }
 
                     @Override
                     public void onComplete() {
-                        unSubscribe(mFollowDisposable);
+                        CallbackForm sendCallback = callbackHashMap.get(callbackId);
+                        if(sendCallback != null) {
+                            unSubscribe(sendCallback.mDisposable);
+                        }
                     }
                 });
+
+        return callbackId;
     }
 
     /**
@@ -1125,7 +1191,11 @@ public class UserCenterRecordManager {
      * @param contentUUid 节目id
      * @param callback    查询状态回调
      */
-    public void queryContentCollectionStatus(final Context context, final String contentUUid, final ICollectionStatusCallback callback) {
+    public Long queryContentCollectionStatus(final Context context, final String contentUUid, ICollectionStatusCallback callback) {
+        final Long callbackId = System.currentTimeMillis();
+        final CallbackForm callbackForm = new CallbackForm();
+        callbackForm.callback = callback;
+        callbackHashMap.put(callbackId,callbackForm);
         io.reactivex.Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
@@ -1148,8 +1218,7 @@ public class UserCenterRecordManager {
                 .subscribe(new Observer<String>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        unSubscribe(mCollectionDisposable);
-                        mCollectionDisposable = d;
+                        callbackForm.mDisposable = d;
                     }
 
                     @Override
@@ -1179,7 +1248,7 @@ public class UserCenterRecordManager {
                                                 if (mHandler != null) {
                                                     Message message = Message.obtain();
                                                     message.what = MSG_NOTIFY_COLLECT_STATUS;
-                                                    message.obj = callback;
+                                                    message.obj = callbackId;
                                                     mHandler.sendMessage(message);
                                                 }
                                             }
@@ -1205,38 +1274,57 @@ public class UserCenterRecordManager {
                                                     if (mHandler != null) {
                                                         Message message = Message.obtain();
                                                         message.what = MSG_NOTIFY_COLLECT_STATUS;
-                                                        message.obj = callback;
+                                                        message.obj = callbackId;
                                                         mHandler.sendMessage(message);
                                                     }
                                                 }
                                             }
                                         }).excute();
                             } else {
-                                queryCollectStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_COLLECT_TABLE_NAME, callback);
+                                queryCollectStatusByDB(SharePreferenceUtils.getUserId
+                                        (LauncherApplication.AppContext), contentUUid, DBConfig
+                                        .REMOTE_COLLECT_TABLE_NAME, callbackId);
                             }
                         } else {
-                            queryCollectStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callback);
+                            queryCollectStatusByDB(SystemUtils.getDeviceMac(LauncherApplication
+                                    .AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callbackId);
                         }
-                        unSubscribe(mCollectionDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "---queryContentCollectionStatus:onError:" + e.toString());
-                        if (callback != null) {
-                            callback.notifyCollectionStatus(false);
+                        CallbackForm sendCallbackForm = callbackHashMap.get(callbackId);
+                        if (sendCallbackForm != null) {
+                            if(sendCallbackForm.callback!=null) {
+                                ((ICollectionStatusCallback) sendCallbackForm.callback)
+                                        .notifyCollectionStatus(false,callbackId);
+                            }
+                            if(sendCallbackForm.mDisposable != null){
+                                unSubscribe(sendCallbackForm.mDisposable);
+                            }
                         }
-                        unSubscribe(mCollectionDisposable);
+                        removeCallback(callbackId);
+
                     }
 
                     @Override
                     public void onComplete() {
-                        unSubscribe(mCollectionDisposable);
+                        CallbackForm sendCallbackForm = callbackHashMap.get(callbackId);
+                        if (sendCallbackForm != null) {
+                            if(sendCallbackForm.mDisposable != null){
+                                unSubscribe(sendCallbackForm.mDisposable);
+                            }
+                        }
+                        removeCallback(callbackId);
                     }
                 });
+        return callbackId;
+
     }
 
-    private void queryCollectStatusByDB(String userId, String contentuuid, String tableName, final ICollectionStatusCallback callback) {
+    private void queryCollectStatusByDB(String userId, String contentuuid, String tableName,
+                                        final Long callback) {
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.CONTENTUUID, contentuuid)
@@ -1247,21 +1335,27 @@ public class UserCenterRecordManager {
                     @Override
                     public void onResult(int code, String result) {
                         if (code == 0) {
+                            CallbackForm callbackForm = callbackHashMap.get(callback);
                             if (!TextUtils.isEmpty(result)) {
-                                if (callback != null) {
-                                    callback.notifyCollectionStatus(true);
+                                if (callbackForm != null && callbackForm.callback!=null) {
+                                    ((ICollectionStatusCallback)callbackForm.callback)
+                                            .notifyCollectionStatus(true,callback);
                                 }
                             } else {
-                                if (callback != null) {
-                                    callback.notifyCollectionStatus(false);
+                                if (callbackForm != null && callbackForm.callback!=null) {
+                                    ((ICollectionStatusCallback)callbackForm.callback)
+                                            .notifyCollectionStatus(false,callback);
                                 }
                             }
                         }
+
+                        removeCallback(callback);
                     }
                 }).excute();
     }
 
-    private void querySubscribeStatusByDB(String userId, String contentuuid, String tableName, final ISubscribeStatusCallback callback) {
+    private void querySubscribeStatusByDB(String userId, String contentuuid, String tableName,
+                                          final Long callbackId) {
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.CONTENTUUID, contentuuid)
@@ -1271,14 +1365,17 @@ public class UserCenterRecordManager {
                 .withCallback(new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {
+                        CallbackForm callbackForm = callbackHashMap.get(callbackId);
                         if (code == 0) {
                             if (!TextUtils.isEmpty(result)) {
-                                if (callback != null) {
-                                    callback.notifySubScribeStatus(true);
+                                if (callbackForm != null && callbackForm.callback!=null) {
+                                    ((ISubscribeStatusCallback)callbackForm.callback)
+                                            .notifySubScribeStatus(true,callbackId);
                                 }
                             } else {
-                                if (callback != null) {
-                                    callback.notifySubScribeStatus(false);
+                                if (callbackForm != null && callbackForm.callback!=null) {
+                                    ((ISubscribeStatusCallback)callbackForm.callback)
+                                            .notifySubScribeStatus(false,callbackId);
                                 }
                             }
                         }
@@ -1286,7 +1383,8 @@ public class UserCenterRecordManager {
                 }).excute();
     }
 
-    private void queryFollowStatusByDB(String userId, String contentuuid, String tableName, final IFollowStatusCallback callback) {
+    private void queryFollowStatusByDB(String userId, String contentuuid, String tableName, final
+    Long callbackId) {
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.CONTENTUUID, contentuuid)
@@ -1296,19 +1394,33 @@ public class UserCenterRecordManager {
                 .withCallback(new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {
+                        CallbackForm callbackFrom = callbackHashMap.get(callbackId);
                         if (code == 0) {
                             if (!TextUtils.isEmpty(result)) {
-                                if (callback != null) {
-                                    callback.notifyFollowStatus(true);
+                                if (callbackFrom != null && callbackFrom.callback != null) {
+                                    ((IFollowStatusCallback)callbackFrom.callback).notifyFollowStatus(true,
+                                            callbackId);
+                                    removeCallback(callbackId);
                                 }
                             } else {
-                                if (callback != null) {
-                                    callback.notifyFollowStatus(false);
+                                if (callbackFrom != null && callbackFrom.callback != null) {
+                                    ((IFollowStatusCallback)callbackFrom.callback).notifyFollowStatus(false,callbackId);
+                                    removeCallback(callbackId);
                                 }
                             }
                         }
+
+
                     }
                 }).excute();
+    }
+
+    public void removeCallback(Long id){
+        CallbackForm callbackForm = callbackHashMap.get(id);
+        if(callbackForm != null){
+            callbackForm.destroy();
+            callbackHashMap.remove(id);
+        }
     }
 
 
@@ -1361,8 +1473,8 @@ public class UserCenterRecordManager {
     private void unSubscribe(Disposable disposable) {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
-            disposable = null;
         }
+        disposable = null;
     }
 
     /**

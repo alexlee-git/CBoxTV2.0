@@ -113,7 +113,7 @@ public class BuyGoodsBusiness{
 
         if(!isInit){
             //初始化
-            JDSmartSDK.getInstance().init(context,APP_KEY, SystemUtils.getDeviceMac(context));
+            JDSmartSDK.getInstance().init(context.getApplicationContext(),APP_KEY, SystemUtils.getDeviceMac(context));
             isInit = true;
         }
     }
