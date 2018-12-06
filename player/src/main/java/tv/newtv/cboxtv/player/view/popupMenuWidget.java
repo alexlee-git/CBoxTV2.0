@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 import com.newtv.libs.IDefaultFocus;
+import com.newtv.libs.util.ScreenUtils;
 
 import tv.newtv.cboxtv.player.IFocusWidget;
 import tv.newtv.cboxtv.player.KeyAction;
@@ -36,9 +38,17 @@ public class popupMenuWidget implements IFocusWidget {
     private View focusView;
     private ViewGroup parentView;
     private ViewGroup.LayoutParams layoutParams;
+    private int mGravity;
+    private IPopupWidget mPopupWidget;
 
-    public popupMenuWidget(Context context, View outView) {
+    public interface IPopupWidget{
+        KeyAction[] getRegisterKeyActions();
+    }
+
+    public popupMenuWidget(Context context, View outView, int gravity,IPopupWidget popupWidget) {
         outerView = outView;
+        mGravity = gravity;
+        mPopupWidget = popupWidget;
     }
 
     @Override
@@ -50,7 +60,7 @@ public class popupMenuWidget implements IFocusWidget {
     }
 
     @Override
-    public boolean show(ViewGroup parent, int gravity) {
+    public boolean show(ViewGroup parent) {
         if (outerView.getParent() != null) {
             parentView = (ViewGroup) outerView.getParent();
             layoutParams = outerView.getLayoutParams();
@@ -64,6 +74,8 @@ public class popupMenuWidget implements IFocusWidget {
                 contentView = new RelativeLayout(parent.getContext());
             } else if (parentView instanceof LinearLayout) {
                 contentView = new LinearLayout(parent.getContext());
+                ((LinearLayout) contentView).setOrientation(((LinearLayout) parentView)
+                        .getOrientation());
             } else {
                 contentView = new RelativeLayout(parent.getContext());
             }
@@ -72,26 +84,44 @@ public class popupMenuWidget implements IFocusWidget {
             contentView.setClipChildren(false);
         }
 
-        Log.e(TAG, "show()");
+        Log.e(TAG, "show() width=" + outerView.getMeasuredWidth() + " height=" + outerView
+                .getMeasuredHeight());
         popupWindow = new PopupWindow();
         popupWindow.setContentView(contentView);
         contentView.addView(outerView, layoutParams);
-        popupWindow.setWidth(outerView.getMeasuredWidth());
-        popupWindow.setHeight(outerView.getMeasuredHeight());
-        popupWindow.setAnimationStyle(R.style.anim_x_side);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        popupWindow.showAtLocation(parent, gravity, 0, 0);
+        int width = 0;
+        int height = 0;
+        if(mGravity == Gravity.RIGHT || mGravity == Gravity.END){
+            width = outerView.getWidth();
+            height = outerView.getHeight();
+            popupWindow.setAnimationStyle(R.style.anim_x_right_side);
+        }else if (mGravity == Gravity.LEFT || mGravity == Gravity.START) {
+            width = outerView.getWidth();
+            height = outerView.getHeight();
+            popupWindow.setAnimationStyle(R.style.anim_x_side);
+        } else if (mGravity == Gravity.BOTTOM) {
+            height = contentView.getContext().getResources().getDimensionPixelSize(R.dimen
+                    .height_350px);
+            width = ScreenUtils.getScreenW();
+            popupWindow.setAnimationStyle(R.style.anim_y_side);
+        } else if (mGravity == Gravity.TOP) {
+            height = contentView.getContext().getResources().getDimensionPixelSize(R.dimen
+                    .height_350px);
+            width = ScreenUtils.getScreenW();
+            popupWindow.setAnimationStyle(R.style.anim_y_top_side);
+        }
+        popupWindow.setWidth(width);
+        popupWindow.setHeight(height);
+        popupWindow.showAtLocation(parent, mGravity, 0, 0);
+
         mIsShowing = true;
         return true;
     }
 
     @Override
     public KeyAction[] getRegisterKeyCodes() {
-        return new KeyAction[]{
-                new KeyAction(KeyEvent.KEYCODE_MENU, KeyEvent.ACTION_DOWN),
-                new KeyAction(KeyEvent.KEYCODE_DPAD_UP, KeyEvent.ACTION_DOWN),
-                new KeyAction(KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.ACTION_DOWN),
-        };
+        return mPopupWidget.getRegisterKeyActions();
     }
 
     @Override
@@ -142,11 +172,11 @@ public class popupMenuWidget implements IFocusWidget {
             focusView.requestFocus();
             return;
         }
-        if(outerView != null) {
+        if (outerView != null) {
             outerView.requestFocus();
             return;
         }
-        if(contentView != null) {
+        if (contentView != null) {
             contentView.requestFocus();
         }
     }

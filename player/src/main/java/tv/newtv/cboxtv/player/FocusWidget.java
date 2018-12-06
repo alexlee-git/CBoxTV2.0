@@ -58,9 +58,9 @@ public class FocusWidget implements IFocusWidget {
     }
 
     @Override
-    public boolean show(ViewGroup parent,int gravity) {
+    public boolean show(ViewGroup parent) {
         if (mFocusWidget != null)
-            return mFocusWidget.show(parent,gravity);
+            return mFocusWidget.show(parent);
         return false;
     }
 

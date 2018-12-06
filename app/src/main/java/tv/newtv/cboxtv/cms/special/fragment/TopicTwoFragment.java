@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
+import tv.newtv.cboxtv.player.KeyAction;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.popupMenuWidget;
@@ -131,7 +133,16 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.outerControl();
         mPopupMenuWidget = new popupMenuWidget(view.getContext().getApplicationContext(),
-                news_recycle);
+                news_recycle, Gravity.BOTTOM, new popupMenuWidget.IPopupWidget() {
+            @Override
+            public KeyAction[] getRegisterKeyActions() {
+                return new KeyAction[]{
+                        new KeyAction(KeyEvent.KEYCODE_MENU, KeyEvent.ACTION_DOWN),
+                        new KeyAction(KeyEvent.KEYCODE_DPAD_UP, KeyEvent.ACTION_DOWN),
+                        new KeyAction(KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.ACTION_DOWN),
+                };
+            }
+        });
         widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
         video_player_rl = view.findViewById(R.id.video_player_rl);
         videoTitle = view.findViewById(R.id.videoTitle);
@@ -146,11 +157,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         news_recycle.setAlign(AiyaRecyclerView.ALIGN_START);
         news_recycle.setAdapter(adapter);
 
-
         adapter.setOnItemAction(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {
-
 
             }
 
