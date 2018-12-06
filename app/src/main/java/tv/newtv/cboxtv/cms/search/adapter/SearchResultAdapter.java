@@ -89,14 +89,25 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
 
             if (!TextUtils.isEmpty(subContent.getContentType()) && subContent.getContentType().equals("PS")){
 
+                if (!TextUtils.isEmpty(subContent.getVipFlag())){//节目集vip
+                    if (subContent.getVipFlag().equals(1) || subContent.getVipFlag().equals(3) || subContent.getVipFlag().equals(4)){
+                        holder.isVipImg.setVisibility(View.VISIBLE);
+                    }else {
+                        holder.isVipImg.setVisibility(View.GONE);
+                    }
+                }else {
+                    holder.isVipImg.setVisibility(View.GONE);
+                }
                 if (!TextUtils.isEmpty(subContent.getRecentNum()) && !subContent.getRecentNum().equals("0")){
                     holder.updateLayout.setVisibility(View.VISIBLE);
                     holder.updateLeft.setVisibility(View.VISIBLE);
                     holder.updateRight.setVisibility(View.VISIBLE);
                     holder.recentNumTv.setText(subContent.getRecentNum());
-                }
-                if (!TextUtils.isEmpty(subContent.getVipFlag()) && subContent.getVipFlag().equals(4)){//节目集vip
-                    holder.isVipImg.setVisibility(View.VISIBLE);
+                }else {
+                    holder.updateLayout.setVisibility(View.GONE);
+                    holder.updateLeft.setVisibility(View.GONE);
+                    holder.updateRight.setVisibility(View.GONE);
+                    holder.recentNumTv.setText("");
                 }
             }
 
