@@ -159,7 +159,7 @@ public class SearchFragmentNew extends BaseFragment implements PageContract.View
     @Override
     public View getFirstFocusView() {
         View firstFocusView = null;
-        if (mRecyclerView != null){
+        if (mRecyclerView != null && mRecyclerView.getAdapter() != null){
             firstFocusView = ((SearchContentAdapter) mRecyclerView.getAdapter()).getFirstFocusView();
         }
         return firstFocusView;
