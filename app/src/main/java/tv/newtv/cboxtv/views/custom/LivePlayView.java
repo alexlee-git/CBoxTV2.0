@@ -37,6 +37,7 @@ import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.BlockBuilder;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
@@ -582,10 +583,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (!fullScreen) {
             ViewGroup parent = (ViewGroup) getParent();
             if (parent != null) {
-                bringChildWithTag(BlockBuilder.BLOCK_CORNER_RIGHT_BOTTOM, parent);
-                bringChildWithTag(BlockBuilder.BLOCK_CORNER_RIGHT_TOP, parent);
-                bringChildWithTag(BlockBuilder.BLOCK_CORNER_LEFT_BOTTOM, parent);
-                bringChildWithTag(BlockBuilder.BLOCK_CORNER_LEFT_TOP, parent);
+                bringChildWithTag(SuperScriptManager.BLOCK_CORNER_RIGHT_BOTTOM, parent);
+                bringChildWithTag(SuperScriptManager.BLOCK_CORNER_RIGHT_TOP, parent);
+                bringChildWithTag(SuperScriptManager.BLOCK_CORNER_LEFT_BOTTOM, parent);
+                bringChildWithTag(SuperScriptManager.BLOCK_CORNER_LEFT_TOP, parent);
 
                 bringChildTagWithId(R.id.tag_title_background, parent);
                 bringChildTagWithId(R.id.tag_title, parent);

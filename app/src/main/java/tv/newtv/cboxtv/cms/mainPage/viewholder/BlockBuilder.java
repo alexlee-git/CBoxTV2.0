@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.cms.mainPage.viewholder;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.Row;
@@ -36,12 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Locale;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AlternatePageView;
@@ -66,27 +58,16 @@ public class BlockBuilder extends BaseBlockBuilder {
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
 
-    public static final String BLOCK_CORNER_LEFT_TOP = "CORNER_LEFT_TOP";
-    public static final String BLOCK_CORNER_LEFT_BOTTOM = "CORNER_LEFT_BOTTOM";
-    public static final String BLOCK_CORNER_RIGHT_TOP = "CORNER_RIGHT_TOP";
-    public static final String BLOCK_CORNER_RIGHT_BOTTOM = "CORNER_RIGHT_BOTTOM";
-
 
     private Context mContext;
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
     private boolean showFirstTitle = false;
 
-    private int CORNER_WIDTH = 0;
-    private int CORNER_HEIGHT = 0;
-
 
     BlockBuilder(Context context) {
         super(context);
         mContext = context;
-
-        CORNER_WIDTH = context.getResources().getDimensionPixelSize(R.dimen.width_75px);
-        CORNER_HEIGHT = context.getResources().getDimensionPixelSize(R.dimen.height_30px);
 
         mSpringInterpolator = new OvershootInterpolator(2.2f);
 
@@ -338,13 +319,16 @@ public class BlockBuilder extends BaseBlockBuilder {
                 }
 
                 // 按需添加角标控件
-                processSuperscript(layoutCode, postIndex + 1, info, parentFrameLayout);
+                SuperScriptManager.getInstance().processSuperscript(mContext,
+                        layoutCode,
+                        postIndex + 1,
+                        info, parentFrameLayout);
             }
 
             if (layoutList.size() > 0) {
                 for (String layout : layoutList) {
                     View target = itemView.findViewWithTag(layout);
-                    if(target != null){
+                    if (target != null) {
                         target.setVisibility(View.GONE);
                     }
                 }
@@ -408,7 +392,7 @@ public class BlockBuilder extends BaseBlockBuilder {
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
             focusTextView.setSelected(true);
 
-            Log.e("yml", "onItemGetFocus: "+layoutId );
+            Log.e("yml", "onItemGetFocus: " + layoutId);
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {
@@ -529,142 +513,6 @@ public class BlockBuilder extends BaseBlockBuilder {
         }
     }
 
-    @SuppressLint("CheckResult")
-    private void processSuperscript(final String layoutCode, final int posterIndex, final Program
-            info, final ViewGroup parent) {
-        if (info == null || parent == null) {
-            return;
-        }
-        Observable.create(new ObservableOnSubscribe<List<Corner>>() {
-            @Override
-            public void subscribe(ObservableEmitter<List<Corner>> e) throws Exception {
-                List<Corner> cornerList = SuperScriptManager.getInstance().findSuitCorner(info);
-                e.onNext(cornerList);
-            }
-        }).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Corner>>() {
-                    @Override
-                    public void accept(List<Corner> cornerList) throws Exception {
-                        if (cornerList != null && cornerList.size() > 0) {
-                            for (Corner corner : cornerList) {
-                                if (Corner.LEFT_TOP.equals(corner.getCornerPosition())) {
-                                    addLeftTopSuperscript(corner, parent, posterIndex);
-                                } else if (Corner.LEFT_BOTTOM.equals(corner.getCornerPosition())) {
-                                    addLeftBottomSuperscript(layoutCode, corner, parent,
-                                            posterIndex);
-                                } else if (Corner.RIGHT_TOP.equals(corner.getCornerPosition())) {
-                                    addRightTopSuperscript(corner, parent, posterIndex);
-                                } else if (Corner.RIGHT_BOTTOM.equals(corner.getCornerPosition())) {
-                                    addRightBottomSuperscript(layoutCode, corner, parent,
-                                            posterIndex);
-                                }
-                            }
-                        }else{
-                            ImageView leftTop = parent.findViewWithTag(BLOCK_CORNER_LEFT_TOP);
-                            ImageView leftBottom = parent.findViewWithTag(BLOCK_CORNER_LEFT_BOTTOM);
-                            ImageView rightTop = parent.findViewWithTag(BLOCK_CORNER_RIGHT_TOP);
-                            ImageView rightBottom = parent.findViewWithTag(BLOCK_CORNER_RIGHT_BOTTOM);
-                            if(leftTop != null){
-                                leftTop.setImageDrawable(null);
-                            }
-                            if(leftBottom != null){
-                                leftBottom.setImageDrawable(null);
-                            }
-                            if(rightTop != null){
-                                rightTop.setImageDrawable(null);
-                            }
-                            if(rightBottom != null){
-                                rightBottom.setImageDrawable(null);
-                            }
-                        }
-                    }
-                });
-    }
-
-    private void addLeftTopSuperscript(Corner corner, ViewGroup parent, int postIndex) {
-        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_LEFT_TOP);
-        if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
-            lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-            lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-
-            imageView = new RecycleImageView(mContext);
-            imageView.setLayoutParams(lp);
-            imageView.setScaleType(ImageView.ScaleType.CENTER);
-            imageView.setTag(BLOCK_CORNER_LEFT_TOP);
-            parent.addView(imageView, postIndex, lp);
-        }
-        showCorner(corner, imageView);
-    }
-
-    private void addLeftBottomSuperscript(String layoutCode, Corner corner,
-                                          ViewGroup parent, int posterIndex) {
-        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_LEFT_BOTTOM);
-        if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
-            lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-            if (TextUtils.equals(layoutCode, "layout_005")) {
-                lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
-            } else {
-                lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-            }
-
-            lp.gravity = Gravity.BOTTOM;
-            imageView = new RecycleImageView(mContext);
-            imageView.setTag(BLOCK_CORNER_LEFT_BOTTOM);
-            imageView.setLayoutParams(lp);
-            parent.addView(imageView, posterIndex, lp);
-        }
-
-        showCorner(corner, imageView);
-    }
-
-    private void addRightTopSuperscript(Corner corner, ViewGroup parent, int posterIndex) {
-        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_RIGHT_TOP);
-        if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
-            lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-            lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-            lp.gravity = Gravity.RIGHT | Gravity.END;
-            imageView = new RecycleImageView(mContext);
-            imageView.setTag(BLOCK_CORNER_RIGHT_TOP);
-            imageView.setLayoutParams(lp);
-            parent.addView(imageView, posterIndex, lp);
-        }
-        showCorner(corner, imageView);
-    }
-
-    private void addRightBottomSuperscript(String layoutCode, Corner corner, ViewGroup parent,
-                                           int posterIndex) {
-        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_RIGHT_BOTTOM);
-        if (imageView == null) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
-            if (TextUtils.equals(layoutCode, "layout_005")) {
-                lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
-            } else {
-                lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-            }
-            lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
-            lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
-            imageView = new RecycleImageView(mContext);
-            imageView.setTag(BLOCK_CORNER_RIGHT_BOTTOM);
-            imageView.setLayoutParams(lp);
-            parent.addView(imageView, posterIndex, lp);
-        }
-
-        // 加载角标x
-        showCorner(corner, imageView);
-    }
-
-
-    private void showCorner(Corner corner, RecycleImageView target) {
-        String superUrl = corner.getCornerImg();
-        if (!TextUtils.isEmpty(superUrl)) {
-            target.hasCorner(false).useResize(true).load(superUrl);
-        }
-    }
-
 
     /**
      * 按需添加标题控件
@@ -696,7 +544,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     layoutParams.gravity = Gravity.BOTTOM;
                     layoutParams.bottomMargin = pxheight_1px;
                     background = new ImageView(mContext);
-                    framelayout.setTag(R.id.tag_title_background,background);
+                    framelayout.setTag(R.id.tag_title_background, background);
                     background.setBackgroundResource(R.drawable.gradient_white_to_black);
                     background.setLayoutParams(layoutParams);
                     framelayout.addView(background);
@@ -752,8 +600,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                 titleWidget.setText(title);
                 titleWidget.setVisibility(View.VISIBLE);
             }
-        }else{
-            if(titleWidget != null){
+        } else {
+            if (titleWidget != null) {
                 titleWidget.setText("");
             }
         }
@@ -815,8 +663,8 @@ public class BlockBuilder extends BaseBlockBuilder {
             }
 
             subTitleWidget.setText(subTitle);
-        }else{
-            if(subTitleWidget != null) {
+        } else {
+            if (subTitleWidget != null) {
                 subTitleWidget.setText("");
             }
         }

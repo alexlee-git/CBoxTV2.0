@@ -1,13 +1,24 @@
 package tv.newtv.cboxtv.cms.superscript;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Html;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.CornerCondition;
 import com.newtv.cms.bean.ModelResult;
+import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.CornerContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +37,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
  * Created by lixin on 2018/3/9.
@@ -37,16 +58,21 @@ import tv.newtv.cboxtv.BuildConfig;
 
 public class SuperScriptManager implements CornerContract.View {
 
-
+    public static final String BLOCK_CORNER_LEFT_TOP = "CORNER_LEFT_TOP";
+    public static final String BLOCK_CORNER_LEFT_BOTTOM = "CORNER_LEFT_BOTTOM";
+    public static final String BLOCK_CORNER_RIGHT_TOP = "CORNER_RIGHT_TOP";
+    public static final String BLOCK_CORNER_RIGHT_BOTTOM = "CORNER_RIGHT_BOTTOM";
     private volatile static SuperScriptManager mInstance;
-
     private final String CACHE_FILE_NAME = "super.json";
     private final String TAG = "superscript";
+    private int CORNER_WIDTH = -1;
+    private int CORNER_HEIGHT = -1;
     private String mLocalUpdateTime; // 本地缓存的角标对应的时间戳信息
     private Map<String, Corner> mSuperscriptMap;
     private CornerContract.Presenter mPresenter;
 
     private SuperScriptManager() {
+
     }
 
     public static SuperScriptManager getInstance() {
@@ -58,6 +84,257 @@ public class SuperScriptManager implements CornerContract.View {
             }
         }
         return mInstance;
+    }
+
+    @SuppressLint("CheckResult")
+    public void processSuperscript(Context context, final String layoutCode, final int posterIndex,
+                                   final Program info, final ViewGroup parent) {
+        if (info == null || parent == null) {
+            return;
+        }
+        if (CORNER_WIDTH == -1) {
+            CORNER_WIDTH = context.getResources().getDimensionPixelSize(R.dimen.width_75px);
+        }
+        if (CORNER_HEIGHT == -1) {
+            CORNER_HEIGHT = context.getResources().getDimensionPixelSize(R.dimen.height_30px);
+        }
+        Observable.create(new ObservableOnSubscribe<List<Corner>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<Corner>> e) throws Exception {
+                List<Corner> cornerList = SuperScriptManager.getInstance().findSuitCorner(info);
+                e.onNext(cornerList);
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Corner>>() {
+                    @Override
+                    public void accept(List<Corner> cornerList) throws Exception {
+                        if (TextUtils.equals(layoutCode, "layout_008")) {
+                            addRecentMsgText(context, info.getRecentMsg(), parent);
+                            addGradeMsgText(context, info.getGrade(), parent);
+                        }
+                        if (cornerList != null && cornerList.size() > 0) {
+                            for (Corner corner : cornerList) {
+                                if (Corner.LEFT_TOP.equals(corner.getCornerPosition())) {
+                                    addLeftTopSuperscript(context, corner, parent, posterIndex);
+                                } else if (Corner.LEFT_BOTTOM.equals(corner.getCornerPosition())) {
+                                    addLeftBottomSuperscript(context, layoutCode, corner, parent,
+                                            posterIndex);
+                                } else if (Corner.RIGHT_TOP.equals(corner.getCornerPosition())) {
+                                    addRightTopSuperscript(context, corner, parent, posterIndex);
+                                } else if (Corner.RIGHT_BOTTOM.equals(corner.getCornerPosition())) {
+                                    addRightBottomSuperscript(context, layoutCode, corner, parent,
+                                            posterIndex);
+                                }
+                            }
+                        } else {
+                            ImageView leftTop = parent.findViewWithTag(BLOCK_CORNER_LEFT_TOP);
+                            ImageView leftBottom = parent.findViewWithTag(BLOCK_CORNER_LEFT_BOTTOM);
+                            ImageView rightTop = parent.findViewWithTag(BLOCK_CORNER_RIGHT_TOP);
+                            ImageView rightBottom = parent.findViewWithTag
+                                    (BLOCK_CORNER_RIGHT_BOTTOM);
+                            if (leftTop != null) {
+                                leftTop.setImageDrawable(null);
+                            }
+                            if (leftBottom != null) {
+                                leftBottom.setImageDrawable(null);
+                            }
+                            if (rightTop != null) {
+                                rightTop.setImageDrawable(null);
+                            }
+                            if (rightBottom != null) {
+                                rightBottom.setImageDrawable(null);
+                            }
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 添加更新角标
+     *
+     * @param context
+     * @param message
+     * @param parent
+     */
+    private void addRecentMsgText(Context context, String message, ViewGroup parent) {
+        TextView recentText = parent.findViewWithTag("TEXT_RECENT_MSG");
+        if (recentText == null) {
+            recentText = new TextView(context);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
+                    .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            lp.gravity = Gravity.LEFT | Gravity.START | Gravity.BOTTOM;
+            int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
+            lp.leftMargin = space;
+            lp.bottomMargin = space;
+            recentText.setTextSize(space);
+            recentText.setTextColor(Color.WHITE);
+            recentText.setBackgroundColor(Color.parseColor("#50000000"));
+            recentText.setLayoutParams(lp);
+            recentText.setTag("TEXT_RECENT_MSG");
+            parent.addView(recentText, lp);
+        }
+        if (!TextUtils.isEmpty(message)) {
+            recentText.setVisibility(View.VISIBLE);
+            Pattern pattern = Pattern.compile("\\d+");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                String value = matcher.group(0);
+                if (!TextUtils.isEmpty(value)) {
+                    if(!TextUtils.equals("0",value)) {
+                        message = message.replace(value, String.format("<font " +
+                                "color='#ff0000'>%s</font>", value));
+                        CharSequence charSequence = Html.fromHtml(message);
+                        recentText.setText(charSequence);
+                    }
+                    return;
+                }
+                recentText.setText(message);
+            }else {
+                recentText.setText(message);
+            }
+        } else {
+            recentText.setText("");
+            recentText.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 添加更新角标
+     *
+     * @param context
+     * @param message
+     * @param parent
+     */
+    private void addGradeMsgText(Context context, String message, ViewGroup parent) {
+        TextView gradeText = parent.findViewWithTag("TEXT_GRADE_MSG");
+        if (gradeText == null) {
+            gradeText = new TextView(context);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
+                    .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            lp.gravity = Gravity.RIGHT | Gravity.END | Gravity.BOTTOM;
+            int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
+            int size = context.getResources().getDimensionPixelSize(R.dimen.width_8px);
+            lp.rightMargin = space;
+            lp.bottomMargin = space;
+            gradeText.setTextSize(size);
+            gradeText.setTextColor(Color.WHITE);
+            gradeText.setBackgroundColor(Color.parseColor("#50000000"));
+            gradeText.setLayoutParams(lp);
+            gradeText.setTag("TEXT_GRADE_MSG");
+            parent.addView(gradeText, lp);
+        }
+
+        if (!TextUtils.isEmpty(message)) {
+            gradeText.setVisibility(View.VISIBLE);
+            message = String.format("<font " +
+                    "color='#ff0000'>%s</font>", message);
+            CharSequence charSequence = Html.fromHtml(message);
+            gradeText.setText(charSequence);
+        }else{
+            gradeText.setText("");
+            gradeText.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void addLeftTopSuperscript(Context context, Corner corner, ViewGroup parent, int
+            postIndex) {
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_LEFT_TOP);
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
+            lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+
+            imageView = new RecycleImageView(context);
+            imageView.setLayoutParams(lp);
+            imageView.setScaleType(ImageView.ScaleType.CENTER);
+            imageView.setTag(BLOCK_CORNER_LEFT_TOP);
+            parent.addView(imageView, postIndex, lp);
+        }
+        showCorner(corner, imageView);
+    }
+
+    private void addLeftBottomSuperscript(Context context, String layoutCode, Corner corner,
+                                          ViewGroup parent, int posterIndex) {
+
+        TextView recentText = parent.findViewWithTag("TEXT_RECENT_MSG");
+        if (recentText != null) {
+            recentText.setText("");
+            recentText.setVisibility(View.GONE);
+        }
+
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_LEFT_BOTTOM);
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
+            lp.leftMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            if (TextUtils.equals(layoutCode, "layout_005")) {
+                lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
+            } else {
+                lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+            }
+
+            lp.gravity = Gravity.BOTTOM;
+            imageView = new RecycleImageView(context);
+            imageView.setTag(BLOCK_CORNER_LEFT_BOTTOM);
+            imageView.setLayoutParams(lp);
+            parent.addView(imageView, posterIndex, lp);
+        }
+
+        showCorner(corner, imageView);
+    }
+
+    private void addRightTopSuperscript(Context context, Corner corner, ViewGroup parent, int
+            posterIndex) {
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_RIGHT_TOP);
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
+            lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+            lp.gravity = Gravity.RIGHT | Gravity.END;
+            imageView = new RecycleImageView(context);
+            imageView.setTag(BLOCK_CORNER_RIGHT_TOP);
+            imageView.setLayoutParams(lp);
+            parent.addView(imageView, posterIndex, lp);
+        }
+        showCorner(corner, imageView);
+    }
+
+    private void addRightBottomSuperscript(Context context, String layoutCode, Corner corner,
+                                           ViewGroup parent,
+                                           int posterIndex) {
+
+        TextView gradeText = parent.findViewWithTag("TEXT_GRADE_MSG");
+        if(gradeText != null){
+            gradeText.setText("");
+            gradeText.setVisibility(View.GONE);
+        }
+
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_RIGHT_BOTTOM);
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
+            if (TextUtils.equals(layoutCode, "layout_005")) {
+                lp.bottomMargin = DisplayUtils.translate(101, DisplayUtils.SCALE_TYPE_HEIGHT);
+            } else {
+                lp.bottomMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+            }
+            lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
+            imageView = new RecycleImageView(context);
+            imageView.setTag(BLOCK_CORNER_RIGHT_BOTTOM);
+            imageView.setLayoutParams(lp);
+            parent.addView(imageView, posterIndex, lp);
+        }
+
+        // 加载角标x
+        showCorner(corner, imageView);
+    }
+
+    private void showCorner(Corner corner, RecycleImageView target) {
+        String superUrl = corner.getCornerImg();
+        if (!TextUtils.isEmpty(superUrl)) {
+            target.hasCorner(false).useResize(true).load(superUrl);
+        }
     }
 
     private boolean isContain(List<CornerCondition> conditions, Object item) {

@@ -22,8 +22,6 @@ import java.util.List;
 import tv.newtv.cboxtv.JumpScreen;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.AlternateCallback;
-import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
-import tv.newtv.cboxtv.views.custom.AlternateView;
 import tv.newtv.cboxtv.views.detail.AlterHeaderView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
@@ -84,6 +82,11 @@ public class AlternateActivity extends DetailPageActivity implements
     protected void onDestroy() {
         super.onDestroy();
 
+        if(mPresenter != null){
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+
         headerView = null;
     }
 
@@ -139,7 +142,7 @@ public class AlternateActivity extends DetailPageActivity implements
         mPlayListView.setOnItemClick(this);
 
         headerView.setCallback(this);
-        headerView.setContentUUID("11488346");
+        headerView.setContentUUID(contentUUID);
     }
 
     @Override
@@ -236,7 +239,7 @@ public class AlternateActivity extends DetailPageActivity implements
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @Nullable String desc) {
 
     }
 }

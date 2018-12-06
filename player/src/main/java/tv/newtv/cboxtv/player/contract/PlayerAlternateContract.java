@@ -45,6 +45,8 @@ public class PlayerAlternateContract {
         Alternate getCurrentAlternate();
         int getCurrentPlayIndex();
         boolean playNext();
+        boolean needTipAlternate();
+        void alternateTipComplete();
         void addHistory();
         void playAlternateItem(String contentId, String contentUUID);
     }
@@ -107,6 +109,17 @@ public class PlayerAlternateContract {
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public boolean needTipAlternate() {
+
+            return false;
+        }
+
+        @Override
+        public void alternateTipComplete() {
+
         }
 
         @Override

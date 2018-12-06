@@ -149,7 +149,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
 
         @Override
         public void bind(Program data, AlternateViewHolder holder, boolean selected) {
-            holder.mAlternateId.setText("111");
+            holder.mAlternateId.setText(data.getAlternateNumber());
             holder.mAlternateTitle.setText(data.getTitle());
             holder.mAlternateSubTitle.setText(data.getSubTitle());
             holder.itemView.setActivated(selected);
