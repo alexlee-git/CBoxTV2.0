@@ -37,6 +37,7 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.search.view.SearchActivity;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
@@ -159,7 +160,7 @@ public class SearchFragmentNew extends BaseFragment implements PageContract.View
     @Override
     public View getFirstFocusView() {
         View firstFocusView = null;
-        if (mRecyclerView != null){
+        if (mRecyclerView != null && mRecyclerView.getAdapter() != null){
             firstFocusView = ((SearchContentAdapter) mRecyclerView.getAdapter()).getFirstFocusView();
         }
         return firstFocusView;
@@ -329,6 +330,10 @@ public class SearchFragmentNew extends BaseFragment implements PageContract.View
                     FrameLayout imgfoused = actionMaps.get(index);
                     RecycleImageView poster = iconMaps.get(index);
                     TextView title = titleMaps.get(index);
+
+                    SuperScriptManager.getInstance().processSuperscript(getContext(),
+                            "layout_008",((ViewGroup)itemView).indexOfChild(poster),program,
+                            (ViewGroup) poster.getParent());
 
                     title.setText(program.getTitle());
                     String url = program.getImg();

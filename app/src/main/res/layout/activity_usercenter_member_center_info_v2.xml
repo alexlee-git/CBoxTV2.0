@@ -111,7 +111,7 @@
             android:background="@drawable/member_center_btn_normal_v2"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <TextView
                 style="@style/MemberCenterBtnTitleStyle"

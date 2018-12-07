@@ -60,6 +60,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, View.On
             mADPresenter.destroy();
             mADPresenter = null;
         }
+        adItem = null;
     }
 
     @Override

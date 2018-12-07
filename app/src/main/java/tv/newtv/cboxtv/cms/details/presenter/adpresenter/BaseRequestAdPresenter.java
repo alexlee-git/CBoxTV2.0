@@ -14,7 +14,9 @@ import com.newtv.libs.util.RxBus;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
@@ -29,6 +31,8 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
     protected String adLoc;
     private boolean isDestory;
     private RequestAdParameter requestAdParameter;
+
+    private Disposable mDisposable;
 
     protected Handler handler = new Handler(Looper.getMainLooper()){
         @Override
@@ -76,14 +80,38 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
             }
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Integer>() {
+                .subscribe(new Observer<Integer>() {
                     @Override
-                    public void accept(Integer result) throws Exception {
+                    public void onSubscribe(Disposable d) {
+                        mDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
                         if(!isDestory){
                             dealResult(sb.toString());
                         }
                     }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        dispose();
+                    }
                 });
+    }
+
+    private void dispose(){
+        if(mDisposable != null){
+            if(!mDisposable.isDisposed()){
+                mDisposable.dispose();
+            }
+            mDisposable = null;
+        }
     }
 
     protected abstract void dealResult(String result);
@@ -105,6 +133,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
 
     public void destroy(){
         isDestory = true;
+        dispose();
         handler.removeCallbacksAndMessages(null);
         ADConfig.getInstance().reset();
         ADConfig.getInstance().removeListener(this);

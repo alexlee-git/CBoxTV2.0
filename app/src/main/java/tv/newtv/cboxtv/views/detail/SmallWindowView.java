@@ -47,7 +47,10 @@ public class SmallWindowView extends BaseAdView implements IEpisode {
 
     @Override
     public void destroy() {
-        mADPresenter.destroy();
+        if(mADPresenter != null) {
+            mADPresenter.destroy();
+            mADPresenter = null;
+        }
     }
 
 }

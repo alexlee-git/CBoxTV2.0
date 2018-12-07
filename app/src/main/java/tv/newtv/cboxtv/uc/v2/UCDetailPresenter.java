@@ -77,7 +77,7 @@ class UCDetailPresenter<T> implements DBCallback<String> {
 
     @Override
     public void onResult(int code, String result) {
-
+        if(mDetailCallback == null) return;
         if (TextUtils.isEmpty(result)) {
             if (mDetailCallback != null)
                 mDetailCallback.onResult(new ArrayList<T>());

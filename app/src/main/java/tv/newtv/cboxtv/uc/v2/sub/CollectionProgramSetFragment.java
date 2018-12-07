@@ -93,7 +93,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private static final int MSG_SYNC_DATA_COMP = 10033;
     private static final int MSG_INFLATE_PAGE = 10034;
 
-    private static CollectionHandler mHandler;
     private int move = -1;
     private Observable<Integer> observable;
 
@@ -109,7 +108,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     @Override
     public void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mHandler = new CollectionHandler(this);
     }
 
     @Override
@@ -194,9 +192,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                                     }
 
                                     localDataReqComp = true;
-                                    if (mHandler != null) {
-                                        mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                                    }
+                                    sendEmptyMessage(MSG_SYNC_DATA_COMP);
                                 }
                             }
                         }).excute();
@@ -219,9 +215,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                                     }
 
                                     remoteDataReqComp = true;
-                                    if (mHandler != null) {
-                                        mHandler.sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                                    }
+                                    sendEmptyMessage(MSG_SYNC_DATA_COMP);
                                 }
                             }
                         }).excute();
@@ -243,9 +237,10 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         return false;
     }
 
-    private void checkDataSync() {
+    @Override
+    protected void checkDataSync() {
         if (remoteDataReqComp && localDataReqComp) {
-            mHandler.removeMessages(MSG_SYNC_DATA_COMP);
+            removeMessages(MSG_SYNC_DATA_COMP);
 
             List<UserCenterPageBean.Bean> collectionRecords = new ArrayList<>();
 
@@ -262,9 +257,9 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             Message msg = Message.obtain();
             msg.what = MSG_INFLATE_PAGE;
             msg.obj = collectionRecords;
-            mHandler.sendMessage(msg);
+            sendMessage(msg);
         } else {
-            mHandler.sendEmptyMessageDelayed(MSG_SYNC_DATA_COMP, 100);
+            sendEmptyMessageDelayed(MSG_SYNC_DATA_COMP, 100);
         }
     }
 
@@ -353,7 +348,8 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     }
 
 
-    private void inflatePageWhenNoData() {
+    @Override
+    public void inflatePageWhenNoData() {
         hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
@@ -426,31 +422,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             showView(mHotRecommendRecyclerView);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    class CollectionHandler extends android.os.Handler {
-
-        WeakReference<CollectionProgramSetFragment> reference;
-
-        CollectionHandler(CollectionProgramSetFragment setFragment) {
-            reference = new WeakReference<>(setFragment);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == MSG_SYNC_DATA_COMP) {
-                checkDataSync();
-            } else if (msg.what == MSG_INFLATE_PAGE) {
-                List<UserCenterPageBean.Bean> datas = (List<UserCenterPageBean.Bean>) msg.obj;
-                if (datas != null && datas.size() > 0) {
-                    inflatePage(datas);
-                } else {
-                    inflatePageWhenNoData();
-                }
-            } else {
-                Log.d("collection", "unresolved msg : " + msg.what);
-            }
         }
     }
 

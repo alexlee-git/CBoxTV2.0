@@ -33,10 +33,20 @@ public abstract class BaseAdView extends RecycleImageView implements View.OnFocu
         super(context, attrs, defStyleAttr);
     }
 
+    public void destroy(){
+        if(mADPresenter != null){
+            mADPresenter.destroy();
+            mADPresenter = null;
+        }
+        result = null;
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mADPresenter = new ADPresenter(this);
+        if(mADPresenter == null) {
+            mADPresenter = new ADPresenter(this);
+        }
         getAD(mADPresenter);
     }
 

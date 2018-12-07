@@ -33,8 +33,9 @@ import tv.newtv.cboxtv.player.AlternateCallback;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
+import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
-import tv.newtv.cboxtv.views.custom.FocusToggleSelect;
+import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -56,8 +57,12 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     private TextView alternateDescText;
     private VideoPlayerView alternateView;
 
+    private FocusToggleView2 mCollect;
+
     private View fullScreenBtn;
     private View payBtn;
+
+    private boolean mIsCollect = false;
 
     private NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig;
     private AlternateCallback mAlternateCallback;
@@ -138,9 +143,9 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateDescText = findViewById(R.id.id_detail_desc);
         alternateView = findViewById(R.id.video_player);
 
-        final View collect = findViewById(R.id.collect);
-        if (collect != null) {
-            collect.setOnClickListener(new MultipleClickListener() {
+        mCollect = findViewById(R.id.collect);
+        if (mCollect != null) {
+            mCollect.setOnClickListener(new MultipleClickListener() {
                 @Override
                 protected void onMultipleClick(View view) {
                     onViewClick(view);
@@ -168,6 +173,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
+
+        updateUI();
     }
 
     @Override
@@ -178,10 +185,28 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     public void setContentUUID(String contentUUID) {
         mContentUUID = contentUUID;
 
+        checkIsRecord();
         if (mPresenter == null) {
             mPresenter = new ContentContract.ContentPresenter(getContext(), this);
         }
         mPresenter.getContent(contentUUID, false);
+    }
+
+    private void checkIsRecord() {
+        UserCenterRecordManager.getInstance().queryContentCollectionStatus(getContext(),
+                getContentUUID(), new ICollectionStatusCallback() {
+                    @Override
+                    public void notifyCollectionStatus(boolean status, Long id) {
+                        mIsCollect = status;
+                        updateUI();
+                    }
+                });
+    }
+
+    private void updateUI() {
+        if (mCollect != null) {
+            mCollect.setSelect(mIsCollect);
+        }
     }
 
     @Override
@@ -203,6 +228,11 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     @Override
     public void destroy() {
+        if (mPresenter != null) {
+            mPresenter.destroy();
+            mPresenter = null;
+        }
+        mAlternateCallback = null;
         if (alternateView != null) {
             alternateView.destroy();
         }
@@ -258,34 +288,58 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 alternateView.enterFullScreen(ActivityStacks.get().getCurrentActivity());
                 break;
             case R.id.collect:
-                Bundle bundle = new Bundle();
-                bundle.putString(DBConfig.CONTENTUUID, mContent.getContentUUID());
-                bundle.putString(DBConfig.CONTENT_ID, mContent.getContentID());
-                bundle.putString(DBConfig.TITLE_NAME, mContent.getTitle());
-                bundle.putString(DBConfig.IS_FINISH, mContent.isFinish());
-                bundle.putString(DBConfig.REAL_EXCLUSIVE, mContent.getNew_realExclusive());
+                if (mContent == null) return;
+                if (!mIsCollect) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(DBConfig.CONTENTUUID, mContent.getContentUUID());
+                    bundle.putString(DBConfig.CONTENT_ID, mContent.getContentID());
+                    bundle.putString(DBConfig.TITLE_NAME, mContent.getTitle());
+                    bundle.putString(DBConfig.IS_FINISH, mContent.isFinish());
+                    bundle.putString(DBConfig.REAL_EXCLUSIVE, mContent.getNew_realExclusive());
 //                bundle.putString(DBConfig.ISSUE_DATE, lastNode.issuedate);
 //                bundle.putString(DBConfig.LAST_PUBLISH_DATE, mContent.get);
-                bundle.putString(DBConfig.SUB_TITLE, mContent.getSubTitle());
-                bundle.putString(DBConfig.UPDATE_TIME, System.currentTimeMillis() + "");
-                bundle.putString(DBConfig.USERID, SystemUtils.getDeviceMac(getContext()));
-                bundle.putString(DBConfig.V_IMAGE, mContent.getVImage());
-                bundle.putString(DBConfig.H_IMAGE, mContent.getHImage());
-                bundle.putString(DBConfig.VIP_FLAG, mContent.getVipFlag());
-                bundle.putString(DBConfig.CONTENTTYPE, mContent.getContentType());
-                UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager
-                                .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
-                        getContext(),
-                        bundle,
-                        mContent,
-                        new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, String result) {
-                                if (code == 0) {
-                                    Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                    bundle.putString(DBConfig.SUB_TITLE, mContent.getSubTitle());
+                    bundle.putString(DBConfig.UPDATE_TIME, System.currentTimeMillis() + "");
+                    bundle.putString(DBConfig.USERID, SystemUtils.getDeviceMac(getContext()));
+                    bundle.putString(DBConfig.V_IMAGE, mContent.getVImage());
+                    bundle.putString(DBConfig.H_IMAGE, mContent.getHImage());
+                    bundle.putString(DBConfig.VIP_FLAG, mContent.getVipFlag());
+                    bundle.putString(DBConfig.CONTENTTYPE, mContent.getContentType());
+                    UserCenterRecordManager.getInstance().addRecord(UserCenterRecordManager
+                                    .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
+                            getContext(),
+                            bundle,
+                            mContent,
+                            new DBCallback<String>() {
+                                @Override
+                                public void onResult(int code, String result) {
+                                    if (code == 0) {
+                                        Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT)
+                                                .show();
+
+                                        mIsCollect = true;
+                                        updateUI();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                } else {
+                    UserCenterRecordManager.getInstance().deleteRecord(UserCenterRecordManager
+                                    .USER_CENTER_RECORD_TYPE.TYPE_LUNBO, getContext(),
+                            getContentUUID(),
+                            mContent.getContentType(),
+                            SystemUtils.getDeviceMac(getContext()),
+                            new DBCallback<String>() {
+                                @Override
+                                public void onResult(int code, String result) {
+                                    if(code == 0){
+                                        Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT)
+                                                .show();
+                                        mIsCollect = false;
+                                        updateUI();
+                                    }
+                                }
+                            });
+                }
                 break;
             case R.id.vip_pay:
 

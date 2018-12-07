@@ -11,7 +11,7 @@ import android.view.ViewGroup;
  * 创建日期:          2018/9/11
  */
 public interface IFocusWidget {
-    boolean show(ViewGroup parent, int gravity);
+    boolean show(ViewGroup parent);
     KeyAction[] getRegisterKeyCodes();
     boolean isShowing();
     boolean isToggleKey(int keycode);

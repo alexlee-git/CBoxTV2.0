@@ -110,7 +110,7 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
         mPresenter = new AppMainContract.MainPresenter(getApplicationContext(), this);
 
         mUpdatePresenter = new VersionUpdateContract.UpdatePresenter(getApplicationContext(), this);
-        mUpdatePresenter.checkVersionUpdate(getApplicationContext());
+        mUpdatePresenter.checkCreateUpVersion(getApplicationContext());
     }
 
     private void versionUpDialog(final UpVersion versionBeen, boolean isForceUp) {

@@ -3,6 +3,7 @@ package com.newtv.cms.contract
 import android.content.Context
 import android.content.pm.PackageManager
 import android.text.TextUtils
+import android.util.Log
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
@@ -30,6 +31,7 @@ class VersionUpdateContract {
 
     interface Presenter : ICmsPresenter {
         fun checkVersionUpdate(context: Context)
+        fun checkCreateUpVersion(context: Context)
     }
 
     class UpdatePresenter(context: Context, view: View) : CmsServicePresenter<View>(context, view), Presenter {
@@ -132,5 +134,57 @@ class VersionUpdateContract {
             hashMap["hardwareCode"] = hardwareCode
             return hashMap
         }
+
+        override fun checkCreateUpVersion(context: Context){
+            Log.d("ywy OK version : ","checkVersion");
+            updateService?.let {update->
+                val versionCode = context.packageManager.getPackageInfo(context.packageName, 0).versionCode
+                val params = createUpParam(context, versionCode)
+                update.getUpVersion(params, object : DataObserver<UpVersion> {
+                    override fun onResult(result: UpVersion, requestCode: Long) {
+                        if (TextUtils.isEmpty(result.versionCode) || "null" == result
+                                        .versionCode) {
+                            return
+                        }
+                        if (Integer.parseInt(result.versionCode) > versionCode && !TextUtils
+                                        .isEmpty(result.versionName)) {
+                            if (!TextUtils.isEmpty(result.packageMD5)) {
+                                val mSharedPreferences = context.getSharedPreferences("VersionMd5", Context.MODE_PRIVATE)
+                                mSharedPreferences.edit().putString("versionmd5", result
+                                        .packageMD5).apply()
+                            }
+                            if ("1" == result.upgradeType) {
+                                //强制升级
+                                view?.versionCheckResult(result, true)
+                            } else {
+                                //非强制升级
+                                view?.versionCheckResult(result, false)
+                            }
+
+                            Constant.VERSION_UPDATE = true;
+                        }
+                    }
+
+                    override fun onError(desc: String?) {}
+                })
+            }
+        }
+
+        internal fun createUpParam(context: Context, versionCode: Int): HashMap<String, String> {
+            val hardwareCode = SystemUtils.getMac(context)
+
+            val hashMap = HashMap<String, String>()
+            hashMap["appKey"] = Libs.get().appKey
+            hashMap["channelCode"] = Libs.get().channelId
+            hashMap["versionCode"] = Integer.toString(versionCode)
+            if (!TextUtils.isEmpty(hardwareCode)) {
+                hashMap["hardwareCode"] = "" + hardwareCode
+            }
+            Log.d("ywy OK version create: ","appKey : " + Libs.get().appKey +
+                    "  channel : " + Libs.get().channelId +
+                    "  version : "+Integer.toString(versionCode) + "  hardwareCode : "+hardwareCode);
+            return hashMap
+        }
+
     }
 }

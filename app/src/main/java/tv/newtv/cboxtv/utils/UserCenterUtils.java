@@ -150,8 +150,10 @@ public class UserCenterUtils {
     }
 
     //是否收藏
-    public static void getCollectState(String contentUUID, ICollectionStatusCallback mICollectionStatusCallback) {
-        UserCenterRecordManager.getInstance().queryContentCollectionStatus(LauncherApplication.AppContext, contentUUID, mICollectionStatusCallback);
+    public static Long getCollectState(String contentUUID, ICollectionStatusCallback
+            mICollectionStatusCallback) {
+        return UserCenterRecordManager.getInstance().queryContentCollectionStatus
+                (LauncherApplication.AppContext, contentUUID, mICollectionStatusCallback);
     }
 
     //添加收藏
@@ -233,8 +235,10 @@ public class UserCenterUtils {
     }
 
     //是否关注
-    public static void getAttentionState(String contentUUID, IFollowStatusCallback mIFollowStatusCallback) {
-        UserCenterRecordManager.getInstance().queryContentFollowStatus(LauncherApplication.AppContext, contentUUID, mIFollowStatusCallback);
+    public static Long getAttentionState(String contentUUID, IFollowStatusCallback
+            mIFollowStatusCallback) {
+        return UserCenterRecordManager.getInstance().queryContentFollowStatus(LauncherApplication
+                .AppContext, contentUUID, mIFollowStatusCallback);
     }
 
     //添加关注
@@ -299,8 +303,10 @@ public class UserCenterUtils {
 
 
     //是否订阅
-    public static void getSuncribeState(String contentUUID, ISubscribeStatusCallback mISubscribeStatusCallback) {
-        UserCenterRecordManager.getInstance().queryContentSubscribeStatus(LauncherApplication.AppContext, contentUUID, mISubscribeStatusCallback);
+    public static Long getSuncribeState(String contentUUID, ISubscribeStatusCallback
+            mISubscribeStatusCallback) {
+        return UserCenterRecordManager.getInstance().queryContentSubscribeStatus(LauncherApplication
+                .AppContext, contentUUID, mISubscribeStatusCallback);
     }
 
     //添加订阅
@@ -369,7 +375,8 @@ public class UserCenterUtils {
     }
 
     //删除所有订阅
-    public static void deleteAllSubcribe(Content mProgramSeriesInfo, DBCallback<String> dbCallback) {
+    public static void deleteAllSubcribe(Content mProgramSeriesInfo, DBCallback<String>
+            dbCallback) {
         if (null != mProgramSeriesInfo) {
             UserCenterRecordManager.getInstance().deleteRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_SUBSCRIBE,

@@ -44,7 +44,6 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
     private boolean hasAD = false;
     private ADHelper.AD.ADItem adItem;
     private List<SubContent> mData;
-    private View contentView;
     private View firstView;
     private View lastView;
     private WeakReference<ResizeViewPager> mWeakViewPager;
@@ -220,7 +219,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             if (view != null) {
                 ViewHolder holder = null;
                 if (view.getTag(R.id.id_view_tag) == null) {
-                    holder = new ViewHolder(view, index);
+                    holder = new ViewHolder(view, index, mChange, mPosition, getPageSize());
                     view.setTag(R.id.id_view_tag, holder);
                 } else {
                     holder = (ViewHolder) view.getTag(R.id.id_view_tag);
@@ -255,12 +254,16 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
         updateUI();
     }
 
-    private class ViewHolder extends BaseHolder<SubContent> implements IEpisodePlayChange {
+    private static class ViewHolder extends BaseHolder<SubContent> implements IEpisodePlayChange {
         int mIndex;
+        EpisodeChange mChange;
+        int mPageSize;
+        int mPosition;
 
-        ViewHolder(View view, int postion) {
+        ViewHolder(View view, int postion, EpisodeChange change, int pos, int pageSize) {
             super(view);
             mIndex = postion;
+            mChange = change;
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -277,23 +280,26 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             }
         }
 
+        @Override
         public void destroy() {
+            super.destroy();
             FocusView = null;
             PosterView = null;
             TitleView = null;
             itemView = null;
+            mChange = null;
         }
 
         void select() {
             if (mChange != null) {
-                mChange.updateUI(this, mPosition * getPageSize() + mIndex);
+                mChange.updateUI(this, mPosition * mPageSize + mIndex);
             }
         }
 
         void performClick(boolean fromClick, boolean dispatch) {
             if (mChange != null) {
-                mChange.updateUI(this, mPosition * getPageSize() + mIndex);
-                mChange.onChange(this, mPosition * getPageSize() + mIndex, fromClick);
+                mChange.updateUI(this, mPosition * mPageSize + mIndex);
+                mChange.onChange(this, mPosition * mPageSize + mIndex, fromClick);
             }
         }
 
@@ -324,8 +330,10 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                     TitleView.setText(programsInfo.getTitle());
                 }
 
-                if ((VipCheck.VIP_FLAG_VIP_BUY.equals(programsInfo.getVipFlag()) || VipCheck.VIP_FLAG_VIP.equals(programsInfo.getVipFlag
-                        ()) || VipCheck.VIP_FLAG_BUY.equals(programsInfo.getVipFlag())) && vipView != null) {
+                if ((VipCheck.VIP_FLAG_VIP_BUY.equals(programsInfo.getVipFlag()) || VipCheck
+                        .VIP_FLAG_VIP.equals(programsInfo.getVipFlag
+                                ()) || VipCheck.VIP_FLAG_BUY.equals(programsInfo.getVipFlag())) &&
+                        vipView != null) {
                     vipView.setVisibility(View.VISIBLE);
                 }
             } else {
@@ -339,44 +347,22 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
         }
     }
 
-
-    private class ADHolder extends BaseHolder<ADHelper.AD.ADItem> {
-
-        ADHolder(View view) {
-            super(view);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (mData != null && !TextUtils.isEmpty(mData.eventContent)) {
-                        AdEventContent adEventContent = GsonUtil.fromjson(mData.eventContent,
-                                AdEventContent.class);
-                        JumpUtil.activityJump(getContext(), adEventContent.actionType,
-                                adEventContent.contentType,
-                                adEventContent.contentUUID, adEventContent.actionURI);
-                    }
-                }
-            });
-        }
-
-        @Override
-        public void update(ADHelper.AD.ADItem adItem) {
-            if (!TextUtils.isEmpty(adItem.AdUrl)) {
-                Picasso.get()
-                        .load(adItem.AdUrl)
-                        .resize(384, 216)
-                        .transform(new PosterCircleTransform(LauncherApplication.AppContext, 4))
-                        .into(PosterView);
-            }
-        }
-    }
-
-    private class BaseHolder<T> {
-        protected View itemView;
-        protected ImageView vipView;
+    private static class BaseHolder<T> {
+        View itemView;
+        ImageView vipView;
         CurrentPlayImageView PosterView;
         ImageView FocusView;
         TextView TitleView;
         T mData;
+
+        public void destroy() {
+            itemView = null;
+            vipView = null;
+            PosterView = null;
+            FocusView = null;
+            TitleView = null;
+            mData = null;
+        }
 
         BaseHolder(View view) {
             this.itemView = view;
@@ -402,9 +388,11 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             FocusView = view.findViewWithTag("tag_img_focus");
 
             ViewGroup.LayoutParams layoutParams = FocusView.getLayoutParams();
-            layoutParams.height = PosterView.getLayoutParams().height + 2 * getResources()
+            layoutParams.height = PosterView.getLayoutParams().height + 2 * view
+                    .getContext().getResources()
                     .getDimensionPixelOffset(R.dimen.width_17dp);
-            layoutParams.width = PosterView.getLayoutParams().width + 2 * getResources()
+            layoutParams.width = PosterView.getLayoutParams().width + 2 * view.getContext()
+                    .getResources()
                     .getDimensionPixelOffset(R.dimen.width_17dp);
             FocusView.setLayoutParams(layoutParams);
             FocusView.requestLayout();
@@ -412,11 +400,43 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             vipView = view.findViewWithTag("tag_img_vip");
         }
 
+
+
         protected void onFocusChange(View view, boolean b) {
         }
 
         public void update(T item) {
             this.mData = item;
+        }
+    }
+
+    private static class ADHolder extends BaseHolder<ADHelper.AD.ADItem> {
+
+        ADHolder(View view) {
+            super(view);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (mData != null && !TextUtils.isEmpty(mData.eventContent)) {
+                        AdEventContent adEventContent = GsonUtil.fromjson(mData.eventContent,
+                                AdEventContent.class);
+                        JumpUtil.activityJump(view.getContext(), adEventContent.actionType,
+                                adEventContent.contentType,
+                                adEventContent.contentUUID, adEventContent.actionURI);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void update(ADHelper.AD.ADItem adItem) {
+            if (!TextUtils.isEmpty(adItem.AdUrl)) {
+                Picasso.get()
+                        .load(adItem.AdUrl)
+                        .resize(384, 216)
+                        .transform(new PosterCircleTransform(LauncherApplication.AppContext, 4))
+                        .into(PosterView);
+            }
         }
     }
 

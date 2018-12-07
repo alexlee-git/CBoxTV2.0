@@ -194,7 +194,8 @@ public class CollectionTopicFragment extends BaseDetailSubFragment {
     }
 
 
-    private void inflatePageWhenNoData() {
+    @Override
+    public void inflatePageWhenNoData() {
         mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
         mRecyclerView.setVisibility(View.INVISIBLE);
 

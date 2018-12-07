@@ -144,8 +144,8 @@ class ContentContract {
                                                 }
                                             }
                                         }
-                                        view?.onContentResult(uuid, contentResult)
                                         view?.let {
+                                            it.onContentResult(uuid, contentResult)
                                             if (it is LoadingView) it.loadComplete()
                                         }
                                     } else {

@@ -172,7 +172,7 @@ public class SmoothScrollView extends RelativeLayout {
             typedArray.recycle();
         }
 
-        mScroller = new Scroller(getContext());
+        mScroller = new Scroller(getContext().getApplicationContext());
     }
 
     public void scrollToTop() {

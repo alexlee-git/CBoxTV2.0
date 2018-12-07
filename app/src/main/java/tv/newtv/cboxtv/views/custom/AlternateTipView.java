@@ -46,6 +46,8 @@ public class AlternateTipView extends FrameLayout {
             downTimer.cancel();
             downTimer = null;
         }
+
+
     }
 
     @Override

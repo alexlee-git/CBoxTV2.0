@@ -22,7 +22,6 @@ import com.newtv.libs.Constant;
 
 import java.util.List;
 
-import tv.newtv.cboxtv.cms.special.SpecialActivity;
 
 public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 

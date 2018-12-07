@@ -19,6 +19,7 @@ public class ADPresenter extends BaseRequestAdPresenter implements IAdConstract.
     private ADHelper.AD mAD;
     private String flag;
 
+
     public ADPresenter(IAdConstract.IADConstractView adConstractView) {
         this.adConstractView = adConstractView;
     }
@@ -82,6 +83,7 @@ public class ADPresenter extends BaseRequestAdPresenter implements IAdConstract.
 
     @Override
     public void destroy(){
+        super.destroy();
         cancel();
         mAD = null;
         adConstractView = null;

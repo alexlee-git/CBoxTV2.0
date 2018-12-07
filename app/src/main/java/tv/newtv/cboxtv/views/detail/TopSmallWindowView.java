@@ -20,6 +20,12 @@ public class TopSmallWindowView extends BaseAdView implements IAdConstract.IADCo
         this(context, attrs,0);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        destroy();
+    }
+
     public TopSmallWindowView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }

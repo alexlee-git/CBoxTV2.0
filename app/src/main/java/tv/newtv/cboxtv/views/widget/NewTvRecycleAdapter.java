@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static tv.newtv.cboxtv.views.widget.NewTvRecycleAdapter.NewTvViewHolder.Callback;
@@ -22,6 +23,7 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
 
     private static final String TAG = NewTvRecycleAdapter.class.getSimpleName();
     private int currentIndex = 0;
+    private List<H> holderList = new ArrayList<>();
     private Callback mCallback = new Callback() {
         @Override
         public void onItemClick(int pos, NewTvViewHolder holder) {
@@ -38,6 +40,18 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
             NewTvRecycleAdapter.this.onFocusChange(view, pos, hasFocus);
         }
     };
+
+    public void destroy(){
+        if(holderList != null) {
+            for (H holder : holderList) {
+                holder.destroy();
+            }
+            holderList.clear();
+        }
+        holderList = null;
+
+        mCallback = null;
+    }
 
     public int getSelectedIndex(){
         return currentIndex;
@@ -59,7 +73,9 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
 
     @Override
     public H onCreateViewHolder(ViewGroup parent, int viewType) {
-        return createHolder(parent, viewType);
+        H holder =  createHolder(parent, viewType);
+        holderList.add(holder);
+        return holder;
     }
 
     public void setSelectedIndex(int index) {
@@ -122,6 +138,11 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
 
         private Callback mCallback;
 
+
+        void destroy(){
+            mCallback = null;
+        }
+
         public NewTvViewHolder(View itemView) {
             super(itemView);
         }
@@ -131,7 +152,6 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
         }
 
         protected void performClick() {
-
             if (mCallback != null) {
                 mCallback.onItemClick(getAdapterPosition(), this);
             }

@@ -38,12 +38,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
@@ -81,27 +83,25 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     private View view;
     private String contentUUID;
     private boolean isAttention = false;
-    private Context mContext;
     private long lastClickTime = 0;
     private Content dataInfo;
     private ContentContract.ContentPresenter mContentPresenter;
 
+    private List<Long> requestIdList;
+
 
     public PersonDetailHeadView(Context context) {
         super(context);
-        this.mContext = context;
     }
 
     public PersonDetailHeadView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mContext = context;
         init(context);
         initListener();
     }
 
     public PersonDetailHeadView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.mContext = context;
         init(context);
         initListener();
     }
@@ -110,6 +110,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         view = LayoutInflater.from(context).inflate(R.layout.person_detail_head_view_item,this,false);
         view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         addView(view);
+        requestIdList = new ArrayList<>();
         ButterKnife.bind(this);
     }
 
@@ -164,12 +165,14 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     public void setContentUUID(String contentUUIDs){
         contentUUID = contentUUIDs;
 
-        UserCenterUtils.getAttentionState(getContentUUID(), new IFollowStatusCallback() {
+        final Long id = UserCenterUtils.getAttentionState(getContentUUID(), new IFollowStatusCallback() {
             @Override
-            public void notifyFollowStatus(boolean status) {
+            public void notifyFollowStatus(boolean status,Long reqId) {
                 isAttention = status;
+                requestIdList.remove(reqId);
             }
         });
+        requestIdList.add(id);
 
         //获取人物信息
         mContentPresenter.getContent(contentUUIDs,false);
@@ -196,6 +199,18 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         detailStarTv = null;
         sendFlowerView = null;
         attentionView = null;
+
+        if(requestIdList != null && requestIdList.size() > 0){
+            for(Long id : requestIdList){
+                UserCenterRecordManager.getInstance().removeCallback(id);
+            }
+            requestIdList.clear();
+        }
+        requestIdList = null;
+
+        if(mFlowerView != null){
+            mFlowerView.release();
+        }
         mFlowerView = null;
     }
 
@@ -241,7 +256,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                             attentionView.setSelect(false);
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION,"1,"+contentUuId);
 
-                            Toast.makeText(mContext, "取消关注成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext().getApplicationContext(), "取消关注成功", Toast.LENGTH_SHORT).show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
                     });
@@ -265,7 +280,9 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                             isAttention = true;
                             attentionView.setSelect(true);
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION,"0,"+contentUUID);
-                            Toast.makeText(mContext, R.string.attention_success, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext().getApplicationContext(), R.string.attention_success, Toast
+                                    .LENGTH_SHORT)
+                                    .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                         }
                     });
@@ -278,20 +295,22 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         String img = dataInfo.getVImage();
         detailTypeTv.setText(String.format("%s | %s", dataInfo.getDistrict(), dataInfo.getCountry()));
 
-        UserCenterUtils.getAttentionState(contentUUID, new IFollowStatusCallback() {
+        Long id = UserCenterUtils.getAttentionState(contentUUID, new IFollowStatusCallback() {
             @Override
-            public void notifyFollowStatus(boolean status) {
+            public void notifyFollowStatus(boolean status,Long reqId) {
                 if (status) {
                     attentionView.setSelect(true);
                 } else {
                     attentionView.setSelect(false);
                 }
                 isAttention = status;
+                requestIdList.remove(reqId);
             }
         });
+        requestIdList.add(id);
 
         Picasso.get().load(img).transform(new PosterCircleTransform
-                (mContext, 8)).fit().memoryPolicy(MemoryPolicy.NO_STORE)
+                (getContext().getApplicationContext(), 8)).fit().memoryPolicy(MemoryPolicy.NO_STORE)
                 .placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into
                 (detailPlayIv);
 
@@ -304,7 +323,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                 detailPlayIv.setVisibility(View.VISIBLE);
                 RequestCreator picasso = Picasso.get()
                         .load(img)
-                        .transform(new PosterCircleTransform(mContext, 4))
+                        .transform(new PosterCircleTransform(getContext().getApplicationContext(), 4))
                         .priority(Picasso.Priority.HIGH)
                         .stableKey(img)
                         .config(Bitmap.Config.RGB_565);

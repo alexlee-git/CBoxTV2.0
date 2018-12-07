@@ -1,9 +1,0 @@
-<resources>
-
-
-    <style name="anim_x_side">
-        <item name="android:windowEnterAnimation">@anim/anim_left_in</item>
-        <item name="android:windowExitAnimation">@anim/anim_left_out</item>
-    </style>
-
-</resources>

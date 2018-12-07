@@ -638,13 +638,13 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                     }
                     break;
                 case R.id.id_member_center_btn_exchange:
-                    /*if (!TextUtils.isEmpty(mLoginTokenString)) {
-                        mPageClass = MyOrderActivity.class;
+                    if (!TextUtils.isEmpty(mLoginTokenString)) {
+                        mPageClass = CodeExChangeActivity.class;
                     } else {
                         mPageClass = LoginActivity.class;
-                    }*/
+                    }
                     //mPageClass = CodeExChangeActivity.class;
-                    Toast.makeText(this, "此页面正在开发中", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(this, "此页面正在开发中", Toast.LENGTH_LONG).show();
                     break;
                 case R.id.id_member_center_btn_order:
                     if (!TextUtils.isEmpty(mLoginTokenString)) {

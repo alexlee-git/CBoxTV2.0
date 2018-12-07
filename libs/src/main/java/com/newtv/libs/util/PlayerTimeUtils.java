@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by wangkun on 2018/2/7.
@@ -32,6 +33,7 @@ public class PlayerTimeUtils {
     public static Long parseTime(String time, String format) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format,
                 Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
         try {
             return dateFormat.parse(time).getTime();
         } catch (ParseException e) {

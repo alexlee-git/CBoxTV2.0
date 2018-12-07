@@ -13,9 +13,9 @@ import tv.newtv.player.R;
  */
 public final class PlayerErrorCode {
 
-    public static final String USER_NOT_BUY = "80006";                      //用户未购买
-    public static final String USER_NOT_LOGIN = "80017";                    //用户未登录
-    public static final String USER_TOKEN_IS_EXPIRED = "80019";             //登录TOKEN过期
+    public static final String USER_NOT_BUY = "60006";                      //用户未购买
+    public static final String USER_NOT_LOGIN = "60017";                    //用户未登录
+    public static final String USER_TOKEN_IS_EXPIRED = "60019";             //登录TOKEN过期
     public static final String LIVE_INFO_EMPTY = "80020";                   //直播信息为空
     public static final String PROGRAM_SERIES_EMPTY = "80021";              //节目集子节目为空
     public static final String PROGRAM_CDN_EMPTY = "80022";                 //CND节点为空
