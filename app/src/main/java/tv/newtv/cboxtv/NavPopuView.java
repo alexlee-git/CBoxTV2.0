@@ -50,7 +50,7 @@ public class NavPopuView extends PopupWindow implements NavContract.View {
     public void onNavResult(Context context, List<Nav> result) {
         navs = result;
         Log.e("TAG", "onNavResult: " + navs);
-        PopuAdapter adapter = new PopuAdapter(context, navs, navRecycle);
+        PopuAdapter adapter = new PopuAdapter(context, navs);
         navRecycle.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         navRecycle.setAdapter(adapter);
         navRecycle.addOnScrollListener(new RecyclerView.OnScrollListener

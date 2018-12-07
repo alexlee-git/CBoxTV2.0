@@ -34,7 +34,7 @@
         android:layout_height="@dimen/height_32px"
         android:gravity="center"
         android:text="搜索"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorWhite_50"
         android:textSize="@dimen/height_28px" />
 
 </LinearLayout>

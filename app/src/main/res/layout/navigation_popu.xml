@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#e0000000"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
+    <ImageView
+        android:id="@+id/iv_left"
+        android:layout_width="@dimen/width_20px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="@dimen/height_156px"
+        android:src="@drawable/icon_detail_tips_left"
+        android:focusable="false"
+        android:layout_marginLeft="@dimen/width_200px"
+        android:visibility="gone"/>
 
     <tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView
         android:id="@+id/nav_recycle"
@@ -15,9 +25,23 @@
         android:layout_marginLeft="@dimen/width_269px"
         android:layout_marginRight="@dimen/width_263px"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        >
 
     </tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView>
 
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/iv_right"
+        android:layout_alignTop="@+id/nav_recycle"
+        android:layout_width="@dimen/width_20px"
+        android:layout_height="@dimen/height_50px"
+        android:layout_alignRight="@+id/nav_recycle"
+        android:layout_marginTop="@dimen/height_156px"
+        android:src="@drawable/icon_detail_tips_right"
+        android:focusable="false"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/width_200px"
+        android:visibility="gone"/>
+
+</RelativeLayout>

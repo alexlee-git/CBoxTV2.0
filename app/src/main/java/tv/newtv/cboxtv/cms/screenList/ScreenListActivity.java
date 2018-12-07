@@ -1,5 +1,8 @@
 package tv.newtv.cboxtv.cms.screenList;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -284,19 +287,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         place_text = findViewById(R.id.place_text);
 
         final LinearLayout upTop = findViewById(R.id.up_top);
-        if (fromOuter) {
-            new CountDownTimer(5 * 1000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    upTop.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFinish() {
-                    upTop.setVisibility(View.GONE);
-                }
-            }.start();
-        }
+        hintAnimator(upTop);
 
 
         tab.setScaleValue(1.2f);
@@ -373,6 +364,25 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         });
 
 
+    }
+
+    private void hintAnimator(LinearLayout upTop) {
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(upTop, "alpha", 1, 0, 1, 0, 1,
+                0, 1, 0, 1, 0, 1, 0);
+        translationX.setDuration(5000);
+        translationX.start();
+        translationX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                upTop.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
     }
 
 
