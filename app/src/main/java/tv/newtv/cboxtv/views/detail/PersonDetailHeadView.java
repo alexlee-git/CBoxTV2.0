@@ -1,10 +1,12 @@
 package tv.newtv.cboxtv.views.detail;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.CountDownTimer;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -20,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
-import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
@@ -114,17 +115,23 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
 
     public void setTopView(){
         final LinearLayout upTop = view.findViewById(R.id.up_top);
-            new CountDownTimer(5 * 1000, 1000) {
-                @Override
-                public void onTick(long l) {
-                    upTop.setVisibility(View.VISIBLE);
-                }
+        upTop.setVisibility(View.VISIBLE);
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(upTop, "alpha", 1, 0, 1, 0, 1,
+                0, 1, 0, 1, 0, 1, 0);
+        translationX.setDuration(5000);
+        translationX.start();
+        translationX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                upTop.setVisibility(View.GONE);
+            }
 
-                @Override
-                public void onFinish() {
-                    upTop.setVisibility(View.GONE);
-                }
-            }.start();
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
     }
 
     private void initListener(){

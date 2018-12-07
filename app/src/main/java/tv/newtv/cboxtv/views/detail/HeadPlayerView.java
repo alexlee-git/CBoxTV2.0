@@ -1,5 +1,9 @@
 package tv.newtv.cboxtv.views.detail;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -325,13 +329,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
-            addView(inflate);
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    removeView(inflate);
-                }
-            }, 5000);
+        addView(inflate);
+        hintAnimator(inflate);
         addView(contentView);
         checkDataFromDB();
 
@@ -362,6 +361,26 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
         //mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
+    }
+
+    private void hintAnimator(final View view) {
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1,
+                0, 1, 0, 1, 0, 1, 0);
+        translationX.setDuration(5000);
+        translationX.start();
+        translationX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+//                view.setVisibility(View.GONE);
+                removeView(view);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
     }
 
     private void checkDataFromDB() {
