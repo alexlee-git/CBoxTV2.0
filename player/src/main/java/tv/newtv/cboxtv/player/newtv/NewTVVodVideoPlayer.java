@@ -287,10 +287,14 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
         icntvPlayerInfo.setDeviceId(Constant.UUID);
         icntvPlayerInfo.setStartPosition(videoDataStruct.getHistoryPosition());
-        if(UserStatus.isVip()){
-            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
-        }else {
-            icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        if(!videoDataStruct.isAlternate()) {
+            if (UserStatus.isVip()) {
+                icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
+            } else {
+                icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+            }
+        }else{
+            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_CAROUSEL);
         }
         //extend字段
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId

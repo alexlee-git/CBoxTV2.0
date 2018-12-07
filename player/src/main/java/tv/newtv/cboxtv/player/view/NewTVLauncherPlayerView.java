@@ -362,6 +362,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     }
                 }
 
+                if(!fullScreen || !videoPlaying){
+                    if(mNewTvAlterChange != null){
+                        mNewTvAlterChange.dismiss();
+                    }
+                }
+
                 if (fullScreen && visible == 0 && videoPlaying) {
                     if (mNewTvAlterChange != null && mNewTvAlterChange.isNeedTip()) {
                         Alternate current = mAlternatePresenter.getCurrentAlternate();
@@ -886,6 +892,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (alterTitle != null) alterTitle.setVisibility(GONE);
             if (alterChannel != null) alterChannel.setVisibility(GONE);
             if (bigScreen != null) bigScreen.setVisibility(GONE);
+        }
+
+        if(mAlternatePresenter != null && mAlternatePresenter.equalsAlternate(alternateId)){
+            return;
+        }
+        if (mChangeAlternateListener != null) {
+            mChangeAlternateListener.changeAlternate(alternateId, title, channelId);
         }
 
         if (alterChannel != null) {
@@ -1816,6 +1829,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             ADConfig.getInstance().setSeriesID(defaultConfig.programSeriesInfo.getContentID(),
                     false);
         }
+        videoDataStruct.setAlternate(defaultConfig.isAlternate);
         videoDataStruct.setHistoryPosition(mHistoryPostion);
         mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
                 videoDataStruct);
@@ -1940,12 +1954,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
 
     protected void changeAlternate(String contentId, String title, String channelCode) {
-        if(mAlternatePresenter != null && mAlternatePresenter.equalsAlternate(contentId)){
-            return;
-        }
-        if (mChangeAlternateListener != null) {
-            mChangeAlternateListener.changeAlternate(contentId, title, channelCode);
-        }
         playAlternate(contentId, title, channelCode);
     }
 

@@ -22,7 +22,6 @@ import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
-import com.newtv.libs.util.DisplayUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
@@ -164,26 +164,33 @@ public class NewTVSearchHotRecommend extends RelativeLayout implements PageContr
                     return;
                 } else {
                     Picasso.get().load(mDatas.get(position).getImg()).transform(new PosterCircleTransform(mContext, 4)).memoryPolicy(MemoryPolicy.NO_STORE).placeholder(R.drawable.focus_240_360).error(R.drawable.focus_240_360).into(holder.mPosterImageView);
-                    holder.mTxtTitle.setText(mDatas.get(position).getTitle());
-                    holder.mFrameLayoutHotRecommend.setOnFocusChangeListener(new OnFocusChangeListener() {
+                    holder.mPosterTitle.setText(mDatas.get(position).getTitle());
+
+                    SuperScriptManager.getInstance().processSuperscript(
+                            holder.itemView.getContext(),
+                            "layout_008",
+                            ((ViewGroup) holder.itemView).indexOfChild(holder.mPosterImageView),
+                            mDatas.get(position),
+                            (ViewGroup) holder.mPosterImageView.getParent()
+                    );
+
+                    holder.mFocusView.setOnFocusChangeListener(new OnFocusChangeListener() {
                         @Override
                         public void onFocusChange(View view, boolean hasFocus) {
 
                             if (hasFocus) {
                                 keyBoardFocusStatus = false;
                                 mLeftArrow.setVisibility(View.VISIBLE);
-                                onItemGetFocus(view);
-                                holder.mTxtTitle.setSelected(true);
-                                holder.mFocusImageView.setVisibility(View.VISIBLE);
+                                onItemGetFocus(holder.itemView);
+                                holder.mPosterTitle.setSelected(true);
                             } else {
-                                holder.mTxtTitle.setSelected(false);
+                                holder.mPosterTitle.setSelected(false);
                                 mLeftArrow.setVisibility(View.INVISIBLE);
-                                onItemLoseFocus(view);
-                                holder.mFocusImageView.setVisibility(View.INVISIBLE);
+                                onItemLoseFocus(holder.itemView);
                             }
                         }
                     });
-                    holder.mFrameLayoutHotRecommend.setOnClickListener(new OnClickListener() {
+                    holder.mFocusView.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             String contentUUID = mDatas.get(position).getL_id();
@@ -195,13 +202,14 @@ public class NewTVSearchHotRecommend extends RelativeLayout implements PageContr
                         }
                     });
 
-                    holder.mFrameLayoutHotRecommend.setOnKeyListener(new OnKeyListener() {
+                    holder.mFocusView.setOnKeyListener(new OnKeyListener() {
                         @Override
                         public boolean onKey(View view, int i, KeyEvent keyEvent) {
                             if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                                 if (i == KeyEvent.KEYCODE_DPAD_RIGHT) {
                                     if (position == mDatas.size() - 1) {
-                                        holder.mFrameLayoutHotRecommend.setNextFocusRightId(R.id.id_frameLayout_hot_recommend_list);
+                                        holder.itemView.requestFocus();
+//                                        holder.mFrameLayoutHotRecommend.setNextFocusRightId(R.id.id_frameLayout_hot_recommend_list);
                                         return true;
                                     }
                                 } else if (i == KeyEvent.KEYCODE_DPAD_UP) {
@@ -261,19 +269,17 @@ public class NewTVSearchHotRecommend extends RelativeLayout implements PageContr
     }
 
     class SearchResultViewHolder extends RecyclerView.ViewHolder {
-        public FrameLayout mFrameLayoutHotRecommend;
-        public ImageView mPosterImageView, mFocusImageView;
-        public TextView mTxtTitle, mPosterTitle;
+        public FrameLayout mFocusView;
+        public ImageView mPosterImageView;
+        public TextView mPosterTitle;
 
         public SearchResultViewHolder(View itemView) {
             super(itemView);
-            mFrameLayoutHotRecommend = itemView.findViewById(R.id.id_frameLayout_hot_recommend_list);
-            mTxtTitle = itemView.findViewById(R.id.id_hot_recommend_title);
-            mPosterTitle = itemView.findViewById(R.id.id_hot_recommend_poster_title);
+            mFocusView = itemView.findViewById(R.id.ai_sou_focus_view);
+            mPosterTitle = itemView.findViewById(R.id.id_hot_recommend_title);
             mPosterImageView = itemView.findViewById(R.id.id_hot_recommend_imageView_poster);
-            mFocusImageView = itemView.findViewById(R.id.id_hot_recommend_imageView_focus);
             //适配
-            DisplayUtils.adjustView(getContext(),mPosterImageView,mFocusImageView,R.dimen.width_16dp,R.dimen.width_16dp);
+//            DisplayUtils.adjustView(getContext(),mPosterImageView,mFocusImageView,R.dimen.width_16dp,R.dimen.width_16dp);
         }
     }
 }

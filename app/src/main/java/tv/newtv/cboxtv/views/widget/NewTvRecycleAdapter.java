@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +74,7 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
     }
 
     @Override
-    public H onCreateViewHolder(ViewGroup parent, int viewType) {
+    public H onCreateViewHolder(@Nullable ViewGroup parent, int viewType) {
         H holder =  createHolder(parent, viewType);
         holderList.add(holder);
         return holder;

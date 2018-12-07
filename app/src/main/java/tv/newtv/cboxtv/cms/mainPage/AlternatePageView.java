@@ -1,7 +1,7 @@
 package tv.newtv.cboxtv.cms.mainPage;
 
 import android.content.Context;
-import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +17,7 @@ import com.newtv.libs.util.GlideUtil;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.widget.NewTvRecycleAdapter;
 import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
@@ -28,7 +29,8 @@ import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/20
  */
-public class AlternatePageView extends FrameLayout implements IProgramChange {
+public class AlternatePageView extends FrameLayout implements IProgramChange,
+        NewTVLauncherPlayerView.ChangeAlternateListener {
 
     private LivePlayView mBlockPosterView;
     private VerticalRecycleView mRecycleView;
@@ -61,13 +63,14 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         setUp();
     }
 
-    public View getFirstFocusView(){
+    public View getFirstFocusView() {
         return firstFocusView;
     }
 
     private void initialize(Context context, AttributeSet attrs, int defStyle) {
         LayoutInflater.from(context).inflate(R.layout.content_alternate_view_layout, this, true);
         mBlockPosterView = findViewById(R.id.block_poster);
+        mBlockPosterView.setAlternateChange(this);
         mRecycleView = findViewById(R.id.alternate_list);
         firstFocusView = findViewById(R.id.focus_layout);
         posterView = findViewWithTag("poster_view");
@@ -127,6 +130,14 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         play(data);
     }
 
+    @Override
+    public void changeAlternate(String contentId, String title, String channel) {
+        if (mRecycleView != null && mRecycleView.getAdapter() != null
+                && mRecycleView.getAdapter() instanceof AlternateAdapter) {
+            ((AlternateAdapter) mRecycleView.getAdapter()).notifyChange(contentId);
+        }
+    }
+
     private static class AlternateAdapter extends NewTvRecycleAdapter<Program,
             AlternateViewHolder> {
 
@@ -140,6 +151,17 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         public void setData(List<Program> programs) {
             mPrograms = programs;
             notifyDataSetChanged();
+        }
+
+        void notifyChange(String contentId) {
+            if (mPrograms != null && mPrograms.size() > 0) {
+                for (Program program : mPrograms) {
+                    if (TextUtils.equals(program.getL_id(), contentId)) {
+                        int index = mPrograms.indexOf(program);
+                        setSelectedIndex(index);
+                    }
+                }
+            }
         }
 
         @Override
