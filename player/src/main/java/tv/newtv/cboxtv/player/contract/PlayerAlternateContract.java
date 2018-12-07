@@ -30,6 +30,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import tv.newtv.cboxtv.player.Player;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -112,6 +113,7 @@ public class PlayerAlternateContract {
 
         @Override
         public boolean playNext() {
+            NewTVLauncherPlayerViewManager.getInstance().stop();
             currentAlternate = null;
             if (mAlternates != null) {
                 currentPlayIndex += 1;
