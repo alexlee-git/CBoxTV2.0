@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -81,62 +82,39 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
                     .error(R.drawable.focus_240_360)
                     .into(holder.mPosterImageView);
 
-//            SuperScriptManager.getInstance().processSuperscript(holder.itemView.getContext(),
-//                    "layout_008",((ViewGroup)holder.itemView).indexOfChild(holder
-//                            .mPosterImageView),);
+            SuperScriptManager.getInstance().processSuperscript(
+                    holder.itemView.getContext(),
+                    "layout_008",
+                    ((ViewGroup) holder.itemView).indexOfChild(holder.mPosterImageView),
+                    subContent,
+                    (ViewGroup) holder.mPosterImageView.getParent()
+            );
 
-            SuperScriptManager.getInstance().processVipSuperScript(holder.itemView.getContext(),
-                    subContent, "layout_008", ((ViewGroup) holder.itemView).indexOfChild(holder
-                            .mPosterImageView), (ViewGroup) holder.itemView);
+            SuperScriptManager.getInstance().processVipSuperScript(
+                    holder.itemView.getContext(),
+                    subContent,
+                    "layout_008",
+                    ((ViewGroup) holder.itemView).indexOfChild(holder.mPosterImageView),
+                    (ViewGroup) holder.mPosterImageView.getParent()
+            );
 
-//            if (!TextUtils.isEmpty(subContent.getContentType()) && subContent.getContentType()
-// .equals("PS")){
-//
-//                if (!TextUtils.isEmpty(subContent.getVipFlag())){//节目集vip
-//                    if (subContent.getVipFlag().equals(1) || subContent.getVipFlag().equals(3)
-// || subContent.getVipFlag().equals(4)){
-//                        holder.isVipImg.setVisibility(View.VISIBLE);
-//                    }else {
-//                        holder.isVipImg.setVisibility(View.GONE);
-//                    }
-//                }else {
-//                    holder.isVipImg.setVisibility(View.GONE);
-//                }
-//                if (!TextUtils.isEmpty(subContent.getRecentNum()) && !subContent.getRecentNum()
-// .equals("0")){
-//                    holder.updateLayout.setVisibility(View.VISIBLE);
-//                    holder.updateLeft.setVisibility(View.VISIBLE);
-//                    holder.updateRight.setVisibility(View.VISIBLE);
-//                    holder.recentNumTv.setText(subContent.getRecentNum());
-//                }else {
-//                    holder.updateLayout.setVisibility(View.GONE);
-//                    holder.updateLeft.setVisibility(View.GONE);
-//                    holder.updateRight.setVisibility(View.GONE);
-//                    holder.recentNumTv.setText("");
-//                }
-//            }
-
-            holder.mTxtTitle.setText(dataList.get(position).getTitle());
-            holder.mPosterTitle.setText(dataList.get(position).getSubTitle());
-            holder.mLayoutResultList.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            holder.mPosterTitle.setText(dataList.get(position).getTitle());
+            holder.mFocusImageView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     lastFocusView = view;
 
                     if (hasFocus) {
-                        onItemGetFocus(view);
-                        holder.mTxtTitle.setSelected(true);
-                        holder.mFocusImageView.setVisibility(View.VISIBLE);
-
+                        holder.mPosterTitle.setSelected(true);
+                        onItemGetFocus(holder.itemView);
                     } else {
-                        onItemLoseFocus(view);
-                        holder.mTxtTitle.setSelected(false);
-                        holder.mFocusImageView.setVisibility(View.INVISIBLE);
+                        holder.mPosterTitle.setSelected(false);
+                        onItemLoseFocus(holder.itemView);
                     }
                 }
             });
 
-            holder.mLayoutResultList.setOnKeyListener(new View.OnKeyListener() {
+            holder.mFocusImageView.setOnKeyListener(new View.OnKeyListener() {
                 @Override
                 public boolean onKey(View view, int i, KeyEvent keyEvent) {
 
@@ -196,27 +174,21 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
 
 class ResultHolder extends RecyclerView.ViewHolder {
 
-    public LinearLayout updateLayout;
-    public FrameLayout mLayoutResultList;
-    public ImageView mPosterImageView, mFocusImageView, isVipImg;
-    public TextView mTxtTitle, mPosterTitle, recentNumTv, updateLeft, updateRight;
+    public View mLayoutResultList;
+    public ImageView mPosterImageView;
+    public View mFocusImageView;
+    public TextView mPosterTitle;
 
     public ResultHolder(View itemView) {
         super(itemView);
-        updateLayout = itemView.findViewById(R.id.update_layout);
-        mLayoutResultList = itemView.findViewById(R.id.search_result_rl);
-        mPosterImageView = itemView.findViewById(R.id.result_image_default);
-        mFocusImageView = itemView.findViewById(R.id.result_image_focus);
-        mTxtTitle = itemView.findViewById(R.id.result_title);
-        mPosterTitle = itemView.findViewById(R.id.result_poster_title);
-        recentNumTv = itemView.findViewById(R.id.recentNumTv);
-        isVipImg = itemView.findViewById(R.id.isVipImg);
-        updateLeft = itemView.findViewById(R.id.update_left);
-        updateRight = itemView.findViewById(R.id.update_right);
+        mLayoutResultList = itemView;
+        mPosterImageView = itemView.findViewWithTag("cell_poster");
+        mFocusImageView = itemView.findViewWithTag("cell_focus");
+        mPosterTitle = itemView.findViewWithTag("cell_title");
 
 //            适配
-        DisplayUtils.adjustView(LauncherApplication.AppContext, mPosterImageView,
-                mFocusImageView, R.dimen.width_16dp, R.dimen.width_16dp);
+//        DisplayUtils.adjustView(LauncherApplication.AppContext, mPosterImageView,
+//                mFocusImageView, R.dimen.width_16dp, R.dimen.width_16dp);
     }
 
 }
