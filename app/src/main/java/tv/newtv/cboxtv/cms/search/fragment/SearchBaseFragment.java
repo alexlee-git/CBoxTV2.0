@@ -167,6 +167,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
                     notifyToDataInfoResult(current.contents == null || current.contents.size() <=
                             0);
                     onResult(requestId, current.contents, current.total);
+                    currentkey = key;
                     return;
                 }
             } else {
