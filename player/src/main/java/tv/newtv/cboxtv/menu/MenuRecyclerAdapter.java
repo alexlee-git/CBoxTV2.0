@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.menu;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
         final Holder h = (Holder) holder;
         h.itemView.setBackgroundResource(R.color.color_transparent);
         h.tv.setText(node.getTitle());
-        if (node.getId().equals(playId)) {
+        if (TextUtils.equals(node.getId(),playId)) {
             h.itemView.setBackgroundResource(R.drawable.xuanhong);
             selectView = h.itemView;
             pathView = h.itemView;
@@ -48,9 +49,8 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     v.setBackgroundResource(R.drawable.one_focus);
-                                        h.tv.setSelected(true);
-
-                } else if (node.getId().equals(playId)) {
+                    h.tv.setSelected(true);
+                } else if (TextUtils.equals(node.getId(),playId)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
                     h.tv.setSelected(false);
                 } else {
@@ -105,7 +105,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
     public int calculatePlayIdPosition(int defValue) {
         int result = defValue;
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).getId().equals(playId)) {
+            if (TextUtils.equals(data.get(i).getId(),playId)) {
                 result = i;
                 break;
             }

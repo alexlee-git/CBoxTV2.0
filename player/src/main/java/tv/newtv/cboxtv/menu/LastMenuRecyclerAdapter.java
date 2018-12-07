@@ -166,7 +166,8 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
 
     public void setData(List<Program> data,Program program){
         if(data != null && data.size() > 0 && Constant.CONTENTTYPE_LB.equals(data.get(0).getParent().getContentType())
-                && data.get(0).getParent().searchNodeInParent(MenuGroupPresenter2.LB_ID_COLLECT) == null){
+                && data.get(0).getParent().searchNodeInParent(MenuGroupPresenter2.LB_ID_COLLECT) == null
+                && !data.get(0).getParent().isForbidAddCollect()){
             Node node = data.get(0).getParent();
             addCollectDataToList(data,node);
             this.contentType = node.getContentType();

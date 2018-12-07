@@ -33,7 +33,14 @@ public class Node {
     private List<Program> programs = new ArrayList<>();
     private LastMenuBean lastMenuBean;
     private Content content;
+    /**
+     * 是否已经请求完数据了
+     */
     private boolean request = false;
+    /**
+     * 是否禁止添加LB频道的收藏
+     */
+    private boolean forbidAddCollect = false;
 
     public boolean isLeaf(){
 //        if(child != null && child.size() > 0)
@@ -168,6 +175,14 @@ public class Node {
 
     public String getCategoryType() {
         return categoryType;
+    }
+
+    public boolean isForbidAddCollect() {
+        return forbidAddCollect;
+    }
+
+    public void setForbidAddCollect(boolean forbidAddCollect) {
+        this.forbidAddCollect = forbidAddCollect;
     }
 
     public void setCategoryType(String categoryType) {

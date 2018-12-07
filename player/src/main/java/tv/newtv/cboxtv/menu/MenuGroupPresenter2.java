@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +28,6 @@ import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
-import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
 import org.json.JSONObject;
@@ -376,6 +374,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                                     lbCollectNode = childNode;
                                     searchLbCollect(childNode, true);
                                     node.getChild().add(1, childNode);
+                                    searchLbHistory(node.getChild().get(0));
                                 }
                                 node.initParent();
                             }
@@ -542,7 +541,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             List<DBProgram> list = gson.fromJson(result, type);
             return list;
         }
-        return null;
+        return new ArrayList<>();
     }
 
     private void setNode(List<DBProgram> list, Node parent) {
@@ -934,6 +933,49 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         if (lbCollectNode != null) {
             lbCollectNode.getChild().clear();
             searchLbCollect(lbCollectNode, true);
+        }
+    }
+
+    private void searchLbHistory(final Node node) {
+        DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
+                .condition()
+                .eq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, final String result) {
+                        Log.e(TAG, "request local data complete result : " + result);
+                        if (code == 0 && !TextUtils.isEmpty(result)) {
+                            Gson gson = new Gson();
+                            Type type = new TypeToken<List<DBProgram>>() {
+                            }.getType();
+                            List<DBProgram> list = gson.fromJson(result, type);
+                            setLbNode(list,node);
+                        }
+                    }
+                }).excute();
+    }
+
+    private void setLbNode(List<DBProgram> list, Node parent) {
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                DBProgram program = list.get(i);
+                if (TextUtils.isEmpty(program._title_name) || TextUtils.isEmpty(program._contentuuid))
+                    continue;
+
+                Node node = new LastNode();
+                node.setId(program._contentuuid);
+                node.setPid(parent.getId());
+                node.setTitle(program._title_name);
+                node.setActionUri(program._contentuuid);
+                node.setContentType(program._contenttype);
+                node.setForbidAddCollect(true);
+
+                Log.i(TAG, "setLbNode: "+node.getId());
+                node.setParent(parent);
+                parent.getChild().add(node);
+            }
         }
     }
 }
