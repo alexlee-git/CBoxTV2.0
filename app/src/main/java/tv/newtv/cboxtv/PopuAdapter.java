@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +18,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.newtv.cms.bean.Nav;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.SharePreferenceUtils;
 
 import java.util.List;
+
+import tv.newtv.cboxtv.uc.v2.LoginActivity;
 
 
 public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private List<Nav> navs;
+    private String token;
 
     public PopuAdapter(Context context, List<Nav> navs) {
         this.context = context;
@@ -38,6 +41,14 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         View inflate = LayoutInflater.from(context).inflate(R.layout.item_popu_nav, parent, false);
         RecyclerView.ViewHolder popu = new PopuViewHolder(inflate);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                token = SharePreferenceUtils.getToken(context.getApplicationContext());
+            }
+        }).start();
+
         return popu;
     }
 
@@ -111,14 +122,18 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Nav nav = navs.get(getAdapterPosition());
                     if (nav != null) {
                         if (!TextUtils.isEmpty(nav.getTitle())) {
+                            Class clazz = MainActivity.class;
+                            if (TextUtils.isEmpty(token)&&nav.getTitle().equals("我的")){
+                                clazz = LoginActivity.class;
+                            }
                             Intent intent = new Intent();
                             intent.putExtra("action", "panel");
                             intent.putExtra("params", getAdapterPosition() + "&");
                             intent.putExtra(Constant.ACTION_FROM, false);
-                            intent.setClass(context, MainActivity.class);
+                            intent.setClass(context, clazz);
                             context.startActivity(intent);
                             boolean isBackground = ActivityStacks.get().isBackGround();
-                            if (!isBackground){
+                            if (!isBackground&&clazz==MainActivity.class){
                                 ActivityStacks.get().finishAllActivity();
                             }
                         }
