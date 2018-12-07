@@ -62,6 +62,7 @@ public class SuperScriptManager implements CornerContract.View {
     public static final String BLOCK_CORNER_LEFT_TOP = "CORNER_LEFT_TOP";
     public static final String BLOCK_CORNER_LEFT_BOTTOM = "CORNER_LEFT_BOTTOM";
     public static final String BLOCK_CORNER_RIGHT_TOP = "CORNER_RIGHT_TOP";
+    public static final String BLOCK_VIP_CORNER_RIGHT_TOP = "CORNER_VIP_RIGHT_TOP";
     public static final String BLOCK_CORNER_RIGHT_BOTTOM = "CORNER_RIGHT_BOTTOM";
     private volatile static SuperScriptManager mInstance;
     private final String CACHE_FILE_NAME = "super.json";
@@ -88,20 +89,42 @@ public class SuperScriptManager implements CornerContract.View {
 
     public void processVipSuperScript(Context context, SubContent info, final String layoutCode,
                                       final int posterIndex, final ViewGroup parent) {
-        if (info == null || parent == null || TextUtils.isEmpty(info.getVipFlag())) {
+        if (info == null || parent == null) {
             return;
         }
-//        if ("1|3|4".contains(info.getVipFlag())) {
+        if (!TextUtils.isEmpty(info.getVipFlag()) && "1|3|4".contains(info.getVipFlag())) {
             Corner corner = new Corner();
             corner.setCornerImg("vip");
-            addRightTopSuperscript(context, corner, parent, posterIndex);
-//        }
+            corner.setCornerPosition("2");
+            addVipSuperscript(context, corner, parent, posterIndex);
+        }else{
+            RecycleImageView imageView = parent.findViewWithTag(BLOCK_VIP_CORNER_RIGHT_TOP);
+            if(imageView != null){
+                parent.removeView(imageView);
+            }
+        }
 
+    }
+
+    private void addVipSuperscript(Context context, Corner corner, ViewGroup parent, int
+            posterIndex) {
+        RecycleImageView imageView = parent.findViewWithTag(BLOCK_VIP_CORNER_RIGHT_TOP);
+        if (imageView == null) {
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
+            lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
+            lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
+            lp.gravity = Gravity.RIGHT | Gravity.END;
+            imageView = new RecycleImageView(context);
+            imageView.setTag(BLOCK_VIP_CORNER_RIGHT_TOP);
+            imageView.setLayoutParams(lp);
+            parent.addView(imageView, posterIndex, lp);
+        }
+        showCorner(corner, imageView);
     }
 
     @SuppressLint("CheckResult")
     public void processSuperscript(Context context, final String layoutCode, final int posterIndex,
-                                   final Program info, final ViewGroup parent) {
+                                   final Object info, final ViewGroup parent) {
         if (info == null || parent == null) {
             return;
         }
@@ -123,8 +146,21 @@ public class SuperScriptManager implements CornerContract.View {
                     @Override
                     public void accept(List<Corner> cornerList) throws Exception {
                         if (TextUtils.equals(layoutCode, "layout_008")) {
-                            addRecentMsgText(context, info.getRecentMsg(), parent);
-                            addGradeMsgText(context, info.getGrade(), parent);
+                            if(info instanceof Program) {
+                                addRecentMsgText(context, ((Program) info).getRecentMsg(), parent);
+                                addGradeMsgText(context, ((Program) info).getGrade(), parent);
+                            }else if(info instanceof  SubContent){
+                                if(!TextUtils.isEmpty(((SubContent) info).getRecentNum())) {
+                                    addRecentMsgText(context, String.format("更新至%s集", ((SubContent) info).getRecentNum()), parent);
+                                }else{
+                                    removeRecentMsg(parent);
+                                }
+                                if(!TextUtils.isEmpty(((SubContent) info).getGrade())) {
+                                    addGradeMsgText(context, ((SubContent) info).getGrade(), parent);
+                                }else{
+                                    removeGradeMsg(parent);
+                                }
+                            }
                         }
                         if (cornerList != null && cornerList.size() > 0) {
                             for (Corner corner : cornerList) {
@@ -163,6 +199,14 @@ public class SuperScriptManager implements CornerContract.View {
                 });
     }
 
+
+    private void removeRecentMsg(ViewGroup parent){
+        TextView recentText = parent.findViewWithTag("TEXT_RECENT_MSG");
+        if (recentText != null) {
+            parent.removeView(recentText);
+        }
+    }
+
     /**
      * 添加更新角标
      *
@@ -172,22 +216,25 @@ public class SuperScriptManager implements CornerContract.View {
      */
     private void addRecentMsgText(Context context, String message, ViewGroup parent) {
         TextView recentText = parent.findViewWithTag("TEXT_RECENT_MSG");
-        if (recentText == null) {
-            recentText = new TextView(context);
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
-                    .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            lp.gravity = Gravity.LEFT | Gravity.START | Gravity.BOTTOM;
-            int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
-            lp.leftMargin = space;
-            lp.bottomMargin = space;
-            recentText.setTextSize(space);
-            recentText.setTextColor(Color.WHITE);
-            recentText.setBackgroundColor(Color.parseColor("#50000000"));
-            recentText.setLayoutParams(lp);
-            recentText.setTag("TEXT_RECENT_MSG");
-            parent.addView(recentText, lp);
-        }
+
         if (!TextUtils.isEmpty(message)) {
+            if (recentText == null) {
+                recentText = new TextView(context);
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
+                        .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                lp.gravity = Gravity.LEFT | Gravity.START | Gravity.BOTTOM;
+                int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
+                lp.leftMargin = space;
+                lp.bottomMargin = space;
+                recentText.setTextSize(space);
+                recentText.setTextColor(Color.WHITE);
+                recentText.setBackgroundColor(Color.parseColor("#50000000"));
+                recentText.setLayoutParams(lp);
+                recentText.setBackground(context.getResources().getDrawable(R.drawable.update_item_black_bg));
+                recentText.setTag("TEXT_RECENT_MSG");
+                parent.addView(recentText, lp);
+            }
+
             recentText.setVisibility(View.VISIBLE);
             Pattern pattern = Pattern.compile("\\d+");
             Matcher matcher = pattern.matcher(message);
@@ -196,7 +243,7 @@ public class SuperScriptManager implements CornerContract.View {
                 if (!TextUtils.isEmpty(value)) {
                     if (!TextUtils.equals("0", value)) {
                         message = message.replace(value, String.format("<font " +
-                                "color='#ff0000'>%s</font>", value));
+                                "color='#ea6617'>%s</font>", value));
                         CharSequence charSequence = Html.fromHtml(message);
                         recentText.setText(charSequence);
                     }
@@ -207,8 +254,14 @@ public class SuperScriptManager implements CornerContract.View {
                 recentText.setText(message);
             }
         } else {
-            recentText.setText("");
-            recentText.setVisibility(View.GONE);
+            removeRecentMsg(parent);
+        }
+    }
+
+    private void removeGradeMsg(ViewGroup parent){
+        TextView recentText = parent.findViewWithTag("TEXT_GRADE_MSG");
+        if (recentText != null) {
+            parent.removeView(recentText);
         }
     }
 
@@ -221,32 +274,33 @@ public class SuperScriptManager implements CornerContract.View {
      */
     private void addGradeMsgText(Context context, String message, ViewGroup parent) {
         TextView gradeText = parent.findViewWithTag("TEXT_GRADE_MSG");
-        if (gradeText == null) {
-            gradeText = new TextView(context);
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
-                    .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            lp.gravity = Gravity.RIGHT | Gravity.END | Gravity.BOTTOM;
-            int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
-            int size = context.getResources().getDimensionPixelSize(R.dimen.width_8px);
-            lp.rightMargin = space;
-            lp.bottomMargin = space;
-            gradeText.setTextSize(size);
-            gradeText.setTextColor(Color.WHITE);
-            gradeText.setBackgroundColor(Color.parseColor("#50000000"));
-            gradeText.setLayoutParams(lp);
-            gradeText.setTag("TEXT_GRADE_MSG");
-            parent.addView(gradeText, lp);
-        }
 
-        if (!TextUtils.isEmpty(message)) {
+        if (!TextUtils.isEmpty(message) && !TextUtils.equals(message,"0.0") && !TextUtils.equals(message,"0")) {
+            if (gradeText == null) {
+                gradeText = new TextView(context);
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
+                        .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                lp.gravity = Gravity.RIGHT | Gravity.END | Gravity.BOTTOM;
+                int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
+                int size = context.getResources().getDimensionPixelSize(R.dimen.width_8px);
+                lp.rightMargin = space;
+                lp.bottomMargin = space;
+                gradeText.setTextSize(size);
+                gradeText.setTextColor(Color.WHITE);
+                gradeText.setBackgroundColor(Color.parseColor("#50000000"));
+                gradeText.setLayoutParams(lp);
+                gradeText.setBackground(context.getResources().getDrawable(R.drawable.update_item_black_bg));
+                gradeText.setTag("TEXT_GRADE_MSG");
+                parent.addView(gradeText, lp);
+            }
+
             gradeText.setVisibility(View.VISIBLE);
             message = String.format("<font " +
-                    "color='#ff0000'>%s</font>", message);
+                    "color='#ffffff'>%s</font>", message);
             CharSequence charSequence = Html.fromHtml(message);
             gradeText.setText(charSequence);
         } else {
-            gradeText.setText("");
-            gradeText.setVisibility(View.GONE);
+            removeGradeMsg(parent);
         }
 
     }
@@ -299,6 +353,11 @@ public class SuperScriptManager implements CornerContract.View {
 
     private void addRightTopSuperscript(Context context, Corner corner, ViewGroup parent, int
             posterIndex) {
+        RecycleImageView vip = parent.findViewWithTag(BLOCK_VIP_CORNER_RIGHT_TOP);
+        if(vip != null){
+            return;
+        }
+
         RecycleImageView imageView = parent.findViewWithTag(BLOCK_CORNER_RIGHT_TOP);
         if (imageView == null) {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
