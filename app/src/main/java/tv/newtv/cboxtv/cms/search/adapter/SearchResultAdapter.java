@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.cms.search.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +12,10 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
-import com.newtv.libs.util.LogUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -27,6 +24,7 @@ import java.util.ArrayList;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 
 /**
@@ -43,34 +41,29 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
     private SearchRecyclerView mRecyclerView;
 
     private View lastFocusView;
-
-    public View getlastFocusView(){
-        return lastFocusView;
-    }
-
     private SearchHolderAction mSearchHolderAction;
 
-    public interface SearchHolderAction {
-        void onItemClick(int position,SubContent content);
-
-        void onFocusToTop();
-    }
-
-    public void setSearchHolderAction(SearchHolderAction action){
-        mSearchHolderAction = action;
-    }
-
-    public SearchResultAdapter(Context context, ArrayList<SubContent> data, View labelView, SearchRecyclerView recyclerView) {
+    public SearchResultAdapter(Context context, ArrayList<SubContent> data, View labelView,
+                               SearchRecyclerView recyclerView) {
         this.mContext = context;
         this.dataList = data;
         this.mLabelView = labelView;
         this.mRecyclerView = recyclerView;
     }
 
+    public View getlastFocusView() {
+        return lastFocusView;
+    }
+
+    public void setSearchHolderAction(SearchHolderAction action) {
+        mSearchHolderAction = action;
+    }
+
     @NonNull
     @Override
     public ResultHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.search_result_adapter_item, null, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.search_result_adapter_item,
+                null, false);
         ResultHolder resultHolder = new ResultHolder(view);
         return resultHolder;
     }
@@ -80,36 +73,48 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
         if (dataList != null && dataList.size() > 0) {
 
             final SubContent subContent = dataList.get(position);
-            Picasso.get().load(dataList.get(position).getVImage()).transform(new PosterCircleTransform(mContext, 4))
+            Picasso.get().load(dataList.get(position).getVImage()).transform(new
+                    PosterCircleTransform(mContext, 4))
                     .fit()
                     .memoryPolicy(MemoryPolicy.NO_STORE)
                     .placeholder(R.drawable.focus_240_360)
                     .error(R.drawable.focus_240_360)
                     .into(holder.mPosterImageView);
 
-            if (!TextUtils.isEmpty(subContent.getContentType()) && subContent.getContentType().equals("PS")){
+//            SuperScriptManager.getInstance().processSuperscript(holder.itemView.getContext(),
+//                    "layout_008",((ViewGroup)holder.itemView).indexOfChild(holder
+//                            .mPosterImageView),);
 
-                if (!TextUtils.isEmpty(subContent.getVipFlag())){//节目集vip
-                    if (subContent.getVipFlag().equals(1) || subContent.getVipFlag().equals(3) || subContent.getVipFlag().equals(4)){
-                        holder.isVipImg.setVisibility(View.VISIBLE);
-                    }else {
-                        holder.isVipImg.setVisibility(View.GONE);
-                    }
-                }else {
-                    holder.isVipImg.setVisibility(View.GONE);
-                }
-                if (!TextUtils.isEmpty(subContent.getRecentNum()) && !subContent.getRecentNum().equals("0")){
-                    holder.updateLayout.setVisibility(View.VISIBLE);
-                    holder.updateLeft.setVisibility(View.VISIBLE);
-                    holder.updateRight.setVisibility(View.VISIBLE);
-                    holder.recentNumTv.setText(subContent.getRecentNum());
-                }else {
-                    holder.updateLayout.setVisibility(View.GONE);
-                    holder.updateLeft.setVisibility(View.GONE);
-                    holder.updateRight.setVisibility(View.GONE);
-                    holder.recentNumTv.setText("");
-                }
-            }
+            SuperScriptManager.getInstance().processVipSuperScript(holder.itemView.getContext(),
+                    subContent, "layout_008", ((ViewGroup) holder.itemView).indexOfChild(holder
+                            .mPosterImageView), (ViewGroup) holder.itemView);
+
+//            if (!TextUtils.isEmpty(subContent.getContentType()) && subContent.getContentType()
+// .equals("PS")){
+//
+//                if (!TextUtils.isEmpty(subContent.getVipFlag())){//节目集vip
+//                    if (subContent.getVipFlag().equals(1) || subContent.getVipFlag().equals(3)
+// || subContent.getVipFlag().equals(4)){
+//                        holder.isVipImg.setVisibility(View.VISIBLE);
+//                    }else {
+//                        holder.isVipImg.setVisibility(View.GONE);
+//                    }
+//                }else {
+//                    holder.isVipImg.setVisibility(View.GONE);
+//                }
+//                if (!TextUtils.isEmpty(subContent.getRecentNum()) && !subContent.getRecentNum()
+// .equals("0")){
+//                    holder.updateLayout.setVisibility(View.VISIBLE);
+//                    holder.updateLeft.setVisibility(View.VISIBLE);
+//                    holder.updateRight.setVisibility(View.VISIBLE);
+//                    holder.recentNumTv.setText(subContent.getRecentNum());
+//                }else {
+//                    holder.updateLayout.setVisibility(View.GONE);
+//                    holder.updateLeft.setVisibility(View.GONE);
+//                    holder.updateRight.setVisibility(View.GONE);
+//                    holder.recentNumTv.setText("");
+//                }
+//            }
 
             holder.mTxtTitle.setText(dataList.get(position).getTitle());
             holder.mPosterTitle.setText(dataList.get(position).getSubTitle());
@@ -141,12 +146,13 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
                                 mSearchHolderAction.onFocusToTop();
                             return true;
                         }
-                        if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER || keyEvent.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER){
+                        if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER || keyEvent
+                                .getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
                             if (mSearchHolderAction != null)
-                                mSearchHolderAction.onItemClick(position,subContent);
+                                mSearchHolderAction.onItemClick(position, subContent);
                             return true;
                         }
-                        if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                        if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                             mLabelView.requestFocus();
                             mRecyclerView.smoothScrollToPosition(0);
                             return true;
@@ -165,7 +171,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
 
     private void onItemGetFocus(View view) {
         //直接放大view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
+                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         sa.setFillAfter(true);
         sa.setDuration(150);
         view.startAnimation(sa);
@@ -173,10 +180,17 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
 
     private void onItemLoseFocus(View view) {
         // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
+                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         sa.setFillAfter(true);
         sa.setDuration(150);
         view.startAnimation(sa);
+    }
+
+    public interface SearchHolderAction {
+        void onItemClick(int position, SubContent content);
+
+        void onFocusToTop();
     }
 }
 
@@ -184,8 +198,8 @@ class ResultHolder extends RecyclerView.ViewHolder {
 
     public LinearLayout updateLayout;
     public FrameLayout mLayoutResultList;
-    public ImageView mPosterImageView, mFocusImageView,isVipImg;
-    public TextView mTxtTitle, mPosterTitle,recentNumTv,updateLeft,updateRight;
+    public ImageView mPosterImageView, mFocusImageView, isVipImg;
+    public TextView mTxtTitle, mPosterTitle, recentNumTv, updateLeft, updateRight;
 
     public ResultHolder(View itemView) {
         super(itemView);
@@ -201,7 +215,8 @@ class ResultHolder extends RecyclerView.ViewHolder {
         updateRight = itemView.findViewById(R.id.update_right);
 
 //            适配
-        DisplayUtils.adjustView(LauncherApplication.AppContext, mPosterImageView, mFocusImageView, R.dimen.width_16dp, R.dimen.width_16dp);
+        DisplayUtils.adjustView(LauncherApplication.AppContext, mPosterImageView,
+                mFocusImageView, R.dimen.width_16dp, R.dimen.width_16dp);
     }
 
 }

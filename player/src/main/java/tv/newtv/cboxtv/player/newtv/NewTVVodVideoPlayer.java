@@ -237,11 +237,6 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
                 mIPlayCallBackEvent.onTimeout(i);
             }
         }
-
-        @Override
-        public void onAdStateChange(boolean b) {
-
-        }
     };
 
     private NewTVVodVideoPlayer(Context context) {

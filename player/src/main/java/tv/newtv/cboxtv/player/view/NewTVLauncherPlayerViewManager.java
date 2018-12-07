@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.libs.Libs;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -243,8 +244,12 @@ public class NewTVLauncherPlayerViewManager {
         return false;
     }
 
-
     public void changeAlternate(String contentId,String channel,String title){
+
+        if(mNewTVLauncherPlayerView == null){
+            mNewTVLauncherPlayerViewManager.init(Libs.get().getContext());
+        }
+
         if(mNewTVLauncherPlayerView != null){
             mNewTVLauncherPlayerView.changeAlternate(contentId,title,channel);
         }

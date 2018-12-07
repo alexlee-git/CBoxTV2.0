@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.newtv.libs.bean.CountDown;
+import com.newtv.libs.util.LogUtils;
+import com.newtv.libs.util.SPrefUtils;
 
 import java.util.Locale;
 
@@ -24,8 +26,11 @@ import tv.newtv.player.R;
  */
 public class AlternateTipView extends FrameLayout {
 
+    private static final String ALTERNATE_TIP_TAG = "int_alternate_tip";
     private CountDown downTimer;
     private TextView tipView;
+    private boolean needTip = true;
+    private int currentValue = 0;
 
     public AlternateTipView(Context context) {
         this(context, null);
@@ -40,9 +45,14 @@ public class AlternateTipView extends FrameLayout {
         initialize(context);
     }
 
+    public boolean isNeedTip() {
+        return needTip;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        SPrefUtils.setValue(getContext(), ALTERNATE_TIP_TAG, currentValue + 1);
         if (downTimer != null) {
             downTimer.cancel();
             downTimer = null;
@@ -100,6 +110,11 @@ public class AlternateTipView extends FrameLayout {
     }
 
     private void initialize(Context context) {
+        currentValue = (int) SPrefUtils.getValue(context, ALTERNATE_TIP_TAG, 0);
+        needTip = currentValue < 3;
+
+        LogUtils.d("AlternateTipView", "current tip time=" + currentValue);
+
         LayoutInflater.from(context).inflate(R.layout.alternate_tip_layout, this, true);
         tipView = findViewById(R.id.tip_button);
         if (tipView != null) {

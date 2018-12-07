@@ -15,14 +15,22 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Libs;
+import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import tv.newtv.cboxtv.player.Player;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -43,9 +51,17 @@ public class PlayerAlternateContract {
         void requestAlternate(String alternateId, String title, String channelId);
 
         Alternate getCurrentAlternate();
+
         int getCurrentPlayIndex();
+
         boolean playNext();
+
+        boolean needTipAlternate();
+
+        void alternateTipComplete();
+
         void addHistory();
+
         void playAlternateItem(String contentId, String contentUUID);
     }
 
@@ -64,6 +80,9 @@ public class PlayerAlternateContract {
         private int currentPlayIndex = 0;
 
         private Long requestID = 0L;
+
+        private Disposable mDisposable;
+        private Long endTime = 0L;
 
         public AlternatePresenter(@NotNull Context context, @Nullable View view) {
             super(context, view);
@@ -94,6 +113,7 @@ public class PlayerAlternateContract {
 
         @Override
         public boolean playNext() {
+            NewTVLauncherPlayerViewManager.getInstance().stop();
             currentAlternate = null;
             if (mAlternates != null) {
                 currentPlayIndex += 1;
@@ -110,6 +130,17 @@ public class PlayerAlternateContract {
         }
 
         @Override
+        public boolean needTipAlternate() {
+
+            return false;
+        }
+
+        @Override
+        public void alternateTipComplete() {
+
+        }
+
+        @Override
         public void addHistory() {
             Player.get().addLBHistory(currentAlternateId);
         }
@@ -117,7 +148,7 @@ public class PlayerAlternateContract {
         @Override
         public void requestAlternate(final String alternateId, final String title, final String
                 channelId) {
-            if(requestID != 0L){
+            if (requestID != 0L) {
                 mAlternate.cancel(requestID);
             }
             currentAlternateId = alternateId;
@@ -136,7 +167,7 @@ public class PlayerAlternateContract {
                                 if (result.isOk()) {
                                     mAlternates = result.getData();
                                     Cache.getInstance().put(Cache.CACHE_TYPE_ALTERNATE,
-                                            alternateId,mAlternates);
+                                            alternateId, mAlternates);
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
@@ -148,6 +179,54 @@ public class PlayerAlternateContract {
                             public void onError(@Nullable String desc) {
                                 if (getView() != null)
                                     getView().onError(getContext(), desc);
+                            }
+                        });
+            }
+        }
+
+        private void dispose(){
+            if (mDisposable != null) {
+                if (!mDisposable.isDisposed()) {
+                    mDisposable.dispose();
+                }
+                mDisposable = null;
+            }
+        }
+
+        private void startAlternateTimer() {
+            if(mDisposable != null){
+                dispose();
+            }
+
+            if (currentPlayIndex < mAlternates.size() - 1) {
+                Alternate next = mAlternates.get(currentPlayIndex + 1);
+                if (next != null) {
+                    endTime = CmsUtil.parse(next.getStartTime());
+                }
+            }
+
+            if (mDisposable == null) {
+                mDisposable = Observable.interval(1000, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<Long>() {
+                            @Override
+                            public void accept(Long aLong) throws Exception {
+                                if (System.currentTimeMillis() > endTime) {
+                                    dispose();
+                                    playNext();
+                                }
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                LogUtils.e("Alternate", "interval exception = " + throwable
+                                        .getMessage());
+                                startAlternateTimer();
+                            }
+                        }, new Action() {
+                            @Override
+                            public void run() throws Exception {
+                                LogUtils.e("Alternate", "interval complete");
                             }
                         });
             }
@@ -182,6 +261,7 @@ public class PlayerAlternateContract {
             currentRequestId = contentId;
             currentSubUUID = contentUUID;
             mContent.getContent(contentId, true);
+            startAlternateTimer();
         }
 
         @Override
