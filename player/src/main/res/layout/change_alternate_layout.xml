@@ -4,13 +4,15 @@
              android:layout_height="match_parent">
 
     <ImageView
-        android:src="@drawable/normalplayer_bg"
         android:id="@+id/background_ad"
         android:scaleType="fitXY"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/height_358px"
+        android:layout_width="@dimen/width_952px"
+        android:layout_height="@dimen/height_182px"/>
 
     <RelativeLayout
+        android:id="@+id/tip_area"
         android:layout_width="@dimen/width_952px"
         android:layout_height="@dimen/height_158px"
         android:layout_gravity="bottom|center_horizontal"
@@ -30,7 +32,7 @@
                 android:layout_marginLeft="@dimen/width_48px"
                 android:layout_marginTop="@dimen/height_32px"
                 android:layout_marginEnd="@dimen/width_48px"
-                android:text="测试标题测试标题测试标题测试"
+                android:singleLine="true"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/height_36px"/>
 
@@ -43,7 +45,7 @@
                 android:layout_marginLeft="@dimen/width_48px"
                 android:layout_marginEnd="@dimen/width_48px"
                 android:layout_marginBottom="@dimen/height_32px"
-                android:text="测试标题测试标题测试标题测试标题"
+                android:singleLine="true"
                 android:textColor="#70FFFFFF"
                 android:textSize="@dimen/height_28px"/>
         </RelativeLayout>

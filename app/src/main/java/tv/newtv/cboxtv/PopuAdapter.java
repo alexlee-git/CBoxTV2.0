@@ -2,6 +2,7 @@ package tv.newtv.cboxtv;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,12 +27,10 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
     private List<Nav> navs;
-    private RecyclerView mRecyclerView;
 
-    public PopuAdapter(Context context, List<Nav> navs, RecyclerView mRecyclerView) {
+    public PopuAdapter(Context context, List<Nav> navs) {
         this.context = context;
         this.navs = navs;
-        this.mRecyclerView = mRecyclerView;
     }
 
     @Override
@@ -93,8 +92,10 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 v.setSelected(hasFocus);
             }
             if (hasFocus) {
+                navName.setTextColor(Color.parseColor("#FFFFFF"));
                 onItemGetFocus(v, getAdapterPosition());
             } else {
+                navName.setTextColor(Color.parseColor("#80FFFFFF"));
                 navFrame.setBackgroundResource(R.drawable.circle_no);
             }
         }

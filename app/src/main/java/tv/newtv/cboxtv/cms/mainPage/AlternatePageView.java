@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.mainPage;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
     private VerticalRecycleView mRecycleView;
     private int curPlayIndex = 0;
     private Page mPage;
+    private View firstFocusView;
     private ImageView posterView;
     private String mPageUUID;
 
@@ -59,10 +61,15 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         setUp();
     }
 
+    public View getFirstFocusView(){
+        return firstFocusView;
+    }
+
     private void initialize(Context context, AttributeSet attrs, int defStyle) {
         LayoutInflater.from(context).inflate(R.layout.content_alternate_view_layout, this, true);
         mBlockPosterView = findViewById(R.id.block_poster);
         mRecycleView = findViewById(R.id.alternate_list);
+        firstFocusView = findViewById(R.id.focus_layout);
         posterView = findViewWithTag("poster_view");
         findViewById(R.id.focus_layout).setOnClickListener(new OnClickListener() {
             @Override
@@ -193,6 +200,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         @Override
         public void onFocusChange(View view, boolean b) {
             performFocus(b);
+            mAlternateSubTitle.setSelected(b);
         }
     }
 }

@@ -13,7 +13,7 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlue">#34a2ff</color>
     <color name="colorTextTime">#c1c1c1</color>
-
+    <color name="colorWhite_50">#80ffffff</color>
     <color name="color_font">#ededed</color>
    <color name="color_transparent">#00FFFFFF</color>
     <color name="color_3B446A">#3B446A</color>

@@ -54,6 +54,12 @@ public class PlayerAlternateContract {
 
         int getCurrentPlayIndex();
 
+        String getCurrrentTitle();
+
+        boolean equalsAlternate(String id);
+
+        String getCurrrentChannel();
+
         boolean playNext();
 
         boolean needTipAlternate();
@@ -68,8 +74,11 @@ public class PlayerAlternateContract {
     public static class AlternatePresenter extends CmsServicePresenter<View> implements
             Presenter, ContentContract.View {
 
+        private static final String TAG = "AlternatePresenter";
         private String currentAlternateId;
-
+        private String currrentTitle;
+        private String currrentChannel;
+        private boolean needShowChangeView = true;
         private IAlternate mAlternate;
         private String currentRequestId;
         private String currentSubUUID;
@@ -77,6 +86,7 @@ public class PlayerAlternateContract {
 
         private List<Alternate> mAlternates;
         private Alternate currentAlternate;
+
         private int currentPlayIndex = 0;
 
         private Long requestID = 0L;
@@ -84,10 +94,27 @@ public class PlayerAlternateContract {
         private Disposable mDisposable;
         private Long endTime = 0L;
 
+        private Observable<Long> observable;
+
         public AlternatePresenter(@NotNull Context context, @Nullable View view) {
             super(context, view);
             mAlternate = getService(SERVICE_ALTERNATE);
             mContent = new ContentContract.ContentPresenter(getContext(), this);
+            observable = Observable.interval(1000, TimeUnit.MILLISECONDS);
+        }
+
+        public boolean equalsAlternate(String id){
+            return TextUtils.equals(id,currentAlternateId);
+        }
+
+        @Override
+        public String getCurrrentChannel() {
+            return currrentChannel;
+        }
+
+        @Override
+        public String getCurrrentTitle() {
+            return currrentTitle;
         }
 
         @Override
@@ -97,6 +124,7 @@ public class PlayerAlternateContract {
                 mContent.destroy();
                 mContent = null;
             }
+            dispose();
             mAlternates = null;
             currentAlternate = null;
         }
@@ -131,13 +159,12 @@ public class PlayerAlternateContract {
 
         @Override
         public boolean needTipAlternate() {
-
-            return false;
+            return needShowChangeView;
         }
 
         @Override
         public void alternateTipComplete() {
-
+            needShowChangeView = false;
         }
 
         @Override
@@ -150,8 +177,15 @@ public class PlayerAlternateContract {
                 channelId) {
             if (requestID != 0L) {
                 mAlternate.cancel(requestID);
+                requestID = 0L;
             }
+            dispose();
+
+            needShowChangeView = TextUtils.equals(alternateId, currentAlternateId);
+
             currentAlternateId = alternateId;
+            currrentTitle = title;
+            currrentChannel = channelId;
             mAlternates = Cache.getInstance().get(Cache.CACHE_TYPE_ALTERNATE, alternateId);
             if (mAlternates != null) {
                 parseAlternate(title, channelId);
@@ -184,19 +218,17 @@ public class PlayerAlternateContract {
             }
         }
 
-        private void dispose(){
+        private void dispose() {
             if (mDisposable != null) {
                 if (!mDisposable.isDisposed()) {
                     mDisposable.dispose();
                 }
                 mDisposable = null;
             }
+            endTime = 0L;
         }
 
         private void startAlternateTimer() {
-            if(mDisposable != null){
-                dispose();
-            }
 
             if (currentPlayIndex < mAlternates.size() - 1) {
                 Alternate next = mAlternates.get(currentPlayIndex + 1);
@@ -206,11 +238,14 @@ public class PlayerAlternateContract {
             }
 
             if (mDisposable == null) {
-                mDisposable = Observable.interval(1000, TimeUnit.MILLISECONDS)
+                mDisposable = observable
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Consumer<Long>() {
                             @Override
                             public void accept(Long aLong) throws Exception {
+                                LogUtils.d(TAG, "[Alternate time=" + System.currentTimeMillis() +
+                                        " " +
+                                        "endTime=" + endTime + "]");
                                 if (System.currentTimeMillis() > endTime) {
                                     dispose();
                                     playNext();
@@ -258,6 +293,9 @@ public class PlayerAlternateContract {
 
         @Override
         public void playAlternateItem(final String contentId, final String contentUUID) {
+
+            dispose();
+
             currentRequestId = contentId;
             currentSubUUID = contentUUID;
             mContent.getContent(contentId, true);

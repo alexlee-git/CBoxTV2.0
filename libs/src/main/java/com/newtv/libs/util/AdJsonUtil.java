@@ -15,7 +15,8 @@ import tv.icntv.icntvplayersdk.been.PlayerAdInfos;
 
 public class AdJsonUtil {
     private static final String LOG_TAG = "adsdk";
-    private static final String[] adTypes = new String[]{"topic","quit","before", "middle", "after", "float", "buffer", "pause", "open", "desk", "before_live"};
+    private static final String[] adTypes = new String[]{"topic","quit","before", "middle",
+            "after", "float", "buffer", "pause", "open", "desk", "before_live","carousel_change"};
 
     public AdJsonUtil() {
     }

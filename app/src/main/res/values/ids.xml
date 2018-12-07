@@ -23,5 +23,7 @@
 
     <item name="id_frameLayout_result_label_drama" type="id"/>
 
+    <item name="id_updata" type="id"/>
+
 
 </resources>

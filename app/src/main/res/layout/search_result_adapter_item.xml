@@ -1,105 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/search_result_rl"
+    android:id="@+id/id_module_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:focusable="true"
-    >
+    android:tag="cell_008_1">
 
-    <ImageView
-        android:id="@+id/result_image_default"
-        android:layout_width="@dimen/width_240px"
-        android:layout_height="@dimen/height_360px"
-        android:focusable="false"
-        android:scaleType="fitXY"
-        />
-    <LinearLayout
-        android:id="@+id/update_layout"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="@dimen/width_39px"
-        android:layout_marginBottom="@dimen/width_22px"
-        android:layout_marginTop="@dimen/height_345px"
-        android:background="@drawable/update_item_black_bg"
-        android:visibility="gone"
-        >
-        <TextView
-            android:id="@+id/update_left"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/height_22px"
-            android:focusable="false"
-            android:visibility="visible"
-            android:text="@string/user_poster_program_update_title_left_being"
-            />
-        <TextView
-            android:id="@+id/recentNumTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/color_order_focus_text"
-            android:textSize="@dimen/height_22px"
-            android:focusable="false"
-            android:visibility="visible"
-            />
-        <TextView
-            android:id="@+id/update_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/height_22px"
-            android:focusable="false"
-            android:visibility="visible"
-            android:text="@string/user_tag_poster_program_update_title_right"
-            />
-    </LinearLayout>
-    <ImageView
-        android:id="@+id/isVipImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/uc_program_vip"
-        android:layout_marginTop="@dimen/width_60px"
-        android:layout_marginRight="@dimen/width_37px"
-        android:focusable="false"
-        android:visibility="gone"
-        android:layout_gravity="end"
-        />
-    <ImageView
-        android:id="@+id/result_image_focus"
-        android:layout_width="@dimen/width_248px"
-        android:layout_height="@dimen/height_368px"
-        android:background="@drawable/pos_zui"
-        android:focusable="false"
-        android:visibility="invisible" />
-
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/selector_pos_background_27px"
+        android:tag="cell_focus">
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
+            android:tag="cell_poster" />
+    </FrameLayout>
     <TextView
-        android:id="@+id/result_title"
-        style="@style/StyleSearchResultListItemTitle"
-        android:layout_width="@dimen/width_226px"
-        android:layout_height="@dimen/height_33px"
-        android:layout_marginBottom="@dimen/height_21px"
-        android:layout_marginLeft="@dimen/width_39px"
-        android:layout_marginRight="@dimen/width_24px"
-        android:layout_marginTop="@dimen/height_401px"
+        style="@style/ModulePosterBottomTitleStyle"
+        android:layout_width="@dimen/width_280px"
+        android:layout_height="@dimen/height_65px"
+        android:layout_marginTop="@dimen/height_410px"
+        android:paddingBottom="@dimen/height_33px"
+        android:paddingLeft="@dimen/height_30px"
         android:ellipsize="marquee"
-        android:focusable="false"
-        android:gravity="left"
         android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
         android:singleLine="true"
+        android:tag="cell_title"
         />
-
-    <TextView
-        android:id="@+id/result_poster_title"
-        style="@style/StyleSearchResultPosterTitle"
-        android:layout_width="@dimen/width_228px"
-        android:layout_height="@dimen/height_28px"
-        android:layout_marginLeft="@dimen/width_35px"
-        android:layout_marginTop="@dimen/height_375px"
-        android:focusable="false"
-        android:gravity="start" />
 
 </FrameLayout>

@@ -47,7 +47,7 @@ public class Constant {
     //详情页通栏广告
     public static final String AD_DETAILPAGE_BANNER = "cbox_detailpage_banner";
     //轮播台广告
-    public static final String AD_CAROUSEL_CORNER = "cbox_carousel_corner";
+    public static final String AD_CAROUSEL_CHANGE = "carousel_change";
     //详情页背景广告
     public static final String AD_DETAILPAGE_BACKGROUND = "cbox_detailpage_background";
     //详情页内容列表广告
