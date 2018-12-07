@@ -226,7 +226,7 @@ public class SuperScriptManager implements CornerContract.View {
     }
 
     /**
-     * 添加更新角标
+     * 添加更新到多少集的角标
      *
      * @param context
      * @param message
@@ -242,12 +242,13 @@ public class SuperScriptManager implements CornerContract.View {
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
                         .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.LEFT | Gravity.START | Gravity.BOTTOM;
-                int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
-                lp.leftMargin = space;
-                lp.bottomMargin = space;
-                recentText.setTextSize(space);
+                int leftMargin = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
+                int bottomMargin = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
+                int fontSize = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
+                lp.leftMargin = leftMargin;
+                lp.bottomMargin = bottomMargin;
+                recentText.setTextSize(fontSize);
                 recentText.setTextColor(Color.WHITE);
-                recentText.setBackgroundColor(Color.parseColor("#50000000"));
                 recentText.setLayoutParams(lp);
                 recentText.setBackground(context.getResources().getDrawable(R.drawable
                         .update_item_black_bg));
@@ -263,9 +264,11 @@ public class SuperScriptManager implements CornerContract.View {
                 if (!TextUtils.isEmpty(value)) {
                     if (!TextUtils.equals("0", value)) {
                         message = message.replace(value, String.format("<font " +
-                                "color='#ea6617'>%s</font>", value));
+                                "color='#955D06'>%s</font>", value));
                         CharSequence charSequence = Html.fromHtml(message);
                         recentText.setText(charSequence);
+                    }else {
+                        removeRecentMsg(parent);
                     }
                     return;
                 }
@@ -286,7 +289,7 @@ public class SuperScriptManager implements CornerContract.View {
     }
 
     /**
-     * 添加更新角标
+     * 添加影片打分角标
      *
      * @param context
      * @param message
@@ -304,13 +307,13 @@ public class SuperScriptManager implements CornerContract.View {
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
                         .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.RIGHT | Gravity.END | Gravity.BOTTOM;
-                int space = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
-                int size = context.getResources().getDimensionPixelSize(R.dimen.width_8px);
-                lp.rightMargin = space;
-                lp.bottomMargin = space;
-                gradeText.setTextSize(size);
-                gradeText.setTextColor(Color.WHITE);
-                gradeText.setBackgroundColor(Color.parseColor("#50000000"));
+                int rightMargin = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
+                int bottomMargin = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
+                int fontSize = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
+                lp.rightMargin = rightMargin;
+                lp.bottomMargin = bottomMargin;
+                gradeText.setTextSize(fontSize);
+                gradeText.setTextColor(context.getResources().getColor(R.color.color_62c0eb));
                 gradeText.setLayoutParams(lp);
                 gradeText.setBackground(context.getResources().getDrawable(R.drawable
                         .update_item_black_bg));
@@ -319,10 +322,11 @@ public class SuperScriptManager implements CornerContract.View {
             }
 
             gradeText.setVisibility(View.VISIBLE);
-            message = String.format("<font " +
-                    "color='#ffffff'>%s</font>", message);
-            CharSequence charSequence = Html.fromHtml(message);
-            gradeText.setText(charSequence);
+            gradeText.setText(message);
+//            message = String.format("<font " +
+//                    "color='#ffffff'>%s</font>", message);
+//            CharSequence charSequence = Html.fromHtml(message);
+//            gradeText.setText(charSequence);
         } else {
             removeGradeMsg(parent);
         }

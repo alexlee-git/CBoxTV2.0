@@ -12,8 +12,8 @@
     <padding
         android:bottom="@dimen/width_3px"
         android:top="@dimen/width_3px"
-        android:left="@dimen/width_5px"
-        android:right="@dimen/width_5px"
+        android:left="@dimen/width_2px"
+        android:right="@dimen/width_2px"
         />
 
 </shape>
