@@ -30,6 +30,7 @@ import java.util.Map;
 
 import tv.newtv.cboxtv.BackGroundManager;
 import tv.newtv.cboxtv.BuildConfig;
+import tv.newtv.cboxtv.ListDataSave;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
@@ -400,6 +401,8 @@ public class MainNavManager implements NavContract.View {
     public void onNavResult(Context context, List<Nav> result) {
         BackGroundManager.getInstance().parseNavigation(result);
         inflateNavigationBar(result, context, "server");
+        ListDataSave ldata = new ListDataSave(context,"navData");
+        ldata.setDataList("nav",result);
     }
 
     @Override
