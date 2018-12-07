@@ -84,7 +84,7 @@ public class UserCenterRecordManager {
     private boolean collectStatusInRemote;
     private boolean collectStatusLocalReqComp;
     private boolean collectStatusRemoteReqComp;
-    
+
     private HashMap<Long,CallbackForm> callbackHashMap;
 
     private static class CallbackForm{
@@ -903,6 +903,7 @@ public class UserCenterRecordManager {
         pageBean.set_actiontype(Constant.OPEN_DETAILS);
         pageBean.setPlayId(bundle.getString(DBConfig.PLAYID));
         pageBean.setProgramChildName(bundle.getString(DBConfig.PROGRAM_CHILD_NAME));
+        pageBean.setContentId(bundle.getString(DBConfig.CONTENT_ID));
         return pageBean;
     }
 

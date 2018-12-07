@@ -71,7 +71,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String userId = SharePreferenceUtils.getUserId(mContext);
 
-        Log.d(TAG, "report history item, user_id " + userId);
+        Log.d(TAG, "report history item, user_id " + userId + ", content_id : " + entity.getContentId());
 
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
