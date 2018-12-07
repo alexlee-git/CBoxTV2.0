@@ -41,6 +41,10 @@ public class Node {
      * 是否禁止添加LB频道的收藏
      */
     private boolean forbidAddCollect = false;
+    /**
+     * 是否必须请求数据
+     */
+    private boolean mustRequest = false;
 
     public boolean isLeaf(){
 //        if(child != null && child.size() > 0)
@@ -187,6 +191,14 @@ public class Node {
 
     public void setCategoryType(String categoryType) {
         this.categoryType = categoryType;
+    }
+
+    public boolean isMustRequest() {
+        return mustRequest;
+    }
+
+    public void setMustRequest(boolean mustRequest) {
+        this.mustRequest = mustRequest;
     }
 
     public List<Node> getNodes(){

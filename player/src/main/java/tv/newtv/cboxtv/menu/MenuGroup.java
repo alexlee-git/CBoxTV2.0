@@ -603,7 +603,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             MenuRecyclerAdapter nextAdapter = (MenuRecyclerAdapter) menuRecyclerViewByLevel
                     .getAdapter();
             nextAdapter.setData(node.getChild());
-            if(node.getChild().size() == 0 && !node.isRequest()){
+            if(node.getChild().size() == 0 && !node.isRequest() || node.isMustRequest()){
                 //请求数据
                 getNodeData(node,menuRecyclerViewByLevel);
             }else {
@@ -649,6 +649,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
+                        node.setMustRequest(false);
                         CategoryContent categoryContent = GsonUtil.fromjson(responseBody.string(),CategoryContent.class);
                         if(categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0){
                             node.addChild(categoryContent.data);
