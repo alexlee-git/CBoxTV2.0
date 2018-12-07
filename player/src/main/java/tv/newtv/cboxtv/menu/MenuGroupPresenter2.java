@@ -375,7 +375,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                                     searchLbCollect(childNode, true);
                                     node.getChild().add(1, childNode);
 
-                                    node.getChild().get(0).setMustRequest(true);
+                                    if(!TextUtils.equals(node.getChild().get(0).getId(),categoryId)){
+                                        node.getChild().get(0).setMustRequest(true);
+                                    }
                                     searchLbHistory(node.getChild().get(0));
                                 }
                                 node.initParent();
