@@ -200,6 +200,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange {
         @Override
         public void onFocusChange(View view, boolean b) {
             performFocus(b);
+            mAlternateSubTitle.setSelected(b);
         }
     }
 }

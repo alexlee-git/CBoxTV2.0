@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
-             android:background="@drawable/normalplayer_bg"
              android:layout_height="match_parent">
 
     <ImageView
@@ -33,7 +32,7 @@
                 android:layout_marginLeft="@dimen/width_48px"
                 android:layout_marginTop="@dimen/height_32px"
                 android:layout_marginEnd="@dimen/width_48px"
-                android:text="测试标题测试标题测试标题测试"
+                android:singleLine="true"
                 android:textColor="#FFFFFF"
                 android:textSize="@dimen/height_36px"/>
 
@@ -46,7 +45,7 @@
                 android:layout_marginLeft="@dimen/width_48px"
                 android:layout_marginEnd="@dimen/width_48px"
                 android:layout_marginBottom="@dimen/height_32px"
-                android:text="测试标题测试标题测试标题测试标题"
+                android:singleLine="true"
                 android:textColor="#70FFFFFF"
                 android:textSize="@dimen/height_28px"/>
         </RelativeLayout>

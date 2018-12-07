@@ -36,6 +36,14 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     private ImageView background;
 
     private String currentChannel, currentTitle;
+    private boolean needTip = true;
+    private String currentId;
+    private Runnable closeRunnalbe = new Runnable() {
+        @Override
+        public void run() {
+            dismiss();
+        }
+    };
 
     public NewTvAlterChangeView(Context context) {
         this(context, null);
@@ -55,6 +63,15 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         background = findViewById(R.id.background_ad);
     }
 
+    public void setCurrentId(String id) {
+        needTip = !TextUtils.equals(id, currentId);
+        currentId = id;
+    }
+
+    public boolean isNeedTip() {
+        return needTip;
+    }
+
     public void setChannelText(String text) {
         currentChannel = text;
         if (channelText != null) {
@@ -70,9 +87,14 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     }
 
     public void show() {
+        removeCallbacks(closeRunnalbe);
+
         mAdPresenter.getAdByType(Constant.AD_CAROUSEL_CHANGE, "", "", null);
-//        mAdPresenter.getAdByUrl("carousel_change");
         setVisibility(VISIBLE);
+        postDelayed(closeRunnalbe, 5000);
+
+        needTip = false;
+
         NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                 .SHOWING_ALTER_CHANGE_VIEW);
     }
