@@ -70,7 +70,8 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     }
 
     public void show() {
-        mAdPresenter.getAdByType(Constant.AD_DESK, Constant.AD_CAROUSEL_CORNER, "", null);
+        mAdPresenter.getAdByType(Constant.AD_CAROUSEL_CHANGE, "", "", null);
+//        mAdPresenter.getAdByUrl("carousel_change");
         setVisibility(VISIBLE);
         NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                 .SHOWING_ALTER_CHANGE_VIEW);
@@ -91,7 +92,8 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         if (Constant.AD_IMAGE_TYPE.equals(type)) {
             if (background != null && !TextUtils.isEmpty(url)) {
                 if (url.startsWith("http") || url.startsWith("https")) {
-                    GlideUtil.loadImage(getContext(), background, url, R.drawable.normalplayer_bg, R.drawable.normalplayer_bg, false);
+                    GlideUtil.loadImage(getContext(), background, url, R.drawable
+                            .normalplayer_bg, R.drawable.normalplayer_bg, false);
                 } else if (url.startsWith("file:")) {
                     background.setImageURI(Uri.parse(url));
                 }

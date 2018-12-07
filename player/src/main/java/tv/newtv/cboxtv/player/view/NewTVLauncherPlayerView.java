@@ -451,6 +451,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mLivePresenter = null;
         }
 
+        if(mAlternatePresenter != null){
+            mAlternatePresenter.destroy();
+            mAlternatePresenter = null;
+        }
+
         if (menuGroupPresenter != null) {
             menuGroupPresenter.release();
             menuGroupPresenter = null;
@@ -849,7 +854,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mLivePresenter = new LiveContract.LivePresenter(getContext(), this);
         mVodPresenter = new VodContract.VodPresenter(getContext(), this);
-        mAlternatePresenter = new PlayerAlternateContract.AlternatePresenter(getContext(), this);
 
     }
 
@@ -890,9 +894,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         updatePlayStatus(PLAY_TYPE_ALTERNATE, 0, 0);
         stop();
         defaultConfig.alternateID = alternateId;
-        if (mAlternatePresenter != null) {
-            mAlternatePresenter.requestAlternate(alternateId, title, channelId);
+        if (mAlternatePresenter == null) {
+            mAlternatePresenter = new PlayerAlternateContract.AlternatePresenter(getContext(), this);
         }
+        mAlternatePresenter.requestAlternate(alternateId, title, channelId);
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
@@ -950,6 +955,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         LogUtils.i(TAG, "playVideo: index=" + index + " position=" + position);
         if (updateState) {
             updatePlayStatus(PLAY_TYPE_SERIES, index, position);
+        }else{
+            updatePlayStatus(PLAY_TYPE_ALTERNATE, index, position);
         }
 
         defaultConfig.programSeriesInfo = programSeriesInfo;
@@ -1055,6 +1062,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (updateState) {
             updatePlayStatus(PLAY_TYPE_SINGLE, 0, position);
+        }else{
+            updatePlayStatus(PLAY_TYPE_ALTERNATE, 0, position);
         }
         defaultConfig.programSeriesInfo = programDetailInfo;
 
@@ -1615,6 +1624,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public void dismissTipView() {
         if (mNewTvTipView != null && mNewTvTipView.getVisibility() == VISIBLE) {
             mNewTvTipView.dismiss();
+            if(mAlternatePresenter == null){
+                LogUtils.e(TAG,"mAlternatePresenter is null");
+                return;
+            }
             mAlternatePresenter.alternateTipComplete();
         }
     }
@@ -1929,6 +1942,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String
             title, String channelId) {
+        if(isReleased) return;
         updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
 
         if (defaultConfig.alternateCallback != null) {
@@ -1954,6 +1968,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     @Override
     public void onAlterItemResult(String contentId, Content content) {
+        if(isReleased) return;
         setSeriesInfo(content);
 
         if (mNewTvAlterChange != null) {

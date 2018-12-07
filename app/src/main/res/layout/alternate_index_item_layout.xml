@@ -20,6 +20,8 @@
     <TextView
         android:id="@+id/alternate_title"
         android:layout_width="@dimen/width_441px"
+        android:singleLine="true"
+        android:ellipsize="marquee"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/width_127px"
         android:layout_marginLeft="@dimen/width_127px"
@@ -41,6 +43,8 @@
         android:layout_marginEnd="@dimen/width_32px"
         android:layout_marginRight="@dimen/width_32px"
         android:text="正义联盟"
+        android:singleLine="true"
+        android:ellipsize="marquee"
         android:textColor="#60FFFFFF"
         android:textSize="@dimen/height_28px"
         android:textStyle="bold"/>

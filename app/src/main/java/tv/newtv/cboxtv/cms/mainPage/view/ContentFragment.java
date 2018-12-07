@@ -32,6 +32,7 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
+import tv.newtv.cboxtv.cms.mainPage.AlternatePageView;
 import tv.newtv.cboxtv.cms.mainPage.viewholder.UniversalAdapter;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
@@ -137,6 +138,15 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 .getChildAt(0) != null && loadingView.getVisibility() == View.GONE) {
             String tag = ((UniversalAdapter) mRecyclerView.getAdapter()).getFirstViewId();
             LogUtils.d("ContentFragment", "getFirstFocusView  tag=" + tag);
+            if (TextUtils.equals("cell_032_1", tag)) {
+                AlternatePageView pageView = mRecyclerView.findViewWithTag(tag);
+                if(pageView != null){
+                    View focusView =  pageView.getFirstFocusView();
+                    if(focusView != null){
+                        return focusView;
+                    }
+                }
+            }
             if (TextUtils.isEmpty(tag)) return null;
             return mRecyclerView.findViewWithTag(tag);
         }
@@ -344,7 +354,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 mRecyclerView.setAdapter(adapter);
             } else {
 //                if (!mRecyclerView.hasFocus()) {
-                    adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
 //                }
             }
 
@@ -370,7 +380,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
         if (loadingView != null)
             loadingView.setVisibility(View.GONE);
         setTipVisibility(View.VISIBLE);
-        if(loadingView!=null) {
+        if (loadingView != null) {
             loadingView.setVisibility(View.GONE);
         }
         if (mEmptyView != null)

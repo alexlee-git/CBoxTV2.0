@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
+             android:background="@drawable/normalplayer_bg"
              android:layout_height="match_parent">
 
     <ImageView
-        android:src="@drawable/normalplayer_bg"
         android:id="@+id/background_ad"
         android:scaleType="fitXY"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="@dimen/height_358px"
+        android:layout_width="@dimen/width_952px"
+        android:layout_height="@dimen/height_182px"/>
 
     <RelativeLayout
+        android:id="@+id/tip_area"
         android:layout_width="@dimen/width_952px"
         android:layout_height="@dimen/height_158px"
         android:layout_gravity="bottom|center_horizontal"
