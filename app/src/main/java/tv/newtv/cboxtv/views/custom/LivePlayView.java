@@ -56,7 +56,7 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  */
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
         ContentContract.View, LiveListener, ICustomPlayer, NewTVLauncherPlayerView
-                .OnPlayerStateChange {
+                .OnPlayerStateChange,NewTVLauncherPlayerView.ChangeAlternateListener {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -80,6 +80,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private TextView hintText;
 
     private boolean mIsShow;
+
+    private NewTVLauncherPlayerView.ChangeAlternateListener mAlternateChange;
 
     private ContentContract.Presenter mContentPresenter;
 
@@ -107,6 +109,11 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             }
         }
     };
+
+    public void setAlternateChange(NewTVLauncherPlayerView.ChangeAlternateListener listener){
+        mAlternateChange = listener;
+    }
+
     private Runnable playLiveRunnable = new Runnable() {
         @Override
         public void run() {
@@ -162,6 +169,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 mVideoPlayerView.registerScreenListener(new MyScreenListener());
             }
 
+            mVideoPlayerView.setChangeAlternateListen(this);
             mVideoPlayerView.setOnPlayerStateChange(this);
         }
     }
@@ -180,6 +188,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             if (position >= 0) {
                 mPosition = position;
             }
+            removeCallbacks(playAlternateRunnable);
             removeCallbacks(playLiveRunnable);
             removeCallbacks(playRunnable);
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
@@ -599,6 +608,13 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     @Override
     public boolean processKeyEvent(KeyEvent keyEvent) {
         return false;
+    }
+
+    @Override
+    public void changeAlternate(String contentId, String title, String channel) {
+        if(mAlternateChange != null){
+            mAlternateChange.changeAlternate(contentId, title, channel);
+        }
     }
 
     private static class PlayInfo {

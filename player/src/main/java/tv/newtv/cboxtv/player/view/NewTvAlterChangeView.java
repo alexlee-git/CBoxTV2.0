@@ -100,6 +100,7 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     }
 
     public void dismiss() {
+        removeCallbacks(closeRunnalbe);
         setVisibility(GONE);
         if (NewTVLauncherPlayerViewManager.getInstance().getShowView() == NewTVLauncherPlayerView
                 .SHOWING_ALTER_CHANGE_VIEW) {

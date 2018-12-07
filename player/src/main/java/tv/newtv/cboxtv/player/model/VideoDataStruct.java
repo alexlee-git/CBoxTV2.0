@@ -20,6 +20,7 @@ public class VideoDataStruct implements Serializable {
 	private String zone = "";// 地区
 	private String desc = "";// 影片介绍
 	private boolean isCollect;// 是否收藏
+	private boolean isAlternate;// 是否轮播
 	private int dataSource = -1;// -1:不明 0:icntv 1:tencent 2:sohu
 								// 3:icntv-tentcent-sohu 4......1000:other
 	private String dataSourceStr = "";// -1:不明 0:icntv 1:tencent 2:sohu
@@ -131,6 +132,14 @@ public class VideoDataStruct implements Serializable {
 
 	public String getSeriesId() {
 		return seriesId;
+	}
+
+	public void setAlternate(boolean alternate) {
+		isAlternate = alternate;
+	}
+
+	public boolean isAlternate() {
+		return isAlternate;
 	}
 
 	public void setSeriesId(String seriesId) {
