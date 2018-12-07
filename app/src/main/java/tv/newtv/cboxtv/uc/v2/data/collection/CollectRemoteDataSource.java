@@ -87,7 +87,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
-                        bean.getProgramChildName())
+                        bean.getProgramChildName(),
+                        bean.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {

@@ -97,7 +97,8 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.get_contenttype(),
                         entity.getPlayIndex(),
                         entity.get_actiontype(),
-                        entity.getProgramChildName())
+                        entity.getProgramChildName(),
+                        entity.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
@@ -220,17 +221,17 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
                                     entity.set_contentuuid(item.optString("program_child_id"));
+                                    entity.setContentId(item.optString("content_id"));
                                 } else {
                                     entity.set_contentuuid(item.optString("programset_id"));
+                                    entity.setContentId(item.optString("contend_id"));
                                 }
 
                                 entity.set_contenttype(contentType);
 
-                                // entity.set_contentuuid(item.optString("programset_id"));
                                 entity.setPlayId(item.optString("program_child_id"));
                                 entity.set_title_name(item.optString("programset_name"));
                                 entity.setIs_program(item.optString("is_program"));
-
                                 entity.set_actiontype(item.optString("action_type"));
                                 entity.set_imageurl(item.optString("poster"));
                                 entity.setGrade(item.optString("score"));
@@ -244,7 +245,6 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                 entity.setUpdateTime(Long.parseLong(item.optString("program_watch_date")) / 1000);
                                 entity.setDuration(String.valueOf(item.optLong("program_dur")));
                                 entity.setPlayPosition(String.valueOf(item.optLong("program_watch_dur")));
-
                                 infos.add(entity);
                             }
 

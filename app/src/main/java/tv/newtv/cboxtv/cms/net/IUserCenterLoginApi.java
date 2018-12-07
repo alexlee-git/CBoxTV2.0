@@ -165,7 +165,8 @@ public interface IUserCenterLoginApi {
                                         @Field("content_type") String contentType,
                                         @Field("latest_episode") String curEpisode,
                                         @Field("action_type") String actionType,
-                                        @Field("program_child_name") String programChildId);
+                                        @Field("program_child_name") String programChildId,
+                                        @Field("content_id") String contentId);
 
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
@@ -210,7 +211,8 @@ public interface IUserCenterLoginApi {
                                         @Field("content_type") String content_type,
                                         @Field("latest_episode") String latest_episode,
                                         @Field("action_type") String action_type,
-                                        @Field("program_child_name") String programChildName);
+                                        @Field("program_child_name") String programChildName,
+                                        @Field("content_id") String contentId);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @DELETE("/gazella/service/collections/del")

@@ -93,10 +93,11 @@ public class UserCenterUtils {
                 bundle.putString(DBConfig.VIDEO_TYPE, mProgramSeriesInfo.getVideoType());
                 bundle.putString(DBConfig.TOTAL_CNT, mProgramSeriesInfo.getSeriesSum());
                 //bundle.putString(DBConfig.SUPERSCRIPT, mProgramSeriesInfo.getrSuperScript());
-                bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentID());
+                bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentUUID());
                 bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
                 bundle.putString(DBConfig.PLAYINDEX, valueOf(index));
                 bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+                bundle.putString(DBConfig.CONTENT_ID, mProgramSeriesInfo.getContentID());
 
                 List<SubContent> subContents = mProgramSeriesInfo.getData();
                 if (subContents != null && subContents.size() > 0) {
@@ -172,7 +173,7 @@ public class UserCenterUtils {
             action_type 动作类型*/
         if (mProgramSeriesInfo != null) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentID());
+            bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentUUID());
             bundle.putString(DBConfig.TITLE_NAME, mProgramSeriesInfo.getTitle());
             bundle.putString(DBConfig.IMAGEURL, mProgramSeriesInfo.getVImage());
             bundle.putString(DBConfig.CONTENT_GRADE, mProgramSeriesInfo.getGrade());
@@ -181,6 +182,7 @@ public class UserCenterUtils {
             //bundle.putString(DBConfig.SUPERSCRIPT, mProgramSeriesInfo.getrSuperScript());
             bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
             bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
+            bundle.putString(DBConfig.CONTENT_ID, mProgramSeriesInfo.getContentID());
 
             List<SubContent> subContents = mProgramSeriesInfo.getData();
             if (subContents != null && subContents.size() > 0) {

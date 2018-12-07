@@ -84,7 +84,7 @@ public class UserCenterRecordManager {
     private boolean collectStatusInRemote;
     private boolean collectStatusLocalReqComp;
     private boolean collectStatusRemoteReqComp;
-
+    
     private HashMap<Long,CallbackForm> callbackHashMap;
 
     private static class CallbackForm{
@@ -101,7 +101,6 @@ public class UserCenterRecordManager {
             }
         }
     }
-
 
 
     private final int MSG_NOTIFY_COLLECT_STATUS   = 10071;
@@ -276,7 +275,7 @@ public class UserCenterRecordManager {
                         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
                             procAddHistoryRecord(userId, context, token, bundle, info, dbCallback);
                         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
-                           procAddCarouselPlayRecord(userId, token, bundle, dbCallback);
+                            procAddCarouselPlayRecord(userId, token, bundle, dbCallback);
                         } else {
                             Log.e(TAG, "unresolved record type : " + type);
                         }

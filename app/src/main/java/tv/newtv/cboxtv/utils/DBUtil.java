@@ -135,9 +135,9 @@ public class DBUtil {
      */
     public static void PutCollect(String userId, Content entity, Bundle bundle, DBCallback<String> callback, String tableName) {
         if (entity != null) {
-            //TODO 写入本地数据库 历史记录
             ContentValues contentValues = new ContentValues();
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+            contentValues.put(DBConfig.CONTENT_ID, entity.getContentID());
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
@@ -205,8 +205,8 @@ public class DBUtil {
             }
             contentValues.put(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
             contentValues.put(DBConfig.PLAYID, mInfo.getContentUUID());
-        }else{
-            seriesUUID = mInfo.getContentID();
+        } else {
+            seriesUUID = mInfo.getContentUUID();
             if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
                 if (mInfo.getData() != null && mInfo.getData().size() != 0) {
                     contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
@@ -214,8 +214,9 @@ public class DBUtil {
             }
         }
 
+        contentValues.put(DBConfig.CONTENT_ID, bundle.getString(DBConfig.CONTENT_ID));
         contentValues.put(DBConfig.PLAYPOSITION, bundle.getString(DBConfig.PLAYPOSITION));
-        contentValues.put(DBConfig.CONTENTUUID,seriesUUID);
+        contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
 
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (!TextUtils.isEmpty(updateTime)) {
