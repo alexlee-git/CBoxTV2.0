@@ -189,10 +189,9 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 recordPosition = position;
                 RxBus.get().post("recordPosition",holder.getLayoutPosition());
 
-                Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info
-                        .get_actiontype());
+                Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
                 JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
-                        info.get_contentuuid(), "");
+                        info.getContentId(), "");
             }
         });
     }
