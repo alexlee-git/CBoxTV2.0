@@ -26,7 +26,7 @@ public class HistoryRepository implements HistoryDataSource {
         return INSTANCE;
     }
 
-    public static void destroyInstance() {
+    public  void destroyInstance() {
         INSTANCE = null;
     }
 
@@ -43,5 +43,10 @@ public class HistoryRepository implements HistoryDataSource {
     @Override
     public void getRemoteHistoryList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetHistoryListCallback callback) {
         mRemoteDataSource.getRemoteHistoryList(token, userId, appKey, channelCode, offset, limit, callback);
+    }
+
+    @Override
+    public void releaseHistoryResource() {
+        mRemoteDataSource.releaseHistoryResource();
     }
 }

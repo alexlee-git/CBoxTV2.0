@@ -22,6 +22,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
 /**
@@ -36,6 +37,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
 
     private static FollowRemoteDataSource INSTANCE;
     private Context mContext;
+    private Disposable mAddDisposable, mGetListDisposable, mDeleteDisposable;
 
     public static FollowRemoteDataSource getInstance(Context mContext) {
         if (INSTANCE == null) {
@@ -83,18 +85,26 @@ public class FollowRemoteDataSource implements FollowDataSource {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
-                    public void onSubscribe(Disposable d) {}
+                    public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
+                    }
 
                     @Override
-                    public void onNext(ResponseBody responseBody) {}
+                    public void onNext(ResponseBody responseBody) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
-                    public void onComplete() {}
+                    public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
                 });
     }
 
@@ -127,22 +137,24 @@ public class FollowRemoteDataSource implements FollowDataSource {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+                        mDeleteDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
     }
@@ -161,7 +173,8 @@ public class FollowRemoteDataSource implements FollowDataSource {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+                        mGetListDisposable = d;
                     }
 
                     @Override
@@ -217,6 +230,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         if (callback != null) {
                             callback.onDataNotAvailable();
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
@@ -225,13 +239,22 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         if (callback != null) {
                             callback.onFollowListLoaded(null, 0);
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
+    }
+
+    @Override
+    public void releaseFollowResource() {
+        INSTANCE = null;
+        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 
 }

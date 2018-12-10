@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.uc.v2.manager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.VpnService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -618,7 +617,8 @@ public class UserCenterRecordManager {
                 UserCenterPageBean.Bean bean = iterator.next();
 
                 Content info = new Content();
-                info.setContentID(bean.get_contentuuid());
+                info.setContentID(bean.getContentId());
+                info.setContentUUID(bean._contentuuid);
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -642,7 +642,8 @@ public class UserCenterRecordManager {
 
                 Log.d("sub", "addSubscribeToDataBase contentid : " + bean.get_contentuuid());
 
-                info.setContentID(bean.get_contentuuid());
+                info.setContentID(bean.getContentId());
+                info.setContentUUID(bean._contentuuid);
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -663,7 +664,8 @@ public class UserCenterRecordManager {
                 UserCenterPageBean.Bean bean = iterator.next();
 
                 Content info = new Content();
-                info.setContentID(bean.get_contentuuid());
+                info.setContentID(bean.getContentId());
+                info.setContentUUID(bean._contentuuid);
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -684,7 +686,8 @@ public class UserCenterRecordManager {
                 UserCenterPageBean.Bean bean = iterator.next();
 
                 Content info = new Content();
-                info.setContentID(bean.get_contentuuid());
+                info.setContentID(bean.getContentId());
+                info.setContentUUID(bean._contentuuid);
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -758,12 +761,12 @@ public class UserCenterRecordManager {
                         getRemoteHistoryList(context, token, userId, offset, limit, new HistoryDataSource.GetHistoryListCallback() {
                             @Override
                             public void onHistoryListLoaded(List<UserCenterPageBean.Bean> historyList, final int totalSize) {
-                                Log.d(TAG, "---historyList.size():" + totalSize);
+                                Log.d(TAG, "wqs:historyList.size():" + totalSize);
                                 if (historyList != null && historyList.size() > 0) {
                                     addHistoryToDataBase(userId, historyList, new DBCallback<String>() {
                                         @Override
                                         public void onResult(int code, String result) {
-                                            Log.d(TAG, "---currentHistoryIndex:" + currentHistoryIndex);
+                                            Log.d(TAG, "wqs:currentHistoryIndex:" + currentHistoryIndex);
                                             if (currentHistoryIndex == totalSize) {
                                                 getHistoryRecordComplete = true;
                                                 getUserBehaviorComplete(context);
@@ -784,12 +787,12 @@ public class UserCenterRecordManager {
                         getRemoteSubscribe(context, token, userId, offset, limit, new SubDataSource.GetSubscribeListCallback() {
                             @Override
                             public void onSubscribeListLoaded(List<UserCenterPageBean.Bean> subList, final int totalSize) {
-                                Log.d(TAG, "---subList.size():" + totalSize);
+                                Log.d(TAG, "wqs:subList.size():" + totalSize);
                                 if (subList != null && subList.size() > 0) {
                                     addSubscribeToDataBase(userId, subList, new DBCallback<String>() {
                                         @Override
                                         public void onResult(int code, String result) {
-                                            Log.d(TAG, "---currentSubIndex:" + currentSubIndex);
+                                            Log.d(TAG, "wqs:currentSubIndex:" + currentSubIndex);
                                             if (currentSubIndex == totalSize) {
                                                 getSubscribeRecordComplete = true;
                                                 getUserBehaviorComplete(context);
@@ -810,12 +813,12 @@ public class UserCenterRecordManager {
                         getRemoteCollectionList(context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
                             @Override
                             public void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize) {
-                                Log.d(TAG, "---CollectList.size():" + totalSize);
+                                Log.d(TAG, "wqs:CollectList.size():" + totalSize);
                                 if (CollectList != null && CollectList.size() > 0) {
                                     addCollectToDataBase(userId, CollectList, new DBCallback<String>() {
                                         @Override
                                         public void onResult(int code, String result) {
-                                            Log.d(TAG, "---currentCollectIndex:" + currentCollectIndex);
+                                            Log.d(TAG, "wqs:currentCollectIndex:" + currentCollectIndex);
                                             if (currentCollectIndex == totalSize) {
                                                 getCollectionRecordComplete = true;
                                                 getUserBehaviorComplete(context);
@@ -836,12 +839,12 @@ public class UserCenterRecordManager {
                         getRemoteFollowList(context, token, userId, offset, limit, new FollowDataSource.GetFollowListCallback() {
                             @Override
                             public void onFollowListLoaded(List<UserCenterPageBean.Bean> FollowList, final int totalSize) {
-                                Log.d(TAG, "---FollowList.size():" + totalSize);
+                                Log.d(TAG, "wqs:FollowList.size():" + totalSize);
                                 if (FollowList != null && FollowList.size() > 0) {
                                     addFollowToDataBase(userId, FollowList, new DBCallback<String>() {
                                         @Override
                                         public void onResult(int code, String result) {
-                                            Log.d(TAG, "---currentFollowIndex:" + currentFollowIndex);
+                                            Log.d(TAG, "wqs:currentFollowIndex:" + currentFollowIndex);
                                             if (currentFollowIndex == totalSize) {
                                                 getFollowRecordComplete = true;
                                                 getUserBehaviorComplete(context);
@@ -860,10 +863,10 @@ public class UserCenterRecordManager {
                             }
                         });
                     } else {
-                        Log.e(TAG, "---getUserBehaviorUtils:token==null");
+                        Log.e(TAG, "wqs:getUserBehaviorUtils:token==null");
                     }
                 } else {
-                    Log.e(TAG, "---getUserBehaviorUtils:loginStatus:" + status);
+                    Log.e(TAG, "wqs:getUserBehaviorUtils:loginStatus:" + status);
                 }
             }
         });
@@ -871,15 +874,24 @@ public class UserCenterRecordManager {
 
     //数据获取完成，向用户中心首页发送广播
     private void getUserBehaviorComplete(Context context) {
-        Log.d(TAG, "----getUserBehaviorComplete");
+        Log.d(TAG, "wqs:getUserBehaviorComplete");
         if (getHistoryRecordComplete && getCollectionRecordComplete
                 && getFollowRecordComplete && getSubscribeRecordComplete) {
-            Log.e(TAG, "---getUserBehaviorUtils:getUserBehaviorComplete:sendBroadcast");
+            Log.e(TAG, "wqs:getUserBehaviorUtils:getUserBehaviorComplete:sendBroadcast");
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("action.uc.data.sync.complete"));
         } else {
-            Log.e(TAG, "----getUserBehaviorComplete:error");
+            Log.e(TAG, "wqs:getUserBehaviorComplete:error");
         }
 
+    }
+
+    //远端数据库获取获取流程取消订阅关系，防止数据错乱与内存泄漏
+    public void releaseUserBehavior(Context context) {
+        Log.d(TAG, "wqs:releaseUserBehavior");
+        HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context)).releaseHistoryResource();
+        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).releaseCollectResource();
+        SubRepository.getInstance(SubRemoteDataSource.getInstance(context)).releaseSubscribeResource();
+        FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context)).releaseFollowResource();
     }
 
     private UserCenterPageBean.Bean packageData(Bundle bundle) {
@@ -1469,11 +1481,12 @@ public class UserCenterRecordManager {
 
 
     //解决数据订阅关系
-    private void unSubscribe(Disposable disposable) {
+    public void unSubscribe(Disposable disposable) {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
+            disposable = null;
         }
-        disposable = null;
+
     }
 
     /**

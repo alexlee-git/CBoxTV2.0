@@ -35,4 +35,6 @@ public interface FollowDataSource {
 
     void getRemoteFollowList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetFollowListCallback callback);
 
+    //释放资源
+    void releaseFollowResource();
 }
