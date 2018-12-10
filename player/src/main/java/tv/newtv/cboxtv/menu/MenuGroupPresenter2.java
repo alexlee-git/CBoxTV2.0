@@ -25,6 +25,7 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.db.SqlCondition;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.SystemUtils;
@@ -515,10 +516,14 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void searchInDB(String titleName, final Node node) {
-        DataSupport.search(titleName)
+        SqlCondition sqlCondition = DataSupport.search(titleName)
                 .condition()
-                .OrderBy(DBConfig.ORDER_BY_TIME)
-                .build()
+                .OrderBy(DBConfig.ORDER_BY_TIME);
+        if("attention".equals(node.getId())){
+            sqlCondition.noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB);
+        }
+
+        sqlCondition.build()
                 .withCallback(new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {
