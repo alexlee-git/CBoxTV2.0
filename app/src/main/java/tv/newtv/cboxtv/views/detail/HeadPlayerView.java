@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tv.newtv.cboxtv.DetailTextPopuView;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.details.DescriptionActivity;
@@ -824,8 +825,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 view.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        DescriptionActivity.runAction(getContext(), mInfo.getTitle(),
-                                mInfo.getDescription());
+//                        DescriptionActivity.runAction(getContext(), mInfo.getTitle(),
+//                                mInfo.getDescription());
+                        DetailTextPopuView navPopuView = new DetailTextPopuView();
+                        navPopuView.showPopup(getContext(), getRootView(),mInfo.getTitle(),mInfo.getDescription());
                     }
                 });
             }
