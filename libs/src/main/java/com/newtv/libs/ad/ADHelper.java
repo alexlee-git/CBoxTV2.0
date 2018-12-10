@@ -249,7 +249,10 @@ public class ADHelper {
                     time += adItem.PlayTime;
                 }
             }
-            adCallback.updateTime(time, time);
+            Log.d(TAG, "time : " + time);
+            if( time > 0){
+                adCallback.updateTime(time, time);
+            }
             doNext(isReportAD);
         }
 
@@ -306,8 +309,9 @@ public class ADHelper {
             countDown.listen(new CountDown.Listen() {
                 @Override
                 public void onCount(final int t) {
+                    Log.d(TAG, "time : " + time + "ctime : " + ctime);
                     ctime++;
-                    if (adCallback != null) {
+                    if (adCallback != null && time - ctime > 0) {
                         adCallback.updateTime(time, time - ctime);
                     }
                 }
