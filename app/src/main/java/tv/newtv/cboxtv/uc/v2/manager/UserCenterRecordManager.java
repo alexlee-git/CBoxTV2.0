@@ -618,7 +618,7 @@ public class UserCenterRecordManager {
 
                 Content info = new Content();
                 info.setContentID(bean.getContentId());
-                info.setContentUUID(bean._contentuuid);
+                info.setContentUUID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -643,7 +643,7 @@ public class UserCenterRecordManager {
                 Log.d("sub", "addSubscribeToDataBase contentid : " + bean.get_contentuuid());
 
                 info.setContentID(bean.getContentId());
-                info.setContentUUID(bean._contentuuid);
+                info.setContentUUID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -665,7 +665,7 @@ public class UserCenterRecordManager {
 
                 Content info = new Content();
                 info.setContentID(bean.getContentId());
-                info.setContentUUID(bean._contentuuid);
+                info.setContentUUID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
@@ -687,7 +687,7 @@ public class UserCenterRecordManager {
 
                 Content info = new Content();
                 info.setContentID(bean.getContentId());
-                info.setContentUUID(bean._contentuuid);
+                info.setContentUUID(bean.get_contentuuid());
                 info.setContentType(bean.get_contenttype());
                 info.setVImage(bean.get_imageurl());
                 info.setTitle(bean.get_title_name());
