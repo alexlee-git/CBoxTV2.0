@@ -36,4 +36,6 @@ public interface HistoryDataSource {
 
     void getRemoteHistoryList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetHistoryListCallback callback);
 
+    //释放资源
+    void releaseHistoryResource();
 }
