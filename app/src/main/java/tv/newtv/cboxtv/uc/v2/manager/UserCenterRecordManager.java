@@ -303,17 +303,17 @@ public class UserCenterRecordManager {
 
         if (type == USER_CENTER_RECORD_TYPE.TYPE_COLLECT) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENTUUID, contentuuids);
+            bundle.putString(DBConfig.CONTENT_ID, contentuuids);
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteCollectionRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_FOLLOW) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENTUUID, contentuuids);
+            bundle.putString(DBConfig.CONTENT_ID, contentuuids);
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteFollowRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_SUBSCRIBE) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENTUUID, contentuuids);
+            bundle.putString(DBConfig.CONTENT_ID, contentuuids);
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteSubscribeRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
@@ -452,7 +452,7 @@ public class UserCenterRecordManager {
                 DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
-                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .eq(DBConfig.CONTENT_ID, contentuuids)
                         .build()
                         .withCallback(callback).excute();
             }
@@ -483,7 +483,7 @@ public class UserCenterRecordManager {
                 DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
-                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .eq(DBConfig.CONTENT_ID, contentuuids)
                         .build()
                         .withCallback(callback).excute();
                 Log.d(TAG, "单点删除本地数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
@@ -493,7 +493,7 @@ public class UserCenterRecordManager {
                 DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
-                        .eq(DBConfig.CONTENTUUID, contentuuids)
+                        .eq(DBConfig.CONTENT_ID, contentuuids)
                         .build()
                         .withCallback(callback).excute();
                 Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
@@ -515,7 +515,7 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
+        String contentuuid = bundle.getString(DBConfig.CONTENT_ID);
 
         Log.d("lxl", "userId : " + userId + ", contentuuid : " + contentuuid);
 
@@ -539,7 +539,7 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
+        String contentuuid = bundle.getString(DBConfig.CONTENT_ID);
 
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
@@ -560,7 +560,7 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String contentuuid = bundle.getString(DBConfig.CONTENTUUID);
+        String contentuuid = bundle.getString(DBConfig.CONTENT_ID);
         // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
@@ -900,7 +900,7 @@ public class UserCenterRecordManager {
         }
 
         UserCenterPageBean.Bean pageBean = new UserCenterPageBean.Bean();
-        pageBean.set_contentuuid(bundle.getString(DBConfig.CONTENTUUID));
+        pageBean.set_contentuuid(bundle.getString(DBConfig.CONTENT_ID));
         pageBean.set_title_name(bundle.getString(DBConfig.TITLE_NAME));
         pageBean.set_imageurl(bundle.getString(DBConfig.IMAGEURL));
         pageBean.setProgress(bundle.getString(DBConfig.PLAY_PROGRESS));
@@ -966,7 +966,7 @@ public class UserCenterRecordManager {
                                 Log.d("col", "需要两个表都查");
                                 DataSupport.search(DBConfig.SUBSCRIBE_TABLE_NAME)
                                         .condition()
-                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.CONTENT_ID, contentUUid)
                                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                                         .OrderBy(DBConfig.ORDER_BY_TIME)
                                         .build()
@@ -994,7 +994,7 @@ public class UserCenterRecordManager {
 
                                 DataSupport.search(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME)
                                         .condition()
-                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.CONTENT_ID, contentUUid)
                                         .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
                                         .OrderBy(DBConfig.ORDER_BY_TIME)
                                         .build()
@@ -1108,7 +1108,7 @@ public class UserCenterRecordManager {
                                 Log.d("follow", "需要两个表都查");
                                 DataSupport.search(DBConfig.ATTENTION_TABLE_NAME)
                                         .condition()
-                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.CONTENT_ID, contentUUid)
                                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                                         .OrderBy(DBConfig.ORDER_BY_TIME)
                                         .build()
@@ -1136,7 +1136,7 @@ public class UserCenterRecordManager {
 
                                 DataSupport.search(DBConfig.REMOTE_ATTENTION_TABLE_NAME)
                                         .condition()
-                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.CONTENT_ID, contentUUid)
                                         .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
                                         .OrderBy(DBConfig.ORDER_BY_TIME)
                                         .build()
@@ -1240,7 +1240,7 @@ public class UserCenterRecordManager {
                                 Log.d("col", "需要两个表都查");
                                 DataSupport.search(DBConfig.COLLECT_TABLE_NAME)
                                         .condition()
-                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.CONTENT_ID, contentUUid)
                                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                                         .OrderBy(DBConfig.ORDER_BY_TIME)
                                         .build()
@@ -1268,7 +1268,7 @@ public class UserCenterRecordManager {
 
                                 DataSupport.search(DBConfig.REMOTE_COLLECT_TABLE_NAME)
                                         .condition()
-                                        .eq(DBConfig.CONTENTUUID, contentUUid)
+                                        .eq(DBConfig.CONTENT_ID, contentUUid)
                                         .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
                                         .OrderBy(DBConfig.ORDER_BY_TIME)
                                         .build()
@@ -1339,7 +1339,7 @@ public class UserCenterRecordManager {
                                         final Long callback) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -1370,7 +1370,7 @@ public class UserCenterRecordManager {
                                           final Long callbackId) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -1399,7 +1399,7 @@ public class UserCenterRecordManager {
     Long callbackId) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
