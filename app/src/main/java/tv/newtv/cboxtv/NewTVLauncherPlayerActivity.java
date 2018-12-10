@@ -14,6 +14,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.ToastUtil;
 import com.newtv.libs.util.YSLogUtils;
@@ -243,7 +244,12 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
             finish();
             return;
         }
-        doPlay(content);
+        MainLooper.get().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doPlay(content);
+            }
+        },1000);
     }
 
     private void doPlay(Content content) {

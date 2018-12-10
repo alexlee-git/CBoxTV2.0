@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.gridsum.videotracker.play.Play;
 import com.newtv.cms.Request;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
@@ -187,7 +186,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 }
 
                 if (Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())) {
-                    Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                    if (Constant.CONTENTTYPE_PG.equals(program.getContentType())) {
+                        Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                    } else {
+                        jumpActivity(program);
+                    }
                     return;
                 }
 
@@ -207,7 +210,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             public void select(Node node) {
                 if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
                     LastNode lastNode = (LastNode) node;
-                    NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId,"11488346",lastNode.getTitle());
+                    NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, "11488346", lastNode.getTitle());
                 }
             }
         });
@@ -375,7 +378,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                                     searchLbCollect(childNode, true);
                                     node.getChild().add(1, childNode);
 
-                                    if(!TextUtils.equals(node.getChild().get(0).getId(),categoryId)){
+                                    if (!TextUtils.equals(node.getChild().get(0).getId(), categoryId)) {
                                         node.getChild().get(0).setMustRequest(true);
                                     }
                                     searchLbHistory(node.getChild().get(0));
@@ -943,7 +946,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private void searchLbHistory(final Node node) {
         DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
                 .condition()
-                .eq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
+                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
                 .withCallback(new DBCallback<String>() {
@@ -955,7 +958,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                             Type type = new TypeToken<List<DBProgram>>() {
                             }.getType();
                             List<DBProgram> list = gson.fromJson(result, type);
-                            setLbNode(list,node);
+                            setLbNode(list, node);
                         }
                     }
                 }).excute();
@@ -976,10 +979,48 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 node.setContentType(program._contenttype);
                 node.setForbidAddCollect(true);
 
-                Log.i(TAG, "setLbNode: "+node.getId());
+                Log.i(TAG, "setLbNode: " + node.getId());
                 node.setParent(parent);
                 parent.getChild().add(node);
             }
         }
+    }
+
+
+    private void jumpActivity(final Program program) {
+        String id = program.getContentID();
+        String leftString = id.substring(0, 2);
+        String rightString = id.substring(id.length() - 2, id.length());
+        Request.INSTANCE.getContent()
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        JSONObject jsonObject = new JSONObject(responseBody.string());
+                        String data = jsonObject.optString("data");
+                        com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
+                        if (content != null) {
+                            Log.i(TAG, "页面跳转: ");
+                            String csContentId = mySplit(content.getCsContentIDs());
+                            if (!TextUtils.isEmpty(csContentId)) {
+                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_PS, csContentId, "");
+                                return;
+                            }
+                            String tvContentId = mySplit(content.getTvContentIDs());
+                            if (!TextUtils.isEmpty(tvContentId)) {
+                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_TV, tvContentId, "");
+                                return;
+                            }
+                            String cgContentId = mySplit(content.getCgContentIDs());
+                            if (!TextUtils.isEmpty(cgContentId)) {
+                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_CG, cgContentId, "");
+                                return;
+                            }
+                            Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                        }
+                    }
+                });
     }
 }
