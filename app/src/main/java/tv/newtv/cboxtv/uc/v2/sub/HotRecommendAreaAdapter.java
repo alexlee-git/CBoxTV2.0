@@ -48,7 +48,14 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Program info = mDatas.get(position);
-        holder.score.setText(info.getGrade());
+        if (!TextUtils.isEmpty(info.getGrade())&& !TextUtils.equals(info.getGrade(), "null")) {
+            holder.score.setText(info.getGrade());
+        } else {
+            if (holder.score != null) {
+                holder.score.setVisibility(View.INVISIBLE);
+            }
+        }
+
         holder.name.setText(info.getTitle());
         // holder.episode.setText("更新至xxxx集");
 

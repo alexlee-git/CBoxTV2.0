@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.uc.v2.Pay;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +22,7 @@ import com.google.gson.Gson;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.uc.pay.ExterPayBean;
@@ -95,9 +95,10 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
             mVipFlag = mExterPayBean.getVipFlag();
         }
         Log.i(TAG, "mVipProductId: " + mVipProductId + "---mFlagAction: " + mFlagAction);
-        if (!TextUtils.isEmpty(Constant.ID_PAGE_MEMBER)) {
+        String idPageNumber = BootGuide.getBaseUrl(BootGuide.PAGE_MEMBER);
+        if (!TextUtils.isEmpty(idPageNumber)) {
             mContentPresenter = new PageContract.ContentPresenter(getApplicationContext(), this);
-            mContentPresenter.getPageContent(Constant.ID_PAGE_MEMBER);
+            mContentPresenter.getPageContent(idPageNumber);
         } else {
             Log.i(TAG, "wqs:ID_PAGE_MEMBER==null");
         }

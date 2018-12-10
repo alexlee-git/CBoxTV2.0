@@ -35,4 +35,6 @@ public interface CollectDataSource {
 
     void getRemoteCollectList(String token, final String userId, String appKey, String channelCode, String offset, final String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback);
 
+    //释放资源
+    void releaseCollectResource();
 }

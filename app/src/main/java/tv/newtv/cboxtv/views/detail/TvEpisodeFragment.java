@@ -21,6 +21,7 @@ import com.newtv.libs.util.GsonUtil;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
@@ -37,6 +38,7 @@ import tv.newtv.cboxtv.player.vip.VipCheck;
 public class TvEpisodeFragment extends AbsEpisodeFragment {
     private static final int mListLayout = R.layout.episode_programe_page_item_layout;
     private static final String mItemTag = "rl_focus_30_";
+    Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
     private int DEFAULT_SIZE = 30;
     private String TAG = "TvEpisodeFragment";
     private boolean hasAD = false;
@@ -224,12 +226,27 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     }
 
     @Override
-    public String getTabString(int index,int endIndex) {
+    public String getTabString(int index, int endIndex) {
         if (mData.size() == 1) {
             return mData.get(0).getPeriods();
         }
-        return String.format("%s-%s", mData.get(0).getPeriods(), mData.get(mData.size() - 1)
-                .getPeriods());
+
+        String start = mData.get(0).getPeriods();
+        String end = mData.get(mData.size() - 1).getPeriods();
+        int startInt = 0;
+        int endInt = 0;
+        if (!TextUtils.isEmpty(start) && pattern.matcher(start).matches()) {
+            startInt = Integer.parseInt(start);
+        }
+        if (!TextUtils.isEmpty(end) && pattern.matcher(end).matches()) {
+            endInt = Integer.parseInt(end);
+        }
+        if (endInt > startInt) {
+            return String.format("%s-%s", start, end);
+        } else if (startInt > endInt) {
+            return String.format("%s-%s", end, start);
+        }
+        return String.format("%s-%s", start, end);
     }
 
     @Nullable
@@ -239,8 +256,8 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
         if (contentView == null) {
             contentView = inflater.inflate(mListLayout, null, false);
         }
-        if(contentView.getParent() != null){
-            ((ViewGroup)contentView.getParent()).removeView(contentView);
+        if (contentView.getParent() != null) {
+            ((ViewGroup) contentView.getParent()).removeView(contentView);
         }
         return contentView;
     }
@@ -262,7 +279,7 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    performClick(true,true);
+                    performClick(true, true);
                 }
             });
         }
@@ -284,13 +301,13 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
 
         }
 
-        void select(){
-            if(mChange != null){
-                mChange.updateUI(this,mPosition * getPageSize() + mIndex);
+        void select() {
+            if (mChange != null) {
+                mChange.updateUI(this, mPosition * getPageSize() + mIndex);
             }
         }
 
-        void performClick(boolean fromClick,boolean dispatch) {
+        void performClick(boolean fromClick, boolean dispatch) {
             if (mChange != null) {
                 mChange.updateUI(this, mPosition * getPageSize() + mIndex);
                 mChange.onChange(this, mPosition * getPageSize() + mIndex, fromClick);
@@ -306,9 +323,9 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
                 }
                 //为剧集页添加vip功能  1 单点包月  3vip  4单点
 //                int vipFlag = Integer.parseInt(programsInfo.getVipFlag());
-                if (VipCheck.isPay(programsInfo.getVipFlag())){
+                if (VipCheck.isPay(programsInfo.getVipFlag())) {
                     mImageView.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     mImageView.setVisibility(View.GONE);
                 }
             } else {
