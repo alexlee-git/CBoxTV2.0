@@ -108,7 +108,7 @@ public class CodeExChangeActivity extends BaseActivity {
                         RequestBody requestBody = formatJson(mCodeExChangeEdit.getText().toString());
                         checkCode(token, requestBody);
                     } else {
-                        errorToast("");
+                        setErrorMessage(getResources().getString(R.string.code_exchange_fail));
                     }
                     return true;
                 }
@@ -162,7 +162,7 @@ public class CodeExChangeActivity extends BaseActivity {
                                     JSONObject js = new JSONObject(data);
                                     if (js.has("errorCode")) {
                                         Log.d(TAG, "code : " + js.getString("errorCode") + "  message : " + js.getString("errorMessage"));
-                                        setErrorMessage(Integer.parseInt(js.getString("errorCode")), js.getString("errorMessage"));
+                                        setErrorMessage(js.getString("errorMessage"));
                                     } else {
                                         setSuccessMessage();
                                     }
@@ -248,7 +248,7 @@ public class CodeExChangeActivity extends BaseActivity {
         mCodeExChangeStatus.setText(getResources().getString(R.string.code_exchange_success));
     }
 
-    private void setErrorMessage(int status, String errorMessage) {
+    private void setErrorMessage(String errorMessage) {
         /*{
             "timestamp" : 1543227530654,
                 "status" : 500,
@@ -257,35 +257,7 @@ public class CodeExChangeActivity extends BaseActivity {
                 "message" : "您输入的兑换码无效，请重新输入。",
                 "path" : "/service/exchangeCards/exchange"
         }*/
-        Log.d(TAG, "setErrorMessage status : " + status + "  message : " + errorMessage);
-        String error = null;
-        switch (status) {
-            case CODE_60800://500
-                error = getResources().getString(R.string.code_exchange_fail_0);
-                break;
-            case CODE_60801:
-                error = getResources().getString(R.string.code_exchange_fail_1);
-                break;
-            case CODE_60802:
-                error = getResources().getString(R.string.code_exchange_fail_2);
-                break;
-            case CODE_60803:
-                error = getResources().getString(R.string.code_exchange_fail_3);
-                break;
-            case CODE_60804:
-                error = getResources().getString(R.string.code_exchange_fail_4);
-                break;
-            case CODE_60805:
-                error = getResources().getString(R.string.code_exchange_fail_5);
-                break;
-            case CODE_60806:
-                error = getResources().getString(R.string.code_exchange_fail_6);
-                break;
-            default:
-                error = getResources().getString(R.string.code_exchange_fail);
-                break;
-
-        }
+        Log.d(TAG, "setErrorMessage  message : " + errorMessage);
         mCodeExChangeStatus.setVisibility(View.VISIBLE);
         mCodeExChangeStatus.setText(errorMessage);
     }
@@ -297,9 +269,5 @@ public class CodeExChangeActivity extends BaseActivity {
         InputMethodManager inputManager =
                 (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.showSoftInput(editText, 0);
-    }
-
-    private void errorToast(String error) {
-        Toast.makeText(LauncherApplication.AppContext, error, Toast.LENGTH_SHORT).show();
     }
 }
