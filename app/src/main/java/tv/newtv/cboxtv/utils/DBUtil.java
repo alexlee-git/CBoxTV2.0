@@ -9,7 +9,6 @@ import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.Data;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.Utils;
@@ -50,8 +49,11 @@ public class DBUtil {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
         Log.d("sub", "AddSubcribe contentid : " + entity.getContentID());
-        if (entity.getContentID() != null) {
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
+        if (!TextUtils.isEmpty(entity.getContentID())) {
+            contentValues.put(DBConfig.CONTENT_ID, entity.getContentID());
+        }
+        if (!TextUtils.isEmpty(entity.getContentUUID())) {
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
         }
         if (entity.getContentType() != null) {
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
@@ -200,7 +202,7 @@ public class DBUtil {
 
         String seriesUUID = mInfo.getContentID();
         if (Constant.CONTENTTYPE_CP.equals(mInfo.getContentType())) {
-            if(!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
+            if (!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
                 seriesUUID = mInfo.getCsContentIDs().split("\\|")[0];
             }
             contentValues.put(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
@@ -245,7 +247,10 @@ public class DBUtil {
 
         ContentValues contentValues = new ContentValues();
         if (!TextUtils.isEmpty(entity.getContentID())) {
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
+            contentValues.put(DBConfig.CONTENT_ID, entity.getContentID());
+        }
+        if (!TextUtils.isEmpty(entity.getContentUUID())) {
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
         }
 
         if (!TextUtils.isEmpty(entity.getContentType())) {

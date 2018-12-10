@@ -73,7 +73,7 @@ public class UserCenterUtils {
 
     //会员状态
     public static void getMemberStatus(String UUid, INotifyMemberStatusCallback callBack) {
-        QueryUserStatusUtil.getInstance().getMemberStatus(LauncherApplication.AppContext,UUid, callBack);
+        QueryUserStatusUtil.getInstance().getMemberStatus(LauncherApplication.AppContext, UUid, callBack);
     }
 
     public static void getHistoryState(final String field, final String value, final String order, IHisoryStatusCallback callack) {
@@ -259,6 +259,7 @@ public class UserCenterUtils {
             bundle.putString(DBConfig.VIDEO_TYPE, mProgramSeriesInfo.getVideoType());
             bundle.putString(DBConfig.IMAGEURL, mProgramSeriesInfo.getVImage());
             bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
+            bundle.putString(DBConfig.CONTENT_ID, mProgramSeriesInfo.getContentID());
             bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             UserCenterRecordManager.getInstance().addRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_FOLLOW,
@@ -340,7 +341,7 @@ public class UserCenterUtils {
             bundle.putString(DBConfig.CONTENTTYPE, mProgramSeriesInfo.getContentType());
             bundle.putString(DBConfig.PLAYINDEX, String.valueOf(position));
             bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
-
+            bundle.putString(DBConfig.CONTENT_ID, mProgramSeriesInfo.getContentID());
             UserCenterRecordManager.getInstance().addRecord(
                     UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_SUBSCRIBE,
                     LauncherApplication.AppContext,
@@ -426,7 +427,7 @@ public class UserCenterUtils {
     private static ExterPayBean setExterPayBean(Content mProgramSeriesInfo, String action) {
         ExterPayBean mExterPayBean = new ExterPayBean();
         mExterPayBean.setContentUUID(mProgramSeriesInfo.getContentUUID());
-        Log.d(TAG,"UUID : "+mProgramSeriesInfo.getContentUUID());
+        Log.d(TAG, "UUID : " + mProgramSeriesInfo.getContentUUID());
         mExterPayBean.setContentType(mProgramSeriesInfo.getContentType());
         mExterPayBean.setContentid(mProgramSeriesInfo.getContentID());
         mExterPayBean.setVipProductId(mProgramSeriesInfo.getVipProductId());

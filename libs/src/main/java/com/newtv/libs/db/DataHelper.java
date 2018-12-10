@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.OptionalLong;
-
 /**
  * 项目名称:         DanceTv_Android
  * 包名:            com.newtv.dancetv.db
@@ -53,17 +51,17 @@ class DataHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         Log.d("db", "onUpgrade oldversion : " + oldVersion + ", newVersion : " + newVersion);
 
-        String str = "alter table " + DBConfig.COLLECT_TABLE_NAME+" add "+DBConfig.UPDATE_TIME+" long default 0";
-        String str2 = "alter table " + DBConfig.ATTENTION_TABLE_NAME+" add "+DBConfig.UPDATE_TIME+" long default 0";
-        String str3 = "alter table " + DBConfig.SUBSCRIBE_TABLE_NAME+" add "+DBConfig.UPDATE_TIME+" long default 0";
-        String str4 = "alter table " + DBConfig.HISTORY_TABLE_NAME+" add "+DBConfig.UPDATE_TIME+" long default 0";
+        String str = "alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.UPDATE_TIME + " long default 0";
+        String str2 = "alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.UPDATE_TIME + " long default 0";
+        String str3 = "alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.UPDATE_TIME + " long default 0";
+        String str4 = "alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_TIME + " long default 0";
 
         /**
          * 数据为2时的兼容性问题
          * 数据库为2时的数据库，四个本地表都增加了一个updateTime的字段,用来储存记录的生成时间
          * 所以要做的事就是给四个表都增加一个字段
          */
-        if (newVersion == 2 && oldVersion == 1){
+        if (newVersion == 2 && oldVersion == 1) {
             sqLiteDatabase.execSQL(str);
             sqLiteDatabase.execSQL(str2);
             sqLiteDatabase.execSQL(str3);
@@ -146,6 +144,10 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
         }
 
         /**
