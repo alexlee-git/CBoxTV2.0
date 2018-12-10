@@ -161,7 +161,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
         int posSize = ModuleLayoutManager.getInstance().getSubWidgetSizeById(layoutCode);
         Log.i(TAG, "layoutCode=" + layoutCode);
         List<String> layoutList = ModuleLayoutManager.getInstance().getWidgetLayoutList
-                (layoutId);
+                (layoutCode);
         Log.i(TAG, "layoutList=" + layoutList);
 
         if (blockData.getRows() != null && blockData.getRows().size() > 0) {
