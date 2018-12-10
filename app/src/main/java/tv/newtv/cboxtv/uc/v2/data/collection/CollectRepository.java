@@ -28,7 +28,7 @@ public class CollectRepository implements CollectDataSource {
         return INSTANCE;
     }
 
-    public static void destroyInstance() {
+    public  void destroyInstance() {
         INSTANCE = null;
     }
 
@@ -45,5 +45,10 @@ public class CollectRepository implements CollectDataSource {
     @Override
     public void getRemoteCollectList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetCollectListCallback callback) {
         mRemoteDataSource.getRemoteCollectList(token, userId, appKey, channelCode, offset, limit, callback);
+    }
+
+    @Override
+    public void releaseCollectResource() {
+        mRemoteDataSource.releaseCollectResource();
     }
 }
