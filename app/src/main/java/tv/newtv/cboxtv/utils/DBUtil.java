@@ -216,7 +216,7 @@ public class DBUtil {
             }
         }
 
-        contentValues.put(DBConfig.CONTENT_ID, bundle.getString(DBConfig.CONTENT_ID));
+        contentValues.put(DBConfig.CONTENT_ID, mInfo.getContentID());
         contentValues.put(DBConfig.PLAYPOSITION, bundle.getString(DBConfig.PLAYPOSITION));
         contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
 

@@ -237,7 +237,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                 } else {
                                     entity.set_contentuuid(item.optString("programset_id"));
                                 }
-                                entity.setContentId(item.optString("contend_id"));
+                                entity.setContentId(item.optString("content_id"));
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
