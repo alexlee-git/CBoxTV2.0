@@ -54,6 +54,7 @@ public class UniversalAdapter extends RecyclerView.Adapter<UniversalViewHolder> 
         Page moduleItem = mDatas.get(0);
         String layoutCode = moduleItem.getLayoutCode(); // 形如"layout_002"
         if (TextUtils.isEmpty(layoutCode)) return null;
+        if(TextUtils.equals("search",layoutCode)) return layoutCode;
         String layoutId = layoutCode.substring(layoutCode.indexOf("_") + 1); // 形如"002"
         return "cell_" + layoutId + "_1";
     }
