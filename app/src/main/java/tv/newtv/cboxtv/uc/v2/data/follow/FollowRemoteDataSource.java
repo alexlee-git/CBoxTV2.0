@@ -76,7 +76,8 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         mType,
                         bean.get_imageurl(),
                         bean.get_contenttype(),
-                        bean.get_actiontype()
+                        bean.get_actiontype(),
+                        bean.getContentId()
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -186,7 +187,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                                 } else {
                                     entity.set_contentuuid(item.optString("programset_id"));
                                 }
-
+                                entity.setContentId(item.optString("contend_id"));
                                 entity.set_contenttype(contentType);
                                 entity.setPlayId(item.optString("program_child_id"));
                                 entity.set_title_name(item.optString("programset_name"));

@@ -299,7 +299,7 @@ public class UserCenterFragment extends BaseFragment implements
     //读取用户会员信息
     private void requestMemberInfo() {
         try {
-            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(),"").subscribeOn(Schedulers.io())
+            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(), "").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
 
                 @Override
@@ -446,7 +446,7 @@ public class UserCenterFragment extends BaseFragment implements
             }).excute();
             DataSupport.search(tableNameHistory).condition()
                     .eq(DBConfig.USERID, userId)
-                    .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
                 @Override
@@ -518,7 +518,8 @@ public class UserCenterFragment extends BaseFragment implements
                     for (int i = 0; i < programInfoList.size(); i++) {
                         mProgramInfo = new UserCenterPageBean.Bean();
                         mProgramInfo.set_title_name(programInfoList.get(i).getTitle());
-                        mProgramInfo.set_contentuuid(programInfoList.get(i).getL_id());
+                        mProgramInfo.setContentId(programInfoList.get(i).getL_id());
+                        mProgramInfo.set_contentuuid(programInfoList.get(i).getL_uuid());
                         mProgramInfo.set_contenttype(programInfoList.get(i).getL_contentType());
                         mProgramInfo.set_imageurl(programInfoList.get(i).getImg());
                         mProgramInfo.set_actiontype(programInfoList.get(i).getL_actionType());
@@ -797,9 +798,9 @@ public class UserCenterFragment extends BaseFragment implements
                 case R.id.id_module_8_view5:
                 case R.id.id_module_8_view6:
                     if (entity != null) {
-                        Log.e(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype());
+                        Log.d(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype() + "--- entity.getContentId():" + entity.getContentId());
                         JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
-                                entity.get_contentuuid(), "");
+                                entity.getContentId(), "");
                     } else {
                         switch (position) {
                             case SUBSCRIBE:

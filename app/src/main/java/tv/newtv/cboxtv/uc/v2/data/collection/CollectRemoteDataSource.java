@@ -174,7 +174,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
-                    public void onSubscribe(Disposable d) {}
+                    public void onSubscribe(Disposable d) {
+                    }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
@@ -198,8 +199,9 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                     entity.set_contentuuid(item.optString("program_child_id"));
                                 } else {
                                     entity.set_contentuuid(item.optString("programset_id"));
-                                }
 
+                                }
+                                entity.setContentId(item.optString("contend_id"));
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
