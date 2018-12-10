@@ -20,7 +20,7 @@
         android:id="@+id/suggest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/height_500px"
+        android:layout_marginTop="@dimen/height_400px"
         android:tag="suggest"
         android:visibility="gone">
 
