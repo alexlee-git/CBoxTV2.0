@@ -97,6 +97,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private String programSeries = "";
     private String contentUUID = "";
     private String categoryId;
+    private String contentType;
     private List<Node> rootNode;
 
     private boolean menuGroupIsInit = false;
@@ -120,6 +121,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private String alternateId;
 
     private Node lbCollectNode;
+    private List<String> seriesIdList = new ArrayList<>();
 
     @Override
     public void release() {
@@ -264,6 +266,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             Log.e(TAG, "isLiving");
             return false;
         }
+        seriesIdList.clear();
+        programSeries = "";
+
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
         int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
@@ -283,17 +288,18 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 Log.i(TAG, "单节目不显示栏目树");
                 break;
             case Constant.CONTENTTYPE_CP:
-                programSeries = mySplit(getStringByPriority(programSeriesInfo.getTvContentIDs(), programSeriesInfo.getCsContentIDs(), programSeriesInfo.getCgContentIDs()));
+                splitIds(programSeriesInfo.getTvContentIDs(), seriesIdList);
+                splitIds(programSeriesInfo.getCsContentIDs(), seriesIdList);
+                splitIds(programSeriesInfo.getCgContentIDs(), seriesIdList);
+//                programSeries = mySplit(getStringByPriority(programSeriesInfo.getTvContentIDs(), programSeriesInfo.getCsContentIDs(), programSeriesInfo.getCgContentIDs()));
                 contentUUID = programSeriesInfo.getContentID();
                 categoryId = mySplit(programSeriesInfo.getCategoryIDs());
                 break;
-//            case Constant.CONTENTTYPE_PS:
-//            case Constant.CONTENTTYPE_CG:
             default:
                 if (index != -1 && programSeriesInfo.getData() != null && index < programSeriesInfo.getData().size()) {
-                    programSeries = programSeriesInfo.getContentID();
                     contentUUID = programSeriesInfo.getData().get(index).getContentID();
                     categoryId = mySplit(programSeriesInfo.getCategoryIDs());
+                    programSeries = programSeriesInfo.getContentID();
                 }
                 break;
         }
@@ -304,13 +310,15 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 return false;
             }
         } else {
-            if (TextUtils.isEmpty(programSeries) || TextUtils.isEmpty(contentUUID)) {
-                Log.e(TAG, "programSeries or contentUUID can not empty,programSeries=" + programSeries + ",contentUUID=" + contentUUID);
+            if ((seriesIdList.size() == 0 && TextUtils.isEmpty(programSeries)) || TextUtils.isEmpty(contentUUID)) {
+                Log.e(TAG, "seriesIdList or programSeries or contentUUID can not empty,seriesIdList=" + seriesIdList + ",programSeries"
+                        + programSeries + ",contentUUID=" + contentUUID);
                 return false;
             }
         }
+        contentType = programSeriesInfo.getContentType();
 
-        Log.i(TAG, "programSeriesUUID=" + programSeries + ",contentUUID=" + contentUUID
+        Log.i(TAG, "seriesIdList=" + seriesIdList + ",contentUUID=" + contentUUID + "programSeries:" + programSeries
                 + ",categoryId=" + categoryId + ",isAlternate=" + isAlternate + ",alternateId=" + alternateId);
         return true;
     }
@@ -348,6 +356,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         Content content = GsonUtil.fromjson(responseBody.string(), Content.class);
                         if (content != null && content.data != null) {
                             categoryId = mySplit(content.data.categoryIDs);
+                            if(TextUtils.isEmpty(categoryId)){
+                                Log.i(TAG, "获取栏目id失败");
+                                return;
+                            }
                             getCategoryTree();
                         }
                     }
@@ -412,7 +424,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                             if (isAlternate) {
                                 getAlternateContent();
                             } else {
-                                getSeriesContent();
+                                dealIds(categoryContent);
                             }
                         }
                     }
@@ -519,8 +531,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         SqlCondition sqlCondition = DataSupport.search(titleName)
                 .condition()
                 .OrderBy(DBConfig.ORDER_BY_TIME);
-        if("attention".equals(node.getId())){
-            sqlCondition.noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB);
+        if ("attention".equals(node.getId())) {
+            sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
 
         sqlCondition.build()
@@ -842,6 +854,18 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 });
     }
 
+    private void splitIds(String str, List<String> list) {
+        if (TextUtils.isEmpty(str)) {
+            return;
+        }
+        String[] split = str.split("\\|");
+        for (String result : split) {
+            if (!TextUtils.isEmpty(result)) {
+                list.add(result);
+            }
+        }
+    }
+
     private String mySplit(String str) {
         if (TextUtils.isEmpty(str)) {
             return "";
@@ -1028,5 +1052,97 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         }
                     }
                 });
+    }
+
+    private void dealIds(CategoryContent categoryContent) {
+        if (Constant.CONTENTTYPE_CP.equals(contentType)) {
+            if (TextUtils.isEmpty(programSeries)) {
+                for (String str : seriesIdList) {
+                    for (LastNode lastNode : categoryContent.data) {
+                        if (TextUtils.equals(lastNode.getId(), str)) {
+                            programSeries = str;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (TextUtils.isEmpty(programSeries)) {
+                Log.i(TAG, "CP栏目树未匹配到对应id");
+                return;
+            }
+            getSeriesContent();
+        } else {
+            boolean match = false;
+            if (seriesIdList.size() == 0) {
+                for (LastNode lastNode : categoryContent.data) {
+                    if (TextUtils.equals(lastNode.getId(), programSeries)) {
+                        match = true;
+                    }
+                }
+            } else {
+                for (String str : seriesIdList) {
+                    for (LastNode lastNode : categoryContent.data) {
+                        if (TextUtils.equals(lastNode.getId(), str)) {
+                            programSeries = str;
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (match) {
+                getSeriesContent();
+            } else if (seriesIdList.size() == 0) {
+                getContent(categoryContent);
+            } else {
+                Log.i(TAG, contentType+"栏目树未匹配到对应id");
+            }
+        }
+    }
+
+    private void getContent(final CategoryContent categoryContent) {
+        String contentId = contentUUID;
+        String leftString = contentId.substring(0, 2);
+        String rightString = contentId.substring(contentId.length() - 2, contentId.length());
+        Request.INSTANCE.getContent()
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, contentId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        String result = responseBody.string();
+                        Log.i(TAG, "getContent: " + result);
+                        JSONObject jsonObject = new JSONObject(result);
+                        String data = jsonObject.getString("data");
+                        com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
+                        getIds(content);
+                        if(seriesIdList.size() == 0){
+                            Log.i(TAG, "获取ids失败");
+                            return;
+                        }
+                        dealIds(categoryContent);
+                     }
+                });
+    }
+
+    private void getIds(com.newtv.cms.bean.Content programSeriesInfo){
+        switch (contentType){
+            case Constant.CONTENTTYPE_PS:
+                splitIds(programSeriesInfo.getCsContentIDs(),seriesIdList);
+                splitIds(programSeriesInfo.getTvContentIDs(),seriesIdList);
+                splitIds(programSeriesInfo.getCgContentIDs(),seriesIdList);
+                break;
+            case Constant.CONTENTTYPE_TV:
+                splitIds(programSeriesInfo.getTvContentIDs(),seriesIdList);
+                splitIds(programSeriesInfo.getCsContentIDs(),seriesIdList);
+                splitIds(programSeriesInfo.getCgContentIDs(),seriesIdList);
+                break;
+            case Constant.CONTENTTYPE_CG:
+                splitIds(programSeriesInfo.getCgContentIDs(),seriesIdList);
+                splitIds(programSeriesInfo.getCsContentIDs(),seriesIdList);
+                splitIds(programSeriesInfo.getTvContentIDs(),seriesIdList);
+                break;
+        }
     }
 }
