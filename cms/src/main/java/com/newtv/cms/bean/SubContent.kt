@@ -30,8 +30,8 @@ open class SubContent : Serializable {
     var isPlay: Boolean? = false //是否是正在播放的数据
     var seriesSubUUID:String? = null//节目集id或者栏目id
     var useSeriesSubUUID:Boolean? = false
+    val issuedate:String? = null
+    val lastPublishDate:String? = null
     var year:String? = null //视频最近更新日期
-
-
 
 }
