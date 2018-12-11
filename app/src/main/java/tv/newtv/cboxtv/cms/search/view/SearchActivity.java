@@ -14,9 +14,11 @@ import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 
+import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommend;
+import tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommendNew;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchResult;
 import tv.newtv.cboxtv.cms.search.custom.SearchViewKeyboard;
 import tv.newtv.cboxtv.cms.search.listener.OnGetKeyListener;
@@ -32,14 +34,15 @@ import tv.newtv.cboxtv.cms.search.listener.OnReturnInputString;
  * 修改备注：
  */
 
-public class SearchActivity extends FragmentActivity {
+public class SearchActivity extends BaseActivity {
 
     private float SearchViewKeyboardWidth = 655;
     private boolean keyWordChange = false;
 
     private SearchViewKeyboard mSearchViewKeyboard;
     private NewTVSearchResult mSearchResult;
-    private NewTVSearchHotRecommend mHotRecommend;
+    private NewTVSearchHotRecommendNew mHotRecommend;
+//    private NewTVSearchHotRecommend mHotRecommend;
     private View mRelativeLayout;
 
     //监听输入框值变化
@@ -93,6 +96,8 @@ public class SearchActivity extends FragmentActivity {
         mSearchResult = findViewById(R.id.search_result);
         mHotRecommend = findViewById(R.id.search_hot_recommend);
         mRelativeLayout = findViewById(R.id.RelativeLayout);
+        mHotRecommend.setFragmentManager(getSupportFragmentManager());
+        mHotRecommend.setUp();
     }
 
     public void setOnKeyListener(OnGetKeyListener onGetKeyListener) {

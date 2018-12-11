@@ -1,4 +1,4 @@
-package tv.newtv.cboxtv.player.contract;
+package com.newtv.libs;
 
 import android.annotation.SuppressLint;
 
@@ -13,9 +13,12 @@ import java.util.HashMap;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/30
  */
-class Cache {
+public class Cache {
 
     public static final int CACHE_TYPE_ALTERNATE = 0x001;
+    public static final int CACHE_TYPE_NAV = 0x002;
+
+
     private static final Cache ourInstance = new Cache();
     private HashMap<Integer, HashMap<String, Object>> cacheMaps;
 
@@ -24,7 +27,7 @@ class Cache {
         cacheMaps = new HashMap<>();
     }
 
-    static Cache getInstance() {
+    public static Cache getInstance() {
         return ourInstance;
     }
 

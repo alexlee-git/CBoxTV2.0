@@ -32,7 +32,7 @@ public class DBUtil {
      */
     public static void UnSubcribe(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
@@ -46,7 +46,6 @@ public class DBUtil {
      * @param callback
      */
     public static void AddSubcribe(String userId, Content entity, Bundle bundle, DBCallback<String> callback, String tableName) {
-        //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
         Log.d("sub", "AddSubcribe contentid : " + entity.getContentID());
         if (!TextUtils.isEmpty(entity.getContentID())) {
@@ -89,7 +88,7 @@ public class DBUtil {
     public static void CheckSubscrip(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -105,7 +104,7 @@ public class DBUtil {
     public static void CheckCollect(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -124,7 +123,7 @@ public class DBUtil {
         DataSupport.delete(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .build()
                 .withCallback(callback).excute();
     }
@@ -216,7 +215,7 @@ public class DBUtil {
             }
         }
 
-        contentValues.put(DBConfig.CONTENT_ID, bundle.getString(DBConfig.CONTENT_ID));
+        contentValues.put(DBConfig.CONTENT_ID, mInfo.getContentID());
         contentValues.put(DBConfig.PLAYPOSITION, bundle.getString(DBConfig.PLAYPOSITION));
         contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
 
@@ -233,7 +232,7 @@ public class DBUtil {
 
         DataSupport.insertOrUpdate(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, seriesUUID)
+                .eq(DBConfig.CONTENT_ID, seriesUUID)
                 .build()
                 .withValue(contentValues)
                 .withCallback(callback).excute();
@@ -281,7 +280,7 @@ public class DBUtil {
 
     public static void delAttention(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
@@ -289,7 +288,7 @@ public class DBUtil {
 
     public static void delHistory(String userId, String contentuuid, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback)
@@ -324,7 +323,7 @@ public class DBUtil {
     public static void deleteCarouselChannelRecord(String contentuuid, DBCallback<String> callback) {
         DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                 .build()
                 .withCallback(callback).excute();

@@ -1,9 +1,7 @@
 package tv.newtv.cboxtv.uc.v2.sub;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
@@ -23,7 +21,6 @@ import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
-import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -34,29 +31,19 @@ import com.newtv.libs.util.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Handler;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.screenList.tablayout.TabLayout;
-import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
@@ -71,7 +58,7 @@ import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 
 
 public class CollectionProgramSetFragment extends BaseDetailSubFragment implements PageContract.View {
-    private final String TAG = "ColProgramSetFragment";
+    private final String TAG = "cpsf";
     private RecyclerView mRecyclerView;
     private View mHotRecommendArea;
     private ImageView mHotRecommendTitleIcon;
@@ -129,7 +116,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                     public void accept(Map<String, String> map) throws Exception {
                         operationType = map.get("col_operation_type");
                         operationId = map.get("col_operation_id");
-                        Log.d("lx", "type : " + operationType + ", id : " + operationId);
+                        Log.d(TAG, "type : " + operationType + ", id : " + operationId);
                     }
                 });
 
@@ -144,7 +131,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     //获取用户登录状态
     private void requestUserInfo() {
         Observable.create(new ObservableOnSubscribe<String>() {
-            @SuppressLint("LongLogTag")
             @Override
             public void subscribe(ObservableEmitter<String> e) throws Exception {
                 boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(getActivity());
@@ -264,7 +250,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     }
 
     private void requestDataByDB(String tableName) {
-        Log.d("lx", "tableName : " + tableName + ", userId : " + userId);
+        Log.d(TAG, "tableName : " + tableName + ", userId : " + userId);
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
@@ -291,7 +277,14 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                 }).excute();
     }
 
-    private void inflatePage(List<UserCenterPageBean.Bean> datas) {
+
+    @Override
+    protected void inflate(List<UserCenterPageBean.Bean> datas) {
+        inflatePage(datas);
+    }
+
+    protected void inflatePage(List<UserCenterPageBean.Bean> datas) {
+        Log.d(TAG, "inflatePage");
         if (contentView == null) {
             return;
         }
@@ -309,7 +302,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         showView(mRecyclerView);
 
         for (UserCenterPageBean.Bean item : datas) {
-            Log.d("lx", "name : " + item.get_title_name());
+            Log.d(TAG, "name : " + item.get_title_name());
         }
 
         if (mDatas == null) {
@@ -353,11 +346,12 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
+        Log.d(TAG, "hotRecommendParam : " + hotRecommendParam);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
             mContentPresenter.getPageContent(hotRecommendParam);
         } else {
-            Log.e("collectionFragment", "wqs:PAGE_SUBSCRIPTION==null");
+            Log.e(TAG, "wqs:PAGE_SUBSCRIPTION==null");
         }
     }
 

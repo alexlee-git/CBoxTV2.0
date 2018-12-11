@@ -70,6 +70,8 @@ public final class BootGuide {
     public static final String MARK_IS4K = "MARK_IS4K";
     public static final String MARK_VIPPRODUCTID = "MARK_VIPPRODUCTID";
     public static final String MARK_NEW_REALEXCLUSIVE = "MARK_NEW_REALEXCLUSIVE";
+    public static final String CNTV_USER_LOGIN_HOST = "CNTV_USER_LOGIN_HOST"; // 央视网用户中心手机登录方式所对应的域名, http://reg.cctv.com/mobile/mobileRegAndLogin.action
+
     private static HashMap<String, String> mServerAddressMap;
 
     public static void init(Context context){

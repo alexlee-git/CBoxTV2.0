@@ -44,7 +44,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 public class ContentFragment extends BaseFragment implements PageContract.ModelView {
 
     private String param;
-    private String contentId;
+    protected String contentId;
     private String parentId;
 
     @SuppressWarnings("unused")
@@ -55,7 +55,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @SuppressWarnings("unused")
     private String actionType;
 
-    private AiyaRecyclerView mRecyclerView; // 推荐位容器
+    protected AiyaRecyclerView mRecyclerView; // 推荐位容器
     private TextView mEmptyView;
     private SharedPreferences mSharedPreferences;
 
@@ -71,10 +71,19 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     private UniversalAdapter adapter;
 
+    private boolean showFirstTitle = false;
+
     public static ContentFragment newInstance(Bundle paramBundle) {
         ContentFragment fragment = new ContentFragment();
         fragment.setArguments(paramBundle);
         return fragment;
+    }
+
+    public void setShowFirstTitle(){
+        showFirstTitle = true;
+        if(adapter != null){
+            adapter.showFirstLineTitle(true);
+        }
     }
 
     @Override
@@ -350,6 +359,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 adapter = new UniversalAdapter(LauncherApplication.AppContext, mPageList);
                 adapter.setPicassoTag(contentId);
                 adapter.setPlayerUUID(contentId);
+                adapter.showFirstLineTitle(showFirstTitle);
                 Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
                 mRecyclerView.setAdapter(adapter);
             } else {
@@ -399,8 +409,15 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 .getBackground(), getUserVisibleHint());
     }
 
+
+    private boolean mUseLoading = true;
+    public void setUseLoading(boolean useLoading){
+        mUseLoading = useLoading;
+    }
+
     @Override
     public void startLoading() {
+        if(!mUseLoading) return;
         setTipVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
         setTipVisibility(View.GONE);
@@ -408,6 +425,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     @Override
     public void loadingComplete() {
+        if(!mUseLoading) return;
         loadingView.setVisibility(View.GONE);
         setTipVisibility(View.GONE);
     }

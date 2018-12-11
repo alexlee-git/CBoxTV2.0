@@ -23,6 +23,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
 /**
@@ -37,6 +38,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
     private static CollectRemoteDataSource INSTANCE;
     private Context mContext;
+    private Disposable mAddDisposable, mGetListDisposable, mDeleteDisposable;
 
     public static CollectRemoteDataSource getInstance(Context mContext) {
         if (INSTANCE == null) {
@@ -97,6 +99,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.i(TAG, "addRemoteCollect onSubscribe: ");
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
                     }
 
                     @Override
@@ -108,6 +112,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
@@ -115,6 +120,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         Log.i(TAG, "addRemoteCollect onError: ");
 
                         e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
@@ -124,8 +130,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
                     @Override
                     public void onComplete() {
-                        Log.i(TAG, "addRemoteCollect onComplete: ");
 
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
                 });
     }
@@ -160,6 +166,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.i(TAG, "deleteRemoteCollect onSubscribe: ");
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+                        mDeleteDisposable = d;
                     }
 
                     @Override
@@ -171,6 +179,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
@@ -178,6 +187,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         Log.i(TAG, "deleteRemoteCollect onError: ");
 
                         e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
@@ -189,6 +199,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                     public void onComplete() {
                         Log.i(TAG, "deleteRemoteCollect onComplete: ");
 
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
     }
@@ -205,6 +216,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.i(TAG, "getRemoteCollectList onSubscribe: ");
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+                        mGetListDisposable = d;
                     }
 
                     @Override
@@ -235,7 +248,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                     entity.set_contentuuid(item.optString("programset_id"));
 
                                 }
-                                entity.setContentId(item.optString("contend_id"));
+                                entity.setContentId(item.optString("content_id"));
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
@@ -266,6 +279,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         if (callback != null) {
                             callback.onDataNotAvailable();
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
@@ -275,6 +289,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         if (callback != null) {
                             callback.onCollectListLoaded(null, 0);
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
@@ -287,8 +302,18 @@ public class CollectRemoteDataSource implements CollectDataSource {
                     public void onComplete() {
                         Log.i(TAG, "getRemoteCollectList onComplete: ");
 
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
     }
+
+    @Override
+    public void releaseCollectResource() {
+        INSTANCE = null;
+        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+    }
+
 
 }

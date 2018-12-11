@@ -272,6 +272,11 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                 }).excute();
     }
 
+    @Override
+    protected void inflate(List<UserCenterPageBean.Bean> datas) {
+        inflatePage(datas);
+    }
+
     private void inflatePage(List<UserCenterPageBean.Bean> bean) {
         Log.d("sub", "inflatePage");
         if (contentView == null) {
@@ -334,6 +339,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_SUBSCRIPTION);
+        Log.d(TAG, "hotRecommendParam : " + hotRecommendParam);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
             mContentPresenter.getPageContent(hotRecommendParam);

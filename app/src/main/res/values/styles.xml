@@ -51,8 +51,8 @@
     </style>
 
     <style name="popu_anim" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/anim_top</item>
-        <item name="android:windowExitAnimation">@anim/anim_bottom</item>
+        <item name="android:windowEnterAnimation">@anim/anim_top_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_top_out</item>
     </style>
 
     <style name="ModulePosterBottomTitleStyle_005">

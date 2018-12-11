@@ -77,6 +77,7 @@ import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.UserInfoActivity;
 import tv.newtv.cboxtv.uc.v2.VersionUpdateOneActivity;
 import tv.newtv.cboxtv.uc.v2.aboutmine.AboutMineV2Activity;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
 import tv.newtv.cboxtv.utils.BaseObserver;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
@@ -212,6 +213,8 @@ public class UserCenterFragment extends BaseFragment implements
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mDataBaseCompleteReceiver, new IntentFilter("action.uc.data.sync.complete"));
         }
         uploadUserOnline();
+        //同步云端数据库数据
+        UserCenterRecordManager.getInstance().getUserBehaviorUtils(getActivity(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
         return view;
     }
 
@@ -712,6 +715,7 @@ public class UserCenterFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "wqs:onDestroyView");
+        UserCenterRecordManager.getInstance().releaseUserBehavior(getActivity());
     }
 
     @Override
