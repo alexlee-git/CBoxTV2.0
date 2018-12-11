@@ -1832,10 +1832,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
 
-        if (buyGoodsBusiness == null) {
-            buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
+        if(defaultConfig.playType != PLAY_TYPE_ALTERNATE){
+            if (buyGoodsBusiness == null) {
+                buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
+            }
+            buyGoodsBusiness.getAd();
         }
-        buyGoodsBusiness.getAd();
 
         if (videoDataStruct.isTrySee()) {
             isTrySee = true;
