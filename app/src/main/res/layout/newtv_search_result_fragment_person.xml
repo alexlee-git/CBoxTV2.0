@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/id_fragment_person_result_total"
-        android:layout_marginBottom="@dimen/height_28px"
         android:paddingTop="@dimen/height_20px"
         android:paddingLeft="@dimen/width_10px"
         android:paddingRight="@dimen/width_100px"
