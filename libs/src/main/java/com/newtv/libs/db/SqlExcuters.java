@@ -233,7 +233,16 @@ class SqlExcuters {
 
         @Override
         public void run() {
-            final int result = db.delete(tableName, condition.getClause(), condition.getArgs());
+            //2018.12.11 wqs 为了实现整个表清空的需求，对condition判空
+            String clause = "";
+            if (condition != null) {
+                clause = condition.getClause();
+            }
+            String[] args = {};
+            if (condition != null) {
+                args = condition.getArgs();
+            }
+            final int result = db.delete(tableName, clause, args);
             MainLooper.get().post(new Runnable() {
                 @Override
                 public void run() {
@@ -363,7 +372,7 @@ class SqlExcuters {
         @Override
         public void run() {
             Cursor cursor = null;
-            if (condition != null ) {
+            if (condition != null) {
                 cursor = db.query(condition.getDistinct(), tableName, condition.getSelect(),
                         condition.getClause(),
                         condition.getArgs(),
@@ -373,20 +382,20 @@ class SqlExcuters {
                         null);
             }
             JsonArray videoInfos = null;
-            try{
+            try {
                 if (cursor != null) {
                     cursor.moveToFirst();
                     if (cursor.getCount() > 0) {
                         videoInfos = new JsonArray();
-                         do {
+                        do {
                             videoInfos.add(translateCursor(cursor));
                         } while (cursor.moveToNext());
                     }
                     cursor.close();
                 }
-            }catch (SQLiteCantOpenDatabaseException exception){
+            } catch (SQLiteCantOpenDatabaseException exception) {
                 exception.printStackTrace();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

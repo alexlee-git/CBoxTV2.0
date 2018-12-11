@@ -202,4 +202,5 @@
     <string name="code_exchange_fail_6">兑换码未在有效期内使用。</string>
     <string name="code_exchange_tip1">说明：请您输入16位字母加数字的兑换码。</string>
     <string name="code_exchange_tip2">兑换记录请到订单管理中查看。</string>
+    <string name="user_offline_becauce_login_on_mutiple_teminal">您登录的终端已经超过数量限制，即将下线</string>
 </resources>
