@@ -40,6 +40,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -362,8 +364,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     }
                 }
 
-                if(!fullScreen || !videoPlaying){
-                    if(mNewTvAlterChange != null){
+                if (!fullScreen || !videoPlaying) {
+                    if (mNewTvAlterChange != null) {
                         mNewTvAlterChange.dismiss();
                     }
                 }
@@ -871,13 +873,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mLivePresenter = new LiveContract.LivePresenter(getContext(), this);
         mVodPresenter = new VodContract.VodPresenter(getContext(), this);
-
     }
 
     public void setSeriesInfo(Content seriesInfo) {
         if (defaultConfig.playCenter == null) {
             defaultConfig.playCenter = new VPlayCenter();
         }
+
         if (defaultConfig.playCenter != null && seriesInfo != null) {
             defaultConfig.playCenter.setSeriesInfo(seriesInfo);
         }
@@ -894,7 +896,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (bigScreen != null) bigScreen.setVisibility(GONE);
         }
 
-        if(mAlternatePresenter != null && mAlternatePresenter.equalsAlternate(alternateId)){
+        if (isFullScreen() && !equalsInfo(defaultConfig.programSeriesInfo, alternateId)) {
+            defaultConfig.ProgramIsChange = true;
+        }
+
+        if (mAlternatePresenter != null && mAlternatePresenter.equalsAlternate(alternateId)) {
             return;
         }
         if (mChangeAlternateListener != null) {
@@ -928,6 +934,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     private void playSingleOrSeries(int mIndex, int position, boolean updateState) {
         //设置播放的位置
+        stop();
+
         int index = CmsUtil.translateIndex(defaultConfig.playCenter.getCurrentSeriesInfo(), mIndex);
         defaultConfig.playCenter.setCurrentIndex(index);
         setCurrentVideoState(PlayerContract.STATE_NORMAL);
@@ -961,6 +969,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         return AInfo.getContentUUID().equals(BInfo.getContentUUID());
     }
 
+    private boolean equalsInfo(Content AInfo, String contentId) {
+        if (AInfo == null) return false;
+        if (TextUtils.isEmpty(AInfo.getContentUUID()) || TextUtils.isEmpty(contentId
+        )) {
+            return false;
+        }
+        Log.e(TAG, "AInfo Id=" + AInfo.getContentUUID() + " BInfo Id=" + contentId);
+        return AInfo.getContentUUID().equals(contentId);
+    }
+
     /*
      * 播放节目集
      * programSeriesInfo 节目集信息
@@ -971,6 +989,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void playProgramSeries(Content programSeriesInfo, boolean
             isNeedStartActivity, int index, int position, boolean updateState) {
         unshowLoadBack = false;
+
         if (isFullScreen() && !equalsInfo(defaultConfig.programSeriesInfo, programSeriesInfo)) {
             defaultConfig.ProgramIsChange = true;
         }
@@ -1023,11 +1042,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                 (getContext(), PlayerErrorCode.PROGRAM_SERIES_EMPTY));
             }
         }
-
-
     }
 
     public void playLive(LiveInfo liveInfo, boolean isNeedStartActivity, LiveListener listener) {
+        stop();
         unshowLoadBack = false;
         mLiveListener = listener;
         defaultConfig.liveInfo = liveInfo;
@@ -1082,6 +1100,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         LogUtils.i(TAG, "playProgram: ");
         if (programDetailInfo == null) {
             return;
+        }
+
+        if (isFullScreen() && !equalsInfo(defaultConfig.programSeriesInfo, programDetailInfo)) {
+            defaultConfig.ProgramIsChange = true;
         }
 
         if (updateState) {

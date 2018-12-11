@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.views.detail;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -32,15 +31,12 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -211,7 +207,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     //数据库是异步查询，网络快于数据库查询的时候导致历史进度还没渠道就开始播放视频
     private void initData(final boolean isRequest) {
-        UserCenterUtils.getHistoryState(DBConfig.CONTENTUUID, mBuilder.contentUUid, "", new
+        UserCenterUtils.getHistoryState(DBConfig.CONTENT_ID, mBuilder.contentUUid, "", new
                 IHisoryStatusCallback() {
                     @Override
                     public void getHistoryStatus(UserCenterPageBean.Bean bean) {
@@ -668,29 +664,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             }
         }
 
-        if(CmsUtil.isVideoTv(programSeriesInfo)) {
-            final boolean isDesc = "1".equals(programSeriesInfo.getPlayOrder());
-            if (programSeriesInfo.getData() != null && programSeriesInfo.getData().size() > 0) {
-                Collections.sort(programSeriesInfo.getData(), new Comparator<SubContent>() {
-                    @Override
-                    public int compare(SubContent t1, SubContent t2) {
-                        try {
-                            String valueA = TextUtils.isEmpty(t1.getPeriods()) ? "0" : t1.getPeriods();
-                            String valueB = TextUtils.isEmpty(t2.getPeriods()) ? "0" :
-                                    t2.getPeriods();
-                            if (isDesc) {
-                                return Integer.parseInt(valueB) - Integer.parseInt
-                                        (valueA);
-                            }
-                            return Integer.parseInt(valueA) - Integer.parseInt(valueB);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return 0;
-                        }
-                    }
-                });
-            }
-        }
+        CmsUtil.sortPlayList(programSeriesInfo);
 
         if (programSeriesInfo.getData() != null) {
             String playId = mBuilder.childContentUUID;

@@ -220,11 +220,9 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public void onFinish(final Content playInfo, final int index, final int position, final int
             duration) {
-        if (Constant.CONTENTTYPE_CP.equals(playInfo.getContentType())) {
-            if (TextUtils.isEmpty(playInfo.getCsContentIDs())) {
-                addHistory(playInfo, index, position, duration);
-                return;
-            } else if (Constant.CONTENTTYPE_PG.equals(playInfo.getContentType())) {
+
+        if(Constant.CONTENTTYPE_CP.equals(playInfo.getContentType())) {
+            if(TextUtils.isEmpty(playInfo.getCsContentIDs())){
                 addHistory(playInfo, index, position, duration);
                 return;
             }
@@ -257,9 +255,10 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                             addHistory(playInfo, index, position, duration);
                         }
                     });
-        } else {
-            addHistory(playInfo, index, position, duration);
+        }else{
+            addHistory(playInfo,index,position,duration);
         }
+
     }
 
     private void addHistory(final Content playInfo, final int index, final int position, final
@@ -312,8 +311,8 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
 
     @Override
     public void addLBHistory(String alternateID) {
-        if(TextUtils.isEmpty(alternateID)){
-            LogUtils.e("LauncherApplication","addLBHistory alternateID is Empty");
+        if (TextUtils.isEmpty(alternateID)) {
+            LogUtils.e("LauncherApplication", "addLBHistory alternateID is Empty");
             return;
         }
         mContentPresenter.getContent(alternateID, true, new ContentContract.View() {
