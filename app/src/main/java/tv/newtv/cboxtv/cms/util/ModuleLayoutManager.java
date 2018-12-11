@@ -370,6 +370,7 @@ public class ModuleLayoutManager {
         if (TextUtils.equals(layoutCode, "layout_032") && !Constant.canUseAlternate) {
             return false;
         }
+        if("search".equals(layoutCode)) return true;
         return Arrays.asList(layoutIds).contains(layoutCode);
     }
 

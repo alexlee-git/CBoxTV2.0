@@ -22,15 +22,12 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
-import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,7 +35,6 @@ import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
-import tv.newtv.cboxtv.player.PlayerConfig;
 
 
 /**
@@ -395,20 +391,21 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         }
         try {
             mContentList = new ArrayList<>(results);
-            if (CmsUtil.isVideoTv(seriesContent) && !TextUtils.isEmpty(seriesContent.isFinish())) {
-                final boolean sortDesc = "0".equals(seriesContent.isFinish());
-                Collections.sort(mContentList, new Comparator<SubContent>() {
-                    @Override
-                    public int compare(SubContent t1, SubContent t2) {
-                        if (sortDesc) {
-                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt
-                                    (t1.getPeriods());
-                        }
-                        return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods
-                                ());
-                    }
-                });
-            }
+            CmsUtil.sortUIList(seriesContent);
+//            if (CmsUtil.isVideoTv(seriesContent) && !TextUtils.isEmpty(seriesContent.getSortType())) {
+//                final boolean sortDesc = "1".equals(seriesContent.getSortType());
+//                Collections.sort(mContentList, new Comparator<SubContent>() {
+//                    @Override
+//                    public int compare(SubContent t1, SubContent t2) {
+//                        if (sortDesc) {
+//                            return Integer.parseInt(t2.getPeriods()) - Integer.parseInt
+//                                    (t1.getPeriods());
+//                        }
+//                        return Integer.parseInt(t1.getPeriods()) - Integer.parseInt(t2.getPeriods
+//                                ());
+//                    }
+//                });
+//            }
 
             if (mContentList != null && mContentList.size() > 0) {
                 if (mControlView != null) {

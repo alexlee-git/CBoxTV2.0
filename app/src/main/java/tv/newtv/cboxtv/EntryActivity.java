@@ -37,6 +37,7 @@ import com.newtv.libs.util.NetworkManager;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.ToastUtil;
+import com.squareup.picasso.Picasso;
 import com.trello.rxlifecycle2.components.support.RxFragmentActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -508,7 +509,11 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
             if (Constant.AD_IMAGE_TYPE.equals(type)) {
                 imageView.setVisibility(View.VISIBLE);
                 videoView.setVisibility(View.GONE);
-                imageView.setImageURI(Uri.parse(url));
+                if (url.startsWith("http://") || url.startsWith("https://")) {
+                    Picasso.get().load(url).into(imageView);
+                }else {
+                    imageView.setImageURI(Uri.parse(url));
+                }
             } else if (Constant.AD_VIDEO_TYPE.equals(type)) {
                 imageView.setVisibility(View.GONE);
                 videoView.setVisibility(View.VISIBLE);

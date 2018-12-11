@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.contract.LiveContract;
@@ -210,7 +211,9 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
 
     @Override
     public void onTimeChange(String current, String end) {
-        videoPlayerView.setTipText(String.format("%s/%s", current, end));
+        if(videoPlayerView != null && BuildConfig.DEBUG) {
+            videoPlayerView.setTipText(String.format("%s/%s", current, end));
+        }
     }
 
     @Override

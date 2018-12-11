@@ -44,7 +44,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 public class ContentFragment extends BaseFragment implements PageContract.ModelView {
 
     private String param;
-    private String contentId;
+    protected String contentId;
     private String parentId;
 
     @SuppressWarnings("unused")
@@ -55,7 +55,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @SuppressWarnings("unused")
     private String actionType;
 
-    private AiyaRecyclerView mRecyclerView; // 推荐位容器
+    protected AiyaRecyclerView mRecyclerView; // 推荐位容器
     private TextView mEmptyView;
     private SharedPreferences mSharedPreferences;
 

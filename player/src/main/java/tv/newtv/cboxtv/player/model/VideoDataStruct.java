@@ -491,6 +491,7 @@ public class VideoDataStruct implements Serializable {
 				", zone='" + zone + '\'' +
 				", desc='" + desc + '\'' +
 				", isCollect=" + isCollect +
+				", isAlternate=" + isAlternate +
 				", dataSource=" + dataSource +
 				", dataSourceStr='" + dataSourceStr + '\'' +
 				", duration=" + duration +

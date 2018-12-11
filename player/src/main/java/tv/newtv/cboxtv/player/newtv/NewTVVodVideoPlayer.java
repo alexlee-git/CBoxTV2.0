@@ -282,7 +282,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         icntvPlayerInfo.setDynamicKeyUrl(Constant.DYNAMIC_KEY);
         icntvPlayerInfo.setPlayUrl(videoDataStruct.getPlayUrl());
         icntvPlayerInfo.setSeriesID(videoDataStruct.getSeriesId());
-        icntvPlayerInfo.setDuration(videoDataStruct.getDuration() * 60 * 1000);
+        icntvPlayerInfo.setDuration(videoDataStruct.getDuration() * 1000);
         icntvPlayerInfo.setProgramId(videoDataStruct.getProgramId());
         icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
         icntvPlayerInfo.setDeviceId(Constant.UUID);

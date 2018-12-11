@@ -18,6 +18,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
+import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SystemUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -35,6 +36,7 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
@@ -95,7 +97,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     public void onResume() {
         if (!TextUtils.isEmpty(mContentUUID)) {
             prepareMediaPlayer();
-            setContentUUID(mContentUUID);
         }
     }
 
@@ -193,14 +194,21 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     }
 
     private void checkIsRecord() {
-        UserCenterRecordManager.getInstance().queryContentCollectionStatus(getContext(),
-                getContentUUID(), new ICollectionStatusCallback() {
+        DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
+                .condition()
+                .eq(DBConfig.CONTENT_ID,mContentUUID)
+                .build()
+                .withCallback(new DBCallback<String>() {
                     @Override
-                    public void notifyCollectionStatus(boolean status, Long id) {
-                        mIsCollect = status;
+                    public void onResult(int code, String result) {
+                        if(code == 0) {
+                            mIsCollect = !TextUtils.isEmpty(result);
+                        }else {
+                            mIsCollect = false;
+                        }
                         updateUI();
                     }
-                });
+                }).excute();
     }
 
     private void updateUI() {
