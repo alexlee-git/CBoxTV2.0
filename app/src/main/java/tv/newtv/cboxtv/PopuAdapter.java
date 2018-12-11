@@ -21,6 +21,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.SharePreferenceUtils;
 
 import java.util.List;
+import java.util.Map;
 
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
 
@@ -28,12 +29,19 @@ import tv.newtv.cboxtv.uc.v2.LoginActivity;
 public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private List<Nav> navs;
     private String token;
+    private List<Nav> navs;
+    private Map<Integer, Nav> map;
 
     public PopuAdapter(Context context, List<Nav> navs) {
         this.context = context;
         this.navs = navs;
+    }
+
+    public PopuAdapter(Context context, List<Nav> navs, Map<Integer, Nav> map) {
+        this.context = context;
+        this.navs = navs;
+        this.map = map;
     }
 
     @Override
@@ -119,27 +127,36 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
                 return true;
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Nav nav = navs.get(getAdapterPosition());
-                    if (nav != null) {
-                        if (!TextUtils.isEmpty(nav.getTitle())) {
-                            Class clazz = MainActivity.class;
-                            if (TextUtils.isEmpty(token)&&nav.getTitle().equals("我的")){
-                                clazz = LoginActivity.class;
-                            }
-                            Intent intent = new Intent();
-                            intent.putExtra("action", "panel");
-                            intent.putExtra("params", getAdapterPosition() + "&");
-                            intent.putExtra(Constant.ACTION_FROM, false);
-                            intent.setClass(context, clazz);
-                            context.startActivity(intent);
-                            boolean isBackground = ActivityStacks.get().isBackGround();
-                            if (!isBackground&&clazz==MainActivity.class){
-                                ActivityStacks.get().finishAllActivity();
+                Nav nav = navs.get(getAdapterPosition());
+                int adapterPosition = getAdapterPosition();
+
+                if (nav != null) {
+                    if (!TextUtils.isEmpty(nav.getTitle())) {
+                        String id = nav.getId();
+                        for (Integer i : map.keySet()) {
+                            String navId = map.get(i).getId();
+                            if (id.equals(navId)){
+                                adapterPosition = i;
                             }
                         }
+                        Class clazz = MainActivity.class;
+                        if (TextUtils.isEmpty(token) && nav.getTitle().equals("我的")) {
+                            clazz = LoginActivity.class;
+                        }
+                        Intent intent = new Intent();
+                        intent.putExtra("action", "panel");
+                        intent.putExtra("params", adapterPosition + "&");
+                        intent.putExtra(Constant.ACTION_FROM, false);
+                        intent.setClass(context, clazz);
+                        context.startActivity(intent);
+                        boolean isBackground = ActivityStacks.get().isBackGround();
+                        if (!isBackground && clazz == MainActivity.class) {
+                            ActivityStacks.get().finishAllActivity();
+                        }
                     }
-                    return true;
                 }
+                return true;
+            }
 
             return false;
         }

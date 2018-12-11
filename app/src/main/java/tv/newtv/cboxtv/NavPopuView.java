@@ -2,7 +2,6 @@ package tv.newtv.cboxtv;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,23 +13,52 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 
 import com.newtv.cms.bean.Nav;
-import com.newtv.cms.contract.NavContract;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
+import com.newtv.libs.Cache;
 import tv.newtv.cboxtv.views.widget.RecycleSpaceDecoration;
 
 public class NavPopuView extends PopupWindow {
     private View inflate;
     private HorizontalRecyclerView navRecycle;
+    private List<Nav> list;
     private List<Nav> navs;
+    private Map<Integer, Nav> map;
+
 
     public void showPopup(Context context, View parents) {
         inflate = LayoutInflater.from(context).inflate(R.layout.navigation_popu, null);
         setContentView(inflate);
         ListDataSave listDataSave = new ListDataSave(context,"navData");
         navs = listDataSave.getDataList("nav");
+        navs = Cache.getInstance().get(Cache.CACHE_TYPE_NAV, "navId");
+
+        Log.e("yml", "showPopup: "+navs.size() );
+        list = new ArrayList<>(navs.size());
+        map = new HashMap<>();
+        Nav searchNav = null, meNav = null;
+        for (int i = 0; i < navs.size(); i++) {
+            if ("搜索".equals(navs.get(i).getTitle())){
+                searchNav = navs.get(i);
+            }else if ("我的".equals(navs.get(i).getTitle())){
+                meNav = navs.get(i);
+            }else {
+                list.add(navs.get(i));
+            }
+            map.put(i,navs.get(i));
+        }
+        if (searchNav != null) {
+            list.add(0, searchNav);
+        }
+        if (meNav != null) {
+            list.add(meNav);
+        }
+
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
         setAnimationStyle(R.style.popu_anim);
@@ -47,7 +75,7 @@ public class NavPopuView extends PopupWindow {
         showAtLocation(parents, Gravity.TOP, 0, 0);
         navRecycle.addItemDecoration(new RecycleSpaceDecoration(context.getResources().getDimensionPixelSize(R.dimen.width_72px), context.getResources().getDimensionPixelSize(R.dimen.width_72px)));//new SpacesItemDecoration(ScreenUtils.dp2px(30))
 
-        PopuAdapter adapter = new PopuAdapter(context, navs);
+        PopuAdapter adapter = new PopuAdapter(context, list,map);
         navRecycle.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         navRecycle.setAdapter(adapter);
 
@@ -67,7 +95,7 @@ public class NavPopuView extends PopupWindow {
                     } else {
                         ivLeft.setVisibility(View.VISIBLE);
                     }
-                    if (lastPosition == navs.size() - 1) {
+                    if (lastPosition == list.size() - 1) {
 
                         ivRight.setVisibility(View.INVISIBLE);
 

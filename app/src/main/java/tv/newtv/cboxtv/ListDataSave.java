@@ -2,6 +2,7 @@ package tv.newtv.cboxtv;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,7 +28,6 @@ public class ListDataSave {
     public void setDataList(String tag, List<Nav> datalist) {
         if (null == datalist || datalist.size() <= 0)
             return;
-
         Gson gson = new Gson();
         //转换成json数据，再保存
         String strJson = gson.toJson(datalist, Nav.class);
