@@ -1,5 +1,9 @@
 package tv.newtv.cboxtv.uc.v2.listener;
 
+import java.util.List;
+
+import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+
 /**
  * 项目名称:         工委会Launcher
  * 包名:            tv.newtv.tvlauncher
@@ -10,4 +14,5 @@ package tv.newtv.cboxtv.uc.v2.listener;
 
 
 public interface ICarouselInfoCallback {
+    void notifyCarouselInfos(List<UserCenterPageBean.Bean> carouselInfos, long id);
 }
