@@ -38,7 +38,7 @@
         android:visibility="gone"
         />
 
-    <tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommend
+    <tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommendNew
         android:id="@+id/search_hot_recommend"
         android:layout_width="@dimen/width_1920px"
         android:layout_height="match_parent"
