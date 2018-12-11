@@ -51,6 +51,7 @@ import tv.newtv.cboxtv.uc.v2.data.history.HistoryRepository;
 import tv.newtv.cboxtv.uc.v2.data.subscribe.SubDataSource;
 import tv.newtv.cboxtv.uc.v2.data.subscribe.SubRemoteDataSource;
 import tv.newtv.cboxtv.uc.v2.data.subscribe.SubRepository;
+import tv.newtv.cboxtv.uc.v2.listener.ICarouselInfoCallback;
 import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.IFollowStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.IHisoryStatusCallback;
@@ -1176,8 +1177,7 @@ public class UserCenterRecordManager {
                         Log.e(TAG, "---queryContentFollowStatus:onError:" + e.toString());
                         CallbackForm sendCallback = callbackHashMap.get(callbackId);
                         if (sendCallback != null && sendCallback.callback != null) {
-                            ((IFollowStatusCallback) sendCallback.callback).notifyFollowStatus
-                                    (false, callbackId);
+                            ((IFollowStatusCallback) sendCallback.callback).notifyFollowStatus(false, callbackId);
                             if (sendCallback.mDisposable != null) {
                                 unSubscribe(sendCallback.mDisposable);
                             }
@@ -1335,8 +1335,7 @@ public class UserCenterRecordManager {
 
     }
 
-    private void queryCollectStatusByDB(String userId, String contentuuid, String tableName,
-                                        final Long callback) {
+    private void queryCollectStatusByDB(String userId, String contentuuid, String tableName, final Long callback) {
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.CONTENT_ID, contentuuid)
@@ -1395,8 +1394,7 @@ public class UserCenterRecordManager {
                 }).excute();
     }
 
-    private void queryFollowStatusByDB(String userId, String contentuuid, String tableName, final
-    Long callbackId) {
+    private void queryFollowStatusByDB(String userId, String contentuuid, String tableName, final Long callbackId) {
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.CONTENT_ID, contentuuid)
@@ -1427,7 +1425,42 @@ public class UserCenterRecordManager {
                 }).excute();
     }
 
-    public void removeCallback(Long id) {
+    public Long queryCarouselInfos(final String orderBy, ICarouselInfoCallback callback) {
+        final Long callbackId = System.currentTimeMillis();
+        final CallbackForm callbackForm = new CallbackForm();
+        callbackForm.callback = callback;
+        callbackHashMap.put(callbackId,callbackForm);
+
+        DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
+                .condition()
+                .OrderBy(orderBy)
+                .build()
+                .withCallback(new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        CallbackForm callbackFrom = callbackHashMap.get(callbackId);
+                        if (code == 0) {
+                            if (!TextUtils.isEmpty(result)) {
+                                if (callbackFrom != null && callbackFrom.callback != null) {
+                                    Log.d(TAG, "carousel info : " + result);
+                                    ((ICarouselInfoCallback)callbackFrom.callback).notifyCarouselInfos(null, callbackId);
+                                    removeCallback(callbackId);
+                                }
+                            } else {
+                                if (callbackFrom != null && callbackFrom.callback != null) {
+                                    ((ICarouselInfoCallback)callbackFrom.callback).notifyCarouselInfos(null, callbackId);
+                                    removeCallback(callbackId);
+                                }
+                            }
+                        }
+
+
+                    }
+                }).excute();
+        return callbackId;
+    }
+
+    public void removeCallback(Long id){
         CallbackForm callbackForm = callbackHashMap.get(id);
         if (callbackForm != null) {
             callbackForm.destroy();
