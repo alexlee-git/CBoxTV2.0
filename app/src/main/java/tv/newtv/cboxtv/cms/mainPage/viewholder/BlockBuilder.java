@@ -37,6 +37,8 @@ import java.util.Locale;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AlternatePageView;
+import tv.newtv.cboxtv.cms.search.SearchFragmentNew;
+import tv.newtv.cboxtv.cms.search.view.SearchEditView;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
@@ -57,6 +59,8 @@ public class BlockBuilder extends BaseBlockBuilder {
     public static final String TAG = BlockBuilder.class.getSimpleName();
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
+
+    private static final int SEARCH_EDIT_VIEW = 6;
 
 
     private Context mContext;
@@ -81,16 +85,22 @@ public class BlockBuilder extends BaseBlockBuilder {
     public UniversalViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         UniversalViewHolder holder = null;
         if (viewType > 0) {
-            // 根据viewType获取相应的布局文件
-            int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType
-                    (viewType);
-            if (layoutResId == R.layout.layout_module_32 && !Constant.canUseAlternate) {
-                //不允许使用轮播
-                layoutResId = R.layout.layout_module_1;
+            if (viewType == SEARCH_EDIT_VIEW){
+//                View view = LayoutInflater.from(mContext).inflate(R.layout.search_edit_holder_item, parent, false);
+                return new UniversalViewHolder(new SearchEditView(mContext),"");
+
+            }else {
+                // 根据viewType获取相应的布局文件
+                int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType
+                        (viewType);
+                if (layoutResId == R.layout.layout_module_32 && !Constant.canUseAlternate) {
+                    //不允许使用轮播
+                    layoutResId = R.layout.layout_module_1;
+                }
+                holder = new UniversalViewHolder(LayoutInflater.from(parent
+                        .getContext()).inflate
+                        (layoutResId, parent, false), PlayerUUID);
             }
-            holder = new UniversalViewHolder(LayoutInflater.from(parent
-                    .getContext()).inflate
-                    (layoutResId, parent, false), PlayerUUID);
         } else if (viewType == 0) {
             holder = new UniversalViewHolder(new AutoBlockType(parent.getContext()), PlayerUUID);
         }
@@ -109,6 +119,9 @@ public class BlockBuilder extends BaseBlockBuilder {
     public int getItemViewType(int position, Page item) {
         try {
             if (item != null) {
+                if ("search".equals( item.getBlockType())){
+                    return SEARCH_EDIT_VIEW;
+                }
                 if (!"6".equals(item.getBlockType())) {
                     String layoutCode = item.getLayoutCode();
                     if (!TextUtils.isEmpty(layoutCode)) {

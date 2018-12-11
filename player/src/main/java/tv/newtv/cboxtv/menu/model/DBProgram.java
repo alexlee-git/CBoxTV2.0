@@ -17,6 +17,7 @@ public class DBProgram {
 
     //栏目树历史播放节点必须数据
     public String _contentuuid;
+    public String _content_id;
     public String _contenttype;
     //栏目树历史播放节点必须数据
     public String _title_name;
@@ -39,7 +40,7 @@ public class DBProgram {
                 DBProgram program = list.get(i);
 
 
-                if(TextUtils.isEmpty(program._contentuuid) || TextUtils.isEmpty(program._title_name)){
+                if(TextUtils.isEmpty(program._contentuuid) || TextUtils.isEmpty(program._title_name) || TextUtils.isEmpty(program._content_id)){
                     Log.i(TAG, "过滤掉不符合的数据："+program.toString());
                     continue;
                 }
@@ -62,6 +63,7 @@ public class DBProgram {
         program.setActionType(dbProgram._actiontype);
         program.setvImage(dbProgram._imageurl);
         program.setSeriesSubUUID(dbProgram._contentuuid);
+        program.setContentID(dbProgram._content_id);
         return program;
     }
 

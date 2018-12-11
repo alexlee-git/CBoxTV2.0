@@ -35,4 +35,6 @@ public interface SubDataSource {
 
     void getRemoteSubscribeList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetSubscribeListCallback callback);
 
+    //释放资源
+    void releaseSubscribeResource();
 }
