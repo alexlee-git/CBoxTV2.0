@@ -161,6 +161,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
     public void setKey(String key) {
         key = key.trim();
         if (!TextUtils.isEmpty(currentkey) && cacheDatas != null) {
+            if(key.length() == currentkey.length()) return;
             if (key.length() < currentkey.length()) {
                 if (cacheDatas.containsKey(key)) {
                     SearchResult current = cacheDatas.remove(key);
@@ -225,6 +226,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
             if (cacheDatas != null) {
                 cacheDatas.clear();
             }
+            currentkey = "";
             currentPos = -1;
             mIsLoading = false;
             if (mSearchPresenter != null){
@@ -311,7 +313,6 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
         if (cacheDatas == null) {
             cacheDatas = new HashMap<>();
         }
-
 
         cacheDatas.put(currentkey, new SearchResult(result, total));
         mIsLoading = false;

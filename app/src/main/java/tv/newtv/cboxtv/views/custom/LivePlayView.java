@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
@@ -404,9 +405,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public void setProgramInfo(Program programInfo, boolean useDelay) {
         if (programInfo == null) return;
-        if (mProgramInfo != null) {
-            if (TextUtils.equals(mProgramInfo.toString(), programInfo.toString())) return;
-        }
+
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
         mPlayInfo.contentType = programInfo.getL_contentType();
@@ -525,7 +524,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void onTimeChange(String current, String end) {
-        mVideoPlayerView.setTipText(String.format("%s/%s", current, end));
+        if(mVideoPlayerView != null && BuildConfig.DEBUG) {
+            mVideoPlayerView.setTipText(String.format("%s/%s", current, end));
+        }
     }
 
     @Override

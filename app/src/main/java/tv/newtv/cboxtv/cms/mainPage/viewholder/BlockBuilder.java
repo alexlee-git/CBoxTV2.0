@@ -86,9 +86,7 @@ public class BlockBuilder extends BaseBlockBuilder {
         UniversalViewHolder holder = null;
         if (viewType > 0) {
             if (viewType == SEARCH_EDIT_VIEW){
-//                View view = LayoutInflater.from(mContext).inflate(R.layout.search_edit_holder_item, parent, false);
                 return new UniversalViewHolder(new SearchEditView(mContext),"");
-
             }else {
                 // 根据viewType获取相应的布局文件
                 int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType
