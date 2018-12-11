@@ -6,7 +6,7 @@ import java.util.List;
 public class DBLastNode {
     public String id;
     public String _contentuuid;
-    public String _contentid;
+    public String _content_id;
     public String _title_name;
     public String _contenttype;
     public String is_finish;
@@ -37,7 +37,7 @@ public class DBLastNode {
     public static LastNode converLastNode(DBLastNode dbLastNode){
         LastNode lastNode = new LastNode();
         lastNode.contentUUID = dbLastNode._contentuuid;
-        lastNode.contentId = dbLastNode._contentid;
+        lastNode.contentId = dbLastNode._content_id;
         lastNode.setTitle(dbLastNode._title_name);
         lastNode.setContentType(dbLastNode._contenttype);
         lastNode.isFinish = dbLastNode.is_finish;

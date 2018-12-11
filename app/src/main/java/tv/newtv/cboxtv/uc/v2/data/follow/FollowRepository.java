@@ -46,4 +46,9 @@ public class FollowRepository implements FollowDataSource {
     public void getRemoteFollowList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetFollowListCallback callback) {
         mRemoteDataSource.getRemoteFollowList(token, userId, appKey, channelCode, offset, limit, callback);
     }
+
+    @Override
+    public void releaseFollowResource() {
+        mRemoteDataSource.releaseFollowResource();
+    }
 }

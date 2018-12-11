@@ -133,6 +133,7 @@ public final class DBConfig {
     static final String CREATE_REMOTE_ATTENTION_TABLE_SQL =
             "create table " + REMOTE_ATTENTION_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -144,6 +145,7 @@ public final class DBConfig {
     static final String CREATE_ATTENTION_TABLE_SQL =
             "create table " + ATTENTION_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -155,6 +157,7 @@ public final class DBConfig {
     static final String CREATE_REMOTE_SUBSCRIBE_TABLE_SQL =
             "create table " + REMOTE_SUBSCRIBE_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -172,6 +175,7 @@ public final class DBConfig {
     static final String CREATE_SUBSCRIBE_TABLE_SQL =
             "create table " + SUBSCRIBE_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +

@@ -24,6 +24,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
 /**
@@ -38,6 +39,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
     private static HistoryRemoteDataSource INSTANCE;
     private Context mContext;
+    private Disposable mAddDisposable, mGetListDisposable, mDeleteDisposable;
 
     public static HistoryRemoteDataSource getInstance(Context mContext) {
         if (INSTANCE == null) {
@@ -104,20 +106,25 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         Log.d(TAG, "add History result : " + getServerResultMessage(responseBody));
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "add history onError");
+                        Log.d(TAG, "add history onError:e:" + e.toString());
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
                 });
     }
@@ -166,20 +173,25 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+                        mDeleteDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         Log.d(TAG, "remove history record result : " + getServerResultMessage(responseBody));
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "delete history occur error");
+                        Log.d(TAG, "delete history occur error:" + e.toString());
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
     }
@@ -199,7 +211,8 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+                        mGetListDisposable = d;
                     }
 
                     @Override
@@ -221,12 +234,10 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
                                     entity.set_contentuuid(item.optString("program_child_id"));
-                                    entity.setContentId(item.optString("content_id"));
                                 } else {
                                     entity.set_contentuuid(item.optString("programset_id"));
-                                    entity.setContentId(item.optString("contend_id"));
                                 }
-
+                                entity.setContentId(item.optString("content_id"));
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
@@ -259,6 +270,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         if (callback != null) {
                             callback.onDataNotAvailable();
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
@@ -267,12 +279,22 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         if (callback != null) {
                             callback.onHistoryListLoaded(null, 0);
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
                     public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
+    }
+
+    @Override
+    public void releaseHistoryResource() {
+        INSTANCE = null;
+        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 
     private String getServerResultMessage(ResponseBody responseBody) {

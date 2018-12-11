@@ -8,16 +8,15 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
@@ -36,7 +35,6 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 
@@ -263,11 +261,25 @@ public class CodeExChangeActivity extends BaseActivity {
     }
 
     public void showSoftInputFromWindow(EditText editText) {
-        editText.setFocusable(true);
-        editText.setFocusableInTouchMode(true);
-        editText.requestFocus();
-        InputMethodManager inputManager =
-                (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.showSoftInput(editText, 0);
+        Log.d(TAG,"showSoftInputFromWindow");
+        editText.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                editText.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputManager =
+                                (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                        Log.d(TAG,"showSoftInputFromWindow   getViewTreeObserver");
+                        editText.setFocusable(true);
+                        editText.setFocusableInTouchMode(true);
+                        editText.requestFocus();
+                        //editText.setText("");
+                    }
+                }, 100);
+                editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 }

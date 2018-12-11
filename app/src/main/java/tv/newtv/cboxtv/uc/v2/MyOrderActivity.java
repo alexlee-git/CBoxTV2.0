@@ -210,14 +210,9 @@ public class MyOrderActivity extends BaseActivity {
             }
             holder.tvResumeContent.setText(mResultListBean.getProductName());
             String payTime = mResultListBean.getPayTime();
-            String createTime = mResultListBean.getCreateTime();
             String expireTime = mResultListBean.getExpireTime();
-            if (TextUtils.isEmpty(payTime)) {
-                //购买时间为空时显示订单生成时间
-                if (!TextUtils.isEmpty(createTime)){
-                    holder.tvBuyDate.setText(transFormatDate(mResultListBean.getCreateTime()));
-                }
-            } else {
+            //产品需求-针对未支付的订单，购买时间和有效时间都不显示
+            if (!TextUtils.isEmpty(payTime)) {
                 holder.tvBuyDate.setText(transFormatDate(payTime));
             }
             if (!TextUtils.isEmpty(expireTime)){
