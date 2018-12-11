@@ -68,6 +68,16 @@ public interface IUserCenterLoginApi {
                                          @Field("client_id") String client_id,
                                          @Field("mobile") String mobile);
 
+
+
+    @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST)
+    @FormUrlEncoded
+    @GET("/regist/getVerifiCode.action")
+    Observable<ResponseBody> sendSMSCodeByCNTV(@Field("method") String method,
+                                               @Field("mobile") String mobile,
+                                               @Field("verifyCode") String verifyCode,
+                                               @Field("isCheckCode") boolean isCheckCode);
+
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/token/sms_code")
@@ -76,6 +86,14 @@ public interface IUserCenterLoginApi {
                                            @Field("client_id") String client_id,
                                            @Field("mobile") String mobile,
                                            @Field("sms_code") String sms_code);
+
+    @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST)
+    @FormUrlEncoded
+    @GET("/regist/getVerifiCode.action")
+    Observable<ResponseBody> verifySMSCodeByCNTV(@Field("method") String method,
+                                                 @Field("mobile") String mobile,
+                                                 @Field("verifyCode") String verifyCode,
+                                                 @Field("isCheckCode") boolean isCheckCode);
 
 
     //获取订单

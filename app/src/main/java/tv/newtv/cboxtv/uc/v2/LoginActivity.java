@@ -85,6 +85,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private String mVipFlag;
     private int location = -1;
     private String mContentUUID;
+    private int loginType; // 登陆方式 0:newtv;1:cctv，此参数只在手机验证码这种登录方式的情况下会用到, M站登录不需要考虑这个变量
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -224,6 +225,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 mDeviceCode = mJsonObject.optString("device_code");
                                 mQRcode = mJsonObject.optString("veriﬁcation_uri_complete");
                                 expires = mJsonObject.optInt("expires_in");
+                                loginType = mJsonObject.optInt("login_type");
                                 mQrcodeUtil.createQRImage(mQRcode, getResources().getDimensionPixelOffset(R.dimen.width_448px),
                                         getResources().getDimensionPixelOffset(R.dimen.height_448px), mBitmap, img_login);
 
