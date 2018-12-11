@@ -1055,7 +1055,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void dealIds(CategoryContent categoryContent) {
-        //单节目情况
         if (Constant.CONTENTTYPE_CP.equals(contentType)) {
             if (TextUtils.isEmpty(programSeries)) {
                 for (String str : seriesIdList) {
@@ -1068,7 +1067,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 }
             }
             if (TextUtils.isEmpty(programSeries)) {
-                Log.i(TAG, "栏目树未匹配到对应id");
+                Log.i(TAG, "CP栏目树未匹配到对应id");
                 return;
             }
             getSeriesContent();
@@ -1095,6 +1094,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 getSeriesContent();
             } else if (seriesIdList.size() == 0) {
                 getContent(categoryContent);
+            } else {
+                Log.i(TAG, contentType+"栏目树未匹配到对应id");
             }
         }
     }
