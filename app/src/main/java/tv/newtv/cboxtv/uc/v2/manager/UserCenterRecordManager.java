@@ -611,118 +611,149 @@ public class UserCenterRecordManager {
      * 批量插入数据至数据库
      */
     public void addCollectToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
-        if (list != null) {
-            Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                UserCenterPageBean.Bean bean = iterator.next();
-
-                Content info = new Content();
-                info.setContentID(bean.getContentId());
-                info.setContentUUID(bean.get_contentuuid());
-                info.setContentType(bean.get_contenttype());
-                info.setVImage(bean.get_imageurl());
-                info.setTitle(bean.get_title_name());
-                // info.setrSubScript(bean.getSuperscript());
-                info.setGrade(bean.getGrade());
-
-                Bundle bundle = new Bundle();
-                bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
-                DBUtil.PutCollect(userId, info, bundle, callback, tableName);
+        try {
+            if (list != null) {
+                DBUtil.clearTableAll(tableName, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        Log.d(TAG, "wqs:addCollectToDataBase:clear:code:" + code);
+                        Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            UserCenterPageBean.Bean bean = iterator.next();
+                            Content info = new Content();
+                            info.setContentID(bean.getContentId());
+                            info.setContentUUID(bean.get_contentuuid());
+                            info.setContentType(bean.get_contenttype());
+                            info.setVImage(bean.get_imageurl());
+                            info.setTitle(bean.get_title_name());
+                            // info.setrSubScript(bean.getSuperscript());
+                            info.setGrade(bean.getGrade());
+                            Bundle bundle = new Bundle();
+                            bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
+                            DBUtil.PutCollect(userId, info, bundle, callback, tableName);
+                        }
+                    }
+                });
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:addCollectToDataBase:Exception:" + e.toString());
         }
     }
 
     public void addSubscribeToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
-        if (list != null) {
-            Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                UserCenterPageBean.Bean bean = iterator.next();
-
-                Content info = new Content();
-
-                Log.d("sub", "addSubscribeToDataBase contentid : " + bean.get_contentuuid());
-
-                info.setContentID(bean.getContentId());
-                info.setContentUUID(bean.get_contentuuid());
-                info.setContentType(bean.get_contenttype());
-                info.setVImage(bean.get_imageurl());
-                info.setTitle(bean.get_title_name());
-                info.setGrade(bean.getGrade());
-                // info.setrSuperScript(bean.getSuperscript());
-
-                Bundle bundle = new Bundle();
-                bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
-                DBUtil.AddSubcribe(userId, info, bundle, callback, tableName);
+        try {
+            if (list != null) {
+                DBUtil.clearTableAll(tableName, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        Log.d(TAG, "wqs:addSubscribeToDataBase:clear:code:" + code);
+                        Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            UserCenterPageBean.Bean bean = iterator.next();
+                            Content info = new Content();
+                            info.setContentID(bean.getContentId());
+                            info.setContentUUID(bean.get_contentuuid());
+                            info.setContentType(bean.get_contenttype());
+                            info.setVImage(bean.get_imageurl());
+                            info.setTitle(bean.get_title_name());
+                            info.setGrade(bean.getGrade());
+                            // info.setrSuperScript(bean.getSuperscript());
+                            Bundle bundle = new Bundle();
+                            bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
+                            DBUtil.AddSubcribe(userId, info, bundle, callback, tableName);
+                        }
+                    }
+                });
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:addSubscribeToDataBase:Exception:" + e.toString());
         }
     }
 
     public void addFollowToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
-        if (list != null) {
-            Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                UserCenterPageBean.Bean bean = iterator.next();
-
-                Content info = new Content();
-                info.setContentID(bean.getContentId());
-                info.setContentUUID(bean.get_contentuuid());
-                info.setContentType(bean.get_contenttype());
-                info.setVImage(bean.get_imageurl());
-                info.setTitle(bean.get_title_name());
-                // info.setrSubScript(bean.getSuperscript());
-                info.setGrade(bean.getGrade());
-
-                Bundle bundle = new Bundle();
-                bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
-                DBUtil.addAttention(userId, info, bundle, callback, tableName);
+        try {
+            if (list != null) {
+                DBUtil.clearTableAll(tableName, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        Log.d(TAG, "wqs:addFollowToDataBase:clear:code:" + code);
+                        Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            UserCenterPageBean.Bean bean = iterator.next();
+                            Content info = new Content();
+                            info.setContentID(bean.getContentId());
+                            info.setContentUUID(bean.get_contentuuid());
+                            info.setContentType(bean.get_contenttype());
+                            info.setVImage(bean.get_imageurl());
+                            info.setTitle(bean.get_title_name());
+                            // info.setrSubScript(bean.getSuperscript());
+                            info.setGrade(bean.getGrade());
+                            Bundle bundle = new Bundle();
+                            bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
+                            DBUtil.addAttention(userId, info, bundle, callback, tableName);
+                        }
+                    }
+                });
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:addFollowToDataBase:Exception:" + e.toString());
         }
     }
 
     public void addHistoryToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
-        if (list != null) {
-            Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
-            while (iterator.hasNext()) {
-                UserCenterPageBean.Bean bean = iterator.next();
-
-                Content info = new Content();
-                info.setContentID(bean.getContentId());
-                info.setContentUUID(bean.get_contentuuid());
-                info.setContentType(bean.get_contenttype());
-                info.setVImage(bean.get_imageurl());
-                info.setTitle(bean.get_title_name());
-                // info.setrSuperScript(bean.getSuperscript());
-                info.setGrade(bean.getGrade());
-                info.setVideoType(bean.getVideoType());
-
-                if (TextUtils.isEmpty(bean.getPlayId())) {
-                    List<SubContent> programsInfos = new ArrayList<>(Constant.BUFFER_SIZE_4);
-                    SubContent item = new SubContent();
-                    item.setContentID(bean.getPlayId());
-                    item.setPeriods(bean.getPlayIndex());
-                    programsInfos.add(item);
-                    info.setData(programsInfos);
-                }
-
-                String playIndex = bean.getPlayIndex();
-                String playPos = bean.getPlayPosition();
-                int playIdx = 0;
-                int playPosition = 0;
-                if (!TextUtils.isEmpty(playIndex)) {
-                    playIdx = Integer.parseInt(playIndex.trim());
-                }
-                if (!TextUtils.isEmpty(playPos)) {
-                    playPosition = Integer.parseInt(playPos.trim());
-                }
-
-                Bundle bundle = new Bundle();
-                bundle.putString(DBConfig.PLAY_PROGRESS, bean.getProgress());
-                bundle.putString(DBConfig.PLAYINDEX, String.valueOf(playIndex));
-                bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(playPosition));
-                bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
-                bundle.putString(DBConfig.CONTENT_DURATION, bean.getDuration());
-                DBUtil.addHistory(userId, info, bundle, callback, tableName);
+        try {
+            if (list != null) {
+                DBUtil.clearTableAll(tableName, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        Log.d(TAG, "wqs:addHistoryToDataBase:clear:code:" + code);
+                        Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            UserCenterPageBean.Bean bean = iterator.next();
+                            Content info = new Content();
+                            info.setContentID(bean.getContentId());
+                            info.setContentUUID(bean.get_contentuuid());
+                            info.setContentType(bean.get_contenttype());
+                            info.setVImage(bean.get_imageurl());
+                            info.setTitle(bean.get_title_name());
+                            // info.setrSuperScript(bean.getSuperscript());
+                            info.setGrade(bean.getGrade());
+                            info.setVideoType(bean.getVideoType());
+                            if (TextUtils.isEmpty(bean.getPlayId())) {
+                                List<SubContent> programsInfos = new ArrayList<>(Constant.BUFFER_SIZE_4);
+                                SubContent item = new SubContent();
+                                item.setContentID(bean.getPlayId());
+                                item.setPeriods(bean.getPlayIndex());
+                                programsInfos.add(item);
+                                info.setData(programsInfos);
+                            }
+                            String playIndex = bean.getPlayIndex();
+                            String playPos = bean.getPlayPosition();
+                            int playIdx = 0;
+                            int playPosition = 0;
+                            if (!TextUtils.isEmpty(playIndex)) {
+                                playIdx = Integer.parseInt(playIndex.trim());
+                            }
+                            if (!TextUtils.isEmpty(playPos)) {
+                                playPosition = Integer.parseInt(playPos.trim());
+                            }
+                            Bundle bundle = new Bundle();
+                            bundle.putString(DBConfig.PLAY_PROGRESS, bean.getProgress());
+                            bundle.putString(DBConfig.PLAYINDEX, String.valueOf(playIndex));
+                            bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(playPosition));
+                            bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
+                            bundle.putString(DBConfig.CONTENT_DURATION, bean.getDuration());
+                            DBUtil.addHistory(userId, info, bundle, callback, tableName);
+                        }
+                    }
+                });
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:addHistoryToDataBase:Exception:" + e.toString());
         }
     }
 
