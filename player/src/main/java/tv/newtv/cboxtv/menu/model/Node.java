@@ -245,4 +245,21 @@ public class Node {
             node.setPid(getId());
         }
     }
+
+    public boolean containId(String id){
+        if(TextUtils.isEmpty(id)){
+            return false;
+        }
+        if(TextUtils.equals(id,getId())){
+            return true;
+        }
+        Node node = parent;
+        while(node != null){
+            if(TextUtils.equals(id,node.getId())){
+                return true;
+            }
+            node = node.getParent();
+        }
+        return false;
+    }
 }
