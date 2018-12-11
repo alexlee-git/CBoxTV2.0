@@ -245,9 +245,9 @@ public class ADHelper {
             ctime = 0;
             time = 0;
             for (ADItem adItem : adItems) {
-                if (!adItem.isFailed) {
+                //if (!adItem.isFailed) {
                     time += adItem.PlayTime;
-                }
+                //}
             }
             Log.d(TAG, "time : " + time);
             if( time > 0){

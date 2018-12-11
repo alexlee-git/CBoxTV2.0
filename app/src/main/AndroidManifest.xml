@@ -164,7 +164,7 @@
         <activity android:name=".uc.v2.member.MemberAgreementActivity" />
         <activity android:name=".uc.v2.member.UserAgreementActivity" />
         <activity android:name=".uc.v2.CodeExChangeActivity"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
+            android:windowSoftInputMode="adjustUnspecified|stateAlwaysVisible"/>
 
         <meta-data
             android:name="appKey"
