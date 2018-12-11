@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -1191,8 +1192,19 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             addHistory();
             PlayerConfig.getInstance().setJumpAD(NeedJumpAd);
             NeedJumpAd = false;
-            if (defaultConfig.isFullScreen) {
+            if (isFullScreen()) {
                 createMenuGroup();
+            } else if (getWidth() == 0) {
+                getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        Log.i(TAG, "onGlobalLayout: ");
+                        if (isFullScreen()) {
+                            createMenuGroup();
+                        }
+                        NewTVLauncherPlayerView.this.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                });
             }
         }
 
