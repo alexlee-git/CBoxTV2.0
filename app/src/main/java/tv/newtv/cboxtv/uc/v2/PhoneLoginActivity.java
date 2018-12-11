@@ -42,7 +42,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.BaseActivity;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.player.vip.VipCheck;
@@ -89,7 +91,8 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private boolean mFlagAuth;
     private boolean isSendOK = true;
     private String mContentUUID;
-
+    private String mExternalAction;
+    private String mExternalParams;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +102,8 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
         mFlagAuth = getIntent().getBooleanExtra("isAuth", false);
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
+        mExternalAction = getIntent().getStringExtra("action");
+        mExternalParams = getIntent().getStringExtra("params");
         Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay);
         if (mExterPayBean != null) {
             Log.i(TAG, "mExterPayBean = " + mExterPayBean.toString());
@@ -331,7 +336,11 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                     startActivity(mIntent);
                                 }
                             }
-                            finish();
+                            if (TextUtils.isEmpty(mExternalAction)&&TextUtils.isEmpty(mExternalParams)){
+                                finish();
+                            }else {
+                                jumpActivity();
+                            }
                         }
                     }
                     break;
@@ -340,6 +349,19 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             return false;
         }
     });
+
+    private void jumpActivity() {
+        Class clazz = MainActivity.class;
+        Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
+        intent.putExtra("action", mExternalAction);
+        intent.putExtra("params", mExternalParams);
+        startActivity(intent);
+        boolean isBackground = ActivityStacks.get().isBackGround();
+        if (!isBackground && clazz == MainActivity.class) {
+            ActivityStacks.get().finishAllActivity();
+        }
+        finish();
+    }
 
     public boolean checkMobile(String mobile) {
         if (mobile.equals(null)) {

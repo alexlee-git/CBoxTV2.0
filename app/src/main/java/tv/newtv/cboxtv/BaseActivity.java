@@ -56,6 +56,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
     private AdContract.Presenter adPresenter;
     private AdPopupWindow adPopupWindow;
     private List<ILifeCycle> lifeCycleList;
+    private NavPopuView navPopuView;
 
     public void lifeCycle(ILifeCycle lifeCycle) {
         lifeCycleList.add(lifeCycle);
@@ -80,7 +81,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
 
         lifeCycleList = new ArrayList<>();
         ActivityStacks.get().onCreate(this);
-
+        navPopuView = new NavPopuView();//实例化popu
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra(Constant.ACTION_FROM)) {
@@ -192,6 +193,8 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
             lifeCycleList.clear();
         }
         lifeCycleList = null;
+
+        navPopuView.dismiss();
     }
 
     @Override
@@ -225,7 +228,7 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
                 View nextFocus = FocusFinder.getInstance().findNextFocus((ViewGroup) rootView,
                         focusView, View.FOCUS_UP);
                 if (isDetail() && nextFocus == null) {
-                    NavPopuView navPopuView = new NavPopuView();
+
                     navPopuView.showPopup(this, rootView);
                 }
             }

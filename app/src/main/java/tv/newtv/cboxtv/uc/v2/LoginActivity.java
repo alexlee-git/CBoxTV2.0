@@ -40,7 +40,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.BaseActivity;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.player.vip.VipCheck;
@@ -85,6 +87,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private String mVipFlag;
     private int location = -1;
     private String mContentUUID;
+    private String mExternalAction;
+    private String mExternalParams;
+    private int loginType; // 登陆方式 0:newtv;1:cctv，此参数只在手机验证码这种登录方式的情况下会用到, M站登录不需要考虑这个变量
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,6 +100,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         location = getIntent().getIntExtra("location", -1);
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
         mFlagAuth = getIntent().getBooleanExtra("isAuth", false);
+        mExternalAction = getIntent().getStringExtra("action");
+        mExternalParams = getIntent().getStringExtra("params");
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         if (mExterPayBean != null) {
             Log.i(TAG, "mExterPayBean: " + mExterPayBean);
@@ -224,6 +231,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 mDeviceCode = mJsonObject.optString("device_code");
                                 mQRcode = mJsonObject.optString("veriﬁcation_uri_complete");
                                 expires = mJsonObject.optInt("expires_in");
+                                loginType = mJsonObject.optInt("login_type");
                                 mQrcodeUtil.createQRImage(mQRcode, getResources().getDimensionPixelOffset(R.dimen.width_448px),
                                         getResources().getDimensionPixelOffset(R.dimen.height_448px), mBitmap, img_login);
 
@@ -323,7 +331,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                             startActivity(mIntent);
                                         }
                                     }
-                                    finish();
+
+                                    if (TextUtils.isEmpty(mExternalAction)&&TextUtils.isEmpty(mExternalParams)){
+                                        finish();
+                                    }else {
+                                        jumpActivity();
+                                    }
                                 }
 
                             } catch (Exception e) {
@@ -351,6 +364,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void jumpActivity() {
+        Class clazz = MainActivity.class;
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("action", mExternalAction);
+        intent.putExtra("params", mExternalParams);
+        startActivity(intent);
+        boolean isBackground = ActivityStacks.get().isBackGround();
+        if (!isBackground && clazz == MainActivity.class) {
+            ActivityStacks.get().finishAllActivity();
+        }
+        finish();
+
     }
 
     @Override

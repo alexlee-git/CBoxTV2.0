@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.utils.BaseObserver;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
@@ -103,27 +103,45 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "addRemoteHistory onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                         mAddDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.d(TAG, "add History result : " + getServerResultMessage(responseBody));
+                        Log.i(TAG, "addRemoteHistory onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            Log.d(TAG, "add History result : " + getServerResultMessage(responseString));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "addRemoteHistory onError: ");
                         Log.d(TAG, "add history onError:e:" + e.toString());
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "addRemoteHistory dealwithUserOffline: ");
+
+
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "addRemoteHistory onComplete: ");
+
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
                 });
@@ -170,27 +188,45 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         contentUUid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "deleteRemoteHistory onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                         mDeleteDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.d(TAG, "remove history record result : " + getServerResultMessage(responseBody));
+                        Log.i(TAG, "deleteRemoteHistory onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            Log.d(TAG, "add History result : " + getServerResultMessage(responseString));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "deleteRemoteHistory onError: ");
                         Log.d(TAG, "delete history occur error:" + e.toString());
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "deleteRemoteHistory dealwithUserOffline: ");
+
+
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "deleteRemoteHistory onComplete: ");
+
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
@@ -208,18 +244,22 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "getRemoteHistoryList onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                         mGetListDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "getRemoteHistoryList onNext: ");
                         try {
                             int totalSize = 0;
-                            JSONObject jsonObject = new JSONObject(responseBody.string());
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            JSONObject jsonObject = new JSONObject(responseString);
                             JSONObject data = jsonObject.getJSONObject("data");
                             JSONArray list = data.optJSONArray("list");
                             totalSize = data.optInt("end");
@@ -275,7 +315,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "get history list error:" + e.toString());
+                        Log.i(TAG, "getRemoteHistoryList onError: ");
                         if (callback != null) {
                             callback.onHistoryListLoaded(null, 0);
                         }
@@ -283,7 +323,13 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "getRemoteHistoryList dealwithUserOffline: ");
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "getRemoteHistoryList onComplete: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
@@ -297,15 +343,15 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 
-    private String getServerResultMessage(ResponseBody responseBody) {
+    private String getServerResultMessage(String str) {
         String result = "";
         try {
-            JSONObject jsonObject = new JSONObject(responseBody.string());
+            JSONObject jsonObject = new JSONObject(str);
             return jsonObject.optString("message");
         } catch (JSONException e) {
             e.printStackTrace();
             result = "parse json occur error";
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result = "parse responseBody occur error";
         }

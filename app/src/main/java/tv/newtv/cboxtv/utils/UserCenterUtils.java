@@ -13,10 +13,15 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
+import com.newtv.libs.util.ToastUtil;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
+import retrofit2.adapter.rxjava2.HttpException;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
@@ -254,7 +259,7 @@ public class UserCenterUtils {
             action_type 动作类型*/
 
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentID());
+            bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentUUID());
             bundle.putString(DBConfig.TITLE_NAME, mProgramSeriesInfo.getTitle());
             bundle.putString(DBConfig.VIDEO_TYPE, mProgramSeriesInfo.getVideoType());
             bundle.putString(DBConfig.IMAGEURL, mProgramSeriesInfo.getVImage());
@@ -328,7 +333,7 @@ public class UserCenterUtils {
             action_type 动作类型*/
         if (mProgramSeriesInfo != null) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentID());
+            bundle.putString(DBConfig.CONTENTUUID, mProgramSeriesInfo.getContentUUID());
             bundle.putString(DBConfig.TITLE_NAME, mProgramSeriesInfo.getTitle());
             bundle.putString(DBConfig.IMAGEURL, mProgramSeriesInfo.getVImage());
             bundle.putString(DBConfig.CONTENT_GRADE, mProgramSeriesInfo.getGrade());
@@ -437,5 +442,50 @@ public class UserCenterUtils {
         mExterPayBean.setTitle(mProgramSeriesInfo.getTitle());
         return mExterPayBean;
     }
+    private static final int USER_OFFLINE = 100026;
 
+    public static boolean isUserOffline(String str){
+        if(TextUtils.isEmpty(str)){
+            return false;
+        }
+        try {
+            JSONObject jsonObject = new JSONObject(str);
+            int errorCode = jsonObject.optInt("errorCode");
+            int code = jsonObject.optInt("code");
+            if(USER_OFFLINE == errorCode || USER_OFFLINE == code){
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean isUserOffline(Throwable e) {
+        try {
+            if(e instanceof HttpException){
+                HttpException exception = (HttpException)e;
+                String responseString = exception.response().errorBody().string();
+                JSONObject jsonObject = new JSONObject(responseString);
+                String code = jsonObject.optString("code");
+                if(USER_OFFLINE == Integer.parseInt(code)){
+                    return true;
+                }
+            }
+        } catch (Exception e1){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static void userOfflineStartLoginActivity(Activity activity){
+        Log.i(TAG, "userOfflineStartLoginActivity: ");
+        ToastUtil.showToast(activity,activity.getResources().getString(R.string.user_offline_becauce_login_on_mutiple_teminal));
+
+        activity.startActivity(new Intent(activity,LoginActivity.class));
+
+        activity.finish();
+
+    }
 }

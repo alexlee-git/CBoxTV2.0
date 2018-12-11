@@ -264,6 +264,8 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             super(view);
             mIndex = postion;
             mChange = change;
+            mPosition = pos;
+            mPageSize = pageSize;
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

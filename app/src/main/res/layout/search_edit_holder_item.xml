@@ -8,11 +8,13 @@
     >
 
     <FrameLayout
+        android:tag="search"
         android:id="@+id/search_layout"
         android:layout_width="@dimen/width_899px"
         android:layout_height="@dimen/height_147px"
         android:layout_marginTop="@dimen/height_100px"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/selector_pos_background_27px"
         android:clickable="true"
         android:focusable="true">
 
@@ -23,13 +25,7 @@
             android:background="@drawable/search_button"
             android:scaleType="fitCenter" />
 
-        <ImageView
-            android:id="@+id/focus_view"
-            android:layout_width="@dimen/width_845px"
-            android:layout_height="@dimen/height_92px"
-            android:background="@drawable/pos_zui"
-            android:scaleType="fitCenter"
-            android:visibility="invisible" />
+
     </FrameLayout>
 
 </RelativeLayout>

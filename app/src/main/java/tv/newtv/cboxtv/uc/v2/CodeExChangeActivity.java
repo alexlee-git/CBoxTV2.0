@@ -8,16 +8,15 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
@@ -27,7 +26,6 @@ import com.newtv.libs.util.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -36,9 +34,10 @@ import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 public class CodeExChangeActivity extends BaseActivity {
 
@@ -146,7 +145,7 @@ public class CodeExChangeActivity extends BaseActivity {
                     getCodeExChange(token, requestBody)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
+                    .subscribe(new BaseObserver<ResponseBody>() {
 
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -157,6 +156,7 @@ public class CodeExChangeActivity extends BaseActivity {
                             //{"errorCode" : 60800,"errorMessage" : "您输入的兑换码无效，请重新输入。"}
                             try {
                                 String data = responseBody.string();
+                                checkUserOffline(data);
                                 Log.d(TAG, "data : " + data);
                                 if (!TextUtils.isEmpty(data)) {
                                     JSONObject js = new JSONObject(data);
@@ -178,6 +178,11 @@ public class CodeExChangeActivity extends BaseActivity {
                         }
 
                         @Override
+                        public void dealwithUserOffline() {
+                            UserCenterUtils.userOfflineStartLoginActivity(CodeExChangeActivity.this);
+                        }
+
+                        @Override
                         public void onComplete() {
                         }
                     });
@@ -195,7 +200,7 @@ public class CodeExChangeActivity extends BaseActivity {
                     .getCodeExChangeQRCode(Authorization, response_type, client_id, Libs.get().getChannelId(), EXCHANGE_CARD_STATE)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
+                    .subscribe(new BaseObserver<ResponseBody>() {
 
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -206,6 +211,7 @@ public class CodeExChangeActivity extends BaseActivity {
                         public void onNext(ResponseBody responseBody) {
                             try {
                                 String data = responseBody.string();
+                                checkUserOffline(data);
                                 Log.i(TAG, "Login Qrcode :" + data.toString());
                                 JSONObject mJsonObject = new JSONObject(data);
                                 mQRcode = mJsonObject.optString("veriﬁcation_uri_complete");
@@ -232,6 +238,12 @@ public class CodeExChangeActivity extends BaseActivity {
                                     e1.printStackTrace();
                                 }
                             }
+                        }
+
+                        @Override
+                        public void dealwithUserOffline() {
+                            Log.i(TAG, "dealwithUserOffline: ");
+                            UserCenterUtils.userOfflineStartLoginActivity(CodeExChangeActivity.this);
                         }
 
                         @Override
@@ -263,11 +275,25 @@ public class CodeExChangeActivity extends BaseActivity {
     }
 
     public void showSoftInputFromWindow(EditText editText) {
-        editText.setFocusable(true);
-        editText.setFocusableInTouchMode(true);
-        editText.requestFocus();
-        InputMethodManager inputManager =
-                (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.showSoftInput(editText, 0);
+        Log.d(TAG,"showSoftInputFromWindow");
+        editText.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                editText.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        InputMethodManager inputManager =
+                                (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputManager.showSoftInput(editText, InputMethodManager.SHOW_FORCED);
+                        Log.d(TAG,"showSoftInputFromWindow   getViewTreeObserver");
+                        editText.setFocusable(true);
+                        editText.setFocusableInTouchMode(true);
+                        editText.requestFocus();
+                        //editText.setText("");
+                    }
+                }, 100);
+                editText.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
     }
 }

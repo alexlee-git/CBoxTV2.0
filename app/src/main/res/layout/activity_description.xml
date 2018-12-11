@@ -7,6 +7,7 @@
     android:paddingTop="@dimen/width_110px"
     android:paddingRight="@dimen/width_200px"
     android:orientation="vertical"
+    android:background="@drawable/detail_bg"
     >
 
     <TextView
