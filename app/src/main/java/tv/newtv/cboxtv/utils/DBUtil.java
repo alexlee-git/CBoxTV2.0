@@ -46,7 +46,6 @@ public class DBUtil {
      * @param callback
      */
     public static void AddSubcribe(String userId, Content entity, Bundle bundle, DBCallback<String> callback, String tableName) {
-        //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
         Log.d("sub", "AddSubcribe contentid : " + entity.getContentID());
         if (!TextUtils.isEmpty(entity.getContentID())) {

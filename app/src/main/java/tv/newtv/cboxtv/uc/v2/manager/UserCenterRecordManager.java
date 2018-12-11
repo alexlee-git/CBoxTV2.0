@@ -641,7 +641,7 @@ public class UserCenterRecordManager {
 
                 Content info = new Content();
 
-                Log.d("sub", "addSubscribeToDataBase contentid : " + bean.get_contentuuid());
+                Log.d("sub", "addSubscribeToDataBase contentid : " + bean.getContentId() + ", contentuuid : " + bean.get_contentuuid());
 
                 info.setContentID(bean.getContentId());
                 info.setContentUUID(bean.get_contentuuid());
@@ -901,7 +901,7 @@ public class UserCenterRecordManager {
         }
 
         UserCenterPageBean.Bean pageBean = new UserCenterPageBean.Bean();
-        pageBean.set_contentuuid(bundle.getString(DBConfig.CONTENT_ID));
+        pageBean.set_contentuuid(bundle.getString(DBConfig.CONTENTUUID));
         pageBean.set_title_name(bundle.getString(DBConfig.TITLE_NAME));
         pageBean.set_imageurl(bundle.getString(DBConfig.IMAGEURL));
         pageBean.setProgress(bundle.getString(DBConfig.PLAY_PROGRESS));
