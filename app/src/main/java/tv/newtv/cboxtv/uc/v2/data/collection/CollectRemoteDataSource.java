@@ -12,16 +12,17 @@ import com.newtv.libs.util.SharePreferenceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.utils.BaseObserver;
 
 
 /**
@@ -32,7 +33,7 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
  * 创建日期:     2018/9/26 0021
  */
 public class CollectRemoteDataSource implements CollectDataSource {
-    private static final String TAG = "lx";
+    private static final String TAG = CollectRemoteDataSource.class.getSimpleName();
 
     private static CollectRemoteDataSource INSTANCE;
     private Context mContext;
@@ -91,25 +92,39 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        Log.i(TAG, "addRemoteCollect onSubscribe: ");
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-
+                        Log.i(TAG, "addRemoteCollect onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "addRemoteCollect onError: ");
+
                         e.printStackTrace();
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "addRemoteCollect dealwithUserOffline: ");
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "addRemoteCollect onComplete: ");
 
                     }
                 });
@@ -140,25 +155,39 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         programset_ids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        Log.i(TAG, "deleteRemoteCollect onSubscribe: ");
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-
+                        Log.i(TAG, "deleteRemoteCollect onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "deleteRemoteCollect onError: ");
+
                         e.printStackTrace();
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "deleteRemoteCollect dealwithUserOffline: ");
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "deleteRemoteCollect onComplete: ");
 
                     }
                 });
@@ -172,16 +201,21 @@ public class CollectRemoteDataSource implements CollectDataSource {
                 .getCollectList(Authorization, userId, "", Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "getRemoteCollectList onSubscribe: ");
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "getRemoteCollectList onNext: ");
+
                         try {
                             int totalSize = 0;
-                            JSONObject jsonObject = new JSONObject(responseBody.string());
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            JSONObject jsonObject = new JSONObject(responseString);
                             JSONObject data = jsonObject.getJSONObject("data");
                             JSONArray list = data.optJSONArray("list");
                             totalSize = data.optInt("end");
@@ -236,14 +270,22 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "get Collect list error:" + e.toString());
+                        Log.i(TAG, "getRemoteCollectList onError: ");
+
                         if (callback != null) {
                             callback.onCollectListLoaded(null, 0);
                         }
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "getRemoteCollectList dealwithUserOffline: ");
+
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "getRemoteCollectList onComplete: ");
 
                     }
                 });

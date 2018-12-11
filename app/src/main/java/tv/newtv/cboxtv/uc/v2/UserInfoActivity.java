@@ -7,12 +7,10 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.libs.Constant;
-import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 
@@ -21,7 +19,6 @@ import org.json.JSONObject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -30,6 +27,7 @@ import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.utils.BaseObserver;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
@@ -171,7 +169,14 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
                     .getUser(Authorization)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
+                    .subscribe(new BaseObserver<ResponseBody>() {
+
+                        @Override
+                        public void dealwithUserOffline() {
+                            Log.i(TAG, "dealwithUserOffline: ");
+                            UserCenterUtils.userOfflineStartLoginActivity(UserInfoActivity.this);
+
+                        }
 
                         @Override
                         public void onSubscribe(Disposable d) {
@@ -180,9 +185,11 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
 
                         @Override
                         public void onNext(ResponseBody responseBody) {
+                            Log.i(TAG, "onNext: ");
                             try {
                                 String data = responseBody.string();
-                                Log.i("getResult---", data + "----");
+                                Log.i(TAG, data + "----");
+                                checkUserOffline(data);
                                 JSONObject jsonObject = new JSONObject(data);
                                 String phone = jsonObject.optString("mobile");
                                 if (phone.length() == 11) {
@@ -207,6 +214,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
 
                         @Override
                         public void onError(Throwable e) {
+                            Log.i(TAG, "onError: ");
+                            super.onError(e);
                             if (disposable_user != null) {
                                 disposable_user.dispose();
                                 disposable_user = null;

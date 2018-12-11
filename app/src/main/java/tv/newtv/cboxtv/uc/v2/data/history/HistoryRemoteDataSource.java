@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.utils.BaseObserver;
 
 
 /**
@@ -101,23 +101,40 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "addRemoteHistory onSubscribe: ");
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.d(TAG, "add History result : " + getServerResultMessage(responseBody));
+                        Log.i(TAG, "addRemoteHistory onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            Log.d(TAG, "add History result : " + getServerResultMessage(responseString));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "add history onError");
+                        Log.i(TAG, "addRemoteHistory onError: ");
+
+                    }
+
+                    @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "addRemoteHistory dealwithUserOffline: ");
+
                     }
 
                     @Override
                     public void onComplete() {
+                        Log.i(TAG, "addRemoteHistory onComplete: ");
+
                     }
                 });
     }
@@ -163,23 +180,40 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         contentUUid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "deleteRemoteHistory onSubscribe: ");
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.d(TAG, "remove history record result : " + getServerResultMessage(responseBody));
+                        Log.i(TAG, "deleteRemoteHistory onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            Log.d(TAG, "add History result : " + getServerResultMessage(responseString));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "delete history occur error");
+                        Log.i(TAG, "deleteRemoteHistory onError: ");
+
+                    }
+
+                    @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "deleteRemoteHistory dealwithUserOffline: ");
+
                     }
 
                     @Override
                     public void onComplete() {
+                        Log.i(TAG, "deleteRemoteHistory onComplete: ");
+
                     }
                 });
     }
@@ -196,17 +230,20 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        Log.i(TAG, "getRemoteHistoryList onSubscribe: ");
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "getRemoteHistoryList onNext: ");
                         try {
                             int totalSize = 0;
-                            JSONObject jsonObject = new JSONObject(responseBody.string());
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            JSONObject jsonObject = new JSONObject(responseString);
                             JSONObject data = jsonObject.getJSONObject("data");
                             JSONArray list = data.optJSONArray("list");
                             totalSize = data.optInt("end");
@@ -261,27 +298,33 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "get history list error:" + e.toString());
+                        Log.i(TAG, "getRemoteHistoryList onError: ");
                         if (callback != null) {
                             callback.onHistoryListLoaded(null, 0);
                         }
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "getRemoteHistoryList dealwithUserOffline: ");
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "getRemoteHistoryList onComplete: ");
                     }
                 });
     }
 
-    private String getServerResultMessage(ResponseBody responseBody) {
+    private String getServerResultMessage(String str) {
         String result = "";
         try {
-            JSONObject jsonObject = new JSONObject(responseBody.string());
+            JSONObject jsonObject = new JSONObject(str);
             return jsonObject.optString("message");
         } catch (JSONException e) {
             e.printStackTrace();
             result = "parse json occur error";
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result = "parse responseBody occur error";
         }

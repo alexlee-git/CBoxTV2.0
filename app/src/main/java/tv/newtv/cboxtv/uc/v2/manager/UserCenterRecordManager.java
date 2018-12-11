@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.uc.v2.manager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.VpnService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -255,10 +254,13 @@ public class UserCenterRecordManager {
                 .subscribe(new Observer<Bundle>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "addRecord onSubscribe: ");
                     }
 
                     @Override
                     public void onNext(Bundle bundle) {
+                        Log.i(TAG, "addRecord onNext: ");
+
                         if (bundle == null) {
                             return;
                         }
@@ -283,11 +285,13 @@ public class UserCenterRecordManager {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "addRecord onError: ");
 
                     }
 
                     @Override
                     public void onComplete() {
+                        Log.i(TAG, "addRecord onComplete: ");
 
                     }
                 });
