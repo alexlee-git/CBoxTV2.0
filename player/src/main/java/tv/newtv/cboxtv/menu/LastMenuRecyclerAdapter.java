@@ -133,17 +133,27 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
                         v.setBackgroundResource(R.drawable.menu_group_item_focus);
                     }else {
                         v.setBackgroundResource(R.drawable.one_focus);
+                        setSelect(holder,true);
                     }
                 } else if (isCurrentPlay(program)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
+                    setSelect(holder,false);
                 } else {
                     v.setBackgroundResource(R.color.color_transparent);
+                    setSelect(holder,false);
                 }
             }
         });
 
         if(position == 0){
             firstPositionView = holder.itemView;
+        }
+    }
+
+    private void setSelect(RecyclerView.ViewHolder holder,boolean select){
+        if(holder instanceof  Holder){
+            Holder h = (Holder) holder;
+            h.tv.setSelected(select);
         }
     }
 
