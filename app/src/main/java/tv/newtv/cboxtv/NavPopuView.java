@@ -35,7 +35,9 @@ public class NavPopuView extends PopupWindow {
         inflate = LayoutInflater.from(context).inflate(R.layout.navigation_popu, null);
         setContentView(inflate);
         navs = Cache.getInstance().get(Cache.CACHE_TYPE_NAV, "navId");
-
+        if (navs==null){
+            return;
+        }
         list = new ArrayList<>(navs.size());
         map = new HashMap<>();
         Nav searchNav = null, meNav = null;
