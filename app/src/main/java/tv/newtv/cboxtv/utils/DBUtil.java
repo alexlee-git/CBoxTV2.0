@@ -295,6 +295,19 @@ public class DBUtil {
                 .excute();
     }
 
+    /**
+     * 清空表数据
+     *
+     * @param tableName 表名
+     * @param callback  回调
+     */
+    public static void clearTableAll(String tableName, DBCallback<String> callback) {
+        Log.d("wqs", "wqs:clearTableData:tableName：" + tableName);
+        DataSupport.delete(tableName)
+                .withCallback(callback)
+                .excute();
+    }
+
     public static void addCarouselChannelRecord(String userId, String tableName, Bundle bundle, DBCallback<String> callback) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(DBConfig.CONTENTUUID, bundle.getString(DBConfig.CONTENTUUID));
