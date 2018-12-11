@@ -133,7 +133,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.outerControl();
         mPopupMenuWidget = new popupMenuWidget(view.getContext().getApplicationContext(),
-                news_recycle, Gravity.BOTTOM, new popupMenuWidget.IPopupWidget() {
+                news_recycle, Gravity.LEFT, new popupMenuWidget.IPopupWidget() {
             @Override
             public KeyAction[] getRegisterKeyActions() {
                 return new KeyAction[]{
