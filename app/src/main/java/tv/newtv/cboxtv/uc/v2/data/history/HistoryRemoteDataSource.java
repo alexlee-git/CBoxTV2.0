@@ -24,6 +24,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
 /**
@@ -38,6 +39,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
     private static HistoryRemoteDataSource INSTANCE;
     private Context mContext;
+    private Disposable mAddDisposable, mGetListDisposable, mDeleteDisposable;
 
     public static HistoryRemoteDataSource getInstance(Context mContext) {
         if (INSTANCE == null) {
@@ -71,7 +73,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String userId = SharePreferenceUtils.getUserId(mContext);
 
-        Log.d(TAG, "report history item, user_id " + userId);
+        Log.d(TAG, "report history item, user_id " + userId + ", content_id : " + entity.getContentId());
 
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
@@ -97,26 +99,32 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.get_contenttype(),
                         entity.getPlayIndex(),
                         entity.get_actiontype(),
-                        entity.getProgramChildName())
+                        entity.getProgramChildName(),
+                        entity.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         Log.d(TAG, "add History result : " + getServerResultMessage(responseBody));
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "add history onError");
+                        Log.d(TAG, "add history onError:e:" + e.toString());
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
                 });
     }
@@ -165,20 +173,25 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+                        mDeleteDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
                         Log.d(TAG, "remove history record result : " + getServerResultMessage(responseBody));
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, "delete history occur error");
+                        Log.d(TAG, "delete history occur error:" + e.toString());
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
     }
@@ -198,7 +211,8 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+                        mGetListDisposable = d;
                     }
 
                     @Override
@@ -223,14 +237,12 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                 } else {
                                     entity.set_contentuuid(item.optString("programset_id"));
                                 }
-
+                                entity.setContentId(item.optString("content_id"));
                                 entity.set_contenttype(contentType);
 
-                                // entity.set_contentuuid(item.optString("programset_id"));
                                 entity.setPlayId(item.optString("program_child_id"));
                                 entity.set_title_name(item.optString("programset_name"));
                                 entity.setIs_program(item.optString("is_program"));
-
                                 entity.set_actiontype(item.optString("action_type"));
                                 entity.set_imageurl(item.optString("poster"));
                                 entity.setGrade(item.optString("score"));
@@ -244,7 +256,6 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                 entity.setUpdateTime(Long.parseLong(item.optString("program_watch_date")) / 1000);
                                 entity.setDuration(String.valueOf(item.optLong("program_dur")));
                                 entity.setPlayPosition(String.valueOf(item.optLong("program_watch_dur")));
-
                                 infos.add(entity);
                             }
 
@@ -259,6 +270,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         if (callback != null) {
                             callback.onDataNotAvailable();
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
@@ -267,12 +279,22 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         if (callback != null) {
                             callback.onHistoryListLoaded(null, 0);
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
                     public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
+    }
+
+    @Override
+    public void releaseHistoryResource() {
+        INSTANCE = null;
+        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 
     private String getServerResultMessage(ResponseBody responseBody) {

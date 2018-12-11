@@ -21,4 +21,9 @@ public class LastNode extends Node {
     public String getId() {
         return contentId;
     }
+
+    @Override
+    public void setId(String id) {
+        this.contentId = id;
+    }
 }

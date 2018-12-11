@@ -1,30 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/id_frameLayout_hot_recommend_list"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clickable="true"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:focusable="true">
+    >
 
-
-    <ImageView
-        android:id="@+id/id_hot_recommend_imageView_poster"
-        android:layout_width="@dimen/width_240px"
-        android:layout_height="@dimen/height_360px"
-        android:layout_marginLeft="@dimen/width_33px"
-        android:layout_marginTop="@dimen/height_33px"
-        android:scaleType="fitXY"
-        android:focusable="false" />
-
-    <ImageView
-        android:id="@+id/id_hot_recommend_imageView_focus"
-        android:layout_width="@dimen/width_306px"
-        android:layout_height="@dimen/height_426px"
-        android:background="@drawable/pos_zui"
-        android:focusable="false"
-        android:visibility="invisible" />
+    <FrameLayout
+        android:id="@+id/ai_sou_focus_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/selector_pos_background_27px"
+        >
+        <ImageView
+            android:id="@+id/id_hot_recommend_imageView_poster"
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:scaleType="fitXY"
+            android:focusable="false" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/id_hot_recommend_title"
@@ -40,15 +36,4 @@
         android:gravity="left"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true" />
-
-    <TextView
-        android:id="@+id/id_hot_recommend_poster_title"
-        style="@style/StyleSearchResultPosterTitle"
-        android:layout_width="@dimen/width_228px"
-        android:layout_height="@dimen/height_28px"
-        android:layout_marginLeft="@dimen/width_35px"
-        android:layout_marginRight="@dimen/width_24px"
-        android:layout_marginTop="@dimen/height_342px"
-        android:focusable="false"
-        android:gravity="left" />
 </FrameLayout>

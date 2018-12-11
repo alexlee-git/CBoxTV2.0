@@ -46,4 +46,9 @@ public class SubRepository implements SubDataSource {
     public void getRemoteSubscribeList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetSubscribeListCallback callback) {
         mRemoteDataSource.getRemoteSubscribeList(token, userId, appKey, channelCode, offset, limit, callback);
     }
+
+    @Override
+    public void releaseSubscribeResource() {
+        mRemoteDataSource.releaseSubscribeResource();
+    }
 }

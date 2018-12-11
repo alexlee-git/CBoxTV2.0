@@ -5,13 +5,17 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import com.newtv.cms.CmsServicePresenter
+import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
 import com.newtv.cms.ICmsView
+import com.newtv.cms.api.IDefault
+import com.newtv.libs.BootGuide
 import com.newtv.libs.Constant
 import com.newtv.libs.Libs
 import com.newtv.libs.ad.ADConfig
 import com.newtv.libs.ad.ADHelper
 import com.newtv.libs.util.LogUtils
+import com.newtv.libs.util.SystemUtils
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import io.reactivex.Observer
@@ -34,6 +38,8 @@ class AdContract {
         fun getCurrentAdItem(): ADHelper.AD.ADItem?
 
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?)
+
+        fun getAdByUrl(url: String)
 
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?)
 
@@ -69,6 +75,30 @@ class AdContract {
 
     class AdPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
+
+        var default: IDefault? = null
+
+        fun AdPresenter() {
+            default = getService(SERVICE_DEFAULT)
+        }
+
+        override fun getAdByUrl(url: String) {
+            val reqUrl: String = String.format("%s/ad?deviceid=%s&at=%s",
+                    BootGuide.getBaseUrl(BootGuide.AD),
+                    SystemUtils.getDeviceMac(context),
+                    url
+            )
+            default?.getJson(reqUrl, object : DataObserver<String> {
+                override fun onResult(result: String, requestCode: Long) {
+                    val bf: StringBuffer = StringBuffer(result)
+                    parseAdResult(bf, null, view)
+                }
+
+                override fun onError(desc: String?) {
+                    view?.onError(context, desc)
+                }
+            })
+        }
 
         override fun getCurrentAdItem(): ADHelper.AD.ADItem? {
             return adItem

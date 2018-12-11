@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.uc.v2.member;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -241,7 +240,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
     //读取用户会员信息
     private void requestMemberInfo() {
         try {
-            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(),"").subscribeOn(Schedulers.io())
+            NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(), "").subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
 
                 @Override
@@ -460,7 +459,8 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                             if (programInfoList != null && programInfoList.size() > 0) {
                                 mProgramInfo = new UserCenterPageBean.Bean();
                                 mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                                mProgramInfo.set_contentuuid(programInfoList.get(0).getL_id());
+                                mProgramInfo.setContentId(programInfoList.get(0).getL_id());
+                                mProgramInfo.set_contentuuid(programInfoList.get(0).getL_uuid());
                                 mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
                                 mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
@@ -480,7 +480,8 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                             programInfoList = pageList.get(i).getPrograms();
                             mProgramInfo = new UserCenterPageBean.Bean();
                             mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                            mProgramInfo.set_contentuuid(programInfoList.get(0).getL_id());
+                            mProgramInfo.setContentId(programInfoList.get(0).getL_id());
+                            mProgramInfo.set_contentuuid(programInfoList.get(0).getL_uuid());
                             mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
                             mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                             mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
@@ -501,7 +502,8 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                             for (int j = 0; j < programInfoList.size(); j++) {
                                 mProgramInfo = new UserCenterPageBean.Bean();
                                 mProgramInfo.set_title_name(programInfoList.get(j).getTitle());
-                                mProgramInfo.set_contentuuid(programInfoList.get(j).getL_id());
+                                mProgramInfo.setContentId(programInfoList.get(j).getL_id());
+                                mProgramInfo.set_contentuuid(programInfoList.get(j).getL_uuid());
                                 mProgramInfo.set_contenttype(programInfoList.get(j).getL_contentType());
                                 mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
@@ -691,7 +693,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                 case R.id.id_module_8_view6:
                     if (entity != null) {
                         JumpUtil.activityJump(this, entity.get_actiontype(), entity.get_contenttype(),
-                                entity.get_contentuuid(), "");
+                                entity.getContentId(), "");
                     }
                     break;
                 default:
@@ -703,7 +705,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
             intent.setClass(this, mPageClass);
             startActivity(intent);
             if (mPageClass == MainActivity.class) {
-                if (!isBackground){
+                if (!isBackground) {
                     ActivityStacks.get().finishAllActivity();
                 }
                 this.finish();

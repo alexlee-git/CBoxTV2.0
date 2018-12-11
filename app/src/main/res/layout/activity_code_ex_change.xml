@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     tools:context="tv.newtv.cboxtv.uc.v2.CodeExChangeActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/code_exchange_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <include
@@ -19,9 +21,9 @@
             android:id="@+id/code_exchange_input_tip"
             android:layout_width="@dimen/width_864px"
             android:layout_height="@dimen/height_44px"
-            android:layout_marginLeft="@dimen/width_360px"
-            android:layout_marginStart="@dimen/width_360px"
-            android:layout_marginTop="@dimen/height_68px"
+            android:layout_marginLeft="@dimen/width_290px"
+            android:layout_marginStart="@dimen/width_290px"
+            android:layout_marginTop="@dimen/height_178px"
             android:includeFontPadding="false"
             android:text="@string/code_exchange_input"
             android:textColor="#FFFFFFFF"
@@ -29,43 +31,81 @@
 
         <EditText
             android:id="@+id/code_exchange_input_edit"
-            android:layout_width="@dimen/width_476px"
+            android:layout_width="@dimen/width_780px"
             android:layout_height="@dimen/height_100px"
-            android:layout_marginLeft="@dimen/width_360px"
-            android:layout_marginStart="@dimen/width_360px"
-            android:layout_marginTop="@dimen/height_24px"
+            android:layout_marginLeft="@dimen/width_290px"
+            android:layout_marginStart="@dimen/width_290px"
+            android:layout_marginTop="@dimen/height_36px"
             android:background="@drawable/shape_user_phone_login_key"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:textCursorDrawable="@null"
             android:imeOptions="actionDone"
             android:maxLength="16"
             android:paddingLeft="@dimen/width_48px"
+            android:paddingRight="@dimen/width_48px"
             android:singleLine="true"
             android:textColor="#FFFFFFFF"
-            android:textSize="@dimen/height_36px" />
+            android:textSize="@dimen/height_36px"
+            android:layout_below="@+id/code_exchange_input_tip"/>
 
         <TextView
-            android:id="@+id/code_exchange_tip"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/height_42px"
-            android:layout_marginLeft="@dimen/width_360px"
-            android:layout_marginStart="@dimen/width_360px"
+            android:id="@+id/code_exchange_tip1"
+            android:layout_width="@dimen/width_780px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_290px"
+            android:layout_marginStart="@dimen/width_290px"
             android:layout_marginTop="@dimen/height_12px"
             android:includeFontPadding="false"
-            android:text="@string/code_exchange_tip"
+            android:text="@string/code_exchange_tip1"
             android:textColor="#80FFFFFF"
-            android:textSize="@dimen/height_28px" />
+            android:layout_below="@+id/code_exchange_input_edit"
+            android:textSize="@dimen/height_24px" />
+
+        <TextView
+            android:id="@+id/code_exchange_tip2"
+            android:layout_width="@dimen/width_780px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/width_290px"
+            android:layout_marginStart="@dimen/width_290px"
+            android:layout_marginTop="@dimen/height_12px"
+            android:layout_marginBottom="@dimen/width_12px"
+            android:includeFontPadding="false"
+            android:text="@string/code_exchange_tip2"
+            android:textColor="#80FFFFFF"
+            android:layout_below="@+id/code_exchange_tip1"
+            android:textSize="@dimen/height_24px" />
 
         <TextView
             android:id="@+id/code_exchange_status"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/width_780px"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/width_360px"
-            android:layout_marginStart="@dimen/width_360px"
-            android:text="@string/code_exchange_tip"
+            android:layout_marginLeft="@dimen/width_290px"
+            android:layout_marginStart="@dimen/width_290px"
+            android:text="@string/code_exchange_tip1"
+            android:layout_below="@+id/code_exchange_tip2"
             android:textColor="#FFFFFF"
             android:textSize="@dimen/height_36px"
             android:visibility="gone" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/code_exchange_qrcode_tip"
+            android:layout_width="@dimen/width_282px"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/height_178px"
+            android:includeFontPadding="false"
+            android:layout_alignParentRight="true"
+            android:textColor="#FFFFFFFF"
+            android:textSize="@dimen/height_42px"
+            android:layout_marginRight="@dimen/width_326px"
+            android:text="@string/code_exchange_qrcode"/>
+        
+        <ImageView
+            android:id="@+id/code_exchange_qrcode"
+            android:layout_width="@dimen/width_282px"
+            android:layout_height="@dimen/height_282px"
+            android:layout_marginTop="@dimen/height_24px"
+            android:layout_below="@+id/code_exchange_qrcode_tip"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/width_326px"/>
+        
+    </RelativeLayout>
 </FrameLayout>

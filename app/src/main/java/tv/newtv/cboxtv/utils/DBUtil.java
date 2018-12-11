@@ -9,7 +9,6 @@ import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.Data;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.Utils;
@@ -33,7 +32,7 @@ public class DBUtil {
      */
     public static void UnSubcribe(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
@@ -50,8 +49,11 @@ public class DBUtil {
         //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
         Log.d("sub", "AddSubcribe contentid : " + entity.getContentID());
-        if (entity.getContentID() != null) {
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
+        if (!TextUtils.isEmpty(entity.getContentID())) {
+            contentValues.put(DBConfig.CONTENT_ID, entity.getContentID());
+        }
+        if (!TextUtils.isEmpty(entity.getContentUUID())) {
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
         }
         if (entity.getContentType() != null) {
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
@@ -87,7 +89,7 @@ public class DBUtil {
     public static void CheckSubscrip(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -103,7 +105,7 @@ public class DBUtil {
     public static void CheckCollect(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -122,7 +124,7 @@ public class DBUtil {
         DataSupport.delete(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .build()
                 .withCallback(callback).excute();
     }
@@ -135,9 +137,9 @@ public class DBUtil {
      */
     public static void PutCollect(String userId, Content entity, Bundle bundle, DBCallback<String> callback, String tableName) {
         if (entity != null) {
-            //TODO 写入本地数据库 历史记录
             ContentValues contentValues = new ContentValues();
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
+            contentValues.put(DBConfig.CONTENT_ID, entity.getContentID());
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
             contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
             contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
@@ -200,13 +202,13 @@ public class DBUtil {
 
         String seriesUUID = mInfo.getContentID();
         if (Constant.CONTENTTYPE_CP.equals(mInfo.getContentType())) {
-            if(!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
+            if (!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
                 seriesUUID = mInfo.getCsContentIDs().split("\\|")[0];
             }
             contentValues.put(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
             contentValues.put(DBConfig.PLAYID, mInfo.getContentUUID());
-        }else{
-            seriesUUID = mInfo.getContentID();
+        } else {
+            seriesUUID = mInfo.getContentUUID();
             if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
                 if (mInfo.getData() != null && mInfo.getData().size() != 0) {
                     contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
@@ -214,8 +216,9 @@ public class DBUtil {
             }
         }
 
+        contentValues.put(DBConfig.CONTENT_ID, mInfo.getContentID());
         contentValues.put(DBConfig.PLAYPOSITION, bundle.getString(DBConfig.PLAYPOSITION));
-        contentValues.put(DBConfig.CONTENTUUID,seriesUUID);
+        contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
 
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (!TextUtils.isEmpty(updateTime)) {
@@ -230,7 +233,7 @@ public class DBUtil {
 
         DataSupport.insertOrUpdate(tableName)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, seriesUUID)
+                .eq(DBConfig.CONTENT_ID, seriesUUID)
                 .build()
                 .withValue(contentValues)
                 .withCallback(callback).excute();
@@ -244,7 +247,10 @@ public class DBUtil {
 
         ContentValues contentValues = new ContentValues();
         if (!TextUtils.isEmpty(entity.getContentID())) {
-            contentValues.put(DBConfig.CONTENTUUID, entity.getContentID());
+            contentValues.put(DBConfig.CONTENT_ID, entity.getContentID());
+        }
+        if (!TextUtils.isEmpty(entity.getContentUUID())) {
+            contentValues.put(DBConfig.CONTENTUUID, entity.getContentUUID());
         }
 
         if (!TextUtils.isEmpty(entity.getContentType())) {
@@ -275,7 +281,7 @@ public class DBUtil {
 
     public static void delAttention(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENTUUID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentUuId)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
@@ -283,7 +289,7 @@ public class DBUtil {
 
     public static void delHistory(String userId, String contentuuid, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback)
@@ -318,7 +324,7 @@ public class DBUtil {
     public static void deleteCarouselChannelRecord(String contentuuid, DBCallback<String> callback) {
         DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                 .build()
                 .withCallback(callback).excute();

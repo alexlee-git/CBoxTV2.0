@@ -36,6 +36,14 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     private ImageView background;
 
     private String currentChannel, currentTitle;
+    private boolean needTip = true;
+    private String currentId;
+    private Runnable closeRunnalbe = new Runnable() {
+        @Override
+        public void run() {
+            dismiss();
+        }
+    };
 
     public NewTvAlterChangeView(Context context) {
         this(context, null);
@@ -55,6 +63,15 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         background = findViewById(R.id.background_ad);
     }
 
+    public void setCurrentId(String id) {
+        needTip = !TextUtils.equals(id, currentId);
+        currentId = id;
+    }
+
+    public boolean isNeedTip() {
+        return needTip;
+    }
+
     public void setChannelText(String text) {
         currentChannel = text;
         if (channelText != null) {
@@ -70,13 +87,20 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     }
 
     public void show() {
-        mAdPresenter.getAdByType(Constant.AD_DESK, Constant.AD_CAROUSEL_CORNER, "", null);
+        removeCallbacks(closeRunnalbe);
+
+        mAdPresenter.getAdByType(Constant.AD_CAROUSEL_CHANGE, "", "", null);
         setVisibility(VISIBLE);
+        postDelayed(closeRunnalbe, 5000);
+
+        needTip = false;
+
         NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                 .SHOWING_ALTER_CHANGE_VIEW);
     }
 
     public void dismiss() {
+        removeCallbacks(closeRunnalbe);
         setVisibility(GONE);
         if (NewTVLauncherPlayerViewManager.getInstance().getShowView() == NewTVLauncherPlayerView
                 .SHOWING_ALTER_CHANGE_VIEW) {
@@ -91,7 +115,8 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         if (Constant.AD_IMAGE_TYPE.equals(type)) {
             if (background != null && !TextUtils.isEmpty(url)) {
                 if (url.startsWith("http") || url.startsWith("https")) {
-                    GlideUtil.loadImage(getContext(), background, url, R.drawable.normalplayer_bg, R.drawable.normalplayer_bg, false);
+                    GlideUtil.loadImage(getContext(), background, url, R.drawable
+                            .normalplayer_bg, R.drawable.normalplayer_bg, false);
                 } else if (url.startsWith("file:")) {
                     background.setImageURI(Uri.parse(url));
                 }

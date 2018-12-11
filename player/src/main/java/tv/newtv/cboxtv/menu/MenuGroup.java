@@ -42,6 +42,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.menu.model.CategoryContent;
 import tv.newtv.cboxtv.menu.model.LastMenuBean;
+import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
@@ -124,6 +125,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
      */
     private boolean allNodeInit = false;
     private Context mcontext;
+    private Node defaultFocusNode = null;
 
     public MenuGroup(Context context) {
         this(context, null);
@@ -454,6 +456,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                     MenuRecyclerView menuRecyclerViewRight = getMenuRecyclerViewByLevel(level);
                     MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerViewRight.getAdapter();
                     Node item = adapter.getItem(position);
+                    if(item instanceof LastNode && Constant.CONTENTTYPE_LB.equals(item.getContentType())){
+                        playProgram = null;
+                        defaultFocusNode = item;
+                    }
                     if (onSelectListenerList.size() > 0) {
                         for (OnSelectListener l : onSelectListenerList) {
                             l.select(item);
@@ -603,7 +609,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             MenuRecyclerAdapter nextAdapter = (MenuRecyclerAdapter) menuRecyclerViewByLevel
                     .getAdapter();
             nextAdapter.setData(node.getChild());
-            if(node.getChild().size() == 0 && !node.isRequest()){
+            if(node.getChild().size() == 0 && !node.isRequest() || node.isMustRequest()){
                 //请求数据
                 getNodeData(node,menuRecyclerViewByLevel);
             }else {
@@ -649,6 +655,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
+                        node.setMustRequest(false);
                         CategoryContent categoryContent = GsonUtil.fromjson(responseBody.string(),CategoryContent.class);
                         if(categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0){
                             node.addChild(categoryContent.data);
@@ -913,8 +920,33 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public void show() {
-        show(playProgram);
+        if(playProgram != null){
+            show(playProgram);
+        }else{
+            show(defaultFocusNode);
+        }
+    }
 
+    public void show(Node node){
+        if(node != null){
+            this.currentNode = node;
+            MenuRecyclerView menuRecyclerView = listViews.get(node.getLevel());
+            MenuRecyclerAdapter menuRecyclerViewAdapter = (MenuRecyclerAdapter)
+                    menuRecyclerView.getAdapter();
+
+            int size = currentNode.getLevel() + 2;
+            currentX = -(size * recyclerViewWidth);
+            showView(null);
+
+            menuRecyclerView.scrollToPosition(menuRecyclerViewAdapter.calculatePlayIdPosition(0));
+            Message msg = Message.obtain();
+            msg.obj = menuRecyclerViewAdapter;
+            msg.what = REQUEST_MENU_FOCUS;
+            focusHandler.sendMessageDelayed(msg, 60);
+
+            NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
+                    .SHOWING_PROGRAM_TREE);
+        }
     }
 
     public void show(Program playProgram) {

@@ -64,6 +64,9 @@ public class UserCenterPageBean {
         @SerializedName("_program_child_name")
         public String programChildName;
 
+        @SerializedName("_content_id")
+        public String contentId;
+
         public String get_contentuuid() {
             return _contentuuid;
         }
@@ -222,6 +225,14 @@ public class UserCenterPageBean {
 
         public void setProgramChildName(String programChildName) {
             this.programChildName = programChildName;
+        }
+
+        public String getContentId() {
+            return contentId;
+        }
+
+        public void setContentId(String contentId) {
+            this.contentId = contentId;
         }
     }
 }

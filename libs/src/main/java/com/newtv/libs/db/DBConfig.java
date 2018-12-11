@@ -45,7 +45,8 @@ public final class DBConfig {
 
     /* VideoDetail db fields */
 
-    public static final String CONTENTUUID   = "_contentuuid"; //内容id
+    public static final String CONTENTUUID   = "_contentuuid"; // 对应cms系统中的contentuuid
+    public static final String CONTENT_ID    = "_content_id";
     public static final String CONTENTTYPE   = "_contenttype"; //内容类型
     public static final String ACTIONTYPE    = "_actiontype"; //跳转类型
     public static final String IMAGEURL      = "_imageurl"; // 内容图片
@@ -64,7 +65,6 @@ public final class DBConfig {
     public static final String CONTENT_DURATION = "_content_duration"; // 内容时长
     public static final String EPISODE_NUM   = "_episode_num";
     public static final String PROGRAM_CHILD_NAME = "_program_child_name";
-    public static final String CONTENT_ID = "_contentid";
 
     public static final String ORDER_BY_TIME = UPDATE_TIME + " desc";//排序条件
     public static final String IS_FINISH = "is_finish";//是否结束
@@ -97,6 +97,7 @@ public final class DBConfig {
     static final String CREATE_REMOTE_COLLECT_TABLE_SQL =
             "create table " + REMOTE_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000), " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
@@ -114,6 +115,7 @@ public final class DBConfig {
     static final String CREATE_COLLECT_TABLE_SQL =
             "create table " + COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000), " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
@@ -131,6 +133,7 @@ public final class DBConfig {
     static final String CREATE_REMOTE_ATTENTION_TABLE_SQL =
             "create table " + REMOTE_ATTENTION_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -142,6 +145,7 @@ public final class DBConfig {
     static final String CREATE_ATTENTION_TABLE_SQL =
             "create table " + ATTENTION_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -153,6 +157,7 @@ public final class DBConfig {
     static final String CREATE_REMOTE_SUBSCRIBE_TABLE_SQL =
             "create table " + REMOTE_SUBSCRIBE_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -170,6 +175,7 @@ public final class DBConfig {
     static final String CREATE_SUBSCRIBE_TABLE_SQL =
             "create table " + SUBSCRIBE_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -187,6 +193,7 @@ public final class DBConfig {
     static final String CREATE_REMOTE_HISTORY_TABLE_SQL =
             "create table " + REMOTE_HISTORY_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000), " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
@@ -208,6 +215,7 @@ public final class DBConfig {
     static final String CREATE_HISTORY_TABLE_SQL =
             "create table " + HISTORY_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    CONTENT_ID + " varchar2(1000), " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +

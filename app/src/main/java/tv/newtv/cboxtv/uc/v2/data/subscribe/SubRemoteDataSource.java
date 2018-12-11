@@ -22,6 +22,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
 /**
@@ -36,6 +37,7 @@ public class SubRemoteDataSource implements SubDataSource {
 
     private static SubRemoteDataSource INSTANCE;
     private Context mContext;
+    private Disposable mAddDisposable, mGetListDisposable, mDeleteDisposable;
 
     public static SubRemoteDataSource getInstance(Context mContext) {
         if (INSTANCE == null) {
@@ -56,7 +58,7 @@ public class SubRemoteDataSource implements SubDataSource {
         String parentId = "";
         String subId = "";
 
-        if (Constant.CONTENTTYPE_CL.equals(type) ||  Constant.CONTENTTYPE_TV.equals(type)) {
+        if (Constant.CONTENTTYPE_CL.equals(type) || Constant.CONTENTTYPE_TV.equals(type)) {
             mType = "0";
             parentId = bean.get_contentuuid();
             subId = bean.getPlayId();
@@ -84,7 +86,8 @@ public class SubRemoteDataSource implements SubDataSource {
                         bean.getSuperscript(),
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
-                        bean.get_actiontype()
+                        bean.get_actiontype(),
+                        bean.getContentId()
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -92,22 +95,24 @@ public class SubRemoteDataSource implements SubDataSource {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
                 });
     }
@@ -141,22 +146,24 @@ public class SubRemoteDataSource implements SubDataSource {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+                        mDeleteDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
     }
@@ -174,7 +181,8 @@ public class SubRemoteDataSource implements SubDataSource {
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+                        mGetListDisposable = d;
                     }
 
                     @Override
@@ -200,11 +208,9 @@ public class SubRemoteDataSource implements SubDataSource {
                                 } else {
                                     entity.set_contentuuid(item.optString("programset_id"));
                                 }
-
+                                entity.setContentId(item.optString("content_id"));
                                 Log.d("sub", "getRemoteSubscribeList contentId : " + entity.get_contentuuid());
-
                                 entity.set_contenttype(contentType);
-
                                 entity.setPlayId(item.optString("program_child_id"));
                                 entity.set_title_name(item.optString("programset_name"));
                                 entity.setIs_program(item.optString("is_program"));
@@ -233,6 +239,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         if (callback != null) {
                             callback.onDataNotAvailable();
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
@@ -241,12 +248,21 @@ public class SubRemoteDataSource implements SubDataSource {
                         if (callback != null) {
                             callback.onSubscribeListLoaded(null, 0);
                         }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
+    }
+
+    @Override
+    public void releaseSubscribeResource() {
+        INSTANCE = null;
+        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
+        UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 }

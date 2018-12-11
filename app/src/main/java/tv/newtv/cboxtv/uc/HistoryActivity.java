@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -38,15 +37,7 @@ import com.newtv.libs.util.XunMaKeyUtils;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,7 +50,6 @@ import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.player.model.PlayCheckRequestBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
@@ -564,7 +554,7 @@ public class HistoryActivity extends BaseActivity implements
     @Override
     public void onItemClick(View view, int Position, UserCenterPageBean.Bean object) {
         JumpUtil.activityJump(getApplicationContext(), object._actiontype, object._contenttype,
-                object._contentuuid, "");
+                object.getContentId(), "");
     }
 
     @Override

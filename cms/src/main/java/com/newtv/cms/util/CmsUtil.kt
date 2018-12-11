@@ -6,7 +6,6 @@ import com.newtv.cms.bean.Alternate
 import com.newtv.cms.bean.Content
 import com.newtv.cms.bean.LiveParam
 import com.newtv.cms.bean.Video
-import com.newtv.libs.ServerTime
 import com.newtv.libs.util.CalendarUtil
 import com.newtv.libs.util.LogUtils
 import com.newtv.libs.util.PlayerTimeUtils
@@ -22,6 +21,36 @@ import java.util.*
  * 创建日期:          2018/10/8
  */
 object CmsUtil {
+
+    /**
+     * 对播放器的播放列表进行排序处理
+     */
+    @JvmStatic
+    fun sortPlayList(content: Content?) {
+//        content?.let { ct ->
+//            val playDesc = isPlayDesc(content)
+//            if (playDesc) {
+//                ct.data?.sortedByDescending { it.periods }
+//            } else {
+//                ct.data?.sortedBy { it.periods }
+//            }
+//        }
+    }
+
+    /**
+     * 对界面显示的数据做排序处理
+     */
+    @JvmStatic
+    fun sortUIList(content: Content?) {
+//        content?.let { ct ->
+//            val sortDesc = isUIDataDesc(content)
+//            if (sortDesc) {
+//                ct.data?.sortedByDescending { it.periods }
+//            } else {
+//                ct.data?.sortedBy { it.periods }
+//            }
+//        }
+    }
 
 
     @JvmStatic
@@ -82,42 +111,50 @@ object CmsUtil {
      */
     @JvmStatic
     fun translateIndex(content: Content?, index: Int): Int {
-        if (isVideoTv(content) && !TextUtils.isEmpty(content?.isFinish) && !TextUtils.isEmpty
-                (content?.playOrder)) {
-            content?.let {
-                val isUiDesc: Boolean = isUIDataDesc(it)
-                val isPlayerDesc: Boolean = isPlayDesc(it)
-                if (isUiDesc == isPlayerDesc) {
-                    return index
-                }
-                it.data?.let { dataList ->
-                    return dataList.size - 1 - index
-                }
-            }
-        }
+//        if (isVideoTv(content) && !TextUtils.isEmpty(content?.isFinish) && !TextUtils.isEmpty
+//                (content?.playOrder)) {
+//            content?.let {
+//                val isUiDesc: Boolean = isUIDataDesc(it)
+//                val isPlayerDesc: Boolean = isPlayDesc(it)
+//                if (isUiDesc == isPlayerDesc) {
+//                    return index
+//                }
+//                it.data?.let { dataList ->
+//                    return dataList.size - 1 - index
+//                }
+//            }
+//        }
         return index
     }
 
     /**
-     * UI是否需要倒序显示
+     * UI界面数据是否需要倒序显示
+     *
+     * 默认返回倒序显示
      */
     @JvmStatic
     fun isUIDataDesc(content: Content?): Boolean {
         content?.let {
-            return "0".equals(it.isFinish)
+            if(!TextUtils.isEmpty(it.sortType)) {
+                return "1".equals(it.sortType)
+            }
         }
-        return false
+        return true
     }
 
     /**
-     * 播放器是否倒序播放
+     * 播放器播放列表是否倒序播放
+     *
+     * 默认返回倒序显示
      */
     @JvmStatic
     fun isPlayDesc(content: Content?): Boolean {
         content?.let {
-            return "1".equals(it.playOrder)
+            if(!TextUtils.isEmpty(it.playOrder)) {
+                return "1".equals(it.playOrder)
+            }
         }
-        return false
+        return true
     }
 
 
@@ -129,7 +166,6 @@ object CmsUtil {
         }
         return null
     }
-
 
     @JvmStatic
     fun isLive(video: Video?): LiveParam? {

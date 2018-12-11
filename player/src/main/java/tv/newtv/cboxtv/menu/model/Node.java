@@ -33,7 +33,18 @@ public class Node {
     private List<Program> programs = new ArrayList<>();
     private LastMenuBean lastMenuBean;
     private Content content;
+    /**
+     * 是否已经请求完数据了
+     */
     private boolean request = false;
+    /**
+     * 是否禁止添加LB频道的收藏
+     */
+    private boolean forbidAddCollect = false;
+    /**
+     * 是否必须请求数据
+     */
+    private boolean mustRequest = false;
 
     public boolean isLeaf(){
 //        if(child != null && child.size() > 0)
@@ -170,8 +181,24 @@ public class Node {
         return categoryType;
     }
 
+    public boolean isForbidAddCollect() {
+        return forbidAddCollect;
+    }
+
+    public void setForbidAddCollect(boolean forbidAddCollect) {
+        this.forbidAddCollect = forbidAddCollect;
+    }
+
     public void setCategoryType(String categoryType) {
         this.categoryType = categoryType;
+    }
+
+    public boolean isMustRequest() {
+        return mustRequest;
+    }
+
+    public void setMustRequest(boolean mustRequest) {
+        this.mustRequest = mustRequest;
     }
 
     public List<Node> getNodes(){
