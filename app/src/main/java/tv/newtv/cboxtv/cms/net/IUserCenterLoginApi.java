@@ -33,6 +33,24 @@ public interface IUserCenterLoginApi {
                                             @Field("client_id") String client_id,
                                             @Field("channel_code") String channel_code);
 
+    /**
+     * 获取M站购买二维码
+     *
+     * @param Authorization
+     * @param response_type
+     * @param client_id
+     * @param channel_code
+     * @return
+     */
+    @Headers("host_type: " + BootGuide.USER)
+    @FormUrlEncoded
+    @POST("/kangaroo/authorization/device_code")
+    Observable<ResponseBody> getMemberQRCode(@Header("Authorization") String Authorization,
+                                             @Field("response_type") String response_type,
+                                             @Field("client_id") String client_id,
+                                             @Field("channel_code") String channel_code,
+                                             @Field("state") String state);
+
 
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
@@ -67,7 +85,6 @@ public interface IUserCenterLoginApi {
                                          @Field("response_type") String response_type,
                                          @Field("client_id") String client_id,
                                          @Field("mobile") String mobile);
-
 
 
     @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST)
