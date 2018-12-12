@@ -262,8 +262,10 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
             NewTVLauncherPlayerViewManager.getInstance().changeAlternate(content.getContentID(),
                     content.getAlternateNumber(),content.getTitle());
         }
-        NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
-                (mPlayerFrameLayoutContainer, this);
+        if(mPlayerFrameLayoutContainer != null){
+            NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
+                    (mPlayerFrameLayoutContainer, this);
+        }
     }
 
     @Override
