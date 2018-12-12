@@ -1171,6 +1171,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void jumpErrorToast(){
-        Toast.makeText(context,"节目走丢了,请继续观看.",Toast.LENGTH_SHORT).show();
+        Toast.makeText(context,"节目走丢了 请继续观看",Toast.LENGTH_SHORT).show();
     }
 }
