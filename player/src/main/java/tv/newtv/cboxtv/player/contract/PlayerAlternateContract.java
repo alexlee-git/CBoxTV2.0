@@ -14,8 +14,8 @@ import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
+import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
-import com.newtv.libs.Cache;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,9 @@ public class PlayerAlternateContract {
         void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String title,
                                String channelId);
 
-        void onAlterItemResult(String contentId, Content content);
+        void onAlterItemResult(String contentId, Content content, boolean isLive);
+
+        void onAlterLookTimeChange(Long time);
     }
 
     public interface Presenter extends ICmsPresenter {
@@ -69,7 +71,9 @@ public class PlayerAlternateContract {
 
         void addHistory();
 
-        void playAlternateItem(String contentId, String contentUUID);
+        void resetKeepLook();
+
+        void playAlternateItem(Alternate current);
     }
 
     public static class AlternatePresenter extends CmsServicePresenter<View> implements
@@ -95,6 +99,10 @@ public class PlayerAlternateContract {
         private Disposable mDisposable;
         private Long endTime = 0L;
 
+        private Long keepLook = 0L;
+
+        private boolean isLive = false;
+
         private Observable<Long> observable;
 
         public AlternatePresenter(@NotNull Context context, @Nullable View view) {
@@ -104,8 +112,8 @@ public class PlayerAlternateContract {
             observable = Observable.interval(1000, TimeUnit.MILLISECONDS);
         }
 
-        public boolean equalsAlternate(String id){
-            return TextUtils.equals(id,currentAlternateId);
+        public boolean equalsAlternate(String id) {
+            return TextUtils.equals(id, currentAlternateId);
         }
 
         @Override
@@ -151,8 +159,7 @@ public class PlayerAlternateContract {
                 }
             }
             if (currentAlternate != null) {
-                playAlternateItem(currentAlternate.getContentID(), currentAlternate
-                        .getContentUUID());
+                playAlternateItem(currentAlternate);
                 return true;
             }
             return false;
@@ -174,6 +181,11 @@ public class PlayerAlternateContract {
         }
 
         @Override
+        public void resetKeepLook() {
+            keepLook = 0L;
+        }
+
+        @Override
         public void requestAlternate(final String alternateId, final String title, final String
                 channelId) {
             if (requestID != 0L) {
@@ -187,11 +199,11 @@ public class PlayerAlternateContract {
             currentAlternateId = alternateId;
             currrentTitle = title;
             currrentChannel = channelId;
-            mAlternates = Cache.getInstance().get(Cache.CACHE_TYPE_ALTERNATE, alternateId);
-            if (mAlternates != null) {
-                parseAlternate(title, channelId);
-                return;
-            }
+//            mAlternates = Cache.getInstance().get(Cache.CACHE_TYPE_ALTERNATE, alternateId);
+//            if (mAlternates != null) {
+//                parseAlternate(title, channelId);
+//                return;
+//            }
             if (mAlternate != null) {
                 requestID = mAlternate.getTodayAlternate(Libs.get().getAppKey(), Libs.get()
                                 .getChannelId(),
@@ -201,8 +213,8 @@ public class PlayerAlternateContract {
                                     requestCode) {
                                 if (result.isOk()) {
                                     mAlternates = result.getData();
-                                    Cache.getInstance().put(Cache.CACHE_TYPE_ALTERNATE,
-                                            alternateId, mAlternates);
+//                                    Cache.getInstance().put(Cache.CACHE_TYPE_ALTERNATE,
+//                                            alternateId, mAlternates);
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
@@ -245,11 +257,16 @@ public class PlayerAlternateContract {
                             @Override
                             public void accept(Long aLong) throws Exception {
                                 LogUtils.d(TAG, "[Alternate time=" + System.currentTimeMillis() +
-                                        " " +
-                                        "endTime=" + endTime + "]");
+                                        " " + "endTime=" + endTime + "]");
                                 if (System.currentTimeMillis() > endTime) {
                                     dispose();
                                     playNext();
+                                }
+
+                                keepLook += 1000;
+
+                                if (getView() != null) {
+                                    getView().onAlterLookTimeChange(keepLook);
                                 }
                             }
                         }, new Consumer<Throwable>() {
@@ -276,8 +293,7 @@ public class PlayerAlternateContract {
                 if (currentPlayIndex > 0 && currentPlayIndex < mAlternates
                         .size()) {
                     currentAlternate = mAlternates.get(currentPlayIndex);
-                    playAlternateItem(currentAlternate.getContentID(),
-                            currentAlternate.getContentUUID());
+                    playAlternateItem(currentAlternate);
                     if (getView() != null) {
                         getView().onAlternateResult(mAlternates,
                                 currentPlayIndex, title, channelId);
@@ -293,13 +309,15 @@ public class PlayerAlternateContract {
         }
 
         @Override
-        public void playAlternateItem(final String contentId, final String contentUUID) {
+        public void playAlternateItem(Alternate current) {
 
             dispose();
 
-            currentRequestId = contentId;
-            currentSubUUID = contentUUID;
-            mContent.getContent(contentId, true);
+            currentRequestId = current.getContentID();
+            currentSubUUID = current.getContentUUID();
+            isLive = Constant.CONTENTTYPE_LV.equals(current.getContentType());
+
+            mContent.getContent(currentRequestId, true);
             startAlternateTimer();
         }
 
@@ -307,20 +325,25 @@ public class PlayerAlternateContract {
         public void onContentResult(@NotNull String uuid, @Nullable Content content) {
             if (TextUtils.equals(currentRequestId, uuid)) {
                 if (content != null) {
-                    if (content.getData() != null) {
-                        ArrayList<SubContent> subContents = new ArrayList<>();
-                        for (SubContent sub : content.getData()) {
-                            if (TextUtils.equals(sub.getContentUUID(),
-                                    currentSubUUID)) {
-                                subContents.add(sub);
-                                break;
+                    if (!isLive) {
+                        if (content.getData() != null) {
+                            ArrayList<SubContent> subContents = new ArrayList<>();
+                            for (SubContent sub : content.getData()) {
+                                if (TextUtils.equals(sub.getContentUUID(),
+                                        currentSubUUID)) {
+                                    subContents.add(sub);
+                                    break;
+                                }
                             }
+                            content.setData(subContents);
                         }
-                        content.setData(subContents);
                     }
+                    //直播
                     if (getView() != null) {
-                        getView().onAlterItemResult(uuid, content);
+                        getView().onAlterItemResult(uuid, content, isLive);
                     }
+
+
                 }
             }
         }

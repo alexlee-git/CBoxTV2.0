@@ -6001,6 +6001,7 @@
     <dimen name="height_2999px">2133px</dimen>
 
     <dimen name="_width_18px">-13px</dimen>
+    <dimen name="_width_15px">-11px</dimen>
     <dimen name="_width_12px">-9px</dimen>
     <dimen name="_width_7px">-5px</dimen>
     <dimen name="_width_6px">-5px</dimen>

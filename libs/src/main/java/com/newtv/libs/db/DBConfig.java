@@ -78,8 +78,8 @@ public final class DBConfig {
 
     static final String CREATE_LB_COLLECT_TABLE_SQL =
             "create table "+ LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000)," +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
                     TITLE_NAME + " varchar2(1000)," +
                     IS_FINISH + " varchar2(1000)," +
                     REAL_EXCLUSIVE + " varchar2(1000)," +
@@ -96,8 +96,8 @@ public final class DBConfig {
 
     static final String CREATE_REMOTE_COLLECT_TABLE_SQL =
             "create table " + REMOTE_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000), " +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE, " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
@@ -114,8 +114,8 @@ public final class DBConfig {
 
     static final String CREATE_COLLECT_TABLE_SQL =
             "create table " + COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000), " +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE, " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
@@ -132,8 +132,8 @@ public final class DBConfig {
 
     static final String CREATE_REMOTE_ATTENTION_TABLE_SQL =
             "create table " + REMOTE_ATTENTION_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000)," +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -144,8 +144,8 @@ public final class DBConfig {
 
     static final String CREATE_ATTENTION_TABLE_SQL =
             "create table " + ATTENTION_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000)," +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -156,8 +156,8 @@ public final class DBConfig {
 
     static final String CREATE_REMOTE_SUBSCRIBE_TABLE_SQL =
             "create table " + REMOTE_SUBSCRIBE_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000)," +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -174,8 +174,8 @@ public final class DBConfig {
 
     static final String CREATE_SUBSCRIBE_TABLE_SQL =
             "create table " + SUBSCRIBE_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000)," +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
                     CONTENTTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -192,8 +192,8 @@ public final class DBConfig {
 
     static final String CREATE_REMOTE_HISTORY_TABLE_SQL =
             "create table " + REMOTE_HISTORY_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000), " +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE, " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +
@@ -214,8 +214,8 @@ public final class DBConfig {
 
     static final String CREATE_HISTORY_TABLE_SQL =
             "create table " + HISTORY_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    CONTENTUUID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
-                    CONTENT_ID + " varchar2(1000), " +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE, " +
                     CONTENTTYPE + " varchar2(1000)," +
                     ACTIONTYPE + " varchar2(1000)," +
                     IMAGEURL + " varchar2(1000)," +

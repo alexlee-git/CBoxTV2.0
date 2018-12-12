@@ -777,6 +777,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         if (menuGroupIsInit) {
             getProgramSeriesAndContentUUID();
             updatePlayProgram();
+            refreshLbNode();
 
 //            if(!updatePlayProgram(lastMenuBean)){
 //                /**
