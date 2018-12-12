@@ -10,3 +10,6 @@
 /gradle
 activity_demo.xml
 .idea
+gradlew
+gradlew.bat
+

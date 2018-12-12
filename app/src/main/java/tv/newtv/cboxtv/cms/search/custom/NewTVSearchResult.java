@@ -272,6 +272,9 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
                 mSearchResultEmpty.setVisibility(GONE);
             } else {
                 mSearchResultEmpty.setVisibility(VISIBLE);
+                if (mLoadingLayout != null){
+                    mLoadingLayout.setVisibility(GONE);
+                }
             }
         }else{
             mSearchResultEmpty.setVisibility(GONE);

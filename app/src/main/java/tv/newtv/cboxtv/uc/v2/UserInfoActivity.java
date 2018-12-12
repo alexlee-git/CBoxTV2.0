@@ -116,9 +116,54 @@ public class UserInfoActivity extends BaseActivity implements View.OnKeyListener
                 LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "0,4");
                 SharePreferenceUtils.clearToken(UserInfoActivity.this);
                 UserCenterUtils.setLogin(false);
+                doLogout();
                 finish();
             }
         });
+    }
+
+    private void doLogout() {
+        Log.i(TAG, "doLogout: ");
+        NetClient.INSTANCE.getUserCenterLoginApi()
+                .logout(Authorition,Constant.CLIENT_ID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "doLogout onSubscribe: ");
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "doLogout onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            Log.i(TAG, "doLogout onNext: responseString = " + responseString);
+                            checkUserOffline(responseString);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i(TAG, "doLogout onComplete: ");
+
+                    }
+
+                    @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "doLogout dealwithUserOffline: ");
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        Log.i(TAG, "doLogout onError: ");
+                    }
+                });
     }
 
     @Override
