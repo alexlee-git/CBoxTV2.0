@@ -271,6 +271,10 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         return result;
     }
 
+    public void setInit(boolean init) {
+        this.init = init;
+    }
+
     public boolean isInit() {
         return init;
     }

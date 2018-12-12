@@ -1196,6 +1196,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public void notifyLastAdapter() {
+        if(lastListView.hasFocus()){
+            getLastAdapter().setInit(false);
+        }
         getLastAdapter().notifyDataSetChanged();
     }
 
