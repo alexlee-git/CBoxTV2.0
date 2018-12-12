@@ -445,8 +445,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (level == MenuRecyclerView.MAX_LEVEL) {
                     Program program = lastProgram.get(position);
-                    playProgram = program;
-                    setPlayId(program);
+                    if(!Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())){
+                        playProgram = program;
+                        setPlayId(program);
+                    }
                     if (onSelectListenerList.size() > 0) {
                         for (OnSelectListener l : onSelectListenerList) {
                             l.select(program);
