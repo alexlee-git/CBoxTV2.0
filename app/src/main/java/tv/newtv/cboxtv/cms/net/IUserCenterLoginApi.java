@@ -351,4 +351,9 @@ public interface IUserCenterLoginApi {
                                                    @Field("channel_code") String channel_code,
                                                    @Field("state") String state);
 
+    //退出登录
+    @Headers("host_type: " + BootGuide.USER)
+    @GET("/kangaroo/user/logout")
+    Observable<ResponseBody> logout(@Header("authorization") String authorization,
+                                    @Query("client_id") String client_id);
 }
