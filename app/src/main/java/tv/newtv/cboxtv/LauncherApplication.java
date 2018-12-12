@@ -359,4 +359,9 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                 this, contentUUID, "", "", dbCallback);
     }
 
+    @Override
+    public void detailsJumpActivity(Context context, String contentType, String contentUUID, String seriesSubUUID) {
+        JumpUtil.detailsJumpActivity(context,contentType,contentUUID,seriesSubUUID);
+    }
+
 }

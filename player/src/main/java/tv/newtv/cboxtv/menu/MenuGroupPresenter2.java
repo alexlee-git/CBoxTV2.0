@@ -1045,17 +1045,17 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                                 Log.i(TAG, "页面跳转: ");
                                 String csContentId = mySplit(content.getCsContentIDs());
                                 if (!TextUtils.isEmpty(csContentId)) {
-                                    Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_PS, csContentId, "");
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_PS,csContentId,program.getContentUUID());
                                     return;
                                 }
                                 String tvContentId = mySplit(content.getTvContentIDs());
                                 if (!TextUtils.isEmpty(tvContentId)) {
-                                    Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_TV, tvContentId, "");
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_TV,tvContentId,program.getContentUUID());
                                     return;
                                 }
                                 String cgContentId = mySplit(content.getCgContentIDs());
                                 if (!TextUtils.isEmpty(cgContentId)) {
-                                    Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_CG, cgContentId, "");
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_CG,cgContentId,program.getContentUUID());
                                     return;
                                 }
                                 Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
