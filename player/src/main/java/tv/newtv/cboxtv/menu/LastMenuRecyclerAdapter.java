@@ -46,6 +46,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
 
     private String contentType;
 
+    private Program playProgram;
     private Handler handler = new MyHandler(this);
 
     private static class MyHandler extends Handler{
@@ -66,8 +67,14 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     }
 
     public LastMenuRecyclerAdapter(Context context, List<Program> data, String playId) {
-        super(context,playId);
-        setData(data);
+        super(context);
+        Program program = null;
+        for(Program p : data){
+            if(TextUtils.equals(p.getContentUUID(),playId)){
+                program = p;
+            }
+        }
+        setData(data,program);
     }
 
     @Override
@@ -231,7 +238,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
 
     public void setPlayId(Program program){
         if(program != null){
-            this.playId = program.getContentUUID();
+            playProgram = program;
             this.title = program.getTitle();
             this.init = false;
             notifyDataSetChanged();
@@ -285,8 +292,11 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
      * @return
      */
     private boolean isCurrentPlay(Program program){
-        if(program != null &&program.getContentUUID()!= null && program.getContentUUID().equals(playId)
-                && program.getTitle() != null && program.getTitle().equals(title)){
+//        if(program != null &&program.getContentUUID()!= null && program.getContentUUID().equals(playId)
+//                && program.getTitle() != null && program.getTitle().equals(title)){
+//            return true;
+//        }
+        if(playProgram == program){
             return true;
         }
         return false;

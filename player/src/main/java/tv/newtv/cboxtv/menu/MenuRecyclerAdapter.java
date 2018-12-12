@@ -20,10 +20,12 @@ import tv.newtv.player.R;
 
 public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
     private List<Node> data;
+    private Node playNode;
 
-    public MenuRecyclerAdapter(Context context, List<Node> data, String playId) {
-        super(context,playId);
+    public MenuRecyclerAdapter(Context context, List<Node> data, Node node) {
+        super(context);
         this.data = data;
+        this.playNode = node;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
         final Holder h = (Holder) holder;
         h.itemView.setBackgroundResource(R.color.color_transparent);
         h.tv.setText(node.getTitle());
-        if (TextUtils.equals(node.getId(),playId)) {
+        if (isCurrentPlay(node)) {
             h.itemView.setBackgroundResource(R.drawable.xuanhong);
             selectView = h.itemView;
             pathView = h.itemView;
@@ -55,7 +57,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
                             && node.getChild().size() == 0){
                         Toast.makeText(context,"暂无内容,欢迎您去收藏.",Toast.LENGTH_SHORT).show();
                     }
-                } else if (TextUtils.equals(node.getId(),playId)) {
+                } else if (isCurrentPlay(node)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
                     h.tv.setSelected(false);
                 } else {
@@ -84,9 +86,9 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
         notifyDataSetChanged();
     }
 
-    public void setData(List<Node> data, String playId) {
+    public void setData(List<Node> data, Node node) {
         this.data = data;
-        this.playId = playId;
+        this.playNode = node;
         this.selectView = null;
         notifyDataSetChanged();
     }
@@ -100,9 +102,8 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
         }
     }
 
-
-    public void setPlayId(String playId) {
-        this.playId = playId;
+    public void setPlayNode(Node node){
+        this.playNode = node;
         notifyDataSetChanged();
     }
 
@@ -110,7 +111,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
     public int calculatePlayIdPosition(int defValue) {
         int result = defValue;
         for (int i = 0; i < data.size(); i++) {
-            if (TextUtils.equals(data.get(i).getId(),playId)) {
+            if (isCurrentPlay(data.get(i))) {
                 result = i;
                 break;
             }
@@ -118,4 +119,10 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
         return result;
     }
 
+    public boolean isCurrentPlay(Node node){
+        if(node == playNode){
+            return true;
+        }
+        return false;
+    }
 }

@@ -180,6 +180,16 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         menuGroup.addOnSelectListener(new MenuGroup.OnSelectListener() {
             @Override
             public void select(Program program) {
+                if (LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())) {
+                    playProgram = program;
+                    if (program.isCollect()) {
+                        deleteLbCollect(program);
+                    } else {
+                        addLbCollect(program);
+                    }
+                    return;
+                }
+
                 if (Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())) {
                     if (Constant.CONTENTTYPE_PG.equals(program.getContentType())) {
                         Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
@@ -188,16 +198,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     }
                     return;
                 }
-
                 playProgram = program;
-                if (LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())) {
-                    if (program.isCollect()) {
-                        deleteLbCollect(program);
-                    } else {
-                        addLbCollect(program);
-                    }
-                    return;
-                }
 
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
                 if (content != null) {
