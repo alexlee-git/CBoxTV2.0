@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -50,6 +51,10 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter{
                 if (hasFocus) {
                     v.setBackgroundResource(R.drawable.one_focus);
                     h.tv.setSelected(true);
+                    if(TextUtils.equals(MenuGroupPresenter2.LB_ID_COLLECT,node.getId())
+                            && node.getChild().size() == 0){
+                        Toast.makeText(context,"暂无内容,欢迎您去收藏.",Toast.LENGTH_SHORT).show();
+                    }
                 } else if (TextUtils.equals(node.getId(),playId)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
                     h.tv.setSelected(false);
