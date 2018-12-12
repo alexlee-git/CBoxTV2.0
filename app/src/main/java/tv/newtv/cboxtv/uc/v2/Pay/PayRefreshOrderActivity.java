@@ -1,7 +1,6 @@
 package tv.newtv.cboxtv.uc.v2.Pay;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +53,8 @@ import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 项目名称:     CBoxTV2.0
@@ -204,7 +205,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                     .getRefreshOrder(Authorization, order)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
+                    .subscribe(new BaseObserver<ResponseBody>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             mDisposable_order = d;
@@ -212,9 +213,10 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
 
                         @Override
                         public void onNext(ResponseBody value) {
-
+                            Log.i(TAG, "onNext: ");
                             try {
                                 String data = value.string();
+                                checkUserOffline(data);
                                 JSONObject object = new JSONObject(data);
                                 orderId = object.getLong("id");
                                 code = object.getString("code");
@@ -249,6 +251,12 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                                 mDisposable_order.dispose();
                                 mDisposable_order = null;
                             }
+                        }
+
+                        @Override
+                        public void dealwithUserOffline() {
+                            Log.i(TAG, "dealwithUserOffline: ");
+                            UserCenterUtils.userOfflineStartLoginActivity(PayRefreshOrderActivity.this);
                         }
 
                         @Override

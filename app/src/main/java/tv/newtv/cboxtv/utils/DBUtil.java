@@ -46,7 +46,6 @@ public class DBUtil {
      * @param callback
      */
     public static void AddSubcribe(String userId, Content entity, Bundle bundle, DBCallback<String> callback, String tableName) {
-        //TODO 写入本地数据库 历史记录
         ContentValues contentValues = new ContentValues();
         Log.d("sub", "AddSubcribe contentid : " + entity.getContentID());
         if (!TextUtils.isEmpty(entity.getContentID())) {
@@ -292,6 +291,19 @@ public class DBUtil {
                 .eq(DBConfig.CONTENT_ID, contentuuid)
                 .eq(DBConfig.USERID, userId)
                 .build()
+                .withCallback(callback)
+                .excute();
+    }
+
+    /**
+     * 清空表数据
+     *
+     * @param tableName 表名
+     * @param callback  回调
+     */
+    public static void clearTableAll(String tableName, DBCallback<String> callback) {
+        Log.d("wqs", "wqs:clearTableData:tableName：" + tableName);
+        DataSupport.delete(tableName)
                 .withCallback(callback)
                 .excute();
     }

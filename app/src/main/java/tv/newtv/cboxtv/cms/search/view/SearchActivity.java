@@ -18,6 +18,7 @@ import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommend;
+import tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommendNew;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchResult;
 import tv.newtv.cboxtv.cms.search.custom.SearchViewKeyboard;
 import tv.newtv.cboxtv.cms.search.listener.OnGetKeyListener;
@@ -40,7 +41,8 @@ public class SearchActivity extends BaseActivity {
 
     private SearchViewKeyboard mSearchViewKeyboard;
     private NewTVSearchResult mSearchResult;
-    private NewTVSearchHotRecommend mHotRecommend;
+    private NewTVSearchHotRecommendNew mHotRecommend;
+//    private NewTVSearchHotRecommend mHotRecommend;
     private View mRelativeLayout;
 
     //监听输入框值变化
@@ -94,6 +96,8 @@ public class SearchActivity extends BaseActivity {
         mSearchResult = findViewById(R.id.search_result);
         mHotRecommend = findViewById(R.id.search_hot_recommend);
         mRelativeLayout = findViewById(R.id.RelativeLayout);
+        mHotRecommend.setFragmentManager(getSupportFragmentManager());
+        mHotRecommend.setUp();
     }
 
     public void setOnKeyListener(OnGetKeyListener onGetKeyListener) {

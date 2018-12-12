@@ -105,19 +105,5 @@
         app:type="collect"
     />
 
-    <tv.newtv.cboxtv.views.custom.FocusToggleView2
-        android:id="@+id/vip_pay"
-        android:layout_width="@dimen/width_152px"
-        android:layout_height="@dimen/height_76px"
-        android:layout_alignBottom="@+id/video_container"
-        android:layout_marginStart="@dimen/width_54px"
-        android:layout_marginLeft="@dimen/width_54px"
-        android:layout_marginBottom="@dimen/height_26px"
-        android:layout_toEndOf="@+id/collect"
-        android:layout_toRightOf="@+id/collect"
-        android:focusable="true"
-        android:visibility="visible"
-        app:type="pay"/>
-
 
 </RelativeLayout>

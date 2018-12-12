@@ -34,7 +34,7 @@ data class Program(
         val specialParam: String,
         val recommendedType: String,
         val recentMsg: String,
-        val video: Video?,
+        var video: Video?,
         val apk: String,
         val apkPageType: String,
         val apkPageParam: String,

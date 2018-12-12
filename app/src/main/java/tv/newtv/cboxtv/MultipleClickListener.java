@@ -11,7 +11,7 @@ import android.view.View;
  */
 public abstract class MultipleClickListener implements View.OnClickListener {
 
-    private static final int DEFAULT_CLICK_DURATION = 3000;
+    private static final int DEFAULT_CLICK_DURATION = 500;
     private long lastClickTime;
 
     protected abstract void onMultipleClick(View view);

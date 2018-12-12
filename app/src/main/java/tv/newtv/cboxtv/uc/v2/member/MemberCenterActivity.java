@@ -63,6 +63,7 @@ import tv.newtv.cboxtv.uc.v2.LoginActivity;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.utils.BaseObserver;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
 /**
@@ -152,16 +153,20 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
                     .getUser(Authorization)
-                    .subscribe(new Observer<ResponseBody>() {
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new BaseObserver<ResponseBody>() {
 
                         @Override
                         public void onSubscribe(Disposable d) {
+                            Log.i(TAG, "onSubscribe: ");
                             unUserInfoSubscribe();
                             mUserInfoDisposable = d;
                         }
 
                         @Override
                         public void onNext(ResponseBody responseBody) {
+                            Log.i(TAG, "onNext: ");
                             try {
                                 String result = responseBody.string();
                                 JSONObject jsonObject = new JSONObject(result);
@@ -178,9 +183,16 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.e(TAG, "wqs:getUserInfo:onError:" + e.toString());
+                            Log.i(TAG, "onError: ");
+                            super.onError(e);
                             mobileString = "";
                             unUserInfoSubscribe();
+                        }
+
+                        @Override
+                        public void dealwithUserOffline() {
+                            Log.i(TAG, "dealwithUserOffline: ");
+//                            UserCenterUtils.userOfflineStartLoginActivity(MemberCenterActivity.this);
                         }
 
                         @Override
