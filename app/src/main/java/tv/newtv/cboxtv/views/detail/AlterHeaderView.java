@@ -34,9 +34,7 @@ import tv.newtv.cboxtv.player.AlternateCallback;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
-import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
-import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
@@ -62,7 +60,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     private FocusToggleView2 mCollect;
 
     private View fullScreenBtn;
-    private View payBtn;
 
     private boolean mIsCollect = false;
 
@@ -91,12 +88,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             alternateView.release();
             alternateView.destory();
             alternateView = null;
-        }
-    }
-
-    public void onResume() {
-        if (!TextUtils.isEmpty(mContentUUID)) {
-            prepareMediaPlayer();
         }
     }
 
@@ -131,10 +122,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         }
     }
 
-    public void play(String contentId) {
-
-    }
-
     private void initialize(Context context, AttributeSet attrs, int defStyle) {
         LayoutInflater.from(context).inflate(R.layout.alternate_head_layout, this, true);
 
@@ -157,15 +144,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateView.setAlternateCallback(this);
 
         fullScreenBtn = findViewById(R.id.full_screen);
-        payBtn = findViewById(R.id.vip_pay);
 
         fullScreenBtn.setOnClickListener(new MultipleClickListener() {
-            @Override
-            protected void onMultipleClick(View view) {
-                onViewClick(view);
-            }
-        });
-        payBtn.setOnClickListener(new MultipleClickListener() {
             @Override
             protected void onMultipleClick(View view) {
                 onViewClick(view);
@@ -196,14 +176,14 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     private void checkIsRecord() {
         DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
                 .condition()
-                .eq(DBConfig.CONTENT_ID,mContentUUID)
+                .eq(DBConfig.CONTENT_ID, mContentUUID)
                 .build()
                 .withCallback(new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {
-                        if(code == 0) {
+                        if (code == 0) {
                             mIsCollect = !TextUtils.isEmpty(result);
-                        }else {
+                        } else {
                             mIsCollect = false;
                         }
                         updateUI();
@@ -227,8 +207,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 } else return hasFocus();
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 return alternateView != null && alternateView.hasFocus();
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                return payBtn.hasFocus();
             }
         }
         return false;
@@ -339,8 +317,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                             new DBCallback<String>() {
                                 @Override
                                 public void onResult(int code, String result) {
-                                    if(code == 0){
-                                        Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT)
+                                    if (code == 0) {
+                                        Toast.makeText(getContext(), "取消收藏成功", Toast.LENGTH_SHORT)
                                                 .show();
                                         mIsCollect = false;
                                         updateUI();
@@ -349,8 +327,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                             });
                 }
                 break;
-            case R.id.vip_pay:
-
+            default:
                 break;
         }
     }
@@ -392,6 +369,12 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                     .getAlternateNumber());
         } else {
             setContentUUID(mContentUUID);
+        }
+    }
+
+    public void onResume() {
+        if(mContent != null && !TextUtils.isEmpty(mContentUUID)){
+            onContentResult(mContentUUID,mContent);
         }
     }
 }
