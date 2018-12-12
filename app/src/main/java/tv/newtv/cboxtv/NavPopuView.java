@@ -69,10 +69,8 @@ public class NavPopuView extends PopupWindow {
 
     private void initView(Context context, final View parents) {
         navRecycle = inflate.findViewById(R.id.nav_recycle);
-        ImageView ivLeft = inflate.findViewById(R.id.iv_left);
-        ImageView ivRight = inflate.findViewById(R.id.iv_right);
         showAtLocation(parents, Gravity.TOP, 0, 0);
-        navRecycle.addItemDecoration(new RecycleSpaceDecoration(context.getResources().getDimensionPixelSize(R.dimen.width_72px), context.getResources().getDimensionPixelSize(R.dimen.width_72px)));//new SpacesItemDecoration(ScreenUtils.dp2px(30))
+//        navRecycle.addItemDecoration(new RecycleSpaceDecoration(context.getResources().getDimensionPixelSize(R.dimen.width_72px), context.getResources().getDimensionPixelSize(R.dimen.width_72px)));//new SpacesItemDecoration(ScreenUtils.dp2px(30))
 
         PopuAdapter adapter = new PopuAdapter(context, list,map);
         navRecycle.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -89,18 +87,6 @@ public class NavPopuView extends PopupWindow {
                     int firstVisibleItemPosition = ((LinearLayoutManager)
                             recyclerView.getLayoutManager())
                             .findFirstVisibleItemPosition();
-                    if (firstVisibleItemPosition == 0) {
-                        ivLeft.setVisibility(View.INVISIBLE);
-                    } else {
-                        ivLeft.setVisibility(View.VISIBLE);
-                    }
-                    if (lastPosition == list.size() - 1) {
-
-                        ivRight.setVisibility(View.INVISIBLE);
-
-                    } else {
-                        ivRight.setVisibility(View.VISIBLE);
-                    }
                 }
             }
         });
