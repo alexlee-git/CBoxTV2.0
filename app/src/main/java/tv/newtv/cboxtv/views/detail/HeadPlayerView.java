@@ -345,7 +345,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     //显示全屏
     public void EnterFullScreen(Activity activity) {
-        playerView.enterFullScreen(activity);
+        if(playerView != null) {
+            playerView.enterFullScreen(activity);
+        }
     }
 
     public void Build(Builder builder) {

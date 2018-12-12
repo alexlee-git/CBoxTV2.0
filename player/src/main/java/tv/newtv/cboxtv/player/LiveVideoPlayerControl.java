@@ -63,6 +63,7 @@ public class LiveVideoPlayerControl implements IVideoPlayerControlInterface {
 
     @Override
     public boolean stopVideo() {
+
         return false;
     }
 

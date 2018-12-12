@@ -16,14 +16,14 @@
     <TextView
         android:id="@+id/id_module_28_title"
         style="@style/ModuleTitleStyle"
-        android:layout_width="@dimen/width_376px"
+        android:layout_width="@dimen/width_1830px"
         android:layout_height="@dimen/height_34px"
         android:layout_marginLeft="@dimen/width_6px"
         android:layout_marginTop="@dimen/height_47px"
         android:layout_toRightOf="@id/id_module_28_title_icon"
         android:includeFontPadding="false"
         android:tag="module_028_title"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <!-- 1 -->
     <FrameLayout
@@ -52,7 +52,7 @@
         android:layout_width="@dimen/width_2458px"
         android:layout_height="@dimen/height_228px"
         android:layout_below="@id/id_module_28_title"
-        android:layout_marginLeft="-18px"
+        android:layout_marginLeft="@dimen/_width_18px"
         android:layout_marginTop="@dimen/height_15px"
         android:layout_toRightOf="@id/id_module_28_view1"
         android:background="@drawable/selector_pos_background_27px"

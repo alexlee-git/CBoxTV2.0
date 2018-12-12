@@ -584,7 +584,6 @@ public class HistoryActivity extends BaseActivity implements
                     case R.id.delete_all_btn:
                         mAdapter.setAllowLostFocus(true);
                         if (mCollectBean != null && mCollectBean.size() != 0) {
-
                             UserCenterRecordManager.getInstance()
                                     .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
                                             getApplicationContext(),
