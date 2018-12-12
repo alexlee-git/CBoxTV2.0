@@ -56,6 +56,31 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         @Override
         public void onPrepared(LinkedHashMap<String, String> linkedHashMap) {
             Log.i(TAG, "onPrepared: ");
+
+            if (!mIsPositiveOnPrepared) {
+                mIsPositiveOnPrepared = true;
+                Log.i(TAG, "---正片播放的状态:mIsPositiveOnPrepared = true");
+                // 正片播放后，央视网日志初始化
+                if (mIcntvPlayer != null) {
+                    // 初始化央视网日志SDK，开始上传信息
+
+                    YSLogUtils.getInstance(mContext).setmIcntvPlayer(mIcntvPlayer);
+                    // 央视网日志：视频开始加载
+                    if (!outSourceId.equals(PlayerUrlConfig.getInstance().getPlayingContentId()))
+                    {//判断小屏时是否已经播放，空时未播放
+                        //slp
+                        YSLogUtils.getInstance(mContext).initCNTVVideoTracker(YSLogUtils
+                                .YS_VOD_LOG);//初始化
+                        if (YSLogUtils.getInstance(mContext).getmVodPlay() != null) {
+                            YSLogUtils.getInstance(mContext).getmVodPlay().beginPreparing();
+                            PlayerUrlConfig.getInstance().setPlayingContentId(outSourceId);
+                            PlayerUrlConfig.getInstance().setPlayUrl(outSourcePlayUrl);
+                        }
+                    }
+
+                }
+
+            }
             // 点播起播日志上传
             if (mIcntvPlayer != null) {
                 // 央视网日志：加载视频成功标识
@@ -134,31 +159,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
             if (mIPlayCallBackEvent != null) {
                 mIPlayCallBackEvent.onVideoBufferStart(s);
             }
-            if (s.equals("VideoStartBuffer")) {
-                mIsPositiveOnPrepared = true;
-                Log.i(TAG, "---正片播放的状态:mIsPositiveOnPrepared = true");
-                // 正片播放后，央视网日志初始化
-                if (mIcntvPlayer != null) {
-                    // 初始化央视网日志SDK，开始上传信息
 
-                    YSLogUtils.getInstance(mContext).setmIcntvPlayer(mIcntvPlayer);
-                    // 央视网日志：视频开始加载
-                    if (!outSourceId.equals(PlayerUrlConfig.getInstance().getPlayingContentId()))
-                    {//判断小屏时是否已经播放，空时未播放
-                        //slp
-                        YSLogUtils.getInstance(mContext).initCNTVVideoTracker(YSLogUtils
-                                .YS_VOD_LOG);//初始化
-                        if (YSLogUtils.getInstance(mContext).getmVodPlay() != null) {
-                            YSLogUtils.getInstance(mContext).getmVodPlay().beginPreparing();
-                            PlayerUrlConfig.getInstance().setPlayingContentId(outSourceId);
-                            PlayerUrlConfig.getInstance().setPlayUrl(outSourcePlayUrl);
-                            Log.i(TAG, "----onBufferStart:视频开始加载");
-                        }
-                    }
-
-                }
-
-            }
             if (s.equals(ON_BUFFER_START_TYPE_701_STATUS)
                     && mIcntvPlayer != null) {
 //                if (mVodPlay != null && mIsPositiveOnPrepared) {
