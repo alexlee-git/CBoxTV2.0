@@ -80,6 +80,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         super.onDestroy();
         if (mAdPresenter!=null){
             mAdPresenter.destroy();
+            mAdPresenter = null;
         }
 
         if (imageView != null) {
