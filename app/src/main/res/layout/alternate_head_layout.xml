@@ -8,6 +8,8 @@
                 android:paddingEnd="@dimen/width_87px"
                 android:paddingRight="@dimen/width_87px">
 
+    <include
+        layout="@layout/left_top_logo"/>
 
     <FrameLayout
         android:id="@+id/video_container"
@@ -15,7 +17,7 @@
         android:layout_height="@dimen/height_420px"
         android:layout_marginStart="@dimen/width_93px"
         android:layout_marginLeft="@dimen/width_93px"
-        android:layout_marginTop="@dimen/height_30px"
+        android:layout_marginTop="@dimen/height_62px"
         android:background="@drawable/selector_pos_background">
         <tv.newtv.cboxtv.player.videoview.VideoPlayerView
             android:focusable="true"
@@ -44,6 +46,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/detail_tvcolor"
             android:textSize="@dimen/height_38px"
+            android:maxEms="18"
+            android:maxLines="1"
             android:textStyle="bold"/>
 
         <TextView
@@ -92,8 +96,8 @@
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
         android:layout_alignBottom="@+id/video_container"
-        android:layout_marginStart="@dimen/width_22px"
-        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginStart="@dimen/width_54px"
+        android:layout_marginLeft="@dimen/width_54px"
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toEndOf="@+id/full_screen"
         android:layout_toRightOf="@+id/video_container"
@@ -106,8 +110,8 @@
         android:layout_width="@dimen/width_152px"
         android:layout_height="@dimen/height_76px"
         android:layout_alignBottom="@+id/video_container"
-        android:layout_marginStart="@dimen/width_22px"
-        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginStart="@dimen/width_54px"
+        android:layout_marginLeft="@dimen/width_54px"
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toEndOf="@+id/collect"
         android:layout_toRightOf="@+id/collect"
