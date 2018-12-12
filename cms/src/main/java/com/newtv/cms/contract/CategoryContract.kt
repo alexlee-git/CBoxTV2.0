@@ -37,11 +37,11 @@ class CategoryContract {
                     if (result.isOk()) {
                         view?.onCategoryResult(context, result)
                     } else {
-                        view?.onError(context, result.errorMessage)
+                        view?.onError(context,result.errorCode, result.errorMessage)
                     }
                 }
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }

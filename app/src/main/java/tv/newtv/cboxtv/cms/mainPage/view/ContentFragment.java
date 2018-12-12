@@ -290,7 +290,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
         super.lazyLoad();
 
         if (TextUtils.isEmpty(contentId) || mPresenter == null) {
-            onError(LauncherApplication.AppContext, "暂无数据内容。");
+            onError(LauncherApplication.AppContext, "" , "暂无数据内容。");
         } else {
             mPresenter.getPageContent(contentId);
         }
@@ -370,7 +370,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
             Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
         } else {
-            onError(LauncherApplication.AppContext, "数据为空");
+            onError(LauncherApplication.AppContext, "" , "数据为空");
         }
     }
 
@@ -386,7 +386,8 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
         if (loadingView != null)
             loadingView.setVisibility(View.GONE);
         setTipVisibility(View.VISIBLE);

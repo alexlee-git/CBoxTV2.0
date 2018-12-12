@@ -279,7 +279,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         Toast.makeText(getApplicationContext(), desc, Toast.LENGTH_SHORT).show();
     }
 

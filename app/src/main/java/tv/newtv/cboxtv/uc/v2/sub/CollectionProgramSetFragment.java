@@ -375,7 +375,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

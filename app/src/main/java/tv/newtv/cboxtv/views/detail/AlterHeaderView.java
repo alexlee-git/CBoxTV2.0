@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
@@ -22,6 +23,7 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SystemUtils;
+import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -300,8 +302,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
-
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
+        onError(code, desc);
     }
 
 
@@ -373,6 +375,13 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     public void onAlternateResult(@Nullable List<Alternate> result) {
         if (mAlternateCallback != null) {
             mAlternateCallback.onAlternateResult(result);
+        }
+    }
+
+    @Override
+    public void onError(String code, String desc) {
+        if(mAlternateCallback != null){
+            mAlternateCallback.onError(code, desc);
         }
     }
 

@@ -168,7 +168,8 @@ public class SearchFragment extends BaseFragment implements PageContract.View{
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
         if (mLoadingView != null)
             mLoadingView.setText("暂无数据内容");
     }

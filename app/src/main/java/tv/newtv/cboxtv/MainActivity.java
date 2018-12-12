@@ -332,7 +332,7 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

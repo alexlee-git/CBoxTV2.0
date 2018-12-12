@@ -148,13 +148,13 @@ class SearchContract {
                                 it.searchResult(requestCode, result.data, result.total)
                             }
                         } else {
-                            view?.onError(context, result.errorMessage)
+                            view?.onError(context,result.errorCode, result.errorMessage)
                         }
                     }
 
-                    override fun onError(desc: String?) {
+                    override fun onError(code: String?, desc: String?) {
                         view?.let { callback ->
-                            callback.onError(context, desc)
+                            callback.onError(context,code, desc)
                             if (callback is LoadingView) {
                                 callback.loadingFinish()
                             }

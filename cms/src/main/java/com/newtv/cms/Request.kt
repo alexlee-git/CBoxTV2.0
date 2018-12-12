@@ -19,7 +19,8 @@ import java.util.concurrent.TimeUnit
  */
 internal object Request {
     private val logInterceptor = HttpLoggingInterceptor()
-    private val headersInterceptor = HeadersInterceptor();
+    private val headersInterceptor = HeadersInterceptor()
+    private val responseInterceptor = ResponseInterceptor()
 
     init {
         if (BuildConfig.DEBUG) {
@@ -34,6 +35,7 @@ internal object Request {
             .sslSocketFactory(sslFactory.sSLSocketFactory, sslFactory.trustManager)
             .connectTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(headersInterceptor)
+            .addInterceptor(responseInterceptor)
             .addInterceptor(logInterceptor)
             .build()!!
 

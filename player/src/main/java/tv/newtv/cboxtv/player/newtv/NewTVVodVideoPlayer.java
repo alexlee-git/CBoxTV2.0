@@ -301,7 +301,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
                 .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), PlayerConfig
-                .getInstance().getTopicId()));
+                .getInstance().getTopicId(),videoDataStruct.getAlternateId()));
         String secondColumn = parseCategoryIds(videoDataStruct.getCategoryIds(), icntvPlayerInfo);
         addExtend(icntvPlayerInfo, "secondcolumn", secondColumn);
         addExtend(icntvPlayerInfo, "program", videoDataStruct.getProgramId());

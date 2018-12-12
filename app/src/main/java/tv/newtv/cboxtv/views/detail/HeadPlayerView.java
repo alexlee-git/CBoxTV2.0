@@ -186,6 +186,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
                     playerView.setLayoutParams(layoutParams);
                     ((ViewGroup) video).addView(playerView, layoutParams);
+//                    playerView.showFloatWindow();
                 } else {
                     currentPosition = defaultConfig.playPosition;
                     playerView = new VideoPlayerView(defaultConfig, getContext());
@@ -708,8 +709,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return;
         }
 
-        releasePlayer();
-        prepareMediaPlayer();
+        if(playerView != null){
+            playerView.stop();
+        }else{
+            prepareMediaPlayer();
+        }
 
         setCurrentPlayIndex("Play", index);
         currentPosition = postion;
@@ -847,8 +851,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             }
 
                             @Override
-                            public void onError(@NotNull Context context, @org.jetbrains.annotations
-                                    .Nullable String desc) {
+                            public void onError(@NotNull Context context, @NotNull String code,
+                                                @org.jetbrains.annotations.Nullable String desc) {
                                 play();
                             }
                         });
@@ -945,7 +949,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains.annotations.Nullable String desc) {
         mBuilder.infoResult.onResult(null);
     }
 

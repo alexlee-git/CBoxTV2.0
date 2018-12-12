@@ -144,7 +144,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
 
     private void setContentUUID(String uuid, boolean compare, String channel, String title) {
         if (compare && TextUtils.equals(uuid, mContentUUID)) {
-            onError(getContext(), "正在播放当前节目");
+            onError(getContext(), "" , "正在播放当前节目");
             return;
         }
         if (isRequesting) return;
@@ -179,7 +179,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
     /* 请求轮播数据 */
     private void requestAlternates() {
         if (TextUtils.isEmpty(mContentUUID)) {
-            onError(getContext(), "ContentUUID为空");
+            onError(getContext(), "" , "ContentUUID为空");
             return;
         }
         if (mAlternatePresenter == null) {
@@ -354,7 +354,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         if (!isInEditMode()) {
             Toast.makeText(context, desc, Toast.LENGTH_SHORT).show();
         }

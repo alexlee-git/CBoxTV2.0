@@ -761,7 +761,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

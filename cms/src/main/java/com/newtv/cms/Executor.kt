@@ -72,7 +72,7 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                     }
 
                     override fun onError(e: Throwable) {
-                        mObserver?.onError(e.message)
+                        mObserver?.onError(CmsErrorCode.APP_ERROR_EXCEPTION, e.message)
                         cancel()
                     }
 
@@ -91,7 +91,7 @@ internal class Executor<T>(val observable: Observable<ResponseBody>,
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            mObserver?.onError(e.message)
+                            mObserver?.onError(CmsErrorCode.APP_ERROR_EXCEPTION, e.message)
                         }
                     }
                 })

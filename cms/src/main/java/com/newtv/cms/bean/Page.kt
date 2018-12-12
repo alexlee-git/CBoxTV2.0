@@ -18,5 +18,9 @@ data class Page(
     val colNum: String,
     val layoutCode: String,         //
     val blockType: String           //区块类型
-)
+) {
+    override fun toString(): String {
+        return "Page(programs=$programs, blockId='$blockId', blockTitle='$blockTitle', blockImg='$blockImg', haveBlockTitle='$haveBlockTitle', rowNum='$rowNum', colNum='$colNum', layoutCode='$layoutCode', blockType='$blockType')"
+    }
+}
 

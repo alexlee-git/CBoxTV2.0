@@ -1,11 +1,8 @@
 package com.newtv.cms.models
 
 import android.text.TextUtils
-import com.google.gson.reflect.TypeToken
 import com.newtv.cms.*
 import com.newtv.cms.api.ICorner
-import com.newtv.cms.bean.Corner
-import com.newtv.cms.bean.ModelResult
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -20,7 +17,7 @@ internal class CornerModel : BaseModel(), ICorner {
             channelCode: String,
             observer: DataObserver<String>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
         val executor: Executor<String> =

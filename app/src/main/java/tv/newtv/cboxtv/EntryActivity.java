@@ -478,7 +478,8 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
         ToastUtil.showToast(getApplicationContext(), desc);
     }
 

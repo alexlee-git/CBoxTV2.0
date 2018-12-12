@@ -74,12 +74,12 @@ class ContentContract {
                         if (result.isOk()) {
                             callback?.onContentResult(uuid, result.data);
                         } else {
-                            callback?.onError(context, result.errorMessage)
+                            callback?.onError(context,result.errorCode, result.errorMessage)
                         }
                     }
 
-                    override fun onError(desc: String?) {
-                        callback?.onError(context, desc)
+                    override fun onError(code: String?, desc: String?) {
+                        callback?.onError(context,code, desc)
                     }
                 })
                 return
@@ -106,12 +106,12 @@ class ContentContract {
                         if (result.isOk()) {
                             view?.onSubContentResult(uuid, ArrayList(result.data))
                         } else {
-                            view?.onError(context, result.errorMessage)
+                            view?.onError(context,result.errorCode, result.errorMessage)
                         }
                     }
 
-                    override fun onError(desc: String?) {
-                        view?.onError(context, desc)
+                    override fun onError(code: String?, desc: String?) {
+                        view?.onError(context,code, desc)
                     }
                 })
                 return id
@@ -149,12 +149,12 @@ class ContentContract {
                                             if (it is LoadingView) it.loadComplete()
                                         }
                                     } else {
-                                        view?.onError(context, result.errorMessage)
+                                        view?.onError(context,result.errorCode, result.errorMessage)
                                     }
                                 }
 
-                                override fun onError(desc: String?) {
-                                    view?.onError(context, desc)
+                                override fun onError(code: String?, desc: String?) {
+                                    view?.onError(context,code, desc)
                                 }
                             })
                 }
@@ -175,12 +175,12 @@ class ContentContract {
                             getSubContentsWithCallback(result.data, uuid, contentType)
                         }
                     } else {
-                        view?.onError(context, result.errorMessage)
+                        view?.onError(context,result.errorCode, result.errorMessage)
                     }
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
 
             })
@@ -192,8 +192,7 @@ class ContentContract {
             }
             contentService?.let {
                 return it.getContentInfo(Libs.get().appKey, Libs.get().channelId, uuid, false,
-                        object
-                            : DataObserver<ModelResult<Content>> {
+                        object : DataObserver<ModelResult<Content>> {
                             override fun onResult(result: ModelResult<Content>, requestCode: Long) {
                                 if (result.isOk()) {
                                     if (!autoSub) {
@@ -203,12 +202,12 @@ class ContentContract {
                                                 .data?.contentType)
                                     }
                                 } else {
-                                    view?.onError(context, result.errorMessage)
+                                    view?.onError(context,result.errorCode, result.errorMessage)
                                 }
                             }
 
-                            override fun onError(desc: String?) {
-                                view?.onError(context, desc)
+                            override fun onError(code: String?, desc: String?) {
+                                view?.onError(context,code, desc)
                             }
 
                         })

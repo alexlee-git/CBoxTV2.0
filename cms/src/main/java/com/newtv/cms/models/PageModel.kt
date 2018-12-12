@@ -22,11 +22,11 @@ internal class PageModel : BaseModel(), IPage {
     override fun getPage(appkey: String, channelId: String, pageId: String,
                          observer: DataObserver<ModelResult<ArrayList<Page>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
         if (TextUtils.isEmpty(pageId)) {
-            observer.onError("PageId is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "PageId is Empty")
             return 0
         }
 
