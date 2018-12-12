@@ -158,56 +158,8 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
 
     //读取数据库中数据
     private void requestData() {
-        if (!TextUtils.isEmpty(mLoginTokenString)) {
-            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
-                DataSupport.search(DBConfig.COLLECT_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                if (code == 0) {
-                                    Gson gson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
-                                    localData = gson.fromJson(result, type);
-
-                                    if (localData == null) {
-                                        localData = new ArrayList<>(Constant.BUFFER_SIZE_8);
-                                    }
-
-                                    localDataReqComp = true;
-                                    sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                                }
-                            }
-                        }).excute();
-
-                DataSupport.search(DBConfig.REMOTE_COLLECT_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                if (code == 0) {
-                                    Gson gson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
-                                    remoteData = gson.fromJson(result, type);
-
-                                    if (remoteData == null) {
-                                        remoteData = new ArrayList<>(Constant.BUFFER_SIZE_8);
-                                    }
-
-                                    remoteDataReqComp = true;
-                                    sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                                }
-                            }
-                        }).excute();
-            } else {
-                requestDataByDB(DBConfig.REMOTE_COLLECT_TABLE_NAME);
-            }
+        if (!TextUtils.isEmpty(mLoginTokenString)) { // 登录用户
+            requestDataByDB(DBConfig.REMOTE_COLLECT_TABLE_NAME);
         } else {
             requestDataByDB(DBConfig.COLLECT_TABLE_NAME);
         }
@@ -250,7 +202,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     }
 
     private void requestDataByDB(String tableName) {
-        Log.d(TAG, "tableName : " + tableName + ", userId : " + userId);
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
@@ -266,6 +217,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                             List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
                             userCenterUniversalBean.data = universalBeans;
                             if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
+                                Log.d(TAG, "query collection record from : " + tableName + ", size : " + userCenterUniversalBean.data.size());
                                 inflatePage(userCenterUniversalBean.data);
                             } else {
                                 inflatePageWhenNoData();
@@ -284,7 +236,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     }
 
     protected void inflatePage(List<UserCenterPageBean.Bean> datas) {
-        Log.d(TAG, "inflatePage");
         if (contentView == null) {
             return;
         }
@@ -301,8 +252,8 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
 
         showView(mRecyclerView);
 
-        for (UserCenterPageBean.Bean item : datas) {
-            Log.d(TAG, "name : " + item.get_title_name());
+        for (int i = 0; i < datas.size(); ++i) {
+            Log.d(TAG, "collect record name : " + datas.get(i).get_title_name());
         }
 
         if (mDatas == null) {
@@ -346,7 +297,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
-        Log.d(TAG, "hotRecommendParam : " + hotRecommendParam);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
             mContentPresenter.getPageContent(hotRecommendParam);

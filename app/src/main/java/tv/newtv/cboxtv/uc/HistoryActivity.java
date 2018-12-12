@@ -599,12 +599,12 @@ public class HistoryActivity extends BaseActivity implements
                                                     for (int i = 0; i < mCollectBean.size(); i++) {
                                                         if (i < mCollectBean.size() - 1) {
                                                             dataBuff.append(mCollectBean.get(i)
-                                                                    ._contentuuid)
+                                                                    .contentId)
                                                                     .append(",");
                                                         }
                                                         if (i == mCollectBean.size() - 1) {
                                                             dataBuff.append(mCollectBean.get(i)
-                                                                    ._contentuuid)
+                                                                    .contentId)
                                                                     .trimToSize();
                                                         }
                                                     }
@@ -682,7 +682,7 @@ public class HistoryActivity extends BaseActivity implements
                                     .deleteRecord(UserCenterRecordManager.USER_CENTER_RECORD_TYPE.TYPE_HISTORY,
                                             getApplicationContext(),
                                             mCollectBean.get(mAdapter.getSelectPostion())
-                                                    ._contentuuid,
+                                                    .contentId,
                                             mCollectBean.get(mAdapter.getSelectPostion())
                                                     ._contenttype,
                                             mCollectBean.get(mAdapter.getSelectPostion())
@@ -695,7 +695,7 @@ public class HistoryActivity extends BaseActivity implements
                                                             .LOG_NODE_HISTORY, "1," +
                                                             mCollectBean.get(mAdapter
                                                                     .getSelectPostion())
-                                                                    ._contentuuid);//删除历史记录
+                                                                    .contentId);//删除历史记录
                                                     mRecyclerView.post(new Runnable() {
                                                         @Override
                                                         public void run() {
