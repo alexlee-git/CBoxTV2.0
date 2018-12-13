@@ -552,6 +552,8 @@ public class BuyGoodsBusiness{
                 addExtend(stringBuilder,"topic",playerConfig.getTopicId());
                 addExtend(stringBuilder,"secondcolumn",config.getSecondColumnId());
                 addExtend(stringBuilder,"program",config.getProgramId());
+                addExtend(stringBuilder, "type",config.getVideoType());
+                addExtend(stringBuilder,"secondtype",config.getVideoClass());
                 requestAdParameter = new RequestAdParameter();
                 requestAdParameter.setExtend(stringBuilder.toString());
                 requestAdParameter.setProgram(config.getProgramId());

@@ -1910,6 +1910,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             ADConfig.getInstance().setSeriesID(defaultConfig.programSeriesInfo.getContentID(),
                     false);
         }
+        if(defaultConfig.programSeriesInfo != null){
+            ADConfig.getInstance().setVideoType(defaultConfig.programSeriesInfo.getVideoType());
+            ADConfig.getInstance().setVideoClass(defaultConfig.programSeriesInfo.getVideoClass());
+        }
+
         videoDataStruct.setAlternate(defaultConfig.isAlternate,defaultConfig.isFirstAlternate);
         videoDataStruct.setAlternateId(defaultConfig.alternateID);
         videoDataStruct.setHistoryPosition(mHistoryPostion);
