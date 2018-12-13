@@ -388,6 +388,9 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
             .annotations.Nullable String desc) {
+
+        LogUtils.e("ContentFragment","error code="+code+" desc="+desc);
+
         if (loadingView != null)
             loadingView.setVisibility(View.GONE);
         setTipVisibility(View.VISIBLE);

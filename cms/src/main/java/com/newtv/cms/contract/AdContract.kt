@@ -41,7 +41,7 @@ class AdContract {
 
         fun getAdByUrl(url: String)
 
-        fun getCarouselAd(adType:String,panel:String,secondPannel:String,carousel:String)
+        fun getCarouselAd(adType: String, panel: String, secondPannel: String, carousel: String)
 
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?)
 
@@ -128,7 +128,7 @@ class AdContract {
                 }
 
                 override fun onError(code: String?, desc: String?) {
-                    view?.onError(context,code, desc)
+                    view?.onError(context, code, desc)
                 }
             })
         }
@@ -235,10 +235,9 @@ class AdContract {
         override fun destroy() {
             super.destroy()
 
-            if (ad != null) {
-                ad!!.cancel()
-                ad = null
-            }
+            ad?.cancel()
+            ad = null
+
             adItem = null
 
             if (mDisposable != null) {

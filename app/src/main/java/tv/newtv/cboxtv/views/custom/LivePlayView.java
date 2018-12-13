@@ -23,7 +23,6 @@ import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.bean.Video;
 import com.newtv.cms.contract.ContentContract;
-import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LiveTimingUtil;
 import com.newtv.libs.util.LogUtils;
@@ -37,7 +36,6 @@ import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
-import tv.newtv.cboxtv.cms.mainPage.viewholder.BlockBuilder;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.LiveListener;
@@ -57,7 +55,7 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  */
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
         ContentContract.View, LiveListener, ICustomPlayer, NewTVLauncherPlayerView
-                .OnPlayerStateChange,NewTVLauncherPlayerView.ChangeAlternateListener {
+                .OnPlayerStateChange, NewTVLauncherPlayerView.ChangeAlternateListener {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -109,11 +107,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             }
         }
     };
-
-    public void setAlternateChange(NewTVLauncherPlayerView.ChangeAlternateListener listener){
-        mAlternateChange = listener;
-    }
-
     private Runnable playLiveRunnable = new Runnable() {
         @Override
         public void run() {
@@ -142,6 +135,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public LivePlayView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
+    }
+
+    public void setAlternateChange(NewTVLauncherPlayerView.ChangeAlternateListener listener) {
+        mAlternateChange = listener;
     }
 
     public void setPageUUID(String uuid) {
@@ -271,7 +268,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public void dispatchClick() {
         Log.d(TAG, "enterFullScreen");
-        LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(),mProgramInfo.getVideo());
+        LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
         if (liveInfo.isLiveTime()) {
             Log.d(TAG, "直播中，特殊处理");
             if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
@@ -302,9 +299,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void doPlay() {
-        Log.d(TAG, "currentMode : " + currentMode);
+        Log.d(TAG, "currentMode : " + currentMode + " visible=" + mIsShow +" uuid="+mUUID);
+        if (!mIsShow) return;
         if (currentMode == MODE_LIVE) {
-            LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(),mProgramInfo.getVideo());
+            LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
             if (liveInfo.isLiveTime()) {
                 playLiveVideo(mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ? 0 :
                         2000);
@@ -401,10 +399,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     public void setProgramInfo(Program programInfo) {
-        setProgramInfo(programInfo, true,false);
+        setProgramInfo(programInfo, true, false);
     }
 
-    public void setProgramInfo(Program programInfo, boolean useDelay,boolean isAlternate) {
+    public void setProgramInfo(Program programInfo, boolean useDelay, boolean isAlternate) {
         if (programInfo == null) return;
 
         this.mProgramInfo = programInfo;
@@ -416,7 +414,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             mPlayInfo.playUrl = programInfo.getVideo().getLiveUrl();
         } else if (Constant.CONTENTTYPE_LB.equals(mPlayInfo.contentType)) {
             mPlayInfo.ContentUUID = programInfo.getL_id();
-        }else if(isAlternate){
+        } else if (isAlternate) {
             mPlayInfo.ContentUUID = programInfo.getContentId();
         }
         mPlayInfo.title = programInfo.getTitle();
@@ -440,7 +438,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 currentMode = MODE_OPEN_VIDEO;
                 playVideo(useDelay ? 2000 : 0);
                 return;
-            }else if (isAlternate()) {
+            } else if (isAlternate()) {
                 currentMode = MODE_ALTERNATE;
                 playAlternate(useDelay ? 2000 : 0);
                 return;
@@ -490,9 +488,12 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void onChange(String uuid) {
+        LogUtils.d(TAG, "onTabVisibleChange: uuid=" + uuid + " current=" + mUUID);
         if (Navigation.get().isCurrentPage(mUUID)) {
+            mIsShow = true;
             setVisibleChange(VISIBLE, false);
         } else {
+            mIsShow = false;
             setVisibleChange(GONE, false);
         }
     }
@@ -526,7 +527,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void onTimeChange(String current, String end) {
-        if(mVideoPlayerView != null && BuildConfig.DEBUG) {
+        if (mVideoPlayerView != null && BuildConfig.DEBUG) {
             mVideoPlayerView.setTipText(String.format("%s/%s", current, end));
         }
     }
@@ -552,7 +553,9 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
 
-        setVisibleChange(visibility, true);
+        if(mIsShow) {
+            setVisibleChange(visibility, true);
+        }
     }
 
     @Override
@@ -615,7 +618,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void changeAlternate(String contentId, String title, String channel) {
-        if(mAlternateChange != null){
+        if (mAlternateChange != null) {
             mAlternateChange.changeAlternate(contentId, title, channel);
         }
     }

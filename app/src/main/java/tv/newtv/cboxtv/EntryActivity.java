@@ -78,10 +78,6 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mAdPresenter!=null){
-            mAdPresenter.destroy();
-            mAdPresenter = null;
-        }
 
         if (imageView != null) {
             imageView.setImageDrawable(null);
@@ -96,11 +92,6 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         if (mSplashPresenter != null) {
             mSplashPresenter.destroy();
             mAuthPresenter = null;
-        }
-
-        if(mAdPresenter != null){
-            mAdPresenter.destroy();
-            mAdPresenter = null;
         }
 
 
@@ -327,7 +318,19 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         finish();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+
+
+    }
+
     private void enterMain() {
+
+        if(mAdPresenter != null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
 
         authLogSuccess();//认证成功
 
@@ -470,7 +473,6 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
     @Override
     public void activeResult() {
-        mAuthPresenter.auth();
     }
 
     @Override

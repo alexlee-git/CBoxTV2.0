@@ -1413,6 +1413,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             return true;
         }
 
+
         if (mPlayerContract != null && mPlayerContract.processKeyEvent(event) &&
                 mShowingChildView == SHOWING_TIP_VIEW) {
             return true;
@@ -1524,6 +1525,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
             return true;
+        }
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            if (defaultConfig.playType == PLAY_TYPE_ALTERNATE) {
+                return true;
+            }
         }
 
         if (isFullScreen()) {
