@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -116,6 +118,7 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             } else {
                 navName.setTextColor(Color.parseColor("#80FFFFFF"));
                 navFrame.setBackgroundResource(R.drawable.circle_no);
+                onItemLostFocus(v);
             }
         }
 
@@ -162,11 +165,27 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    private void onItemLostFocus(View view) {
+        // 直接缩小view
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator bigx = ObjectAnimator.ofFloat(view, "scaleX", 1.1f, 1f);
+        ObjectAnimator bigy = ObjectAnimator.ofFloat(view, "scaleY", 1.1f, 1f);
+        animatorSet.play(bigx).with(bigy);
+        animatorSet.setDuration(300);
+        animatorSet.start();
+    }
+
 
     private void onItemGetFocus(View view, int adapterPosition) {
         FrameLayout viewById = view.findViewById(R.id.nav_frame);
         viewById.setBackgroundResource(R.drawable.circle_foucs);
-
+        //直接放大view
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator bigx = ObjectAnimator.ofFloat(view, "scaleX", 1f, 1.1f);
+        ObjectAnimator bigy = ObjectAnimator.ofFloat(view, "scaleY", 1f, 1.1f);
+        animatorSet.play(bigx).with(bigy);
+        animatorSet.setDuration(300);
+        animatorSet.start();
     }
 
 

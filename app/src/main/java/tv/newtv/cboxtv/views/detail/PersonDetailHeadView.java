@@ -115,10 +115,15 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     }
 
     public void setTopView(){
-        final LinearLayout upTop = view.findViewById(R.id.up_top);
-        upTop.setVisibility(View.VISIBLE);
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(upTop, "alpha", 1, 0, 1, 0, 1,
-                0, 1, 0, 1, 0, 1, 0);
+        LinearLayout upTop = view.findViewById(R.id.up_top);
+        ImageView arrowsDark = view.findViewById(R.id.nav_arrows_dark);
+        hintAnimator(upTop,arrowsDark);
+
+    }
+
+    private void hintAnimator(LinearLayout upTop, ImageView arrowsDark) {
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(arrowsDark, "alpha", 1, 0, 1, 0, 1,
+                0);
         translationX.setDuration(5000);
         translationX.start();
         translationX.addListener(new AnimatorListenerAdapter() {
@@ -126,6 +131,21 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 upTop.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+
+        ObjectAnimator translationY = new ObjectAnimator().ofFloat(arrowsDark, "TranslationY", 0,10,0,10,0,10);
+        translationY.setDuration(5000);
+        translationY.start();
+        translationY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
             }
 
             @Override

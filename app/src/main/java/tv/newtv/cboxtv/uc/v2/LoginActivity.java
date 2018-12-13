@@ -158,6 +158,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 intent.putExtra("ispay", mFlagPay);
                 intent.putExtra("isAuth", mFlagAuth);
                 intent.putExtra("payBean", mExterPayBean);
+                intent.putExtra("action", mExternalAction);
+                intent.putExtra("params", mExternalParams);
                 startActivity(intent);
                 finish();
                 break;

@@ -21,7 +21,7 @@ class PlayerTimer {
 
     private static final String TAG = "PlayerTimer";
     private Disposable mDisposable;
-    private PlayerTimerCallback mLiveTimerCallback;
+    private PlayerTimerCallback mLookTimerCallback;
     private Observable<Long> mObservale;
     private int keepLookSeconds = 0;
 
@@ -34,7 +34,7 @@ class PlayerTimer {
     }
 
     void setCallback(PlayerTimerCallback callback) {
-        mLiveTimerCallback = callback;
+        mLookTimerCallback = callback;
     }
 
     /**
@@ -54,8 +54,8 @@ class PlayerTimer {
                             @Override
                             public void accept(Long aLong) throws Exception {
                                 keepLookSeconds += 1;
-                                if (mLiveTimerCallback != null) {
-                                    mLiveTimerCallback.onChange(keepLookSeconds);
+                                if (mLookTimerCallback != null) {
+                                    mLookTimerCallback.onKeepLookTimeChange(keepLookSeconds);
                                 }
                             }
                         }, new Consumer<Throwable>() {
@@ -86,7 +86,7 @@ class PlayerTimer {
     }
 
     interface PlayerTimerCallback {
-        void onChange(int currentSecond);
+        void onKeepLookTimeChange(int currentSecond);
     }
 
 
