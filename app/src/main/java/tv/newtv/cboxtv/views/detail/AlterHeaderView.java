@@ -1,5 +1,8 @@
 package tv.newtv.cboxtv.views.detail;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +76,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     private NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig;
     private AlternateCallback mAlternateCallback;
+    private ImageView navTitle;
 
     public AlterHeaderView(Context context) {
         this(context, null);
@@ -137,6 +143,11 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateDescText = findViewById(R.id.id_detail_desc);
         alternateView = findViewById(R.id.video_player);
         mMoreView = findViewById(R.id.more_view_stub);
+        ImageView navArrowDark = findViewById(R.id.nav_arrows_dark);
+//        ImageView navArrowsBright = findViewById(R.id.nav_arrows_bright);
+        navTitle = findViewById(R.id.nav_title);
+        darkAnimator(navArrowDark);
+//        brightAnimator(navArrowsBright);
 
         mCollect = findViewById(R.id.collect);
         if (mCollect != null) {
@@ -163,6 +174,62 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
 
         updateUI();
+    }
+
+    private void brightAnimator(ImageView view) {
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 0, 1, 0, 1, 0,
+                1, 0, 1, 0, 1, 0, 1);
+        translationX.setDuration(5000);
+        translationX.start();
+        translationX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                view.setVisibility(View.GONE);
+                navTitle.setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+    }
+
+    private void darkAnimator(ImageView view ){
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1,
+                0,1,0);
+        translationX.setDuration(5000);
+        translationX.start();
+        translationX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                view.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+
+        ObjectAnimator translationY = new ObjectAnimator().ofFloat(view, "TranslationY", 0,10,0,10,0,10);
+        translationY.setDuration(5000);
+        translationY.start();
+        translationY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                view.setVisibility(View.GONE);
+                navTitle.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
     }
 
     @Override

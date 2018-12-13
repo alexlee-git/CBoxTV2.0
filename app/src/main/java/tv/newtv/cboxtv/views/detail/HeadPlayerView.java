@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -363,11 +364,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         contentView = LayoutInflater.from(getContext()).inflate(mBuilder.mLayout, this, false);
         final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_, null);
+        ImageView arrowsDark = inflate.findViewById(R.id.nav_arrows_dark);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
         addView(inflate);
-        hintAnimator(inflate);
+        hintAnimator(inflate,arrowsDark);
         addView(contentView);
         checkDataFromDB();
 
@@ -400,9 +402,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         //mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
     }
 
-    private void hintAnimator(final View view) {
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1,
-                0, 1, 0, 1, 0, 1, 0);
+    private void hintAnimator(final View view,ImageView arrow) {
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(arrow, "alpha", 1, 0, 1, 0, 1,
+                0);
         translationX.setDuration(5000);
         translationX.start();
         translationX.addListener(new AnimatorListenerAdapter() {
@@ -411,6 +413,21 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 super.onAnimationEnd(animation);
 //                view.setVisibility(View.GONE);
                 removeView(view);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+
+        ObjectAnimator translationY = new ObjectAnimator().ofFloat(arrow, "TranslationY", 0,10,0,10,0,10);
+        translationY.setDuration(5000);
+        translationY.start();
+        translationY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
             }
 
             @Override
