@@ -334,6 +334,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
 
         lastListView = new MenuRecyclerView(getContext());
+        lastListView.setItemAnimator(null);
         LastMenuRecyclerAdapter adapter = new LastMenuRecyclerAdapter(getContext(), lastProgram,
                 detailcontentUUID);
         lastListView.setAdapter(adapter);
@@ -445,7 +446,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (level == MenuRecyclerView.MAX_LEVEL) {
                     Program program = lastProgram.get(position);
-                    if(!Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())){
+                    if(!Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())
+                            || LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())){
                         playProgram = program;
                         setPlayId(program);
                     }
@@ -611,6 +613,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             MenuRecyclerAdapter nextAdapter = (MenuRecyclerAdapter) menuRecyclerViewByLevel
                     .getAdapter();
             nextAdapter.setData(node.getChild());
+            menuRecyclerViewByLevel.setTag(node.getId());
             if (node.getChild().size() == 0 && !node.isRequest() || node.isMustRequest()) {
                 //请求数据
                 getNodeData(node, menuRecyclerViewByLevel);
@@ -645,8 +648,6 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     private void getNodeData(final Node node, final MenuRecyclerView recyclerView) {
-        recyclerView.setTag(node.getId());
-
         String contentUUID = node.getId();
         String leftString = contentUUID.substring(0, 2);
         String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
@@ -1197,9 +1198,6 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public void notifyLastAdapter() {
-        if(lastListView.hasFocus()){
-            getLastAdapter().setInit(false);
-        }
         getLastAdapter().notifyDataSetChanged();
     }
 

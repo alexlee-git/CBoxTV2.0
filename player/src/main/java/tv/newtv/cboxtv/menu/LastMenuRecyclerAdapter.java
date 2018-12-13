@@ -75,6 +75,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             }
         }
         setData(data,program);
+        setHasStableIds(true);
     }
 
     @Override
@@ -236,6 +237,11 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
                 }).excute();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return data.get(position).hashCode();
+    }
+
     public void setPlayId(Program program){
         if(program != null){
             playProgram = program;
@@ -276,10 +282,6 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             }
         }
         return result;
-    }
-
-    public void setInit(boolean init) {
-        this.init = init;
     }
 
     public boolean isInit() {
