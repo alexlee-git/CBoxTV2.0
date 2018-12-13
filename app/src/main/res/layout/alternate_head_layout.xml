@@ -8,6 +8,8 @@
                 android:paddingEnd="@dimen/width_87px"
                 android:paddingRight="@dimen/width_87px">
 
+    <include layout="@layout/up_top_" />
+
     <include
         layout="@layout/left_top_logo"/>
 

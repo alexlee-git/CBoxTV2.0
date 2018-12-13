@@ -258,21 +258,23 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
     private void doPlay(Content content) {
         initListener();
-        if (!Constant.CONTENTTYPE_LB.equals(content.getContentType())) {
-            NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay,
-                    playPostion);
-            mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-        } else {
-            NewTVLauncherPlayerViewManager.getInstance().changeAlternate(content.getContentID(),
-                    content.getAlternateNumber(), content.getTitle());
-        }
-        if (mPlayerFrameLayoutContainer != null) {
-            NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
-                    (mPlayerFrameLayoutContainer, this);
-        }
+        if (!isFinishing()) {
+            if (!Constant.CONTENTTYPE_LB.equals(content.getContentType())) {
+                NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay,
+                        playPostion);
+                mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+            } else {
+                NewTVLauncherPlayerViewManager.getInstance().changeAlternate(content.getContentID(),
+                        content.getAlternateNumber(), content.getTitle());
+            }
+            if (mPlayerFrameLayoutContainer != null) {
+                NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
+                        (mPlayerFrameLayoutContainer, this);
+            }
 
-        if (loadingView != null)
-            loadingView.setVisibility(View.GONE);
+            if (loadingView != null)
+                loadingView.setVisibility(View.GONE);
+        }
     }
 
     @Override

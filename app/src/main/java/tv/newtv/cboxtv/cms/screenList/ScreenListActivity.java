@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -43,6 +44,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalLayoutManager;
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
+import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.screenList.adapter.FirstLabelAdapter;
 import tv.newtv.cboxtv.cms.screenList.adapter.LabelDataAdapter;
 import tv.newtv.cboxtv.cms.screenList.adapter.secondLabelAdapter;
@@ -286,8 +288,9 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         result_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
 
-        final LinearLayout upTop = findViewById(R.id.up_top);
-        hintAnimator(upTop);
+        LinearLayout upTop = findViewById(R.id.up_top);
+        ImageView arrowsDark = findViewById(R.id.nav_arrows_dark);
+        hintAnimator(upTop,arrowsDark);
 
 
         tab.setScaleValue(1.2f);
@@ -302,8 +305,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         labelDataAdapter.setHasStableIds(true);
         tvRecyclerView.setLayoutManager(manager);
         tvRecyclerView.setAdapter(labelDataAdapter);
-        tvRecyclerView.setFocusFrontAble(true);
-        tvRecyclerView.setFocusOutAble(true);
+//        tvRecyclerView.setFocusFrontAble(true);
+//        tvRecyclerView.setFocusOutAble(true);
         labelDataAdapter.setOnItemClickListener(new LabelDataAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -366,9 +369,9 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
     }
 
-    private void hintAnimator(LinearLayout upTop) {
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(upTop, "alpha", 1, 0, 1, 0, 1,
-                0, 1, 0, 1, 0, 1, 0);
+    private void hintAnimator(LinearLayout upTop,ImageView arrowsDark) {
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(arrowsDark, "alpha", 1, 0, 1, 0, 1,
+                0);
         translationX.setDuration(5000);
         translationX.start();
         translationX.addListener(new AnimatorListenerAdapter() {
@@ -383,6 +386,22 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 super.onAnimationStart(animation);
             }
         });
+
+        ObjectAnimator translationY = new ObjectAnimator().ofFloat(arrowsDark, "TranslationY", 0,10,0,10,0,10);
+        translationY.setDuration(5000);
+        translationY.start();
+        translationY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+
     }
 
 
@@ -527,6 +546,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 pageNum = 1;
                 loadMore = false;
                 tvRecyclerView.smoothScrollToPosition(0);
+                Log.e("yml", "onKeyDown: ..4" );
                 if (moveFlag == 1) {
                     title_label.setVisibility(View.GONE);
                     labelRecyclerView.smoothScrollToPosition(0);
@@ -542,6 +562,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 if (moveFlag == 2) {
                     type_text.setVisibility(View.GONE);
                     labelRecyclerView.setVisibility(View.VISIBLE);
+                    Log.e("yml", "onKeyDown: ..4" );
                     if (labelRecordView != null) {
                         labelRecordView.requestFocus();
                     }
@@ -563,6 +584,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         labelRecyclerView.setVisibility(View.VISIBLE);
                         if (labelRecordView != null) {
                             labelRecordView.requestFocus();
+                            Log.e("yml", "onKeyDown: ..3" );
                             moveFlag = 2;
                             map.remove(type_key);
                         }
@@ -595,6 +617,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                 labelRecyclerView.setVisibility(View.VISIBLE);
 
                                 labelRecyclerView.requestFocus();
+                                Log.e("yml", "onKeyDown: ..2" );
                                 moveFlag = 2;
                                 map.remove(type_key);
                             }
@@ -634,6 +657,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                 if (labelRecordView != null) {
                                     labelRecyclerView.setVisibility(View.VISIBLE);
                                     labelRecyclerView.requestFocus();
+                                    Log.e("yml", "onKeyDown: ..1" );
                                     moveFlag = 2;
                                     map.remove(type_key);
                                 }
@@ -900,4 +924,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         return super.dispatchKeyEvent(event);
     }
 
+    @Override
+    protected boolean isDetail() {
+        return true;
+    }
 }

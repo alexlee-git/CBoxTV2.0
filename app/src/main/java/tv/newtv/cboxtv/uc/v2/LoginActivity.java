@@ -45,8 +45,6 @@ import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.player.vip.VipCheck;
-import tv.newtv.cboxtv.player.vip.VipCheck.BuyFlagListener;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
@@ -160,6 +158,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 intent.putExtra("ispay", mFlagPay);
                 intent.putExtra("isAuth", mFlagAuth);
                 intent.putExtra("payBean", mExterPayBean);
+                intent.putExtra("action", mExternalAction);
+                intent.putExtra("params", mExternalParams);
                 startActivity(intent);
                 finish();
                 break;
@@ -306,7 +306,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 Log.i(TAG, "Login RefreshToken :" + RefreshToken);
                                 SharePreferenceUtils.saveToken(LoginActivity.this, mAccessToken, RefreshToken);
 
-                                UserCenterRecordManager.getInstance().getUserBehaviorUtils(getApplicationContext(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
+                                UserCenterRecordManager.getInstance().synchronizationUserBehavior(getApplicationContext());
 
                                 if (mHandler != null) {
                                     mHandler.removeMessages(MSG_RESULT_TOKEN);

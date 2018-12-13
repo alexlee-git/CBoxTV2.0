@@ -3,6 +3,8 @@ package tv.newtv.cboxtv.uc.v2.data.history;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 
 /**
@@ -26,13 +28,18 @@ public class HistoryRepository implements HistoryDataSource {
         return INSTANCE;
     }
 
-    public  void destroyInstance() {
+    public void destroyInstance() {
         INSTANCE = null;
     }
 
     @Override
     public void addRemoteHistory(@NonNull UserCenterPageBean.Bean entity) {
         mRemoteDataSource.addRemoteHistory(entity);
+    }
+
+    @Override
+    public void addRemoteHistoryList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteHistoryListCallback callback) {
+        mRemoteDataSource.addRemoteHistoryList(token, userID, beanList, callback);
     }
 
     @Override

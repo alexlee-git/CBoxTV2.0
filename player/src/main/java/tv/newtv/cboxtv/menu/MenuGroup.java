@@ -314,10 +314,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             MenuRecyclerView lv = new MenuRecyclerView(getContext());
             MenuRecyclerAdapter adapter;
             if (i == level) {
-                adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode.getId());
+                adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode);
             } else {
                 adapter = new MenuRecyclerAdapter(getContext(), currentNode.getParent()
-                        .getChild(), currentNode.getId());
+                        .getChild(), currentNode);
             }
             lv.setAdapter(adapter);
 
@@ -334,6 +334,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
 
         lastListView = new MenuRecyclerView(getContext());
+        lastListView.setItemAnimator(null);
         LastMenuRecyclerAdapter adapter = new LastMenuRecyclerAdapter(getContext(), lastProgram,
                 detailcontentUUID);
         lastListView.setAdapter(adapter);
@@ -445,8 +446,11 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (level == MenuRecyclerView.MAX_LEVEL) {
                     Program program = lastProgram.get(position);
-                    playProgram = program;
-                    setPlayId(program);
+                    if(!Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())
+                            || LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())){
+                        playProgram = program;
+                        setPlayId(program);
+                    }
                     if (onSelectListenerList.size() > 0) {
                         for (OnSelectListener l : onSelectListenerList) {
                             l.select(program);
@@ -609,6 +613,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             MenuRecyclerAdapter nextAdapter = (MenuRecyclerAdapter) menuRecyclerViewByLevel
                     .getAdapter();
             nextAdapter.setData(node.getChild());
+            menuRecyclerViewByLevel.setTag(node.getId());
             if (node.getChild().size() == 0 && !node.isRequest() || node.isMustRequest()) {
                 //请求数据
                 getNodeData(node, menuRecyclerViewByLevel);
@@ -643,8 +648,6 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     private void getNodeData(final Node node, final MenuRecyclerView recyclerView) {
-        recyclerView.setTag(node.getId());
-
         String contentUUID = node.getId();
         String leftString = contentUUID.substring(0, 2);
         String rightString = contentUUID.substring(contentUUID.length() - 2, contentUUID.length());
@@ -702,7 +705,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     public MenuRecyclerView createRecyclerView(int level) {
         MenuRecyclerView lv = new MenuRecyclerView(getContext());
         MenuRecyclerAdapter adapter = new MenuRecyclerAdapter(getContext(), new ArrayList<Node>()
-                , "");
+                , null);
         lv.setAdapter(adapter);
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -972,12 +975,12 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         for (int i = level; i > 0; i--) {
             MenuRecyclerView menuRecyclerView = getMenuRecyclerViewByLevel(i);
             MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerView.getAdapter();
-            adapter.setData(currentNode.getParent().getChild(), currentNode.getId());
+            adapter.setData(currentNode.getParent().getChild(), currentNode);
             currentNode = currentNode.getParent();
         }
         MenuRecyclerView firstMenu = getMenuRecyclerViewByLevel(0);
         MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) firstMenu.getAdapter();
-        adapter.setData(rootNodes, currentNode.getId());
+        adapter.setData(rootNodes, currentNode);
 
         lastListView.setVisibility(View.VISIBLE);
         setRecyclerViewsGoneByLevel(level);
@@ -1066,7 +1069,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         for (int i = level; i >= 0; i--) {
             MenuRecyclerView menuRecyclerView = getMenuRecyclerViewByLevel(i);
             MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerView.getAdapter();
-            adapter.setPlayId(currentNode.getId());
+            adapter.setPlayNode(currentNode);
             currentNode = currentNode.getParent();
         }
 
@@ -1075,8 +1078,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             for (int i = level + 1; i < size; i++) {
                 MenuRecyclerView menuRecyclerView = listViews.get(i);
                 MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerView.getAdapter();
-                adapter.setPlayId("");
-
+                adapter.setPlayNode(null);
             }
         }
     }

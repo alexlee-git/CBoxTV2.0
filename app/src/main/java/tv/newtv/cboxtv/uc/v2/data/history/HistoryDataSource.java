@@ -23,6 +23,12 @@ public interface HistoryDataSource {
         void onDataNotAvailable();
     }
 
+    interface AddRemoteHistoryListCallback {
+
+        void onAddRemoteHistoryListComplete(int totalSize);
+
+    }
+
     interface GetHistoryCallback {
 
         void onHistoryLoaded(History history);
@@ -31,6 +37,8 @@ public interface HistoryDataSource {
     }
 
     void addRemoteHistory(@NonNull UserCenterPageBean.Bean entity);
+
+    void addRemoteHistoryList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, HistoryRemoteDataSource.AddRemoteHistoryListCallback callback);
 
     void deleteRemoteHistory(String token, @NonNull String userId, String contentType, String appKey, String channelCode, String contentuuids);
 

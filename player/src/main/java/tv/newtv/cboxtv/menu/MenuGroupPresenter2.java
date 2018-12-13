@@ -36,7 +36,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
@@ -178,8 +180,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         menuGroup.addOnSelectListener(new MenuGroup.OnSelectListener() {
             @Override
             public void select(Program program) {
-                playProgram = program;
                 if (LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())) {
+                    playProgram = program;
                     if (program.isCollect()) {
                         deleteLbCollect(program);
                     } else {
@@ -196,6 +198,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     }
                     return;
                 }
+                playProgram = program;
 
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
                 if (content != null) {
@@ -1026,31 +1029,52 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseBody>() {
+                .subscribe(new Observer<ResponseBody>() {
                     @Override
-                    public void accept(ResponseBody responseBody) throws Exception {
-                        JSONObject jsonObject = new JSONObject(responseBody.string());
-                        String data = jsonObject.optString("data");
-                        com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
-                        if (content != null) {
-                            Log.i(TAG, "页面跳转: ");
-                            String csContentId = mySplit(content.getCsContentIDs());
-                            if (!TextUtils.isEmpty(csContentId)) {
-                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_PS, csContentId, "");
-                                return;
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(responseBody.string());
+                            String data = jsonObject.optString("data");
+                            com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
+                            if (content != null) {
+                                Log.i(TAG, "页面跳转: ");
+                                String csContentId = mySplit(content.getCsContentIDs());
+                                if (!TextUtils.isEmpty(csContentId)) {
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_PS,csContentId,program.getContentUUID());
+                                    return;
+                                }
+                                String tvContentId = mySplit(content.getTvContentIDs());
+                                if (!TextUtils.isEmpty(tvContentId)) {
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_TV,tvContentId,program.getContentUUID());
+                                    return;
+                                }
+                                String cgContentId = mySplit(content.getCgContentIDs());
+                                if (!TextUtils.isEmpty(cgContentId)) {
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_CG,cgContentId,program.getContentUUID());
+                                    return;
+                                }
+                                Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
                             }
-                            String tvContentId = mySplit(content.getTvContentIDs());
-                            if (!TextUtils.isEmpty(tvContentId)) {
-                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_TV, tvContentId, "");
-                                return;
-                            }
-                            String cgContentId = mySplit(content.getCgContentIDs());
-                            if (!TextUtils.isEmpty(cgContentId)) {
-                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_CG, cgContentId, "");
-                                return;
-                            }
-                            Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            jumpErrorToast();
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        jumpErrorToast();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }
@@ -1145,5 +1169,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 splitIds(programSeriesInfo.getTvContentIDs(),seriesIdList);
                 break;
         }
+    }
+
+    private void jumpErrorToast(){
+        Toast.makeText(context,"节目走丢了 请继续观看",Toast.LENGTH_SHORT).show();
     }
 }

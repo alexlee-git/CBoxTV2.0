@@ -46,6 +46,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
 
     private String contentType;
 
+    private Program playProgram;
     private Handler handler = new MyHandler(this);
 
     private static class MyHandler extends Handler{
@@ -66,8 +67,15 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     }
 
     public LastMenuRecyclerAdapter(Context context, List<Program> data, String playId) {
-        super(context,playId);
-        setData(data);
+        super(context);
+        Program program = null;
+        for(Program p : data){
+            if(TextUtils.equals(p.getContentUUID(),playId)){
+                program = p;
+            }
+        }
+        setData(data,program);
+        setHasStableIds(true);
     }
 
     @Override
@@ -133,17 +141,27 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
                         v.setBackgroundResource(R.drawable.menu_group_item_focus);
                     }else {
                         v.setBackgroundResource(R.drawable.one_focus);
+                        setSelect(holder,true);
                     }
                 } else if (isCurrentPlay(program)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
+                    setSelect(holder,false);
                 } else {
                     v.setBackgroundResource(R.color.color_transparent);
+                    setSelect(holder,false);
                 }
             }
         });
 
         if(position == 0){
             firstPositionView = holder.itemView;
+        }
+    }
+
+    private void setSelect(RecyclerView.ViewHolder holder,boolean select){
+        if(holder instanceof  Holder){
+            Holder h = (Holder) holder;
+            h.tv.setSelected(select);
         }
     }
 
@@ -219,9 +237,14 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
                 }).excute();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return data.get(position).hashCode();
+    }
+
     public void setPlayId(Program program){
         if(program != null){
-            this.playId = program.getContentUUID();
+            playProgram = program;
             this.title = program.getTitle();
             this.init = false;
             notifyDataSetChanged();
@@ -271,8 +294,11 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
      * @return
      */
     private boolean isCurrentPlay(Program program){
-        if(program != null &&program.getContentUUID()!= null && program.getContentUUID().equals(playId)
-                && program.getTitle() != null && program.getTitle().equals(title)){
+//        if(program != null &&program.getContentUUID()!= null && program.getContentUUID().equals(playId)
+//                && program.getTitle() != null && program.getTitle().equals(title)){
+//            return true;
+//        }
+        if(playProgram == program){
             return true;
         }
         return false;

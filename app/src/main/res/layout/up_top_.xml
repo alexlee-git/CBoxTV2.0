@@ -6,15 +6,24 @@
     android:gravity="center"
     android:orientation="vertical">
 
+
+    <!--<ImageView-->
+        <!--android:id="@+id/nav_arrows_bright"-->
+        <!--android:layout_marginTop="@dimen/height_7px"-->
+        <!--android:layout_width="@dimen/height_34px"-->
+        <!--android:layout_height="@dimen/height_20px"-->
+        <!--android:src="@drawable/icon_arrows_bright" />-->
+
     <ImageView
-        android:layout_marginTop="@dimen/height_20px"
+        android:id="@+id/nav_arrows_dark"
         android:layout_width="@dimen/height_34px"
+        android:layout_marginTop="@dimen/height_15px"
         android:layout_height="@dimen/height_20px"
-        android:src="@drawable/icon_prompt" />
+        android:src="@drawable/icon_arrows_dark" />
 
     <ImageView
         android:id="@+id/nav_title"
-        android:layout_marginTop="@dimen/height_7px"
+        android:layout_marginTop="@dimen/height_10px"
         android:layout_width="@dimen/width_168px"
         android:layout_height="@dimen/height_24px"
         android:src="@drawable/up_to_nav" />

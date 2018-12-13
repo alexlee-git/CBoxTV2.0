@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.cms.search.view;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
@@ -17,7 +16,6 @@ import com.newtv.libs.util.LogUploadUtils;
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommend;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchHotRecommendNew;
 import tv.newtv.cboxtv.cms.search.custom.NewTVSearchResult;
 import tv.newtv.cboxtv.cms.search.custom.SearchViewKeyboard;
@@ -42,7 +40,6 @@ public class SearchActivity extends BaseActivity {
     private SearchViewKeyboard mSearchViewKeyboard;
     private NewTVSearchResult mSearchResult;
     private NewTVSearchHotRecommendNew mHotRecommend;
-//    private NewTVSearchHotRecommend mHotRecommend;
     private View mRelativeLayout;
 
     //监听输入框值变化

@@ -39,6 +39,7 @@ import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.views.UpdateDialog;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
@@ -155,6 +156,7 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
         ModuleLayoutManager.getInstance().unit();
         SuperScriptManager.getInstance().unit();
         MainNavManager.getInstance().unInit();
+        UserCenterRecordManager.getInstance().releaseUserBehavior(this);
 
     }
 
