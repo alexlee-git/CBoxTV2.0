@@ -46,9 +46,7 @@ public class PlayerAlternateContract {
         void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String title,
                                String channelId);
 
-        void onAlterItemResult(String contentId, Content content, boolean isLive);
-
-        void onAlterLookTimeChange(Long time);
+        void onAlterItemResult(String contentId, Content content, boolean isLive,boolean isFirst);
 
         void onAlternateError(String code, String desc);
     }
@@ -74,8 +72,6 @@ public class PlayerAlternateContract {
 
         void addHistory();
 
-        void resetKeepLook();
-
         void playAlternateItem(Alternate current);
     }
 
@@ -83,17 +79,18 @@ public class PlayerAlternateContract {
             Presenter, ContentContract.View {
 
         private static final String TAG = "AlternatePresenter";
-        private String currentAlternateId;
-        private String currrentTitle;
-        private String currrentChannel;
-        private boolean needShowChangeView = true;
-        private IAlternate mAlternate;
-        private String currentRequestId;
-        private String currentSubUUID;
-        private ContentContract.Presenter mContent;
+        private String currentAlternateId;                  //当前轮播台ID
+        private String currrentTitle;                       //当前轮播台名称
+        private String currrentChannel;                     //当前轮播台台号
+        private boolean needShowChangeView = true;          //是否需要显示切台广告
+        private IAlternate mAlternate;                      // 轮播请求接口
+        private String currentRequestId;                    //当前请求数据的ID
+        private String currentSubUUID;                      //
+        private boolean isFirstChangeAlternate = false;     //是否为切台之后第一次播放
+        private ContentContract.Presenter mContent;         // 内容请求接口
 
-        private List<Alternate> mAlternates;
-        private Alternate currentAlternate;
+        private List<Alternate> mAlternates;                //当前轮播内容列表
+        private Alternate currentAlternate;                 //当前播放的轮播内容
 
         private int currentPlayIndex = 0;
 
@@ -101,8 +98,6 @@ public class PlayerAlternateContract {
 
         private Disposable mDisposable;
         private Long endTime = 0L;
-
-        private Long keepLook = 0L;
 
         private boolean isLive = false;
 
@@ -155,6 +150,7 @@ public class PlayerAlternateContract {
         public boolean playNext() {
             NewTVLauncherPlayerViewManager.getInstance().stop();
             currentAlternate = null;
+            isFirstChangeAlternate = false;
             if (mAlternates != null) {
                 currentPlayIndex += 1;
                 if (currentPlayIndex < mAlternates.size()) {
@@ -183,10 +179,6 @@ public class PlayerAlternateContract {
             Player.get().addLBHistory(currentAlternateId);
         }
 
-        @Override
-        public void resetKeepLook() {
-            keepLook = 0L;
-        }
 
         @Override
         public void requestAlternate(final String alternateId, final String title, final String
@@ -202,6 +194,8 @@ public class PlayerAlternateContract {
             currentAlternateId = alternateId;
             currrentTitle = title;
             currrentChannel = channelId;
+
+            isFirstChangeAlternate = true;
 //            mAlternates = Cache.getInstance().get(Cache.CACHE_TYPE_ALTERNATE, alternateId);
 //            if (mAlternates != null) {
 //                parseAlternate(title, channelId);
@@ -268,11 +262,6 @@ public class PlayerAlternateContract {
                                     playNext();
                                 }
 
-                                keepLook += 1000;
-
-                                if (getView() != null) {
-                                    getView().onAlterLookTimeChange(keepLook);
-                                }
                             }
                         }, new Consumer<Throwable>() {
                             @Override
@@ -343,9 +332,8 @@ public class PlayerAlternateContract {
                             content.setData(subContents);
                         }
                     }
-                    //直播
                     if (getView() != null) {
-                        getView().onAlterItemResult(uuid, content, isLive);
+                        getView().onAlterItemResult(uuid, content, isLive,isFirstChangeAlternate);
                     }
 
 
