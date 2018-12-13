@@ -22,6 +22,12 @@ public interface SubDataSource {
         void onDataNotAvailable();
     }
 
+    interface AddRemoteSubscribeListCallback {
+
+        void onAddRemoteSubscribeListComplete(int totalSize);
+
+    }
+
     interface GetSubscribeCallback {
 
         void onSubscribeLoaded(UserCenterPageBean.Bean bean);
@@ -30,6 +36,8 @@ public interface SubDataSource {
     }
 
     void addRemoteSubscribe(@NonNull UserCenterPageBean.Bean bean);
+
+    void addRemoteSubscribeList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, SubRemoteDataSource.AddRemoteSubscribeListCallback callback);
 
     void deleteRemoteSubscribe(@NonNull UserCenterPageBean.Bean bean);
 

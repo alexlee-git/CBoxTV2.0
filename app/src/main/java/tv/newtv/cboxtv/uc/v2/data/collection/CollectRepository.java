@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.uc.v2.data.collection;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 
 /**
@@ -28,13 +30,18 @@ public class CollectRepository implements CollectDataSource {
         return INSTANCE;
     }
 
-    public  void destroyInstance() {
+    public void destroyInstance() {
         INSTANCE = null;
     }
 
     @Override
     public void addRemoteCollect(@NonNull UserCenterPageBean.Bean Collect) {
         mRemoteDataSource.addRemoteCollect(Collect);
+    }
+
+    @Override
+    public void addRemoteCollectList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
+        mRemoteDataSource.addRemoteCollectList(token, userID, beanList, callback);
     }
 
     @Override
