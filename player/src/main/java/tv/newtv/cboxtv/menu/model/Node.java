@@ -3,9 +3,12 @@ package tv.newtv.cboxtv.menu.model;
 import android.text.TextUtils;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.libs.Constant;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import tv.newtv.cboxtv.menu.LastMenuRecyclerAdapter;
 
 /**
  * Created by TCP on 2018/4/18.
@@ -89,6 +92,9 @@ public class Node {
     }
 
     public List<Program> getPrograms() {
+        if(Constant.CONTENTTYPE_LV.equals(contentType) && programs.size() == 0){
+            addNoContents(programs);
+        }
         return programs;
     }
 
@@ -261,5 +267,13 @@ public class Node {
             node = node.getParent();
         }
         return false;
+    }
+
+    private void addNoContents(List<Program> list){
+        Program program = new Program();
+        program.setTitle("暂无节目单");
+        program.setContentUUID(LastMenuRecyclerAdapter.NO_CONTENTS);
+        program.setParent(this);
+        list.add(program);
     }
 }
