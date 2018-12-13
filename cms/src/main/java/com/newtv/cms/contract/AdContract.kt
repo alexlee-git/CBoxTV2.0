@@ -41,6 +41,8 @@ class AdContract {
 
         fun getAdByUrl(url: String)
 
+        fun getCarouselAd(adType:String,panel:String,secondPannel:String,carousel:String)
+
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?)
 
         fun getAdByChannel(adType: String?, adLoc: String?, flat: String?, firstChannel: String?,
@@ -75,6 +77,37 @@ class AdContract {
 
     class AdPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
+        override fun getCarouselAd(adType: String, panel: String, secondPannel: String, carousel: String) {
+            val sb = StringBuffer()
+            Observable.create(ObservableOnSubscribe<Int> { e ->
+                val config = ADConfig.getInstance()
+                val stringBuilder = StringBuilder()
+                addExtend(stringBuilder, "panel", panel)
+                addExtend(stringBuilder, "secondpanel", secondPannel)
+                addExtend(stringBuilder, "carousel", carousel)
+                e.onNext(AdSDK.getInstance().getAD(adType, config.columnId, config
+                        .seriesID, "", null, stringBuilder.toString(), sb))
+            }).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Int> {
+
+                        override fun onSubscribe(d: Disposable) {
+                            mDisposable = d
+                        }
+
+                        override fun onNext(integer: Int) {
+                            parseAdResult(sb, null, view)
+                        }
+
+                        override fun onError(e: Throwable) {
+                            view?.showAd(null, null, null)
+                        }
+
+                        override fun onComplete() {
+                        }
+
+                    })
+        }
 
         var default: IDefault? = null
 
@@ -94,8 +127,8 @@ class AdContract {
                     parseAdResult(bf, null, view)
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }

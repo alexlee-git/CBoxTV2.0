@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.player.videoview;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -53,6 +55,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private TextView videoTitle;
     private ImageView full_screen;
     private boolean isEnd;
+
+
 
     public void destory() {
         super.destroy();
@@ -244,6 +248,30 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return super.dispatchKeyEvent(event);
     }
 
+    public boolean showFloatWindow(){
+        //获取WindowManager
+        WindowManager wm = (WindowManager) getContext().getApplicationContext().getSystemService
+                (Context.WINDOW_SERVICE);
+        if(wm == null) return false;
+        //设置LayoutParams(全局变量）相关参数
+        WindowManager.LayoutParams wmParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_TOAST,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSLUCENT);
+        wmParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+        //以屏幕左上角为原点，设置x、y初始值
+        wmParams.x = 0;
+        wmParams.y = 0;
+        //设置悬浮窗口长宽数据
+        wmParams.width = getContext().getResources().getDimensionPixelSize(R.dimen.width_816px);
+        wmParams.height = getContext().getResources().getDimensionPixelSize(R.dimen.height_480px);
+
+        wm.addView(this,wmParams);
+        return true;
+    }
+
     @Override
     protected void initView(Context context) {
         defaultConfig.startIsFullScreen = false;
@@ -287,8 +315,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
             }
         });
-
-
     }
 
     /**
@@ -299,22 +325,24 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @SuppressWarnings("PointlessNullCheck")
     private void resetLayoutParams(boolean hasFocus) {
 
-        ViewGroup parent = (ViewGroup) getParent();
-        if (parent != null) {
-            if (hasFocus) {
-                parent.setBackgroundResource(R.drawable.pos_zui);
-            } else {
-                parent.setBackground(new ColorDrawable(Color.TRANSPARENT));
+        if(getParent() instanceof ViewGroup) {
+            ViewGroup parent = (ViewGroup) getParent();
+            if (parent != null) {
+                if (hasFocus) {
+                    parent.setBackgroundResource(R.drawable.pos_zui);
+                } else {
+                    parent.setBackground(new ColorDrawable(Color.TRANSPARENT));
+                }
             }
-        }
 
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        if (layoutParams != null && layoutParams instanceof MarginLayoutParams) {
-            ((MarginLayoutParams) layoutParams).leftMargin = 0;
-            ((MarginLayoutParams) layoutParams).topMargin = 0;
-            ((MarginLayoutParams) layoutParams).rightMargin = 0;
-            ((MarginLayoutParams) layoutParams).bottomMargin = 0;
-            setLayoutParams(layoutParams);
+            ViewGroup.LayoutParams layoutParams = getLayoutParams();
+            if (layoutParams != null && layoutParams instanceof MarginLayoutParams) {
+                ((MarginLayoutParams) layoutParams).leftMargin = 0;
+                ((MarginLayoutParams) layoutParams).topMargin = 0;
+                ((MarginLayoutParams) layoutParams).rightMargin = 0;
+                ((MarginLayoutParams) layoutParams).bottomMargin = 0;
+                setLayoutParams(layoutParams);
+            }
         }
     }
 

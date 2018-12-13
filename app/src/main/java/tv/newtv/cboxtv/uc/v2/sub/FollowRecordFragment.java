@@ -88,8 +88,7 @@ public class FollowRecordFragment extends BaseDetailSubFragment  {
                 boolean status = TokenRefreshUtil.getInstance().isTokenRefresh(getActivity());
                 Log.d(TAG, "---isTokenRefresh:status:" + status);
                 //获取登录状态
-                mLoginTokenString = SharePreferenceUtils.getToken(getActivity()
-                        .getApplicationContext());
+                mLoginTokenString = SharePreferenceUtils.getToken(getActivity().getApplicationContext());
                 if (!TextUtils.isEmpty(mLoginTokenString)) {
                     userId = SharePreferenceUtils.getUserId(getActivity().getApplicationContext());
                     e.onNext(mLoginTokenString);
@@ -110,68 +109,8 @@ public class FollowRecordFragment extends BaseDetailSubFragment  {
 
     //读取数据库中数据
     private void requestData() {
-        localDataReqComp = false;
-        remoteDataReqComp = false;
-
-        Log.d("follow", "requestData");
         if (!TextUtils.isEmpty(mLoginTokenString)) {
-            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
-                DataSupport.search(DBConfig.ATTENTION_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication
-                                .AppContext))
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                if (code == 0) {
-                                    Gson gson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                                    }.getType();
-                                    localData = gson.fromJson(result, type);
-
-                                    if (localData == null) {
-                                        localData = new ArrayList<>(Constant.BUFFER_SIZE_8);
-                                    }
-                                }
-
-                                Log.d("follow", "本地数据库查询完毕");
-                                localDataReqComp = true;
-
-                                sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                            }
-                        }).excute();
-
-                DataSupport.search(DBConfig.REMOTE_ATTENTION_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication
-                                .AppContext))
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                if (code == 0) {
-                                    Gson gson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
-                                    }.getType();
-                                    remoteData = gson.fromJson(result, type);
-
-                                    if (remoteData == null) {
-                                        remoteData = new ArrayList<>(Constant.BUFFER_SIZE_8);
-                                    }
-                                }
-
-                                Log.d("follow", "远程数据库查询完毕");
-
-                                remoteDataReqComp = true;
-                                sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                            }
-                        }).excute();
-            } else {
-                requestDataByDB(DBConfig.REMOTE_ATTENTION_TABLE_NAME);
-            }
+            requestDataByDB(DBConfig.REMOTE_ATTENTION_TABLE_NAME);
         } else {
             requestDataByDB(DBConfig.ATTENTION_TABLE_NAME);
         }

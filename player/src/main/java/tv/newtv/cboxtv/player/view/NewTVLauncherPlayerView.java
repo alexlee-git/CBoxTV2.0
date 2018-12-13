@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.BuildConfig;
+import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
@@ -36,6 +37,7 @@ import com.newtv.libs.util.KeyEventUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ScreenUtils;
+import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -1907,6 +1909,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     false);
         }
         videoDataStruct.setAlternate(defaultConfig.isAlternate);
+        videoDataStruct.setAlternateId(defaultConfig.alternateID);
         videoDataStruct.setHistoryPosition(mHistoryPostion);
         mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
                 videoDataStruct);
@@ -1938,8 +1941,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
-        onError("-1", desc);
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
+        onError(code, desc);
     }
 
     @Override
@@ -2096,6 +2099,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     }
 
+    @Override
+    public void onAlternateError(String code, String desc) {
+        if(CmsErrorCode.CMS_NO_ONLINE_CONTENT.equals(code)){
+            ToastUtil.showToast(getContext(),"节目走丢了 请继续观看");
+        }else{
+            ToastUtil.showToast(getContext(),desc);
+        }
+
+        onError(code,desc);
+    }
+
     public void setAlternateCallback(AlternateCallback callback) {
         defaultConfig.alternateCallback = callback;
     }
@@ -2116,6 +2130,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                 mNewTVLauncherPlayer.release();
                                 mNewTVLauncherPlayer = null;
                             }
+                        }else{
+                            mPlayerTimer.reset();
                         }
                     }
                 });

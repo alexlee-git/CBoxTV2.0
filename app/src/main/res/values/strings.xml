@@ -12,7 +12,7 @@
     <string name="search_history">搜索历史</string>
     <string name="search_poster_title">搜索结果</string>
     <string name="search_Load_reminding">正在加载请稍后</string>
-    <string name="search_drama_title">剧集</string>
+    <string name="search_drama_title">影音</string>
     <string name="search_single_title">单片</string>
     <string name="search_column_title">电视栏目</string>
     <string name="search_person_title">人物</string>
@@ -203,4 +203,5 @@
     <string name="code_exchange_tip1">说明：请您输入16位字母加数字的兑换码。</string>
     <string name="code_exchange_tip2">兑换记录请到订单管理中查看。</string>
     <string name="user_offline_becauce_login_on_mutiple_teminal">您登录的终端已经超过数量限制，即将下线</string>
+    <string name="more">更多</string>
 </resources>

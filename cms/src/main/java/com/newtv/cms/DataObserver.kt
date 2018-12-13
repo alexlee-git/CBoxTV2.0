@@ -9,5 +9,5 @@ package com.newtv.cms
  */
 interface DataObserver<T> {
     fun onResult(result: T, requestCode: Long)
-    fun onError(desc: String?)
+    fun onError(code: String?, desc: String?)
 }

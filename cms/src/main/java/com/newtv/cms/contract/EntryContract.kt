@@ -87,7 +87,9 @@ class EntryContract {
                         view?.bootGuildResult()
                     }
 
-                    override fun onError(desc: String?) {}
+                    override fun onError(code: String?, desc: String?) {
+                        view?.onError(context, code, desc)
+                    }
                 })
             }
         }

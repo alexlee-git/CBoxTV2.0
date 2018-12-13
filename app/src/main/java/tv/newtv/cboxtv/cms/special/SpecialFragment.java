@@ -241,7 +241,8 @@ public class SpecialFragment extends Fragment implements SpecialContract.ModelRe
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
         ToastUtil.showToast(context.getApplicationContext(),desc);
         getActivity().finish();
     }

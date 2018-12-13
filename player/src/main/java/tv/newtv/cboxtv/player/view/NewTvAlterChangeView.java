@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
+import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.player.R;
 
 /**
@@ -89,7 +90,8 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     public void show() {
         removeCallbacks(closeRunnalbe);
 
-        mAdPresenter.getAdByType(Constant.AD_CAROUSEL_CHANGE, "", "", null);
+        mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE,  PlayerConfig.getInstance()
+                .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), currentId);
         setVisibility(VISIBLE);
         postDelayed(closeRunnalbe, 5000);
 
@@ -140,7 +142,7 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 }

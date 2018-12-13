@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/root_view"
-    >
+             android:id="@+id/root_view"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@drawable/normalplayer_bg"
+>
 
     <tv.newtv.cboxtv.player.view.VideoFrameLayout
         android:id="@+id/player_view_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#000000">
+        android:layout_height="match_parent">
 
     </tv.newtv.cboxtv.player.view.VideoFrameLayout>
+
+    <TextView
+        android:text="正在读取数据..."
+        android:id="@+id/loading"
+        android:gravity="center"
+        android:textSize="@dimen/height_30px"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
 

@@ -22,6 +22,7 @@ import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -403,7 +404,7 @@ public class MainNavManager implements NavContract.View {
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         tip(context, desc);
     }
 

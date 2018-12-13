@@ -51,12 +51,12 @@ class PersonDetailsConstract {
                     if (result.isOk()) {
                         view?.setPersonProgramList(result.data)
                     } else {
-                        view?.onError(context, result.errorMessage)
+                        view?.onError(context,result.errorCode, result.errorMessage)
                     }
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }
@@ -69,12 +69,12 @@ class PersonDetailsConstract {
                     if (result.isOk()) {
                         view?.setPersonTvList(result.data)
                     } else {
-                        view?.onError(context, result.errorMessage)
+                        view?.onError(context,result.errorCode, result.errorMessage)
                     }
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }
