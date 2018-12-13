@@ -162,7 +162,7 @@ public class Utils {
     //用于传入播放器，播放器传入广告sdk后获取广告
     //用于传入播放器，播放器传入广告sdk后获取广告
     public static String buildExtendString(String columnId, String secondColumnId, String
-            parentId, String contentId, String topic) {
+            parentId, String contentId, String topic,String alterId) {
         String extend = "";
 
         if (!TextUtils.isEmpty(columnId)) {
@@ -192,6 +192,10 @@ public class Utils {
 
         if (!TextUtils.isEmpty(topic)) {
             extend += "&topic=" + topic;
+        }
+
+        if (!TextUtils.isEmpty(alterId)) {
+            extend += "&carousel=" + alterId;
         }
 
         LogUtils.i(TAG, "extend=" + extend);

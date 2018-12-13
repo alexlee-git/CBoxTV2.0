@@ -23,11 +23,11 @@ internal class PersonModel : BaseModel(), IPerson {
     override fun getPersonTvList(appkey: String, channelId: String, UUID: String, observer:
     DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
         if (TextUtils.isEmpty(UUID) || UUID.length < 2) {
-            observer.onError("ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
             return 0
         }
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
@@ -42,11 +42,11 @@ internal class PersonModel : BaseModel(), IPerson {
     override fun getPersonProgramList(appkey: String, channelId: String, UUID: String, observer:
     DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
         if (TextUtils.isEmpty(UUID) || UUID.length < 2) {
-            observer.onError("ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
             return 0
         }
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
@@ -61,11 +61,11 @@ internal class PersonModel : BaseModel(), IPerson {
     override fun getPersonFigureList(appkey: String, channelId: String, UUID: String, observer:
     DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
         if (TextUtils.isEmpty(UUID) || UUID.length < 2) {
-            observer.onError("ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
             return 0
         }
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =

@@ -72,6 +72,11 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     }
 
     public void setProgram(Page page) {
+        if(page != null && mPage != null) {
+            if (TextUtils.equals(page.toString(), mPage.toString())) {
+                return;
+            }
+        }
         mPage = page;
         setUp();
     }
@@ -127,7 +132,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                 mContentPresenter = new ContentContract.ContentPresenter(getContext(), this);
             }
             if(TextUtils.isEmpty(program.getL_id())){
-                mBlockPosterView.onError(getContext(),"ID为空");
+                mBlockPosterView.onError(getContext(), "" , "ID为空");
                 return;
             }
             mContentPresenter.getContent(program.getL_id(), false);
@@ -182,7 +187,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                 mProgram.setVideo(video);
                 mBlockPosterView.setProgramInfo(mProgram, false, true);
             }else{
-                mBlockPosterView.onError(getContext(),"Error");
+                mBlockPosterView.onError(getContext(), "" , "Error");
             }
         }
     }
@@ -198,7 +203,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

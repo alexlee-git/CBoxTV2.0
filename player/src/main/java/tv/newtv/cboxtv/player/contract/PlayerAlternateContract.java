@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.player.contract;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
 import com.newtv.cms.ICmsPresenter;
@@ -48,6 +49,8 @@ public class PlayerAlternateContract {
         void onAlterItemResult(String contentId, Content content, boolean isLive);
 
         void onAlterLookTimeChange(Long time);
+
+        void onAlternateError(String code, String desc);
     }
 
     public interface Presenter extends ICmsPresenter {
@@ -218,14 +221,16 @@ public class PlayerAlternateContract {
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
-                                        getView().onError(getContext(), result.getErrorMessage());
+                                        getView().onError(getContext(), result.getErrorCode(),
+                                                result
+                                                .getErrorMessage());
                                 }
                             }
 
                             @Override
-                            public void onError(@Nullable String desc) {
+                            public void onError(@NotNull String code, @Nullable String desc) {
                                 if (getView() != null)
-                                    getView().onError(getContext(), desc);
+                                    getView().onError(getContext(), code, desc);
                             }
                         });
             }
@@ -290,8 +295,7 @@ public class PlayerAlternateContract {
                 currentPlayIndex = CmsUtil.binarySearch(mAlternates,
                         System.currentTimeMillis(), 0,
                         mAlternates.size() - 1);
-                if (currentPlayIndex > 0 && currentPlayIndex < mAlternates
-                        .size()) {
+                if (currentPlayIndex > 0 && currentPlayIndex < mAlternates.size()) {
                     currentAlternate = mAlternates.get(currentPlayIndex);
                     playAlternateItem(currentAlternate);
                     if (getView() != null) {
@@ -300,11 +304,12 @@ public class PlayerAlternateContract {
                     }
                 } else {
                     if (getView() != null)
-                        getView().onError(getContext(), "当前没有可以播放的节目");
+                        getView().onError(getContext(), CmsErrorCode.ALTERNATE_ERROR_NOT_FOUND_TOPLAY,
+                                "当前没有可以播放的节目");
                 }
             } else {
                 if (getView() != null)
-                    getView().onError(getContext(), "当前没有可以播放的节目");
+                    getView().onError(getContext(), CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY, "当前没有可以播放的节目");
             }
         }
 
@@ -360,8 +365,9 @@ public class PlayerAlternateContract {
         }
 
         @Override
-        public void onError(@NotNull Context context, @Nullable String desc) {
-
+        public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
+            if (getView() != null)
+                getView().onAlternateError(code, desc);
         }
     }
 }

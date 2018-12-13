@@ -920,7 +920,8 @@ public class UserCenterFragment extends BaseFragment implements
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
 
     }
 

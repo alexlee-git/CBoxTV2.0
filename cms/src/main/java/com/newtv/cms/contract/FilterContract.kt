@@ -32,15 +32,15 @@ class FilterContract {
 
         override fun getFilter( categoryId: String) {
             filterService?.getFilterKeyWords(Libs.get().appKey, Libs.get().channelId,categoryId, object : DataObserver<ModelResult<List<FilterItem>>> {
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
 
                 override fun onResult(result: ModelResult<List<FilterItem>>, requestCode: Long) {
                     if (result.isOk()) {
                         view?.onFilterResult(context, result)
                     } else {
-                        view?.onError(context, result.errorMessage)
+                        view?.onError(context,result.errorCode, result.errorMessage)
                     }
                 }
 

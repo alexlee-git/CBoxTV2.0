@@ -63,7 +63,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public static final int MODE_LIVE = 3;
     public static final int MODE_ALTERNATE = 4;
 
-
     private static final String M3U8 = "http://s003.test.vod06.icntvcdn.com/live/sscntv63.m3u8";
     private static final String TimeFormat = "yyyy-MM-dd HH:mm:ss";
     private static String TAG = "LivePlayView";
@@ -520,7 +519,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
 
     }
 

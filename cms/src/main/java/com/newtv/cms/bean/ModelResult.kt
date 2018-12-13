@@ -1,5 +1,7 @@
 package com.newtv.cms.bean
 
+import com.google.gson.annotations.SerializedName
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            com.newtv.cms.bean
@@ -12,7 +14,10 @@ class ModelResult<T> {
     companion object {
         const val IS_AD_TYPE = "1"
     }
+    @SerializedName(value = "errorCode",alternate = arrayOf("resultCode"))
     var errorCode: String? = null
+
+    @SerializedName(value = "errorMessage",alternate = arrayOf("resultMessage"))
     var errorMessage: String? = null
         get() {
             if (field == null) {

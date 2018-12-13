@@ -57,7 +57,7 @@ class SpecialContract {
         @Override
         public void start(String appkey, String channelId, String pageUUID) {
             if(TextUtils.isEmpty(pageUUID)){
-                getView().onError(getContext(),"页面ID不能为空");
+                getView().onError(getContext(), "" , "页面ID不能为空");
                 return;
             }
             getPageData(appkey, channelId, pageUUID);
@@ -85,7 +85,7 @@ class SpecialContract {
         }
 
         @Override
-        public void onError(@NotNull Context context, @Nullable String desc) {
+        public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
         }
 

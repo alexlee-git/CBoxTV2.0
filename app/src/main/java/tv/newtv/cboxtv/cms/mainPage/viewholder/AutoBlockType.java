@@ -296,7 +296,8 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
 
     }
 }

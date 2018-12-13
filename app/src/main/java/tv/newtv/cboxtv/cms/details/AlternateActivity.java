@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
@@ -153,6 +154,14 @@ public class AlternateActivity extends DetailPageActivity implements
     }
 
     @Override
+    public void onError(String code, String desc) {
+        if(CmsErrorCode.CMS_NO_ONLINE_CONTENT.equals(code)){
+            ToastUtil.showToast(getApplicationContext(),"节目走丢了，即将返回");
+            finish();
+        }
+    }
+
+    @Override
     public void onPlayIndexChange(int index) {
         if (mPlayListView != null) {
             mPlayListView.setCurrentPlay(index);
@@ -239,7 +248,8 @@ public class AlternateActivity extends DetailPageActivity implements
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
 
     }
 }
