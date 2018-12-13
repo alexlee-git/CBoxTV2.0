@@ -138,7 +138,7 @@
     </LinearLayout>
 
 
-    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+    <tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView
         android:id="@+id/tvRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -149,7 +149,7 @@
         android:paddingRight="@dimen/width_100px"
         android:paddingTop="@dimen/height_20px">
 
-    </tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>
+    </tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView>
 
 
 </LinearLayout>

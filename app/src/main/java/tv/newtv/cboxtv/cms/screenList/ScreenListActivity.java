@@ -65,7 +65,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
     private LabelPresenterImpl presenter;
     HorizontalRecyclerView labelRecyclerView;
-    private AiyaRecyclerView tvRecyclerView;
+    private FocusRecyclerView tvRecyclerView;
     private List<CategoryTreeNode> childData = new ArrayList();
     private FirstLabelAdapter adapter;
     private List<CategoryTreeNode> data;
@@ -546,6 +546,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 pageNum = 1;
                 loadMore = false;
                 tvRecyclerView.smoothScrollToPosition(0);
+                Log.e("yml", "onKeyDown: ..4" );
                 if (moveFlag == 1) {
                     title_label.setVisibility(View.GONE);
                     labelRecyclerView.smoothScrollToPosition(0);
@@ -890,7 +891,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         return super.onKeyDown(keyCode, event);
     }
 
-    public static boolean isBottom(AiyaRecyclerView recyclerView) {
+    public static boolean isBottom(FocusRecyclerView recyclerView) {
         GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
         //屏幕中最后一个可见子项的position
         int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
