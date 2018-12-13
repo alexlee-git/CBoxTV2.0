@@ -226,15 +226,19 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
         icntvPlayerInfo.setDhDecryption(videoDataStruct.getKey());
         icntvPlayerInfo.setDeviceId(Constant.UUID);
         icntvPlayerInfo.setPlayType(Constants.PLAY_MODEL_LIVE);
-        if(UserStatus.isVip()){
-            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
-        }else {
-            icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+        if(!videoDataStruct.isAlternate()) {
+            if (UserStatus.isVip()) {
+                icntvPlayerInfo.setAdModel(Constants.AD_MODEL_WITHOUT_BEFORE_AND_AFTER);
+            } else {
+                icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
+            }
+        }else{
+            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_CAROUSEL);
         }
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
                 .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), PlayerConfig
-                .getInstance().getTopicId()));
+                .getInstance().getTopicId(),videoDataStruct.getAlternateId()));
         mIcntvLive = NewTvPlayerWrapper.getInstance().getPlayer(context, frameLayout, icntvPlayerInfo, mIcntvPlayerCallback);
 
 

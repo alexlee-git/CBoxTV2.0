@@ -70,7 +70,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
 
     protected void getContent(String uuid,String contentType){
         if(TextUtils.isEmpty(uuid)){
-            onError(getContext(),"播放ID不能为空");
+            onError(getContext(), "" , "播放ID不能为空");
             return;
         }
         mPresenter.getContent(uuid,true,contentType);
@@ -78,7 +78,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
 
     protected void getSubContents(String uuid){
         if(TextUtils.isEmpty(uuid)){
-            onError(getContext(),"播放ID不能为空");
+            onError(getContext(), "" , "播放ID不能为空");
             return;
         }
         mPresenter.getSubContent(uuid);
@@ -104,7 +104,8 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
         ToastUtil.showToast(context.getApplicationContext(),desc);
     }
 

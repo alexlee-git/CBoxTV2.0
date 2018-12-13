@@ -64,6 +64,7 @@ import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
 /**
@@ -190,7 +191,13 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                         @Override
                         public void dealwithUserOffline() {
                             Log.i(TAG, "dealwithUserOffline: ");
-//                            UserCenterUtils.userOfflineStartLoginActivity(MemberCenterActivity.this);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    UserCenterUtils.userOfflineStartLoginActivity(MemberCenterActivity.this);
+
+                                }
+                            });
                         }
 
                         @Override
@@ -754,7 +761,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

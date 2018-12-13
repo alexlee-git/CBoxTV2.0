@@ -1,7 +1,6 @@
 package com.newtv.cms.contract
 
 import android.content.Context
-import android.text.TextUtils
 
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
@@ -71,12 +70,12 @@ class PageContract {
                             }
                         }
                     } else {
-                        onError(result.errorMessage)
+                        onError(result.errorCode, result.errorMessage)
                     }
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }

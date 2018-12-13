@@ -137,7 +137,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
 
     public void setContentUUID(int type, @Nullable Content content, View controllView, String contentType) {
         if(content == null || TextUtils.isEmpty(content.getContentID())){
-            onError(getContext(),"数据ID不正确");
+            onError(getContext(), "" , "数据ID不正确");
             return;
         }
 
@@ -371,7 +371,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         LogUtils.e("SuggestView",desc);
     }
 

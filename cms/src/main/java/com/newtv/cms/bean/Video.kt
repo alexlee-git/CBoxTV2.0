@@ -13,4 +13,8 @@ data class Video(
         val contentUUID: String,
         val liveUrl: String,
         val liveParam: List<LiveParam>?
-)
+) {
+    override fun toString(): String {
+        return "Video(videoType='$videoType', contentId='$contentId', contentUUID='$contentUUID', liveUrl='$liveUrl', liveParam=$liveParam)"
+    }
+}

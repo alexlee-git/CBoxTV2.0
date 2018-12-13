@@ -389,7 +389,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         LogUtils.e("parseDataError","data error : " + desc);
     }
 

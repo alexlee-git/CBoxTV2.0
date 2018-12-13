@@ -84,7 +84,7 @@ class AppMainContract {
                     }
                 }
 
-                override fun onError(desc: String?) {
+                override fun onError(code: String?, desc: String?) {
                     view?.syncServerTime(null)
                 }
             })
