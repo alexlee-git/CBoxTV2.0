@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -80,11 +78,6 @@ public class UserCenterRecordManager {
     // private String tableName;
     private final String TAG = "UserCenterRecordManager";
 
-    private boolean collectStatusInLocal;
-    private boolean collectStatusInRemote;
-    private boolean collectStatusLocalReqComp;
-    private boolean collectStatusRemoteReqComp;
-
     private HashMap<Long, CallbackForm> callbackHashMap;
 
     private static class CallbackForm {
@@ -101,95 +94,6 @@ public class UserCenterRecordManager {
             }
         }
     }
-
-
-    private final int MSG_NOTIFY_COLLECT_STATUS = 10071;
-    private final int MSG_NOTIFY_SUBSCRIBE_STATUS = 10072;
-    private final int MSG_NOTIFY_FOLLOW_STATUS = 10073;
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == MSG_NOTIFY_COLLECT_STATUS) {
-                Log.d(TAG, "接收到 MSG_NOTIFY_COLLECT_STATUS 消息");
-                Long callbackId = (Long) msg.obj;
-                CallbackForm callbackForm = callbackHashMap.get(callbackId);
-                if (callbackForm == null || callbackForm.callback == null) {
-                    return;
-                }
-
-                mHandler.removeMessages(MSG_NOTIFY_COLLECT_STATUS);
-
-                if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
-                    if (collectStatusInRemote || collectStatusInLocal) {
-                        Log.d(TAG, "通知该片已订阅");
-                        ((ICollectionStatusCallback) callbackForm.callback)
-                                .notifyCollectionStatus(true, callbackId);
-                    } else {
-                        Log.d(TAG, "通知该片未订阅");
-                        ((ICollectionStatusCallback) callbackForm.callback)
-                                .notifyCollectionStatus(false, callbackId);
-                    }
-                    removeCallback(callbackId);
-                } else {
-                    if (mHandler != null) {
-                        mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_COLLECT_STATUS, 100);
-                    }
-                }
-            } else if (msg.what == MSG_NOTIFY_SUBSCRIBE_STATUS) {
-                Long callbackId = (Long) msg.obj;
-                CallbackForm callbackForm = callbackHashMap.get(callbackId);
-                if (callbackForm == null || callbackForm.callback == null) {
-                    return;
-                }
-
-                mHandler.removeMessages(MSG_NOTIFY_SUBSCRIBE_STATUS);
-
-                if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
-                    if (collectStatusInRemote || collectStatusInLocal) {
-                        Log.d(TAG, "通知该片已收藏");
-                        ((ISubscribeStatusCallback) callbackForm.callback).notifySubScribeStatus
-                                (true, callbackId);
-                    } else {
-                        Log.d(TAG, "通知该片未收藏");
-                        ((ISubscribeStatusCallback) callbackForm.callback).notifySubScribeStatus
-                                (false, callbackId);
-                    }
-                    removeCallback(callbackId);
-                } else {
-                    if (mHandler != null) {
-                        mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_SUBSCRIBE_STATUS, 100);
-                    }
-                }
-            } else if (msg.what == MSG_NOTIFY_FOLLOW_STATUS) {
-                Log.d(TAG, "接收到 MSG_NOTIFY_FOLLOW_STATUS 消息");
-                Long callbackId = (Long) msg.obj;
-                CallbackForm callbackForm = callbackHashMap.get(callbackId);
-                if (callbackForm == null || callbackForm.callback == null) {
-                    return;
-                }
-
-                mHandler.removeMessages(MSG_NOTIFY_FOLLOW_STATUS);
-
-                if (collectStatusLocalReqComp && collectStatusRemoteReqComp) {
-                    if (collectStatusInRemote || collectStatusInLocal) {
-                        Log.d(TAG, "通知人物已关注");
-                        ((IFollowStatusCallback) callbackForm.callback).notifyFollowStatus(true, callbackId);
-                    } else {
-                        Log.d(TAG, "通知该人物未关注");
-                        ((IFollowStatusCallback) callbackForm.callback).notifyFollowStatus(false, callbackId);
-                    }
-                    removeCallback(callbackId);
-                } else {
-                    if (mHandler != null) {
-                        mHandler.sendEmptyMessageDelayed(MSG_NOTIFY_FOLLOW_STATUS, 100);
-                    }
-                }
-            } else {
-                Log.d(TAG, "unresolved msg : " + msg.what);
-            }
-        }
-    };
 
     public enum USER_CENTER_RECORD_TYPE {
         TYPE_SUBSCRIBE,

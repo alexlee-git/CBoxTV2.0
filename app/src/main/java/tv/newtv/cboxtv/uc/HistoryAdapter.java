@@ -113,10 +113,10 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
 
             // 评分
             String score = entity.getGrade();
-            if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null")) {
+            if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null") && !TextUtils.equals(score, "0.0")) {
                 viewHolder.mScore.setText(entity.getGrade());
             } else {
-                viewHolder.mScore.setText("0.0");
+                viewHolder.mScore.setVisibility(View.INVISIBLE);
             }
             // 观看进度
             viewHolder.mSubTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress
