@@ -1,9 +1,16 @@
 package com.newtv.libs.bean;
 
 import com.newtv.libs.MainLooper;
+import com.newtv.libs.util.LogUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 /**
  * 项目名称:         CBoxTV
@@ -15,12 +22,19 @@ import java.util.TimerTask;
 public class CountDown {
 
     private int mTime;
-    private Timer mTimer;
-    private TimerTask mTimerTask;
     private Listen mListen;
+    private Observable observable;
+    private Disposable mDisposable;
 
     public CountDown(int seconds) {
         mTime = seconds;
+        observable = Observable.interval(1000, TimeUnit.MILLISECONDS);
+    }
+
+    public void destroy() {
+        mListen = null;
+        observable = null;
+        cancel();
     }
 
     public void listen(Listen listen) {
@@ -28,32 +42,57 @@ public class CountDown {
     }
 
     public void start() {
-        mTimer = new Timer();
-        mTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                mTime--;
-                MainLooper.get().post(new Runnable() {
+        observable.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer() {
                     @Override
-                    public void run() {
-                        if (mListen != null) mListen.onCount(mTime);
+                    public void onSubscribe(Disposable d) {
+                        mDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        mTime--;
+                        MainLooper.get().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mListen != null) mListen.onCount(mTime);
+                            }
+                        });
+                        if (mTime == 0) {
+                            MainLooper.get().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mListen != null) mListen.onComplete();
+                                }
+                            });
+                            CountDown.this.cancel();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
-                if (mTime == 0) {
-                    MainLooper.get().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mListen != null) mListen.onComplete();
-                        }
-                    });
-                    CountDown.this.cancel();
-                }
+    }
+
+    private void unSubscribe(){
+        if(mDisposable != null){
+            if(!mDisposable.isDisposed()){
+                mDisposable.dispose();
             }
-        };
-        mTimer.schedule(mTimerTask, 1000, 1000);
+            mDisposable = null;
+        }
     }
 
     public void cancel() {
+        LogUtils.e("CountDown", "cancel countdown...");
+        unSubscribe();
         if (mTime != 0) {
             MainLooper.get().post(new Runnable() {
                 @Override
@@ -63,14 +102,6 @@ public class CountDown {
                 }
             });
         }
-        if (mTimer != null) {
-            mTimer.cancel();
-        }
-        if (mTimerTask != null) {
-            mTimerTask.cancel();
-        }
-        mTimerTask = null;
-        mTimer = null;
     }
 
     public interface Listen {
