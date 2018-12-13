@@ -17,6 +17,7 @@ import retrofit2.http.QueryMap
 interface IUpVersionRetro {
     @Headers("host_type: " + BootGuide.VERSION_UP)
     @GET("bradypod/api/apps")
+    //@GET("api/apps")
     abstract fun getUpVersion(@QueryMap map: Map<String, String>): Observable<ResponseBody>
 
     @Headers("host_type: " + BootGuide.IS_ORIENTED)
