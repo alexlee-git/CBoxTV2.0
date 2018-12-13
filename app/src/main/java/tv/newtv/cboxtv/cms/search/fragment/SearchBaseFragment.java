@@ -159,10 +159,10 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
     }
 
     public void setKey(String key) {
-        key = key.trim();
+//        key = key.trim();
         if (!TextUtils.isEmpty(currentkey) && cacheDatas != null) {
-            if(key.length() == currentkey.length()) return;
-            if (key.length() < currentkey.length()) {
+
+            if (key.length() < currentkey.length() && !currentkey.endsWith(" ") && "".equals(currentkey.replaceAll(" ",""))) {
                 if (cacheDatas.containsKey(key)) {
                     SearchResult current = cacheDatas.remove(key);
                     notifyToDataInfoResult(current.contents == null || current.contents.size() <=
@@ -222,7 +222,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
     }
 
     private void requestData(String key) {
-        if (TextUtils.isEmpty(key)) {
+        if (TextUtils.isEmpty(key) || "".equals(key.replace(" ",""))) {
             if (cacheDatas != null) {
                 cacheDatas.clear();
             }
@@ -241,6 +241,23 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
             currentPos = -1;
             inputKeyChange();
         }
+
+//        if (!TextUtils.isEmpty(currentkey) &&
+//                key.length()<currentkey.length() &&
+//                " ".equals(currentkey.substring(key.length(),currentkey.length())) &&
+//                !"".equals(currentkey.replace(" ",""))
+//                ){
+//            return;
+//        }
+//        if (!TextUtils.isEmpty(currentkey) &&
+//                key.length()>currentkey.length() &&
+//                " ".equals(key.substring(currentkey.length(),key.length())) &&
+//                !"".equals(currentkey.replace(" ",""))
+//                ){
+//            return;
+//        }
+
+
 //        else {
 //            return;
 //        }
@@ -249,7 +266,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
                 .Companion
                 .Builder()
                 .setContentType(getType())
-                .setKeyword(key)
+                .setKeyword(key.trim())
                 .setKeywordType(getKeyType())
                 .setPage(getPageNum())//页号
                 .setRows(getPageSize());//每页条数
@@ -268,7 +285,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
                 .Companion
                 .Builder()
                 .setContentType(getType())
-                .setKeyword(currentkey)
+                .setKeyword(currentkey.trim())
                 .setKeywordType(getKeyType())
                 .setPage(String.valueOf(getPageNum()))//页号
                 .setRows(getPageSize());//每页条数
@@ -328,7 +345,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         LogUtils.e("BaseFragment", "onError:" + desc);
         notifyToDataInfoResult(true);
     }

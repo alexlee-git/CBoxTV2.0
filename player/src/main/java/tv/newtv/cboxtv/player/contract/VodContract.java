@@ -300,7 +300,7 @@ public class VodContract {
                     }
 
                     @Override
-                    public void onError(@Nullable String desc) {
+                    public void onError(@NotNull String code, @Nullable String desc) {
                         LogUtils.e(TAG, "onFailure: " + desc);
                         if (!NetworkManager.getInstance().isConnected()) {
                             if (getView() != null)

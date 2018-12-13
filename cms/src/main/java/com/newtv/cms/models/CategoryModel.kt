@@ -24,7 +24,7 @@ internal class CategoryModel : BaseModel(), ICategory {
     override fun getCategoryTree(appkey: String, channelCode: String,
                                  observer: DataObserver<ModelResult<List<CategoryTreeNode>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
         val executor: Executor<ModelResult<List<CategoryTreeNode>>> =
@@ -39,11 +39,11 @@ internal class CategoryModel : BaseModel(), ICategory {
     override fun getCategoryContent(appkey: String, channelCode: String, contentId: String,
                                     observer: DataObserver<ModelResult<List<SubContent>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelCode)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
         if (TextUtils.isEmpty(contentId) || contentId.length < 2) {
-            observer.onError("ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
             return 0
         }
         val left: String = getLeft(contentId)

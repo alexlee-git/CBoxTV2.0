@@ -2,7 +2,6 @@ package com.newtv.cms.contract
 
 import android.content.Context
 
-import com.newtv.cms.BuildConfig
 import com.newtv.cms.CmsServicePresenter
 import com.newtv.cms.DataObserver
 import com.newtv.cms.ICmsPresenter
@@ -69,12 +68,12 @@ class SuggestContract {
                     if (result.isOk()) {
                         view?.columnFiguresResult(result.data)
                     } else {
-                        view?.onError(context, result.errorMessage)
+                        view?.onError(context,result.errorCode, result.errorMessage)
                     }
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }
@@ -88,12 +87,12 @@ class SuggestContract {
                     if (result.isOk()) {
                         view?.columnSuggestResult(result.data)
                     } else {
-                        view?.onError(context, result.errorMessage)
+                        view?.onError(context,result.errorCode, result.errorMessage)
                     }
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }
@@ -104,12 +103,12 @@ class SuggestContract {
                     if (result.isOk()) {
                         view?.columnPersonFiguresResult(result.data)
                     } else {
-                        view?.onError(context, "Error")
+                        view?.onError(context,result.errorCode, "Error")
                     }
                 }
 
-                override fun onError(desc: String?) {
-                    view?.onError(context, desc)
+                override fun onError(code: String?, desc: String?) {
+                    view?.onError(context,code, desc)
                 }
             })
         }

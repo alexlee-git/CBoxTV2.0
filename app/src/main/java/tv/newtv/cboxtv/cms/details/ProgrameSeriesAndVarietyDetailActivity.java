@@ -111,7 +111,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getContent(contentUUID, false);
         } else {
-            onError(getApplicationContext(), "节目集信息有误");
+            onError(getApplicationContext(), "" , "节目集信息有误");
         }
     }
 
@@ -400,7 +400,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
         Toast.makeText(context.getApplicationContext(), desc, Toast
                 .LENGTH_SHORT).show();
         ProgrameSeriesAndVarietyDetailActivity.this.finish();

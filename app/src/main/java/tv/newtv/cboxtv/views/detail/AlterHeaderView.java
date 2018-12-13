@@ -4,14 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
@@ -20,6 +23,7 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SystemUtils;
+import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,15 +32,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.ActivityStacks;
+import tv.newtv.cboxtv.DetailTextPopuView;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.AlternateCallback;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
-import tv.newtv.cboxtv.uc.v2.listener.ICollectionStatusCallback;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
-import tv.newtv.cboxtv.utils.DBUtil;
 import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
@@ -58,11 +61,11 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     private TextView alternateFromText;
     private TextView alternateDescText;
     private VideoPlayerView alternateView;
+    private ViewStub mMoreView;
 
     private FocusToggleView2 mCollect;
 
     private View fullScreenBtn;
-    private View payBtn;
 
     private boolean mIsCollect = false;
 
@@ -91,12 +94,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             alternateView.release();
             alternateView.destory();
             alternateView = null;
-        }
-    }
-
-    public void onResume() {
-        if (!TextUtils.isEmpty(mContentUUID)) {
-            prepareMediaPlayer();
         }
     }
 
@@ -131,10 +128,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         }
     }
 
-    public void play(String contentId) {
-
-    }
-
     private void initialize(Context context, AttributeSet attrs, int defStyle) {
         LayoutInflater.from(context).inflate(R.layout.alternate_head_layout, this, true);
 
@@ -143,6 +136,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateFromText = findViewById(R.id.id_detail_from);
         alternateDescText = findViewById(R.id.id_detail_desc);
         alternateView = findViewById(R.id.video_player);
+        mMoreView = findViewById(R.id.more_view_stub);
 
         mCollect = findViewById(R.id.collect);
         if (mCollect != null) {
@@ -157,15 +151,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateView.setAlternateCallback(this);
 
         fullScreenBtn = findViewById(R.id.full_screen);
-        payBtn = findViewById(R.id.vip_pay);
 
         fullScreenBtn.setOnClickListener(new MultipleClickListener() {
-            @Override
-            protected void onMultipleClick(View view) {
-                onViewClick(view);
-            }
-        });
-        payBtn.setOnClickListener(new MultipleClickListener() {
             @Override
             protected void onMultipleClick(View view) {
                 onViewClick(view);
@@ -196,14 +183,14 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     private void checkIsRecord() {
         DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
                 .condition()
-                .eq(DBConfig.CONTENT_ID,mContentUUID)
+                .eq(DBConfig.CONTENT_ID, mContentUUID)
                 .build()
                 .withCallback(new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {
-                        if(code == 0) {
+                        if (code == 0) {
                             mIsCollect = !TextUtils.isEmpty(result);
-                        }else {
+                        } else {
                             mIsCollect = false;
                         }
                         updateUI();
@@ -219,6 +206,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     @Override
     public boolean interruptKeyEvent(KeyEvent event) {
+        View focusView = findFocus();
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
                 if (!hasFocus() && alternateView != null) {
@@ -227,8 +215,13 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 } else return hasFocus();
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 return alternateView != null && alternateView.hasFocus();
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                return payBtn.hasFocus();
+            }if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                View view = FocusFinder.getInstance().findNextFocus(this, focusView, View
+                        .FOCUS_RIGHT);
+                if (view != null) {
+                    view.requestFocus();
+                }
+                return true;
             }
         }
         return false;
@@ -263,7 +256,31 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         }
 
         if (alternateDescText != null) {
-            alternateDescText.setText(content.getDescription());
+            alternateDescText.setText(content.getDescription().replace("\r\n", ""));
+            int ellipsisCount = alternateDescText.getLayout().getEllipsisCount(alternateDescText.getLineCount
+                    () - 1);
+            if (ellipsisCount > 0 && mMoreView != null) {
+                final View view = mMoreView.inflate();
+                view.setOnFocusChangeListener(new OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            view.setBackgroundResource(R.drawable.more_hasfocus);
+                        } else {
+                            view.setBackgroundResource(R.drawable.more_nofocus);
+                        }
+                    }
+                });
+
+                view.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DetailTextPopuView navPopuView = new DetailTextPopuView();
+                        navPopuView.showPopup(getContext(), getRootView(), content.getTitle(), content.getDescription());
+                    }
+                });
+            }
+
         }
 
         if (alternateView != null) {
@@ -285,8 +302,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
-
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
+        onError(code, desc);
     }
 
 
@@ -339,8 +356,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                             new DBCallback<String>() {
                                 @Override
                                 public void onResult(int code, String result) {
-                                    if(code == 0){
-                                        Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT)
+                                    if (code == 0) {
+                                        Toast.makeText(getContext(), "取消收藏成功", Toast.LENGTH_SHORT)
                                                 .show();
                                         mIsCollect = false;
                                         updateUI();
@@ -349,8 +366,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                             });
                 }
                 break;
-            case R.id.vip_pay:
-
+            default:
                 break;
         }
     }
@@ -359,6 +375,13 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     public void onAlternateResult(@Nullable List<Alternate> result) {
         if (mAlternateCallback != null) {
             mAlternateCallback.onAlternateResult(result);
+        }
+    }
+
+    @Override
+    public void onError(String code, String desc) {
+        if(mAlternateCallback != null){
+            mAlternateCallback.onError(code, desc);
         }
     }
 
@@ -392,6 +415,12 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                     .getAlternateNumber());
         } else {
             setContentUUID(mContentUUID);
+        }
+    }
+
+    public void onResume() {
+        if(mContent != null && !TextUtils.isEmpty(mContentUUID)){
+            onContentResult(mContentUUID,mContent);
         }
     }
 }

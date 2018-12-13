@@ -10,14 +10,24 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.SubContent;
+import com.newtv.cms.bean.Video;
+import com.newtv.cms.contract.ContentContract;
+import com.newtv.libs.Constant;
 import com.newtv.libs.util.GlideUtil;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.widget.NewTvRecycleAdapter;
 import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
@@ -30,7 +40,7 @@ import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
  * 创建日期:          2018/11/20
  */
 public class AlternatePageView extends FrameLayout implements IProgramChange,
-        NewTVLauncherPlayerView.ChangeAlternateListener {
+        NewTVLauncherPlayerView.ChangeAlternateListener, ContentContract.View {
 
     private LivePlayView mBlockPosterView;
     private VerticalRecycleView mRecycleView;
@@ -39,6 +49,9 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     private View firstFocusView;
     private ImageView posterView;
     private String mPageUUID;
+    private Program mProgram;
+
+    private ContentContract.Presenter mContentPresenter;
 
     public AlternatePageView(Context context) {
         this(context, null);
@@ -59,6 +72,11 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     }
 
     public void setProgram(Page page) {
+        if(page != null && mPage != null) {
+            if (TextUtils.equals(page.toString(), mPage.toString())) {
+                return;
+            }
+        }
         mPage = page;
         setUp();
     }
@@ -101,7 +119,26 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     }
 
     private void play(Program program) {
-        mBlockPosterView.setProgramInfo(program, false);
+
+        NewTVLauncherPlayerViewManager.getInstance().stop();
+
+        if(mContentPresenter != null){
+            mContentPresenter.stop();
+        }
+
+        mProgram = program;
+        if (Constant.CONTENTTYPE_LV.equals(program.getL_contentType())) {
+            if (mContentPresenter == null) {
+                mContentPresenter = new ContentContract.ContentPresenter(getContext(), this);
+            }
+            if(TextUtils.isEmpty(program.getL_id())){
+                mBlockPosterView.onError(getContext(), "" , "ID为空");
+                return;
+            }
+            mContentPresenter.getContent(program.getL_id(), false);
+        } else {
+            mBlockPosterView.setProgramInfo(program, false, true);
+        }
     }
 
     private void setRecycleView() {
@@ -136,6 +173,38 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                 && mRecycleView.getAdapter() instanceof AlternateAdapter) {
             ((AlternateAdapter) mRecycleView.getAdapter()).notifyChange(contentId);
         }
+    }
+
+    @Override
+    public void onContentResult(@NotNull String uuid, @Nullable Content content) {
+        if(mProgram != null && TextUtils.equals(mProgram.getL_id(),uuid)){
+            if(content != null) {
+                Video video = new Video("LIVE",
+                        content.getContentID(),
+                        content.getContentUUID(),
+                        content.getPlayUrl(),
+                        null);
+                mProgram.setVideo(video);
+                mBlockPosterView.setProgramInfo(mProgram, false, true);
+            }else{
+                mBlockPosterView.onError(getContext(), "" , "Error");
+            }
+        }
+    }
+
+    @Override
+    public void onSubContentResult(@NotNull String uuid, @Nullable ArrayList<SubContent> result) {
+
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
+
     }
 
     private static class AlternateAdapter extends NewTvRecycleAdapter<Program,

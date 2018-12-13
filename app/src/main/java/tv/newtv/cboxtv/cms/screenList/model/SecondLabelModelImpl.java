@@ -40,7 +40,7 @@ public class SecondLabelModelImpl implements SecondLabelModel, FilterContract.Vi
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 }

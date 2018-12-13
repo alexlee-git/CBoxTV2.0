@@ -63,7 +63,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public static final int MODE_LIVE = 3;
     public static final int MODE_ALTERNATE = 4;
 
-
     private static final String M3U8 = "http://s003.test.vod06.icntvcdn.com/live/sscntv63.m3u8";
     private static final String TimeFormat = "yyyy-MM-dd HH:mm:ss";
     private static String TAG = "LivePlayView";
@@ -272,7 +271,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public void dispatchClick() {
         Log.d(TAG, "enterFullScreen");
-        if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
+        LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(),mProgramInfo.getVideo());
+        if (liveInfo.isLiveTime()) {
             Log.d(TAG, "直播中，特殊处理");
             if (Constant.OPEN_SPECIAL.equals(mPlayInfo.actionType)) {
                 Log.e(TAG, "dispatchClick: " + mProgramInfo);
@@ -304,7 +304,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private void doPlay() {
         Log.d(TAG, "currentMode : " + currentMode);
         if (currentMode == MODE_LIVE) {
-            if (CmsUtil.isLive(mProgramInfo.getVideo()) != null) {
+            LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(),mProgramInfo.getVideo());
+            if (liveInfo.isLiveTime()) {
                 playLiveVideo(mPlayerViewConfig != null && mPlayerViewConfig.isFullScreen ? 0 :
                         2000);
             } else {
@@ -400,10 +401,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     public void setProgramInfo(Program programInfo) {
-        setProgramInfo(programInfo, true);
+        setProgramInfo(programInfo, true,false);
     }
 
-    public void setProgramInfo(Program programInfo, boolean useDelay) {
+    public void setProgramInfo(Program programInfo, boolean useDelay,boolean isAlternate) {
         if (programInfo == null) return;
 
         this.mProgramInfo = programInfo;
@@ -415,13 +416,15 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             mPlayInfo.playUrl = programInfo.getVideo().getLiveUrl();
         } else if (Constant.CONTENTTYPE_LB.equals(mPlayInfo.contentType)) {
             mPlayInfo.ContentUUID = programInfo.getL_id();
+        }else if(isAlternate){
+            mPlayInfo.ContentUUID = programInfo.getContentId();
         }
         mPlayInfo.title = programInfo.getTitle();
 
         if (!mPlayInfo.isCanUse()) return;
 
         //2代表视频
-        if (mProgramInfo.getRecommendedType().equals("2")) {
+        if (mProgramInfo.getRecommendedType().equals("2") || isAlternate) {
             //如果有playurl并且在直播的时间段内，则判断是直播
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
             if (liveInfo.isLiveTime()) {
@@ -437,9 +440,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 currentMode = MODE_OPEN_VIDEO;
                 playVideo(useDelay ? 2000 : 0);
                 return;
-            }
-        } else {
-            if (isAlternate()) {
+            }else if (isAlternate()) {
                 currentMode = MODE_ALTERNATE;
                 playAlternate(useDelay ? 2000 : 0);
                 return;
@@ -518,7 +519,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
 
     }
 

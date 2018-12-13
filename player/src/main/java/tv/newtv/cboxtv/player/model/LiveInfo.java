@@ -25,6 +25,7 @@ import java.util.Locale;
  */
 public class LiveInfo {
     private LiveParam mLiveParam;      //直播循环参数
+    private boolean alwaysPlay = false;
     private int delay = 0;
 
     private Date startDate;     //开始时间
@@ -45,15 +46,24 @@ public class LiveInfo {
      */
     private String isTimeShift;
 
-    public LiveInfo() { }
+    public boolean isAlwaysPlay() {
+        return alwaysPlay;
+    }
+
+    public LiveInfo() {
+    }
 
     public LiveInfo(@Nullable Content content) {
         if (content == null) return;
         mTitle = content.getTitle();
         contentUUID = content.getContentID();
-        mLiveParam = CmsUtil.isLiveTime(content.getLiveParam());
-        if (mLiveParam == null) return;
-        parseLiveParam();
+        if(content.getLiveParam() == null || content.getLiveParam().isEmpty()){
+            alwaysPlay = true;
+        }else {
+            mLiveParam = CmsUtil.isLiveTime(content.getLiveParam());
+            if (mLiveParam == null) return;
+            parseLiveParam();
+        }
     }
 
     public LiveInfo(String title, @Nullable Video video) {
@@ -63,10 +73,13 @@ public class LiveInfo {
         mTitle = title;
         setLiveUrl(video.getLiveUrl());
         setContentUUID(video.getContentId());
+        if(video.getLiveParam() != null && !video.getLiveParam().isEmpty()) {
             mLiveParam = CmsUtil.isLive(video);
-        if (mLiveParam == null) return;
-
-        parseLiveParam();
+            if (mLiveParam == null) return;
+            parseLiveParam();
+        }else{
+            alwaysPlay = true;
+        }
     }
 
     private void parseLiveParam() {
@@ -126,15 +139,21 @@ public class LiveInfo {
     }
 
     public String getStartTimeStr() {
-        return mTimeFormat.format(startDate);
+        if(startDate != null) {
+            return mTimeFormat.format(startDate);
+        }
+        return "";
     }
 
     public String getEndTimeStr() {
-        return mTimeFormat.format(endDate);
+        if(endDate != null) {
+            return mTimeFormat.format(endDate);
+        }
+        return "";
     }
 
     public boolean isLiveTime() {
-        return mLiveParam != null;
+        return mLiveParam != null || alwaysPlay;
     }
 
     public String getIsTimeShift() {

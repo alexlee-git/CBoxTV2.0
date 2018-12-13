@@ -34,7 +34,7 @@ data class Program(
         val specialParam: String,
         val recommendedType: String,
         val recentMsg: String,
-        val video: Video?,
+        var video: Video?,
         val apk: String,
         val apkPageType: String,
         val apkPageParam: String,
@@ -43,5 +43,9 @@ data class Program(
 ) {
     fun getLiveParam(): LiveParam? {
         return null
+    }
+
+    override fun toString(): String {
+        return "Program(dataUrl='$dataUrl', defaultFocus=$defaultFocus, contentId='$contentId', contentType='$contentType', img='$img', title='$title', subTitle='$subTitle', l_id='$l_id', l_uuid='$l_uuid', l_contentType='$l_contentType', l_actionType='$l_actionType', l_actionUri='$l_actionUri', l_focusId='$l_focusId', l_focusParam='$l_focusParam', grade='$grade', columnPoint='$columnPoint', rowPoint='$rowPoint', columnLength='$columnLength', rowHeight='$rowHeight', cellType='$cellType', cellCode='$cellCode', isAd=$isAd, sortNum='$sortNum', seriesSubUUID='$seriesSubUUID', realExclusive='$realExclusive', alternateNumber='$alternateNumber', apkParam='$apkParam', specialParam='$specialParam', recommendedType='$recommendedType', recentMsg='$recentMsg', video=$video, apk='$apk', apkPageType='$apkPageType', apkPageParam='$apkPageParam', recentNum='$recentNum', isFinish='$isFinish')"
     }
 }

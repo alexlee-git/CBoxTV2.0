@@ -6,7 +6,6 @@ import com.newtv.cms.*
 import com.newtv.cms.api.IAlternate
 import com.newtv.cms.bean.Alternate
 import com.newtv.cms.bean.ModelResult
-import com.newtv.cms.bean.SubContent
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -23,12 +22,12 @@ internal class AlternateModel : BaseModel(), IAlternate {
     override fun getTodayAlternate(appkey: String, channelId: String, contentId: String,
                                    observer: DataObserver<ModelResult<List<Alternate>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError("AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
             return 0
         }
 
         if (TextUtils.isEmpty(contentId)) {
-            observer.onError("ContentId size is invalid")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is invalid")
             return 0
         }
 

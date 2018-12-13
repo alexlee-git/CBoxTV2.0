@@ -213,7 +213,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 
