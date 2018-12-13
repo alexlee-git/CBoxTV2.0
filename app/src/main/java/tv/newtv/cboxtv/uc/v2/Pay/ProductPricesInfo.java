@@ -241,8 +241,10 @@ public class ProductPricesInfo implements Serializable {
             private int vipPrice;
             private int point;
             private int vipPoint;
-             @SerializedName("duration")
+            @SerializedName("duration")
             private int duration;
+            @SerializedName("ifContinued")
+            private boolean ifContinued;
             private String memo;
 
             @SerializedName("priceDiscount")
@@ -325,6 +327,14 @@ public class ProductPricesInfo implements Serializable {
 
             public void setDuration(int duration) {
                 this.duration = duration;
+            }
+
+            public boolean isIfContinued() {
+                return ifContinued;
+            }
+
+            public void setIfContinued(boolean ifContinued) {
+                this.ifContinued = ifContinued;
             }
 
             public String getMemo() {
