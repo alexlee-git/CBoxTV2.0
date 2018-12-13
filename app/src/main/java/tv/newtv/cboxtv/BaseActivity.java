@@ -194,7 +194,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
         }
         lifeCycleList = null;
 
-        navPopuView.dismiss();
+        if (navPopuView!=null){
+            navPopuView.dismiss();
+        }
     }
 
     @Override
@@ -228,8 +230,9 @@ public abstract class BaseActivity extends RxFragmentActivity implements IPlayer
                 View nextFocus = FocusFinder.getInstance().findNextFocus((ViewGroup) rootView,
                         focusView, View.FOCUS_UP);
                 if (isDetail() && nextFocus == null) {
-
-                    navPopuView.showPopup(this, rootView);
+                    if (navPopuView!=null){
+                        navPopuView.showPopup(this, rootView);
+                    }
                 }
             }
         }
