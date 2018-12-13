@@ -1060,6 +1060,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                                     return;
                                 }
                                 Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                            } else {
+                                jumpErrorToast();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
