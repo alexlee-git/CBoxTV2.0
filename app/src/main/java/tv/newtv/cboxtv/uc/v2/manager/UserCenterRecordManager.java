@@ -583,6 +583,36 @@ public class UserCenterRecordManager {
     }
 
     /**
+     * 批量将本地数据库数据上报至远程服务器
+     *
+     * @param context  上下文
+     * @param token    token值
+     * @param userId   用户ID
+     * @param beanList 批量上传的list
+     * @param callback 回调结果
+     */
+    public void addRemoteHistoryList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, @NonNull HistoryDataSource.AddRemoteHistoryListCallback callback) {
+
+        HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context))
+                .addRemoteHistoryList(token, userId, beanList, callback);
+    }
+
+    public void addRemoteCollectList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, CollectDataSource.AddRemoteCollectListCallback callback) {
+        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
+                .addRemoteCollectList(token, userId, beanList, callback);
+    }
+
+    public void addRemoteFollowList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, FollowRemoteDataSource.AddRemoteFollowListCallback callback) {
+        FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context))
+                .addRemoteFollowList(token, userId, beanList, callback);
+    }
+
+    public void addRemoteSubscribeList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, SubRemoteDataSource.AddRemoteSubscribeListCallback callback) {
+        SubRepository.getInstance(SubRemoteDataSource.getInstance(context))
+                .addRemoteSubscribeList(token, userId, beanList, callback);
+    }
+
+    /**
      * 批量插入数据至数据库
      */
     public void addCollectToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
@@ -749,7 +779,7 @@ public class UserCenterRecordManager {
      * @param offset
      * @param limit
      */
-    public void getUserBehaviorUtils(final Context context, final String offset, final String limit) {
+    public void getUserBehavior(final Context context, final String offset, final String limit) {
         currentHistoryIndex = 1;
         currentSubIndex = 1;
         currentCollectIndex = 1;
@@ -764,7 +794,7 @@ public class UserCenterRecordManager {
                 if (status) {
                     String token = SharePreferenceUtils.getToken(context);
                     final String userId = SharePreferenceUtils.getUserId(context);
-                    if (token != null) {
+                    if (!TextUtils.isEmpty(token)) {
                         getRemoteHistoryList(context, token, userId, offset, limit, new HistoryDataSource.GetHistoryListCallback() {
                             @Override
                             public void onHistoryListLoaded(List<UserCenterPageBean.Bean> historyList, final int totalSize) {
@@ -870,10 +900,10 @@ public class UserCenterRecordManager {
                             }
                         });
                     } else {
-                        Log.e(TAG, "wqs:getUserBehaviorUtils:token==null");
+                        Log.e(TAG, "wqs:getUserBehavior:token==null");
                     }
                 } else {
-                    Log.e(TAG, "wqs:getUserBehaviorUtils:loginStatus:" + status);
+                    Log.e(TAG, "wqs:getUserBehavior:loginStatus:" + status);
                 }
             }
         });
@@ -881,25 +911,156 @@ public class UserCenterRecordManager {
 
     //数据获取完成，向用户中心首页发送广播
     private void getUserBehaviorComplete(Context context) {
-        Log.d(TAG, "wqs:getUserBehaviorComplete");
         if (getHistoryRecordComplete && getCollectionRecordComplete
                 && getFollowRecordComplete && getSubscribeRecordComplete) {
-            Log.e(TAG, "wqs:getUserBehaviorUtils:getUserBehaviorComplete:sendBroadcast");
+            Log.d(TAG, "wqs:getUserBehaviorComplete:sendBroadcast");
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("action.uc.data.sync.complete"));
         } else {
-            Log.e(TAG, "wqs:getUserBehaviorComplete:error");
+            Log.d(TAG, "wqs:getUserBehaviorComplete:error");
         }
 
     }
 
     //远端数据库获取获取流程取消订阅关系，防止数据错乱与内存泄漏
     public void releaseUserBehavior(Context context) {
-        Log.d(TAG, "wqs:releaseUserBehavior");
+        Log.e(TAG, "wqs:releaseUserBehavior");
         HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context)).releaseHistoryResource();
         CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).releaseCollectResource();
         SubRepository.getInstance(SubRemoteDataSource.getInstance(context)).releaseSubscribeResource();
         FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context)).releaseFollowResource();
     }
+
+    private boolean AddHistoryRecordComplete = false;//批量上报历史记录数据至远程数据库完成状态
+    private boolean AddCollectionRecordComplete = false;//批量上报收藏记录数据至远程数据库完成状态
+    private boolean AddFollowRecordComplete = false;//批量上报关注记录数据至远程数据库完成状态
+    private boolean AddSubscribeRecordComplete = false;//批量上报订阅记录数据至远程数据库完成状态
+
+    //数据批量上报完成，下一步获取云端数据库数据同步到本地数据库中
+    private void AddUserBehaviorListComplete(Context context) {
+        if (AddHistoryRecordComplete && AddCollectionRecordComplete
+                && AddFollowRecordComplete && AddSubscribeRecordComplete) {
+            Log.d(TAG, "wqs:AddUserBehaviorListComplete:complete");
+            getUserBehavior(context, UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
+        } else {
+            Log.e(TAG, "wqs:AddUserBehaviorListComplete:error");
+        }
+
+    }
+
+    /**
+     * 同步本地数据库与远程数据库数据
+     *
+     * @param context
+     */
+    public void synchronizationUserBehavior(final Context context) {
+        //订阅数据表表名
+        String tableNameSubscribe = DBConfig.SUBSCRIBE_TABLE_NAME;
+        //收藏数据表表名
+        String tableNameCollect = DBConfig.COLLECT_TABLE_NAME;
+        //历史记录数据表表名
+        String tableNameHistory = DBConfig.HISTORY_TABLE_NAME;
+        //关注数据表表名
+        String TableNameAttention = DBConfig.ATTENTION_TABLE_NAME;
+        QueryUserStatusUtil.getInstance().getLoginStatus(context, new INotifyLoginStatusCallback() {
+            @Override
+            public void notifyLoginStatusCallback(boolean status) {
+                if (status) {
+                    String token = SharePreferenceUtils.getToken(context);
+                    final String userId = SharePreferenceUtils.getUserId(context);
+                    if (!TextUtils.isEmpty(token)) {
+                        queryDataBase(tableNameHistory, new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                if (code == 0) {
+                                    Gson mGson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                                    }.getType();
+                                    List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
+                                    addRemoteHistoryList(context, token, userId, beanList, new HistoryDataSource.AddRemoteHistoryListCallback() {
+                                        @Override
+                                        public void onAddRemoteHistoryListComplete(int totalSize) {
+                                            Log.e(TAG, "wqs:onAddRemoteHistoryListComplete:size:" + totalSize);
+                                            AddHistoryRecordComplete = true;
+                                            AddUserBehaviorListComplete(context);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                        queryDataBase(tableNameCollect, new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                if (code == 0) {
+                                    Gson mGson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                                    }.getType();
+                                    List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
+                                    addRemoteCollectList(context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
+                                        @Override
+                                        public void onAddRemoteCollectListComplete(int totalSize) {
+                                            Log.e(TAG, "wqs:onAddRemoteCollectListComplete:size:" + totalSize);
+                                            AddCollectionRecordComplete = true;
+                                            AddUserBehaviorListComplete(context);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                        queryDataBase(tableNameSubscribe, new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                if (code == 0) {
+                                    Gson mGson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                                    }.getType();
+                                    List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
+                                    addRemoteSubscribeList(context, token, userId, beanList, new SubDataSource.AddRemoteSubscribeListCallback() {
+                                        @Override
+                                        public void onAddRemoteSubscribeListComplete(int totalSize) {
+                                            Log.e(TAG, "wqs:onAddRemoteSubscribeListComplete:size:" + totalSize);
+                                            AddSubscribeRecordComplete = true;
+                                            AddUserBehaviorListComplete(context);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                        queryDataBase(TableNameAttention, new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                if (code == 0) {
+                                    Gson mGson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                                    }.getType();
+                                    List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
+                                    addRemoteFollowList(context, token, userId, beanList, new FollowDataSource.AddRemoteFollowListCallback() {
+                                        @Override
+                                        public void onAddRemoteFollowListComplete(int totalSize) {
+                                            Log.e(TAG, "wqs:onAddRemoteFollowListComplete:size:" + totalSize);
+                                            AddFollowRecordComplete = true;
+                                            AddUserBehaviorListComplete(context);
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 查询某一个表的全量数据
+     *
+     * @param tableName
+     */
+    public void queryDataBase(String tableName, DBCallback<String> callback) {
+        DataSupport.search(tableName)
+                .condition()
+                .build().withCallback(callback).excute();
+    }
+
 
     private UserCenterPageBean.Bean packageData(Bundle bundle) {
         if (bundle == null) {

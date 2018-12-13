@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.uc.v2;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -47,7 +46,6 @@ import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
@@ -93,6 +91,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private String mContentUUID;
     private String mExternalAction;
     private String mExternalParams;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -336,9 +335,9 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                     startActivity(mIntent);
                                 }
                             }
-                            if (TextUtils.isEmpty(mExternalAction)&&TextUtils.isEmpty(mExternalParams)){
+                            if (TextUtils.isEmpty(mExternalAction) && TextUtils.isEmpty(mExternalParams)) {
                                 finish();
-                            }else {
+                            } else {
                                 jumpActivity();
                             }
                         }
@@ -540,8 +539,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                 Log.i(TAG, "mVerifySMSCodeSubscriber--onSuccess: accessToken = " + accessToken);
                                 SharePreferenceUtils.saveToken(PhoneLoginActivity.this, accessToken, refreshToken);
 
-                                UserCenterRecordManager.getInstance().getUserBehaviorUtils(getApplicationContext(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
-
+                                UserCenterRecordManager.getInstance().synchronizationUserBehavior(getApplicationContext());
                                 uploadUserExterLog();
                                 uploadUserExter();
                                 UserCenterUtils.setLogin(true);

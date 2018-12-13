@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.uc.v2.data.follow;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 
 /**
@@ -35,6 +37,11 @@ public class FollowRepository implements FollowDataSource {
     @Override
     public void addRemoteFollow(@NonNull UserCenterPageBean.Bean bean) {
         mRemoteDataSource.addRemoteFollow(bean);
+    }
+
+    @Override
+    public void addRemoteFollowList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteFollowListCallback callback) {
+        mRemoteDataSource.addRemoteFollowList(token, userID, beanList, callback);
     }
 
     @Override

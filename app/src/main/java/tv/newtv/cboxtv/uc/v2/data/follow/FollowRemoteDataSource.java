@@ -12,12 +12,17 @@ import com.newtv.libs.util.SharePreferenceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
@@ -33,7 +38,7 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
  * 创建日期:     2018/9/26 0021
  */
 public class FollowRemoteDataSource implements FollowDataSource {
-    private static final String TAG = "lx";
+    private static final String TAG = "FollowRemoteDataSource";
 
     private static FollowRemoteDataSource INSTANCE;
     private Context mContext;
@@ -104,6 +109,44 @@ public class FollowRemoteDataSource implements FollowDataSource {
                     @Override
                     public void onComplete() {
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
+    }
+
+    @Override
+    public void addRemoteFollowList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteFollowListCallback callback) {
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                try {
+                    if (!TextUtils.isEmpty(userID)) {
+                        if (beanList != null && beanList.size() > 0) {
+                            for (int i = 0; i < beanList.size(); i++) {
+                                addRemoteFollowRecord(token, userID, beanList.get(i));
+                            }
+                            e.onNext(beanList.size());
+                        } else {
+                            Log.e(TAG, "wqs:addRemoteFollowList:beanList==null||beanList.size==0");
+                            e.onNext(0);
+                        }
+                    } else {
+                        Log.e(TAG, "wqs:addRemoteFollowList:userID==null");
+                        e.onNext(0);
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    Log.e(TAG, "wqs:addRemoteFollowList:Exception:" + exception.toString());
+                    e.onNext(0);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer size) throws Exception {
+                        if (callback != null) {
+                            callback.onAddRemoteFollowListComplete(size);
+                        }
                     }
                 });
     }
@@ -255,6 +298,63 @@ public class FollowRemoteDataSource implements FollowDataSource {
         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+    }
+
+    private void addRemoteFollowRecord(String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
+        String mType = "0";
+        String parentId = "";
+        String type = bean.get_contenttype();
+
+        if (Constant.CONTENTTYPE_FG.equals(type) || Constant.CONTENTTYPE_CR.equals(type)) {
+            mType = "0";
+            parentId = bean.get_contentuuid();
+        }
+
+        String Authorization = "Bearer " + token;
+        NetClient.INSTANCE
+                .getUserCenterLoginApi()
+                .addFollow(Authorization,
+                        userID,
+                        Libs.get().getChannelId(),
+                        Libs.get().getAppKey(),
+                        parentId,
+                        bean.get_title_name(),
+                        mType,
+                        bean.get_imageurl(),
+                        bean.get_contenttype(),
+                        bean.get_actiontype(),
+                        bean.getContentId()
+                )
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String responseString = responseBody.string();
+                            Log.d(TAG, "wqs:addRemoteFollowRecord onNext result : " + responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "wqs:addRemoteFollowRecord onError result : " + e.toString());
+                        e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
     }
 
 }
