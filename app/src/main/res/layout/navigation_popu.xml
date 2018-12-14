@@ -8,12 +8,14 @@
 
 
     <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
+        android:paddingLeft="@dimen/height_200px"
         android:id="@+id/nav_recycle"
         android:layout_width="match_parent"
         android:gravity="center"
         android:layout_height="wrap_content"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:paddingRight="@dimen/height_200px">
 
     </tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>
 

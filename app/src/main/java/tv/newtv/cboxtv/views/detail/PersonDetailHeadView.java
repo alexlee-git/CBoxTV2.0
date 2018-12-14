@@ -124,9 +124,9 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     }
 
     private void hintAnimator(LinearLayout upTop, ImageView arrowsDark) {
-        ObjectAnimator translationX = ObjectAnimator.ofFloat(arrowsDark, "alpha", 1, 0, 1, 0, 1,
-                0,1,0,1,0);
-        ObjectAnimator translationY = ObjectAnimator.ofFloat(arrowsDark, "TranslationY", 0,8,0,8,0,8,0,8,0,8);
+        ObjectAnimator translationX = ObjectAnimator.ofFloat(arrowsDark, "alpha", 0.1f, 1.0f, 0.1f, 1.0f, 0.1f,
+                1.0f,0.1f,1.0f,0.1f,1.0f);
+        ObjectAnimator translationY = ObjectAnimator.ofFloat(arrowsDark, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
         AnimatorSet animator = new AnimatorSet();
         animator.playTogether(translationX,translationY);
         animator.setInterpolator(new LinearInterpolator());
