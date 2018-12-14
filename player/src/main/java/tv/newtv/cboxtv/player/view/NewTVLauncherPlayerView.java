@@ -239,6 +239,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public void onError(int what, int extra, String msg) {
             LogUtils.i(TAG, "live onError: ");
         }
+
+        @Override
+        public void onAdStartPlaying() {
+
+        }
     };
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
@@ -341,6 +346,15 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         @Override
         public void onError(int what, int extra, String msg) {
             LogUtils.i(TAG, "onError: ");
+        }
+
+        @Override
+        public void onAdStartPlaying() {
+            Log.i(TAG, "onAdStartPlaying  dismiss SeekBar");
+            if (mNewTVLauncherPlayerSeekbar != null
+                    && mNewTVLauncherPlayerSeekbar.getVisibility() == VISIBLE) {
+                mNewTVLauncherPlayerSeekbar.dismiss();
+            }
         }
     };
     private ChangeAlternateListener mChangeAlternateListener;
