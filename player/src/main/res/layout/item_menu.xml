@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/width_385px"
-    android:layout_height="@dimen/height_99px"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:focusable="true"
     android:focusableInTouchMode="true"
     >
@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/tv_video_name"
         android:layout_width="@dimen/width_430px"
-        android:layout_height="@dimen/height_99px"
+        android:layout_height="@dimen/height_104px"
         android:paddingLeft="@dimen/width_40px"
         android:paddingRight="@dimen/width_80px"
         android:gravity="left|center_vertical"

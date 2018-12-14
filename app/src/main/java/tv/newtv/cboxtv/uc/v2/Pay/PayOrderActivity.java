@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -127,6 +126,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private int price;
     private long expireTime_All;
     private long orders[];
+    private boolean mIfContinued; //是否是连续包月
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -224,6 +224,18 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
 
         initdialog();
+
+        mIfContinued = false;
+        if (mProductPricesInfo.getResponse().getPrices() != null && mProductPricesInfo.getResponse().getPrices().size() > 0) {
+            ProductPricesInfo.ResponseBean.PricesBean pricesBean = mProductPricesInfo.getResponse().getPrices().get(position);
+            if (pricesBean != null) {
+                mIfContinued = pricesBean.isIfContinued();
+            }
+        }
+        Log.i(TAG,"mIfContinued = " + mIfContinued);
+        if(mIfContinued){
+            tv_ap.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -732,6 +744,8 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
             } else {
                 jsonObject.put("source", "");
             }
+
+
             jsonObject.put("contentCheckDTO", contentDTOForCheckObject);
             jsonObject.put("paymentChannelDTO", paymentChannelObject);
             jsonObject.put("priceDTO", priceObject);

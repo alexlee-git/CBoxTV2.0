@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.player.contract;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.TimeUtils;
 
 import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.CmsServicePresenter;
@@ -17,13 +18,17 @@ import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.ServerTime;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -45,7 +50,7 @@ public class PlayerAlternateContract {
     public interface View extends ICmsView {
         void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String title,
                                String channelId);
-
+        void onAlternateTimeChange(String current,String end);
         void onAlterItemResult(String contentId, Content content, boolean isLive,boolean isFirst);
 
         void onAlternateError(String code, String desc);
@@ -255,8 +260,18 @@ public class PlayerAlternateContract {
                         .subscribe(new Consumer<Long>() {
                             @Override
                             public void accept(Long aLong) throws Exception {
-                                LogUtils.d(TAG, "[Alternate time=" + System.currentTimeMillis() +
-                                        " " + "endTime=" + endTime + "]");
+
+                                String currentTime = ServerTime.get().formatCurrentTime("HH:mm:ss");
+                                String endFormatTime = ServerTime.get().format("HH:mm:ss",
+                                        endTime);
+
+                                LogUtils.d(TAG, "[Alternate time=" + currentTime +
+                                        " " + "endTime=" + endFormatTime + "]");
+
+                                if(getView() != null) {
+                                    getView().onAlternateTimeChange(currentTime, endFormatTime);
+                                }
+
                                 if (System.currentTimeMillis() > endTime) {
                                     dispose();
                                     playNext();

@@ -55,6 +55,7 @@ import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -218,6 +219,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     playProgram = null;
                     LastNode lastNode = (LastNode) node;
                     NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, "11488346", lastNode.getTitle());
+                } else if(node != null && node instanceof LastNode && Constant.CONTENTTYPE_LV.equals(node.getContentType())){
+                    playLive(node);
                 }
             }
         });
@@ -777,7 +780,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     @Override
     public void enterFullScreen() {
-        if (menuGroupIsInit) {
+        if (menuGroupIsInit && !NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             getProgramSeriesAndContentUUID();
             updatePlayProgram();
             refreshLbNode();
@@ -1006,10 +1009,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     continue;
 
                 Node node = new LastNode();
-                node.setId(program._contentuuid);
+                node.setId(program._content_id);
                 node.setPid(parent.getId());
                 node.setTitle(program._title_name);
-                node.setActionUri(program._contentuuid);
+                node.setActionUri(program._content_id);
                 node.setContentType(program._contenttype);
                 node.setForbidAddCollect(true);
 
@@ -1060,16 +1063,18 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                                     return;
                                 }
                                 Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                            } else {
+                                showErrorToast();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            jumpErrorToast();
+                            showErrorToast();
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        jumpErrorToast();
+                        showErrorToast();
                     }
 
                     @Override
@@ -1171,7 +1176,35 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
     }
 
-    private void jumpErrorToast(){
+    private void showErrorToast(){
         Toast.makeText(context,"节目走丢了 请继续观看",Toast.LENGTH_SHORT).show();
+    }
+
+    private void playLive(Node node) {
+        String id = node.getId();
+        String leftString = id.substring(0, 2);
+        String rightString = id.substring(id.length() - 2, id.length());
+        Request.INSTANCE.getContent()
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        JSONObject jsonObject = new JSONObject(responseBody.string());
+                        com.newtv.cms.bean.Content content = GsonUtil.fromjson(jsonObject.optString("data"), com.newtv.cms.bean.Content.class);
+                        if (content != null && !TextUtils.isEmpty(content.getPlayUrl()) && !TextUtils.isEmpty(content.getContentID())) {
+                            LiveInfo liveInfo = new LiveInfo();
+                            liveInfo.setLiveUrl(content.getPlayUrl());
+                            liveInfo.setContentUUID(content.getContentID());
+                            liveInfo.setmTitle(content.getTitle());
+                            liveInfo.setAlwaysPlay(true);
+                            Log.i(TAG, "accept: "+liveInfo);
+                            NewTVLauncherPlayerViewManager.getInstance().playLive(liveInfo,null);
+                        } else {
+                          showErrorToast();
+                        }
+                    }
+                });
     }
 }
