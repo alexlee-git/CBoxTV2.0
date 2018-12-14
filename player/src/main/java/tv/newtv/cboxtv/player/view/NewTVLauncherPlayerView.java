@@ -784,7 +784,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         createMenuGroup();
 
         if (mNewTVLauncherPlayer != null && !mNewTVLauncherPlayer.isADPlaying()) {
-            if (menuGroupPresenter != null) {
+            if (menuGroupPresenter != null && !isLiving()) {
                 menuGroupPresenter.showHinter();
             }
             showSeekBar(mIsPause, true);
