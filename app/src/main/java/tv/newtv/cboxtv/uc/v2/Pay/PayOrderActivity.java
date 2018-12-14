@@ -515,6 +515,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                 }
                 case MSG_RESULT: {
                     if (status.equals(pay_success)) {
+                        UserCenterUtils.initMemberStatus();
                         uploadUnPayLog(1);
                         if (mHandler != null) {
                             mHandler.removeMessages(MSG_RESULT);
