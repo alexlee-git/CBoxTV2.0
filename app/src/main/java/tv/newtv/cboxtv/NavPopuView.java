@@ -21,11 +21,13 @@ import java.util.Map;
 
 import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
 import com.newtv.libs.Cache;
+
+import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.views.widget.RecycleSpaceDecoration;
 
 public class NavPopuView extends PopupWindow {
     private View inflate;
-    private HorizontalRecyclerView navRecycle;
+    private AiyaRecyclerView navRecycle;
     private List<Nav> list;
     private List<Nav> navs;
     private Map<Integer, Nav> map;
@@ -70,25 +72,13 @@ public class NavPopuView extends PopupWindow {
     private void initView(Context context, final View parents) {
         navRecycle = inflate.findViewById(R.id.nav_recycle);
         showAtLocation(parents, Gravity.TOP, 0, 0);
-//        navRecycle.addItemDecoration(new RecycleSpaceDecoration(context.getResources().getDimensionPixelSize(R.dimen.width_72px), context.getResources().getDimensionPixelSize(R.dimen.width_72px)));//new SpacesItemDecoration(ScreenUtils.dp2px(30))
+        navRecycle.addItemDecoration(new RecycleSpaceDecoration(context.getResources().getDimensionPixelSize(R.dimen.width_72px), context.getResources().getDimensionPixelSize(R.dimen.width_72px)));//new SpacesItemDecoration(ScreenUtils.dp2px(30))
 
         PopuAdapter adapter = new PopuAdapter(context, list,map);
         navRecycle.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        navRecycle.setAlign(AiyaRecyclerView.ALIGN_CENTER);
         navRecycle.setAdapter(adapter);
 
-        navRecycle.addOnScrollListener(new RecyclerView.OnScrollListener
-                () {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int lastPosition = ((LinearLayoutManager) recyclerView
-                            .getLayoutManager()).findLastVisibleItemPosition();
-                    int firstVisibleItemPosition = ((LinearLayoutManager)
-                            recyclerView.getLayoutManager())
-                            .findFirstVisibleItemPosition();
-                }
-            }
-        });
+
     }
 }

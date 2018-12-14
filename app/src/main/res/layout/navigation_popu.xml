@@ -7,15 +7,15 @@
     android:orientation="horizontal">
 
 
-    <tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView
+    <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
         android:id="@+id/nav_recycle"
         android:layout_width="match_parent"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:clipChildren="false"
-        android:clipToPadding="false"
-        >
+        android:clipToPadding="false">
 
-    </tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView>
+    </tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView>
 
 
 

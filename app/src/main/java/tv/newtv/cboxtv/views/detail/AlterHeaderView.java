@@ -2,7 +2,9 @@ package tv.newtv.cboxtv.views.detail;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,7 +81,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     private NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig;
     private AlternateCallback mAlternateCallback;
-    private ImageView navTitle;
+
 
     public AlterHeaderView(Context context) {
         this(context, null);
@@ -144,10 +149,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateView = findViewById(R.id.video_player);
         mMoreView = findViewById(R.id.more_view_stub);
         ImageView navArrowDark = findViewById(R.id.nav_arrows_dark);
-//        ImageView navArrowsBright = findViewById(R.id.nav_arrows_bright);
-        navTitle = findViewById(R.id.nav_title);
-        darkAnimator(navArrowDark);
-//        brightAnimator(navArrowsBright);
+        ImageView navTitle = findViewById(R.id.nav_title);
+        darkAnimator(navArrowDark,navTitle);
 
         mCollect = findViewById(R.id.collect);
         if (mCollect != null) {
@@ -176,60 +179,24 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         updateUI();
     }
 
-    private void brightAnimator(ImageView view) {
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 0, 1, 0, 1, 0,
-                1, 0, 1, 0, 1, 0, 1);
-        translationX.setDuration(5000);
-        translationX.start();
-        translationX.addListener(new AnimatorListenerAdapter() {
+    private void darkAnimator(ImageView view ,ImageView navTitle){
+        ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "alpha", 0.1f, 1.0f, 0.1f, 1.0f, 0.1f,
+                1.0f,0.1f,1.0f,0.1f,1.0f);
+        ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
+        AnimatorSet animator = new AnimatorSet();
+        animator.playTogether(translationX,translationY);
+        animator.setDuration(5000);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.start();
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 view.setVisibility(View.GONE);
                 navTitle.setVisibility(GONE);
             }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-            }
-        });
-    }
-
-    private void darkAnimator(ImageView view ){
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1,
-                0,1,0);
-        translationX.setDuration(5000);
-        translationX.start();
-        translationX.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                view.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-            }
         });
 
-        ObjectAnimator translationY = new ObjectAnimator().ofFloat(view, "TranslationY", 0,10,0,10,0,10);
-        translationY.setDuration(5000);
-        translationY.start();
-        translationY.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                view.setVisibility(View.GONE);
-                navTitle.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-            }
-        });
     }
 
     @Override

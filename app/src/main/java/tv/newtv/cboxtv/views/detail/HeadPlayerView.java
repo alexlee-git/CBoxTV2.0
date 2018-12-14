@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.views.detail;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -403,36 +405,19 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void hintAnimator(final View view,ImageView arrow) {
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(arrow, "alpha", 1, 0, 1, 0, 1,
-                0);
-        translationX.setDuration(5000);
-        translationX.start();
-        translationX.addListener(new AnimatorListenerAdapter() {
+        ObjectAnimator translationX = ObjectAnimator.ofFloat(arrow, "alpha", 1.0f, 0.5f, 1.0f, 0.5f, 1.0f,
+                0f);
+        ObjectAnimator translationY = ObjectAnimator.ofFloat(arrow, "TranslationY", 0,8,0,8,0,8,0,8);
+        AnimatorSet animator = new AnimatorSet();
+        animator.playTogether(translationX,translationY);
+        animator.setInterpolator(new LinearInterpolator());
+        animator.setDuration(5000);
+        animator.start();
+        animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-//                view.setVisibility(View.GONE);
                 removeView(view);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-            }
-        });
-
-        ObjectAnimator translationY = new ObjectAnimator().ofFloat(arrow, "TranslationY", 0,10,0,10,0,10);
-        translationY.setDuration(5000);
-        translationY.start();
-        translationY.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
             }
         });
     }
