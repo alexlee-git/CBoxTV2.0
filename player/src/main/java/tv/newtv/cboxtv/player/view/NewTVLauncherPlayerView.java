@@ -1843,7 +1843,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (mAlternatePresenter != null) {
                 mAlternatePresenter.addHistory();
             }
-            return;
+//            return;
         }
 
         if (defaultConfig.programSeriesInfo == null) {
