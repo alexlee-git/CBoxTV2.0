@@ -18,6 +18,7 @@
         android:layout_marginTop="@dimen/height_22px"
         android:paddingLeft="@dimen/width_33px"
         android:paddingRight="@dimen/width_33px"
+        android:clipToPadding="false"
         tools:ignore="UnknownIdInLayout">
         <View android:id="@+id/dir_left"
               android:layout_width="@dimen/width_25px"
@@ -37,9 +38,7 @@
             android:layout_toEndOf="@+id/dir_left"
             android:layout_toRightOf="@+id/dir_left"
             android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:paddingLeft="@dimen/width_14px"
-            android:paddingRight="@dimen/width_14px">
+            android:overScrollMode="never">
 
         </tv.newtv.cboxtv.views.widget.HorizontalRecycleView>
 

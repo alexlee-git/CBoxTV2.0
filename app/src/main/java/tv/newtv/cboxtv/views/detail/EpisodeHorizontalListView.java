@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.views.detail;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -76,6 +77,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private int item_layout = R.layout.program_horizontal_layout;
     private int place_holder = R.drawable.focus_384_216;
     private int direction = DIRECTION_HORIZONTAL;
+    private RecycleItemDecoration mItemDecoration;
 
     @Override
     public void destroy() {
@@ -180,10 +182,15 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                 mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
                         LinearLayoutManager.HORIZONTAL, false));
                 mRecycleView.setShowCounts(mHorizontalCount);
-                if(item_layout != R.layout.item_details_horizontal_episode) {
-                    mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
-                            .getDimensionPixelOffset(R.dimen.width_48px)));
+                if(mItemDecoration != null){
+                    mRecycleView.addItemDecoration(mItemDecoration);
+                }else {
+                    if (item_layout != R.layout.item_details_horizontal_episode) {
+                        mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
+                                .getDimensionPixelOffset(R.dimen.width_48px)));
+                    }
                 }
+
 
                 mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id
                         .dir_right));
@@ -211,6 +218,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         String image = "";
                         String title = "";
                         String year = "";
+
                         if (data instanceof SubContent) {
                             if (direction == DIRECTION_HORIZONTAL) {
                                 image = ((SubContent) data).getHImage();
@@ -336,13 +344,17 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         direction = dir;
     }
 
-    public void setHorizontalItemLayout(int layout,int count,int scaleLayout,int updateDateId,int layoutId) {
+    public void setHorizontalItemLayout(int layout, int count, int placeHolder, int dir,int
+            scaleView,RecycleItemDecoration itemDecoration) {
         item_layout = layout;
         mHorizontalCount = count;
-        mScaleView = scaleLayout;
-        mColumnUpdateDateId = updateDateId;
-        mLayoutId = layoutId;
+        place_holder = placeHolder;
+        direction = dir;
+        mScaleView = scaleView;
+        mItemDecoration = itemDecoration;
     }
+
+
 
     public void setContentUUID(int type, String uuid, View view) {
         controlView = view;

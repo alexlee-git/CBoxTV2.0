@@ -10,6 +10,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import tv.newtv.cboxtv.views.detail.RecycleItemDecoration;
+
 /**
  * 项目名称:         DanceTv_Android
  * 包名:            com.android.view
@@ -169,19 +171,23 @@ public class HorizontalRecycleView extends RecyclerView {
 
     private View findNextFocus(View focusView, KeyEvent event) {
         View nextFocus = null;
+        View current = getChildAt(0);
+        ItemDecoration decoration = getItemDecorationAt(0);
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 nextFocus = FocusFinder.getInstance().findNextFocus(this, focusView, View
                         .FOCUS_LEFT);
                 if (nextFocus == null && getScrollState() == SCROLL_STATE_IDLE) {
-                    smoothScrollBy(-getChildAt(0).getMeasuredWidth(), 0);
+                    smoothScrollBy(-current.getMeasuredWidth() - current.getPaddingLeft() - current
+                            .getPaddingRight(), 0);
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 nextFocus = FocusFinder.getInstance().findNextFocus(this, focusView, View
                         .FOCUS_RIGHT);
                 if (nextFocus == null && getScrollState() == SCROLL_STATE_IDLE) {
-                    smoothScrollBy(getChildAt(0).getMeasuredWidth(), 0);
+                    smoothScrollBy(current.getMeasuredWidth()+current.getPaddingLeft()+current
+                            .getPaddingRight(), 0);
                 }
                 break;
             default:
@@ -239,5 +245,27 @@ public class HorizontalRecycleView extends RecyclerView {
             }
         }
         return true;
+    }
+
+
+    @Override
+    protected int getChildDrawingOrder(int childCount, int i) {
+        if(getLayoutManager() != null) {
+            View view = getLayoutManager().getFocusedChild();
+            if (null == view) {
+                return super.getChildDrawingOrder(childCount, i);
+            }
+            int position = indexOfChild(view);
+            if (position < 0) {
+                return super.getChildDrawingOrder(childCount, i);
+            }
+            if (i == childCount - 1) {
+                return position;
+            }
+            if (i == position) {
+                return childCount - 1;
+            }
+        }
+        return super.getChildDrawingOrder(childCount, i);
     }
 }
