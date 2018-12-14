@@ -220,18 +220,18 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         String title = "";
                         String year = "";
 
-                        if(Libs.get().isDebug()) {
-                            int pos = holder.getAdapterPosition();
-                            if (data != null && data instanceof SubContent) {
-                                if (pos == 0) {
-                                    ((SubContent) data).setYear("2016");
-                                }else if(pos == 3){
-                                    ((SubContent) data).setYear("2015");
-                                }else if(pos == 5){
-                                    ((SubContent) data).setYear("2014");
-                                }
-                            }
-                        }
+//                        if(Libs.get().isDebug()) {
+//                            int pos = holder.getAdapterPosition();
+//                            if (data != null && data instanceof SubContent) {
+//                                if (pos == 0) {
+//                                    ((SubContent) data).setYear("2016");
+//                                }else if(pos == 3){
+//                                    ((SubContent) data).setYear("2015");
+//                                }else if(pos == 5){
+//                                    ((SubContent) data).setYear("2014");
+//                                }
+//                            }
+//                        }
 
                         if (data instanceof SubContent) {
                             if (direction == DIRECTION_HORIZONTAL) {
