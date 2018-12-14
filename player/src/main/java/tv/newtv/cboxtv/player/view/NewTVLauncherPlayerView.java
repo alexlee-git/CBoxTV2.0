@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.letv.LetvDeviceUtil;
-import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
@@ -850,7 +849,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mPlayerContract = new PlayerContract();
         mPlayerContract.setOnPlayerStateChange(mOnPlayerStateChange);
 
-        View view = LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout
+        View view = LayoutInflater.from(getContext()).inflate(R.layout
                 .newtv_launcher_player_view, this);
 
         defaultConfig.videoFrameLayout = (VideoFrameLayout) view.findViewById(R.id
@@ -2153,17 +2152,27 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * 提示用户是否休息一下
      */
     private void tipUserToRest() {
-        TipDialog.showBuilder(getContext(),
+        TipDialog.showBuilder(Player.get().getCurrentActivity(),
                 5,
                 "您已观看很久了，请问是否休息片刻呢？",
                 new TipDialog.TipListener() {
                     @Override
-                    public void onClick(boolean isOK) {
+                    public void onClick(boolean timeOver,boolean isOK) {
                         if(isOK) {
                             if(mNewTVLauncherPlayer != null){
+                                mPlayerTimer.cancel();
                                 mNewTVLauncherPlayer.release();
                                 mNewTVLauncherPlayer = null;
                             }
+                            if(defaultConfig.startIsFullScreen){
+                                NewTVLauncherPlayerViewManager.getInstance().release();
+                            }else {
+                                if (defaultConfig.isFullScreen) {
+                                    ExitFullScreen();
+                                }
+                            }
+                            onTipFinishPlay(timeOver);
+
                         }else{
                             mPlayerTimer.reset();
                         }
@@ -2171,15 +2180,19 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 });
     }
 
+    protected void onTipFinishPlay(boolean timeOver){
+
+    }
+
     @Override
     public void onKeepLookTimeChange(int currentSecond) {
         if (defaultConfig.isLiving) {
-            if (currentSecond == 3600 * 2) {
-                //直播轮播两小时以上
+            if (currentSecond % 3600 * 2 == 0) {
+                //直播两小时以上
                 tipUserToRest();
             }
         } else {
-            if (currentSecond == 3600 * 4) {
+            if (currentSecond % 3600 * 4 == 0) {
                 //普通点播轮播四小时以上
                 tipUserToRest();
             }
