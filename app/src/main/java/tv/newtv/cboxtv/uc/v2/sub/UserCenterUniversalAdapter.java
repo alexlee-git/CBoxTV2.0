@@ -93,13 +93,11 @@ public class UserCenterUniversalAdapter extends RecyclerView
         if (TextUtils.equals(mContentType, Constant.UC_HISTORY)) {
             // 角标 副标 & 更新剧集 & 评分
             String score = info.getGrade();
-            if (!TextUtils.isEmpty(score) && !TextUtils.equals("null", score)) {
+            if (!TextUtils.isEmpty(score) && !TextUtils.equals("null", score) && !TextUtils.equals(score, "0.0")) {
                 holder.score.setText(score);
                 holder.score.setVisibility(View.VISIBLE);
-                Log.d("pf", "vv : " + score);
             } else {
                 holder.score.setVisibility(View.INVISIBLE);
-                Log.d("pf", "haha");
             }
 
             holder.subTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(info
@@ -120,7 +118,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 (mContentType, Constant.UC_COLLECTION)) {
             // 角标 & 主标 & 海报 & 更新剧集 & 评分
             String score = info.getGrade();
-            if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null")) {
+            if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null") && !TextUtils.equals(score, "0.0")) {
                 holder.score.setVisibility(View.VISIBLE);
                 holder.score.setText(score);
             } else {

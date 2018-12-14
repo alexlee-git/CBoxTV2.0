@@ -13,6 +13,8 @@ public class ADConfig {
     private String seriesID;
     private String programId;
     private String duration;
+    private String videoType;//一级分类
+    private String videoClass;//二级分类
     private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
@@ -43,6 +45,10 @@ public class ADConfig {
         if(reset){
             columnId = "";
             secondColumnId = "";
+            programId = "";
+            duration = "";
+            videoType = "";
+            videoClass = "";
         }
     }
 
@@ -89,6 +95,22 @@ public class ADConfig {
 
     public void setSecondColumnId(String secondColumnId) {
         this.secondColumnId = secondColumnId;
+    }
+
+    public String getVideoType() {
+        return videoType;
+    }
+
+    public void setVideoType(String videoType) {
+        this.videoType = videoType;
+    }
+
+    public String getVideoClass() {
+        return videoClass;
+    }
+
+    public void setVideoClass(String videoClass) {
+        this.videoClass = videoClass;
     }
 
     private void parseCategoryIdsCmsV31(String categoryIds) {
@@ -184,5 +206,7 @@ public class ADConfig {
         seriesID = "";
         programId = "";
         duration = "";
+        videoType = "";
+        videoClass = "";
     }
 }

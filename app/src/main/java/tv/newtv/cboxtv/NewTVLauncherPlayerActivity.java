@@ -269,12 +269,13 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
             }
             if (mPlayerFrameLayoutContainer != null) {
                 NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
-                        (mPlayerFrameLayoutContainer, this);
+                        (mPlayerFrameLayoutContainer, this,true);
             }
 
             if (loadingView != null)
                 loadingView.setVisibility(View.GONE);
         }
+
     }
 
     @Override

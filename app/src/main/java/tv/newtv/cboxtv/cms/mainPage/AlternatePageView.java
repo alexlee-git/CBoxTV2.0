@@ -109,11 +109,6 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         if (mPage.getPrograms() != null && mPage.getPrograms().size() > 0) {
             setRecycleView();
             Program program = mPage.getPrograms().get(curPlayIndex);
-            if (posterView != null) {
-                GlideUtil.loadImage(getContext(), posterView, program.getImg(), R.drawable
-                                .focus_528_296,
-                        R.drawable.focus_528_296, true);
-            }
             play(program);
         }
     }
@@ -121,6 +116,12 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     private void play(Program program) {
 
         NewTVLauncherPlayerViewManager.getInstance().stop();
+
+        if (posterView != null) {
+            GlideUtil.loadImage(getContext(), posterView, program.getImg(), R.drawable
+                            .focus_528_296,
+                    R.drawable.focus_528_296, true);
+        }
 
         if(mContentPresenter != null){
             mContentPresenter.stop();
