@@ -13,8 +13,7 @@
         android:layout_height="@dimen/height_110px"
         android:layout_marginLeft="@dimen/width_24px">
 
-        <include
-            layout="@layout/up_top_"/>
+
 
         <View
             android:id="@+id/line"
