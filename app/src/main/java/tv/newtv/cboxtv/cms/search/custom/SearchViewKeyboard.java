@@ -331,6 +331,7 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
                             mSubBtn01.setVisibility(View.VISIBLE);
                             mSubBtn02.setVisibility(View.VISIBLE);
                             mSubBtn03.setVisibility(View.VISIBLE);
+                            mSubBtn03.requestFocus();
                             mSubBtn04.setVisibility(View.VISIBLE);
                             mSubBtn05.setVisibility(View.INVISIBLE);
 
@@ -340,6 +341,7 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
                             mSubBtn04.setText(val.charAt(4) + "");
                         } else if (val.length() == 6) {
                             mSubBtn03.setVisibility(View.VISIBLE);
+                            mSubBtn03.requestFocus();
                             mSubBtn01.setVisibility(View.VISIBLE);
                             mSubBtn02.setVisibility(View.VISIBLE);
                             mSubBtn04.setVisibility(View.VISIBLE);
@@ -366,6 +368,7 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
                     mSubBtn02.setVisibility(View.VISIBLE);
                     mSubBtn04.setVisibility(View.VISIBLE);
                     mSubBtn03.setVisibility(View.VISIBLE);
+                    mSubBtn03.requestFocus();
                     mSubBtn02.setText(val.charAt(2) + "");
                     mSubBtn03.setText(val.charAt(0) + "");
                     mSubBtn04.setText(val.charAt(4) + "");

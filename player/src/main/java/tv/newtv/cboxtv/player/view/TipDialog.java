@@ -16,7 +16,7 @@ import tv.newtv.player.R;
 class TipDialog {
 
     interface TipListener{
-        void onClick(boolean isOK);
+        void onClick(boolean timeOver,boolean isOK);
     }
 
     static void showBuilder(
@@ -66,7 +66,7 @@ class TipDialog {
                         view.postDelayed(this, 1000);
                     } else {
                         if (listener != null) {
-                            listener.onClick(true);
+                            listener.onClick(true,true);
                         }
                         ad.dismiss();
                     }
@@ -79,7 +79,7 @@ class TipDialog {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        listener.onClick(true);
+                        listener.onClick(false,true);
                     }
                     ad.dismiss();
                 }
@@ -88,7 +88,7 @@ class TipDialog {
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        listener.onClick(false);
+                        listener.onClick(false,false);
                     }
                     ad.dismiss();
                 }

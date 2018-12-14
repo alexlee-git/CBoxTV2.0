@@ -486,6 +486,17 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         this.mOuterControl = true;
     }
 
+    @Override
+    protected void onTipFinishPlay(boolean timeOver) {
+        super.onTipFinishPlay(timeOver);
+
+        if(timeOver) {
+            setHintText("已自动停止播放");
+        }else{
+            setHintText("已停止播放");
+        }
+    }
+
     public void setisEnd(boolean b) {
         this.isEnd = b;
     }

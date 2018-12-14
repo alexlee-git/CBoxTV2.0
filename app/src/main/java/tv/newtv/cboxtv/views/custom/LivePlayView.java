@@ -291,10 +291,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if (mPlayInfo == null) return;
 
         mIsShow = (visibility == VISIBLE);
-        if (visibility == View.GONE) {
-            releaseVideoPlayer();
-        } else if (visibility == View.VISIBLE) {
+        if (visibility == View.VISIBLE) {
             doPlay();
+        }else{
+            releaseVideoPlayer();
         }
     }
 

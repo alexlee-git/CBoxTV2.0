@@ -44,6 +44,7 @@
         android:layout_marginRight="@dimen/width_205px"
         android:layout_marginTop="@dimen/height_14px"
         android:alpha="0.8"
+        android:visibility="gone"
         android:background="@drawable/menu_right"
     />
 
@@ -54,6 +55,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="@dimen/width_205px"
         android:layout_marginTop="@dimen/height_14px"
+        android:visibility="gone"
         android:background="@drawable/menu_left"
     />
 

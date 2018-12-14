@@ -3,7 +3,6 @@ package tv.newtv.cboxtv.cms.special.fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +15,10 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.util.DisplayUtils;
-
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import com.newtv.libs.util.ScaleUtils;
+import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -46,6 +45,8 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     private ModelResult<ArrayList<Page>> moduleInfoResult;
     private int currentIndex = 0;
     private TextView tvProgramaTitle;
+    private Program currentProgram;
+    private boolean playPs = false; //是否按节目集指定位置播完之后，顺序播放同节目集内的下一集
 
     @Override
     protected int getVideoPlayIndex() {
@@ -59,13 +60,32 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     @Override
     protected void onItemContentResult(String uuid, Content content) {
-
+        if (content == null || content.getData() == null) {
+            ToastUtil.showToast(getContext(), "播放内容为空");
+            return;
+        }
+        int index = 0;
+        for (SubContent subContent : content.getData()) {
+            if (TextUtils.equals(subContent.getContentID(), currentProgram.getL_focusId())) {
+                index = content.getData().indexOf(subContent);
+                break;
+            }
+        }
+        if(!playPs){
+            ArrayList<SubContent> datas = new ArrayList<>();
+            datas.add(content.getData().get(index));
+            content.setData(datas);
+            index = 0;
+        }
+        videoPlayerView.setSeriesInfo(content);
+        videoPlayerView.playSingleOrSeries(index, 0);
     }
 
     @Override
     protected void setUpUI(View view) {
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.setPlayerCallback(this);
+        videoPlayerView.outerControl();
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_focus), true);
 
         recyclerView = view.findViewById(R.id.shooter_recycle);
@@ -85,8 +105,8 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
             @Override
             public void onItemClick(Program item, int index) {
-                playVideo(item);
                 currentIndex = index;
+                playVideo(item);
             }
 
             @Override
@@ -134,21 +154,9 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     }
 
     private void playVideo(Program programInfo) {
+        currentProgram = programInfo;
         if (programInfo == null) return;
-        PlayInfoUtil.getPlayInfo(programInfo.getContentId(), new PlayInfoUtil
-                .ProgramSeriesInfoCallback() {
-
-            @Override
-            public void onResult(Content info) {
-                if (info != null) {
-                    Log.e("info", info.toString());
-                    videoPlayerView.setSeriesInfo(info);
-                    videoPlayerView.playSingleOrSeries(0, 0);
-                } else {
-                    videoPlayerView.showProgramError();
-                }
-            }
-        });
+        getContent(programInfo.getL_id(), programInfo.getL_contentType());
     }
 
     @Override
@@ -162,7 +170,6 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     @Override
     public void onEpisodeChange(int index, int position) {
-        currentIndex = index;
     }
 
     @Override
@@ -180,6 +187,8 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             currentIndex++;
             if (adapter.getItemCount() - 1 < currentIndex) {
                 return;
+            }else if(currentIndex == adapter.getItemCount() - 1){
+                videoPlayerView.setisEnd(true);
             }
             int first = layoutManager.findFirstVisibleItemPosition();
             int last = layoutManager.findLastVisibleItemPosition();
@@ -208,7 +217,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         private List<Program> ModuleItems;
         private OnItemAction<Program> onItemAction;
         private String currentID;
-        private int currentIndex = 0;
+        private int playPosition = 0;
 
         ShooterAdapter refreshData(List<Program> datas) {
             ModuleItems = datas;
@@ -246,10 +255,10 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
                 public void onClick(View view) {
                     Program programInfo = getItem(holder.getAdapterPosition());
                     if (programInfo != null) {
-                        currentID = programInfo.getContentId();
-                        onItemAction.onItemChange(currentIndex, holder.getAdapterPosition());
+                        currentID = programInfo.getL_id();
+                        onItemAction.onItemChange(playPosition, holder.getAdapterPosition());
 
-                        currentIndex = holder.getAdapterPosition();
+                        playPosition = holder.getAdapterPosition();
                         onItemAction.onItemClick(programInfo, holder.getAdapterPosition());
                     }
                 }
@@ -257,14 +266,15 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
             if (moduleItem != null) {
                 holder.title.setText(moduleItem.getTitle());
-                int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset(R.dimen.width_4px);
+                int radius = holder.itemView.getContext().getResources().getDimensionPixelOffset
+                        (R.dimen.width_4px);
 
                 Picasso.get()
                         .load(moduleItem.getImg())
                         .transform(new PosterCircleTransform(holder.itemView.getContext(), radius))
                         .into(holder.poster);
 
-                if (TextUtils.equals(moduleItem.getContentId(),currentID) && position == currentIndex) {
+                if (TextUtils.equals(moduleItem.getL_id(), currentID) && position == playPosition) {
                     holder.poster.setIsPlaying(true, false);
                 } else {
                     holder.poster.setIsPlaying(false, false);
@@ -303,8 +313,8 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             poster = itemView.findViewById(R.id.id_poster);
             poster_focus = itemView.findViewById(R.id.id_poster_focus);
             title = itemView.findViewById(R.id.id_title);
-            DisplayUtils.adjustView(itemView.getContext(), poster, poster_focus, R.dimen.width_17dp, R.dimen
-                    .width_17dp);
+            DisplayUtils.adjustView(itemView.getContext(), poster, poster_focus, R.dimen
+                    .width_17dp, R.dimen.width_17dp);
         }
 
         public void dispatchSelect() {

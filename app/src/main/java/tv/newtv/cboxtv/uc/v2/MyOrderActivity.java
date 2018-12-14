@@ -367,6 +367,7 @@ public class MyOrderActivity extends BaseActivity {
         String mediaId = ordersBean.getMediaId();
         String contentType = ordersBean.getContentType();
         String productName = ordersBean.getProductName();
+        String expireTime = ordersBean.getExpireTime();
 
         Intent intent = new Intent(MyOrderActivity.this, PayRefreshOrderActivity.class);
         intent.putExtra("productId", productId);
@@ -378,7 +379,7 @@ public class MyOrderActivity extends BaseActivity {
         intent.putExtra("mediaId", mediaId);
         intent.putExtra("contentType", contentType);
         intent.putExtra("productName", productName);
-        intent.putExtra("action", "android.intent.action.ORDER");
+        intent.putExtra("expireTime", expireTime);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
