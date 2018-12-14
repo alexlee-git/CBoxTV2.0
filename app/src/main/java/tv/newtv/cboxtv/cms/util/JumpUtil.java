@@ -347,6 +347,7 @@ public class JumpUtil {
         if (jumpIntent != null) {
             jumpIntent.putExtra("content_type", contentType);
             jumpIntent.putExtra("content_uuid", contentUUID);
+            jumpIntent.putExtra(Constant.CONTENT_CHILD_UUID,seriesSubUUID);
             jumpIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ActivityCompat.startActivity(context, jumpIntent, null);
         }

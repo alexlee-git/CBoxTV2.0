@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.player.videoview;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,12 +13,14 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.util.CmsUtil;
+import com.newtv.libs.Libs;
 import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.LogUtils;
 
@@ -54,6 +57,30 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private ImageView full_screen;
     private boolean isEnd;
 
+
+    public VideoPlayerView(@NonNull Context context) {
+        this(context, null);
+    }
+
+    public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+
+    public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int
+            defStyleAttr) {
+        this(context, attrs, defStyleAttr, null);
+    }
+
+    public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int
+            defStyleAttr, PlayerViewConfig config) {
+        super(context, attrs, defStyleAttr, config);
+    }
+
+    public VideoPlayerView(PlayerViewConfig config, Context context) {
+        this(context, null, 0, config);
+    }
+
     public void destory() {
         super.destroy();
 
@@ -69,29 +96,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)) {
             NewTVLauncherPlayerViewManager.getInstance().release();
         }
-    }
-
-    public VideoPlayerView(@NonNull Context context) {
-        this(context, null);
-    }
-
-
-    public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int
-            defStyleAttr) {
-        this(context, attrs, defStyleAttr, null);
-    }
-
-    public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int
-            defStyleAttr, PlayerViewConfig config) {
-        super(context, attrs, defStyleAttr, config);
-    }
-
-    public VideoPlayerView(PlayerViewConfig config, Context context) {
-        this(context, null, 0, config);
     }
 
     @Override
@@ -188,7 +192,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     public PlayerViewConfig getDefaultConfig() {
         PlayerViewConfig playerViewConfig = super.getDefaultConfig();
-        if(playerViewConfig != null) {
+        if (playerViewConfig != null) {
             playerViewConfig.defaultFocusView = defaultFocusView;
             playerViewConfig.playerCallback = mPlayerCallback;
             playerViewConfig.videoFullCallBack = videoFullCallBack;
@@ -200,9 +204,18 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void setTipText(String message) {
-        if (TipTextView != null) {
-            TipTextView.setVisibility(VISIBLE);
-            TipTextView.setText(message);
+        if(Libs.get().isDebug()) {
+            if (TipTextView != null) {
+                TipTextView.setVisibility(VISIBLE);
+                TipTextView.setText(message);
+            }
+        }
+    }
+
+    @Override
+    public void onAlternateTimeChange(String current, String end) {
+        if (Libs.get().isDebug()) {
+            setTipText(String.format("DEBUG: %s / %s", current, end));
         }
     }
 
@@ -244,6 +257,31 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         return super.dispatchKeyEvent(event);
     }
 
+    public boolean showFloatWindow() {
+        //获取WindowManager
+        WindowManager wm = (WindowManager) getContext().getApplicationContext().getSystemService
+                (Context.WINDOW_SERVICE);
+        if (wm == null) return false;
+        //设置LayoutParams(全局变量）相关参数
+        WindowManager.LayoutParams wmParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_TOAST,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams
+                        .FLAG_NOT_TOUCH_MODAL,
+                PixelFormat.TRANSLUCENT);
+        wmParams.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
+        //以屏幕左上角为原点，设置x、y初始值
+        wmParams.x = 0;
+        wmParams.y = 0;
+        //设置悬浮窗口长宽数据
+        wmParams.width = getContext().getResources().getDimensionPixelSize(R.dimen.width_816px);
+        wmParams.height = getContext().getResources().getDimensionPixelSize(R.dimen.height_480px);
+
+        wm.addView(this, wmParams);
+        return true;
+    }
+
     @Override
     protected void initView(Context context) {
         defaultConfig.startIsFullScreen = false;
@@ -272,8 +310,8 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 .WRAP_CONTENT);
         TipTextView.setVisibility(View.INVISIBLE);
         tiplayoutParams.rightMargin = 10;
-        tiplayoutParams.bottomMargin = 10;
-        tiplayoutParams.gravity = Gravity.END | Gravity.BOTTOM;
+        tiplayoutParams.topMargin = 10;
+        tiplayoutParams.gravity = Gravity.END | Gravity.TOP;
         TipTextView.setLayoutParams(tiplayoutParams);
 
         addView(TipTextView, tiplayoutParams);
@@ -287,8 +325,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
             }
         });
-
-
     }
 
     /**
@@ -299,22 +335,24 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @SuppressWarnings("PointlessNullCheck")
     private void resetLayoutParams(boolean hasFocus) {
 
-        ViewGroup parent = (ViewGroup) getParent();
-        if (parent != null) {
-            if (hasFocus) {
-                parent.setBackgroundResource(R.drawable.pos_zui);
-            } else {
-                parent.setBackground(new ColorDrawable(Color.TRANSPARENT));
+        if (getParent() instanceof ViewGroup) {
+            ViewGroup parent = (ViewGroup) getParent();
+            if (parent != null) {
+                if (hasFocus) {
+                    parent.setBackgroundResource(R.drawable.pos_zui);
+                } else {
+                    parent.setBackground(new ColorDrawable(Color.TRANSPARENT));
+                }
             }
-        }
 
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        if (layoutParams != null && layoutParams instanceof MarginLayoutParams) {
-            ((MarginLayoutParams) layoutParams).leftMargin = 0;
-            ((MarginLayoutParams) layoutParams).topMargin = 0;
-            ((MarginLayoutParams) layoutParams).rightMargin = 0;
-            ((MarginLayoutParams) layoutParams).bottomMargin = 0;
-            setLayoutParams(layoutParams);
+            ViewGroup.LayoutParams layoutParams = getLayoutParams();
+            if (layoutParams != null && layoutParams instanceof MarginLayoutParams) {
+                ((MarginLayoutParams) layoutParams).leftMargin = 0;
+                ((MarginLayoutParams) layoutParams).topMargin = 0;
+                ((MarginLayoutParams) layoutParams).rightMargin = 0;
+                ((MarginLayoutParams) layoutParams).bottomMargin = 0;
+                setLayoutParams(layoutParams);
+            }
         }
     }
 

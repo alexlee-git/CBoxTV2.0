@@ -45,12 +45,12 @@ class NavContract {
                             if (result.isOk()) {
                                 view?.onNavResult(context, result.data)
                             } else {
-                                onError(result.errorMessage)
+                                onError(result.errorCode, result.errorMessage)
                             }
                         }
 
-                        override fun onError(desc: String?) {
-                            view?.onError(context, desc)
+                        override fun onError(code: String?, desc: String?) {
+                            view?.onError(context,code, desc)
                         }
                     })
         }

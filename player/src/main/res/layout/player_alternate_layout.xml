@@ -11,6 +11,8 @@
         android:layout_marginStart="@dimen/width_15px"
         android:layout_marginLeft="@dimen/width_15px"
         android:layout_marginBottom="@dimen/height_70px"
+        android:maxEms="20"
+        android:maxLines="1"
         android:textColor="@android:color/white"
         android:textSize="@dimen/height_24px"/>
 

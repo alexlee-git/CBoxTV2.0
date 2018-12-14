@@ -1,6 +1,5 @@
 package tv.newtv.cboxtv.uc.v2;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -42,10 +41,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import retrofit2.HttpException;
+import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.BaseActivity;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
@@ -89,6 +89,8 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private boolean mFlagAuth;
     private boolean isSendOK = true;
     private String mContentUUID;
+    private String mExternalAction;
+    private String mExternalParams;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +101,8 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
         mFlagAuth = getIntent().getBooleanExtra("isAuth", false);
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
+        mExternalAction = getIntent().getStringExtra("action");
+        mExternalParams = getIntent().getStringExtra("params");
         Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay);
         if (mExterPayBean != null) {
             Log.i(TAG, "mExterPayBean = " + mExterPayBean.toString());
@@ -331,7 +335,11 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                     startActivity(mIntent);
                                 }
                             }
-                            finish();
+                            if (TextUtils.isEmpty(mExternalAction) && TextUtils.isEmpty(mExternalParams)) {
+                                finish();
+                            } else {
+                                jumpActivity();
+                            }
                         }
                     }
                     break;
@@ -340,6 +348,19 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             return false;
         }
     });
+
+    private void jumpActivity() {
+        Class clazz = MainActivity.class;
+        Intent intent = new Intent(PhoneLoginActivity.this, MainActivity.class);
+        intent.putExtra("action", mExternalAction);
+        intent.putExtra("params", mExternalParams);
+        startActivity(intent);
+        boolean isBackground = ActivityStacks.get().isBackGround();
+        if (!isBackground && clazz == MainActivity.class) {
+            ActivityStacks.get().finishAllActivity();
+        }
+        finish();
+    }
 
     public boolean checkMobile(String mobile) {
         if (mobile.equals(null)) {
@@ -442,6 +463,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                 mTime = Integer.parseInt(time);
                                 btn_refresh.setText(getResources().getString(R.string.phone_login_status1));
                                 tv_code_status.setText("请输入6位数验证码");
+                                tv_code_inval.setText(getResources().getString(R.string.phone_login_tip_5) + " , " + time + getResources().getString(R.string.phone_login_tip_6));
                                 if (mHandler != null) {
                                     mHandler.sendEmptyMessageDelayed(DELAY_MILLIS, 1000);
                                 }
@@ -518,8 +540,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                 Log.i(TAG, "mVerifySMSCodeSubscriber--onSuccess: accessToken = " + accessToken);
                                 SharePreferenceUtils.saveToken(PhoneLoginActivity.this, accessToken, refreshToken);
 
-                                UserCenterRecordManager.getInstance().getUserBehaviorUtils(getApplicationContext(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
-
+                                UserCenterRecordManager.getInstance().synchronizationUserBehavior(getApplicationContext());
                                 uploadUserExterLog();
                                 uploadUserExter();
                                 UserCenterUtils.setLogin(true);

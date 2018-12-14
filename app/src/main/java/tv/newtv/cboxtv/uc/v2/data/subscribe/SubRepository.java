@@ -2,6 +2,8 @@ package tv.newtv.cboxtv.uc.v2.data.subscribe;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 
 /**
@@ -35,6 +37,11 @@ public class SubRepository implements SubDataSource {
     @Override
     public void addRemoteSubscribe(@NonNull UserCenterPageBean.Bean Bean) {
         mRemoteDataSource.addRemoteSubscribe(Bean);
+    }
+
+    @Override
+    public void addRemoteSubscribeList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteSubscribeListCallback callback) {
+        mRemoteDataSource.addRemoteSubscribeList(token, userID, beanList, callback);
     }
 
     @Override

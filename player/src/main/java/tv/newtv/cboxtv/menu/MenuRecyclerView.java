@@ -68,7 +68,8 @@ public class MenuRecyclerView extends RecyclerView{
         if (focusView == null) {
             return result;
         } else {
-            if (event.getAction() == KeyEvent.ACTION_UP) {
+            if (event.getAction() == KeyEvent.ACTION_UP && !(KeyEvent.KEYCODE_DPAD_CENTER == event.getKeyCode()
+                    || KeyEvent.KEYCODE_ENTER == event.getKeyCode())) {
                 return true;
             } else {
                 int position = getChildAdapterPosition(focusView);
@@ -124,7 +125,9 @@ public class MenuRecyclerView extends RecyclerView{
                         return true;
                     case KeyEvent.KEYCODE_DPAD_CENTER:
                     case KeyEvent.KEYCODE_ENTER:
-                        keyEventListener.keyEvent(level,KeyEvent.KEYCODE_DPAD_CENTER,position,focusView);
+                        if(event.getAction() == KeyEvent.ACTION_UP){
+                            keyEventListener.keyEvent(level,KeyEvent.KEYCODE_DPAD_CENTER,position,focusView);
+                        }
                         break;
                 }
             }

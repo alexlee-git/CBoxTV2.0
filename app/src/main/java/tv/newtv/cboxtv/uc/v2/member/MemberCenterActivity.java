@@ -63,6 +63,8 @@ import tv.newtv.cboxtv.uc.v2.LoginActivity;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
 /**
@@ -152,10 +154,11 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
                     .getUser(Authorization)
-                    .subscribe(new Observer<ResponseBody>() {
+                    .subscribe(new BaseObserver<ResponseBody>() {
 
                         @Override
                         public void onSubscribe(Disposable d) {
+                            Log.i(TAG, "onSubscribe: ");
                             unUserInfoSubscribe();
                             mUserInfoDisposable = d;
                         }
@@ -163,6 +166,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                         @Override
                         public void onNext(ResponseBody responseBody) {
                             try {
+                                Log.i(TAG, "onNext: ");
                                 String result = responseBody.string();
                                 JSONObject jsonObject = new JSONObject(result);
                                 mobileString = jsonObject.optString("mobile");
@@ -178,9 +182,22 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.e(TAG, "wqs:getUserInfo:onError:" + e.toString());
+                            Log.i(TAG, "onError: ");
+                            super.onError(e);
                             mobileString = "";
                             unUserInfoSubscribe();
+                        }
+
+                        @Override
+                        public void dealwithUserOffline() {
+                            Log.i(TAG, "dealwithUserOffline: ");
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    UserCenterUtils.userOfflineStartLoginActivity(MemberCenterActivity.this);
+
+                                }
+                            });
                         }
 
                         @Override
@@ -309,7 +326,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
     private void requestQrCodeInfo(String Authorization, String response_type, String client_id) {
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getLoginQRCode(Authorization, response_type, client_id, Libs.get().getChannelId())
+                    .getMemberQRCode(Authorization, response_type, client_id, Libs.get().getChannelId(), "vipInfo")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
@@ -744,7 +761,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

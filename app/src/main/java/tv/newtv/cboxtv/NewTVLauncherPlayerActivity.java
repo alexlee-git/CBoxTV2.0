@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -46,6 +47,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     private String contentUUID;
     private String contentType;
 
+
+    private View loadingView;
     private int mIndexPlay;
     private ContentContract.ContentPresenter mPresenter;
 
@@ -93,6 +96,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         Log.i(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newtv_launcher_vod_activity);
+        loadingView = findViewById(R.id.loading);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -122,10 +126,10 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                 return;
             }
 
-            if(!Constant.CONTENTTYPE_LB.equals(contentType)) {
+            if (!Constant.CONTENTTYPE_LB.equals(contentType)) {
                 mPresenter.getContent(contentUUID, true, contentType);
-            }else{
-                mPresenter.getContent(contentUUID,false,contentType);
+            } else {
+                mPresenter.getContent(contentUUID, false, contentType);
             }
         }
     }
@@ -237,7 +241,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         mProgramSeriesInfo = content;
         if (content == null || !(Constant.CONTENTTYPE_CP.equals(content.getContentType()) ||
                 Constant.CONTENTTYPE_PG
-                .equals(content.getContentType()) || Constant.CONTENTTYPE_LB.equals(content
+                        .equals(content.getContentType()) || Constant.CONTENTTYPE_LB.equals(content
                 .getContentType()))
                 && (content.getData() == null || content.getData().size() == 0)) {
             Toast.makeText(this, "节目内容为空", Toast.LENGTH_LONG).show();
@@ -249,21 +253,29 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
             public void run() {
                 doPlay(content);
             }
-        },1000);
+        }, 1000);
     }
 
     private void doPlay(Content content) {
         initListener();
-        if (!Constant.CONTENTTYPE_LB.equals(content.getContentType())) {
-            NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay,
-                    playPostion);
-            mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-        }else{
-            NewTVLauncherPlayerViewManager.getInstance().changeAlternate(content.getContentID(),
-                    content.getAlternateNumber(),content.getTitle());
+        if (!isFinishing()) {
+            if (!Constant.CONTENTTYPE_LB.equals(content.getContentType())) {
+                NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay,
+                        playPostion);
+                mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+            } else {
+                NewTVLauncherPlayerViewManager.getInstance().changeAlternate(content.getContentID(),
+                        content.getAlternateNumber(), content.getTitle());
+            }
+            if (mPlayerFrameLayoutContainer != null) {
+                NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
+                        (mPlayerFrameLayoutContainer, this,true);
+            }
+
+            if (loadingView != null)
+                loadingView.setVisibility(View.GONE);
         }
-        NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
-                (mPlayerFrameLayoutContainer, this);
+
     }
 
     @Override
@@ -277,7 +289,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         Toast.makeText(getApplicationContext(), desc, Toast.LENGTH_SHORT).show();
     }
 

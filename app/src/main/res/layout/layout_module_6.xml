@@ -16,7 +16,7 @@
     <TextView
         android:id="@+id/id_module_6_title"
         style="@style/ModuleTitleStyle"
-        android:layout_width="@dimen/width_376px"
+        android:layout_width="@dimen/width_1830px"
         android:layout_height="@dimen/height_34px"
         android:layout_marginLeft="@dimen/width_6px"
         android:layout_marginTop="@dimen/height_47px"

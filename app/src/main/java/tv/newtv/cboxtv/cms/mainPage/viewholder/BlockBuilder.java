@@ -159,15 +159,18 @@ public class BlockBuilder extends BaseBlockBuilder {
             final String layoutId = layoutCode.substring(layoutCode.indexOf("_") + 1); //
             // 形如"002"
 
+            String titleId = "module_" + layoutId + "_title";
+            TextView moduleTitleTextView = ((TextView) itemView.findViewWithTag(titleId));
+
+            String titleIconId = "module_" + layoutId + "_title_icon";
+            ImageView titleIcon = (ImageView) itemView.findViewWithTag(titleIconId);
+
             // 处理组件标题与icon
             if (TextUtils.equals(SHOW_BLOCK_TITLE, moduleItem.getHaveBlockTitle())) {
                 String moduleTitleText = moduleItem.getBlockTitle();
                 if (!TextUtils.isEmpty(moduleTitleText) && (position != 0 || showFirstTitle)) {
                     // 填充组件标题
-                    String titleId = "module_" + layoutId + "_title";
-                    TextView moduleTitleTextView = ((TextView) itemView.findViewWithTag(titleId));
                     if (moduleTitleTextView != null) {
-
                         TextPaint paint = moduleTitleTextView.getPaint();
                         paint.setFakeBoldText(true);//字体加粗
 
@@ -175,8 +178,6 @@ public class BlockBuilder extends BaseBlockBuilder {
                         moduleTitleTextView.setVisibility(View.VISIBLE);
                     }
 
-                    String titleIconId = "module_" + layoutId + "_title_icon";
-                    ImageView titleIcon = (ImageView) itemView.findViewWithTag(titleIconId);
                     String iconUrl = moduleItem.getBlockImg();
                     if (titleIcon != null) {
                         titleIcon.setVisibility(View.VISIBLE);
@@ -186,6 +187,13 @@ public class BlockBuilder extends BaseBlockBuilder {
                             Picasso.get().load(iconUrl).into(titleIcon);
                         }
                     }
+                }
+            } else {
+                if (moduleTitleTextView != null) {
+                    moduleTitleTextView.setVisibility(View.GONE);
+                }
+                if (titleIcon != null) {
+                    titleIcon.setVisibility(View.GONE);
                 }
             }
 
@@ -403,7 +411,6 @@ public class BlockBuilder extends BaseBlockBuilder {
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
             focusTextView.setSelected(true);
 
-            Log.e("yml", "onItemGetFocus: " + layoutId);
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {

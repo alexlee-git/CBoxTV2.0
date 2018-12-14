@@ -12,12 +12,17 @@ import com.newtv.libs.util.SharePreferenceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
@@ -33,7 +38,7 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
  * 创建日期:     2018/9/27 0021
  */
 public class SubRemoteDataSource implements SubDataSource {
-    private static final String TAG = "lx";
+    private static final String TAG = "SubRemoteDataSource";
 
     private static SubRemoteDataSource INSTANCE;
     private Context mContext;
@@ -113,6 +118,44 @@ public class SubRemoteDataSource implements SubDataSource {
                     @Override
                     public void onComplete() {
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
+    }
+
+    @Override
+    public void addRemoteSubscribeList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteSubscribeListCallback callback) {
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                try {
+                    if (!TextUtils.isEmpty(userID)) {
+                        if (beanList != null && beanList.size() > 0) {
+                            for (int i = 0; i < beanList.size(); i++) {
+                                addRemoteSubscribeRecord(token, userID, beanList.get(i));
+                            }
+                            e.onNext(beanList.size());
+                        } else {
+                            Log.e(TAG, "wqs:addRemoteSubscribeList:beanList==null||beanList.size==0");
+                            e.onNext(0);
+                        }
+                    } else {
+                        Log.e(TAG, "wqs:addRemoteSubscribeList:userID==null");
+                        e.onNext(0);
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    Log.e(TAG, "wqs:addRemoteSubscribeList:Exception:" + exception.toString());
+                    e.onNext(0);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer size) throws Exception {
+                        if (callback != null) {
+                            callback.onAddRemoteSubscribeListComplete(size);
+                        }
                     }
                 });
     }
@@ -209,7 +252,7 @@ public class SubRemoteDataSource implements SubDataSource {
                                     entity.set_contentuuid(item.optString("programset_id"));
                                 }
                                 entity.setContentId(item.optString("content_id"));
-                                Log.d("sub", "getRemoteSubscribeList contentId : " + entity.get_contentuuid());
+                                Log.d(TAG, "getRemoteSubscribeList contentId : " + entity.getContentId() + ", contentuuid : " + entity.get_contentuuid());
                                 entity.set_contenttype(contentType);
                                 entity.setPlayId(item.optString("program_child_id"));
                                 entity.set_title_name(item.optString("programset_name"));
@@ -264,5 +307,70 @@ public class SubRemoteDataSource implements SubDataSource {
         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+    }
+
+    private void addRemoteSubscribeRecord(String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
+        String mType = "0";
+        String type = bean.get_contenttype();
+
+        String parentId = "";
+        String subId = "";
+
+        if (Constant.CONTENTTYPE_CL.equals(type) || Constant.CONTENTTYPE_TV.equals(type)) {
+            mType = "0";
+            parentId = bean.get_contentuuid();
+            subId = bean.getPlayId();
+        }
+        String Authorization = "Bearer " + token;
+        NetClient.INSTANCE
+                .getUserCenterLoginApi()
+                .addSubscribes(Authorization,
+                        userID,
+                        Libs.get().getChannelId(),
+                        Libs.get().getAppKey(),
+                        parentId,
+                        bean.get_title_name(),
+                        mType,
+                        bean.get_imageurl(),
+                        subId,
+                        bean.getGrade(),
+                        bean.getVideoType(),
+                        bean.getTotalCnt(),
+                        bean.getSuperscript(),
+                        bean.get_contenttype(),
+                        bean.getPlayIndex(),
+                        bean.get_actiontype(),
+                        bean.getContentId()
+                )
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String responseString = responseBody.string();
+                            Log.d(TAG, "wqs:addRemoteSubscribeRecord onNext result : " + responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "wqs:addRemoteSubscribeRecord onError result : " + e.toString());
+                        e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
     }
 }

@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.views.detail;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -18,6 +19,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AlternateContract;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.contract.PersonDetailsConstract;
+import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -76,6 +78,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private int item_layout = R.layout.program_horizontal_layout;
     private int place_holder = R.drawable.focus_384_216;
     private int direction = DIRECTION_HORIZONTAL;
+    private RecycleItemDecoration mItemDecoration;
 
     @Override
     public void destroy() {
@@ -180,10 +183,15 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                 mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
                         LinearLayoutManager.HORIZONTAL, false));
                 mRecycleView.setShowCounts(mHorizontalCount);
-                if(item_layout != R.layout.item_details_horizontal_episode) {
-                    mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
-                            .getDimensionPixelOffset(R.dimen.width_48px)));
+                if(mItemDecoration != null){
+                    mRecycleView.addItemDecoration(mItemDecoration);
+                }else {
+                    if (item_layout != R.layout.item_details_horizontal_episode) {
+                        mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
+                                .getDimensionPixelOffset(R.dimen.width_48px)));
+                    }
                 }
+
 
                 mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id
                         .dir_right));
@@ -211,6 +219,20 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         String image = "";
                         String title = "";
                         String year = "";
+
+//                        if(Libs.get().isDebug()) {
+//                            int pos = holder.getAdapterPosition();
+//                            if (data != null && data instanceof SubContent) {
+//                                if (pos == 0) {
+//                                    ((SubContent) data).setYear("2016");
+//                                }else if(pos == 3){
+//                                    ((SubContent) data).setYear("2015");
+//                                }else if(pos == 5){
+//                                    ((SubContent) data).setYear("2014");
+//                                }
+//                            }
+//                        }
+
                         if (data instanceof SubContent) {
                             if (direction == DIRECTION_HORIZONTAL) {
                                 image = ((SubContent) data).getHImage();
@@ -233,39 +255,45 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                             holder.posterView.setIsPlaying(select);
                         }
 
-//                        if (item_layout == R.layout.item_details_horizontal_episode) {
-//                            if (TextUtils.isEmpty(((SubContent) mProgramSeriesInfo.get(0)).getYear())) {
-//                                holder.mUpdateLayout.setVisibility(GONE);
-//                            } else {
-//                                if (!TextUtils.isEmpty(year)) {
-//                                    holder.mUpdateLayout.setVisibility(VISIBLE);
-//                                    if (holder.getAdapterPosition() == 0) {
-//                                        holder.columnUpdateDateTV.setVisibility(VISIBLE);
-//                                        holder.columnUpdateDateTV.setText(year);
-//                                    } else {
-//                                        int beforePosition = holder.getAdapterPosition() - 1;
-//
-//                                        String beforeYear = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getYear();
-//                                        String beforeTitle = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getTitle();
-//
-//                                        LogUtils.d("getAdapterPosition", "current year: " + year
-//                                                + ",current title : " + title
-//                                                + " , before year : " + beforeYear
-//                                                + " , before Title : " + beforeTitle
-//                                        );
-//
-//                                        if (!year.equals(beforeYear)) {
-//                                            holder.columnUpdateDateTV.setVisibility(VISIBLE);
-//                                            holder.columnUpdateDateTV.setText(year);
-//                                        } else {
-//                                            holder.columnUpdateDateTV.setVisibility(GONE);
-//                                        }
-//                                    }
-//                                } else {
-//                                    holder.mUpdateLayout.setVisibility(INVISIBLE);
-//                                }
-//                            }
-//                        }
+                        if (item_layout == R.layout.item_details_horizontal_episode) {
+                            if (TextUtils.isEmpty(((SubContent) mProgramSeriesInfo.get(0)).getYear())) {
+                                holder.mUpdateLayout.setVisibility(GONE);
+                            } else {
+                                String beforeYear = "";
+                                String beforeTitle = "";
+                                if(holder.getAdapterPosition() > 0) {
+                                    int beforePosition = holder.getAdapterPosition() - 1;
+                                    beforeYear = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getYear();
+                                    beforeTitle = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getTitle();
+                                    if (TextUtils.isEmpty(year) && !TextUtils.isEmpty(beforeYear) && data instanceof SubContent) {
+                                        ((SubContent) data).setYear(beforeYear);
+                                        year = beforeYear;
+                                    }
+                                }
+                                if (!TextUtils.isEmpty(year)) {
+                                    holder.mUpdateLayout.setVisibility(VISIBLE);
+                                    if (holder.getAdapterPosition() == 0) {
+                                        holder.columnUpdateDateTV.setVisibility(VISIBLE);
+                                        holder.columnUpdateDateTV.setText(year);
+                                    } else {
+                                        LogUtils.d("getAdapterPosition", "current year: " + year
+                                                + ",current title : " + title
+                                                + " , before year : " + beforeYear
+                                                + " , before Title : " + beforeTitle
+                                        );
+
+                                        if (!TextUtils.equals(year,beforeYear)) {
+                                            holder.columnUpdateDateTV.setVisibility(VISIBLE);
+                                            holder.columnUpdateDateTV.setText(year);
+                                        } else {
+                                            holder.columnUpdateDateTV.setVisibility(GONE);
+                                        }
+                                    }
+                                } else {
+                                    holder.mUpdateLayout.setVisibility(INVISIBLE);
+                                }
+                            }
+                        }
                     }
 
                     @Override
@@ -336,12 +364,16 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         direction = dir;
     }
 
-    public void setHorizontalItemLayout(int layout,int count,int scaleLayout,int updateDateId,int layoutId) {
+    public void setHorizontalItemLayout(int layout, int count, int placeHolder, int dir,int
+            scaleView,RecycleItemDecoration itemDecoration,int layoutId,int columnUpdateDateId) {
         item_layout = layout;
         mHorizontalCount = count;
-        mScaleView = scaleLayout;
-        mColumnUpdateDateId = updateDateId;
+        place_holder = placeHolder;
+        direction = dir;
+        mScaleView = scaleView;
+        mItemDecoration = itemDecoration;
         mLayoutId = layoutId;
+        mColumnUpdateDateId = columnUpdateDateId;
     }
 
     public void setContentUUID(int type, String uuid, View view) {
@@ -389,7 +421,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         LogUtils.e("parseDataError","data error : " + desc);
     }
 
@@ -450,8 +482,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         public ViewHolder(View itemView) {
             super(itemView);
 
-//            mUpdateLayout = itemView.findViewById(mLayoutId);
-//            columnUpdateDateTV = itemView.findViewById(mColumnUpdateDateId);
+            mUpdateLayout = itemView.findViewById(mLayoutId);
+            columnUpdateDateTV = itemView.findViewById(mColumnUpdateDateId);
             modleView = itemView.findViewById(R.id.id_module_view);
             posterView = itemView.findViewWithTag("tag_poster_image");
             titleText = itemView.findViewWithTag("tag_poster_title");

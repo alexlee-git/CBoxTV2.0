@@ -172,68 +172,12 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
 
     //读取数据库中数据
     private void requestData() {
-        localDataReqComp = false;
-        remoteDataReqComp = false;
-
-        Log.d("sub", "requestData");
         if (!TextUtils.isEmpty(mLoginTokenString)) {
-            if (SharePreferenceUtils.getSyncStatus(LauncherApplication.AppContext) == 0) {
-                DataSupport.search(DBConfig.SUBSCRIBE_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                if (code == 0) {
-                                    Gson gson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
-                                    localData = gson.fromJson(result, type);
-
-                                    if (localData == null) {
-                                        localData = new ArrayList<>(Constant.BUFFER_SIZE_8);
-                                    }
-                                }
-
-                                Log.d("sub", "本地数据库查询完毕");
-                                localDataReqComp = true;
-                                sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                            }
-                        }).excute();
-
-                DataSupport.search(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                if (code == 0) {
-                                    Gson gson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
-                                    remoteData = gson.fromJson(result, type);
-
-                                    if (remoteData == null) {
-                                        remoteData = new ArrayList<>(Constant.BUFFER_SIZE_8);
-                                    }
-                                }
-
-                                Log.d("sub", "远程数据库查询完毕");
-
-                                remoteDataReqComp = true;
-                                sendEmptyMessage(MSG_SYNC_DATA_COMP);
-                            }
-                        }).excute();
-            } else {
-                requestDataByDB(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
-            }
+            requestDataByDB(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
         } else {
             requestDataByDB(DBConfig.SUBSCRIBE_TABLE_NAME);
         }
     }
-
 
     private boolean isSameItem(UserCenterPageBean.Bean item, List<UserCenterPageBean.Bean> datas) {
         for (UserCenterPageBean.Bean comp : datas) {
@@ -245,7 +189,6 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     }
 
     private void requestDataByDB(String tableName) {
-        Log.d("sub", "requestDataByDB tableName : " + tableName + ", userId : " + userId);
         DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
@@ -261,6 +204,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                             List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
                             userCenterUniversalBean.data = universalBeans;
                             if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
+                                Log.d(TAG, "query subscribe info from " + tableName + ", size : " + userCenterUniversalBean.data.size());
                                 inflatePage(userCenterUniversalBean.data);
                             } else {
                                 inflatePageWhenNoData();
@@ -270,6 +214,11 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                         }
                     }
                 }).excute();
+    }
+
+    @Override
+    protected void inflate(List<UserCenterPageBean.Bean> datas) {
+        inflatePage(datas);
     }
 
     private void inflatePage(List<UserCenterPageBean.Bean> bean) {
@@ -334,6 +283,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_SUBSCRIPTION);
+        Log.d(TAG, "hotRecommendParam : " + hotRecommendParam);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
             mContentPresenter.getPageContent(hotRecommendParam);
@@ -414,7 +364,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     }
 
     @Override
-    public void onError(@NotNull Context context, @Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

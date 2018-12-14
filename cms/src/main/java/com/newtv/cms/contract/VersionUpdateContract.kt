@@ -53,7 +53,9 @@ class VersionUpdateContract {
                         checkUpVersion(context, Integer.parseInt(params["versionCode"]), hardwareCode)
                     }
 
-                    override fun onError(desc: String?) {}
+                    override fun onError(code: String?, desc: String?) {
+                        view?.onError(context, code, desc)
+                    }
                 })
             }
         }
@@ -87,7 +89,9 @@ class VersionUpdateContract {
                         }
                     }
 
-                    override fun onError(desc: String?) {}
+                    override fun onError(code: String?, desc: String?) {
+                        view?.onError(context,code, desc)
+                    }
                 })
             }
         }
@@ -165,7 +169,9 @@ class VersionUpdateContract {
                         }
                     }
 
-                    override fun onError(desc: String?) {}
+                    override fun onError(code: String?, desc: String?) {
+                        view?.onError(context, code, desc)
+                    }
                 })
             }
         }

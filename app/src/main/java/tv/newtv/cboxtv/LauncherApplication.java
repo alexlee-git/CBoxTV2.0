@@ -251,7 +251,8 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
                         }
 
                         @Override
-                        public void onError(@NotNull Context context, @Nullable String desc) {
+                        public void onError(@NotNull Context context, @NotNull String code,
+                                            @Nullable String desc) {
                             addHistory(playInfo, index, position, duration);
                         }
                     });
@@ -333,7 +334,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             }
 
             @Override
-            public void onError(@NotNull Context context, @Nullable String desc) {
+            public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
             }
         });
@@ -357,6 +358,11 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         UserCenterRecordManager.getInstance().deleteRecord(UserCenterRecordManager
                         .USER_CENTER_RECORD_TYPE.TYPE_LUNBO,
                 this, contentUUID, "", "", dbCallback);
+    }
+
+    @Override
+    public void detailsJumpActivity(Context context, String contentType, String contentUUID, String seriesSubUUID) {
+        JumpUtil.detailsJumpActivity(context,contentType,contentUUID,seriesSubUUID);
     }
 
 }

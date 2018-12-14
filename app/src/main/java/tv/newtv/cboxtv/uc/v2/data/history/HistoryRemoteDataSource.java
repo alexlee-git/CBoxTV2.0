@@ -17,14 +17,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.BaseObserver;
 
 
 /**
@@ -35,7 +40,7 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
  * 创建日期:     2018/9/21 0021
  */
 public class HistoryRemoteDataSource implements HistoryDataSource {
-    private static final String TAG = "lx";
+    private static final String TAG = "HistoryRemoteDataSource";
 
     private static HistoryRemoteDataSource INSTANCE;
     private Context mContext;
@@ -103,28 +108,84 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "addRemoteHistory onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                         mAddDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.d(TAG, "add History result : " + getServerResultMessage(responseBody));
+                        Log.i(TAG, "addRemoteHistory onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            Log.d(TAG, "add History result : " + getServerResultMessage(responseString));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "addRemoteHistory onError: ");
                         Log.d(TAG, "add history onError:e:" + e.toString());
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "addRemoteHistory dealwithUserOffline: ");
+
+
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "addRemoteHistory onComplete: ");
+
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
+    }
+
+    @Override
+    public void addRemoteHistoryList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteHistoryListCallback callback) {
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                try {
+                    if (!TextUtils.isEmpty(userID)) {
+                        if (beanList != null && beanList.size() > 0) {
+                            for (int i = 0; i < beanList.size(); i++) {
+                                addRemoteHistoryRecord(token, userID, beanList.get(i));
+                            }
+                            e.onNext(beanList.size());
+                        } else {
+                            Log.e(TAG, "wqs:addRemoteHistoryList:beanList==null||beanList.size==0");
+                            e.onNext(0);
+                        }
+                    } else {
+                        Log.e(TAG, "wqs:addRemoteHistoryList:userID==null");
+                        e.onNext(0);
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    Log.e(TAG, "wqs:addRemoteHistoryList:Exception:" + exception.toString());
+                    e.onNext(0);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer size) throws Exception {
+                        if (callback != null) {
+                            callback.onAddRemoteHistoryListComplete(size);
+                        }
                     }
                 });
     }
@@ -170,27 +231,45 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         contentUUid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "deleteRemoteHistory onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                         mDeleteDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.d(TAG, "remove history record result : " + getServerResultMessage(responseBody));
+                        Log.i(TAG, "deleteRemoteHistory onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            Log.d(TAG, "add History result : " + getServerResultMessage(responseString));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "deleteRemoteHistory onError: ");
                         Log.d(TAG, "delete history occur error:" + e.toString());
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "deleteRemoteHistory dealwithUserOffline: ");
+
+
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "deleteRemoteHistory onComplete: ");
+
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
@@ -208,18 +287,22 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "getRemoteHistoryList onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                         mGetListDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "getRemoteHistoryList onNext: ");
                         try {
                             int totalSize = 0;
-                            JSONObject jsonObject = new JSONObject(responseBody.string());
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            JSONObject jsonObject = new JSONObject(responseString);
                             JSONObject data = jsonObject.getJSONObject("data");
                             JSONArray list = data.optJSONArray("list");
                             totalSize = data.optInt("end");
@@ -275,7 +358,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "get history list error:" + e.toString());
+                        Log.i(TAG, "getRemoteHistoryList onError: ");
                         if (callback != null) {
                             callback.onHistoryListLoaded(null, 0);
                         }
@@ -283,7 +366,13 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "getRemoteHistoryList dealwithUserOffline: ");
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "getRemoteHistoryList onComplete: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
@@ -297,18 +386,93 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 
-    private String getServerResultMessage(ResponseBody responseBody) {
+    private String getServerResultMessage(String str) {
         String result = "";
         try {
-            JSONObject jsonObject = new JSONObject(responseBody.string());
+            JSONObject jsonObject = new JSONObject(str);
             return jsonObject.optString("message");
         } catch (JSONException e) {
             e.printStackTrace();
             result = "parse json occur error";
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             result = "parse responseBody occur error";
         }
         return result;
+    }
+
+    private void addRemoteHistoryRecord(String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
+        String mType = "0";
+        String parentId = "";
+        String subId = "";
+
+        String type = bean.get_contenttype();
+        if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
+            mType = "1";
+            subId = bean.get_contentuuid();
+        } else {
+            mType = "0";
+            parentId = bean.get_contentuuid();
+            subId = bean.getPlayId();
+        }
+
+        String Authorization = "Bearer " + token;
+        NetClient.INSTANCE
+                .getUserCenterLoginApi()
+                .addHistory(Authorization,
+                        userID,
+                        Libs.get().getChannelId(),
+                        Libs.get().getAppKey(),
+                        /*bean.get_contentuuid()*/parentId,
+                        bean.get_title_name(),
+                        mType,
+                        bean.get_imageurl(),
+                        bean.getProgress(),
+                        null,
+                        bean.getDuration(),
+                        bean.getPlayPosition(),
+                        false,
+                        true,
+                        /*bean.getPlayId()*/subId,
+                        bean.getGrade(),
+                        bean.getVideoType(),
+                        bean.getTotalCnt(),
+                        bean.getSuperscript(),
+                        bean.get_contenttype(),
+                        bean.getPlayIndex(),
+                        bean.get_actiontype(),
+                        bean.getProgramChildName(),
+                        bean.getContentId())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String responseString = responseBody.string();
+                            Log.d(TAG, "wqs:addRemoteHistoryRecord onNext result : " + responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "wqs:addRemoteHistoryRecord onError result : " + e.toString());
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i(TAG, "wqs:addRemoteHistoryRecord onComplete: ");
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
     }
 }

@@ -1,7 +1,6 @@
 package tv.newtv.cboxtv.uc.v2.Pay;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +53,8 @@ import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.MyOrderActivity;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 项目名称:     CBoxTV2.0
@@ -85,7 +86,6 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
     private final int MSG_RESULT_OK_TIME = 5;
     private final int MSG_RESULT_OK = 6;
     private final int MSG_SETMESSAGE = 7;
-    private String mFlagAction;
     private PopupWindow mPopupWindow;
     private View mPopupView;
     private TextView tv_title_full;
@@ -94,31 +94,43 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
     private TextView tv_dialog_status;
     private TextView tv_dialog_time;
     private Button btn_dialog_ok;
-    private long expireTime;
     private String Exp_time;
     private int Time = 5;
-    private final String prdType = "1";
     private String mContentUUID, order, mVipFlag, mTitle, mContentType;
     private long amount, orderduration;
     private String message_error = "";
+    private long expireTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payrefreshorder);
 
-        mVipProductId = String.valueOf(getIntent().getIntExtra("productId", 0));
+        Intent intent = getIntent();
+        mVipProductId = String.valueOf(intent.getIntExtra("productId", 0));
         Log.i(TAG, "VipProductId:" + mVipProductId);
-        mFlagAction = getIntent().getStringExtra("action");
-        mContentUUID = getIntent().getStringExtra("mediaId");
-        mContentType = getIntent().getStringExtra("ContentType");
-        mTitle = getIntent().getStringExtra("productName");
-        order = String.valueOf(getIntent().getIntExtra("orderId", 0));
-        mVipFlag = String.valueOf(getIntent().getIntExtra("productType", 0));
-        payChannelId = getIntent().getIntExtra("payChannelId", 0);
-        amount = getIntent().getIntExtra("amount", 0);
-        orderduration = getIntent().getIntExtra("duration", 0);
-
+        mContentUUID = intent.getStringExtra("mediaId");
+        mTitle = intent.getStringExtra("productName");
+        order = String.valueOf(intent.getIntExtra("orderId", 0));
+        mVipFlag = String.valueOf(intent.getIntExtra("productType", 0));
+        payChannelId = intent.getIntExtra("payChannelId", 0);
+        amount = intent.getIntExtra("amount", 0);
+        orderduration = intent.getIntExtra("duration", 0);
+        String time = intent.getStringExtra("expireTime");
+        try {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time));
+            expireTime = calendar.getTimeInMillis();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.e(TAG, "time :" + time);
+        Log.e(TAG, "expireTime :" + expireTime);
+        long system_time = TimeUtil.getInstance().getCurrentTimeInMillis();
+        if (expireTime <= system_time) {
+            expireTime = system_time;
+        }
+        Log.e(TAG, "expireTime :" + expireTime);
         Log.i(TAG, "vipFlag:" + mVipFlag);
         Log.i(TAG, "orderduration:" + orderduration);
         Log.i(TAG, "payChannelId:" + payChannelId);
@@ -132,7 +144,6 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                     if (isRefresh) {
                         Log.i(TAG, "isToken is ture");
                         mToken = SharePreferenceUtils.getToken(PayRefreshOrderActivity.this);
-                        requestMemberInfo();
                     } else {
                         Log.i(TAG, "isToken is false");
                     }
@@ -204,7 +215,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                     .getRefreshOrder(Authorization, order)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ResponseBody>() {
+                    .subscribe(new BaseObserver<ResponseBody>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             mDisposable_order = d;
@@ -212,9 +223,10 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
 
                         @Override
                         public void onNext(ResponseBody value) {
-
+                            Log.i(TAG, "onNext: ");
                             try {
                                 String data = value.string();
+                                checkUserOffline(data);
                                 JSONObject object = new JSONObject(data);
                                 orderId = object.getLong("id");
                                 code = object.getString("code");
@@ -249,6 +261,12 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                                 mDisposable_order.dispose();
                                 mDisposable_order = null;
                             }
+                        }
+
+                        @Override
+                        public void dealwithUserOffline() {
+                            Log.i(TAG, "dealwithUserOffline: ");
+                            UserCenterUtils.userOfflineStartLoginActivity(PayRefreshOrderActivity.this);
                         }
 
                         @Override
@@ -333,7 +351,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                         long time = duration + expireTime;
                         Log.e(TAG, "time :" + time);
                         Date date = new Date(time);
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 hh:mm:ss");
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
                         tv_time.setText(getResources().getString(R.string.usercenter_pay_time) + format.format(date));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -360,7 +378,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                     public void accept(Long aLong) throws Exception {
 
                         Date date2 = new Date(aLong);
-                        SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 hh:mm:ss");
+                        SimpleDateFormat format2 = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
                         tv_dialog_time.setText(getResources().getString(R.string.usercenter_pay_success_time) +
                                 format2.format(date2));
                     }
@@ -497,7 +515,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
         try {
             NetClient.INSTANCE.getUserCenterMemberInfoApi()
                     .getMemberInfo("Bearer " + mToken, "",
-                            Libs.get().getAppKey(),"")
+                            Libs.get().getAppKey(), mContentUUID)
                     .subscribe(new Observer<ResponseBody>() {
 
                         @Override

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -186,6 +187,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             .LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
                     playerView.setLayoutParams(layoutParams);
                     ((ViewGroup) video).addView(playerView, layoutParams);
+//                    playerView.showFloatWindow();
                 } else {
                     currentPosition = defaultConfig.playPosition;
                     playerView = new VideoPlayerView(defaultConfig, getContext());
@@ -345,7 +347,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     //显示全屏
     public void EnterFullScreen(Activity activity) {
-        playerView.enterFullScreen(activity);
+        if(playerView != null) {
+            playerView.enterFullScreen(activity);
+        }
     }
 
     public void Build(Builder builder) {
@@ -360,11 +364,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         contentView = LayoutInflater.from(getContext()).inflate(mBuilder.mLayout, this, false);
         final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_, null);
+        ImageView arrowsDark = inflate.findViewById(R.id.nav_arrows_dark);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
         addView(inflate);
-        hintAnimator(inflate);
+        hintAnimator(inflate,arrowsDark);
         addView(contentView);
         checkDataFromDB();
 
@@ -397,9 +402,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         //mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
     }
 
-    private void hintAnimator(final View view) {
-        ObjectAnimator translationX = new ObjectAnimator().ofFloat(view, "alpha", 1, 0, 1, 0, 1,
-                0, 1, 0, 1, 0, 1, 0);
+    private void hintAnimator(final View view,ImageView arrow) {
+        ObjectAnimator translationX = new ObjectAnimator().ofFloat(arrow, "alpha", 1, 0, 1, 0, 1,
+                0);
         translationX.setDuration(5000);
         translationX.start();
         translationX.addListener(new AnimatorListenerAdapter() {
@@ -408,6 +413,21 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                 super.onAnimationEnd(animation);
 //                view.setVisibility(View.GONE);
                 removeView(view);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+            }
+        });
+
+        ObjectAnimator translationY = new ObjectAnimator().ofFloat(arrow, "TranslationY", 0,10,0,10,0,10);
+        translationY.setDuration(5000);
+        translationY.start();
+        translationY.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
             }
 
             @Override
@@ -706,8 +726,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             return;
         }
 
-        releasePlayer();
-        prepareMediaPlayer();
+        if(playerView != null){
+            playerView.stop();
+        }else{
+            prepareMediaPlayer();
+        }
 
         setCurrentPlayIndex("Play", index);
         currentPosition = postion;
@@ -845,8 +868,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             }
 
                             @Override
-                            public void onError(@NotNull Context context, @org.jetbrains.annotations
-                                    .Nullable String desc) {
+                            public void onError(@NotNull Context context, @NotNull String code,
+                                                @org.jetbrains.annotations.Nullable String desc) {
                                 play();
                             }
                         });
@@ -943,7 +966,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains.annotations.Nullable String desc) {
         mBuilder.infoResult.onResult(null);
     }
 

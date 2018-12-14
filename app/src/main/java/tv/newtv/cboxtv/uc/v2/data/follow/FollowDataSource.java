@@ -22,14 +22,22 @@ public interface FollowDataSource {
         void onDataNotAvailable();
     }
 
+    interface AddRemoteFollowListCallback {
+
+        void onAddRemoteFollowListComplete(int totalSize);
+
+    }
+
     interface GetFollowCallback {
 
-        void onFollowLoaded(UserCenterPageBean.Bean Collect);
+        void onFollowLoaded(UserCenterPageBean.Bean Follow);
 
         void onDataNotAvailable();
     }
 
     void addRemoteFollow(@NonNull UserCenterPageBean.Bean bean);
+
+    void addRemoteFollowList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, FollowRemoteDataSource.AddRemoteFollowListCallback callback);
 
     void deleteRemoteFollow(@NonNull UserCenterPageBean.Bean bean);
 

@@ -71,10 +71,19 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     private UniversalAdapter adapter;
 
+    private boolean showFirstTitle = false;
+
     public static ContentFragment newInstance(Bundle paramBundle) {
         ContentFragment fragment = new ContentFragment();
         fragment.setArguments(paramBundle);
         return fragment;
+    }
+
+    public void setShowFirstTitle(){
+        showFirstTitle = true;
+        if(adapter != null){
+            adapter.showFirstLineTitle(true);
+        }
     }
 
     @Override
@@ -281,7 +290,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
         super.lazyLoad();
 
         if (TextUtils.isEmpty(contentId) || mPresenter == null) {
-            onError(LauncherApplication.AppContext, "暂无数据内容。");
+            onError(LauncherApplication.AppContext, "" , "暂无数据内容。");
         } else {
             mPresenter.getPageContent(contentId);
         }
@@ -350,6 +359,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 adapter = new UniversalAdapter(LauncherApplication.AppContext, mPageList);
                 adapter.setPicassoTag(contentId);
                 adapter.setPlayerUUID(contentId);
+                adapter.showFirstLineTitle(showFirstTitle);
                 Log.d("contentFragment", "setAdapter param=" + param + " data=" + pageList);
                 mRecyclerView.setAdapter(adapter);
             } else {
@@ -360,7 +370,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
             Log.d("contentFragment", "updateRecycleView recyle=" + mRecyclerView);
         } else {
-            onError(LauncherApplication.AppContext, "数据为空");
+            onError(LauncherApplication.AppContext, "" , "数据为空");
         }
     }
 
@@ -376,7 +386,11 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
+
+        LogUtils.e("ContentFragment","error code="+code+" desc="+desc);
+
         if (loadingView != null)
             loadingView.setVisibility(View.GONE);
         setTipVisibility(View.VISIBLE);
@@ -399,8 +413,15 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
                 .getBackground(), getUserVisibleHint());
     }
 
+
+    private boolean mUseLoading = true;
+    public void setUseLoading(boolean useLoading){
+        mUseLoading = useLoading;
+    }
+
     @Override
     public void startLoading() {
+        if(!mUseLoading) return;
         setTipVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
         setTipVisibility(View.GONE);
@@ -408,6 +429,7 @@ public class ContentFragment extends BaseFragment implements PageContract.ModelV
 
     @Override
     public void loadingComplete() {
+        if(!mUseLoading) return;
         loadingView.setVisibility(View.GONE);
         setTipVisibility(View.GONE);
     }

@@ -12,7 +12,7 @@
     <string name="search_history">搜索历史</string>
     <string name="search_poster_title">搜索结果</string>
     <string name="search_Load_reminding">正在加载请稍后</string>
-    <string name="search_drama_title">剧集</string>
+    <string name="search_drama_title">影音</string>
     <string name="search_single_title">单片</string>
     <string name="search_column_title">电视栏目</string>
     <string name="search_person_title">人物</string>
@@ -156,7 +156,8 @@
     <string name="phone_login_tip_3">请输入11位数手机号码</string>
     <string name="phone_login_tip_code">已发送到</string>
     <string name="phone_login_tip_code1">，按返回键重新输入手机号</string>
-    <string name="phone_login_tip_5">请输入验证码，十五分钟内输入有效</string>
+    <string name="phone_login_tip_5">请输入验证码</string>
+    <string name="phone_login_tip_6">s内输入有效</string>
     <string name="phone_login_code_err">验证码不能为空</string>
     <string name="phone_login_user_agreement">同意《用户协议》</string>
     <string name="phone_login_user_success">登录成功！</string>
@@ -202,4 +203,6 @@
     <string name="code_exchange_fail_6">兑换码未在有效期内使用。</string>
     <string name="code_exchange_tip1">说明：请您输入16位字母加数字的兑换码。</string>
     <string name="code_exchange_tip2">兑换记录请到订单管理中查看。</string>
+    <string name="user_offline_becauce_login_on_mutiple_teminal">您登录的终端已经超过数量限制，即将下线</string>
+    <string name="more">更多</string>
 </resources>

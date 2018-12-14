@@ -678,7 +678,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
     }
 

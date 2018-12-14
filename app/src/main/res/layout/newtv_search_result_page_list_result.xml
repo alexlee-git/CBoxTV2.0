@@ -112,13 +112,27 @@
         android:id="@+id/id_search_result_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/width_506px"
-        android:layout_marginTop="@dimen/height_510px"
         android:drawableTop="@drawable/empty_icon"
+        android:drawablePadding="@dimen/width_48px"
+        android:gravity="center_horizontal"
         android:text="@string/search_result_empty"
         android:textColor="#ededed"
         android:textSize="@dimen/height_35px"
-        android:visibility="gone" />
+        android:layout_marginTop="@dimen/width_364px"
+        android:layout_marginLeft="@dimen/width_566px"
+        android:visibility="gone"
+        />
+    <ImageView
+        android:id="@+id/id_search_result_empty_line"
+        android:layout_width="@dimen/width_1074px"
+        android:layout_height="@dimen/width_8px"
+        android:src="@drawable/no_search_line"
+        android:layout_marginTop="@dimen/width_49px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/width_129px"
+        android:layout_below="@id/id_search_result_empty"
+        android:visibility="gone"
+        />
 
     <ImageView
         android:id="@+id/id_result_left_arrow"
@@ -138,9 +152,9 @@
 
         <ImageView
             android:id="@+id/search_loading_image"
-            android:layout_width="@dimen/width_532px"
-            android:layout_height="@dimen/height_175px"
-            android:background="@drawable/loading_gif" />
+            android:layout_width="@dimen/width_454px"
+            android:layout_height="@dimen/height_93px"
+            android:background="@drawable/search_loading_gif" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -148,6 +162,6 @@
             android:gravity="center_horizontal"
             android:text="@string/search_loading"
             android:textColor="#ededed"
-            android:textSize="@dimen/height_35px" />
+            android:textSize="@dimen/height_30px" />
     </LinearLayout>
 </RelativeLayout>

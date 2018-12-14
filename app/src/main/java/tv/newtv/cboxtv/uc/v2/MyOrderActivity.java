@@ -37,7 +37,6 @@ import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -45,17 +44,16 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.ActivityStacks;
 import tv.newtv.cboxtv.BaseActivity;
-
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.SplashActivity;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.OrderInfoBean;
 import tv.newtv.cboxtv.uc.listener.RecScrollListener;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayRefreshOrderActivity;
-import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
+import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 
 /**
@@ -369,6 +367,7 @@ public class MyOrderActivity extends BaseActivity {
         String mediaId = ordersBean.getMediaId();
         String contentType = ordersBean.getContentType();
         String productName = ordersBean.getProductName();
+        String expireTime = ordersBean.getExpireTime();
 
         Intent intent = new Intent(MyOrderActivity.this, PayRefreshOrderActivity.class);
         intent.putExtra("productId", productId);
@@ -380,7 +379,7 @@ public class MyOrderActivity extends BaseActivity {
         intent.putExtra("mediaId", mediaId);
         intent.putExtra("contentType", contentType);
         intent.putExtra("productName", productName);
-        intent.putExtra("action", "android.intent.action.ORDER");
+        intent.putExtra("expireTime", expireTime);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -457,7 +456,7 @@ public class MyOrderActivity extends BaseActivity {
                 .getOrders("Bearer " + mAccessToken, Libs.get().getAppKey(), Libs.get().getChannelId(), "", "", offset + "", pageNum + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         Log.e(TAG, "====onSubscribe===");
@@ -468,6 +467,7 @@ public class MyOrderActivity extends BaseActivity {
                         try {
                             String data = value.string();
                             Log.e(TAG, "data=" + data);
+                            checkUserOffline(data);
                             Gson gson = new Gson();
                             orderInfoBean = gson.fromJson(data, OrderInfoBean.class);
                             if (orderInfoBean != null) {
@@ -507,11 +507,17 @@ public class MyOrderActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("==onError===", "onError");
+                        Log.e(TAG, "onError");
                         if (offset == 1) {
                             showEmptyView();
                         }
                         e.printStackTrace();
+                    }
+
+                    @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "dealwithUserOffline: ");
+                        UserCenterUtils.userOfflineStartLoginActivity(MyOrderActivity.this);
                     }
 
                     @Override

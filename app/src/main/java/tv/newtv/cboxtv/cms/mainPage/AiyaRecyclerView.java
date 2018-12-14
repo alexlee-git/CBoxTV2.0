@@ -453,8 +453,6 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
             int first = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
             int last = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
 
-            LogUtils.d(TAG, "first=" + first + " last=" + last);
-
             if (first == 0 && isVisible(getChildAt(0))) {
                 if (mStartIndicator != null) mStartIndicator.setVisibility(View.VISIBLE);
             } else if (last == getAdapter().getItemCount() - 1) {

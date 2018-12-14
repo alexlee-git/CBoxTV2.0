@@ -24,6 +24,7 @@ import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.uc.v2.listener.INotifyMemberStatusCallback;
+import tv.newtv.cboxtv.utils.BaseObserver;
 
 /**
  * 项目名称:         央视影音
@@ -118,7 +119,7 @@ public class QueryUserStatusUtil {
                     if (status) {
                         String token = SharePreferenceUtils.getToken(context);
                         NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + token, "", Libs.get().getAppKey(),UUid).subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+                                .observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<ResponseBody>() {
 
                             @Override
                             public void onSubscribe(Disposable d) {
@@ -131,6 +132,7 @@ public class QueryUserStatusUtil {
                                 String memberInfo = null;
                                 try {
                                     memberInfo = responseBody.string();
+                                    checkUserOffline(memberInfo);
                                     Log.e(TAG, "---getMemberStatus:onNext:" + memberInfo);
                                     JSONArray jsonArray = new JSONArray(memberInfo);
                                     if (jsonArray != null && jsonArray.length() > 0) {
@@ -177,6 +179,11 @@ public class QueryUserStatusUtil {
                             public void onError(Throwable e) {
                                 Log.e(TAG, "---getMemberStatus:onError:" + e.toString());
                                 unSubscribe(mMemberInfoDisposable);
+                            }
+
+                            @Override
+                            public void dealwithUserOffline() {
+                                Log.i(TAG, "dealwithUserOffline: ");
                             }
 
                             @Override

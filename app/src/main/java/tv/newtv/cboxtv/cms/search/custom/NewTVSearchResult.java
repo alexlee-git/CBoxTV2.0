@@ -56,6 +56,8 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     TextView mColumnTitle;
     @BindView(R.id.id_search_result_empty)
     TextView mSearchResultEmpty;
+    @BindView(R.id.id_search_result_empty_line)
+    ImageView mSearchResultEmptyLine;
     @BindView(R.id.id_result_label_person_focus_bottom)
     ImageView mPersonFocusImageView;
     @BindView(R.id.id_result_label_drama_focus_bottom)
@@ -108,42 +110,24 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
 
     public void resetLoadingLayout(boolean keyboardIsHidden){
         int loadingLeftMargin;
-        int loadingTopMargin;
-        final int[] loadingLayoutWidth = new int[1];
-        final int[] loadingLayoutHeight = new int[1];
         if (mLoadingLayout != null) {
             LayoutParams loadingParams = (LayoutParams) mLoadingLayout.getLayoutParams();
 
-            mLoadingLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    loadingLayoutWidth[0] = mLoadingLayout.getMeasuredWidth();
-                    loadingLayoutHeight[0] = mLoadingLayout.getMeasuredHeight();
-                }
-            });
-
             if (keyboardIsHidden){
-                loadingLeftMargin = (ScreenUtils.getScreenW()
-                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_25px))//leftbtn width
-                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_29px))//leftbtn marginleft
-                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_10px))//recycleview paddingLeft
-                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_100px))//recycleview paddingRight
-                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_90px))//SearchViewPager marginLeft
-                        - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_100px))//SearchRecyclerView paddingRight
+                loadingLeftMargin = (int)((ScreenUtils.getScreenW()
+                        - getResources().getDimension(R.dimen.width_25px)//leftbtn width
+                        - getResources().getDimension(R.dimen.width_29px)//leftbtn marginleft
+                        - getResources().getDimension(R.dimen.width_10px)//recycleview paddingLeft
+                        - getResources().getDimension(R.dimen.width_100px)//recycleview paddingRight
+                        - getResources().getDimension(R.dimen.width_90px)//SearchViewPager marginLeft
+                        - getResources().getDimension(R.dimen.width_100px))//SearchRecyclerView paddingRight
                 )/2;
-
             }else {
-                loadingLeftMargin = (ScreenUtils.getScreenW() - ScreenUtils.dp2px(getResources().getDimension(R.dimen.width_654px))
-                        -ScreenUtils.dp2px(loadingLayoutWidth[0]/2)
-                )/2;
+                loadingLeftMargin = (int) getResources().getDimension(R.dimen.width_419px);
             }
-
-            loadingTopMargin = (ScreenUtils.getScreenH() - ScreenUtils.dp2px(getResources().getDimension(R.dimen.height_43px)))/2;
             loadingParams.leftMargin = loadingLeftMargin;
-            loadingParams.topMargin = loadingTopMargin;
-
+            loadingParams.topMargin = (int) getResources().getDimension(R.dimen.width_453px);
             mLoadingLayout.setLayoutParams(loadingParams);
-
         }
     }
 
@@ -270,11 +254,17 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         if (isLoadComplete()) {
             if (mFragments != null && mFragments.size() > 0) {
                 mSearchResultEmpty.setVisibility(GONE);
+                mSearchResultEmptyLine.setVisibility(GONE);
             } else {
                 mSearchResultEmpty.setVisibility(VISIBLE);
+                mSearchResultEmptyLine.setVisibility(VISIBLE);
+                if (mLoadingLayout != null){
+                    mLoadingLayout.setVisibility(GONE);
+                }
             }
         }else{
             mSearchResultEmpty.setVisibility(GONE);
+            mSearchResultEmptyLine.setVisibility(GONE);
         }
     }
 

@@ -102,7 +102,8 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
-    public void setPlayerViewContainer(FrameLayout frameLayout, Context context) {
+    public void setPlayerViewContainer(FrameLayout frameLayout, Context context,boolean
+            fromFullScreen) {
         if (mNewTVLauncherPlayerView != null) {
             ViewGroup viewGroup = (ViewGroup) mNewTVLauncherPlayerView.getParent();
             if (viewGroup != null) {
@@ -111,21 +112,23 @@ public class NewTVLauncherPlayerViewManager {
         } else {
             mNewTVLauncherPlayerViewManager.init(context);
         }
-        mNewTVLauncherPlayerView.setFromFullScreen();
-        mNewTVLauncherPlayerView.updateUIPropertys(true);
+        if(fromFullScreen) {
+            mNewTVLauncherPlayerView.setFromFullScreen();
+            mNewTVLauncherPlayerView.updateUIPropertys(true);
+        }
         frameLayout.addView(mNewTVLauncherPlayerView, -1);
 
         mPlayerPageContext = context;
     }
 
     public void playVod(Context context, Content content, int index, int position) {
-        if(mNewTVLauncherPlayerViewManager != null){
+        if (mNewTVLauncherPlayerViewManager != null) {
             mNewTVLauncherPlayerViewManager.init(context);
         }
-        if(mNewTVLauncherPlayerView != null){
+        if (mNewTVLauncherPlayerView != null) {
             mNewTVLauncherPlayerView.setSeriesInfo(content);
-            mNewTVLauncherPlayerView.playSingleOrSeries(index,position);
-        }else{
+            mNewTVLauncherPlayerView.playSingleOrSeries(index, position);
+        } else {
             Log.e(TAG, "playVod: mNewTVLauncherPlayerView==null");
         }
     }
@@ -167,9 +170,12 @@ public class NewTVLauncherPlayerViewManager {
         if (mNewTVLauncherPlayerView != null) {
             mNewTVLauncherPlayerView.release();
             mNewTVLauncherPlayerView.destroy();
-            ViewGroup viewGroup = (ViewGroup) mNewTVLauncherPlayerView.getParent();
-            if (viewGroup != null) {
-                viewGroup.removeView(mNewTVLauncherPlayerView);
+            if (mNewTVLauncherPlayerView.getParent() != null && mNewTVLauncherPlayerView.getParent()
+                    instanceof ViewGroup) {
+                ViewGroup viewGroup = (ViewGroup) mNewTVLauncherPlayerView.getParent();
+                if (viewGroup != null) {
+                    viewGroup.removeView(mNewTVLauncherPlayerView);
+                }
             }
             mNewTVLauncherPlayerView = null;
         }
@@ -244,14 +250,14 @@ public class NewTVLauncherPlayerViewManager {
         return false;
     }
 
-    public void changeAlternate(String contentId,String channel,String title){
+    public void changeAlternate(String contentId, String channel, String title) {
 
-        if(mNewTVLauncherPlayerView == null){
+        if (mNewTVLauncherPlayerView == null) {
             mNewTVLauncherPlayerViewManager.init(Libs.get().getContext());
         }
 
-        if(mNewTVLauncherPlayerView != null){
-            mNewTVLauncherPlayerView.changeAlternate(contentId,title,channel);
+        if (mNewTVLauncherPlayerView != null) {
+            mNewTVLauncherPlayerView.changeAlternate(contentId, title, channel);
         }
     }
 

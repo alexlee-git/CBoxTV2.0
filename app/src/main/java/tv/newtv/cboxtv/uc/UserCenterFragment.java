@@ -37,6 +37,7 @@ import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
+import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -50,7 +51,6 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -79,6 +79,7 @@ import tv.newtv.cboxtv.uc.v2.VersionUpdateOneActivity;
 import tv.newtv.cboxtv.uc.v2.aboutmine.AboutMineV2Activity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
+import tv.newtv.cboxtv.utils.BaseObserver;
 import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
 
 /**
@@ -213,7 +214,7 @@ public class UserCenterFragment extends BaseFragment implements
         }
         uploadUserOnline();
         //同步云端数据库数据
-        UserCenterRecordManager.getInstance().getUserBehaviorUtils(getActivity(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
+        UserCenterRecordManager.getInstance().getUserBehavior(getActivity(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
         return view;
     }
 
@@ -303,7 +304,7 @@ public class UserCenterFragment extends BaseFragment implements
     private void requestMemberInfo() {
         try {
             NetClient.INSTANCE.getUserCenterMemberInfoApi().getMemberInfo("Bearer " + mLoginTokenString, "", Libs.get().getAppKey(), "").subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
+                    .observeOn(AndroidSchedulers.mainThread()).subscribe(new BaseObserver<ResponseBody>() {
 
                 @Override
                 public void onSubscribe(Disposable d) {
@@ -316,6 +317,7 @@ public class UserCenterFragment extends BaseFragment implements
                     String memberInfo = null;
                     try {
                         memberInfo = responseBody.string();
+                        checkUserOffline(memberInfo);
                         Log.d(TAG, "wqs:requestMemberInfo:onNext:" + memberInfo);
                         JSONArray jsonArray = new JSONArray(memberInfo);
                         if (jsonArray != null && jsonArray.length() > 0) {
@@ -358,6 +360,13 @@ public class UserCenterFragment extends BaseFragment implements
                     } else {
                         Log.d(TAG, "wqs:requestUserInfo:mHandler == null");
                     }
+                }
+
+                @Override
+                public void dealwithUserOffline() {
+                    Log.i(TAG, "dealwithUserOffline: ");
+                    ToastUtil.showToast(getActivity(),R.string.user_offline_becauce_login_on_mutiple_teminal);
+//                    requestUserInfo();
                 }
 
                 @Override
@@ -911,7 +920,8 @@ public class UserCenterFragment extends BaseFragment implements
     }
 
     @Override
-    public void onError(@NotNull Context context, @org.jetbrains.annotations.Nullable String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
+            .annotations.Nullable String desc) {
 
     }
 

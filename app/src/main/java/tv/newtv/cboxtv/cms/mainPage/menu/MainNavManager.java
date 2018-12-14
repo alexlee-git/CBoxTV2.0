@@ -20,9 +20,9 @@ import com.newtv.cms.contract.NavContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
-import com.newtv.libs.util.ScreenUtils;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +33,12 @@ import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
-import tv.newtv.cboxtv.cms.search.SearchFragment;
 import tv.newtv.cboxtv.cms.search.SearchFragmentNew;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import com.newtv.libs.Cache;
+
 import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
-
-import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -400,10 +399,12 @@ public class MainNavManager implements NavContract.View {
     public void onNavResult(Context context, List<Nav> result) {
         BackGroundManager.getInstance().parseNavigation(result);
         inflateNavigationBar(result, context, "server");
+        Cache.getInstance().put(Cache.CACHE_TYPE_NAV,
+                "navId", result);
     }
 
     @Override
-    public void onError(@NotNull Context context, @NotNull String desc) {
+    public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
         tip(context, desc);
     }
 

@@ -33,6 +33,24 @@ public interface IUserCenterLoginApi {
                                             @Field("client_id") String client_id,
                                             @Field("channel_code") String channel_code);
 
+    /**
+     * 获取M站购买二维码
+     *
+     * @param Authorization
+     * @param response_type
+     * @param client_id
+     * @param channel_code
+     * @return
+     */
+    @Headers("host_type: " + BootGuide.USER)
+    @FormUrlEncoded
+    @POST("/kangaroo/authorization/device_code")
+    Observable<ResponseBody> getMemberQRCode(@Header("Authorization") String Authorization,
+                                             @Field("response_type") String response_type,
+                                             @Field("client_id") String client_id,
+                                             @Field("channel_code") String channel_code,
+                                             @Field("state") String state);
+
 
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
@@ -68,6 +86,15 @@ public interface IUserCenterLoginApi {
                                          @Field("client_id") String client_id,
                                          @Field("mobile") String mobile);
 
+
+    @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST)
+    @FormUrlEncoded
+    @GET("/regist/getVerifiCode.action")
+    Observable<ResponseBody> sendSMSCodeByCNTV(@Field("method") String method,
+                                               @Field("mobile") String mobile,
+                                               @Field("verifyCode") String verifyCode,
+                                               @Field("isCheckCode") boolean isCheckCode);
+
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/token/sms_code")
@@ -76,6 +103,14 @@ public interface IUserCenterLoginApi {
                                            @Field("client_id") String client_id,
                                            @Field("mobile") String mobile,
                                            @Field("sms_code") String sms_code);
+
+    @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST)
+    @FormUrlEncoded
+    @GET("/regist/getVerifiCode.action")
+    Observable<ResponseBody> verifySMSCodeByCNTV(@Field("method") String method,
+                                                 @Field("mobile") String mobile,
+                                                 @Field("verifyCode") String verifyCode,
+                                                 @Field("isCheckCode") boolean isCheckCode);
 
 
     //获取订单
@@ -333,4 +368,9 @@ public interface IUserCenterLoginApi {
                                                    @Field("channel_code") String channel_code,
                                                    @Field("state") String state);
 
+    //退出登录
+    @Headers("host_type: " + BootGuide.USER)
+    @GET("/kangaroo/user/logout")
+    Observable<ResponseBody> logout(@Header("authorization") String authorization,
+                                    @Query("client_id") String client_id);
 }

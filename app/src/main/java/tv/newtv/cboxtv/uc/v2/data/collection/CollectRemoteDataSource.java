@@ -12,17 +12,23 @@ import com.newtv.libs.util.SharePreferenceUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.BaseObserver;
 
 
 /**
@@ -33,7 +39,7 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
  * 创建日期:     2018/9/26 0021
  */
 public class CollectRemoteDataSource implements CollectDataSource {
-    private static final String TAG = "lx";
+    private static final String TAG = "CollectRemoteDataSource";
 
     private static CollectRemoteDataSource INSTANCE;
     private Context mContext;
@@ -93,28 +99,83 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.getContentId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
 
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "addRemoteCollect onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                         mAddDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "addRemoteCollect onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "addRemoteCollect onError: ");
+
                         e.printStackTrace();
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "addRemoteCollect dealwithUserOffline: ");
+                    }
+
+                    @Override
                     public void onComplete() {
+
                         UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
+    }
+
+    @Override
+    public void addRemoteCollectList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                try {
+                    if (!TextUtils.isEmpty(userID)) {
+                        if (beanList != null && beanList.size() > 0) {
+                            for (int i = 0; i < beanList.size(); i++) {
+                                addRemoteCollectRecord(token, userID, beanList.get(i));
+                            }
+                            e.onNext(beanList.size());
+                        } else {
+                            Log.e(TAG, "wqs:addRemoteCollectList:beanList==null||beanList.size==0");
+                            e.onNext(0);
+                        }
+                    } else {
+                        Log.e(TAG, "wqs:addRemoteCollectList:userID==null");
+                        e.onNext(0);
+                    }
+
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    Log.e(TAG, "wqs:addRemoteCollectList:Exception:" + exception.toString());
+                    e.onNext(0);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer size) throws Exception {
+                        if (callback != null) {
+                            callback.onAddRemoteCollectListComplete(size);
+                        }
                     }
                 });
     }
@@ -144,27 +205,44 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         programset_ids)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
 
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "deleteRemoteCollect onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                         mDeleteDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "deleteRemoteCollect onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.i(TAG, "deleteRemoteCollect onError: ");
+
                         e.printStackTrace();
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "deleteRemoteCollect dealwithUserOffline: ");
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "deleteRemoteCollect onComplete: ");
+
                         UserCenterRecordManager.getInstance().unSubscribe(mDeleteDisposable);
                     }
                 });
@@ -178,18 +256,23 @@ public class CollectRemoteDataSource implements CollectDataSource {
                 .getCollectList(Authorization, userId, "", Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ResponseBody>() {
+                .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "getRemoteCollectList onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                         mGetListDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "getRemoteCollectList onNext: ");
+
                         try {
                             int totalSize = 0;
-                            JSONObject jsonObject = new JSONObject(responseBody.string());
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            JSONObject jsonObject = new JSONObject(responseString);
                             JSONObject data = jsonObject.getJSONObject("data");
                             JSONArray list = data.optJSONArray("list");
                             totalSize = data.optInt("end");
@@ -245,7 +328,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "get Collect list error:" + e.toString());
+                        Log.i(TAG, "getRemoteCollectList onError: ");
+
                         if (callback != null) {
                             callback.onCollectListLoaded(null, 0);
                         }
@@ -253,7 +337,15 @@ public class CollectRemoteDataSource implements CollectDataSource {
                     }
 
                     @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "getRemoteCollectList dealwithUserOffline: ");
+
+                    }
+
+                    @Override
                     public void onComplete() {
+                        Log.i(TAG, "getRemoteCollectList onComplete: ");
+
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
                 });
@@ -267,5 +359,74 @@ public class CollectRemoteDataSource implements CollectDataSource {
         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 
+    private void addRemoteCollectRecord(String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
+        String mType = "0";
+        String parentId = "";
+        String subId = "";
+        String type = bean.get_contenttype();
+
+        if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
+            mType = "0";
+            parentId = bean.get_contentuuid();
+            subId = bean.getPlayId();
+        } else if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
+            mType = "1";
+            subId = bean.get_contentuuid();
+        }
+
+        String Authorization = "Bearer " + token;
+
+        NetClient.INSTANCE
+                .getUserCenterLoginApi()
+                .addCollect(Authorization,
+                        userID,
+                        Libs.get().getChannelId(),
+                        Libs.get().getAppKey(),
+                        parentId,
+                        bean.get_title_name(),
+                        mType,
+                        bean.get_imageurl(),
+                        subId,
+                        bean.getGrade(),
+                        bean.getVideoType(),
+                        bean.getTotalCnt(),
+                        bean.getTotalCnt(),
+                        bean.get_contenttype(),
+                        bean.getPlayIndex(),
+                        bean.get_actiontype(),
+                        bean.getProgramChildName(),
+                        bean.getContentId())
+                .subscribe(new Observer<ResponseBody>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                        mAddDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        try {
+                            String responseString = responseBody.string();
+                            Log.d(TAG, "wqs:addRemoteCollectRecord onNext result : " + responseString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "wqs:addRemoteCollectRecord onError result : " + e.toString());
+                        e.printStackTrace();
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        UserCenterRecordManager.getInstance().unSubscribe(mAddDisposable);
+                    }
+                });
+    }
 
 }
