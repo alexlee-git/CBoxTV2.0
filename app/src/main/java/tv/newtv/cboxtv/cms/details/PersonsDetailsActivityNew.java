@@ -84,7 +84,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
         hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6,R
                 .drawable.focus_240_360,EpisodeHorizontalListView.DIRECTION_VERTICAL,R.id
                 .column_update_date_layout,new RecycleItemDecoration(getResources()
-                .getDimensionPixelOffset(R.dimen.width_33px),getResources()
+                .getDimensionPixelOffset(R.dimen.width_34px),getResources()
                 .getDimensionPixelOffset(R.dimen.width_15px)),R.id.column_update_item,R.id.column_update_date_tv
                 );
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
