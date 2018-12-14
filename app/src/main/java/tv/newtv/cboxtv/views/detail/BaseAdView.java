@@ -77,7 +77,7 @@ public abstract class BaseAdView extends RecycleImageView implements View.OnFocu
             if(!TextUtils.isEmpty(result.eventContent)){
                 this.result = result;
 //                setFocusable(true);
-                setFocusableInTouchMode(true);
+//                setFocusableInTouchMode(true);
                 setOnFocusChangeListener(this);
                 setOnClickListener(this);
             }
