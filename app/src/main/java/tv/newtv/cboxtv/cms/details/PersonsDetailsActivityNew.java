@@ -85,7 +85,8 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
                 .drawable.focus_240_360,EpisodeHorizontalListView.DIRECTION_VERTICAL,R.id
                 .column_update_date_layout,new RecycleItemDecoration(getResources()
                 .getDimensionPixelOffset(R.dimen.width_33px),getResources()
-                .getDimensionPixelOffset(R.dimen.width_15px)));
+                .getDimensionPixelOffset(R.dimen.width_15px)),R.id.column_update_item,R.id.column_update_date_tv
+                );
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
                 contentUUID, hostProgramView);// 获取主持列表
 
