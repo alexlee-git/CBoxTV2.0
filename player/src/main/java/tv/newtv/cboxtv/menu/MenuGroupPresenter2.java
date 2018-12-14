@@ -1009,10 +1009,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     continue;
 
                 Node node = new LastNode();
-                node.setId(program._contentuuid);
+                node.setId(program._content_id);
                 node.setPid(parent.getId());
                 node.setTitle(program._title_name);
-                node.setActionUri(program._contentuuid);
+                node.setActionUri(program._content_id);
                 node.setContentType(program._contenttype);
                 node.setForbidAddCollect(true);
 
