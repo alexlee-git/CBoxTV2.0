@@ -25,6 +25,8 @@ public class Program {
     private String rSubScript;
     private String periods;
     private String premiereTime;
+    private String startTime;
+    private String duration;
     /**
      * 节目集或者栏目的id，相当于
      */
@@ -194,6 +196,22 @@ public class Program {
 
     public void setCollect(boolean collect) {
         isCollect = collect;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public Content convertProgramInfo(){

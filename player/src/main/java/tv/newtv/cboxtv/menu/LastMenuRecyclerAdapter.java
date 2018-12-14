@@ -17,6 +17,9 @@ import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import tv.newtv.cboxtv.menu.model.LastNode;
@@ -33,6 +36,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     public static final String COLLECT_ID = "collect";
     public static final String NO_CONTENTS = "noContents";
     private static final String TAG = "LastMenuRecyclerAdapter";
+    private MenuGroup menuGroup;
 
     private List<Program> data;
     /**
@@ -48,6 +52,8 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     private String contentType;
 
     private Program playProgram;
+    private SimpleDateFormat format;
+    private SimpleDateFormat targetFormat;
     private Handler handler = new MyHandler(this);
 
     private static class MyHandler extends Handler {
@@ -67,8 +73,9 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         }
     }
 
-    public LastMenuRecyclerAdapter(Context context, List<Program> data, String playId) {
+    public LastMenuRecyclerAdapter(Context context, List<Program> data, String playId,MenuGroup menuGroup) {
         super(context);
+        this.menuGroup = menuGroup;
         Program program = null;
         for (Program p : data) {
             if (TextUtils.equals(p.getContentUUID(), playId)) {
@@ -91,6 +98,9 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         } else if(2 == viewType){
             View view = LayoutInflater.from(context).inflate(R.layout.item_menu_no_contents,null);
             holder = new NoContentsHolder(view);
+        } else if(3 == viewType){
+            View view = LayoutInflater.from(context).inflate(R.layout.item_menu_lb,parent,false);
+            holder = new LbHolder(view);
         }
         return holder;
     }
@@ -119,6 +129,15 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         } else if(holder instanceof NoContentsHolder){
 //            NoContentsHolder noContentsHolder = (NoContentsHolder) holder;
             return;
+        } else if(holder instanceof LbHolder){
+            LbHolder lbHolder = (LbHolder) holder;
+            lbHolder.title.setText(program.getTitle());
+            lbHolder.time.setText(getTime(program.getStartTime(),program.getDuration()));
+            if(isCurrentPlay(program)){
+                lbHolder.playing.setVisibility(View.VISIBLE);
+            } else {
+                lbHolder.playing.setVisibility(View.GONE);
+            }
         }
 
         if (isCurrentPlay(program)) {
@@ -128,7 +147,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             if (!init) {
                 MessageObj messageObj = new MessageObj();
                 messageObj.view = holder.itemView;
-                if (isCollect(program)) {
+                if (isCollect(program) || holder instanceof LbHolder) {
                     messageObj.resId = R.drawable.menu_group_item_focus;
                 } else {
                     messageObj.resId = R.drawable.one_focus;
@@ -144,7 +163,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if (isCollect(program)) {
+                    if (isCollect(program) || holder instanceof LbHolder) {
                         v.setBackgroundResource(R.drawable.menu_group_item_focus);
                     } else {
                         v.setBackgroundResource(R.drawable.one_focus);
@@ -183,6 +202,8 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             return 1;
         } else if(NO_CONTENTS.equals(data.get(position).getContentUUID())){
             return 2;
+        } else if(Constant.CONTENTTYPE_LB.equals(data.get(position).getParent().getContentType())){
+            return 3;
         }
         return super.getItemViewType(position);
     }
@@ -202,6 +223,14 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         } else {
             this.contentType = "";
         }
+
+        if(data != null && data.size() > 0
+                && Constant.CONTENTTYPE_LB.equals(data.get(0).getParent().getContentType())){
+            menuGroup.addLastAdapterSpacesItem();
+        }else {
+            menuGroup.removeLastAdapterSpacesItem();
+        }
+
         this.data = data;
         this.selectView = null;
         if (program != null) {
@@ -292,6 +321,21 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         }
     }
 
+    class LbHolder extends RecyclerView.ViewHolder {
+        public TextView title;
+        public TextView time;
+        public ImageView playing;
+        public ImageView vip;
+
+        public LbHolder(View itemView) {
+            super(itemView);
+            title = itemView.findViewById(R.id.tv_video_name);
+            time = itemView.findViewById(R.id.tv_time);
+            playing = itemView.findViewById(R.id.iv_playing);
+            vip = itemView.findViewById(R.id.iv_vip);
+        }
+    }
+
     public int calculatePlayIdPosition(int defValue) {
         int result = defValue;
         for (int i = 0; i < data.size(); i++) {
@@ -334,5 +378,29 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             return true;
         }
         return false;
+    }
+
+    private String getTime(String startTime,String duration){
+        StringBuilder sb = new StringBuilder();
+        Calendar calendar = Calendar.getInstance();
+        Calendar after = (Calendar) calendar.clone();
+        if(format == null){
+            format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        }
+        if(targetFormat == null){
+            targetFormat = new SimpleDateFormat("HH:mm");
+        }
+        try {
+            Date parse = format.parse(startTime);
+            calendar.setTime(parse);
+            after.add(Calendar.SECOND,Integer.parseInt(duration));
+
+            sb.append(targetFormat.format(calendar.getTime()));
+            sb.append("-");
+            sb.append(targetFormat.format(after.getTime()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 }
