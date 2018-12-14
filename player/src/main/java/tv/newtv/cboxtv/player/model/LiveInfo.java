@@ -262,4 +262,11 @@ public class LiveInfo {
         return 0;
     }
 
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public void setAlwaysPlay(boolean alwaysPlay) {
+        this.alwaysPlay = alwaysPlay;
+    }
 }
