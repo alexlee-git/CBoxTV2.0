@@ -239,6 +239,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public void onError(int what, int extra, String msg) {
             LogUtils.i(TAG, "live onError: ");
         }
+
+        @Override
+        public void onAdStartPlaying() {
+
+        }
     };
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
@@ -341,6 +346,15 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         @Override
         public void onError(int what, int extra, String msg) {
             LogUtils.i(TAG, "onError: ");
+        }
+
+        @Override
+        public void onAdStartPlaying() {
+            Log.i(TAG, "onAdStartPlaying  dismiss SeekBar");
+            if (mNewTVLauncherPlayerSeekbar != null
+                    && mNewTVLauncherPlayerSeekbar.getVisibility() == VISIBLE) {
+                mNewTVLauncherPlayerSeekbar.dismiss();
+            }
         }
     };
     private ChangeAlternateListener mChangeAlternateListener;
@@ -1413,6 +1427,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             return true;
         }
 
+
         if (mPlayerContract != null && mPlayerContract.processKeyEvent(event) &&
                 mShowingChildView == SHOWING_TIP_VIEW) {
             return true;
@@ -1524,6 +1539,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
             return true;
+        }
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
+                || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+            if (defaultConfig.playType == PLAY_TYPE_ALTERNATE) {
+                return true;
+            }
         }
 
         if (isFullScreen()) {
@@ -2073,6 +2095,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             }
         }
+    }
+
+    @Override
+    public void onAlternateTimeChange(String current, String end) {
+
     }
 
     @Override

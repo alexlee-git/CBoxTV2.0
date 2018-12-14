@@ -2,7 +2,10 @@ package com.newtv.cms;
 
 import com.newtv.libs.util.LogUtils;
 
+import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -34,13 +37,19 @@ public class RetryWithDelay implements Function<Observable<? extends Throwable>,
         return attempts.flatMap(new Function<Throwable, ObservableSource<?>>() {
             @Override
             public ObservableSource<?> apply(Throwable throwable) throws Exception {
-                if (++retryCount < maxRetryCount) {
-                    LogUtils.e("do request retry currentTime="+retryCount);
+                if (++retryCount < maxRetryCount & canRetry(throwable)) {
+                    LogUtils.e("do request retry currentTime=" + retryCount);
                     return Observable.timer(retryDelay, timeUnit);
                 }
 
                 return Observable.error(throwable);
             }
         });
+    }
+
+    private boolean canRetry(Throwable throwable) {
+        return throwable instanceof SocketTimeoutException
+                || throwable instanceof TimeoutException
+                || throwable instanceof IOException;
     }
 }

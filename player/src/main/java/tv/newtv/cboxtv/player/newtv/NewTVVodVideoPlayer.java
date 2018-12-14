@@ -238,6 +238,13 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
                 mIPlayCallBackEvent.onTimeout(i);
             }
         }
+
+        @Override
+        public void onAdStartPlaying() {
+            if (mIPlayCallBackEvent != null) {
+                mIPlayCallBackEvent.onAdStartPlaying();
+            }
+        }
     };
 
     private NewTVVodVideoPlayer(Context context) {
