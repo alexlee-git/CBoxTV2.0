@@ -16,7 +16,8 @@
         android:background="@drawable/screen_list_default"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:textSize="@dimen/width_36px"/>
 
 
 

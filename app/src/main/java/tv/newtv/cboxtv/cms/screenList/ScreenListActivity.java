@@ -878,5 +878,5 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         return super.dispatchKeyEvent(event);
     }
 
-    
+
 }
