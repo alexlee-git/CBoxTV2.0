@@ -18,8 +18,11 @@
     </tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView>
 
     <tv.newtv.cboxtv.views.detail.EpisodeAdView
+        android:id="@+id/ad_view"
         android:layout_below="@+id/play_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true" />
 
 </tv.newtv.cboxtv.views.detail.SmoothScrollView>

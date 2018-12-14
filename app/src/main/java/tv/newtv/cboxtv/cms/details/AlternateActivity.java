@@ -25,6 +25,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.AlternateCallback;
 import tv.newtv.cboxtv.views.detail.AlterHeaderView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
+import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
@@ -140,10 +141,12 @@ public class AlternateActivity extends DetailPageActivity implements
         scrollView = findViewById(R.id.root_view);
         headerView = findViewById(R.id.header_view);
         mPlayListView = findViewById(R.id.play_list);
+        EpisodeAdView adView = findViewById(R.id.ad_view);
         mPlayListView.setOnItemClick(this);
 
         headerView.setCallback(this);
         headerView.setContentUUID(contentUUID);
+        adView.requestAD();
     }
 
     @Override
