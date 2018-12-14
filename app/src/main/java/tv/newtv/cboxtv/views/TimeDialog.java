@@ -46,7 +46,9 @@ public class TimeDialog {
             };
         }
     }
-
+    public static void showBuilder(Context context){
+        showBuilder(context,"",null,null);
+    }
     public static void showBuilder(Context context, HeadPlayerView headPlayerView){
         showBuilder(context,"",null,headPlayerView);
     }
@@ -76,7 +78,9 @@ public class TimeDialog {
             @Override
             public void onClick(View v) {
                 if (time <= 0) {
-                    headPlayerView.continuePlayVideo();
+                    if (headPlayerView != null){
+                        headPlayerView.continuePlayVideo();
+                    }
                     TimeDialog.dismiss();
                     if(listener != null){
                         listener.onClick(v);

@@ -225,18 +225,8 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
 
         initdialog();
 
-        mIfContinued = false;
-        if (mProductPricesInfo.getResponse().getPrices() != null && mProductPricesInfo.getResponse().getPrices().size() > 0) {
-            ProductPricesInfo.ResponseBean.PricesBean pricesBean = mProductPricesInfo.getResponse().getPrices().get(position);
-            if (pricesBean != null) {
-                mIfContinued = pricesBean.isIfContinued();
-            }
-        }
-        Log.i(TAG,"mIfContinued = " + mIfContinued);
-        if(mIfContinued){
-            tv_ap.setVisibility(View.GONE);
-        }
     }
+
 
     @Override
     public void onClick(View v) {
@@ -515,6 +505,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                 }
                 case MSG_RESULT: {
                     if (status.equals(pay_success)) {
+                        UserCenterUtils.initMemberStatus();
                         uploadUnPayLog(1);
                         if (mHandler != null) {
                             mHandler.removeMessages(MSG_RESULT);
@@ -552,6 +543,13 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                 if (pricesBean == null) {
                                     return true;
                                 }
+                                //判断是否为连续包月，如是则隐藏支付宝
+                                mIfContinued = pricesBean.isIfContinued();
+                                Log.i(TAG, "handleMessage: mIfContinued="+mIfContinued);
+                                if(mIfContinued){
+                                    tv_ap.setVisibility(View.GONE);
+                                }
+
                                 ProductPricesInfo.ResponseBean.PricesBean.ActivityBean activityBean = pricesBean.getActivity();
 
                                 try {
