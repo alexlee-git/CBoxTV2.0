@@ -11,10 +11,6 @@ import android.view.View;
 public abstract class BaseMenuRecyclerAdapter<T extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<T>{
     protected Context context;
     /**
-     * 当前正在播放视频的id
-     */
-    protected String playId;
-    /**
      * 当前level左边的为到当前节点的路径view
      *
      */
@@ -29,9 +25,8 @@ public abstract class BaseMenuRecyclerAdapter<T extends RecyclerView.ViewHolder>
      */
     protected View pathView;
 
-    public BaseMenuRecyclerAdapter(Context context,String playId){
+    public BaseMenuRecyclerAdapter(Context context){
         this.context = context;
-        this.playId = playId;
     }
 
     public View getFirstPositionView() {

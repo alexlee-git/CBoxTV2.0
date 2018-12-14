@@ -95,4 +95,9 @@ public class Player implements PlayerObserver {
     public void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback) {
         mObserver.deleteLbCollect(contentUUID,dbCallback);
     }
+
+    @Override
+    public void detailsJumpActivity(Context context, String contentType, String contentUUID, String seriesSubUUID) {
+        mObserver.detailsJumpActivity(context,contentType,contentUUID,seriesSubUUID);
+    }
 }

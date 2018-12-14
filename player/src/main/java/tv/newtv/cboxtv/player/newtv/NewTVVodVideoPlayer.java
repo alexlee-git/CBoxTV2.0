@@ -238,6 +238,13 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
                 mIPlayCallBackEvent.onTimeout(i);
             }
         }
+
+        @Override
+        public void onAdStartPlaying() {
+            if (mIPlayCallBackEvent != null) {
+                mIPlayCallBackEvent.onAdStartPlaying();
+            }
+        }
     };
 
     private NewTVVodVideoPlayer(Context context) {
@@ -295,7 +302,11 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
                 icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
             }
         }else{
-            icntvPlayerInfo.setAdModel(Constants.AD_MODEL_CAROUSEL);
+            if(videoDataStruct.isFirstAlternate()){
+                icntvPlayerInfo.setAdModel(Constants.AD_MODEL_NONE);
+            }else{
+                icntvPlayerInfo.setAdModel(Constants.AD_MODEL_CAROUSEL);
+            }
         }
         //extend字段
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId

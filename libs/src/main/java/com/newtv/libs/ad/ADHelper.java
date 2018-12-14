@@ -141,16 +141,24 @@ public class ADHelper {
         private int currentIndex = 0;
         private int ctime;
         private boolean mCancel = false;
+        private CountDown countDown;
         private CountDownLatch countDownLatch;
 
 
         public void cancel() {
+            LogUtils.d("ADHelper","cancel() ad="+this);
+            mCancel = true;
+            adCallback = null;
+
             if (adItems != null) {
                 adItems.clear();
                 adItems = null;
             }
-            adCallback = null;
-            mCancel = true;
+            if(countDown != null){
+                countDown.destroy();
+                countDown = null;
+            }
+
             countDownLatch = null;
             downloadListener = null;
         }
@@ -238,9 +246,11 @@ public class ADHelper {
         }
 
         public void checkStart(boolean isReportAD) {
+
             if (countDownLatch != null && countDownLatch.getCount() != 0) {
                 return;
             }
+            if(mCancel) return;
             currentIndex = 0;
             ctime = 0;
             time = 0;
@@ -305,11 +315,15 @@ public class ADHelper {
                 return;
             }
 
-            CountDown countDown = new CountDown(adItem.PlayTime);
+            countDown = new CountDown(adItem.PlayTime);
             countDown.listen(new CountDown.Listen() {
                 @Override
                 public void onCount(final int t) {
-                    Log.d(TAG, "time : " + time + "ctime : " + ctime);
+                    if(mCancel){
+                        return;
+                    }
+                    Log.d(TAG, "time : " + time + "ctime : " + ctime +" cancel="+mCancel +" " +
+                            "ad="+this);
                     ctime++;
                     if (adCallback != null && time - ctime > 0) {
                         adCallback.updateTime(time, time - ctime);
@@ -318,6 +332,8 @@ public class ADHelper {
 
                 @Override
                 public void onComplete() {
+                    Log.d(TAG, "onComplete()" +" cancel="+mCancel);
+                    if(mCancel) return;
                     currentIndex += 1;
                     doNext(isReportAD);
                 }
@@ -328,6 +344,10 @@ public class ADHelper {
                 }
             });
             countDown.start();
+        }
+
+        public boolean isCancel() {
+            return mCancel;
         }
 
         public static class ADItem {

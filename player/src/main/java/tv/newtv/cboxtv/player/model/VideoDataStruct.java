@@ -21,6 +21,7 @@ public class VideoDataStruct implements Serializable {
 	private String desc = "";// 影片介绍
 	private boolean isCollect;// 是否收藏
 	private boolean isAlternate;// 是否轮播
+	private boolean isFirstAlternate;// 是否首次切换轮播台
 	private String alternateId;//轮播台ID
 	private int dataSource = -1;// -1:不明 0:icntv 1:tencent 2:sohu
 								// 3:icntv-tentcent-sohu 4......1000:other
@@ -135,8 +136,13 @@ public class VideoDataStruct implements Serializable {
 		return seriesId;
 	}
 
-	public void setAlternate(boolean alternate) {
+	public void setAlternate(boolean alternate,boolean isFirst) {
 		isAlternate = alternate;
+		isFirstAlternate = isFirst;
+	}
+
+	public boolean isFirstAlternate() {
+		return isFirstAlternate;
 	}
 
 	public boolean isAlternate() {

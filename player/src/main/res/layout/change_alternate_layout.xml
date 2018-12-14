@@ -7,7 +7,7 @@
         android:id="@+id/background_ad"
         android:scaleType="fitXY"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="@dimen/height_358px"
+        android:layout_marginBottom="@dimen/height_370px"
         android:layout_width="@dimen/width_952px"
         android:layout_height="@dimen/height_182px"/>
 

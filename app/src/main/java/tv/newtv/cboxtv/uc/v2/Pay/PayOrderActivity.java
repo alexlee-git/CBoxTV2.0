@@ -125,6 +125,8 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private final String ACTTYPE = "DISCOUNT";
     private int price;
     private long expireTime_All;
+    private long orders[];
+    private boolean mIfContinued; //是否是连续包月
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -199,6 +201,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     }
 
     private void init() {
+        orders = new long[2];
         tv_wx = findViewById(R.id.paychannel_order_tv_wx);
         tv_ap = findViewById(R.id.paychannel_order_tv_ap);
         tv_wx_fouse = findViewById(R.id.paychannel_order_tv_fouse_wx);
@@ -221,6 +224,18 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         mPopupWindow.setBackgroundDrawable(new BitmapDrawable());// 响应返回键必须的语句。
 
         initdialog();
+
+        mIfContinued = false;
+        if (mProductPricesInfo.getResponse().getPrices() != null && mProductPricesInfo.getResponse().getPrices().size() > 0) {
+            ProductPricesInfo.ResponseBean.PricesBean pricesBean = mProductPricesInfo.getResponse().getPrices().get(position);
+            if (pricesBean != null) {
+                mIfContinued = pricesBean.isIfContinued();
+            }
+        }
+        Log.i(TAG,"mIfContinued = " + mIfContinued);
+        if(mIfContinued){
+            tv_ap.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -234,7 +249,11 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-
+        if (mDisposable_order != null) {
+            mDisposable_order.dispose();
+            mDisposable_order = null;
+        }
+//        img_qrcode.setImageDrawable(null);
         switch (v.getId()) {
             case R.id.paychannel_order_tv_wx:
                 if (hasFocus) {
@@ -244,7 +263,13 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                         isFirstQrCode = false;
                         return;
                     }
-                    getPayQRCode();
+                    long orderID = orders[1];
+                    if (orderID != 0) {
+                        getReFreshOrder(String.valueOf(orderID));
+                    } else {
+                        getPayQRCode();
+                    }
+
                     if (mHandler != null) {
                         mHandler.removeMessages(MSG_RESULT);
                     }
@@ -256,7 +281,12 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                 if (hasFocus) {
                     tv_ap_fouse.setVisibility(View.VISIBLE);
                     payChannelId = 1;
-                    getPayQRCode();
+                    long orderID = orders[0];
+                    if (orderID != 0) {
+                        getReFreshOrder(String.valueOf(orderID));
+                    } else {
+                        getPayQRCode();
+                    }
                     if (mHandler != null) {
                         mHandler.removeMessages(MSG_RESULT);
                     }
@@ -418,6 +448,11 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                 orderId = object.getLong("id");
                                 code = object.getString("code");
                                 qrCodeUrl = object.getString("qrCodeUrl");
+                                if (payChannelId == 1) {
+                                    orders[0] = orderId;
+                                } else if (payChannelId == 2) {
+                                    orders[1] = orderId;
+                                }
                                 if (mHandler != null) {
                                     mHandler.sendEmptyMessage(MSG_QRCODE);
                                 }
@@ -709,6 +744,8 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
             } else {
                 jsonObject.put("source", "");
             }
+
+
             jsonObject.put("contentCheckDTO", contentDTOForCheckObject);
             jsonObject.put("paymentChannelDTO", paymentChannelObject);
             jsonObject.put("priceDTO", priceObject);

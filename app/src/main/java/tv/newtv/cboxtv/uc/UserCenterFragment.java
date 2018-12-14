@@ -214,7 +214,7 @@ public class UserCenterFragment extends BaseFragment implements
         }
         uploadUserOnline();
         //同步云端数据库数据
-        UserCenterRecordManager.getInstance().getUserBehaviorUtils(getActivity(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
+        UserCenterRecordManager.getInstance().getUserBehavior(getActivity(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
         return view;
     }
 

@@ -36,7 +36,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
@@ -53,6 +55,7 @@ import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -178,8 +181,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         menuGroup.addOnSelectListener(new MenuGroup.OnSelectListener() {
             @Override
             public void select(Program program) {
-                playProgram = program;
                 if (LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())) {
+                    playProgram = program;
                     if (program.isCollect()) {
                         deleteLbCollect(program);
                     } else {
@@ -196,6 +199,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     }
                     return;
                 }
+                playProgram = program;
 
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
                 if (content != null) {
@@ -215,6 +219,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     playProgram = null;
                     LastNode lastNode = (LastNode) node;
                     NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, "11488346", lastNode.getTitle());
+                } else if(node != null && node instanceof LastNode && Constant.CONTENTTYPE_LV.equals(node.getContentType())){
+                    playLive(node);
                 }
             }
         });
@@ -774,7 +780,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     @Override
     public void enterFullScreen() {
-        if (menuGroupIsInit) {
+        if (menuGroupIsInit && !NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             getProgramSeriesAndContentUUID();
             updatePlayProgram();
             refreshLbNode();
@@ -1003,10 +1009,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     continue;
 
                 Node node = new LastNode();
-                node.setId(program._contentuuid);
+                node.setId(program._content_id);
                 node.setPid(parent.getId());
                 node.setTitle(program._title_name);
-                node.setActionUri(program._contentuuid);
+                node.setActionUri(program._content_id);
                 node.setContentType(program._contenttype);
                 node.setForbidAddCollect(true);
 
@@ -1026,31 +1032,54 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseBody>() {
+                .subscribe(new Observer<ResponseBody>() {
                     @Override
-                    public void accept(ResponseBody responseBody) throws Exception {
-                        JSONObject jsonObject = new JSONObject(responseBody.string());
-                        String data = jsonObject.optString("data");
-                        com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
-                        if (content != null) {
-                            Log.i(TAG, "页面跳转: ");
-                            String csContentId = mySplit(content.getCsContentIDs());
-                            if (!TextUtils.isEmpty(csContentId)) {
-                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_PS, csContentId, "");
-                                return;
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(responseBody.string());
+                            String data = jsonObject.optString("data");
+                            com.newtv.cms.bean.Content content = GsonUtil.fromjson(data, com.newtv.cms.bean.Content.class);
+                            if (content != null) {
+                                Log.i(TAG, "页面跳转: ");
+                                String csContentId = mySplit(content.getCsContentIDs());
+                                if (!TextUtils.isEmpty(csContentId)) {
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_PS,csContentId,program.getContentUUID());
+                                    return;
+                                }
+                                String tvContentId = mySplit(content.getTvContentIDs());
+                                if (!TextUtils.isEmpty(tvContentId)) {
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_TV,tvContentId,program.getContentUUID());
+                                    return;
+                                }
+                                String cgContentId = mySplit(content.getCgContentIDs());
+                                if (!TextUtils.isEmpty(cgContentId)) {
+                                    Player.get().detailsJumpActivity(context,Constant.CONTENTTYPE_CG,cgContentId,program.getContentUUID());
+                                    return;
+                                }
+                                Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                            } else {
+                                showErrorToast();
                             }
-                            String tvContentId = mySplit(content.getTvContentIDs());
-                            if (!TextUtils.isEmpty(tvContentId)) {
-                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_TV, tvContentId, "");
-                                return;
-                            }
-                            String cgContentId = mySplit(content.getCgContentIDs());
-                            if (!TextUtils.isEmpty(cgContentId)) {
-                                Player.get().activityJump(context, Constant.OPEN_DETAILS, Constant.CONTENTTYPE_CG, cgContentId, "");
-                                return;
-                            }
-                            Player.get().activityJump(context, Constant.OPEN_DETAILS, program.getContentType(), program.getContentID(), "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            showErrorToast();
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        showErrorToast();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }
@@ -1145,5 +1174,37 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 splitIds(programSeriesInfo.getTvContentIDs(),seriesIdList);
                 break;
         }
+    }
+
+    private void showErrorToast(){
+        Toast.makeText(context,"节目走丢了 请继续观看",Toast.LENGTH_SHORT).show();
+    }
+
+    private void playLive(Node node) {
+        String id = node.getId();
+        String leftString = id.substring(0, 2);
+        String rightString = id.substring(id.length() - 2, id.length());
+        Request.INSTANCE.getContent()
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), leftString, rightString, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        JSONObject jsonObject = new JSONObject(responseBody.string());
+                        com.newtv.cms.bean.Content content = GsonUtil.fromjson(jsonObject.optString("data"), com.newtv.cms.bean.Content.class);
+                        if (content != null && !TextUtils.isEmpty(content.getPlayUrl()) && !TextUtils.isEmpty(content.getContentID())) {
+                            LiveInfo liveInfo = new LiveInfo();
+                            liveInfo.setLiveUrl(content.getPlayUrl());
+                            liveInfo.setContentUUID(content.getContentID());
+                            liveInfo.setmTitle(content.getTitle());
+                            liveInfo.setAlwaysPlay(true);
+                            Log.i(TAG, "accept: "+liveInfo);
+                            NewTVLauncherPlayerViewManager.getInstance().playLive(liveInfo,null);
+                        } else {
+                          showErrorToast();
+                        }
+                    }
+                });
     }
 }

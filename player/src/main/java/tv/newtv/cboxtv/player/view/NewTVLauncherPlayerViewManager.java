@@ -102,7 +102,8 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
-    public void setPlayerViewContainer(FrameLayout frameLayout, Context context) {
+    public void setPlayerViewContainer(FrameLayout frameLayout, Context context,boolean
+            fromFullScreen) {
         if (mNewTVLauncherPlayerView != null) {
             ViewGroup viewGroup = (ViewGroup) mNewTVLauncherPlayerView.getParent();
             if (viewGroup != null) {
@@ -111,8 +112,10 @@ public class NewTVLauncherPlayerViewManager {
         } else {
             mNewTVLauncherPlayerViewManager.init(context);
         }
-        mNewTVLauncherPlayerView.setFromFullScreen();
-        mNewTVLauncherPlayerView.updateUIPropertys(true);
+        if(fromFullScreen) {
+            mNewTVLauncherPlayerView.setFromFullScreen();
+            mNewTVLauncherPlayerView.updateUIPropertys(true);
+        }
         frameLayout.addView(mNewTVLauncherPlayerView, -1);
 
         mPlayerPageContext = context;

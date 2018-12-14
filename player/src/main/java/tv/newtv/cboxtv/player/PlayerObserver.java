@@ -16,14 +16,23 @@ import com.newtv.libs.db.DBCallback;
  * 创建日期:          2018/10/10
  */
 public interface PlayerObserver {
-    void onFinish(Content playInfo, int index, int position,int duration);
+    void onFinish(Content playInfo, int index, int position, int duration);
+
     void onExitApp();
+
     Activity getCurrentActivity();
+
     Intent getPlayerActivityIntent();
+
     boolean isVip();
+
     void addLBHistory(String alternateID);
-    void activityJump(Context context, String actionType, String contentType,
-                                    String contentUUID, String actionUri);
-    void addLbCollect(Bundle bundle,DBCallback<String> dbCallback);
-    void deleteLbCollect(String contentUUID,DBCallback<String> dbCallback);
+
+    void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri);
+
+    void addLbCollect(Bundle bundle, DBCallback<String> dbCallback);
+
+    void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback);
+
+    void detailsJumpActivity(Context context, String contentType, String contentUUID, String seriesSubUUID);
 }

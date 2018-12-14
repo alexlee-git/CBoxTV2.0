@@ -72,6 +72,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     private TextView alternateDescText;
     private VideoPlayerView alternateView;
     private ViewStub mMoreView;
+    private boolean isInflate = false;
 
     private FocusToggleView2 mCollect;
 
@@ -148,6 +149,13 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateDescText = findViewById(R.id.id_detail_desc);
         alternateView = findViewById(R.id.video_player);
         mMoreView = findViewById(R.id.more_view_stub);
+        mMoreView.setOnInflateListener(new ViewStub.OnInflateListener() {
+            @Override
+            public void onInflate(ViewStub stub, View inflated) {
+                isInflate = true;
+            }
+        });
+
         ImageView navArrowDark = findViewById(R.id.nav_arrows_dark);
         ImageView navTitle = findViewById(R.id.nav_title);
         darkAnimator(navArrowDark,navTitle);
@@ -289,11 +297,11 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
         }
 
-        if (alternateDescText != null) {
+        if (alternateDescText != null && !TextUtils.isEmpty(content.getDescription())) {
             alternateDescText.setText(content.getDescription().replace("\r\n", ""));
             int ellipsisCount = alternateDescText.getLayout().getEllipsisCount(alternateDescText.getLineCount
                     () - 1);
-            if (ellipsisCount > 0 && mMoreView != null) {
+            if (ellipsisCount > 0 && mMoreView != null && !isInflate) {
                 final View view = mMoreView.inflate();
                 view.setOnFocusChangeListener(new OnFocusChangeListener() {
                     @Override

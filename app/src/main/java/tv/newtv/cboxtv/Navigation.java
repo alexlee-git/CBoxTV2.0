@@ -51,6 +51,8 @@ public class Navigation {
             return;
         }
         navigationChangeList.add(change);
+
+        dispatchChange();
     }
 
     public void setCurrentUUID(String currentUUID) {
