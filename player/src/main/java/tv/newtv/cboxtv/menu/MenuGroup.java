@@ -61,7 +61,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     private static final int REQUEST_MENU_FOCUS = 1;
     private static final int REQUEST_MENU_FIRST_FOCUS = 2;
     private static final int REQUEST_MENU_PATH_VIEW_FOCUS = 3;
-    private static final int PADDING_TOP = ScreenUtils.dp2px(24);
+    private static final int PADDING_TOP = ScreenUtils.dp2px(26);
     /**
      * 无法测量到recyclerView宽度的时候，临时使用这个值为recyclerView的宽度
      */
