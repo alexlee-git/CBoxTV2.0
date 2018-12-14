@@ -2093,6 +2093,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     @Override
+    public void onAlternateTimeChange(String current, String end) {
+
+    }
+
+    @Override
     public void onAlterItemResult(String contentId, Content content, boolean isLive,boolean
             isFirst) {
         if (isReleased) return;
