@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -642,7 +641,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         defaultConfig.defaultHeight,
                 screenWidth, screenHeight, false, true);
 
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) frameLayout
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) frameLayout
                 .getLayoutParams();
         layoutParams.leftMargin = 0;
         layoutParams.topMargin = 0;

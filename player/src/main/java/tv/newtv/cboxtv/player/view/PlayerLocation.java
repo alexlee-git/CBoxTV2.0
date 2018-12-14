@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.player.view;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -61,7 +62,7 @@ class PlayerLocation {
         if (mPlayerView == null || mContainer == null) return;
         Rect rect = new Rect();
         if (!mPlayerView.getLocalVisibleRect(rect)) return;
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mContainer
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mContainer
                 .getLayoutParams();
         int[] location = new int[2];
         mPlayerView.getLocationInWindow(location);
