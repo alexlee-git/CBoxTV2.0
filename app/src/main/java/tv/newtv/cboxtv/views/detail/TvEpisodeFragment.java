@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.vip.VipCheck;
@@ -336,10 +337,9 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
         @Override
         public void setIsPlay(boolean value) {
             if (value) {
-                mTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color.color_62c0eb));
+                mTitleView.setTextColor(ContextCompat.getColor(LauncherApplication.AppContext, R.color.color_62c0eb));
             } else {
-                mTitleView.setTextColor(ContextCompat.getColor(getContext(), R.color
-                        .detail_tvcolor));
+                mTitleView.setTextColor(ContextCompat.getColor(LauncherApplication.AppContext, R.color.detail_tvcolor));
             }
             mTitleView.postInvalidate();
         }

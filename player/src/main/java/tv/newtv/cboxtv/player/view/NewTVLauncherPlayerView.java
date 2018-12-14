@@ -17,10 +17,10 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.letv.LetvDeviceUtil;
 import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
@@ -239,6 +239,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         public void onError(int what, int extra, String msg) {
             LogUtils.i(TAG, "live onError: ");
         }
+
+        @Override
+        public void onAdStartPlaying() {
+
+        }
     };
     private iPlayCallBackEvent mCallBackEvent = new iPlayCallBackEvent() {
         @Override
@@ -246,7 +251,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
 //            stopLoading();//注释掉该行代码会在乐视上导致在播放某些视频时一直显示加载  但是视频已经播放的问题
-            if (BuildConfig.FLAVOR.equals(DeviceUtil.LETV)) {
+            if (LetvDeviceUtil.isLetvDevice()) {
                 stopLoading();
             }
             mNewTVLauncherPlayerSeekbar.setDuration();
@@ -293,7 +298,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if ("702".equals(typeString)) {
                 unshowLoadBack = true;
             }
-
+            if (LetvDeviceUtil.isLetvDevice()&&mNewTVLauncherPlayer.isADPlaying()) {
+                unshowLoadBack = false;
+            }
             boolean isHaveAD;
             if (!TextUtils.isEmpty(typeString)) {
                 if (typeString.equals(AD_END_BUFFER)) {
@@ -341,6 +348,15 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         @Override
         public void onError(int what, int extra, String msg) {
             LogUtils.i(TAG, "onError: ");
+        }
+
+        @Override
+        public void onAdStartPlaying() {
+            Log.i(TAG, "onAdStartPlaying  dismiss SeekBar");
+            if (mNewTVLauncherPlayerSeekbar != null
+                    && mNewTVLauncherPlayerSeekbar.getVisibility() == VISIBLE) {
+                mNewTVLauncherPlayerSeekbar.dismiss();
+            }
         }
     };
     private ChangeAlternateListener mChangeAlternateListener;
@@ -651,7 +667,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         defaultConfig.defaultHeight,
                 screenWidth, screenHeight, false, true);
 
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) frameLayout
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) frameLayout
                 .getLayoutParams();
         layoutParams.leftMargin = 0;
         layoutParams.topMargin = 0;
@@ -784,7 +800,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         createMenuGroup();
 
         if (mNewTVLauncherPlayer != null && !mNewTVLauncherPlayer.isADPlaying()) {
-            if (menuGroupPresenter != null) {
+            if (menuGroupPresenter != null && !isLiving()) {
                 menuGroupPresenter.showHinter();
             }
             showSeekBar(mIsPause, true);
@@ -1829,7 +1845,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (mAlternatePresenter != null) {
                 mAlternatePresenter.addHistory();
             }
-            return;
+//            return;
         }
 
         if (defaultConfig.programSeriesInfo == null) {
@@ -1918,6 +1934,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             ADConfig.getInstance().setSeriesID(defaultConfig.programSeriesInfo.getContentID(),
                     false);
         }
+        if(defaultConfig.programSeriesInfo != null){
+            ADConfig.getInstance().setVideoType(defaultConfig.programSeriesInfo.getVideoType());
+            ADConfig.getInstance().setVideoClass(defaultConfig.programSeriesInfo.getVideoClass());
+        }
+
         videoDataStruct.setAlternate(defaultConfig.isAlternate,defaultConfig.isFirstAlternate);
         videoDataStruct.setAlternateId(defaultConfig.alternateID);
         videoDataStruct.setHistoryPosition(mHistoryPostion);
@@ -2076,6 +2097,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             }
         }
+    }
+
+    @Override
+    public void onAlternateTimeChange(String current, String end) {
+
     }
 
     @Override

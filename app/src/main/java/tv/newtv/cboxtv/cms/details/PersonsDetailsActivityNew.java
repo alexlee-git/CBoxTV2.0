@@ -21,9 +21,11 @@ import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
 import tv.newtv.cboxtv.views.detail.EpisodeHorizontalListView;
 import tv.newtv.cboxtv.views.detail.PersonDetailHeadView;
+import tv.newtv.cboxtv.views.detail.RecycleItemDecoration;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
 import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
+import tv.newtv.cboxtv.views.widget.RecycleFocusItemDecoration;
 
 /**
  * Created by linzy on 2018/4/2.
@@ -80,7 +82,11 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
     private void requestData(String contentUUID) {
 
         hostProgramView.setHorizontalItemLayout(R.layout.item_details_horizontal_episode,6,R
-                .drawable.focus_240_360,EpisodeHorizontalListView.DIRECTION_VERTICAL);
+                .drawable.focus_240_360,EpisodeHorizontalListView.DIRECTION_VERTICAL,R.id
+                .column_update_date_layout,new RecycleItemDecoration(getResources()
+                .getDimensionPixelOffset(R.dimen.width_34px),getResources()
+                .getDimensionPixelOffset(R.dimen.width_15px)),R.id.column_update_item,R.id.column_update_date_tv
+                );
         hostProgramView.setContentUUID(EpisodeHorizontalListView.TYPE_PERSON_HOST_LV,
                 contentUUID, hostProgramView);// 获取主持列表
 
@@ -108,7 +114,7 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             ADConfig.getInstance().setSeriesID(contentUUID);
         }
 
-            personDetailHeadView.setTopView();
+        personDetailHeadView.setTopView();
 
         hostProgramView.setOnItemClick(new onEpisodeItemClick<SubContent>() {
             @Override

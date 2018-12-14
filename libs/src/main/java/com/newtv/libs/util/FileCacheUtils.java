@@ -28,20 +28,20 @@ public class FileCacheUtils {
      * @param context 删除缓存
      */
     public static void clearAllCache(Context context) {
-        deleteDir(context.getCacheDir());
+        deleteDir(context,context.getCacheDir());
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            deleteDir(context.getExternalCacheDir());
+            deleteDir(context,context.getExternalCacheDir());
         }
     }
 
-    private static boolean deleteDir(File dir) {
+    private static boolean deleteDir(Context context,File dir) {
         if (dir != null && dir.isDirectory()) {
             String[] children = dir.list();
             int size = 0;
             if (children != null) {
                 size = children.length;
                 for (int i = 0; i < size; i++) {
-                    boolean success = deleteDir(new File(dir, children[i]));
+                    boolean success = deleteDir(context,new File(dir, children[i]));
                     if (!success) {
                         return false;
                     }
@@ -51,7 +51,13 @@ public class FileCacheUtils {
         if (dir == null) {
             return true;
         } else {
-            return dir.delete();
+            String str = dir.getAbsolutePath();
+            String packageName = context.getPackageName();
+            if (str.endsWith("/"+packageName+"/cache")){
+                return true;
+            }else {
+                return dir.delete();
+            }
         }
     }
     // 获取文件

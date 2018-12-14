@@ -463,6 +463,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                 mTime = Integer.parseInt(time);
                                 btn_refresh.setText(getResources().getString(R.string.phone_login_status1));
                                 tv_code_status.setText("请输入6位数验证码");
+                                tv_code_inval.setText(getResources().getString(R.string.phone_login_tip_5) + " , " + time + getResources().getString(R.string.phone_login_tip_6));
                                 if (mHandler != null) {
                                     mHandler.sendEmptyMessageDelayed(DELAY_MILLIS, 1000);
                                 }

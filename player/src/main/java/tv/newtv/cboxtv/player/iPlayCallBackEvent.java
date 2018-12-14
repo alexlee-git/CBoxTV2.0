@@ -11,4 +11,5 @@ public interface iPlayCallBackEvent {
 	public void onTimeout(int i);
 	public void changePlayWithDelay(int delay, String url);
 	public void onError(int what, int extra, String msg);
+	public void onAdStartPlaying();
 }
