@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.letv.LetvDeviceUtil;
 import com.newtv.cms.BuildConfig;
 import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
@@ -250,7 +251,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
 //            stopLoading();//注释掉该行代码会在乐视上导致在播放某些视频时一直显示加载  但是视频已经播放的问题
-            if (BuildConfig.FLAVOR.equals(DeviceUtil.LETV)) {
+            if (LetvDeviceUtil.isLetvDevice()) {
                 stopLoading();
             }
             mNewTVLauncherPlayerSeekbar.setDuration();
@@ -297,7 +298,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if ("702".equals(typeString)) {
                 unshowLoadBack = true;
             }
-
+            if (LetvDeviceUtil.isLetvDevice()&&mNewTVLauncherPlayer.isADPlaying()) {
+                unshowLoadBack = false;
+            }
             boolean isHaveAD;
             if (!TextUtils.isEmpty(typeString)) {
                 if (typeString.equals(AD_END_BUFFER)) {
