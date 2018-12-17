@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import com.gridsum.videotracker.GSVideoState;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.Utils;
@@ -316,6 +317,8 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
         String secondColumn = parseCategoryIds(videoDataStruct.getCategoryIds(), icntvPlayerInfo);
         addExtend(icntvPlayerInfo, "secondcolumn", secondColumn);
         addExtend(icntvPlayerInfo, "program", videoDataStruct.getProgramId());
+        addExtend(icntvPlayerInfo, "type", ADConfig.getInstance().getVideoType());
+        addExtend(icntvPlayerInfo,"secondtype",ADConfig.getInstance().getVideoClass());
 
         Log.i(TAG, "setExtend: " + icntvPlayerInfo.getExtend() + ",columnId:" + icntvPlayerInfo
                 .getColumnId());
