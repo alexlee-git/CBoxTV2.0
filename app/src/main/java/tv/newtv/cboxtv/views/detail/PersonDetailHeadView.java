@@ -40,7 +40,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,11 +56,11 @@ import tv.newtv.cboxtv.views.custom.FocusToggleView2;
 
 /**
  * Created by linzy on 2018/10/11.
- *
+ * <p>
  * 人物详情头部view
  */
 
-public class PersonDetailHeadView extends RelativeLayout implements IEpisode,View.OnKeyListener,ContentContract.View{
+public class PersonDetailHeadView extends RelativeLayout implements IEpisode, View.OnKeyListener, ContentContract.View {
 
     @BindView(R.id.id_detail_view)
     FrameLayout mDetailsImgView;
@@ -108,27 +110,27 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         initListener();
     }
 
-    private void init(Context context){
-        view = LayoutInflater.from(context).inflate(R.layout.person_detail_head_view_item,this,false);
+    private void init(Context context) {
+        view = LayoutInflater.from(context).inflate(R.layout.person_detail_head_view_item, this, false);
         view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         addView(view);
         requestIdList = new ArrayList<>();
         ButterKnife.bind(this);
     }
 
-    public void setTopView(){
+    public void setTopView() {
         LinearLayout upTop = view.findViewById(R.id.up_top);
         ImageView arrowsDark = view.findViewById(R.id.nav_arrows_dark);
-        hintAnimator(upTop,arrowsDark);
+        hintAnimator(upTop, arrowsDark);
 
     }
 
     private void hintAnimator(LinearLayout upTop, ImageView arrowsDark) {
         ObjectAnimator translationX = ObjectAnimator.ofFloat(arrowsDark, "alpha", 0.1f, 1.0f, 0.1f, 1.0f, 0.1f,
-                1.0f,0.1f,1.0f,0.1f,1.0f);
-        ObjectAnimator translationY = ObjectAnimator.ofFloat(arrowsDark, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
+                1.0f, 0.1f, 1.0f, 0.1f, 1.0f);
+        ObjectAnimator translationY = ObjectAnimator.ofFloat(arrowsDark, "TranslationY", 0, 12, 0, 12, 0, 12, 0, 12, 0, 12);
         AnimatorSet animator = new AnimatorSet();
-        animator.playTogether(translationX,translationY);
+        animator.playTogether(translationX, translationY);
         animator.setInterpolator(new LinearInterpolator());
         animator.setDuration(5000);
         animator.start();
@@ -141,8 +143,8 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         });
     }
 
-    private void initListener(){
-        mContentPresenter = new ContentContract.ContentPresenter(getContext(),this);
+    private void initListener() {
+        mContentPresenter = new ContentContract.ContentPresenter(getContext(), this);
 
         sendFlowerView.setOnKeyListener(this);
         attentionView.setOnKeyListener(this);
@@ -168,12 +170,12 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         });
     }
 
-    public void setContentUUID(String contentUUIDs){
+    public void setContentUUID(String contentUUIDs) {
         contentUUID = contentUUIDs;
 
         final Long id = UserCenterUtils.getAttentionState(getContentUUID(), new IFollowStatusCallback() {
             @Override
-            public void notifyFollowStatus(boolean status,Long reqId) {
+            public void notifyFollowStatus(boolean status, Long reqId) {
                 isAttention = status;
                 requestIdList.remove(reqId);
             }
@@ -181,7 +183,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         requestIdList.add(id);
 
         //获取人物信息
-        mContentPresenter.getContent(contentUUIDs,false);
+        mContentPresenter.getContent(contentUUIDs, false);
     }
 
     @Override
@@ -191,7 +193,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
 
     @Override
     public void destroy() {
-        if (mContentPresenter != null){
+        if (mContentPresenter != null) {
             mContentPresenter.destroy();
             mContentPresenter = null;
         }
@@ -206,15 +208,15 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
         sendFlowerView = null;
         attentionView = null;
 
-        if(requestIdList != null && requestIdList.size() > 0){
-            for(Long id : requestIdList){
+        if (requestIdList != null && requestIdList.size() > 0) {
+            for (Long id : requestIdList) {
                 UserCenterRecordManager.getInstance().removeCallback(id);
             }
             requestIdList.clear();
         }
         requestIdList = null;
 
-        if(mFlowerView != null){
+        if (mFlowerView != null) {
             mFlowerView.release();
         }
         mFlowerView = null;
@@ -232,7 +234,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
 
 
     public void onClickView(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.attention:
                 if (System.currentTimeMillis() - lastClickTime >= 2000) {//判断距离上次点击小于2秒
                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
@@ -260,10 +262,13 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                         public void run() {
                             isAttention = false;
                             attentionView.setSelect(false);
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION,"1,"+contentUuId);
-
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "1," + contentUuId);
                             Toast.makeText(getContext().getApplicationContext(), "取消关注成功", Toast.LENGTH_SHORT).show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                            Map<String, String> map = new HashMap<>();
+                            map.put("follow_operation_type", "delete");
+                            map.put("follow_operation_id", contentUuId);
+                            RxBus.get().post("follow_operation_map", map);
                         }
                     });
                 }
@@ -285,11 +290,15 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
                         public void run() {
                             isAttention = true;
                             attentionView.setSelect(true);
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION,"0,"+contentUUID);
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "0," + contentUUID);
                             Toast.makeText(getContext().getApplicationContext(), R.string.attention_success, Toast
                                     .LENGTH_SHORT)
                                     .show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
+                            Map<String, String> map = new HashMap<>();
+                            map.put("follow_operation_type", "add");
+                            map.put("follow_operation_id", entity.getContentID());
+                            RxBus.get().post("follow_operation_map", map);
                         }
                     });
                 }
@@ -303,7 +312,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
 
         Long id = UserCenterUtils.getAttentionState(contentUUID, new IFollowStatusCallback() {
             @Override
-            public void notifyFollowStatus(boolean status,Long reqId) {
+            public void notifyFollowStatus(boolean status, Long reqId) {
                 if (status) {
                     attentionView.setSelect(true);
                 } else {
@@ -395,11 +404,11 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
 
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
-        if (content != null){
+        if (content != null) {
             dataInfo = content;
             setHeadData(content);
-        }else {
-            LogUtils.e(TAG,"content data is null!");
+        } else {
+            LogUtils.e(TAG, "content data is null!");
         }
     }
 
