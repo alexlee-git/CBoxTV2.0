@@ -151,6 +151,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         up_arrow = view.findViewById(R.id.up_arrow);
         news_recycle.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.VERTICAL, false));
+        news_recycle.setDirIndicator(up_arrow,down_arrow);
         int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.height_24px);
         news_recycle.setSpace(space, 0);
         final NewsAdapter adapter = new NewsAdapter();
@@ -269,24 +270,24 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
             }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (news_recycle.canScrollVertically(-1)){
-                    up_arrow.setVisibility(View.VISIBLE);
-                }else {
-                    up_arrow.setVisibility(View.INVISIBLE);
-                }
-                if (news_recycle.canScrollVertically(1)){
-                    down_arrow.setVisibility(View.VISIBLE);
-                }else {
-                    down_arrow.setVisibility(View.INVISIBLE);
-                }
-                if (!news_recycle.canScrollVertically(-1)&&news_recycle.canScrollVertically(1)){
-                    up_arrow.setVisibility(View.INVISIBLE);
-                    down_arrow.setVisibility(View.INVISIBLE);
-                }
-            }
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                if (news_recycle.canScrollVertically(-1)){
+//                    up_arrow.setVisibility(View.VISIBLE);
+//                }else {
+//                    up_arrow.setVisibility(View.INVISIBLE);
+//                }
+//                if (news_recycle.canScrollVertically(1)){
+//                    down_arrow.setVisibility(View.VISIBLE);
+//                }else {
+//                    down_arrow.setVisibility(View.INVISIBLE);
+//                }
+//                if (!news_recycle.canScrollVertically(-1)&&news_recycle.canScrollVertically(1)){
+//                    up_arrow.setVisibility(View.INVISIBLE);
+//                    down_arrow.setVisibility(View.INVISIBLE);
+//                }
+//            }
         });
     }
 
