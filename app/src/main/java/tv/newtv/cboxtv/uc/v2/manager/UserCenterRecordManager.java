@@ -545,6 +545,9 @@ public class UserCenterRecordManager {
                             info.setTitle(bean.get_title_name());
                             // info.setrSubScript(bean.getSuperscript());
                             info.setGrade(bean.getGrade());
+                            info.setRecentNum(bean.getEpisode_num());
+                            info.setSeriesSum(bean.getTotalCnt());
+                            info.setVideoType(bean.getVideoType());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             DBUtil.PutCollect(userId, info, bundle, callback, tableName);
@@ -576,6 +579,9 @@ public class UserCenterRecordManager {
                             info.setVImage(bean.get_imageurl());
                             info.setTitle(bean.get_title_name());
                             info.setGrade(bean.getGrade());
+                            info.setRecentNum(bean.getEpisode_num());
+                            info.setSeriesSum(bean.getTotalCnt());
+                            info.setVideoType(bean.getVideoType());
                             // info.setrSuperScript(bean.getSuperscript());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
@@ -639,6 +645,8 @@ public class UserCenterRecordManager {
                             info.setTitle(bean.get_title_name());
                             // info.setrSuperScript(bean.getSuperscript());
                             info.setGrade(bean.getGrade());
+                            info.setRecentNum(bean.getEpisode_num());
+                            info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
                             if (TextUtils.isEmpty(bean.getPlayId())) {
                                 List<SubContent> programsInfos = new ArrayList<>(Constant.BUFFER_SIZE_4);
@@ -1441,7 +1449,8 @@ public class UserCenterRecordManager {
 
     /**
      * 获取用户数据接口函数
-     * @param type 类型参数
+     *
+     * @param type       类型参数
      * @param dbCallback 数据回调函数
      */
     public void getUserRecords(String type, DBCallback<String> dbCallback) {
