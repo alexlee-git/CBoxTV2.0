@@ -939,7 +939,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return;
         }
         LastNode lastNode = (LastNode) node;
-        Player.get().deleteLbCollect(lastNode.contentUUID, new DBCallback<String>() {
+        Player.get().deleteLbCollect(lastNode.contentId, new DBCallback<String>() {
             @Override
             public void onResult(int code, String result) {
                 if (code == 0) {
