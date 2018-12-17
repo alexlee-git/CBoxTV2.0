@@ -54,6 +54,8 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     TextView mPersonTitle;
     @BindView(R.id.id_result_label_column_title)
     TextView mColumnTitle;
+    @BindView(R.id.id_search_result_empty_img)
+    ImageView mSearchResultImg;
     @BindView(R.id.id_search_result_empty)
     TextView mSearchResultEmpty;
     @BindView(R.id.id_search_result_empty_line)
@@ -254,9 +256,11 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
         if (isLoadComplete()) {
             if (mFragments != null && mFragments.size() > 0) {
                 mSearchResultEmpty.setVisibility(GONE);
+                mSearchResultImg.setVisibility(GONE);
                 mSearchResultEmptyLine.setVisibility(GONE);
             } else {
                 mSearchResultEmpty.setVisibility(VISIBLE);
+                mSearchResultImg.setVisibility(VISIBLE);
                 mSearchResultEmptyLine.setVisibility(VISIBLE);
                 if (mLoadingLayout != null){
                     mLoadingLayout.setVisibility(GONE);
@@ -264,6 +268,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         }else{
             mSearchResultEmpty.setVisibility(GONE);
+            mSearchResultImg.setVisibility(GONE);
             mSearchResultEmptyLine.setVisibility(GONE);
         }
     }
