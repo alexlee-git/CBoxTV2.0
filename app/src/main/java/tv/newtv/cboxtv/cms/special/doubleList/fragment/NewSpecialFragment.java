@@ -800,7 +800,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             } else {
                 if (mVideoPlayerTitle != null && mFullScreenImage != null) {
                     mVideoPlayerTitle.setVisibility(View.VISIBLE);
-                    mFullScreenImage.setVisibility(View.VISIBLE);
+                    mFullScreenImage.setVisibility(View.GONE);
                 }
             }
         }
@@ -824,7 +824,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                             } else {
                                 if (mVideoPlayerTitle != null && mFullScreenImage != null) {
                                     mVideoPlayerTitle.setVisibility(View.VISIBLE);
-                                    mFullScreenImage.setVisibility(View.VISIBLE);
+                                    mFullScreenImage.setVisibility(View.GONE);
                                 }
                             }
                         }
