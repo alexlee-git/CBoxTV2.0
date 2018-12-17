@@ -610,6 +610,9 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                     mainTitle = bean.get_title_name();
                     subTitle = UserCenterRecordManager.getInstance().getWatchProgress(bean.getPlayPosition(), bean.getDuration());
                     scoreTitle = bean.getGrade();
+                    if (TextUtils.isEmpty(scoreTitle) || TextUtils.equals(scoreTitle, "0.0") || TextUtils.equals(scoreTitle, "0")) {
+                        scoreTitle = "";
+                    }
                     setTitleView(mainTitleTextView, mainTitle);
                     setTitleView(subTitleTextView, subTitle);
                     setTitleView(scoreTitleTextView, scoreTitle);

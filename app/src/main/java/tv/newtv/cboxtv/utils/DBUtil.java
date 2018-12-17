@@ -58,7 +58,7 @@ public class DBUtil {
             contentValues.put(DBConfig.CONTENTTYPE, entity.getContentType());
         }
 
-        if (entity.getGrade() != null) {
+        if (!TextUtils.isEmpty(entity.getGrade()) && !TextUtils.equals(entity.getGrade(), "0.0") && !TextUtils.equals(entity.getGrade(), "0")) {
             contentValues.put(DBConfig.CONTENT_GRADE, entity.getGrade());
         }
         contentValues.put(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
@@ -144,6 +144,9 @@ public class DBUtil {
             contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
             contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
             contentValues.put(DBConfig.USERID, userId);
+            if (!TextUtils.isEmpty(entity.getGrade()) && !TextUtils.equals(entity.getGrade(), "0.0") && !TextUtils.equals(entity.getGrade(), "0")) {
+                contentValues.put(DBConfig.CONTENT_GRADE, entity.getGrade());
+            }
             String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
             if (TextUtils.isEmpty(updateTime)) {
                 contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
@@ -177,11 +180,9 @@ public class DBUtil {
         String indexStr = bundle.getString(DBConfig.PLAYINDEX);
         int index = Integer.parseInt(indexStr);
         contentValues.put(DBConfig.PLAYINDEX, indexStr);
-
-        if (!TextUtils.isEmpty(mInfo.getGrade())) {
+        if (!TextUtils.isEmpty(mInfo.getGrade()) && !TextUtils.equals(mInfo.getGrade(), "0.0") && !TextUtils.equals(mInfo.getGrade(), "0")) {
             contentValues.put(DBConfig.CONTENT_GRADE, mInfo.getGrade());
         }
-
         if (!TextUtils.isEmpty(mInfo.getVideoType())) {
             contentValues.put(DBConfig.VIDEO_TYPE, mInfo.getVideoType());
         }
