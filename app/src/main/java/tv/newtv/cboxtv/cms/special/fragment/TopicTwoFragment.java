@@ -54,7 +54,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private int isFirstEnter = 0;
     private boolean hasDefaultFocus;
     private List<Program> datas;
-    private ImageView down_arrow;
+    private ImageView down_arrow,up_arrow;
     private  int firstplayIndex=-1;
 
     //目标项是否在最后一个可见项之后
@@ -148,8 +148,10 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoTitle = view.findViewById(R.id.videoTitle);
         full_screen = view.findViewById(R.id.full_screen);
         down_arrow = view.findViewById(R.id.down_arrow);
+        up_arrow = view.findViewById(R.id.up_arrow);
         news_recycle.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.VERTICAL, false));
+        news_recycle.setDirIndicator(up_arrow,down_arrow);
         int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.height_24px);
         news_recycle.setSpace(space, 0);
         final NewsAdapter adapter = new NewsAdapter();
@@ -268,8 +270,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
             }
         });
-
-
     }
 
     /**
@@ -380,7 +380,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 if (videoPlayerView != null) {
                     videoPlayerView.requestFocus();
                     videoTitle.setVisibility(View.VISIBLE);
-                    full_screen.setVisibility(View.VISIBLE);
+//                    full_screen.setVisibility(View.VISIBLE);
+                    full_screen.setVisibility(View.GONE);
 
                 }
                 return true;
@@ -512,11 +513,11 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
                     if (hasFocus) {
 
-                        if (isBottom(news_recycle)) {
-                            down_arrow.setVisibility(View.VISIBLE);
-                        } else {
-                            down_arrow.setVisibility(View.INVISIBLE);
-                        }
+//                        if (isBottom(news_recycle)) {
+//                            down_arrow.setVisibility(View.VISIBLE);
+//                        } else {
+//                            down_arrow.setVisibility(View.INVISIBLE);
+//                        }
                         if (moduleItem != null  &&!TextUtils.isEmpty( moduleItem.getSubTitle())&& moduleItem.getSubTitle().length() > 10) {
 
                             holder.news_title.setSingleLine(true);
@@ -548,7 +549,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                                 }
                             }
 
-                            }
+                        }
 
 
                     }

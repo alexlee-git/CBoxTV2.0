@@ -1430,4 +1430,58 @@ public class UserCenterRecordManager {
 
         return result;
     }
+
+    /**
+     * 获取用户数据接口函数
+     * @param type 类型参数
+     * @param dbCallback 数据回调函数
+     */
+    public void getUserRecords(String type, DBCallback<String> dbCallback) {
+        String tableName;
+        String userId;
+        if (TextUtils.equals(type, "collect")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.COLLECT_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else if (TextUtils.equals(type, "subscribe")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.SUBSCRIBE_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else if (TextUtils.equals(type, "follow")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.ATTENTION_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else if (TextUtils.equals(type, "history")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.HISTORY_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else {
+            return;
+        }
+
+        Log.d(TAG, "tableName : " + tableName + ", userId : " + userId);
+
+        DataSupport.search(tableName)
+                .condition()
+                .eq(DBConfig.USERID, userId)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(dbCallback).excute();
+    }
 }
