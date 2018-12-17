@@ -174,7 +174,8 @@ public class SubRemoteDataSource implements SubDataSource {
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
         Log.e("UserId", User_id + "");
-        String[] programset_ids = new String[]{bean.get_contentuuid()};
+        String programset_ids = bean.get_contentuuid();
+        String contentID = bean.getContentId();
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
                 .deleteSubscribes(Authorization,
@@ -182,7 +183,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        programset_ids)
+                        "",contentID )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {

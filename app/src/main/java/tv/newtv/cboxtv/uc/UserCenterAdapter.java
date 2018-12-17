@@ -610,6 +610,9 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                     mainTitle = bean.get_title_name();
                     subTitle = UserCenterRecordManager.getInstance().getWatchProgress(bean.getPlayPosition(), bean.getDuration());
                     scoreTitle = bean.getGrade();
+                    if (TextUtils.isEmpty(scoreTitle) || TextUtils.equals(scoreTitle, "0.0") || TextUtils.equals(scoreTitle, "0")) {
+                        scoreTitle = "";
+                    }
                     setTitleView(mainTitleTextView, mainTitle);
                     setTitleView(subTitleTextView, subTitle);
                     setTitleView(scoreTitleTextView, scoreTitle);
@@ -619,6 +622,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                         } else {
                             showView(programUpdateRoot);
                             programUpdateCenterTitleTextView.setText(bean.getEpisode_num());
+                            programUpdateRightTitleTextView.setText(context.getResources().getString(R.string.user_tag_poster_program_update_title_right));
                             if (Integer.parseInt(bean.getEpisode_num()) < Integer.parseInt(bean.getTotalCnt())) {
                                 programUpdateLeftTitleTextView.setText(context.getResources().getString(R.string.user_poster_program_update_title_left_being));
                             } else {
