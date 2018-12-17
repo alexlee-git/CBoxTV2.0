@@ -782,8 +782,12 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     @Override
     public void enterFullScreen() {
-        if (menuGroupIsInit && !NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
+        if (!NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
+            String oldContentUUID = contentUUID;
             getProgramSeriesAndContentUUID();
+            if(TextUtils.isEmpty(contentUUID) || TextUtils.equals(oldContentUUID,contentUUID)){
+                return;
+            }
             if (updatePlayProgram()) {
                 refreshLbNode();
             } else {
