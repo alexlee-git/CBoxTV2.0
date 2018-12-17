@@ -27,12 +27,12 @@ public class DBUtil {
     /**
      * 移除订阅
      *
-     * @param contentUuId
+     * @param contentID
      * @param callback
      */
-    public static void UnSubcribe(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
+    public static void UnSubcribe(String userId, String contentID, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENT_ID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
@@ -82,13 +82,13 @@ public class DBUtil {
     /**
      * 检查是否属于订阅
      *
-     * @param contentUuId
+     * @param contentID
      * @param callback
      */
-    public static void CheckSubscrip(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
+    public static void CheckSubscrip(String userId, String contentID, DBCallback<String> callback, String tableName) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -98,13 +98,13 @@ public class DBUtil {
     /**
      * 检查是否属于收藏
      *
-     * @param contentUuId
+     * @param contentID
      * @param callback
      */
-    public static void CheckCollect(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
+    public static void CheckCollect(String userId, String contentID, DBCallback<String> callback, String tableName) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -115,15 +115,15 @@ public class DBUtil {
     /**
      * 移除收藏
      *
-     * @param contentUuId
+     * @param contentID
      * @param callback
      */
-    public static void UnCollect(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
-        Log.d("lxl", "userId : " + userId + ", contentuuid : " + contentUuId + ", tableName : " + tableName);
+    public static void UnCollect(String userId, String contentID, DBCallback<String> callback, String tableName) {
+        Log.d("lxl", "userId : " + userId + ", contentID : " + contentID + ", tableName : " + tableName);
         DataSupport.delete(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
-                .eq(DBConfig.CONTENT_ID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .build()
                 .withCallback(callback).excute();
     }
@@ -214,8 +214,9 @@ public class DBUtil {
                 }
             }
         }
-
-        contentValues.put(DBConfig.CONTENT_ID, mInfo.getContentID());
+        //2018.12.17 wqs 修改插入历史的条件为contentID
+        String contentID = mInfo.getContentID();
+        contentValues.put(DBConfig.CONTENT_ID, contentID);
         contentValues.put(DBConfig.PLAYPOSITION, bundle.getString(DBConfig.PLAYPOSITION));
         contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
 
@@ -232,7 +233,7 @@ public class DBUtil {
 
         DataSupport.insertOrUpdate(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, seriesUUID)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .build()
                 .withValue(contentValues)
                 .withCallback(callback).excute();
@@ -278,17 +279,17 @@ public class DBUtil {
 
     }
 
-    public static void delAttention(String userId, String contentUuId, DBCallback<String> callback, String tableName) {
+    public static void delAttention(String userId, String contentID, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENT_ID, contentUuId)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
     }
 
-    public static void delHistory(String userId, String contentuuid, DBCallback<String> callback, String tableName) {
+    public static void delHistory(String userId, String contentID, DBCallback<String> callback, String tableName) {
         DataSupport.delete(tableName).condition()
-                .eq(DBConfig.CONTENT_ID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback)
@@ -333,10 +334,10 @@ public class DBUtil {
                 .withCallback(callback).excute();
     }
 
-    public static void deleteCarouselChannelRecord(String contentuuid, DBCallback<String> callback) {
+    public static void deleteCarouselChannelRecord(String contentID, DBCallback<String> callback) {
         DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
                 .build()
                 .withCallback(callback).excute();
