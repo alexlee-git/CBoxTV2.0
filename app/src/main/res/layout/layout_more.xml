@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/more"
+    android:textSize="@dimen/width_22px"
     android:textColor="@color/colorWhite"
     android:gravity="center"
     android:focusable="true"
