@@ -202,34 +202,42 @@ public class UserCenterRecordManager {
                 });
     }
 
-    public void deleteRecord(USER_CENTER_RECORD_TYPE type, Context context, String contentuuids, String contentType, String dataUserId, DBCallback<String> dbCallback) {
+    /**
+     * @param type
+     * @param context
+     * @param contentID   节目的唯一标识
+     * @param contentType
+     * @param dataUserId
+     * @param dbCallback
+     */
+    public void deleteRecord(USER_CENTER_RECORD_TYPE type, Context context, String contentID, String contentType, String dataUserId, DBCallback<String> dbCallback) {
         if (context == null) {
             return;
         }
 
-        if (TextUtils.isEmpty(contentuuids)) {
+        if (TextUtils.isEmpty(contentID)) {
             return;
         }
 
         if (type == USER_CENTER_RECORD_TYPE.TYPE_COLLECT) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENT_ID, contentuuids);
+            bundle.putString(DBConfig.CONTENT_ID, contentID);
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteCollectionRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_FOLLOW) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENT_ID, contentuuids);
+            bundle.putString(DBConfig.CONTENT_ID, contentID);
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteFollowRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_SUBSCRIBE) {
             Bundle bundle = new Bundle();
-            bundle.putString(DBConfig.CONTENT_ID, contentuuids);
+            bundle.putString(DBConfig.CONTENT_ID, contentID);
             bundle.putString(DBConfig.CONTENTTYPE, contentType);
             procDeleteSubscribeRecord(context, bundle, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
-            procDeleteHistoryRecord(dataUserId, context, contentuuids, contentType, dbCallback);
+            procDeleteHistoryRecord(dataUserId, context, contentID, contentType, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
-            procDeleteCarouselChannelRecord(contentuuids, dbCallback);
+            procDeleteCarouselChannelRecord(contentID, dbCallback);
         }
     }
 
@@ -335,12 +343,12 @@ public class UserCenterRecordManager {
      * 删除历史记录数据
      *
      * @param context
-     * @param contentuuids 待删除的历史记录的content_uuid值,如果是全部则传"clean", 如果是多个则用逗号将id隔开
+     * @param contentID   待删除的历史记录的contentID值,如果是全部则传"clean", 如果是多个则用逗号将id隔开
      * @param contentType
      */
-    public void procDeleteHistoryRecord(String dataUserId, Context context, String contentuuids, String contentType, DBCallback<String> callback) {
-        Log.d(TAG, "删除 dataUserId : " + dataUserId + ", contentuuids : " + contentuuids);
-        if (TextUtils.isEmpty(contentuuids)) {
+    public void procDeleteHistoryRecord(String dataUserId, Context context, String contentID, String contentType, DBCallback<String> callback) {
+        Log.d(TAG, "删除 dataUserId : " + dataUserId + ", contentID : " + contentID);
+        if (TextUtils.isEmpty(contentID)) {
             return;
         }
 
@@ -352,7 +360,7 @@ public class UserCenterRecordManager {
         // String tableName = "";
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            if (TextUtils.equals(contentuuids, "clean")) {
+            if (TextUtils.equals(contentID, "clean")) {
                 DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
@@ -362,7 +370,7 @@ public class UserCenterRecordManager {
                 DataSupport.delete(DBConfig.HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
-                        .eq(DBConfig.CONTENT_ID, contentuuids)
+                        .eq(DBConfig.CONTENT_ID, contentID)
                         .build()
                         .withCallback(callback).excute();
             }
@@ -373,47 +381,47 @@ public class UserCenterRecordManager {
                                 contentType,
                                 Libs.get().getAppKey(),
                                 Libs.get().getChannelId(),
-                                contentuuids);
+                                contentID);
             }
 
-            if (TextUtils.equals(contentuuids, "clean")) {
+            if (TextUtils.equals(contentID, "clean")) {
                 DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
                         .build()
                         .withCallback(callback).excute();
-                Log.d(TAG, "删除全部历史的远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+                Log.d(TAG, "删除全部历史的远程数据, dataUserId : " + dataUserId + ", contentID : " + contentID);
             } else {
                 DataSupport.delete(DBConfig.REMOTE_HISTORY_TABLE_NAME)
                         .condition()
                         .eq(DBConfig.USERID, SharePreferenceUtils.getUserId(LauncherApplication.AppContext))
-                        .eq(DBConfig.CONTENT_ID, contentuuids)
+                        .eq(DBConfig.CONTENT_ID, contentID)
                         .build()
                         .withCallback(callback).excute();
-                Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentuuid : " + contentuuids);
+                Log.d(TAG, "单点删除远程数据, dataUserId : " + dataUserId + ", contentID : " + contentID);
             }
         }
 
-        Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentuuids);
+        Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentID);
     }
 
-    private void procDeleteCarouselChannelRecord(String contentuuid, DBCallback<String> callback) {
-        Log.d(TAG, "procDeleteCarouselChannelRecord contentid : " + contentuuid);
-        DBUtil.deleteCarouselChannelRecord(contentuuid, callback);
+    private void procDeleteCarouselChannelRecord(String contentID, DBCallback<String> callback) {
+        Log.d(TAG, "procDeleteCarouselChannelRecord contentid : " + contentID);
+        DBUtil.deleteCarouselChannelRecord(contentID, callback);
     }
 
     private void procDeleteCollectionRecord(Context context, Bundle bundle, DBCallback<String> callback) {
-        String contentuuid = bundle.getString(DBConfig.CONTENT_ID);
+        String contentID = bundle.getString(DBConfig.CONTENT_ID);
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentuuid, callback, DBConfig.COLLECT_TABLE_NAME);
+            DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, callback, DBConfig.COLLECT_TABLE_NAME);
         } else {
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect(packageData(bundle));
             }
 
-            Log.d(TAG, "登录用户, 删除远程表数据, contentuuid : " + contentuuid);
-            DBUtil.UnCollect(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentuuid, callback, DBConfig.REMOTE_COLLECT_TABLE_NAME);
+            Log.d(TAG, "登录用户, 删除远程表数据, contentID : " + contentID);
+            DBUtil.UnCollect(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentID, callback, DBConfig.REMOTE_COLLECT_TABLE_NAME);
         }
     }
 
@@ -423,17 +431,17 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String contentuuid = bundle.getString(DBConfig.CONTENT_ID);
+        String contentID = bundle.getString(DBConfig.CONTENT_ID);
 
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) {
-            DBUtil.delAttention(userId, contentuuid, callback, DBConfig.ATTENTION_TABLE_NAME);
+            DBUtil.delAttention(userId, contentID, callback, DBConfig.ATTENTION_TABLE_NAME);
         } else {
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context)).deleteRemoteFollow(packageData(bundle));
             }
 
-            DBUtil.UnCollect(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentuuid, callback, DBConfig.REMOTE_ATTENTION_TABLE_NAME);
+            DBUtil.UnCollect(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentID, callback, DBConfig.REMOTE_ATTENTION_TABLE_NAME);
         }
     }
 
@@ -443,16 +451,16 @@ public class UserCenterRecordManager {
             userId = SystemUtils.getDeviceMac(context);
         }
 
-        String contentuuid = bundle.getString(DBConfig.CONTENT_ID);
+        String contentID = bundle.getString(DBConfig.CONTENT_ID);
         String token = SharePreferenceUtils.getToken(context);
         if (TextUtils.isEmpty(token)) { // 如果是未登录用户,则删除本地表
-            DBUtil.UnSubcribe(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentuuid, callback, DBConfig.SUBSCRIBE_TABLE_NAME);
+            DBUtil.UnSubcribe(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, callback, DBConfig.SUBSCRIBE_TABLE_NAME);
         } else { // 如果是登录用户,则删除远程表
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
                 SubRepository.getInstance(SubRemoteDataSource.getInstance(context)).deleteRemoteSubscribe(packageData(bundle));
             }
 
-            DBUtil.UnSubcribe(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentuuid, callback, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
+            DBUtil.UnSubcribe(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentID, callback, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
         }
 
         Log.d(TAG, "procDeleteSubscribeRecord delete subscribe complete, userId : " + userId + ", name : " + bundle.getString(DBConfig.TITLE_NAME));
@@ -537,6 +545,9 @@ public class UserCenterRecordManager {
                             info.setTitle(bean.get_title_name());
                             // info.setrSubScript(bean.getSuperscript());
                             info.setGrade(bean.getGrade());
+                            info.setRecentNum(bean.getEpisode_num());
+                            info.setSeriesSum(bean.getTotalCnt());
+                            info.setVideoType(bean.getVideoType());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             DBUtil.PutCollect(userId, info, bundle, callback, tableName);
@@ -568,6 +579,9 @@ public class UserCenterRecordManager {
                             info.setVImage(bean.get_imageurl());
                             info.setTitle(bean.get_title_name());
                             info.setGrade(bean.getGrade());
+                            info.setRecentNum(bean.getEpisode_num());
+                            info.setSeriesSum(bean.getTotalCnt());
+                            info.setVideoType(bean.getVideoType());
                             // info.setrSuperScript(bean.getSuperscript());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
@@ -631,6 +645,8 @@ public class UserCenterRecordManager {
                             info.setTitle(bean.get_title_name());
                             // info.setrSuperScript(bean.getSuperscript());
                             info.setGrade(bean.getGrade());
+                            info.setRecentNum(bean.getEpisode_num());
+                            info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
                             if (TextUtils.isEmpty(bean.getPlayId())) {
                                 List<SubContent> programsInfos = new ArrayList<>(Constant.BUFFER_SIZE_4);
@@ -994,11 +1010,11 @@ public class UserCenterRecordManager {
     /**
      * 查询节目是否被订阅
      *
-     * @param context     上下文
-     * @param contentUUid 节目id
-     * @param callback    查询状态回调
+     * @param context   上下文
+     * @param contentID 节目的唯一标识
+     * @param callback  查询状态回调
      */
-    public Long queryContentSubscribeStatus(final Context context, final String contentUUid,
+    public Long queryContentSubscribeStatus(final Context context, final String contentID,
                                             ISubscribeStatusCallback callback) {
 
         final Long callbackId = System.currentTimeMillis();
@@ -1031,11 +1047,11 @@ public class UserCenterRecordManager {
                     public void onNext(String s) {
                         if (!TextUtils.isEmpty(s)) {
                             querySubscribeStatusByDB(SharePreferenceUtils.getUserId
-                                        (LauncherApplication.AppContext), contentUUid, DBConfig
-                                        .REMOTE_SUBSCRIBE_TABLE_NAME, callbackId);
+                                    (LauncherApplication.AppContext), contentID, DBConfig
+                                    .REMOTE_SUBSCRIBE_TABLE_NAME, callbackId);
                         } else {
                             querySubscribeStatusByDB(SystemUtils.getDeviceMac(LauncherApplication
-                                    .AppContext), contentUUid, DBConfig.SUBSCRIBE_TABLE_NAME, callbackId);
+                                    .AppContext), contentID, DBConfig.SUBSCRIBE_TABLE_NAME, callbackId);
                         }
                     }
 
@@ -1072,11 +1088,11 @@ public class UserCenterRecordManager {
     /**
      * 查询节目是否被关注
      *
-     * @param context     上下文
-     * @param contentUUid 节目id
-     * @param callback    查询状态回调
+     * @param context   上下文
+     * @param contentID 节目的唯一标识
+     * @param callback  查询状态回调
      */
-    public Long queryContentFollowStatus(final Context context, final String contentUUid, IFollowStatusCallback callback) {
+    public Long queryContentFollowStatus(final Context context, final String contentID, IFollowStatusCallback callback) {
         final Long callbackId = System.currentTimeMillis();
         final CallbackForm callbackForm = new CallbackForm();
         callbackForm.callback = callback;
@@ -1107,9 +1123,9 @@ public class UserCenterRecordManager {
                     @Override
                     public void onNext(String s) {
                         if (!TextUtils.isEmpty(s)) {
-                            queryFollowStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_ATTENTION_TABLE_NAME, callbackId);
+                            queryFollowStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentID, DBConfig.REMOTE_ATTENTION_TABLE_NAME, callbackId);
                         } else {
-                            queryFollowStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.ATTENTION_TABLE_NAME, callbackId);
+                            queryFollowStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, DBConfig.ATTENTION_TABLE_NAME, callbackId);
                         }
                     }
 
@@ -1140,11 +1156,11 @@ public class UserCenterRecordManager {
     /**
      * 查询节目是否被收藏
      *
-     * @param context     上下文
-     * @param contentUUid 节目id
-     * @param callback    查询状态回调
+     * @param context   上下文
+     * @param contentID 节目的唯一标识
+     * @param callback  查询状态回调
      */
-    public Long queryContentCollectionStatus(final Context context, final String contentUUid, ICollectionStatusCallback callback) {
+    public Long queryContentCollectionStatus(final Context context, final String contentID, ICollectionStatusCallback callback) {
         final Long callbackId = System.currentTimeMillis();
         final CallbackForm callbackForm = new CallbackForm();
         callbackForm.callback = callback;
@@ -1173,9 +1189,9 @@ public class UserCenterRecordManager {
                     @Override
                     public void onNext(String s) {
                         if (!TextUtils.isEmpty(s)) {
-                            queryCollectStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentUUid, DBConfig.REMOTE_COLLECT_TABLE_NAME, callbackId);
+                            queryCollectStatusByDB(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentID, DBConfig.REMOTE_COLLECT_TABLE_NAME, callbackId);
                         } else {
-                            queryCollectStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentUUid, DBConfig.COLLECT_TABLE_NAME, callbackId);
+                            queryCollectStatusByDB(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, DBConfig.COLLECT_TABLE_NAME, callbackId);
                         }
                     }
 
@@ -1211,10 +1227,10 @@ public class UserCenterRecordManager {
 
     }
 
-    private void queryCollectStatusByDB(String userId, String contentuuid, String tableName, final Long callback) {
+    private void queryCollectStatusByDB(String userId, String contentID, String tableName, final Long callback) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -1241,10 +1257,10 @@ public class UserCenterRecordManager {
                 }).excute();
     }
 
-    private void querySubscribeStatusByDB(String userId, String contentuuid, String tableName, final Long callbackId) {
+    private void querySubscribeStatusByDB(String userId, String contentID, String tableName, final Long callbackId) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -1269,10 +1285,10 @@ public class UserCenterRecordManager {
                 }).excute();
     }
 
-    private void queryFollowStatusByDB(String userId, String contentuuid, String tableName, final Long callbackId) {
+    private void queryFollowStatusByDB(String userId, String contentID, String tableName, final Long callbackId) {
         DataSupport.search(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentuuid)
+                .eq(DBConfig.CONTENT_ID, contentID)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -1350,7 +1366,7 @@ public class UserCenterRecordManager {
      * @param value    搜索内容
      * @param callback 查询状态回调
      */
-    public void queryContenthistoryStatus(final Context context, final String field, final String value, final String order, final IHisoryStatusCallback callback) {
+    public void queryContentHistoryStatus(final Context context, final String field, final String value, final String order, final IHisoryStatusCallback callback) {
         QueryUserStatusUtil.getInstance().getLoginStatus(context, new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
@@ -1429,5 +1445,60 @@ public class UserCenterRecordManager {
         Log.d(TAG, "pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
 
         return result;
+    }
+
+    /**
+     * 获取用户数据接口函数
+     *
+     * @param type       类型参数
+     * @param dbCallback 数据回调函数
+     */
+    public void getUserRecords(String type, DBCallback<String> dbCallback) {
+        String tableName;
+        String userId;
+        if (TextUtils.equals(type, "collect")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.COLLECT_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else if (TextUtils.equals(type, "subscribe")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.SUBSCRIBE_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else if (TextUtils.equals(type, "follow")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.ATTENTION_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else if (TextUtils.equals(type, "history")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.HISTORY_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else {
+            return;
+        }
+
+        Log.d(TAG, "tableName : " + tableName + ", userId : " + userId);
+
+        DataSupport.search(tableName)
+                .condition()
+                .eq(DBConfig.USERID, userId)
+                .OrderBy(DBConfig.ORDER_BY_TIME)
+                .build()
+                .withCallback(dbCallback).excute();
     }
 }

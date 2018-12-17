@@ -211,7 +211,8 @@ public interface IUserCenterLoginApi {
                                            @Query("channel_code") String channel_code,
                                            @Query("app_key") String app_key,
                                            @Query("program_child_ids") String program_child_ids,
-                                           @Query("programset_ids") String programset_ids);
+                                           @Query("programset_ids") String programset_id,
+                                           @Query("content_ids") String content_id);
 
 //    @FormUrlEncoded
 //    @POST("content/history/info")
@@ -256,7 +257,8 @@ public interface IUserCenterLoginApi {
                                            @Query("is_program") String is_program,
                                            @Query("channel_code") String channel_code,
                                            @Query("app_key") String app_key,
-                                           @Query("programset_ids") String[] programset_ids);
+                                           @Query("programset_ids") String programset_id,
+                                           @Query("content_ids") String content_id);
 
 //    @FormUrlEncoded
 //    @POST("collections")
@@ -299,7 +301,8 @@ public interface IUserCenterLoginApi {
                                           @Query("is_program") String is_program,
                                           @Query("channel_code") String channel_code,
                                           @Query("app_key") String app_key,
-                                          @Query("programset_ids") String[] programset_ids);
+                                          @Query("programset_ids") String programset_id,
+                                          @Query("content_ids") String content_id);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/concerns")
@@ -340,7 +343,8 @@ public interface IUserCenterLoginApi {
                                               @Query("is_program") String is_program,
                                               @Query("channel_code") String channel_code,
                                               @Query("app_key") String app_key,
-                                              @Query("programset_ids") String[] programset_ids);
+                                              @Query("programset_ids") String programset_id,
+                                              @Query("content_ids") String content_id);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/subscribes")

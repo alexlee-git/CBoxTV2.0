@@ -140,8 +140,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 VideoPlayerView.this.requestFocus();
                 if (videoTitle != null)
                     videoTitle.setVisibility(VISIBLE);
-                if (full_screen != null)
-                    full_screen.setVisibility(VISIBLE);
+                if (full_screen != null){
+//                    full_screen.setVisibility(VISIBLE);
+                }
             } else {
                 defaultFocusView.requestFocus();
             }
@@ -484,6 +485,17 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     public void outerControl() {
         this.mOuterControl = true;
+    }
+
+    @Override
+    protected void onTipFinishPlay(boolean timeOver) {
+        super.onTipFinishPlay(timeOver);
+
+        if(timeOver) {
+            setHintText("已自动停止播放");
+        }else{
+            setHintText("已停止播放");
+        }
     }
 
     public void setisEnd(boolean b) {

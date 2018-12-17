@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
+import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,13 +22,19 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
+import com.newtv.libs.Constant;
+import com.newtv.libs.util.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
+import tv.newtv.cboxtv.cms.mainPage.viewholder.BlockBuilder;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.player.KeyAction;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -35,6 +42,7 @@ import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.popupMenuWidget;
 
 public class TopicTwoFragment extends BaseSpecialContentFragment implements PlayerCallback {
+    private static final String TAG = TopicTwoFragment.class.getSimpleName();
     private ModelResult<ArrayList<Page>> moduleInfoResult;
     private Content mProgramSeriesInfo;
     private int videoIndex = 0;
@@ -54,14 +62,15 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private int isFirstEnter = 0;
     private boolean hasDefaultFocus;
     private List<Program> datas;
-    private ImageView down_arrow;
+    private ImageView down_arrow,up_arrow;
     private  int firstplayIndex=-1;
 
     //目标项是否在最后一个可见项之后
     private boolean mShouldScroll;
     //记录目标项位置
     private int mToPosition;
-
+    private Observable<Boolean> isHaveAdObservable;
+    private boolean isHaveAD = false;
     public static boolean isBottom(AiyaRecyclerView recyclerView) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
@@ -95,6 +104,12 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             videoPlayerView.unregisterWidget(widgetId);
         }
         super.onStop();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        RxBus.get().unregister(Constant.IS_HAVE_AD, isHaveAdObservable);
     }
 
     @Override
@@ -132,6 +147,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         title_direction = view.findViewById(R.id.title_direction);
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.outerControl();
+        setVideoPlayerVisibility();
         mPopupMenuWidget = new popupMenuWidget(view.getContext().getApplicationContext(),
                 news_recycle, Gravity.LEFT, new popupMenuWidget.IPopupWidget() {
             @Override
@@ -148,8 +164,10 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoTitle = view.findViewById(R.id.videoTitle);
         full_screen = view.findViewById(R.id.full_screen);
         down_arrow = view.findViewById(R.id.down_arrow);
+        up_arrow = view.findViewById(R.id.up_arrow);
         news_recycle.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.VERTICAL, false));
+        news_recycle.setDirIndicator(up_arrow,down_arrow);
         int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.height_24px);
         news_recycle.setSpace(space, 0);
         final NewsAdapter adapter = new NewsAdapter();
@@ -268,8 +286,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
             }
         });
-
-
     }
 
     /**
@@ -379,8 +395,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
                 if (videoPlayerView != null) {
                     videoPlayerView.requestFocus();
-                    videoTitle.setVisibility(View.VISIBLE);
-                    full_screen.setVisibility(View.VISIBLE);
+                    setVideoTitleVisibility();
+//                    full_screen.setVisibility(View.VISIBLE);
+                    full_screen.setVisibility(View.GONE);
 
                 }
                 return true;
@@ -425,6 +442,32 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                     .getPrograms()).notifyDataSetChanged();
 
 
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private void setVideoPlayerVisibility() {
+        if (null != videoPlayerView) {
+            isHaveAdObservable = RxBus.get().register(Constant.IS_HAVE_AD);
+            isHaveAdObservable.observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean isHaveAd) {
+                            Log.d(TAG, "setVideoPlayerVisibility isHaveAd : " + isHaveAd);
+                            isHaveAD = isHaveAd;
+                            setVideoTitleVisibility();
+                        }
+                    });
+        }
+    }
+
+    private void setVideoTitleVisibility() {
+        if (videoPlayerView != null && videoTitle != null) {
+            if (isHaveAD) {
+                videoTitle.setVisibility(View.GONE);
+            } else {
+                videoTitle.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -512,11 +555,11 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
                     if (hasFocus) {
 
-                        if (isBottom(news_recycle)) {
-                            down_arrow.setVisibility(View.VISIBLE);
-                        } else {
-                            down_arrow.setVisibility(View.INVISIBLE);
-                        }
+//                        if (isBottom(news_recycle)) {
+//                            down_arrow.setVisibility(View.VISIBLE);
+//                        } else {
+//                            down_arrow.setVisibility(View.INVISIBLE);
+//                        }
                         if (moduleItem != null  &&!TextUtils.isEmpty( moduleItem.getSubTitle())&& moduleItem.getSubTitle().length() > 10) {
 
                             holder.news_title.setSingleLine(true);
@@ -548,7 +591,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                                 }
                             }
 
-                            }
+                        }
 
 
                     }

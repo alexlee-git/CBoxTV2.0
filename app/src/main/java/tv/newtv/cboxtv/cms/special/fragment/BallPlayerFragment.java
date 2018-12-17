@@ -25,6 +25,7 @@ import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.views.TimeDialog;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -222,6 +223,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
         mImageView.setVisibility(View.VISIBLE);
         if (mHintText != null) {
             mHintText.setText("暂无播放");
+            TimeDialog.showBuilder(getContext());
         }
     }
 }

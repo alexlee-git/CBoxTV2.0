@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width_430px"
+    android:layout_height="@dimen/height_104px"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+
+
+    <ImageView
+        android:id="@+id/iv_vip"
+        android:layout_width="@dimen/width_75px"
+        android:layout_height="@dimen/height_30px"
+        android:src="@drawable/vip"
+        android:layout_marginLeft="@dimen/width_12px"
+        android:layout_marginTop="@dimen/height_16px"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/iv_playing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/playing_triangle"
+        android:layout_marginLeft="@dimen/width_41px"
+        android:layout_marginTop="@dimen/height_70px"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/tv_video_name"
+        android:layout_width="@dimen/width_430px"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/width_99px"
+        android:paddingRight="@dimen/width_24px"
+        android:layout_marginTop="@dimen/height_12px"
+        android:gravity="left|center_vertical"
+        android:background="@color/color_transparent"
+        android:textColor="@color/color_font"
+        android:ellipsize="marquee"
+        android:focusable="false"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="@dimen/width_430px"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/width_99px"
+        android:paddingRight="@dimen/width_24px"
+        android:layout_below="@id/tv_video_name"
+        android:layout_marginTop="@dimen/width_8px"
+        android:gravity="left|center_vertical"
+        android:background="@color/color_transparent"
+        android:textColor="@color/color_font"
+        android:textSize="14sp"
+        android:singleLine="true"
+        />
+
+</RelativeLayout>

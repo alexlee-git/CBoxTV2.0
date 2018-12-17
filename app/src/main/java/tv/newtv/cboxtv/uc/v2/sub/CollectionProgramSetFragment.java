@@ -42,7 +42,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
@@ -101,7 +100,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     public void onResume() {
         super.onResume();
         observable = RxBus.get().register("recordPosition");
-        observable.observeOn(AndroidSchedulers .mainThread())
+        observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer integer) throws Exception {
@@ -110,7 +109,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                 });
 
         operationObs = RxBus.get().register("col_operation_map");
-        operationObs.observeOn(AndroidSchedulers .mainThread())
+        operationObs.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Map<String, String>>() {
                     @Override
                     public void accept(Map<String, String> map) throws Exception {
@@ -204,6 +203,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private void requestDataByDB(String tableName) {
         DataSupport.search(tableName)
                 .condition()
+                .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -213,7 +213,8 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                         if (code == 0) {
                             UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
                             Gson gson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                            }.getType();
                             List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
                             userCenterUniversalBean.data = universalBeans;
                             if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
@@ -388,6 +389,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     public void loadingComplete() {
 
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

@@ -308,6 +308,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                 }
                 case MSG_RESULT: {
                     if (status.equals(pay_success)) {
+                        UserCenterUtils.initMemberStatus();
                         if (mHandler != null) {
                             mHandler.removeMessages(MSG_RESULT);
                             mHandler.sendEmptyMessage(MSG_RESULT_OK);

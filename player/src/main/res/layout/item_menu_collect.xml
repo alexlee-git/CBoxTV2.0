@@ -10,6 +10,7 @@
         android:id="@+id/iv_collect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_12px"
         android:src="@drawable/menu_group_collect_unfocus"
         android:layout_gravity="center_vertical"
         />
@@ -17,9 +18,9 @@
     <TextView
         android:id="@+id/tv_video_name"
         android:layout_width="@dimen/width_430px"
-        android:layout_height="@dimen/height_104px"
-        android:paddingLeft="@dimen/width_40px"
-        android:paddingRight="@dimen/width_80px"
+        android:layout_height="@dimen/height_106px"
+        android:paddingLeft="@dimen/width_99px"
+        android:paddingRight="@dimen/width_24px"
         android:gravity="left|center_vertical"
         android:background="@color/color_transparent"
         android:text="收藏"

@@ -82,7 +82,7 @@ public class UserCenterUtils {
     }
 
     public static void getHistoryState(final String field, final String value, final String order, IHisoryStatusCallback callack) {
-        UserCenterRecordManager.getInstance().queryContenthistoryStatus(LauncherApplication.AppContext, field, value, order, callack);
+        UserCenterRecordManager.getInstance().queryContentHistoryStatus(LauncherApplication.AppContext, field, value, order, callack);
     }
 
     //添加历史记录

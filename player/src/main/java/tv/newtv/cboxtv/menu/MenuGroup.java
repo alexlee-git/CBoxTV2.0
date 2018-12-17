@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -60,7 +61,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     private static final int REQUEST_MENU_FOCUS = 1;
     private static final int REQUEST_MENU_FIRST_FOCUS = 2;
     private static final int REQUEST_MENU_PATH_VIEW_FOCUS = 3;
-    private static final int PADDING_TOP = ScreenUtils.dp2px(20);
+    private static final int PADDING_TOP = ScreenUtils.dp2px(26);
     /**
      * 无法测量到recyclerView宽度的时候，临时使用这个值为recyclerView的宽度
      */
@@ -126,6 +127,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     private boolean allNodeInit = false;
     private Context mcontext;
     private Node defaultFocusNode = null;
+    private SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration(getResources()
+            .getDimensionPixelOffset(R.dimen.width_26px));
 
     public MenuGroup(Context context) {
         this(context, null);
@@ -336,7 +339,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         lastListView = new MenuRecyclerView(getContext());
         lastListView.setItemAnimator(null);
         LastMenuRecyclerAdapter adapter = new LastMenuRecyclerAdapter(getContext(), lastProgram,
-                detailcontentUUID);
+                detailcontentUUID,this);
         lastListView.setAdapter(adapter);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -1201,6 +1204,18 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         getLastAdapter().notifyDataSetChanged();
     }
 
+    protected void addLastAdapterSpacesItem(){
+        if(lastListView.getItemDecorationCount() == 0){
+            lastListView.addItemDecoration(spacesItemDecoration);
+        }
+    }
+
+    protected void removeLastAdapterSpacesItem(){
+        if(lastListView.getItemDecorationCount() > 0){
+            lastListView.removeItemDecoration(spacesItemDecoration);
+        }
+    }
+
     public interface RecreateListener {
 
         void success(LastMenuBean lastMenuBean);
@@ -1261,6 +1276,20 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             this.x = x;
             this.toX = toX;
             this.gone = gone;
+        }
+    }
+
+    static class SpacesItemDecoration extends RecyclerView.ItemDecoration{
+        private int space;
+
+        public SpacesItemDecoration(int space) {
+            this.space = space;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            outRect.bottom = space;
+            Log.i(TAG, "getItemOffsets: "+outRect);
         }
     }
 }

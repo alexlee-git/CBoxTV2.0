@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.letv.LetvDeviceUtil;
 import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.ScreenUtils;
@@ -41,7 +43,12 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     public void init(Context context,View parent){
         this.context = context;
         this.parent = parent;
-        rootView = LayoutInflater.from(context).inflate(R.layout.layout_buy_goods_pop,null);
+        if (LetvDeviceUtil.isLetvDevice()) {
+            rootView = LayoutInflater.from(context).inflate(R.layout.layout_lstv_buy_goods_pop,null);
+        } else{
+            rootView = LayoutInflater.from(context).inflate(R.layout.layout_buy_goods_pop,null);
+        }
+
         imageView = rootView.findViewById(R.id.image);
         textView = rootView.findViewById(R.id.text);
         qrCodeImage = rootView.findViewById(R.id.qr_code_image);
@@ -102,18 +109,18 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
                 imageView.setImageResource(R.drawable.qrcode_bg);
 
                 QrcodeUtil qrcodeUtil = new QrcodeUtil();
-                qrcodeUtil.createQRImage(authCode,qrCodeImage,217,217);
-                show(500,370);
+                qrcodeUtil.createQRImage(authCode,qrCodeImage,context.getResources().getDimensionPixelOffset(R.dimen.width_167px),context.getResources().getDimensionPixelOffset(R.dimen.width_167px));
+                show(context.getResources().getDimensionPixelOffset(R.dimen.width_500px),context.getResources().getDimensionPixelOffset(R.dimen.width_370px));
             }
         });
     }
 
     private void show(){
         if(width <= 0){
-            width = 500;
+            width = context.getResources().getDimensionPixelOffset(R.dimen.width_500px);
         }
         if(height <= 0){
-            height = 370;
+            height = context.getResources().getDimensionPixelOffset(R.dimen.width_370px);
         }
         show(width,height,x,y);
     }
@@ -134,8 +141,8 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
         }
 
         if(x <=0 || y <= 0){
-            showAtLocation(parent, Gravity.NO_GRAVITY,ScreenUtils.getScreenW() - width + 50,
-                    ScreenUtils.getScreenH() - height + 50);
+            showAtLocation(parent, Gravity.NO_GRAVITY, ScreenUtils.getScreenW() - width + context.getResources().getDimensionPixelOffset(R.dimen.width_50px),
+                    ScreenUtils.getScreenH() - height + context.getResources().getDimensionPixelOffset(R.dimen.width_50px));
         } else {
             showAtLocation(parent,Gravity.NO_GRAVITY,x,y);
         }

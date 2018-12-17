@@ -102,6 +102,15 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         setUp();
     }
 
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+
+//        if(mBlockPosterView != null){
+//            mBlockPosterView.dispatchWindowVisibilityChanged(visibility);
+//        }
+    }
+
     private void setUp() {
         if (mPage == null || mBlockPosterView == null || mRecycleView == null) {
             return;
