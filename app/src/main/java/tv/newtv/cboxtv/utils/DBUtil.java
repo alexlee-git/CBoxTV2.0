@@ -65,7 +65,13 @@ public class DBUtil {
         contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
         contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
         contentValues.put(DBConfig.USERID, userId);
-
+        //2018.12.17 wqs 梳理更新至多少集逻辑
+        if (!TextUtils.isEmpty(entity.getRecentNum())) {
+            contentValues.put(DBConfig.EPISODE_NUM, entity.getRecentNum());
+        }
+        if (!TextUtils.isEmpty(entity.getSeriesSum())) {
+            contentValues.put(DBConfig.TOTAL_CNT, entity.getSeriesSum());
+        }
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (TextUtils.isEmpty(updateTime)) {
             contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
@@ -144,6 +150,13 @@ public class DBUtil {
             contentValues.put(DBConfig.IMAGEURL, entity.getVImage());
             contentValues.put(DBConfig.TITLE_NAME, entity.getTitle());
             contentValues.put(DBConfig.USERID, userId);
+            //2018.12.17 wqs 梳理更新至多少集逻辑
+            if (!TextUtils.isEmpty(entity.getRecentNum())) {
+                contentValues.put(DBConfig.EPISODE_NUM, entity.getRecentNum());
+            }
+            if (!TextUtils.isEmpty(entity.getSeriesSum())) {
+                contentValues.put(DBConfig.TOTAL_CNT, entity.getSeriesSum());
+            }
             if (!TextUtils.isEmpty(entity.getGrade()) && !TextUtils.equals(entity.getGrade(), "0.0") && !TextUtils.equals(entity.getGrade(), "0")) {
                 contentValues.put(DBConfig.CONTENT_GRADE, entity.getGrade());
             }
@@ -231,7 +244,13 @@ public class DBUtil {
         // contentValues.put(DBConfig.SUPERSCRIPT, mInfo.getrSuperScript());
         contentValues.put(DBConfig.CONTENT_DURATION, bundle.getString(DBConfig.CONTENT_DURATION));
 
-
+        //2018.12.17 wqs 梳理更新至多少集逻辑
+        if (!TextUtils.isEmpty(mInfo.getRecentNum())) {
+            contentValues.put(DBConfig.EPISODE_NUM, mInfo.getRecentNum());
+        }
+        if (!TextUtils.isEmpty(mInfo.getSeriesSum())) {
+            contentValues.put(DBConfig.TOTAL_CNT, mInfo.getSeriesSum());
+        }
         DataSupport.insertOrUpdate(tableName)
                 .condition()
                 .eq(DBConfig.CONTENT_ID, contentID)
