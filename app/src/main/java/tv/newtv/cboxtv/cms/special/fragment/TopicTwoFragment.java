@@ -269,25 +269,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                     hasDefaultFocus = true;
                 }
             }
-
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                if (news_recycle.canScrollVertically(-1)){
-//                    up_arrow.setVisibility(View.VISIBLE);
-//                }else {
-//                    up_arrow.setVisibility(View.INVISIBLE);
-//                }
-//                if (news_recycle.canScrollVertically(1)){
-//                    down_arrow.setVisibility(View.VISIBLE);
-//                }else {
-//                    down_arrow.setVisibility(View.INVISIBLE);
-//                }
-//                if (!news_recycle.canScrollVertically(-1)&&news_recycle.canScrollVertically(1)){
-//                    up_arrow.setVisibility(View.INVISIBLE);
-//                    down_arrow.setVisibility(View.INVISIBLE);
-//                }
-//            }
         });
     }
 
