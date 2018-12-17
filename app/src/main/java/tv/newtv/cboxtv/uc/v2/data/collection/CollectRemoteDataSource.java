@@ -195,6 +195,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
         String User_id = SharePreferenceUtils.getUserId(mContext);
         Log.e("UserId", User_id + "");
         String[] programset_ids = new String[]{Collect.get_contentuuid()};
+        String contentID = Collect.getContentId();
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
                 .deleteCollect(Authorization,
@@ -202,7 +203,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        programset_ids)
+                        "", contentID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {

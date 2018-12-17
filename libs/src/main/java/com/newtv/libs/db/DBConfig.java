@@ -19,6 +19,7 @@ public final class DBConfig {
 
     /* database name */
     public static final String DB_NAME;
+
     static {
         if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO)) {
             DB_NAME = "cbox_database_panda";
@@ -31,39 +32,39 @@ public final class DBConfig {
     public static final int DB_VERSION = 4;  //数据库表添加一列，升级数据库
 
     /* database table names */
-    public static final String COLLECT_TABLE_NAME   = "user_collect_info";//我的收藏
+    public static final String COLLECT_TABLE_NAME = "user_collect_info";//我的收藏
     public static final String ATTENTION_TABLE_NAME = "user_attention_info";//我的关注
     public static final String SUBSCRIBE_TABLE_NAME = "user_subscribe_info";//我的订阅
-    public static final String HISTORY_TABLE_NAME   = "user_history_info";//历史记录
+    public static final String HISTORY_TABLE_NAME = "user_history_info";//历史记录
     public static final String LB_COLLECT_TABLE_NAME = "lb_user_colllect_info";//轮播台收藏
 
-    public static final String REMOTE_COLLECT_TABLE_NAME   = "remote_user_collect_info";//我的收藏
+    public static final String REMOTE_COLLECT_TABLE_NAME = "remote_user_collect_info";//我的收藏
     public static final String REMOTE_ATTENTION_TABLE_NAME = "remote_user_attention_info";//我的关注
     public static final String REMOTE_SUBSCRIBE_TABLE_NAME = "remote_user_subscribe_info";//我的订阅
-    public static final String REMOTE_HISTORY_TABLE_NAME   = "remote_user_history_info";//历史记录
+    public static final String REMOTE_HISTORY_TABLE_NAME = "remote_user_history_info";//历史记录
 
 
     /* VideoDetail db fields */
 
-    public static final String CONTENTUUID   = "_contentuuid"; // 对应cms系统中的contentuuid
-    public static final String CONTENT_ID    = "_content_id";
-    public static final String CONTENTTYPE   = "_contenttype"; //内容类型
-    public static final String ACTIONTYPE    = "_actiontype"; //跳转类型
-    public static final String IMAGEURL      = "_imageurl"; // 内容图片
-    public static final String TITLE_NAME    = "_title_name"; //内容标题
-    public static final String SUPERSCRIPT   = "superscript"; // 右上角角标id
+    public static final String CONTENTUUID = "_contentuuid"; // 对应cms系统中的contentuuid
+    public static final String CONTENT_ID = "_content_id";
+    public static final String CONTENTTYPE = "_contenttype"; //内容类型
+    public static final String ACTIONTYPE = "_actiontype"; //跳转类型
+    public static final String IMAGEURL = "_imageurl"; // 内容图片
+    public static final String TITLE_NAME = "_title_name"; //内容标题
+    public static final String SUPERSCRIPT = "superscript"; // 右上角角标id
     public static final String PLAY_PROGRESS = "_play_progress"; // 单个内容的播放进度
-    public static final String PLAYINDEX     = "_play_index"; // 播放的是第几集
+    public static final String PLAYINDEX = "_play_index"; // 播放的是第几集
     public static final String CONTENT_GRADE = "grade"; // 评分
-    public static final String UPDATE_TIME   = "_update_time";//更新时间
-    public static final String PLAYPOSITION  = "_play_position";// 断点时间
-    public static final String USERID        = "_user_id"; // 用户id
-    public static final String TOTAL_CNT     = "_total_count"; // 内容总集数
-    public static final String PLAYID        = "_play_id";//子节目id
-    public static final String VIDEO_TYPE    = "_video_type"; // 内容的一集分类
+    public static final String UPDATE_TIME = "_update_time";//更新时间
+    public static final String PLAYPOSITION = "_play_position";// 断点时间
+    public static final String USERID = "_user_id"; // 用户id
+    public static final String TOTAL_CNT = "_total_count"; // 内容总集数
+    public static final String PLAYID = "_play_id";//子节目id
+    public static final String VIDEO_TYPE = "_video_type"; // 内容的一集分类
     public static final String UPDATE_SUPERSCRIPT = "_update_superscript"; // 是否展示更新角标
     public static final String CONTENT_DURATION = "_content_duration"; // 内容时长
-    public static final String EPISODE_NUM   = "_episode_num";
+    public static final String EPISODE_NUM = "_episode_num";// 内容已更新集数
     public static final String PROGRAM_CHILD_NAME = "_program_child_name";
 
     public static final String ORDER_BY_TIME = UPDATE_TIME + " desc";//排序条件
@@ -77,7 +78,7 @@ public final class DBConfig {
     public static final String VIP_FLAG = "vip_flag";//付费标识
 
     static final String CREATE_LB_COLLECT_TABLE_SQL =
-            "create table "+ LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "create table " + LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000)," +
                     CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
                     TITLE_NAME + " varchar2(1000)," +
@@ -109,6 +110,7 @@ public final class DBConfig {
                     USERID + " varchar2(1000)," +
                     VIDEO_TYPE + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
+                    TOTAL_CNT + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 
@@ -127,6 +129,7 @@ public final class DBConfig {
                     USERID + " varchar2(1000)," +
                     VIDEO_TYPE + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
+                    TOTAL_CNT + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 
@@ -167,6 +170,7 @@ public final class DBConfig {
                     USERID + " varchar2(1000)," +
                     UPDATE_TIME + " long," +
                     EPISODE_NUM + " varchar2(1000)," +
+                    TOTAL_CNT + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)," +
                     VIDEO_TYPE + " varchar2(1000)," +
                     PLAYINDEX + " varchar2(1000)" +
@@ -185,6 +189,7 @@ public final class DBConfig {
                     USERID + " varchar2(1000)," +
                     UPDATE_TIME + " long," +
                     EPISODE_NUM + " varchar2(1000)," +
+                    TOTAL_CNT + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)," +
                     VIDEO_TYPE + " varchar2(1000)," +
                     PLAYINDEX + " varchar2(1000)" +
@@ -209,6 +214,7 @@ public final class DBConfig {
                     CONTENT_DURATION + " varchar2(1000)," +
                     PLAYID + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
+                    TOTAL_CNT + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 
@@ -231,6 +237,7 @@ public final class DBConfig {
                     CONTENT_DURATION + " varchar2(1000)," +
                     PLAYID + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
+                    TOTAL_CNT + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 }

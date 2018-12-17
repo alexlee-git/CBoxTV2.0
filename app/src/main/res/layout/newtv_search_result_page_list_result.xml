@@ -108,20 +108,30 @@
         android:clipToPadding="false"
         android:scrollbars="none"/>
 
-    <TextView
-        android:id="@+id/id_search_result_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@drawable/empty_icon"
-        android:drawablePadding="@dimen/width_48px"
-        android:gravity="center_horizontal"
-        android:text="@string/search_result_empty"
-        android:textColor="#ededed"
-        android:textSize="@dimen/height_35px"
-        android:layout_marginTop="@dimen/width_364px"
+    <ImageView
+        android:id="@+id/id_search_result_empty_img"
+        android:layout_width="@dimen/width_106px"
+        android:layout_height="@dimen/width_93px"
+        android:src="@drawable/empty_icon"
         android:layout_marginLeft="@dimen/width_566px"
+        android:layout_marginTop="@dimen/width_346px"
         android:visibility="gone"
         />
+
+    <TextView
+        android:id="@+id/id_search_result_empty"
+        android:layout_below="@id/id_search_result_empty_img"
+        android:layout_width="@dimen/width_624px"
+        android:layout_height="wrap_content"
+        android:text="@string/search_result_empty"
+        android:textColor="#ededed"
+        android:textSize="@dimen/height_33px"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/width_305px"
+        android:layout_marginTop="@dimen/width_48px"
+        android:visibility="gone"
+        />
+
     <ImageView
         android:id="@+id/id_search_result_empty_line"
         android:layout_width="@dimen/width_1074px"
@@ -129,7 +139,7 @@
         android:src="@drawable/no_search_line"
         android:layout_marginTop="@dimen/width_49px"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="@dimen/width_129px"
+        android:layout_marginLeft="@dimen/width_84px"
         android:layout_below="@id/id_search_result_empty"
         android:visibility="gone"
         />

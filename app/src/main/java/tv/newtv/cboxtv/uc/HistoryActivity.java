@@ -472,64 +472,65 @@ public class HistoryActivity extends BaseActivity implements
 
     private void requestData() {
         if (!TextUtils.isEmpty(mLoginTokenString)) {
-            if (SharePreferenceUtils.getSyncStatus(getApplicationContext()) == 0) {
-                DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
-                        .condition()
-                        .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
-                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(getApplicationContext()))
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                Log.e(TAG, "request local data complete result : " + result);
-                                if (code == 0) {
-                                    Gson mGson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
-                                    localData = mGson.fromJson(result, type);
-
-                                    if (localData == null) {
-                                        Log.d(TAG, "localdata is null");
-                                        localData = new ArrayList<>();
-                                    }
-                                }
-
-                                localDataReqComp = true;
-                                if (mHandler != null) {
-                                    mHandler.sendEmptyMessage(SYNC_DATA_COMPLETE);
-                                }
-                            }
-                        }).excute();
-
-                DataSupport.search(DBConfig.REMOTE_HISTORY_TABLE_NAME)
-                        .condition()
-                        .eq(DBConfig.USERID, userId)
-                        .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
-                        .OrderBy(DBConfig.ORDER_BY_TIME)
-                        .build()
-                        .withCallback(new DBCallback<String>() {
-                            @Override
-                            public void onResult(int code, final String result) {
-                                Log.e(TAG, "request remote data complete result : " + result);
-                                if (code == 0) {
-                                    Gson mGson = new Gson();
-                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
-                                    remoteData = mGson.fromJson(result, type);
-
-                                    if (remoteData == null) {
-                                        remoteData = new ArrayList<>();
-                                    }
-                                }
-
-                                remoteDataReqComp = true;
-                                if (mHandler != null) {
-                                    mHandler.sendEmptyMessage(SYNC_DATA_COMPLETE);
-                                }
-                            }
-                        }).excute();
-            } else {
-                requestDataByDB(DBConfig.REMOTE_HISTORY_TABLE_NAME);
-            }
+            requestDataByDB(DBConfig.REMOTE_HISTORY_TABLE_NAME);
+//            if (SharePreferenceUtils.getSyncStatus(getApplicationContext()) == 0) {
+//                DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
+//                        .condition()
+//                        .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
+//                        .eq(DBConfig.USERID, SystemUtils.getDeviceMac(getApplicationContext()))
+//                        .OrderBy(DBConfig.ORDER_BY_TIME)
+//                        .build()
+//                        .withCallback(new DBCallback<String>() {
+//                            @Override
+//                            public void onResult(int code, final String result) {
+//                                Log.e(TAG, "request local data complete result : " + result);
+//                                if (code == 0) {
+//                                    Gson mGson = new Gson();
+//                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+//                                    localData = mGson.fromJson(result, type);
+//
+//                                    if (localData == null) {
+//                                        Log.d(TAG, "localdata is null");
+//                                        localData = new ArrayList<>();
+//                                    }
+//                                }
+//
+//                                localDataReqComp = true;
+//                                if (mHandler != null) {
+//                                    mHandler.sendEmptyMessage(SYNC_DATA_COMPLETE);
+//                                }
+//                            }
+//                        }).excute();
+//
+//                DataSupport.search(DBConfig.REMOTE_HISTORY_TABLE_NAME)
+//                        .condition()
+//                        .eq(DBConfig.USERID, userId)
+//                        .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
+//                        .OrderBy(DBConfig.ORDER_BY_TIME)
+//                        .build()
+//                        .withCallback(new DBCallback<String>() {
+//                            @Override
+//                            public void onResult(int code, final String result) {
+//                                Log.e(TAG, "request remote data complete result : " + result);
+//                                if (code == 0) {
+//                                    Gson mGson = new Gson();
+//                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+//                                    remoteData = mGson.fromJson(result, type);
+//
+//                                    if (remoteData == null) {
+//                                        remoteData = new ArrayList<>();
+//                                    }
+//                                }
+//
+//                                remoteDataReqComp = true;
+//                                if (mHandler != null) {
+//                                    mHandler.sendEmptyMessage(SYNC_DATA_COMPLETE);
+//                                }
+//                            }
+//                        }).excute();
+//            } else {
+//                requestDataByDB(DBConfig.REMOTE_HISTORY_TABLE_NAME);
+//            }
         } else {
             requestDataByDB(DBConfig.HISTORY_TABLE_NAME);
         }

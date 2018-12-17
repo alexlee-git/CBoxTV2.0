@@ -34,7 +34,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
@@ -48,7 +47,7 @@ import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
  * 创建日期:         2018/9/11
  */
 
-public class FollowRecordFragment extends BaseDetailSubFragment  {
+public class FollowRecordFragment extends BaseDetailSubFragment {
     public static final int INFLATE_DATA_BASE = 1001;//填充数据库数据
     private final String TAG = "FollowRecordFragment";
     private final int COLUMN_COUNT = 6;
@@ -252,6 +251,7 @@ public class FollowRecordFragment extends BaseDetailSubFragment  {
     private void requestDataByDB(String tableName) {
         DataSupport.search(tableName)
                 .condition()
+                .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()

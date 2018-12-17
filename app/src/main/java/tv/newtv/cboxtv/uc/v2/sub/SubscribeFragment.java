@@ -21,7 +21,6 @@ import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
-import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -33,28 +32,18 @@ import com.newtv.libs.util.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
@@ -191,6 +180,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     private void requestDataByDB(String tableName) {
         DataSupport.search(tableName)
                 .condition()
+                .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()

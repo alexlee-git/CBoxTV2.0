@@ -12,10 +12,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -113,7 +111,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
 
             // 评分
             String score = entity.getGrade();
-            if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null") && !TextUtils.equals(score, "0.0")) {
+            if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null") && !TextUtils.equals(score, "0.0") && !TextUtils.equals(score, "0")) {
                 viewHolder.mScore.setText(entity.getGrade());
             } else {
                 viewHolder.mScore.setVisibility(View.INVISIBLE);
@@ -183,7 +181,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                 picasso.transform(new PosterCircleTransform(context, 4)).into(viewHolder.mImageIv);
             }
 
-            if(!viewHolder.itemView.hasFocus()){
+            if (!viewHolder.itemView.hasFocus()) {
                 viewHolder.mFocusIv.setVisibility(View.GONE);
             }
         }
