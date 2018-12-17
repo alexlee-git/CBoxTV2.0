@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -32,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -402,8 +405,17 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
             .annotations.Nullable String desc) {
-        Toast.makeText(context.getApplicationContext(), desc, Toast
-                .LENGTH_SHORT).show();
+        if (fromOuter){
+            Toast.makeText(context.getApplicationContext(), "节目走丢了，即将进入应用首页", Toast
+                    .LENGTH_SHORT).show();
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra("action", "");
+            intent.putExtra("params", "");
+            startActivity(intent);
+        }else {
+            Toast.makeText(context.getApplicationContext(), desc, Toast
+                    .LENGTH_SHORT).show();
+        }
         ProgrameSeriesAndVarietyDetailActivity.this.finish();
     }
 

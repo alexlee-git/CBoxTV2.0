@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -11,9 +12,11 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.ToastUtil;
 
 import java.util.ArrayList;
 
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
@@ -213,7 +216,16 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
-                        if (info == null) return;
+                        if (info == null){
+                            if (fromOuter){
+                                ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将进入应用首页");
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.putExtra("action", "");
+                                intent.putExtra("params", "");
+                                startActivity(intent);
+                            }
+                            ProgramCollectionActivity.this.finish();
+                        }
                         mContent = info;
                         mListView.setContentUUID(contentUUID);
                         mListView.onSubContentResult(contentUUID, new ArrayList<>(info.getData()));
