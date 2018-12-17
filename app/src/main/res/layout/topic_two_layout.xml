@@ -14,6 +14,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/up_arrow"
             android:layout_marginLeft="@dimen/width_240px"
             android:src="@drawable/up"
             android:layout_marginTop="@dimen/height_24px"
