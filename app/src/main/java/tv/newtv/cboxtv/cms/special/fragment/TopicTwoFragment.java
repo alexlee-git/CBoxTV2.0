@@ -399,6 +399,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                     videoPlayerView.requestFocus();
                     videoTitle.setVisibility(View.VISIBLE);
 //                    full_screen.setVisibility(View.VISIBLE);
+                    full_screen.setVisibility(View.GONE);
 
                 }
                 return true;
