@@ -201,21 +201,21 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 //    }
 
     @Override
-    public void deleteRemoteHistory(String token, @NonNull String userId, String contentType, String appKey, String channelCode, String contentuuids) {
+    public void deleteRemoteHistory(String token, @NonNull String userId, String contentType, String appKey, String channelCode, String contentID) {
         String isProgram = null;
         String program_child = null;
-        String contentUUid = null;
+        String content_id = null;
         Log.e(TAG, "contentType: " + contentType);
-        if (!"clean".equals(contentuuids)) {
+        if (!"clean".equals(contentID)) {
             isProgram = (TextUtils.equals(contentType, Constant.CONTENTTYPE_CS)
                     || TextUtils.equals(contentType, Constant.CONTENTTYPE_PS)
                     || TextUtils.equals(contentType, Constant.CONTENTTYPE_CG)) ? "0" : "1";
             if (TextUtils.equals(isProgram, "0")) {
                 program_child = "";
-                contentUUid = contentuuids;
+                content_id = contentID;
             } else if (TextUtils.equals(isProgram, "1")) {
-                program_child = contentuuids;
-                contentUUid = "";
+                program_child = contentID;
+                content_id = "";
             }
         } else {
             // 如果是clean, 则isProgram要传null
@@ -228,7 +228,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
                         program_child,
-                        contentUUid)
+                        "", content_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {

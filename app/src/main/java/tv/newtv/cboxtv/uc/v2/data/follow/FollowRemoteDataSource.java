@@ -164,8 +164,8 @@ public class FollowRemoteDataSource implements FollowDataSource {
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
-        String[] programset_ids = new String[]{bean.get_contentuuid()};
-
+        String programset_id = bean.get_contentuuid();
+        String contentID = bean.getContentId();
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
                 .deleteFollow(Authorization,
@@ -173,7 +173,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        programset_ids)
+                        "", contentID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
