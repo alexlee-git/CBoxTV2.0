@@ -365,8 +365,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     private boolean videoType() {
-        if (!TextUtils.isEmpty(videoType) && (TextUtils.equals(videoType, "电视剧")
-                || TextUtils.equals(videoType, "动漫"))) {
+        if (!TextUtils.isEmpty(videoType) && (
+                TextUtils.equals(videoType, "电视剧")
+                || TextUtils.equals(videoType, "动漫")
+                || TextUtils.equals(videoType, "少儿"))) {
             return false;
         }
         return true;
