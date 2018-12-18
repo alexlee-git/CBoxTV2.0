@@ -160,6 +160,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 intent.putExtra("payBean", mExterPayBean);
                 intent.putExtra("action", mExternalAction);
                 intent.putExtra("params", mExternalParams);
+                intent.putExtra("loginType", loginType);
+                Log.e(TAG, "onClick: mobile_login_btn------loginType="+loginType );
                 startActivity(intent);
                 finish();
                 break;
