@@ -253,13 +253,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 disposable_Qrcode.dispose();
                                 disposable_Qrcode = null;
                             }
-                            String error = getResources().getString(R.string.send_phone_err);
+                            String error = getResources().getString(R.string.phone_login_err);
                             if (e instanceof HttpException) {
                                 HttpException httpException = (HttpException) e;
                                 try {
                                     String responseString = httpException.response().errorBody().string();
                                     JSONObject jsonObject = new JSONObject(responseString);
-                                    error = jsonObject.getString("msg");
+                                    error = jsonObject.optString("msg");
                                     Log.i(TAG, "error: " + responseString);
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
