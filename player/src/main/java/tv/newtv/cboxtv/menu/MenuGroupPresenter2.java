@@ -528,42 +528,34 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         list.add(subscribe);
         root.setChild(list);
 
-        searchInDB(DBConfig.COLLECT_TABLE_NAME, collect);
-        searchInDB(DBConfig.SUBSCRIBE_TABLE_NAME, subscribe);
-        searchInDB(DBConfig.HISTORY_TABLE_NAME, history);
+        searchInDB("collect", collect);
+        searchInDB("subscribe", subscribe);
+        searchInDB("history", history);
 
         menuGroup.addNodeToRoot(root);
     }
 
-    private void searchInDB(String titleName, final Node node) {
-        SqlCondition sqlCondition = DataSupport.search(titleName)
-                .condition()
-                .OrderBy(DBConfig.ORDER_BY_TIME);
-        if ("attention".equals(node.getId())) {
-            sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
-        }
-
-        sqlCondition.build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        Log.i(TAG, "onResult: " + result);
-                        List<DBProgram> list = dataDispose(result);
-                        switch (node.getTitle()) {
-                            case COLLECT:
-                            case SUBSCRIBE:
-                                setNode(list, node);
-                                break;
-                            case HISTORY:
-                                if (list != null) {
-                                    setProgram(node, DBProgram.convertProgram(list));
-                                } else {
-                                    setProgram(node, null);
-                                }
-                                break;
+    private void searchInDB(String type, final Node node) {
+        Player.get().getUserRecords(type, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                Log.i(TAG, "onResult: " + result);
+                List<DBProgram> list = dataDispose(result);
+                switch (node.getTitle()) {
+                    case COLLECT:
+                    case SUBSCRIBE:
+                        setNode(list, node);
+                        break;
+                    case HISTORY:
+                        if (list != null) {
+                            setProgram(node, DBProgram.convertProgram(list));
+                        } else {
+                            setProgram(node, null);
                         }
-                    }
-                }).excute();
+                        break;
+                }
+            }
+        });
     }
 
     private List<DBProgram> dataDispose(String result) {

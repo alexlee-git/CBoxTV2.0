@@ -115,4 +115,11 @@ public class Player implements PlayerObserver {
         if (mObserver != null)
             mObserver.detailsJumpActivity(context, contentType, contentUUID, seriesSubUUID);
     }
+
+    @Override
+    public void getUserRecords(String type, DBCallback<String> dbCallback) {
+        if(mObserver != null){
+            mObserver.getUserRecords(type,dbCallback);
+        }
+    }
 }
