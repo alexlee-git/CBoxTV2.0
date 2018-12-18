@@ -1963,16 +1963,20 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     @Override
     public void onChkError(String code, String desc) {
-        switch (code) {
-            case PlayerErrorCode.USER_NOT_BUY:
-            case PlayerErrorCode.USER_NOT_LOGIN:
-            case PlayerErrorCode.USER_TOKEN_IS_EXPIRED:
-                isTrySee = true;
-                break;
-            default:
-                isTrySee = false;
+        if(!TextUtils.isEmpty(code)) {
+            switch (code) {
+                case PlayerErrorCode.USER_NOT_BUY:
+                case PlayerErrorCode.USER_NOT_LOGIN:
+                case PlayerErrorCode.USER_TOKEN_IS_EXPIRED:
+                    isTrySee = true;
+                    break;
+                default:
+                    isTrySee = false;
+            }
+            onError(code, desc);
+        }else{
+            onError("000","UNKONWN ERROR");
         }
-        onError(code, desc);
     }
 
     @Override

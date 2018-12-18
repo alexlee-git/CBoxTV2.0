@@ -180,6 +180,12 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
     @Override
     public void onChange(Program data, int position) {
+        if(curPlayIndex == position + 1){
+            if(mBlockPosterView != null){
+                mBlockPosterView.dispatchClick();
+                return;
+            }
+        }
         curPlayIndex = position + 1;
         play(data);
     }
@@ -294,6 +300,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
         private TextView mAlternateId, mAlternateTitle, mAlternateSubTitle;
         private AlternateRefresh mObservable;
+        private String mId = "";
 
         AlternateViewHolder(View itemView) {
             super(itemView);
@@ -307,6 +314,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         }
 
         void bindObserver(String contentId) {
+            mId = contentId;
             if (!TextUtils.isEmpty(contentId)) {
                 if (mObservable == null) {
                     mObservable = new AlternateRefresh(itemView.getContext(), this);
@@ -329,13 +337,17 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         }
 
         @Override
-        public void onChange(@NotNull Alternate title) {
-            mAlternateSubTitle.setText(title.getTitle());
+        public void onChange(String id,@NotNull Alternate title) {
+            if(TextUtils.equals(mId,id)) {
+                mAlternateSubTitle.setText(title.getTitle());
+            }else{
+                mAlternateSubTitle.setText("");
+            }
         }
 
         @Override
-        public void onError(@Nullable String code, @Nullable String desc) {
-            mAlternateSubTitle.setText(desc);
+        public void onError(String id,@Nullable String code, @Nullable String desc) {
+            mAlternateSubTitle.setText("");
         }
     }
 }
