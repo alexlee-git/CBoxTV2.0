@@ -23,6 +23,11 @@ class AlternateContract {
         fun onAlternateResult(alternates: List<Alternate>?)
     }
 
+    interface Callback {
+        fun onFailed(cid:String,code: String?, desc: String?)
+        fun onAlternateResult(cid: String, alternates: List<Alternate>)
+    }
+
     interface LoadingView : View {
         fun onLoading()
         fun loadComplete()
@@ -30,39 +35,60 @@ class AlternateContract {
 
     interface Presenter : ICmsPresenter {
         fun getTodayAlternate(contentId: String)
+        fun requestAlternateWithCallback(contentId: String, callback: Callback?)
     }
 
     class AlternatePresenter(context: Context, view: View?) : CmsServicePresenter<View>(context,
             view), Presenter {
 
-        private var alternate:IAlternate? = null
+
+        private var alternate: IAlternate? = null
 
         init {
             alternate = getService<IAlternate>(SERVICE_ALTERNATE)
         }
 
+        override fun requestAlternateWithCallback(contentId: String, callback: Callback?) {
+            alternate?.getTodayAlternate(Libs.get().appKey, Libs.get().channelId,
+                    contentId,
+                    object : DataObserver<ModelResult<List<Alternate>>> {
+                        override fun onResult(result: ModelResult<List<Alternate>>, requestCode: Long) {
+                            if (result.isOk()) {
+                                callback?.onAlternateResult(contentId, result.data!!)
+                            } else {
+                                callback?.onFailed(contentId,result.errorCode, result.errorMessage)
+                            }
+                        }
+
+                        override fun onError(code: String?, desc: String?) {
+                            callback?.onFailed(contentId,code, desc)
+                        }
+
+                    })
+        }
+
         override fun getTodayAlternate(contentId: String) {
 
             alternate?.let { alter ->
-                if(view != null && view is LoadingView){
+                if (view != null && view is LoadingView) {
                     view.onLoading()
                 }
                 alter.getTodayAlternate(Libs.get().appKey, Libs.get().channelId,
                         contentId,
                         object : DataObserver<ModelResult<List<Alternate>>> {
                             override fun onResult(result: ModelResult<List<Alternate>>, requestCode: Long) {
-                                if(view != null && view is LoadingView){
+                                if (view != null && view is LoadingView) {
                                     view.loadComplete()
                                 }
                                 if (result.isOk()) {
                                     view?.onAlternateResult(result.data)
                                 } else {
-                                    view?.onError(context,result.errorCode, result.errorMessage)
+                                    view?.onError(context, result.errorCode, result.errorMessage)
                                 }
                             }
 
                             override fun onError(code: String?, desc: String?) {
-                                view?.onError(context,code, desc)
+                                view?.onError(context, code, desc)
                             }
 
                         })

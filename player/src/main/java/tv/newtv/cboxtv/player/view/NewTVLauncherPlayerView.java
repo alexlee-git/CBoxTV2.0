@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.player.view;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -2152,7 +2153,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * 提示用户是否休息一下
      */
     private void tipUserToRest() {
-        TipDialog.showBuilder(Player.get().getCurrentActivity(),
+        AlertDialog alertDialog =
+                TipDialog.showBuilder(Player.get().getCurrentActivity(),
                 5,
                 "您已观看很久了，请问是否休息片刻呢？",
                 new TipDialog.TipListener() {
@@ -2164,6 +2166,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                 mNewTVLauncherPlayer.release();
                                 mNewTVLauncherPlayer = null;
                             }
+                            if(mAlternatePresenter != null) {
+                                mAlternatePresenter.destroy();
+                                mAlternatePresenter = null;
+                            }
                             if(defaultConfig.startIsFullScreen){
                                 NewTVLauncherPlayerViewManager.getInstance().release();
                             }else {
@@ -2171,11 +2177,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                     ExitFullScreen();
                                 }
                             }
+
                             onTipFinishPlay(timeOver);
 
                         }else{
                             mPlayerTimer.reset();
                         }
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
                     }
                 });
     }
@@ -2187,12 +2199,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onKeepLookTimeChange(int currentSecond) {
         if (defaultConfig.isLiving) {
-            if (currentSecond % 3600 * 2 == 0) {
+            if (currentSecond % Constant.TIP_LIVE_DURATION == 0) {
                 //直播两小时以上
                 tipUserToRest();
             }
         } else {
-            if (currentSecond % 3600 * 4 == 0) {
+            if (currentSecond % Constant.TIP_VOD_DURATION == 0) {
                 //普通点播轮播四小时以上
                 tipUserToRest();
             }
