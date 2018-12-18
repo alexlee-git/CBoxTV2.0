@@ -115,6 +115,12 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 finish();
                 return;
             }
+            if(i.hasExtra("vod")){
+                Constant.TIP_VOD_DURATION = i.getLongExtra("vod",Constant.TIP_VOD_DURATION);
+            }
+            if(i.hasExtra("live")){
+                Constant.TIP_LIVE_DURATION = i.getLongExtra("live",Constant.TIP_LIVE_DURATION);
+            }
         }
 
         setContentView(R.layout.activity_splash);

@@ -52,7 +52,6 @@ public class PlayerAlternateContract {
                                String channelId);
         void onAlternateTimeChange(String current,String end);
         void onAlterItemResult(String contentId, Content content, boolean isLive,boolean isFirst);
-
         void onAlternateError(String code, String desc);
     }
 
@@ -201,11 +200,6 @@ public class PlayerAlternateContract {
             currrentChannel = channelId;
 
             isFirstChangeAlternate = true;
-//            mAlternates = Cache.getInstance().get(Cache.CACHE_TYPE_ALTERNATE, alternateId);
-//            if (mAlternates != null) {
-//                parseAlternate(title, channelId);
-//                return;
-//            }
             if (mAlternate != null) {
                 requestID = mAlternate.getTodayAlternate(Libs.get().getAppKey(), Libs.get()
                                 .getChannelId(),
@@ -215,8 +209,6 @@ public class PlayerAlternateContract {
                                     requestCode) {
                                 if (result.isOk()) {
                                     mAlternates = result.getData();
-//                                    Cache.getInstance().put(Cache.CACHE_TYPE_ALTERNATE,
-//                                            alternateId, mAlternates);
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)

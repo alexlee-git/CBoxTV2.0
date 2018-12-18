@@ -453,9 +453,17 @@ public class SearchViewKeyboard extends RelativeLayout implements OnClickListene
                 mSubBtn05.setVisibility(View.INVISIBLE);
                 if (mPopupWindow.isShowing()){
                     mPopupWindow.dismiss();
-            }
+                }
             } else {
                 searchResultAlet();
+                if (mPopupWindow != null){
+                    mSubBtn01.setVisibility(View.INVISIBLE);
+                    mSubBtn02.setVisibility(View.INVISIBLE);
+                    mSubBtn03.setVisibility(View.INVISIBLE);
+                    mSubBtn04.setVisibility(View.INVISIBLE);
+                    mSubBtn05.setVisibility(View.INVISIBLE);
+                    mPopupWindow.dismiss();
+                }
             }
         }
     }

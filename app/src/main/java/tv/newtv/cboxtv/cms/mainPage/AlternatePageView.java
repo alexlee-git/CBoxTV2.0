@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.mainPage;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,12 +11,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.bean.Video;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.cms.AlternateRefresh;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.GlideUtil;
 
@@ -72,7 +75,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     }
 
     public void setProgram(Page page) {
-        if(page != null && mPage != null) {
+        if (page != null && mPage != null) {
             if (TextUtils.equals(page.toString(), mPage.toString())) {
                 return;
             }
@@ -106,9 +109,13 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
 
-//        if(mBlockPosterView != null){
-//            mBlockPosterView.dispatchWindowVisibilityChanged(visibility);
-//        }
+        if(visibility == GONE || visibility == INVISIBLE){
+            //隐藏起来
+
+        }else{
+            //显示出来
+
+        }
     }
 
     private void setUp() {
@@ -132,7 +139,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                     R.drawable.focus_528_296, true);
         }
 
-        if(mContentPresenter != null){
+        if (mContentPresenter != null) {
             mContentPresenter.stop();
         }
 
@@ -141,8 +148,8 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
             if (mContentPresenter == null) {
                 mContentPresenter = new ContentContract.ContentPresenter(getContext(), this);
             }
-            if(TextUtils.isEmpty(program.getL_id())){
-                mBlockPosterView.onError(getContext(), "" , "ID为空");
+            if (TextUtils.isEmpty(program.getL_id())) {
+                mBlockPosterView.onError(getContext(), "", "ID为空");
                 return;
             }
             mContentPresenter.getContent(program.getL_id(), false);
@@ -187,8 +194,8 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
-        if(mProgram != null && TextUtils.equals(mProgram.getL_id(),uuid)){
-            if(content != null) {
+        if (mProgram != null && TextUtils.equals(mProgram.getL_id(), uuid)) {
+            if (content != null) {
                 Video video = new Video("LIVE",
                         content.getContentID(),
                         content.getContentUUID(),
@@ -196,8 +203,8 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                         null);
                 mProgram.setVideo(video);
                 mBlockPosterView.setProgramInfo(mProgram, false, true);
-            }else{
-                mBlockPosterView.onError(getContext(), "" , "Error");
+            } else {
+                mBlockPosterView.onError(getContext(), "", "Error");
             }
         }
     }
@@ -222,6 +229,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
         private IProgramChange mListener;
         private List<Program> mPrograms;
+        private List<AlternateRefresh> alternateRefreshes;
 
         AlternateAdapter(IProgramChange listener) {
             mListener = listener;
@@ -261,6 +269,9 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
             holder.mAlternateTitle.setText(data.getTitle());
             holder.mAlternateSubTitle.setText(data.getSubTitle());
             holder.itemView.setActivated(selected);
+            if (Constant.CONTENTTYPE_LB.equals(data.getL_contentType())) {
+                holder.bindObserver(data.getL_id());
+            }
         }
 
         @Override
@@ -278,9 +289,11 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     }
 
     private static class AlternateViewHolder extends NewTvRecycleAdapter.NewTvViewHolder
-            implements OnFocusChangeListener, OnClickListener {
+            implements OnFocusChangeListener, OnClickListener, AlternateRefresh
+            .AlternateCallback {
 
         private TextView mAlternateId, mAlternateTitle, mAlternateSubTitle;
+        private AlternateRefresh mObservable;
 
         AlternateViewHolder(View itemView) {
             super(itemView);
@@ -293,6 +306,17 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
             itemView.setOnClickListener(this);
         }
 
+        void bindObserver(String contentId) {
+            if (!TextUtils.isEmpty(contentId)) {
+                if (mObservable == null) {
+                    mObservable = new AlternateRefresh(itemView.getContext(), this);
+                }
+                if (mObservable.equals(contentId)) return;
+                mAlternateSubTitle.setText("正在获取信息...");
+                mObservable.attach(contentId);
+            }
+        }
+
         @Override
         public void onClick(View view) {
             performClick();
@@ -302,6 +326,16 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         public void onFocusChange(View view, boolean b) {
             performFocus(b);
             mAlternateSubTitle.setSelected(b);
+        }
+
+        @Override
+        public void onChange(@NotNull Alternate title) {
+            mAlternateSubTitle.setText(title.getTitle());
+        }
+
+        @Override
+        public void onError(@Nullable String code, @Nullable String desc) {
+            mAlternateSubTitle.setText(desc);
         }
     }
 }
