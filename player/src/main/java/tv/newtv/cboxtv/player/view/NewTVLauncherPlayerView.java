@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import tv.icntv.icntvplayersdk.NewTVPlayerInterface;
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuPopupWindow;
 import tv.newtv.cboxtv.player.AlternateCallback;
@@ -175,7 +176,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         @Override
-        public void onCompletion() {
+        public void onCompletion(int type) {
             LogUtils.i(TAG, "live onCompletion: ");
         }
 
@@ -264,7 +265,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         @Override
-        public void onCompletion() {
+        public void onCompletion(int type) {
             LogUtils.i(TAG, "onCompletion: ");
             /*
              *  大屏点播完成后，
@@ -272,8 +273,18 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
              */
             // 什么时候会修改Constant.isLiving的值？
             // 3. 大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
-            Constant.isLiving = false;
-            playVodNext();
+            if(type ==  NewTVPlayerInterface.CONTENT_TYPE ||
+                    type == NewTVPlayerInterface.POST_AD_TYPE) {
+                Constant.isLiving = false;
+                playVodNext();
+            }
+
+            if(type == NewTVPlayerInterface.PRE_AD_TYPE || type == NewTVPlayerInterface.MID_AD_TYPE
+                    || type == NewTVPlayerInterface.POST_AD_TYPE){
+                if(isTrySee){
+                    hintVip.setVisibility(View.VISIBLE);
+                }
+            }
         }
 
         @Override
@@ -355,6 +366,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (mNewTVLauncherPlayerSeekbar != null
                     && mNewTVLauncherPlayerSeekbar.getVisibility() == VISIBLE) {
                 mNewTVLauncherPlayerSeekbar.dismiss();
+            }
+            if(isTrySee){
+                hintVip.setVisibility(View.GONE);
             }
         }
     };

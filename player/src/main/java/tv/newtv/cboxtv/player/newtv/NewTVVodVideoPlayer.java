@@ -148,9 +148,9 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
                         Log.i(TAG, "---结束播放endPlay()");
                     }
                 }
-                if (mIPlayCallBackEvent != null) {
-                    mIPlayCallBackEvent.onCompletion();
-                }
+            }
+            if (mIPlayCallBackEvent != null) {
+                mIPlayCallBackEvent.onCompletion(type);
             }
         }
 
