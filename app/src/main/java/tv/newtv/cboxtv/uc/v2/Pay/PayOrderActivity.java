@@ -1040,7 +1040,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         dataBuff.append(1 + ",")
                 .append(action + ",")
                 .append(mVipProductId + ",")
-                .append(mProductPricesInfo.getResponse().getPrices().get(0).getPriceDiscount() + ",")
+                .append(price + ",")
                 .append(payChannelId + ",")
                 .append(orderId)
                 .trimToSize();
