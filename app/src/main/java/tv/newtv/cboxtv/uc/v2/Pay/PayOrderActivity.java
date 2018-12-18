@@ -533,6 +533,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                     mHandler.sendEmptyMessage(MSG_RESULT_OK_TIME);
                     setExprefresh();
                     dialog.show();
+                    UserCenterUtils.initMemberStatus();
                     break;
                 }
                 case MSG_SETMESSAGE: {
