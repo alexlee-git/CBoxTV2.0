@@ -89,11 +89,11 @@ public interface IUserCenterLoginApi {
 
     @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST)
     @FormUrlEncoded
-    @GET("/regist/getVerifiCode.action")
+    @POST("/regist/getVerifiCode.action")
     Observable<ResponseBody> sendSMSCodeByCNTV(@Field("method") String method,
                                                @Field("mobile") String mobile,
-                                               @Field("verifyCode") String verifyCode,
-                                               @Field("isCheckCode") boolean isCheckCode);
+                                               @Field("verfiCodeType") String verfiCodeType,
+                                               @Field("isCheckCode") String isCheckCode);
 
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
@@ -104,14 +104,22 @@ public interface IUserCenterLoginApi {
                                            @Field("mobile") String mobile,
                                            @Field("sms_code") String sms_code);
 
-    @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST)
+    @Headers("host_type: " + BootGuide.CNTV_USER_LOGIN_HOST_S)
     @FormUrlEncoded
-    @GET("/regist/getVerifiCode.action")
-    Observable<ResponseBody> verifySMSCodeByCNTV(@Field("method") String method,
-                                                 @Field("mobile") String mobile,
+    @POST("/mobile/mobileRegAndLogin.action")
+    Observable<ResponseBody> verifySMSCodeByCNTV(@Field("mobile") String mobile,
                                                  @Field("verifyCode") String verifyCode,
-                                                 @Field("isCheckCode") boolean isCheckCode);
+                                                 @Field("from") String from,
+                                                 @Field("service") String service,
+                                                @Field("checkCode") String checkCode);
 
+    //通过ticket换取accessToken接口
+    @Headers("host_type: " + BootGuide.USER)
+    @FormUrlEncoded
+    @POST("/kangaroo/service/cctv/getAccessToken")
+    Observable<ResponseBody> transTicketToToken(@Header("Authorization") String Authorization,
+                                            @Field("client_id") String response_type,
+                                            @Field("ticket") String channel_code);
 
     //获取订单
     @Headers("host_type: " + BootGuide.PAY)

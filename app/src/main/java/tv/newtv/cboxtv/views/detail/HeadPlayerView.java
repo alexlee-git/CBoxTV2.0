@@ -244,8 +244,8 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         reqIdList = new ArrayList<>();
     }
 
-    private void getMemberStatus(String UUid) {
-        UserCenterUtils.getMemberStatus(UUid, new INotifyMemberStatusCallback() {
+    private void getMemberStatus(String UUid,String vipId) {
+        UserCenterUtils.getMemberStatus(UUid,vipId, new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
                 memberStatus = status;
@@ -316,7 +316,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public void onActivityResume() {
         if (mInfo != null) {
-            getMemberStatus(mInfo.getContentUUID());
+            getMemberStatus(mInfo.getContentUUID(),mInfo.getVipProductId());
         }
         if (playerView != null && !playerView.isReleased() && playerView.isReady() && (playerView
                 .isADPlaying() || playerView.isPlaying())) {
@@ -689,7 +689,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         mInfo = programSeriesInfo;
         setVipPayStatus(mInfo);
-        getMemberStatus(mInfo.getContentUUID());
+        getMemberStatus(mInfo.getContentUUID(),mInfo.getVipProductId());
         parseResult();
     }
 

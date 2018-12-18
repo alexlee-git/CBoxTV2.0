@@ -11,9 +11,12 @@ import com.newtv.libs.util.Utils;
 import org.json.JSONObject;
 
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
+import tv.newtv.cboxtv.utils.BaseObserver;
 
 /**
  * 项目名称:     CBoxTV2.0
@@ -131,8 +134,59 @@ public class TokenRefreshUtil {
                     }
                 });
         if (!isToken) {
+            doLogout(mContext);
             SharePreferenceUtils.clearToken(mContext);
         }
         return isToken;
+    }
+
+    private void doLogout(final Context mContext) {
+        Log.i(TAG, "doLogout: ");
+        if (TextUtils.isEmpty(Constant.Authorization)) {
+            String Authorization = Utils.getAuthorization(mContext);
+            if (!TextUtils.isEmpty(Authorization)) {
+                Constant.Authorization = Authorization;
+            }
+        }
+        NetClient.INSTANCE.getUserCenterLoginApi()
+                .logout(Constant.Authorization, Constant.CLIENT_ID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.i(TAG, "doLogout onSubscribe: ");
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        Log.i(TAG, "doLogout onNext: ");
+                        try {
+                            String responseString = responseBody.string();
+                            Log.i(TAG, "doLogout onNext: responseString = " + responseString);
+                            checkUserOffline(responseString);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i(TAG, "doLogout onComplete: ");
+
+                    }
+
+                    @Override
+                    public void dealwithUserOffline() {
+                        Log.i(TAG, "doLogout dealwithUserOffline: ");
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        Log.i(TAG, "doLogout onError: ");
+                    }
+                });
     }
 }

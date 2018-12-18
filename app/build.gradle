@@ -68,6 +68,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600001\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
         }
     }
     sourceSets {

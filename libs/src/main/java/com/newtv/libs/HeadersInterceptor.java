@@ -1,5 +1,7 @@
 package com.newtv.libs;
 
+import android.util.Log;
+
 import java.io.IOException;
 
 import okhttp3.HttpUrl;
@@ -93,6 +95,12 @@ public class HeadersInterceptor implements okhttp3.Interceptor {
                     break;
                 case BootGuide.USER:
                     newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.USER));
+                    break;
+                case BootGuide.CNTV_USER_LOGIN_HOST:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.CNTV_USER_LOGIN_HOST));
+                    break;
+                case BootGuide.CNTV_USER_LOGIN_HOST_S:
+                    newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.CNTV_USER_LOGIN_HOST_S));
                     break;
                 case BootGuide.PAY:
                     newBaseUrl = HttpUrl.parse(BootGuide.getBaseUrl(BootGuide.PAY));

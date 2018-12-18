@@ -22,6 +22,9 @@
         <address url="https://api.adott.ottcn.com/" debug="http://api.adott.ottcn.org/" name="AD"/>
         <!--LOG域名-->
         <address url="log.cloud.ottcn.com:14630" debug="log.cloud.ottcn.com:14630" name="LOG"/>
+        <!--央视网通行证域名-->
+        <address url="http://reg.cctv.com/" debug="http://reg.cctv.com/" name="CNTV_USER_LOGIN_HOST"/>
+        <address url="https://reg.cctv.com/" debug="https://reg.cctv.com/" name="CNTV_USER_LOGIN_HOST_S"/>
         <!--CMS 域名-->
         <address url="http://epg.cloud.ottcn.com/" debug="http://111.32.132.156/" name="CMS"/>
         <address url="http://stage-bzo.cloud.ottcn.com/" name="USER_BEHAVIOR"/>
