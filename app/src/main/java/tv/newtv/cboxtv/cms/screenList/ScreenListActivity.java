@@ -26,6 +26,7 @@ import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
 
 import java.util.ArrayList;
@@ -124,6 +125,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         Gson gson = new Gson();
         if (!TextUtils.isEmpty(s)) {
             focusBean = gson.fromJson(s, FocusBean.class);
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + s);
         }
     }
 
@@ -282,7 +284,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         year_text = findViewById(R.id.year_text);
         result_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
-
 
 
 
