@@ -337,6 +337,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                 case MSG_RESULT_OK: {
                     mHandler.sendEmptyMessage(MSG_RESULT_OK_TIME);
                     setExprefresh();
+                    UserCenterUtils.initMemberStatus();
                     dialog.show();
                     break;
                 }
