@@ -45,6 +45,8 @@ public class Constant {
             "/ad_cache";
     public static final String TAG = "CBoxTV";
 
+    public static final String STAGE = "_stage";
+
     //广告位类型
     public static final String AD_TOPIC = "topic";//专题广告
     public static final String AD_DESK = "desk";//桌面广告

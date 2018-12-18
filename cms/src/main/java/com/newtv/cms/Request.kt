@@ -3,6 +3,8 @@ package com.newtv.cms
 import com.newtv.cms.service.*
 import com.newtv.libs.Constant
 import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.Libs
+import com.newtv.libs.util.DeviceUtil
 import com.newtv.libs.util.HttpsUtils
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -23,7 +25,7 @@ internal object Request {
     private val responseInterceptor = ResponseInterceptor()
 
     init {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || Libs.get().flavor.endsWith(Constant.STAGE)) {
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
         } else {
             logInterceptor.level = HttpLoggingInterceptor.Level.BASIC
