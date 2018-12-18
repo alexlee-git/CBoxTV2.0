@@ -72,6 +72,10 @@ public class DBUtil {
         if (!TextUtils.isEmpty(entity.getSeriesSum())) {
             contentValues.put(DBConfig.TOTAL_CNT, entity.getSeriesSum());
         }
+        //2018.12.18 wqs 更新至多少集策略修改为cms返回recentMsg字段显示更新状态
+        if (!TextUtils.isEmpty(entity.getRecentMsg())) {
+            contentValues.put(DBConfig.RECENT_MSG, entity.getRecentMsg());
+        }
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (TextUtils.isEmpty(updateTime)) {
             contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
@@ -156,6 +160,10 @@ public class DBUtil {
             }
             if (!TextUtils.isEmpty(entity.getSeriesSum())) {
                 contentValues.put(DBConfig.TOTAL_CNT, entity.getSeriesSum());
+            }
+            //2018.12.18 wqs 更新至多少集策略修改为cms返回recentMsg字段显示更新状态
+            if (!TextUtils.isEmpty(entity.getRecentMsg())) {
+                contentValues.put(DBConfig.RECENT_MSG, entity.getRecentMsg());
             }
             if (!TextUtils.isEmpty(entity.getGrade()) && !TextUtils.equals(entity.getGrade(), "0.0") && !TextUtils.equals(entity.getGrade(), "0")) {
                 contentValues.put(DBConfig.CONTENT_GRADE, entity.getGrade());
@@ -250,6 +258,10 @@ public class DBUtil {
         }
         if (!TextUtils.isEmpty(mInfo.getSeriesSum())) {
             contentValues.put(DBConfig.TOTAL_CNT, mInfo.getSeriesSum());
+        }
+        //2018.12.18 wqs 更新至多少集策略修改为cms返回recentMsg字段显示更新状态
+        if (!TextUtils.isEmpty(mInfo.getRecentMsg())) {
+            contentValues.put(DBConfig.RECENT_MSG, mInfo.getRecentMsg());
         }
         DataSupport.insertOrUpdate(tableName)
                 .condition()

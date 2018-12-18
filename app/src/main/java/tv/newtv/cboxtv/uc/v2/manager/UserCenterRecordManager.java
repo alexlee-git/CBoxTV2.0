@@ -3,10 +3,14 @@ package tv.newtv.cboxtv.uc.v2.manager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -35,6 +39,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
@@ -548,6 +553,7 @@ public class UserCenterRecordManager {
                             info.setRecentNum(bean.getEpisode_num());
                             info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
+                            info.setRecentMsg(bean.getRecentMsg());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             DBUtil.PutCollect(userId, info, bundle, callback, tableName);
@@ -582,6 +588,7 @@ public class UserCenterRecordManager {
                             info.setRecentNum(bean.getEpisode_num());
                             info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
+                            info.setRecentMsg(bean.getRecentMsg());
                             // info.setrSuperScript(bean.getSuperscript());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
@@ -612,6 +619,7 @@ public class UserCenterRecordManager {
                             info.setContentType(bean.get_contenttype());
                             info.setVImage(bean.get_imageurl());
                             info.setTitle(bean.get_title_name());
+                            info.setRecentMsg(bean.getRecentMsg());
                             // info.setrSubScript(bean.getSuperscript());
                             info.setGrade(bean.getGrade());
                             Bundle bundle = new Bundle();
@@ -648,6 +656,7 @@ public class UserCenterRecordManager {
                             info.setRecentNum(bean.getEpisode_num());
                             info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
+                            info.setRecentMsg(bean.getRecentMsg());
                             if (TextUtils.isEmpty(bean.getPlayId())) {
                                 List<SubContent> programsInfos = new ArrayList<>(Constant.BUFFER_SIZE_4);
                                 SubContent item = new SubContent();
@@ -1445,6 +1454,30 @@ public class UserCenterRecordManager {
         Log.d(TAG, "pos : " + positionStr + ", duration : " + durationStr + ", resultTmp : " + resultTmp);
 
         return result;
+    }
+
+    public SpannableStringBuilder getSpannableRecentMsg(String recentMsg) {
+        try {
+            if (TextUtils.isEmpty(recentMsg) || TextUtils.equals(recentMsg, "null")) {
+                return null;
+            }
+            SpannableStringBuilder mStrMsg = new SpannableStringBuilder(recentMsg);
+            if (recentMsg.length() > 4 && recentMsg.contains
+                    (LauncherApplication.AppContext.getResources().getString(R.string.user_poster_program_update_title_left_being))) {
+                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), 0, 4, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                mStrMsg.setSpan(new ForegroundColorSpan(Color.parseColor("#FFF5A623")), 3, recentMsg.length() - 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), recentMsg.length() - 1, recentMsg.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            } else {
+                mStrMsg.setSpan(new ForegroundColorSpan(Color.parseColor("#FFF5A623")), 0, recentMsg.length() - 2, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), recentMsg.length() - 2, recentMsg.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            return mStrMsg;
+        } catch (Exception e) {
+            Log.e(TAG, "wqs:getSpannableRecentMsg:Exception:" + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     /**

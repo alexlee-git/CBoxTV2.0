@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
@@ -19,7 +20,6 @@ import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Corner;
@@ -37,6 +37,7 @@ import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -65,10 +66,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     private final String TAG_POSTER_MAIN_TITLE = "tag_poster_main_title";//海报下方主标题
     private final String TAG_POSTER_SUB_TITLE = "tag_poster_sub_title";//海报下方副标题
     private final String TAG_POSTER_RIGHT_TOP_MARK = "tag_poster_right_top_mark";//右上角角标
-    private final String TAG_POSTER_PROGRAM_UPDATE_ROOT = "tag_poster_program_update_root";//海报图节目更新状态标题
-    private final String TAG_POSTER_PROGRAM_UPDATE_TITLE_LEFT = "tag_poster_program_update_title_left";//海报图节目更新状态标题左边部分
-    private final String TAG_POSTER_PROGRAM_UPDATE_TITLE_CENTER = "tag_poster_program_update_title_center";//海报图节目更新状态标题中间变颜色部分
-    private final String TAG_POSTER_PROGRAM_UPDATE_TITLE_RIGHT = "tag_poster_program_update_title_right";//海报图节目更新状态标题右边部分
+    private final String TAG_POSTER_PROGRAM_UPDATE_TITLE = "tag_poster_program_recent_title";//海报图节目更新状态标题
     private final String TAG_POSTER_SCORE_TITLE = "tag_poster_score_title";//海报图评分标题
     private final String TAG_BUTTON_TEXT = "tag_member_center_btn_text";//会员中心按钮文本
     private Context mContext;
@@ -538,14 +536,8 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 TextView mainTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_MAIN_TITLE);
                 //右上角角标
                 RecycleImageView rightTopMarkImageView = (RecycleImageView) mModuleView.findViewWithTag(TAG_POSTER_RIGHT_TOP_MARK);
-                //海报图节目更新状态标题父布局
-                RelativeLayout programUpdateRoot = (RelativeLayout) mModuleView.findViewWithTag(TAG_POSTER_PROGRAM_UPDATE_ROOT);
-                //海报图节目更新状态标题左边部分
-                TextView programUpdateLeftTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_PROGRAM_UPDATE_TITLE_LEFT);
-                //海报图节目更新状态标题中间变色部分
-                TextView programUpdateCenterTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_PROGRAM_UPDATE_TITLE_CENTER);
-                //海报图节目更新状态标题中间变色部分
-                TextView programUpdateRightTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_PROGRAM_UPDATE_TITLE_RIGHT);
+                //海报图节目更新状态标题
+                TextView recentTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_PROGRAM_UPDATE_TITLE);
                 //海报图评分标题
                 TextView scoreTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_SCORE_TITLE);
                 if (posterImageview != null && img != null) {
@@ -573,18 +565,12 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     scoreTitle = bean.getGrade();
                     setTitleView(mainTitleTextView, mainTitle);
                     setTitleView(scoreTitleTextView, scoreTitle);
-                    if (programUpdateLeftTitleTextView != null && programUpdateCenterTitleTextView != null) {
-                        if (TextUtils.isEmpty(bean.getEpisode_num()) || TextUtils.equals(bean.getEpisode_num(), "null")) {
-                            hideView(programUpdateRoot);
-                        } else {
-                            showView(programUpdateRoot);
-                            programUpdateCenterTitleTextView.setText(bean.getEpisode_num());
-                            if (Integer.parseInt(bean.getEpisode_num()) < Integer.parseInt(bean.getTotalCnt())) {
-                                programUpdateLeftTitleTextView.setText(mContext.getResources().getString(R.string.user_poster_program_update_title_left_being));
-                            } else {
-                                programUpdateLeftTitleTextView.setText(mContext.getResources().getString(R.string.user_poster_program_update_title_left_end));
-                            }
-                        }
+                    // 更新剧集
+                    SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(bean.getRecentMsg());
+                    if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                        recentTitleTextView.setText(spannableRecentMsg);
+                    } else {
+                        recentTitleTextView.setText("");
                     }
                     String superscript = bean.getSuperscript();
                     if (!TextUtils.isEmpty(superscript) && !TextUtils.equals(superscript, "null")) {
@@ -601,7 +587,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     hideView(mainTitleTextView);
                     hideView(scoreTitleTextView);
                     hideView(rightTopMarkImageView);
-                    hideView(programUpdateRoot);
+                    hideView(recentTitleTextView);
                 }
             } else {
                 Log.e(TAG, "wqs:setPosterData:mModuleView == null");

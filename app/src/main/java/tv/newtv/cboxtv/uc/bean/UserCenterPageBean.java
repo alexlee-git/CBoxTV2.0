@@ -67,6 +67,9 @@ public class UserCenterPageBean {
         @SerializedName("_content_id")
         public String contentId;
 
+        @SerializedName("_recent_msg")
+        public String recentMsg;
+
         public String get_contentuuid() {
             return _contentuuid;
         }
@@ -233,6 +236,14 @@ public class UserCenterPageBean {
 
         public void setContentId(String contentId) {
             this.contentId = contentId;
+        }
+
+        public String getRecentMsg() {
+            return recentMsg;
+        }
+
+        public void setRecentMsg(String recentMsg) {
+            this.recentMsg = recentMsg;
         }
     }
 }

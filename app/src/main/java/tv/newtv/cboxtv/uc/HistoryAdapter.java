@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -121,28 +122,36 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                     (entity.getPlayPosition(), entity.getDuration()));
 
             // 更新剧集
-            String episode = entity.getEpisode_num();
-            if (!TextUtils.isEmpty(episode) && !TextUtils.equals("null", episode)) {
-                String totalCnt = entity.getTotalCnt();
-
-                int cnt = Integer.parseInt(totalCnt);
-                int episodeNum = Integer.parseInt(episode);
-
-                String videoType = entity.getVideoType();
-                if (TextUtils.equals(videoType, "电视剧")) {
-                    if (episodeNum < cnt) {
-                        viewHolder.mEpisode.setText(String.format("更新至 %s 集", episode));
-                    } else {
-                        viewHolder.mEpisode.setText(String.format("%s 集全", episode));
-                    }
-                } else if (TextUtils.equals(videoType, "综艺")) {
-                    if (episodeNum < cnt) {
-                        viewHolder.mEpisode.setText(String.format("更新至 %s 期", episode));
-                    } else {
-                        viewHolder.mEpisode.setText(String.format("%s 期全", episode));
-                    }
-                }
+            SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(entity.getRecentMsg());
+            if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                viewHolder.mEpisode.setText(spannableRecentMsg);
+            } else {
+                viewHolder.mEpisode.setText("");
+                viewHolder.mEpisode.setVisibility(View.INVISIBLE);
             }
+
+            //            String episode = entity.getEpisode_num();
+//            if (!TextUtils.isEmpty(episode) && !TextUtils.equals("null", episode)) {
+//                String totalCnt = entity.getTotalCnt();
+//
+//                int cnt = Integer.parseInt(totalCnt);
+//                int episodeNum = Integer.parseInt(episode);
+//
+//                String videoType = entity.getVideoType();
+//                if (TextUtils.equals(videoType, "电视剧")) {
+//                    if (episodeNum < cnt) {
+//                        viewHolder.mEpisode.setText(String.format("更新至 %s 集", episode));
+//                    } else {
+//                        viewHolder.mEpisode.setText(String.format("%s 集全", episode));
+//                    }
+//                } else if (TextUtils.equals(videoType, "综艺")) {
+//                    if (episodeNum < cnt) {
+//                        viewHolder.mEpisode.setText(String.format("更新至 %s 期", episode));
+//                    } else {
+//                        viewHolder.mEpisode.setText(String.format("%s 期全", episode));
+//                    }
+//                }
+//            }
 
             // 角标
             if (viewHolder.mSuperscript != null) {
