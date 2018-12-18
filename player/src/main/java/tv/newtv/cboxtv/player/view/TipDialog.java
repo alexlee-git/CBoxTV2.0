@@ -16,24 +16,39 @@ import tv.newtv.player.R;
 class TipDialog {
 
     interface TipListener{
+        /**
+         *
+         * @param timeOver 是否超时结束
+         * @param isOK     是否点击OK键
+         */
         void onClick(boolean timeOver,boolean isOK);
+        void onDismiss();
     }
 
-    static void showBuilder(
+    @SuppressWarnings("SameParameterValue")
+    static AlertDialog showBuilder(
             Context context,
             final int delaySeconds,
             final String notification,
-            final TipListener listener) {
+            final TipListener listener){
         if (context == null) {
-            return ;
+            return null;
         }
         if(!(context instanceof Activity)){
-            return;
+            return null;
         }
         if(((Activity) context).isFinishing()){
-            return;
+            return null;
         }
         final AlertDialog ad = new AlertDialog.Builder(context).create();
+        ad.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(listener != null){
+                    listener.onDismiss();
+                }
+            }
+        });
         ad.show();
         ad.setCancelable(false);
         final View view = LayoutInflater.from(context).inflate(R.layout.layout_tip_dialog, null,
@@ -97,6 +112,7 @@ class TipDialog {
         } else {
             ad.dismiss();
         }
+        return ad;
     }
 
 }

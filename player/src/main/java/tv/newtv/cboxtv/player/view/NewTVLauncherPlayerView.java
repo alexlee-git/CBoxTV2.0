@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.player.view;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import tv.icntv.icntvplayersdk.NewTVPlayerInterface;
 import tv.newtv.cboxtv.menu.IMenuGroupPresenter;
 import tv.newtv.cboxtv.menu.MenuPopupWindow;
 import tv.newtv.cboxtv.player.AlternateCallback;
@@ -175,7 +177,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         @Override
-        public void onCompletion() {
+        public void onCompletion(int type) {
             LogUtils.i(TAG, "live onCompletion: ");
         }
 
@@ -264,7 +266,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         @Override
-        public void onCompletion() {
+        public void onCompletion(int type) {
             LogUtils.i(TAG, "onCompletion: ");
             /*
              *  大屏点播完成后，
@@ -272,8 +274,18 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
              */
             // 什么时候会修改Constant.isLiving的值？
             // 3. 大屏加载完一个点播文件，播放下一个之前，需要判断当前时间是否满足直播
-            Constant.isLiving = false;
-            playVodNext();
+            if(type ==  NewTVPlayerInterface.CONTENT_TYPE ||
+                    type == NewTVPlayerInterface.POST_AD_TYPE) {
+                Constant.isLiving = false;
+                playVodNext();
+            }
+
+            if(type == NewTVPlayerInterface.PRE_AD_TYPE || type == NewTVPlayerInterface.MID_AD_TYPE
+                    || type == NewTVPlayerInterface.POST_AD_TYPE){
+                if(isTrySee){
+                    hintVip.setVisibility(View.VISIBLE);
+                }
+            }
         }
 
         @Override
@@ -355,6 +367,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (mNewTVLauncherPlayerSeekbar != null
                     && mNewTVLauncherPlayerSeekbar.getVisibility() == VISIBLE) {
                 mNewTVLauncherPlayerSeekbar.dismiss();
+            }
+            if(isTrySee){
+                hintVip.setVisibility(View.GONE);
             }
         }
     };
@@ -2152,7 +2167,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
      * 提示用户是否休息一下
      */
     private void tipUserToRest() {
-        TipDialog.showBuilder(Player.get().getCurrentActivity(),
+        AlertDialog alertDialog =
+                TipDialog.showBuilder(Player.get().getCurrentActivity(),
                 5,
                 "您已观看很久了，请问是否休息片刻呢？",
                 new TipDialog.TipListener() {
@@ -2164,6 +2180,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                 mNewTVLauncherPlayer.release();
                                 mNewTVLauncherPlayer = null;
                             }
+                            if(mAlternatePresenter != null) {
+                                mAlternatePresenter.destroy();
+                                mAlternatePresenter = null;
+                            }
                             if(defaultConfig.startIsFullScreen){
                                 NewTVLauncherPlayerViewManager.getInstance().release();
                             }else {
@@ -2171,11 +2191,17 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                     ExitFullScreen();
                                 }
                             }
+
                             onTipFinishPlay(timeOver);
 
                         }else{
                             mPlayerTimer.reset();
                         }
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
                     }
                 });
     }
@@ -2187,12 +2213,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onKeepLookTimeChange(int currentSecond) {
         if (defaultConfig.isLiving) {
-            if (currentSecond % 3600 * 2 == 0) {
+            if (currentSecond % Constant.TIP_LIVE_DURATION == 0) {
                 //直播两小时以上
                 tipUserToRest();
             }
         } else {
-            if (currentSecond % 3600 * 4 == 0) {
+            if (currentSecond % Constant.TIP_VOD_DURATION == 0) {
                 //普通点播轮播四小时以上
                 tipUserToRest();
             }

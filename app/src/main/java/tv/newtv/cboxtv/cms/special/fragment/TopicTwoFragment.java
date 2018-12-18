@@ -92,17 +92,17 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         super.onResume();
 
         /* 界面还原回来时候，重新注册控件 */
-        if (videoPlayerView != null && mPopupMenuWidget != null) {
-            widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
-        }
+//        if (videoPlayerView != null && mPopupMenuWidget != null) {
+//            widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
+//        }
     }
 
     @Override
     public void onStop() {
         /* 销毁播放器的时候将注册的控件消除 */
-        if (videoPlayerView != null) {
-            videoPlayerView.unregisterWidget(widgetId);
-        }
+//        if (videoPlayerView != null) {
+//            videoPlayerView.unregisterWidget(widgetId);
+//        }
         super.onStop();
     }
 
@@ -148,18 +148,18 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.outerControl();
         setVideoPlayerVisibility();
-        mPopupMenuWidget = new popupMenuWidget(view.getContext().getApplicationContext(),
-                news_recycle, Gravity.LEFT, new popupMenuWidget.IPopupWidget() {
-            @Override
-            public KeyAction[] getRegisterKeyActions() {
-                return new KeyAction[]{
-                        new KeyAction(KeyEvent.KEYCODE_MENU, KeyEvent.ACTION_DOWN),
-                        new KeyAction(KeyEvent.KEYCODE_DPAD_UP, KeyEvent.ACTION_DOWN),
-                        new KeyAction(KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.ACTION_DOWN),
-                };
-            }
-        });
-        widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
+//        mPopupMenuWidget = new popupMenuWidget(view.getContext().getApplicationContext(),
+//                news_recycle, Gravity.LEFT, new popupMenuWidget.IPopupWidget() {
+//            @Override
+//            public KeyAction[] getRegisterKeyActions() {
+//                return new KeyAction[]{
+//                        new KeyAction(KeyEvent.KEYCODE_MENU, KeyEvent.ACTION_DOWN),
+//                        new KeyAction(KeyEvent.KEYCODE_DPAD_UP, KeyEvent.ACTION_DOWN),
+//                        new KeyAction(KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.ACTION_DOWN),
+//                };
+//            }
+//        });
+//        widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
         video_player_rl = view.findViewById(R.id.video_player_rl);
         videoTitle = view.findViewById(R.id.videoTitle);
         full_screen = view.findViewById(R.id.full_screen);

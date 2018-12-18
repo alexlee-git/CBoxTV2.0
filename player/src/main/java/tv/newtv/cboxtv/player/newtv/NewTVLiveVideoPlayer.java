@@ -70,7 +70,7 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
             if(type ==  NewTVPlayerInterface.CONTENT_TYPE ||
                     type == NewTVPlayerInterface.POST_AD_TYPE) {
                 if (mIPlayCallBackEvent != null) {
-                    mIPlayCallBackEvent.onCompletion();
+                    mIPlayCallBackEvent.onCompletion(type);
                 }
 
                 PlayerConfig.getInstance().setJumpAD(false);

@@ -152,15 +152,15 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         removeAllViews();
         if (allNodes != null) {
             allNodes.clear();
-            allNodes = null;
+//            allNodes = null;
         }
         if (rootNodes != null) {
             rootNodes.clear();
-            rootNodes = null;
+//            rootNodes = null;
         }
         if (listViews != null) {
             listViews.clear();
-            listViews = null;
+//            listViews = null;
         }
         lastListView = null;
         if (lastProgram != null) {
@@ -171,20 +171,20 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         playProgram = null;
         if (animList != null) {
             animList.clear();
-            animList = null;
+//            animList = null;
         }
         arrowHead = null;
         if (focusHandler != null) {
             focusHandler.removeCallbacksAndMessages(null);
-            focusHandler = null;
+//            focusHandler = null;
         }
         if (lineList != null) {
             lineList.clear();
-            lineList = null;
+//            lineList = null;
         }
         if (onSelectListenerList != null) {
             onSelectListenerList.clear();
-            onSelectListenerList = null;
+//            onSelectListenerList = null;
         }
     }
 
