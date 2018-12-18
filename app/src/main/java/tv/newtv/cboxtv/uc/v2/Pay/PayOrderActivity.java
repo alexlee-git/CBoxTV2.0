@@ -127,6 +127,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private long expireTime_All;
     private long orders[];
     private boolean mIfContinued; //是否是连续包月
+    private String message;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -432,28 +433,38 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
 
                         @Override
                         public void onNext(ResponseBody value) {
+
                             try {
                                 String data = value.string();
+                                Log.i(TAG, "onNext: getpay" + data);
                                 JSONObject object = new JSONObject(data);
-                                orderId = object.getLong("id");
-                                code = object.getString("code");
-                                qrCodeUrl = object.getString("qrCodeUrl");
-                                if (payChannelId == 1) {
-                                    orders[0] = orderId;
-                                } else if (payChannelId == 2) {
-                                    orders[1] = orderId;
-                                }
-                                if (mHandler != null) {
-                                    mHandler.sendEmptyMessage(MSG_QRCODE);
+                                long id = object.optLong("id");
+                                code = object.optString("code");
+                                qrCodeUrl = object.optString("qrCodeUrl");
+                                message = object.optString("errorMessage");
+                                orderId = id;
+                                if (orderId == 0) {
+                                    Toast.makeText(PayOrderActivity.this, message, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    if (payChannelId == 1) {
+                                        orders[0] = orderId;
+                                    } else if (payChannelId == 2) {
+                                        orders[1] = orderId;
+                                    }
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(MSG_QRCODE);
+                                    }
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
 //                                mHandler.sendEmptyMessage(3);
+
                             }
                         }
 
                         @Override
                         public void onError(Throwable e) {
+                            Log.i(TAG, "onError:  getpay---id");
                             if (mDisposable_order != null) {
                                 mDisposable_order.dispose();
                                 mDisposable_order = null;
@@ -545,8 +556,8 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                 }
                                 //判断是否为连续包月，如是则隐藏支付宝
                                 mIfContinued = pricesBean.isIfContinued();
-                                Log.i(TAG, "handleMessage: mIfContinued="+mIfContinued);
-                                if(mIfContinued){
+                                Log.i(TAG, "handleMessage: mIfContinued=" + mIfContinued);
+                                if (mIfContinued) {
                                     tv_ap.setVisibility(View.GONE);
                                 }
 
@@ -752,7 +763,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
             e.printStackTrace();
         }
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonObject.toString());
-        Log.d("jsonObject.toString()", "----" + jsonObject.toString());
+        Log.i("jsonObject.toString()", "----" + jsonObject.toString());
         getpay(requestBody);
     }
 
@@ -880,7 +891,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(Constant.TAG, "------onDestroy");
+        Log.i(TAG, "------onDestroy");
         if (dialog.isShowing()) {
             dialog.dismiss();
         }
@@ -899,6 +910,10 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         if (mDisposable_result != null) {
             mDisposable_result.dispose();
             mDisposable_result = null;
+        }
+        if (mDisposable_time != null) {
+            mDisposable_time.dispose();
+            mDisposable_time = null;
         }
 
     }
@@ -985,10 +1000,6 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                         @Override
                         public void onError(Throwable e) {
                             Log.i(TAG, "---requestMemberInfo:onError");
-                            if (mDisposable_time != null) {
-                                mDisposable_time.dispose();
-                                mDisposable_time = null;
-                            }
                         }
 
                         @Override
@@ -999,10 +1010,6 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
 
                         @Override
                         public void onComplete() {
-                            if (mDisposable_time != null) {
-                                mDisposable_time.dispose();
-                                mDisposable_time = null;
-                            }
                         }
                     });
         } catch (Exception e) {
