@@ -10,7 +10,7 @@ package com.newtv.cms.bean
 
 data class AutoBlock(
     val total: Int,
-    val rows: List<Row>
+    val rows: List<Row>?
 )
 
 data class Row(
@@ -30,7 +30,7 @@ data class Row(
     val createUserName: String,
     val definition: String,
     val duration: String,
-    val grade: Double,
+    val grade: String,
     val hImage: String,
     val movieLevel: String,
     val offlineDate: String,

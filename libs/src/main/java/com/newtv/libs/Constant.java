@@ -35,6 +35,10 @@ public class Constant {
     //是否启用轮播
     public static final boolean canUseAlternate  = true;
 
+
+    public static long TIP_LIVE_DURATION = 3600 * 2;
+    public static long TIP_VOD_DURATION = 3600 * 4;
+
     public static final boolean isLocalData = false;
     public static final String AdCache = Environment.getExternalStorageDirectory()
             .getAbsolutePath() +
