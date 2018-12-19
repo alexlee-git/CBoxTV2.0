@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -71,7 +72,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                         holder.itemView.requestFocus();
 
                     }
-                },50);
+                }, 50);
             }
         } else {
             if (recordPosition != -1 && recordPosition == position + 1) {
@@ -81,7 +82,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                         holder.itemView.requestFocus();
 
                     }
-                },50);
+                }, 50);
             }
         }
 
@@ -93,7 +94,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
         if (TextUtils.equals(mContentType, Constant.UC_HISTORY)) {
             // 角标 副标 & 更新剧集 & 评分
             String score = info.getGrade();
-            if (!TextUtils.isEmpty(score) && !TextUtils.equals("null", score) && !TextUtils.equals(score, "0.0")) {
+            if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null") && !TextUtils.equals(score, "0.0") && !TextUtils.equals(score, "0")) {
                 holder.score.setText(score);
                 holder.score.setVisibility(View.VISIBLE);
             } else {
@@ -102,7 +103,14 @@ public class UserCenterUniversalAdapter extends RecyclerView
 
             holder.subTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(info
                     .getPlayPosition(), info.getDuration()));
-            holder.episode.setText(getEpisode(info));
+            // 更新剧集
+            SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(info.getRecentMsg());
+            if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
+                holder.episode.setText(spannableRecentMsg);
+            } else {
+                holder.episode.setText("");
+                holder.episode.setVisibility(View.INVISIBLE);
+            }
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
                 if (!TextUtils.isEmpty(info.getSuperscript())) {
@@ -125,7 +133,15 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 holder.score.setVisibility(View.INVISIBLE);
             }
 
-            holder.episode.setText(getEpisode(info));
+            // 更新剧集
+
+            SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(info.getRecentMsg());
+            if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                holder.episode.setText(spannableRecentMsg);
+            } else {
+                holder.episode.setText("");
+                holder.episode.setVisibility(View.INVISIBLE);
+            }
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
                 if (!TextUtils.isEmpty(info.getSuperscript())) {
@@ -141,6 +157,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
             // 主标 & 海报 这两个下面统一做,这里只需将衬托剧集信息和评分区域的蒙版隐藏掉
             holder.mask.setVisibility(View.GONE);
             holder.score.setVisibility(View.GONE);
+            holder.episode.setVisibility(View.GONE);
         }
 
         // 主标题
@@ -185,7 +202,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
             @Override
             public void onClick(View view) {
                 recordPosition = position;
-                RxBus.get().post("recordPosition",holder.getLayoutPosition());
+                RxBus.get().post("recordPosition", holder.getLayoutPosition());
 
                 Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
                 JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
@@ -263,7 +280,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
 
     @Override
     public long getItemId(int position) {
-        return  position;
+        return position;
     }
 }
 

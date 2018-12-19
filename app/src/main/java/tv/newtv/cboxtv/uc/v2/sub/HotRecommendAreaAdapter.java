@@ -20,6 +20,7 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 /**
  * 项目名称:         央视影音
@@ -48,11 +49,19 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Program info = mDatas.get(position);
-        if (!TextUtils.isEmpty(info.getGrade())&& !TextUtils.equals(info.getGrade(), "null")) {
-            holder.score.setText(info.getGrade());
-        } else {
+        String score = info.getGrade();
+        if (TextUtils.isEmpty(score) || TextUtils.equals(score, "null") || TextUtils.equals(score, "0.0") || TextUtils.equals(score, "0")) {
             if (holder.score != null) {
                 holder.score.setVisibility(View.INVISIBLE);
+            }
+        } else {
+            holder.score.setText(score);
+        }
+        if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
+            holder.episode.setText(UserCenterRecordManager.getInstance().getSpannableRecentMsg(info.getRecentMsg()));
+        } else {
+            if (holder.episode != null) {
+                holder.episode.setVisibility(View.INVISIBLE);
             }
         }
 

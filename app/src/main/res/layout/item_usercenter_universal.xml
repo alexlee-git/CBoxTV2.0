@@ -41,13 +41,13 @@
     <!-- 更新至 -->
     <TextView
         android:id="@+id/id_episode_data"
-        android:layout_width="@dimen/width_140px"
+        style="@style/ModulePosterProgramUpdateTitleStyle"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/height_30px"
         android:layout_marginLeft="@dimen/width_39px"
         android:layout_marginTop="@dimen/height_347px"
-        android:includeFontPadding="false"
-        android:textColor="#ffffff"
-        android:textSize="@dimen/width_26px"/>
+        android:background="#99000000"
+        android:includeFontPadding="false"/>
 
     <!-- 评分 -->
     <TextView

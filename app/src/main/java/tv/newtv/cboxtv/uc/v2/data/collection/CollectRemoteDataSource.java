@@ -310,6 +310,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity.setIsUpdate(item.optString("update_superscript"));
                                 entity.setPlayIndex(item.optString("episode_num"));
                                 entity.setUpdateTime(Long.parseLong(item.optString("create_time")) / 1000);
+                                entity.setRecentMsg(item.optString("recent_msg"));
                                 infos.add(entity);
                             }
 
