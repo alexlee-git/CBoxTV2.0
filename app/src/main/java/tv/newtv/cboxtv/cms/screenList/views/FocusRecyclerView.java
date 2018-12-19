@@ -76,14 +76,13 @@ public class FocusRecyclerView extends RecyclerView {
                         downView.requestFocus();
                         this.smoothScrollBy(0, offsetY);
                         return true;
+                    } else {
+                        if (!isRecyclerViewToBottom()) {
+                            needGetDownView = true;
+                        }
+                        this.smoothScrollBy(0, offsetY);
+                        return true;
                     }
-//                    else {
-//                        if (!isRecyclerViewToBottom()) {
-//                            needGetDownView = true;
-//                        }
-//                        this.smoothScrollBy(0, offsetY);
-//                        return true;
-//                    }
                 case KeyEvent.KEYCODE_DPAD_UP:
                     View upView = FocusFinder.getInstance().findNextFocus(this, focusView, View.FOCUS_UP);
                     if (layoutDirection == OrientationHelper.HORIZONTAL || (upView == null && isRecyclerViewToTop())) {

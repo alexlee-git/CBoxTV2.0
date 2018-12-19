@@ -5,35 +5,36 @@
     <TextView
         android:id="@+id/alter_channel"
         android:visibility="visible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/width_424px"
+        android:layout_height="@dimen/height_26px"
         android:layout_gravity="bottom|left|start"
-        android:layout_marginStart="@dimen/width_15px"
-        android:layout_marginLeft="@dimen/width_15px"
-        android:layout_marginBottom="@dimen/height_70px"
+        android:layout_marginStart="@dimen/width_12px"
+        android:layout_marginLeft="@dimen/width_12px"
+        android:layout_marginBottom="@dimen/height_45px"
         android:maxEms="20"
         android:maxLines="1"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/height_24px"/>
+        android:textSize="@dimen/height_20px"/>
 
     <TextView
         android:id="@+id/alter_title"
         android:visibility="visible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/width_424px"
+        android:layout_height="@dimen/height_30px"
         android:layout_gravity="bottom|left|start"
-        android:layout_marginStart="@dimen/width_15px"
-        android:layout_marginLeft="@dimen/width_15px"
-        android:layout_marginBottom="@dimen/height_15px"
+        android:layout_marginStart="@dimen/width_12px"
+        android:layout_marginLeft="@dimen/width_12px"
+        android:layout_marginBottom="@dimen/height_12px"
         android:textColor="@android:color/white"
-        android:textSize="@dimen/height_28px"/>
+        android:textSize="@dimen/height_25px"/>
 
     <ImageView
-        android:visibility="invisible"
         android:id="@+id/alter_big_screen"
         android:layout_width="@dimen/width_135px"
-        android:layout_height="@dimen/height_32px"
+        android:layout_height="wrap_content"
         android:layout_gravity="right|end|bottom"
-        android:layout_margin="@dimen/width_15px"
-        android:src="@drawable/big_screen"/>
+        android:layout_margin="@dimen/width_13px"
+        android:scaleType="fitXY"
+        android:src="@drawable/big_screen"
+        android:visibility="invisible" />
 </FrameLayout>

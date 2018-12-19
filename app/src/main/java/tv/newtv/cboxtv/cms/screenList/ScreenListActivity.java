@@ -475,8 +475,16 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
             list.addAll(contents);
             labelDataAdapter.notifyDataSetChanged();
         } else {
+//            int index = list.size();
             list.addAll(contents);
             labelDataAdapter.notifyDataSetChanged();
+
+//            int index = list.size();
+//            list.addAll(contents);
+//            int end = list.size();
+//
+//            labelDataAdapter.notifyItemRangeInserted(index,end);
+            Log.e("yml", "showData: "+total );
         }
     }
 
@@ -622,9 +630,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     moveFlag--;
                     presenter.getLabelData();
                     return true;
-                }
-                if (tab.hasFocus()) {
-                    super.checkIsTop(event);
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
