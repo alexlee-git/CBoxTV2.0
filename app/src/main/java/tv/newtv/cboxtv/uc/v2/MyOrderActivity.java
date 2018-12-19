@@ -453,7 +453,7 @@ public class MyOrderActivity extends BaseActivity {
     private void getOrderList() {
         Log.e(TAG, "-----getOrderList: ----offset=" + offset);
         NetClient.INSTANCE.getOrdersApi()
-                .getOrders("Bearer " + mAccessToken, Libs.get().getAppKey(), Libs.get().getChannelId(), "", "", offset + "", pageNum + "")
+                .getOrders("Bearer " + mAccessToken, Libs.get().getAppKey(), "", "", "", offset + "", pageNum + "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
