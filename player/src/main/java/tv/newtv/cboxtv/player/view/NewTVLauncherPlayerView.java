@@ -1919,13 +1919,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
 
-        if (defaultConfig.playType != PLAY_TYPE_ALTERNATE) {
-            if (buyGoodsBusiness == null) {
-                buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
-            }
-            buyGoodsBusiness.getAd();
-        }
-
         if (videoDataStruct.isTrySee() && !defaultConfig.isAlternate) {
             isTrySee = true;
             hintVip.setVisibility(View.VISIBLE);
@@ -1936,12 +1929,22 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     mNewTVLauncherPlayerSeekbar.setFreeDuration(duration, freeDurationListener);
                 }
             } else {
-                goToBuy();
+//                goToBuy();
+                onChkError(PlayerErrorCode.USER_NOT_BUY,"付费内容需购买后才能观看");
+                return;
             }
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
             mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
+        }
+
+
+        if (defaultConfig.playType != PLAY_TYPE_ALTERNATE) {
+            if (buyGoodsBusiness == null) {
+                buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
+            }
+            buyGoodsBusiness.getAd();
         }
 
         if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals

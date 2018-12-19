@@ -61,6 +61,7 @@
 
         <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:id="@+id/imageView8"
+            android:scaleType="fitXY"
             android:layout_width="@dimen/width_400px"
             android:layout_height="@dimen/height_216px"
             android:tag="cell_010_2_poster"/>
@@ -84,6 +85,7 @@
         <tv.newtv.cboxtv.views.custom.RecycleImageView
             android:layout_width="@dimen/width_400px"
             android:layout_height="@dimen/height_216px"
+            android:scaleType="fitXY"
             android:tag="cell_010_5_poster" />
     </FrameLayout>
 

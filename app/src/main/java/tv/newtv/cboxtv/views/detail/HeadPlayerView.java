@@ -369,11 +369,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         contentView = LayoutInflater.from(getContext()).inflate(mBuilder.mLayout, this, false);
         final View inflate = LayoutInflater.from(getContext()).inflate(R.layout.up_top_, null);
         ImageView arrowsDark = inflate.findViewById(R.id.nav_arrows_dark);
+        ImageView navTitle = inflate.findViewById(R.id.nav_title);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         inflate.setLayoutParams(lp);
         addView(inflate);
-        hintAnimator(inflate, arrowsDark);
+        hintAnimator(inflate,arrowsDark,navTitle);
         addView(contentView);
         checkDataFromDB();
 
@@ -406,14 +407,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         //mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
     }
 
-    private void hintAnimator(final View view, ImageView arrow) {
-        ObjectAnimator translationX = ObjectAnimator.ofFloat(arrow, "alpha", 0.1f, 1.0f, 0.1f,
-                1.0f, 0.1f,
-                1.0f, 0.1f, 1.0f, 0.1f, 1.0f);
-        ObjectAnimator translationY = ObjectAnimator.ofFloat(arrow, "TranslationY", 0, 12, 0, 12,
-                0, 12, 0, 12, 0, 12);
+    private void hintAnimator(View view,ImageView arrow,ImageView navTitle) {
+        ObjectAnimator translationX = ObjectAnimator.ofFloat(arrow, "alpha", 0.6f, 1.0f, 0.6f, 1.0f, 0.6f,
+                1.0f,0.6f,1.0f,0.6f,1.0f);
+        ObjectAnimator translationY = ObjectAnimator.ofFloat(arrow, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
+        ObjectAnimator alphaY = ObjectAnimator.ofFloat(navTitle, "alpha", 1.0f, 0.6f);
+        alphaY.setStartDelay(4000);
+        alphaY.setDuration(1000);
+        alphaY.start();
         AnimatorSet animator = new AnimatorSet();
-        animator.playTogether(translationX, translationY);
+        animator.playTogether(translationX,translationY);
         animator.setInterpolator(new LinearInterpolator());
         animator.setDuration(5000);
         animator.start();

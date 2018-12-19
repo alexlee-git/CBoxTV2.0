@@ -21,12 +21,12 @@
         android:clipToPadding="false"
         tools:ignore="UnknownIdInLayout">
         <View android:id="@+id/dir_left"
-            android:layout_width="@dimen/width_25px"
-            android:layout_height="@dimen/height_41px"
+            android:layout_width="@dimen/width_20px"
+            android:layout_height="@dimen/height_34px"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/width_15px"
-            android:layout_marginRight="@dimen/width_15px"
+            android:layout_marginEnd="@dimen/width_40px"
+            android:layout_marginRight="@dimen/width_40px"
             android:background="@drawable/icon_detail_tips_left"/>
 
         <tv.newtv.cboxtv.views.widget.HorizontalRecycleView

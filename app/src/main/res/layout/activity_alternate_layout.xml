@@ -19,11 +19,18 @@
 
     <tv.newtv.cboxtv.views.detail.EpisodeAdView
         android:id="@+id/ad_view"
-        android:layout_below="@+id/play_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_width="@dimen/width_1746px"
+        android:layout_height="@dimen/height_386px"
+        android:layout_below="@id/play_list"
+        android:layout_marginLeft="@dimen/width_87px"
+        android:layout_marginRight="@dimen/width_87px"
+        android:layout_marginTop="@dimen/height_15px"
+        android:background="@drawable/selector_pos_background"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:visibility="gone">
+
+    </tv.newtv.cboxtv.views.detail.EpisodeAdView>
 
 </tv.newtv.cboxtv.views.detail.SmoothScrollView>
