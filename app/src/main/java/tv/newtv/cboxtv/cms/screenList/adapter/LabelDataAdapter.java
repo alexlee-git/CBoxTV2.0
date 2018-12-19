@@ -63,8 +63,8 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
         if (!TextUtils.isEmpty(list.get(i).getRecentMsg())) {
             myHolder.labelNum.setVisibility(View.VISIBLE);
             myHolder.labelNum.setText(SpannableBuilderUtils.builderMsg(list.get(i).getRecentMsg()));
-        } else {
-            myHolder.labelNum.setText(SpannableBuilderUtils.builderMsg(list.get(i).getRecentNum()));
+        } else if (!TextUtils.isEmpty(list.get(i).getRecentNum())){
+            myHolder.labelNum.setText(SpannableBuilderUtils.builderNum(list.get(i).getRecentNum()));
         }
 
         Picasso.get()
