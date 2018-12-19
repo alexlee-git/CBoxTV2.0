@@ -238,14 +238,14 @@ public class UserCenterPageBean {
             this.contentId = contentId;
         }
 
-<<<<<<< Updated upstream
+
         public String getRecentMsg() {
             return recentMsg;
         }
 
         public void setRecentMsg(String recentMsg) {
             this.recentMsg = recentMsg;
-=======
+        }
         @Override
         public String toString() {
             return "Bean{" +
@@ -271,7 +271,7 @@ public class UserCenterPageBean {
                     ", programChildName='" + programChildName + '\'' +
                     ", contentId='" + contentId + '\'' +
                     '}';
->>>>>>> Stashed changes
+
         }
     }
 }
