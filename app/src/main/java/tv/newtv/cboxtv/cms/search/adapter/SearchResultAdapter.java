@@ -99,17 +99,17 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
             );
 
             holder.mPosterTitle.setText(dataList.get(position).getTitle());
-            holder.allRootView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            holder.mFocusImageView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     lastFocusView = view;
 
                     if (hasFocus) {
                         holder.mPosterTitle.setSelected(true);
-                        onItemGetFocus(view);
+                        onItemGetFocus(holder.allRootView);
                     } else {
                         holder.mPosterTitle.setSelected(false);
-                        onItemLoseFocus(view);
+                        onItemLoseFocus(holder.allRootView);
                     }
                 }
             });
