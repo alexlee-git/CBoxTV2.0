@@ -76,6 +76,7 @@ public final class DBConfig {
     public static final String V_IMAGE = "v_image";
     public static final String H_IMAGE = "h_image";
     public static final String VIP_FLAG = "vip_flag";//付费标识
+    public static final String ALTERNATE_NUMBER = "alternate_number";
 
     static final String CREATE_LB_COLLECT_TABLE_SQL =
             "create table " + LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -92,7 +93,8 @@ public final class DBConfig {
                     V_IMAGE + " varchar2(1000)," +
                     H_IMAGE + " varchar2(1000)," +
                     VIP_FLAG + " varchar2(1000)," +
-                    CONTENTTYPE + " varchar2(1000)" +
+                    CONTENTTYPE + " varchar2(1000)," +
+                    ALTERNATE_NUMBER + " varchar2(1000)" +
                     ")";
 
     static final String CREATE_REMOTE_COLLECT_TABLE_SQL =

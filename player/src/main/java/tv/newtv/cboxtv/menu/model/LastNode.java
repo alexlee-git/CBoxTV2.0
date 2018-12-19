@@ -11,6 +11,7 @@ public class LastNode extends Node {
     public String contentUUID;
     public String hImage;
     public String vipFlag;
+    public String alternateNumber;
 
     @Override
     public boolean isLeaf() {

@@ -345,6 +345,7 @@ public class DBUtil {
         contentValues.put(DBConfig.H_IMAGE, bundle.getString(DBConfig.H_IMAGE));
         contentValues.put(DBConfig.VIP_FLAG, bundle.getString(DBConfig.VIP_FLAG));
         contentValues.put(DBConfig.CONTENTTYPE, bundle.getString(DBConfig.CONTENTTYPE));
+        contentValues.put(DBConfig.ALTERNATE_NUMBER,bundle.getString(DBConfig.ALTERNATE_NUMBER));
 
         DataSupport.insertOrReplace(tableName)
                 .condition()
