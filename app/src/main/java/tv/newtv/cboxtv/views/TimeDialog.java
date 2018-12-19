@@ -68,7 +68,7 @@ public class TimeDialog {
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.width = context.getResources().getDimensionPixelOffset(R.dimen.width_900px);
         window.setAttributes(lp);
-        window.setContentView(R.layout.layout_tip_dialog);
+        window.setContentView(R.layout.layout_time_dialog);
         textView = (TextView) window.findViewById(R.id.text_view);
         ensure = window.findViewById(R.id.ensure);
         notificationView = window.findViewById(R.id.notification_view);
