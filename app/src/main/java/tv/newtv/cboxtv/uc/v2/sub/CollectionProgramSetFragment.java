@@ -46,6 +46,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 /**
  * 项目名称:         央视影音
@@ -203,6 +204,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private void requestDataByDB(String tableName) {
         DataSupport.search(tableName)
                 .condition()
+                .limit(UserCenterRecordManager.REQUEST_LIST_PAGE_RECORD_LIMIT)
                 .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
