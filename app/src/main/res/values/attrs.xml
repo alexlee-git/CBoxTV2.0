@@ -118,6 +118,15 @@
     </declare-styleable>
 
 
+    <declare-styleable name="LivePlayView">
+        <attr name="play_type" format="enum">
+            <enum value="1" name="vod"/>
+            <enum value="2" name="live"/>
+            <enum value="3" name="alternate"/>
+        </attr>
+    </declare-styleable>
+
+
     <declare-styleable name="GridRecycleView">
         <attr name="spanCount" format="integer"/>
         <attr name="decoration_top" format="dimension"/>

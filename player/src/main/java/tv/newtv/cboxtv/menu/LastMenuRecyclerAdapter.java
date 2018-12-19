@@ -25,6 +25,7 @@ import java.util.List;
 import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
+import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.player.R;
 
 /**
@@ -133,6 +134,11 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             LbHolder lbHolder = (LbHolder) holder;
             lbHolder.title.setText(program.getTitle());
             lbHolder.time.setText(getTime(program.getStartTime(),program.getDuration()));
+            if(VipCheck.isPay(program.getVipFlag())){
+                lbHolder.vip.setVisibility(View.VISIBLE);
+            }else {
+                lbHolder.vip.setVisibility(View.GONE);
+            }
             if(isCurrentPlay(program)){
                 lbHolder.playing.setVisibility(View.VISIBLE);
             } else {

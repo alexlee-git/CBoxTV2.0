@@ -1,7 +1,9 @@
 package tv.newtv.cboxtv.cms.net
 
 import com.newtv.libs.BuildConfig
+import com.newtv.libs.Constant
 import com.newtv.libs.HeadersInterceptor
+import com.newtv.libs.Libs
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -18,7 +20,7 @@ object NetClient {
     private val headersInterceptor = HeadersInterceptor();
 
     init {
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || Libs.get().flavor.endsWith(Constant.STAGE)) {
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
         } else {
             logInterceptor.level = HttpLoggingInterceptor.Level.BASIC

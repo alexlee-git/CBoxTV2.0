@@ -48,6 +48,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, View.On
         super(context, attrs, defStyleAttr);
         setOnFocusChangeListener(this);
         setOnClickListener(this);
+        setVisibility(GONE);
 
         measuredHeight = (int) getResources().getDimension(R.dimen.height_386px);
         measuredWidth = (int) getResources().getDimension(R.dimen.width_1746px);

@@ -249,10 +249,11 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                     }
                 }
             } else {
+                Log.d(TAG, String.format("move height=%d parentHeight=%d top=%d",
+                        rootView.getHeight(), getHeight(), rootView.getTop()));
                 if (mAlign == ALIGN_CENTER) {
                     int space = rootView.getTop() - (getHeight() - rootView.getHeight()) / 2;
-                    Log.d(TAG, String.format("move height=%d parentHeight=%d top=%d space=%d",
-                            rootView.getHeight(), getHeight(), rootView.getTop(), space));
+
                     smoothScrollBy(0, space);
                 } else if (mAlign == ALIGN_START) {
                     smoothScrollBy(0, rootView.getTop() - getScrollY());

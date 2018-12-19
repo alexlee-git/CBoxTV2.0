@@ -23,13 +23,13 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
     : AlternateContract.Callback {
 
     interface AlternateCallback {
-        fun onChange(title: Alternate)
-        fun onError(code: String?, desc: String?)
+        fun onChange(id:String,title: Alternate)
+        fun onError(id:String,code: String?, desc: String?)
     }
 
     override fun onFailed(cid: String, code: String?, desc: String?) {
         if (!TextUtils.equals(mId, cid)) return
-        mCallback?.onError(code, desc)
+        mCallback?.onError(cid,code, desc)
     }
 
     override fun onAlternateResult(cid: String, alternates: List<Alternate>) {
@@ -38,7 +38,7 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
                 0, alternates.size - 1)
         if (index > 0) {
             val alternate: Alternate = alternates.get(index)
-            mCallback?.onChange(alternate)
+            mCallback?.onChange(cid,alternate)
         }
     }
 

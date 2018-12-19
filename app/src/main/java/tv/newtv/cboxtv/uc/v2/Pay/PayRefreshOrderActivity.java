@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
 
@@ -309,6 +310,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                 case MSG_RESULT: {
                     if (status.equals(pay_success)) {
                         UserCenterUtils.initMemberStatus();
+                        uploadUnPayLog(1);
                         if (mHandler != null) {
                             mHandler.removeMessages(MSG_RESULT);
                             mHandler.sendEmptyMessage(MSG_RESULT_OK);
@@ -337,6 +339,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                 case MSG_RESULT_OK: {
                     mHandler.sendEmptyMessage(MSG_RESULT_OK_TIME);
                     setExprefresh();
+                    UserCenterUtils.initMemberStatus();
                     dialog.show();
                     break;
                 }
@@ -571,4 +574,18 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
         return expireTime;
     }
 
+    private void uploadUnPayLog(int action) {
+
+        StringBuilder dataBuff = new StringBuilder(32);
+        dataBuff.append(1 + ",")
+                .append(action + ",")
+                .append(mVipProductId + ",")
+                .append(amount + ",")
+                .append(payChannelId + ",")
+                .append(orderId)
+                .trimToSize();
+
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_PAY, dataBuff.toString());
+
+    }
 }

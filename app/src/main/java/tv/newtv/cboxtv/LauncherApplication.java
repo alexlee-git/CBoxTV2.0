@@ -364,4 +364,9 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         JumpUtil.detailsJumpActivity(context,contentType,contentUUID,seriesSubUUID);
     }
 
+    @Override
+    public void getUserRecords(String type, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().getUserRecords(type,dbCallback);
+    }
+
 }

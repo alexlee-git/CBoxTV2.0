@@ -13,8 +13,6 @@ import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.ToastUtil;
 
 import tv.newtv.cboxtv.BaseActivity;
-import tv.newtv.cboxtv.LauncherApplication;
-import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 
 /**
@@ -41,7 +39,9 @@ public abstract class DetailPageActivity extends BaseActivity {
     }
 
     protected abstract boolean interruptDetailPageKeyEvent(KeyEvent event);
+
     protected abstract boolean isFull(KeyEvent event);
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -128,8 +128,9 @@ public abstract class DetailPageActivity extends BaseActivity {
                     if (!view.hasFocus()) {
                         continue;
                     }
-                    if (view instanceof IEpisode && ((IEpisode) view).interruptKeyEvent
-                            (event)) {
+                    if (view instanceof IEpisode
+                            && view.getVisibility() == View.VISIBLE
+                            && ((IEpisode) view).interruptKeyEvent(event)) {
                         return true;
                     } else {
                         View toView = null;
@@ -140,13 +141,12 @@ public abstract class DetailPageActivity extends BaseActivity {
                             dir = -1;
                             condition = true;
                         } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                            if (isFull(event)){
+                            if (isFull(event)) {
                                 return true;
-                            }else {
+                            } else {
                                 dir = 1;
                                 condition = true;
                             }
-
                         }
                         while (condition) {
                             pos += dir;
@@ -155,9 +155,9 @@ public abstract class DetailPageActivity extends BaseActivity {
                             }
                             toView = viewGroup.getChildAt(pos);
                             if (toView != null) {
-                                if (toView instanceof IEpisode && ((IEpisode) toView)
-                                        .interruptKeyEvent
-                                                (event)) {
+                                if (toView instanceof IEpisode
+                                        && toView.getVisibility() == View.VISIBLE
+                                        && ((IEpisode) toView).interruptKeyEvent(event)) {
                                     return true;
                                 }
                             }

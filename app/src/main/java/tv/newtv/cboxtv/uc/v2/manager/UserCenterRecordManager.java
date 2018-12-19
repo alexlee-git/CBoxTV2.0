@@ -22,6 +22,7 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.db.SqlCondition;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
@@ -532,7 +533,7 @@ public class UserCenterRecordManager {
     /**
      * 批量插入数据至数据库
      */
-    public void addCollectToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addCollectToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -567,7 +568,7 @@ public class UserCenterRecordManager {
         }
     }
 
-    public void addSubscribeToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addSubscribeToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -603,7 +604,7 @@ public class UserCenterRecordManager {
         }
     }
 
-    public void addFollowToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addFollowToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -635,7 +636,7 @@ public class UserCenterRecordManager {
         }
     }
 
-    public void addHistoryToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addHistoryToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -883,18 +884,18 @@ public class UserCenterRecordManager {
      */
     public void synchronizationUserBehavior(final Context context) {
         //订阅数据表表名
-        String tableNameSubscribe = DBConfig.SUBSCRIBE_TABLE_NAME;
+        final String tableNameSubscribe = DBConfig.SUBSCRIBE_TABLE_NAME;
         //收藏数据表表名
-        String tableNameCollect = DBConfig.COLLECT_TABLE_NAME;
+        final String tableNameCollect = DBConfig.COLLECT_TABLE_NAME;
         //历史记录数据表表名
-        String tableNameHistory = DBConfig.HISTORY_TABLE_NAME;
+        final String tableNameHistory = DBConfig.HISTORY_TABLE_NAME;
         //关注数据表表名
-        String TableNameAttention = DBConfig.ATTENTION_TABLE_NAME;
+        final String TableNameAttention = DBConfig.ATTENTION_TABLE_NAME;
         QueryUserStatusUtil.getInstance().getLoginStatus(context, new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
                 if (status) {
-                    String token = SharePreferenceUtils.getToken(context);
+                    final String token = SharePreferenceUtils.getToken(context);
                     final String userId = SharePreferenceUtils.getUserId(context);
                     if (!TextUtils.isEmpty(token)) {
                         queryDataBase(tableNameHistory, new DBCallback<String>() {
@@ -1527,11 +1528,13 @@ public class UserCenterRecordManager {
 
         Log.d(TAG, "tableName : " + tableName + ", userId : " + userId);
 
-        DataSupport.search(tableName)
+        SqlCondition sqlCondition = DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
-                .OrderBy(DBConfig.ORDER_BY_TIME)
-                .build()
-                .withCallback(dbCallback).excute();
+                .OrderBy(DBConfig.ORDER_BY_TIME);
+        if(TextUtils.equals(type,"history")){
+            sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
+        }
+        sqlCondition.build().withCallback(dbCallback).excute();
     }
 }

@@ -25,7 +25,6 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
-import com.newtv.libs.db.SqlCondition;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.SystemUtils;
@@ -98,10 +97,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private MenuGroup menuGroup;
 
     private String programSeries = "";
-    private String contentUUID = "";
+    private String contentId = "";
     private String categoryId;
     private String contentType;
     private List<Node> rootNode;
+    private String exitContentId;
 
     private boolean menuGroupIsInit = false;
     /**
@@ -267,7 +267,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      *
      * @return
      */
-    private boolean getProgramSeriesAndContentUUID() {
+    private boolean getProgramSeriesAndContentId() {
         if (NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             Log.e(TAG, "isLiving");
             return false;
@@ -291,7 +291,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
         switch (programSeriesInfo.getContentType()) {
             case Constant.CONTENTTYPE_PG:
-                contentUUID = "";
+                contentId = "";
                 categoryId = "";
                 Log.i(TAG, "单节目不显示栏目树");
                 break;
@@ -300,12 +300,12 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 splitIds(programSeriesInfo.getCsContentIDs(), seriesIdList);
                 splitIds(programSeriesInfo.getCgContentIDs(), seriesIdList);
 //                programSeries = mySplit(getStringByPriority(programSeriesInfo.getTvContentIDs(), programSeriesInfo.getCsContentIDs(), programSeriesInfo.getCgContentIDs()));
-                contentUUID = programSeriesInfo.getContentID();
+                contentId = programSeriesInfo.getContentID();
                 categoryId = mySplit(programSeriesInfo.getCategoryIDs());
                 break;
             default:
                 if (index != -1 && programSeriesInfo.getData() != null && index < programSeriesInfo.getData().size()) {
-                    contentUUID = programSeriesInfo.getData().get(index).getContentID();
+                    contentId = programSeriesInfo.getData().get(index).getContentID();
                     categoryId = mySplit(programSeriesInfo.getCategoryIDs());
                     programSeries = programSeriesInfo.getContentID();
                 }
@@ -313,27 +313,57 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
 
         if (isAlternate) {
-            if (TextUtils.isEmpty(alternateId) || TextUtils.isEmpty(contentUUID)) {
-                Log.e(TAG, "alternateId or contentUUID can not empty,programSeries=" + alternateId + ",contentUUID=" + contentUUID);
+            if (TextUtils.isEmpty(alternateId) || TextUtils.isEmpty(contentId)) {
+                Log.e(TAG, "alternateId or contentId can not empty,programSeries=" + alternateId + ",contentId=" + contentId);
                 return false;
             }
         } else {
-            if ((seriesIdList.size() == 0 && TextUtils.isEmpty(programSeries)) || TextUtils.isEmpty(contentUUID)) {
-                Log.e(TAG, "seriesIdList or programSeries or contentUUID can not empty,seriesIdList=" + seriesIdList + ",programSeries"
-                        + programSeries + ",contentUUID=" + contentUUID);
+            if ((seriesIdList.size() == 0 && TextUtils.isEmpty(programSeries)) || TextUtils.isEmpty(contentId)) {
+                Log.e(TAG, "seriesIdList or programSeries or contentId can not empty,seriesIdList=" + seriesIdList + ",programSeries"
+                        + programSeries + ",contentId=" + contentId);
                 return false;
             }
         }
         contentType = programSeriesInfo.getContentType();
 
-        Log.i(TAG, "seriesIdList=" + seriesIdList + ",contentUUID=" + contentUUID + "programSeries:" + programSeries
+        Log.i(TAG, "seriesIdList=" + seriesIdList + ",contentId=" + contentId + "programSeries:" + programSeries
                 + ",categoryId=" + categoryId + ",isAlternate=" + isAlternate + ",alternateId=" + alternateId);
+        return true;
+    }
+
+    private boolean updateExitContentId() {
+        exitContentId = "";
+        if (NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
+            Log.e(TAG, "isLiving");
+            return false;
+        }
+
+        com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+        int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+
+        if (programSeriesInfo == null) {
+            Log.e(TAG, "programSeriesInfo == null");
+            return false;
+        }
+
+        switch (programSeriesInfo.getContentType()) {
+            case Constant.CONTENTTYPE_PG:
+            case Constant.CONTENTTYPE_CP:
+                exitContentId = programSeriesInfo.getContentID();
+                break;
+            default:
+                if (index != -1 && programSeriesInfo.getData() != null && index < programSeriesInfo.getData().size()) {
+                    exitContentId = programSeriesInfo.getData().get(index).getContentID();
+                }
+                break;
+        }
+        Log.i(TAG, "updateExitContentId: "+exitContentId);
         return true;
     }
 
     @SuppressLint("CheckResult")
     private void initData() {
-        if (!getProgramSeriesAndContentUUID()) {
+        if (!getProgramSeriesAndContentId()) {
             if (retry++ < MAX_RETRY) {
                 handler.sendEmptyMessageDelayed(RETRY_DATA, 1000);
             }
@@ -343,7 +373,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         if (isAlternate) {
             getCategoryId(alternateId);
         } else if (TextUtils.isEmpty(categoryId)) {
-            getCategoryId(contentUUID);
+            getCategoryId(contentId);
         } else {
             getCategoryTree();
         }
@@ -453,7 +483,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         if (seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0) {
                             MenuGroupPresenter2.this.seriesContent = seriesContent;
                             menuGroup.addRootNodes(rootNode);
-                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, alternateId, contentUUID);
+                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, alternateId, contentId);
                             playProgram = menuGroup.getPlayProgram();
                             Log.i(TAG, "accept: " + playProgram);
                             checkShowHinter();
@@ -476,7 +506,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         if (seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0) {
                             MenuGroupPresenter2.this.seriesContent = seriesContent;
                             menuGroup.addRootNodes(rootNode);
-                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, programSeries, contentUUID);
+                            menuGroupIsInit = menuGroup.setLastProgram(seriesContent.data, programSeries, contentId);
                             playProgram = menuGroup.getPlayProgram();
                             Log.i(TAG, "accept: " + playProgram);
                             checkShowHinter();
@@ -528,42 +558,34 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         list.add(subscribe);
         root.setChild(list);
 
-        searchInDB(DBConfig.COLLECT_TABLE_NAME, collect);
-        searchInDB(DBConfig.SUBSCRIBE_TABLE_NAME, subscribe);
-        searchInDB(DBConfig.HISTORY_TABLE_NAME, history);
+        searchInDB("collect", collect);
+        searchInDB("subscribe", subscribe);
+        searchInDB("history", history);
 
         menuGroup.addNodeToRoot(root);
     }
 
-    private void searchInDB(String titleName, final Node node) {
-        SqlCondition sqlCondition = DataSupport.search(titleName)
-                .condition()
-                .OrderBy(DBConfig.ORDER_BY_TIME);
-        if ("attention".equals(node.getId())) {
-            sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
-        }
-
-        sqlCondition.build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        Log.i(TAG, "onResult: " + result);
-                        List<DBProgram> list = dataDispose(result);
-                        switch (node.getTitle()) {
-                            case COLLECT:
-                            case SUBSCRIBE:
-                                setNode(list, node);
-                                break;
-                            case HISTORY:
-                                if (list != null) {
-                                    setProgram(node, DBProgram.convertProgram(list));
-                                } else {
-                                    setProgram(node, null);
-                                }
-                                break;
+    private void searchInDB(String type, final Node node) {
+        Player.get().getUserRecords(type, new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                Log.i(TAG, "onResult: " + result);
+                List<DBProgram> list = dataDispose(result);
+                switch (node.getTitle()) {
+                    case COLLECT:
+                    case SUBSCRIBE:
+                        setNode(list, node);
+                        break;
+                    case HISTORY:
+                        if (list != null) {
+                            setProgram(node, DBProgram.convertProgram(list));
+                        } else {
+                            setProgram(node, null);
                         }
-                    }
-                }).excute();
+                        break;
+                }
+            }
+        });
     }
 
     private List<DBProgram> dataDispose(String result) {
@@ -783,9 +805,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     @Override
     public void enterFullScreen() {
         if (!NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
-            String oldContentUUID = contentUUID;
-            getProgramSeriesAndContentUUID();
-            if(TextUtils.isEmpty(contentUUID) || TextUtils.equals(oldContentUUID,contentUUID)){
+            getProgramSeriesAndContentId();
+            if(TextUtils.isEmpty(contentId) || TextUtils.isEmpty(exitContentId) && !menuGroupIsInit
+                    || TextUtils.equals(exitContentId,contentId)){
                 return;
             }
             if (updatePlayProgram()) {
@@ -801,7 +823,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     private void reset(){
         programSeries = "";
-        contentUUID = "";
+        contentId = "";
         categoryId = "";
         contentType = "";
         rootNode = null;
@@ -819,13 +841,14 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     @Override
     public void exitFullScreen() {
         setHintGone();
+        updateExitContentId();
     }
 
     public boolean updatePlayProgram() {
         if (seriesContent != null && seriesContent.data != null
                 && seriesContent.data.size() > 0) {
             for (Program program : seriesContent.data) {
-                if (contentUUID.equals(program.getContentID())) {
+                if (contentId.equals(program.getContentID())) {
                     playProgram = program;
                     return true;
                 }
@@ -1137,7 +1160,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void getContent(final CategoryContent categoryContent) {
-        String contentId = contentUUID;
+        String contentId = this.contentId;
         String leftString = contentId.substring(0, 2);
         String rightString = contentId.substring(contentId.length() - 2, contentId.length());
         Request.INSTANCE.getContent()

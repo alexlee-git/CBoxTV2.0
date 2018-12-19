@@ -52,7 +52,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private TextView title_direction;
     private FrameLayout video_player_rl;
     private FrameLayout frame_container;
-    private View focusView;
     private TextView videoTitle;
     private ImageView full_screen;
     private popupMenuWidget mPopupMenuWidget;
@@ -71,6 +70,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private int mToPosition;
     private Observable<Boolean> isHaveAdObservable;
     private boolean isHaveAD = false;
+    private int focusPosition;
+    private View focusView;
     public static boolean isBottom(AiyaRecyclerView recyclerView) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
@@ -385,6 +386,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     public boolean dispatchKeyEvent(KeyEvent event) {
 
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            View focusView = null;
             if (getContentView() != null) {
                 focusView = getContentView().findFocus();
             }
@@ -409,7 +411,17 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 if (focusView instanceof VideoPlayerView) {
-                    news_recycle.getDefaultFocusView().requestFocus();
+                    if(isPositionShow(news_recycle,focusPosition)){
+                        news_recycle.getDefaultFocusView().requestFocus();
+                    } else {
+                        news_recycle.scrollToPosition(focusPosition);
+                        MainLooper.get().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getFocusView().requestFocus();
+                            }
+                        },100);
+                    }
                     videoTitle.setVisibility(View.GONE);
                     full_screen.setVisibility(View.GONE);
                 }
@@ -417,6 +429,10 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    public View getFocusView() {
+        return focusView;
     }
 
     @Override
@@ -537,7 +553,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
         @Override
         public void onBindViewHolder(final NewsViewHolder holder, final int position) {
-
+            if(focusPosition == position){
+                focusView = holder.itemView;
+            }
 
             final Program moduleItem = getItem(position);
             setImageView(holder.isPlaying);
@@ -554,6 +572,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 public void onFocusChange(View view, boolean hasFocus) {
 
                     if (hasFocus) {
+                        TopicTwoFragment.this.focusPosition = position;
 
 //                        if (isBottom(news_recycle)) {
 //                            down_arrow.setVisibility(View.VISIBLE);
@@ -708,4 +727,17 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
     }
 
+    private boolean isPositionShow(RecyclerView recyclerView, int position) {
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
+
+            if (firstVisibleItemPosition <= position && position <= lastVisibleItemPosition) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
