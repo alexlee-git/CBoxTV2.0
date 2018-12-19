@@ -181,19 +181,14 @@ public class UserCenterUniversalAdapter extends RecyclerView
 
         // 海报
         String posterUrl = info.get_imageurl();
-        int posterId;
-        if (type == 1) {
-            posterId = R.drawable.focus_384_216;
-        } else {
-            posterId = R.drawable.default_member_center_240_360_v2;
-        }
-
         if (!TextUtils.isEmpty(posterUrl) && !TextUtils.isEmpty("null") && holder.poster != null) {
             if (type == 1) {
                 Picasso.get().load(posterUrl)
                         .placeholder(R.drawable.focus_384_216)
                         .error(R.drawable.deful_user_h)
                         .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
+                        .resize(384, 216)
+                        .centerInside()
                         .transform(new PosterCircleTransform(mContext, mContext.getResources().getDimensionPixelOffset(R.dimen.collect_lb)))
                         .into(holder.poster);
             } else {
@@ -241,8 +236,13 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 RxBus.get().post("recordPosition", holder.getLayoutPosition());
 
                 Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
-                JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
-                        info.getContentId(), "");
+                if (type == 1) {
+                    JumpUtil.activityJump(mContext, Constant.OPEN_VIDEO, info.get_contenttype(),
+                            info.getContentId(), "");
+                } else {
+                    JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
+                            info.getContentId(), "");
+                }
             }
         });
     }
