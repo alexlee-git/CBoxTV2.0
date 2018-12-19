@@ -1,6 +1,8 @@
 package com.newtv.cms.bean
 
+import android.text.TextUtils
 import com.google.gson.annotations.SerializedName
+import com.newtv.cms.CmsErrorCode
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -20,8 +22,9 @@ class ModelResult<T> {
     @SerializedName(value = "errorMessage",alternate = arrayOf("resultMessage"))
     var errorMessage: String? = null
         get() {
-            if (field == null) {
-                return "UnKnown Error"
+            field = CmsErrorCode.getErrorMessage(errorCode)
+            if (TextUtils.isEmpty(field)) {
+                return "UNKNOWN ERROR"
             }
             return field
         }
@@ -37,7 +40,7 @@ class ModelResult<T> {
     var total:Int?=0
 
     fun asAd():Boolean{
-        return "1".equals(isAd)
+        return IS_AD_TYPE == isAd
     }
 
     fun isOk(): Boolean {

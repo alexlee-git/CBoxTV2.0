@@ -24,13 +24,7 @@
         android:layout_marginLeft="@dimen/width_93px"
         android:layout_marginTop="@dimen/height_62px"
         android:background="@drawable/selector_pos_background">
-        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
-            android:focusable="true"
-            android:id="@+id/video_player"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-        >
-        </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
+
     </FrameLayout>
 
 

@@ -236,7 +236,7 @@ public class SuperScriptManager implements CornerContract.View {
             containOther) {
         if (containOther) return;
         TextView recentText = parent.findViewWithTag("TEXT_RECENT_MSG");
-        if (!TextUtils.isEmpty(message)) {
+        if (!TextUtils.isEmpty(message) && !TextUtils.equals(message,"null")) {
             if (recentText == null) {
                 recentText = new TextView(context);
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
@@ -300,8 +300,10 @@ public class SuperScriptManager implements CornerContract.View {
         if (containOther) return;
         TextView gradeText = parent.findViewWithTag("TEXT_GRADE_MSG");
 
-        if (!TextUtils.isEmpty(message) && !TextUtils.equals(message, "0.0") && !TextUtils.equals
-                (message, "0")) {
+        if (!TextUtils.isEmpty(message)
+                && !TextUtils.equals(message, "null")
+                && !TextUtils.equals(message, "0.0")
+                && !TextUtils.equals(message, "0")) {
             if (gradeText == null) {
                 gradeText = new TextView(context);
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams

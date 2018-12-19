@@ -246,5 +246,11 @@ class DataHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
         }
+        switch (oldVersion){
+            case 1:
+            case 2:
+            case 3:
+                sqLiteDatabase.execSQL("alter table " + DBConfig.LB_COLLECT_TABLE_NAME + " add " + DBConfig.ALTERNATE_NUMBER + " varchar2(1000)");
+        }
     }
 }

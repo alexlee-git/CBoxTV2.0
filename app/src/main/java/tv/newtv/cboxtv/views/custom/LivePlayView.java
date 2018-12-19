@@ -157,9 +157,13 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             if (mPlayerViewConfig != null) {
                 mVideoPlayerView = new VideoPlayerView(mPlayerViewConfig, getContext());
             } else {
-                mVideoPlayerView = new VideoPlayerView(getContext());
+                NewTVLauncherPlayerView.PlayerViewConfig config = null;
+                if(useAlternateUI){
+                    config = new NewTVLauncherPlayerView.PlayerViewConfig();
+                    config.useAlternateUI = true;
+                }
+                mVideoPlayerView = new VideoPlayerView(config,getContext());
                 mVideoPlayerView.setSingleRepeat(true);
-                mVideoPlayerView.setUseAlternateUI();
                 mVideoPlayerView.setTag("videoPlayer");
                 FrameLayout.LayoutParams layoutParams = null;
                 layoutParams = new FrameLayout.LayoutParams

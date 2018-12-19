@@ -21,12 +21,13 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
+import tv.newtv.cboxtv.utils.SpannableBuilderUtils;
 
 
 public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHolder> {
 
     private Context context;
-    private  List<SubContent> list;
+    private List<SubContent> list;
     private MyHolder holder;
 
 
@@ -47,7 +48,24 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
     @Override
     public void onBindViewHolder(@NonNull final MyHolder myHolder, int i) {
         if (!TextUtils.isEmpty(list.get(i).getTitle()))
-        myHolder.label_title.setText(list.get(i).getTitle());
+            myHolder.label_title.setText(list.get(i).getTitle());
+
+        //评分
+        if (list.get(i).getGrade() != null
+                && !TextUtils.equals(list.get(i).getGrade(), "0")
+                && !TextUtils.equals(list.get(i).getGrade(), "0.0")
+                && !TextUtils.equals(list.get(i).getGrade(), null)) {
+            myHolder.labelGrade.setVisibility(View.VISIBLE);
+            myHolder.labelGrade.setText(list.get(i).getGrade());
+        }
+
+        //更新
+        if (!TextUtils.isEmpty(list.get(i).getRecentMsg())) {
+            myHolder.labelNum.setVisibility(View.VISIBLE);
+            myHolder.labelNum.setText(SpannableBuilderUtils.builderMsg(list.get(i).getRecentMsg()));
+        } else {
+            myHolder.labelNum.setText(SpannableBuilderUtils.builderMsg(list.get(i).getRecentNum()));
+        }
 
         Picasso.get()
                 .load(list.get(i).getVImage())     //图片加载地址
@@ -103,6 +121,9 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
         private ImageView focus;
         private FrameLayout frameLayout;
 
+        //更新和评分
+        private TextView labelNum, labelGrade;
+
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setFocusable(true);
@@ -110,6 +131,10 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
             label_title = itemView.findViewById(R.id.label_title);
             label_img = itemView.findViewById(R.id.label_img);
             focus = itemView.findViewById(R.id.focus);
+
+            labelNum = itemView.findViewById(R.id.label_num);
+            labelGrade = itemView.findViewById(R.id.label_grade);
+
             DisplayUtils.adjustView(context, label_img, focus, R.dimen.width_17dp, R.dimen.width_17dp);
 
         }

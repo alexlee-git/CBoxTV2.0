@@ -945,6 +945,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         bundle.putString(DBConfig.H_IMAGE, lastNode.hImage);
         bundle.putString(DBConfig.VIP_FLAG, lastNode.vipFlag);
         bundle.putString(DBConfig.CONTENTTYPE, lastNode.getContentType());
+        bundle.putString(DBConfig.ALTERNATE_NUMBER,lastNode.alternateNumber);
 
         Player.get().addLbCollect(bundle, new DBCallback<String>() {
             @Override

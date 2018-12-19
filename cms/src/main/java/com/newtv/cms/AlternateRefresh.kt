@@ -23,38 +23,42 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
     : AlternateContract.Callback {
 
     interface AlternateCallback {
-        fun onChange(id:String,title: Alternate)
-        fun onError(id:String,code: String?, desc: String?)
+        fun onChange(id: String, title: Alternate)
+        fun onError(id: String, code: String?, desc: String?)
     }
 
     override fun onFailed(cid: String, code: String?, desc: String?) {
         if (!TextUtils.equals(mId, cid)) return
-        mCallback?.onError(cid,code, desc)
+        mCallback?.onError(cid, code, desc)
     }
 
     override fun onAlternateResult(cid: String, alternates: List<Alternate>) {
         if (!TextUtils.equals(mId, cid)) return
+        if (alternates.size <= 0) {
+            mCallback?.onError(cid, CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY, "数据为空")
+            return
+        }
         val index: Int = CmsUtil.binarySearch(alternates, System.currentTimeMillis(),
                 0, alternates.size - 1)
         if (index > 0) {
             val alternate: Alternate = alternates.get(index)
-            mCallback?.onChange(cid,alternate)
+            mCallback?.onChange(cid, alternate)
         }
     }
 
     private var mId: String? = null
     private var mCallback: AlternateCallback? = null
     private var mPresenter: AlternateContract.Presenter? = null
-    private var mObserver:Observable<Long>? = null
-    private var mDisposable:Disposable? = null
+    private var mObserver: Observable<Long>? = null
+    private var mDisposable: Disposable? = null
 
     init {
-        LogUtils.d("AlternateRefresh","new instance()")
+        LogUtils.d("AlternateRefresh", "new instance()")
         mPresenter = AlternateContract.AlternatePresenter(context, null)
         mCallback = alterCallback
-        mObserver = Observable.interval(5,TimeUnit.MINUTES)//五分钟刷新一次轮播数据
+        mObserver = Observable.interval(5, TimeUnit.MINUTES)//五分钟刷新一次轮播数据
         mObserver!!.observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<Long>{
+                .subscribe(object : Observer<Long> {
                     override fun onComplete() {
                     }
 
@@ -72,8 +76,8 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
     }
 
     fun detach() {
-        if(mDisposable != null){
-            if(!mDisposable!!.isDisposed){
+        if (mDisposable != null) {
+            if (!mDisposable!!.isDisposed) {
                 mDisposable!!.dispose()
             }
             mDisposable = null
@@ -84,14 +88,14 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
         mObserver = null
     }
 
-    fun refresh(){
-        if(!TextUtils.isEmpty(mId)){
+    fun refresh() {
+        if (!TextUtils.isEmpty(mId)) {
             mPresenter?.requestAlternateWithCallback(mId!!, this)
         }
     }
 
-    fun equals(id:String):Boolean{
-        return TextUtils.equals(mId,id)
+    fun equals(id: String): Boolean {
+        return TextUtils.equals(mId, id)
     }
 
     fun attach(alternateId: String) {
