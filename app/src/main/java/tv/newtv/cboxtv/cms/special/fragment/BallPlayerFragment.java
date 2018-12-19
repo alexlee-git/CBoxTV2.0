@@ -140,7 +140,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
                 if (liveInfo.isLiveTime()) {
                     startPlay(liveInfo);
                 } else {
-                    onComplete();
+                    setComplete();
                 }
             }
         }
@@ -218,12 +218,15 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
         }
     }
 
-    @Override
-    public void onComplete() {
+    public void setComplete(){
         mImageView.setVisibility(View.VISIBLE);
         if (mHintText != null) {
             mHintText.setText("暂无播放");
-            TimeDialog.showBuilder(getContext());
         }
+    }
+    @Override
+    public void onComplete() {
+        setComplete();
+        TimeDialog.showBuilder(getContext());
     }
 }
