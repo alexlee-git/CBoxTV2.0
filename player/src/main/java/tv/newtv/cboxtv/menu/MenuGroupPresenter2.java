@@ -933,7 +933,6 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         Bundle bundle = new Bundle();
         bundle.putString(DBConfig.CONTENTUUID, lastNode.contentUUID);
         bundle.putString(DBConfig.CONTENT_ID, lastNode.contentId);
-        bundle.putString(DBConfig.ACTIONTYPE, lastNode.actionType);
         bundle.putString(DBConfig.TITLE_NAME, lastNode.getTitle());
         bundle.putString(DBConfig.IS_FINISH, lastNode.isFinish);
         bundle.putString(DBConfig.REAL_EXCLUSIVE, lastNode.realExclusive);
