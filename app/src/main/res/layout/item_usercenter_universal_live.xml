@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/id_module_view"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/height_270px"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/id_poster"
+        android:layout_width="@dimen/width_384px"
+        android:layout_height="@dimen/height_216px"
+        android:layout_marginLeft="@dimen/width_27px"
+        android:layout_marginTop="@dimen/height_27px"
+        android:scaleType="fitXY"
+        android:src="@drawable/focus_384_216" />
+
+    <ImageView
+        android:id="@+id/id_mask"
+        android:layout_width="@dimen/width_384px"
+        android:layout_height="@dimen/height_88px"
+        android:layout_marginLeft="@dimen/width_27px"
+        android:layout_marginTop="@dimen/height_155px"
+        android:background="@drawable/gradient_white_to_black_no_corner" />
+
+    <ImageView
+        android:id="@+id/id_focus"
+        android:layout_width="@dimen/width_438px"
+        android:layout_height="@dimen/height_270px"
+        android:background="@drawable/focusd_384_216"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/id_superscript"
+        android:layout_width="@dimen/width_75px"
+        android:layout_height="@dimen/height_30px"
+        android:layout_gravity="right"
+        android:layout_marginRight="@dimen/width_39px"
+        android:layout_marginTop="@dimen/height_39px" />
+
+    <!-- 更新至 -->
+    <TextView
+        android:id="@+id/id_episode_data"
+        android:layout_width="@dimen/width_140px"
+        android:layout_height="@dimen/height_30px"
+        android:layout_marginLeft="@dimen/width_39px"
+        android:layout_marginTop="@dimen/height_200px"
+        android:includeFontPadding="false"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/width_26px" />
+
+    <!-- 评分 -->
+    <TextView
+        android:id="@+id/id_score"
+        style="@style/ModulePosterScoreTitleStyle"
+        android:layout_width="@dimen/width_40px"
+        android:layout_height="@dimen/height_24px"
+        android:layout_marginLeft="@dimen/width_340px"
+        android:layout_marginTop="@dimen/height_200px"
+        android:background="#99000000"
+        android:gravity="center"
+        android:includeFontPadding="false" />
+
+    <TextView
+        android:id="@+id/id_title"
+        style="@style/ModulePosterBottomTitleStyle"
+        android:layout_width="@dimen/width_380px"
+        android:layout_height="@dimen/height_30px"
+        android:layout_marginLeft="@dimen/width_27px"
+        android:layout_marginTop="@dimen/height_250px"
+        android:ellipsize="marquee"
+        android:enabled="true"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textSize="@dimen/width_25px" />
+
+    <!-- 观看进度 -->
+    <TextView
+        android:id="@+id/id_subtitle"
+        android:layout_width="@dimen/width_380px"
+        android:layout_height="@dimen/height_22px"
+        android:layout_marginLeft="@dimen/width_27px"
+        android:layout_marginTop="@dimen/height_220px"
+        android:ellipsize="end"
+        android:visibility="gone"
+        android:singleLine="true"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/width_18px" />
+
+</FrameLayout>

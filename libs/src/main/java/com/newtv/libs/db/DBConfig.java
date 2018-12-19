@@ -89,10 +89,11 @@ public final class DBConfig {
                     SUB_TITLE + " varchar2(1000)," +
                     UPDATE_TIME + " long," +
                     USERID + " varchar2(1000)," +
-                    V_IMAGE + " varchar2(1000)," +
+                    IMAGEURL + " varchar2(1000)," +
                     H_IMAGE + " varchar2(1000)," +
                     VIP_FLAG + " varchar2(1000)," +
-                    CONTENTTYPE + " varchar2(1000)" +
+                    CONTENTTYPE + " varchar2(1000)," +
+                    ACTIONTYPE + " varchar2(1000)" +
                     ")";
 
     static final String CREATE_REMOTE_COLLECT_TABLE_SQL =

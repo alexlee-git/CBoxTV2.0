@@ -353,10 +353,11 @@ public class DBUtil {
         contentValues.put(DBConfig.SUB_TITLE, bundle.getString(DBConfig.SUB_TITLE));
         contentValues.put(DBConfig.UPDATE_TIME, bundle.getString(DBConfig.UPDATE_TIME));
         contentValues.put(DBConfig.USERID, bundle.getString(DBConfig.USERID));
-        contentValues.put(DBConfig.V_IMAGE, bundle.getString(DBConfig.V_IMAGE));
+        contentValues.put(DBConfig.IMAGEURL, bundle.getString(DBConfig.V_IMAGE));
         contentValues.put(DBConfig.H_IMAGE, bundle.getString(DBConfig.H_IMAGE));
         contentValues.put(DBConfig.VIP_FLAG, bundle.getString(DBConfig.VIP_FLAG));
         contentValues.put(DBConfig.CONTENTTYPE, bundle.getString(DBConfig.CONTENTTYPE));
+        contentValues.put(DBConfig.ACTIONTYPE, bundle.getString(DBConfig.ACTIONTYPE));
 
         DataSupport.insertOrReplace(tableName)
                 .condition()
