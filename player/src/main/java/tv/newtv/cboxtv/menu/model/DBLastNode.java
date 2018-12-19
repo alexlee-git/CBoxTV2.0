@@ -19,6 +19,7 @@ public class DBLastNode {
     public String v_image;
     public String h_image;
     public String vip_flag;
+    public String alternate_number;
 
 
     public static List<LastNode> converLastNode(List<DBLastNode> list){
@@ -48,6 +49,7 @@ public class DBLastNode {
         lastNode.vImage = dbLastNode.v_image;
         lastNode.hImage = dbLastNode.h_image;
         lastNode.vipFlag = dbLastNode.vip_flag;
+        lastNode.alternateNumber = dbLastNode.alternate_number;
         return lastNode;
     }
 }

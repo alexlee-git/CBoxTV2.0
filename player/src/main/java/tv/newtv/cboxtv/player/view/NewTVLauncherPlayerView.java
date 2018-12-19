@@ -680,19 +680,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         container.width = defaultConfig.defaultWidth;
         container.height = defaultConfig.defaultHeight;
         setLayoutParams(container);
-        FrameLayout frameLayout = activity.getWindow().getDecorView().findViewById(android.R.id
-                .content);
+        final FrameLayout frameLayout = activity.getWindow().getDecorView().findViewById(android
+                .R.id.content);
         View rootView = frameLayout.getChildAt(0);
 
         setParentWidth(this, rootView, screenWidth - defaultConfig.defaultWidth, screenHeight -
                         defaultConfig.defaultHeight,
                 screenWidth, screenHeight, false, true);
-
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) frameLayout
-                .getLayoutParams();
-        layoutParams.leftMargin = 0;
-        layoutParams.topMargin = 0;
-        frameLayout.setLayoutParams(layoutParams);
 
         updateUIPropertys(false);
         if (menuGroupPresenter != null) {
@@ -720,7 +714,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     public boolean onBackPressed() {
         if (!defaultConfig.startIsFullScreen) {
-            if (isFullScreen()) {
+            if (defaultConfig.isFullScreen) {
                 ExitFullScreen();
             }
         } else {
@@ -747,7 +741,22 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             maxWidth, int maxHeight, boolean bringFront, boolean isExit) {
         if (view.getParent() != null && view.getParent() instanceof ViewGroup) {
             ViewGroup viewGroup = (ViewGroup) view.getParent();
-
+            if (viewGroup.getId() == android.R.id.content){
+                if(isExit){
+                    //退出全屏，将根布局margin值恢复正常
+                    MarginLayoutParams layoutParams = (MarginLayoutParams) viewGroup.getLayoutParams();
+                    layoutParams.leftMargin = 0;
+                    layoutParams.topMargin = 0;
+                    viewGroup.setLayoutParams(layoutParams);
+                }else{
+                    if (mPlayerLocation != null) {
+                        mPlayerLocation.destroy();
+                        mPlayerLocation = null;
+                    }
+                    mPlayerLocation = PlayerLocation.build(this, bringFront);
+                }
+                return;
+            }
             if (bringFront) {
                 view.bringToFront();
             }
@@ -767,7 +776,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         changeHeight);
             }
             viewGroup.setLayoutParams(layoutParams);
-            if (viewGroup == rootView) return;
+
             setParentWidth(viewGroup, rootView, changeWidth, changeHeight, maxWidth, maxHeight,
                     bringFront, isExit);
         }
@@ -793,11 +802,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         defaultConfig.defaultWidth = getMeasuredWidth();
         defaultConfig.defaultHeight = getMeasuredHeight();
 
-        if (mPlayerLocation != null) {
-            mPlayerLocation.destroy();
-            mPlayerLocation = null;
-        }
-
         final int screenWidth = activity.getWindow().getDecorView().getMeasuredWidth();
         final int screenHeight = activity.getWindow().getDecorView().getMeasuredHeight();
 
@@ -814,8 +818,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         container.height = screenHeight;
         setLayoutParams(container);
 
-        mPlayerLocation = PlayerLocation.build(this, bringFront);
-
         defaultConfig.ProgramIsChange = false;
 
         createMenuGroup();
@@ -828,7 +830,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         updateUIPropertys(true);
-
     }
 
     private void createMenuGroup() {
@@ -954,12 +955,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         if (alterChannel != null) {
-            alterChannel.setText(defaultConfig.useAlternateUI?String.format("%s %s", channelId,
-                    title):"");
+            alterChannel.setText(defaultConfig.useAlternateUI ? String.format("%s %s", channelId,
+                    title) : "");
         }
 
         if (alterTitle != null) {
-            alterTitle.setText(defaultConfig.useAlternateUI?"正在准备轮播数据...":"");
+            alterTitle.setText(defaultConfig.useAlternateUI ? "正在准备轮播数据..." : "");
         }
         setCurrentVideoState(PlayerContract.STATE_NORMAL);
         updatePlayStatus(PLAY_TYPE_ALTERNATE, 0, 0);
@@ -1569,11 +1570,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (isFullScreen()) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                    if (onBackPressed()) {
-                        return true;
-                    }
-                }
+//                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+//                    if (onBackPressed()) {
+//                        return true;
+//                    }
+//                }
                 if (NewTVLauncherPlayerViewManager.getInstance().onKeyUp(event.getKeyCode(),
                         event)) {
                     return true;
@@ -1925,7 +1926,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             buyGoodsBusiness.getAd();
         }
 
-        if (videoDataStruct.isTrySee()) {
+        if (videoDataStruct.isTrySee() && !defaultConfig.isAlternate) {
             isTrySee = true;
             hintVip.setVisibility(View.VISIBLE);
             String freeDuration = videoDataStruct.getFreeDuration();
@@ -2106,9 +2107,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (mAlternatePresenter != null && mAlternatePresenter
                 .getCurrentAlternate() != null) {
             if (alterTitle != null) {
-                alterTitle.setText(defaultConfig.useAlternateUI?String.format(Locale.getDefault(),
+                alterTitle.setText(defaultConfig.useAlternateUI ? String.format(Locale.getDefault(),
                         "即将播放 %s",
-                        mAlternatePresenter.getCurrentAlternate().getTitle()):"");
+                        mAlternatePresenter.getCurrentAlternate().getTitle()) : "");
             }
             if (defaultConfig.isFullScreen) {
                 if (mNewTvAlterChange != null) {
@@ -2136,8 +2137,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (!defaultConfig.isFullScreen) {
                 alterTitle.setVisibility(VISIBLE);
             }
-            alterTitle.setText(defaultConfig.useAlternateUI?mAlternatePresenter
-                    .getCurrentAlternate().getTitle():"");
+            alterTitle.setText(defaultConfig.useAlternateUI ? mAlternatePresenter
+                    .getCurrentAlternate().getTitle() : "");
         }
 
         defaultConfig.isFirstAlternate = isFirst;

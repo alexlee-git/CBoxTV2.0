@@ -238,7 +238,6 @@ public class UserCenterPageBean {
             this.contentId = contentId;
         }
 
-
         public String getRecentMsg() {
             return recentMsg;
         }
@@ -246,6 +245,7 @@ public class UserCenterPageBean {
         public void setRecentMsg(String recentMsg) {
             this.recentMsg = recentMsg;
         }
+
         @Override
         public String toString() {
             return "Bean{" +
@@ -270,8 +270,10 @@ public class UserCenterPageBean {
                     ", duration='" + duration + '\'' +
                     ", programChildName='" + programChildName + '\'' +
                     ", contentId='" + contentId + '\'' +
+                    ", recentMsg='" + recentMsg + '\'' +
                     '}';
-
         }
+
+
     }
 }
