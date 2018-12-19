@@ -76,6 +76,7 @@ public final class DBConfig {
     public static final String V_IMAGE = "v_image";
     public static final String H_IMAGE = "h_image";
     public static final String VIP_FLAG = "vip_flag";//付费标识
+    public static final String RECENT_MSG = "_recent_msg";//更新剧集角标文本
     public static final String ALTERNATE_NUMBER = "alternate_number";
 
     static final String CREATE_LB_COLLECT_TABLE_SQL =
@@ -90,10 +91,11 @@ public final class DBConfig {
                     SUB_TITLE + " varchar2(1000)," +
                     UPDATE_TIME + " long," +
                     USERID + " varchar2(1000)," +
-                    V_IMAGE + " varchar2(1000)," +
+                    IMAGEURL + " varchar2(1000)," +
                     H_IMAGE + " varchar2(1000)," +
                     VIP_FLAG + " varchar2(1000)," +
                     CONTENTTYPE + " varchar2(1000)," +
+                    ACTIONTYPE + " varchar2(1000)," +
                     ALTERNATE_NUMBER + " varchar2(1000)" +
                     ")";
 
@@ -113,6 +115,7 @@ public final class DBConfig {
                     VIDEO_TYPE + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
+                    RECENT_MSG + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 
@@ -132,6 +135,7 @@ public final class DBConfig {
                     VIDEO_TYPE + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
+                    RECENT_MSG + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 
@@ -173,6 +177,7 @@ public final class DBConfig {
                     UPDATE_TIME + " long," +
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
+                    RECENT_MSG + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)," +
                     VIDEO_TYPE + " varchar2(1000)," +
                     PLAYINDEX + " varchar2(1000)" +
@@ -192,6 +197,7 @@ public final class DBConfig {
                     UPDATE_TIME + " long," +
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
+                    RECENT_MSG + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)," +
                     VIDEO_TYPE + " varchar2(1000)," +
                     PLAYINDEX + " varchar2(1000)" +
@@ -217,6 +223,7 @@ public final class DBConfig {
                     PLAYID + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
+                    RECENT_MSG + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 
@@ -240,6 +247,7 @@ public final class DBConfig {
                     PLAYID + " varchar2(1000)," +
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
+                    RECENT_MSG + " varchar2(1000)," +
                     UPDATE_SUPERSCRIPT + " varchar2(1000)" +
                     ")";
 }

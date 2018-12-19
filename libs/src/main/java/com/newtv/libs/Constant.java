@@ -158,6 +158,7 @@ public class Constant {
     public static final int LOG_NODE_DETAIL_SUGGESt = 16;               // 详情推荐
     public static final int LOG_NODE_SPECIAL = 17;               // 专题
     public static final int LOG_NODE_HISTORY = 15;               // 历史记录
+    public static final int LOG_NODE_FILTER = 14;               // 筛选
     public static final int LOG_NODE_RECOMMEND = 18;               // 推荐位
     public static final int LOG_NODE_COLLECT = 5;               // 收藏
     public static final int LOG_NODE_SUBSCRIP = 21;               // 订阅

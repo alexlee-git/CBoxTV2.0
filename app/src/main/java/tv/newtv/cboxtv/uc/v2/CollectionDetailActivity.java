@@ -14,6 +14,7 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.sub.CollectionLiveFragment;
 import tv.newtv.cboxtv.uc.v2.sub.CollectionProgramSetFragment;
 import tv.newtv.cboxtv.uc.v2.sub.CollectionTopicFragment;
 
@@ -29,11 +30,11 @@ public class CollectionDetailActivity extends BaseUCDetailActivity<UserCenterPag
 
     private static final String TAG = "user2nd";
     private final String TAB_JIE_MU_JI = "节目集";
-    private final String TAB_ZHUAN_TI = "专题";
+    private final String TAB_ZHUAN_TI = "轮播";
 
     @Override
     protected String[] getTabList() {
-        return new String[]{/*"节目集", "专题"*/};
+        return new String[]{"节目集", "轮播"};
     }
 
     @Override
@@ -75,7 +76,7 @@ public class CollectionDetailActivity extends BaseUCDetailActivity<UserCenterPag
         if (title.equals(TAB_JIE_MU_JI)) {
             clz = CollectionProgramSetFragment.class;
         } else if (title.equals(TAB_ZHUAN_TI)) {
-            clz = CollectionTopicFragment.class;
+            clz = CollectionLiveFragment.class;
         }
 
         if (clz != null) {

@@ -78,7 +78,7 @@ class DataHelper extends SQLiteOpenHelper {
             String[] params = new String[]{DBConfig.SUPERSCRIPT, DBConfig.PLAYINDEX,
                     DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
                     DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT,
-                    DBConfig.PLAYID, DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT};
+                    DBConfig.PLAYID, DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG};
 
             String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
             for (String table : tables) {
@@ -93,6 +93,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
 
@@ -106,7 +107,7 @@ class DataHelper extends SQLiteOpenHelper {
             String[] params = new String[]{DBConfig.UPDATE_TIME, DBConfig.SUPERSCRIPT,
                     DBConfig.PLAYINDEX, DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
                     DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT, DBConfig.PLAYID,
-                    DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT};
+                    DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG};
 
             String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
             for (String table : tables) {
@@ -122,6 +123,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
 
@@ -159,6 +161,15 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+
+
+            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
         }
 
         /**
@@ -177,7 +188,7 @@ class DataHelper extends SQLiteOpenHelper {
             String[] params = new String[]{DBConfig.SUPERSCRIPT, DBConfig.PLAYINDEX,
                     DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
                     DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT,
-                    DBConfig.PLAYID, DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT};
+                    DBConfig.PLAYID, DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG};
 
             String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
             for (String table : tables) {
@@ -192,6 +203,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
@@ -212,7 +224,7 @@ class DataHelper extends SQLiteOpenHelper {
             String[] params = new String[]{DBConfig.UPDATE_TIME, DBConfig.SUPERSCRIPT,
                     DBConfig.PLAYINDEX, DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
                     DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT, DBConfig.PLAYID,
-                    DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT};
+                    DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG};
 
             String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
             for (String table : tables) {
@@ -227,6 +239,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");

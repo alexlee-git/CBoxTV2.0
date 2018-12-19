@@ -54,9 +54,6 @@ public class AlternateActivity extends DetailPageActivity implements
     public void prepareMediaPlayer() {
         super.prepareMediaPlayer();
 
-        if (headerView != null) {
-            headerView.prepareMediaPlayer();
-        }
     }
 
     @Override

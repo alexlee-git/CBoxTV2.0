@@ -482,6 +482,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                                 mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(0).getGrade());
+                                mProgramInfo.setRecentMsg(programInfoList.get(0).getRecentMsg());
 //                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                                 mPromotionRecommendBean.add(mProgramInfo);
                             }
@@ -503,6 +504,8 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                             mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
                             mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
                             mProgramInfo.setGrade(programInfoList.get(0).getGrade());
+                            mProgramInfo.setRecentMsg(programInfoList.get(0).getRecentMsg());
+//
 //                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
                             mInterestsRecommendBean.add(mProgramInfo);
                         } else {
@@ -525,6 +528,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                                 mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
                                 mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
                                 mProgramInfo.setGrade(programInfoList.get(j).getGrade());
+                                mProgramInfo.setRecentMsg(programInfoList.get(j).getRecentMsg());
 //                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
                                 mDramaRecommendBean.add(mProgramInfo);
                             }

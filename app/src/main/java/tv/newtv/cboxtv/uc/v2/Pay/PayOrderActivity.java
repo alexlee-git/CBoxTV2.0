@@ -128,6 +128,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private long orders[];
     private boolean mIfContinued; //是否是连续包月
     private String message;
+    private int type = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,6 +182,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                     public void accept(Long aLong) throws Exception {
                         if (mProductPricesInfo == null) {
                             position = 0;
+                            type = 0;
                             isBuyOnly = true;
                             if (mVipProductId == null) {
                                 Toast.makeText(PayOrderActivity.this, "产品ID不能为空", Toast.LENGTH_LONG).show();
@@ -193,6 +195,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                         } else {
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
                             isBuyOnly = false;
+                            type = 1;
                             if (mHandler != null) {
                                 mHandler.sendEmptyMessage(MSG_SETMESSAGE);
                             }
@@ -971,8 +974,6 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
             NetClient.INSTANCE.getUserCenterMemberInfoApi()
                     .getMemberInfo("Bearer " + mToken, "",
                             Libs.get().getAppKey(), mContentUUID)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new BaseObserver<ResponseBody>() {
 
                         @Override
@@ -1038,12 +1039,12 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private void uploadUnPayLog(int action) {
 
         StringBuilder dataBuff = new StringBuilder(32);
-        dataBuff.append(1 + ",")
+        dataBuff.append(type + ",")
                 .append(action + ",")
                 .append(mVipProductId + ",")
                 .append(price + ",")
                 .append(payChannelId + ",")
-                .append(orderId)
+                .append(code)
                 .trimToSize();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_PAY, dataBuff.toString());
