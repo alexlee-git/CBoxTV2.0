@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.menu.model;
 
 public class LastNode extends Node {
     public String contentId;
+    public String actionType;
     public String isFinish;
     public String realExclusive;
     public String issuedate;
@@ -20,6 +21,11 @@ public class LastNode extends Node {
     @Override
     public String getId() {
         return contentId;
+    }
+
+    @Override
+    public String getActionType() {
+        return actionType;
     }
 
     @Override

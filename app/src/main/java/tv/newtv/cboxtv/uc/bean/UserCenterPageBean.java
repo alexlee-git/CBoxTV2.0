@@ -238,12 +238,40 @@ public class UserCenterPageBean {
             this.contentId = contentId;
         }
 
+<<<<<<< Updated upstream
         public String getRecentMsg() {
             return recentMsg;
         }
 
         public void setRecentMsg(String recentMsg) {
             this.recentMsg = recentMsg;
+=======
+        @Override
+        public String toString() {
+            return "Bean{" +
+                    "_contentuuid='" + _contentuuid + '\'' +
+                    ", _contenttype='" + _contenttype + '\'' +
+                    ", _actiontype='" + _actiontype + '\'' +
+                    ", _imageurl='" + _imageurl + '\'' +
+                    ", _title_name='" + _title_name + '\'' +
+                    ", superscript='" + superscript + '\'' +
+                    ", is_program='" + is_program + '\'' +
+                    ", progress='" + progress + '\'' +
+                    ", playIndex='" + playIndex + '\'' +
+                    ", episode_num='" + episode_num + '\'' +
+                    ", grade='" + grade + '\'' +
+                    ", updateTime=" + updateTime +
+                    ", playPosition='" + playPosition + '\'' +
+                    ", user_id='" + user_id + '\'' +
+                    ", totalCnt='" + totalCnt + '\'' +
+                    ", playId='" + playId + '\'' +
+                    ", videoType='" + videoType + '\'' +
+                    ", isUpdate='" + isUpdate + '\'' +
+                    ", duration='" + duration + '\'' +
+                    ", programChildName='" + programChildName + '\'' +
+                    ", contentId='" + contentId + '\'' +
+                    '}';
+>>>>>>> Stashed changes
         }
     }
 }
