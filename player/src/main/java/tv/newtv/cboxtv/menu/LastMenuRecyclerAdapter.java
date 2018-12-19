@@ -25,6 +25,7 @@ import java.util.List;
 import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
+import tv.newtv.cboxtv.player.vip.VipCheck;
 import tv.newtv.player.R;
 
 /**
@@ -133,6 +134,11 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             LbHolder lbHolder = (LbHolder) holder;
             lbHolder.title.setText(program.getTitle());
             lbHolder.time.setText(getTime(program.getStartTime(),program.getDuration()));
+            if(VipCheck.isPay(program.getVipFlag())){
+                lbHolder.vip.setVisibility(View.VISIBLE);
+            }else {
+                lbHolder.vip.setVisibility(View.GONE);
+            }
             if(isCurrentPlay(program)){
                 lbHolder.playing.setVisibility(View.VISIBLE);
             } else {
@@ -383,7 +389,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     private String getTime(String startTime,String duration){
         StringBuilder sb = new StringBuilder();
         Calendar calendar = Calendar.getInstance();
-        Calendar after = (Calendar) calendar.clone();
+        Calendar after = null;
         if(format == null){
             format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
         }
@@ -393,6 +399,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         try {
             Date parse = format.parse(startTime);
             calendar.setTime(parse);
+            after = (Calendar) calendar.clone();
             after.add(Calendar.SECOND,Integer.parseInt(duration));
 
             sb.append(targetFormat.format(calendar.getTime()));

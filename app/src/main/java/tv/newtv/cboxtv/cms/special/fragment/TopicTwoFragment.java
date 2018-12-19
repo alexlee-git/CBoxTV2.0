@@ -52,7 +52,6 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private TextView title_direction;
     private FrameLayout video_player_rl;
     private FrameLayout frame_container;
-    private View focusView;
     private TextView videoTitle;
     private ImageView full_screen;
     private popupMenuWidget mPopupMenuWidget;
@@ -71,6 +70,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private int mToPosition;
     private Observable<Boolean> isHaveAdObservable;
     private boolean isHaveAD = false;
+    private int focusPosition;
+    private View focusView;
     public static boolean isBottom(AiyaRecyclerView recyclerView) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
@@ -92,17 +93,17 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         super.onResume();
 
         /* 界面还原回来时候，重新注册控件 */
-        if (videoPlayerView != null && mPopupMenuWidget != null) {
-            widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
-        }
+//        if (videoPlayerView != null && mPopupMenuWidget != null) {
+//            widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
+//        }
     }
 
     @Override
     public void onStop() {
         /* 销毁播放器的时候将注册的控件消除 */
-        if (videoPlayerView != null) {
-            videoPlayerView.unregisterWidget(widgetId);
-        }
+//        if (videoPlayerView != null) {
+//            videoPlayerView.unregisterWidget(widgetId);
+//        }
         super.onStop();
     }
 
@@ -148,18 +149,18 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.outerControl();
         setVideoPlayerVisibility();
-        mPopupMenuWidget = new popupMenuWidget(view.getContext().getApplicationContext(),
-                news_recycle, Gravity.LEFT, new popupMenuWidget.IPopupWidget() {
-            @Override
-            public KeyAction[] getRegisterKeyActions() {
-                return new KeyAction[]{
-                        new KeyAction(KeyEvent.KEYCODE_MENU, KeyEvent.ACTION_DOWN),
-                        new KeyAction(KeyEvent.KEYCODE_DPAD_UP, KeyEvent.ACTION_DOWN),
-                        new KeyAction(KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.ACTION_DOWN),
-                };
-            }
-        });
-        widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
+//        mPopupMenuWidget = new popupMenuWidget(view.getContext().getApplicationContext(),
+//                news_recycle, Gravity.LEFT, new popupMenuWidget.IPopupWidget() {
+//            @Override
+//            public KeyAction[] getRegisterKeyActions() {
+//                return new KeyAction[]{
+//                        new KeyAction(KeyEvent.KEYCODE_MENU, KeyEvent.ACTION_DOWN),
+//                        new KeyAction(KeyEvent.KEYCODE_DPAD_UP, KeyEvent.ACTION_DOWN),
+//                        new KeyAction(KeyEvent.KEYCODE_DPAD_DOWN, KeyEvent.ACTION_DOWN),
+//                };
+//            }
+//        });
+//        widgetId = videoPlayerView.registerWidget(widgetId, mPopupMenuWidget);
         video_player_rl = view.findViewById(R.id.video_player_rl);
         videoTitle = view.findViewById(R.id.videoTitle);
         full_screen = view.findViewById(R.id.full_screen);
@@ -385,6 +386,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     public boolean dispatchKeyEvent(KeyEvent event) {
 
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            View focusView = null;
             if (getContentView() != null) {
                 focusView = getContentView().findFocus();
             }
@@ -409,7 +411,17 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 if (focusView instanceof VideoPlayerView) {
-                    news_recycle.getDefaultFocusView().requestFocus();
+                    if(isPositionShow(news_recycle,focusPosition)){
+                        news_recycle.getDefaultFocusView().requestFocus();
+                    } else {
+                        news_recycle.scrollToPosition(focusPosition);
+                        MainLooper.get().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getFocusView().requestFocus();
+                            }
+                        },100);
+                    }
                     videoTitle.setVisibility(View.GONE);
                     full_screen.setVisibility(View.GONE);
                 }
@@ -417,6 +429,10 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    public View getFocusView() {
+        return focusView;
     }
 
     @Override
@@ -537,7 +553,9 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
         @Override
         public void onBindViewHolder(final NewsViewHolder holder, final int position) {
-
+            if(focusPosition == position){
+                focusView = holder.itemView;
+            }
 
             final Program moduleItem = getItem(position);
             setImageView(holder.isPlaying);
@@ -554,6 +572,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 public void onFocusChange(View view, boolean hasFocus) {
 
                     if (hasFocus) {
+                        TopicTwoFragment.this.focusPosition = position;
 
 //                        if (isBottom(news_recycle)) {
 //                            down_arrow.setVisibility(View.VISIBLE);
@@ -708,4 +727,17 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
         }
     }
 
+    private boolean isPositionShow(RecyclerView recyclerView, int position) {
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof LinearLayoutManager) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            int firstVisibleItemPosition = linearLayoutManager.findFirstVisibleItemPosition();
+            int lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
+
+            if (firstVisibleItemPosition <= position && position <= lastVisibleItemPosition) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

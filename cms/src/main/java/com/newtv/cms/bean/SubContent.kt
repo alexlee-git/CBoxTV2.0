@@ -25,6 +25,7 @@ open class SubContent : Serializable {
     var contentType: String? = null //内容类型
     var vipFlag: String? = null //付费类型
     var recentNum: String? = null //节目集最新集号（非节目集该字段为空）最新集号（用于电视剧，动漫显示更新至**集）
+    var recentMsg:String? = null //后台拼接好的更新集数  更新集数使用此字段
     var isFinish: String? = null // 是否更新完（非节目集该字段为空）0：非；1：是
     var drm: String? = null //是否付费 腾讯内容专用： 0不付费 1普通付费 2drm付费
     var isPlay: Boolean? = false //是否是正在播放的数据
@@ -33,5 +34,6 @@ open class SubContent : Serializable {
     val issuedate:String? = null
     val lastPublishDate:String? = null
     var year:String? = null //视频最近更新日期
+    var realExclusive:String? = null
 
 }

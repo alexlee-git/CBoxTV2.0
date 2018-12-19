@@ -41,6 +41,31 @@
         android:textColor="#ffffff"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true" />
+
+    <!-- 剧集更新标题-->
+    <TextView
+        android:id="@+id/label_num"
+        style="@style/ModulePosterProgramUpdateTitleStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_30px"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/width_39px"
+        android:layout_marginTop="@dimen/height_360px"
+        android:background="#99000000"
+        android:includeFontPadding="false"
+        android:visibility="invisible"/>
+    <!--评分-->
+    <TextView
+        android:id="@+id/label_grade"
+        style="@style/ModulePosterScoreTitleStyle"
+        android:layout_width="@dimen/width_40px"
+        android:layout_height="@dimen/height_30px"
+        android:layout_marginLeft="@dimen/width_220px"
+        android:layout_marginTop="@dimen/height_350px"
+        android:background="#99000000"
+        android:includeFontPadding="false"
+        android:visibility="invisible" />
+
 </FrameLayout>
 
 

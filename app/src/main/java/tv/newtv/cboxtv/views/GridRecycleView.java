@@ -56,7 +56,7 @@ public class GridRecycleView extends RecyclerView {
             mTypeArray.recycle();
         }
 
-        setPadding(getPaddingLeft(), getPaddingTop() + mTop, getPaddingRight(), getPaddingBottom
+        setPadding(getPaddingLeft(), getPaddingTop() + mTop * 2, getPaddingRight(), getPaddingBottom
                 () + mBottom);
 
         mLayoutManager = new GridLayoutManager(context, spanCount);
@@ -65,10 +65,7 @@ public class GridRecycleView extends RecyclerView {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView
                     .State state) {
-                int index = parent.getChildLayoutPosition(view);
-                if (index < spanCount) {
-                    outRect.top = mTop;
-                }
+                outRect.top = 0;
                 outRect.left = 0;
                 outRect.right = 0;
                 outRect.bottom = mBottom;

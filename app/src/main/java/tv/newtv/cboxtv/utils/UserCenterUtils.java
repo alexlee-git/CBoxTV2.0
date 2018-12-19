@@ -63,7 +63,7 @@ public class UserCenterUtils {
     }
 
     public static void initMemberStatus() {
-        getMemberStatus("", new INotifyMemberStatusCallback() {
+        getMemberStatus("",null ,new INotifyMemberStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(String status, Bundle memberBundle) {
                 UserStatus.setMemberSatus(status);
@@ -77,8 +77,8 @@ public class UserCenterUtils {
     }
 
     //会员状态
-    public static void getMemberStatus(String UUid, INotifyMemberStatusCallback callBack) {
-        QueryUserStatusUtil.getInstance().getMemberStatus(LauncherApplication.AppContext, UUid, callBack);
+    public static void getMemberStatus(String UUid,String vipId, INotifyMemberStatusCallback callBack) {
+        QueryUserStatusUtil.getInstance().getMemberStatus(LauncherApplication.AppContext, UUid,vipId, callBack);
     }
 
     public static void getHistoryState(final String field, final String value, final String order, IHisoryStatusCallback callack) {

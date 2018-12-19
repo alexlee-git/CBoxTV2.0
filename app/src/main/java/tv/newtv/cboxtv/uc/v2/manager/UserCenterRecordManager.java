@@ -3,10 +3,14 @@ package tv.newtv.cboxtv.uc.v2.manager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -18,6 +22,7 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.db.SqlCondition;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.newtv.libs.util.SystemUtils;
 
@@ -35,6 +40,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
@@ -73,7 +79,7 @@ public class UserCenterRecordManager {
     private final int SYNC_SWITCH_OFF = 1; // 数据无需同步
 
     public static final String REQUEST_RECORD_OFFSET = "1";
-    public static final String REQUEST_RECORD_LIMIT = "300";
+    public static final String REQUEST_RECORD_LIMIT = "100";
 
     // private String tableName;
     private final String TAG = "UserCenterRecordManager";
@@ -527,7 +533,7 @@ public class UserCenterRecordManager {
     /**
      * 批量插入数据至数据库
      */
-    public void addCollectToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addCollectToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -548,6 +554,7 @@ public class UserCenterRecordManager {
                             info.setRecentNum(bean.getEpisode_num());
                             info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
+                            info.setRecentMsg(bean.getRecentMsg());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             DBUtil.PutCollect(userId, info, bundle, callback, tableName);
@@ -561,7 +568,7 @@ public class UserCenterRecordManager {
         }
     }
 
-    public void addSubscribeToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addSubscribeToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -582,6 +589,7 @@ public class UserCenterRecordManager {
                             info.setRecentNum(bean.getEpisode_num());
                             info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
+                            info.setRecentMsg(bean.getRecentMsg());
                             // info.setrSuperScript(bean.getSuperscript());
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
@@ -596,7 +604,7 @@ public class UserCenterRecordManager {
         }
     }
 
-    public void addFollowToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addFollowToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -612,6 +620,7 @@ public class UserCenterRecordManager {
                             info.setContentType(bean.get_contenttype());
                             info.setVImage(bean.get_imageurl());
                             info.setTitle(bean.get_title_name());
+                            info.setRecentMsg(bean.getRecentMsg());
                             // info.setrSubScript(bean.getSuperscript());
                             info.setGrade(bean.getGrade());
                             Bundle bundle = new Bundle();
@@ -627,7 +636,7 @@ public class UserCenterRecordManager {
         }
     }
 
-    public void addHistoryToDataBase(String userId, List<UserCenterPageBean.Bean> list, DBCallback<String> callback, String tableName) {
+    public void addHistoryToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
         try {
             if (list != null) {
                 DBUtil.clearTableAll(tableName, new DBCallback<String>() {
@@ -648,6 +657,7 @@ public class UserCenterRecordManager {
                             info.setRecentNum(bean.getEpisode_num());
                             info.setSeriesSum(bean.getTotalCnt());
                             info.setVideoType(bean.getVideoType());
+                            info.setRecentMsg(bean.getRecentMsg());
                             if (TextUtils.isEmpty(bean.getPlayId())) {
                                 List<SubContent> programsInfos = new ArrayList<>(Constant.BUFFER_SIZE_4);
                                 SubContent item = new SubContent();
@@ -874,18 +884,18 @@ public class UserCenterRecordManager {
      */
     public void synchronizationUserBehavior(final Context context) {
         //订阅数据表表名
-        String tableNameSubscribe = DBConfig.SUBSCRIBE_TABLE_NAME;
+        final String tableNameSubscribe = DBConfig.SUBSCRIBE_TABLE_NAME;
         //收藏数据表表名
-        String tableNameCollect = DBConfig.COLLECT_TABLE_NAME;
+        final String tableNameCollect = DBConfig.COLLECT_TABLE_NAME;
         //历史记录数据表表名
-        String tableNameHistory = DBConfig.HISTORY_TABLE_NAME;
+        final String tableNameHistory = DBConfig.HISTORY_TABLE_NAME;
         //关注数据表表名
-        String TableNameAttention = DBConfig.ATTENTION_TABLE_NAME;
+        final String TableNameAttention = DBConfig.ATTENTION_TABLE_NAME;
         QueryUserStatusUtil.getInstance().getLoginStatus(context, new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
                 if (status) {
-                    String token = SharePreferenceUtils.getToken(context);
+                    final String token = SharePreferenceUtils.getToken(context);
                     final String userId = SharePreferenceUtils.getUserId(context);
                     if (!TextUtils.isEmpty(token)) {
                         queryDataBase(tableNameHistory, new DBCallback<String>() {
@@ -1447,6 +1457,30 @@ public class UserCenterRecordManager {
         return result;
     }
 
+    public SpannableStringBuilder getSpannableRecentMsg(String recentMsg) {
+        try {
+            if (TextUtils.isEmpty(recentMsg) || TextUtils.equals(recentMsg, "null")) {
+                return null;
+            }
+            SpannableStringBuilder mStrMsg = new SpannableStringBuilder(recentMsg);
+            if (recentMsg.length() > 4 && recentMsg.contains
+                    (LauncherApplication.AppContext.getResources().getString(R.string.user_poster_program_update_title_left_being))) {
+                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), 0, 4, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                mStrMsg.setSpan(new ForegroundColorSpan(Color.parseColor("#FFF5A623")), 3, recentMsg.length() - 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), recentMsg.length() - 1, recentMsg.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            } else {
+                mStrMsg.setSpan(new ForegroundColorSpan(Color.parseColor("#FFF5A623")), 0, recentMsg.length() - 2, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), recentMsg.length() - 2, recentMsg.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            }
+            return mStrMsg;
+        } catch (Exception e) {
+            Log.e(TAG, "wqs:getSpannableRecentMsg:Exception:" + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
     /**
      * 获取用户数据接口函数
      *
@@ -1494,11 +1528,13 @@ public class UserCenterRecordManager {
 
         Log.d(TAG, "tableName : " + tableName + ", userId : " + userId);
 
-        DataSupport.search(tableName)
+        SqlCondition sqlCondition = DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.USERID, userId)
-                .OrderBy(DBConfig.ORDER_BY_TIME)
-                .build()
-                .withCallback(dbCallback).excute();
+                .OrderBy(DBConfig.ORDER_BY_TIME);
+        if(TextUtils.equals(type,"history")){
+            sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
+        }
+        sqlCondition.build().withCallback(dbCallback).excute();
     }
 }

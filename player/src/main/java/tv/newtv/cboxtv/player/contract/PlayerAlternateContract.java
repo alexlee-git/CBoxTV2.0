@@ -2,8 +2,8 @@ package tv.newtv.cboxtv.player.contract;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.TimeUtils;
 
+import com.newtv.cms.AlternateRefresh;
 import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.DataObserver;
@@ -24,11 +24,8 @@ import com.newtv.libs.util.LogUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -50,8 +47,10 @@ public class PlayerAlternateContract {
     public interface View extends ICmsView {
         void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String title,
                                String channelId);
-        void onAlternateTimeChange(String current,String end);
-        void onAlterItemResult(String contentId, Content content, boolean isLive,boolean isFirst);
+
+        void onAlternateTimeChange(String current, String end);
+
+        void onAlterItemResult(String contentId, Content content, boolean isLive, boolean isFirst);
 
         void onAlternateError(String code, String desc);
     }
@@ -81,7 +80,7 @@ public class PlayerAlternateContract {
     }
 
     public static class AlternatePresenter extends CmsServicePresenter<View> implements
-            Presenter, ContentContract.View {
+            Presenter, ContentContract.View, AlternateRefresh.AlternateCallback {
 
         private static final String TAG = "AlternatePresenter";
         private String currentAlternateId;                  //当前轮播台ID
@@ -108,11 +107,14 @@ public class PlayerAlternateContract {
 
         private Observable<Long> observable;
 
+        private AlternateRefresh mAlternateRefresh;
+
         public AlternatePresenter(@NotNull Context context, @Nullable View view) {
             super(context, view);
             mAlternate = getService(SERVICE_ALTERNATE);
             mContent = new ContentContract.ContentPresenter(getContext(), this);
             observable = Observable.interval(1000, TimeUnit.MILLISECONDS);
+            mAlternateRefresh = new AlternateRefresh(context, this);
         }
 
         public boolean equalsAlternate(String id) {
@@ -135,6 +137,10 @@ public class PlayerAlternateContract {
             if (mContent != null) {
                 mContent.destroy();
                 mContent = null;
+            }
+            if(mAlternateRefresh != null){
+                mAlternateRefresh.detach();
+                mAlternateRefresh = null;
             }
             dispose();
             mAlternates = null;
@@ -201,11 +207,6 @@ public class PlayerAlternateContract {
             currrentChannel = channelId;
 
             isFirstChangeAlternate = true;
-//            mAlternates = Cache.getInstance().get(Cache.CACHE_TYPE_ALTERNATE, alternateId);
-//            if (mAlternates != null) {
-//                parseAlternate(title, channelId);
-//                return;
-//            }
             if (mAlternate != null) {
                 requestID = mAlternate.getTodayAlternate(Libs.get().getAppKey(), Libs.get()
                                 .getChannelId(),
@@ -214,15 +215,14 @@ public class PlayerAlternateContract {
                             public void onResult(ModelResult<List<Alternate>> result, long
                                     requestCode) {
                                 if (result.isOk()) {
+                                    mAlternateRefresh.attach(currentAlternateId);
                                     mAlternates = result.getData();
-//                                    Cache.getInstance().put(Cache.CACHE_TYPE_ALTERNATE,
-//                                            alternateId, mAlternates);
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
                                         getView().onError(getContext(), result.getErrorCode(),
                                                 result
-                                                .getErrorMessage());
+                                                        .getErrorMessage());
                                 }
                             }
 
@@ -268,7 +268,7 @@ public class PlayerAlternateContract {
                                 LogUtils.d(TAG, "[Alternate time=" + currentTime +
                                         " " + "endTime=" + endFormatTime + "]");
 
-                                if(getView() != null) {
+                                if (getView() != null) {
                                     getView().onAlternateTimeChange(currentTime, endFormatTime);
                                 }
 
@@ -308,12 +308,14 @@ public class PlayerAlternateContract {
                     }
                 } else {
                     if (getView() != null)
-                        getView().onError(getContext(), CmsErrorCode.ALTERNATE_ERROR_NOT_FOUND_TOPLAY,
+                        getView().onError(getContext(), CmsErrorCode
+                                        .ALTERNATE_ERROR_NOT_FOUND_TOPLAY,
                                 "当前没有可以播放的节目");
                 }
             } else {
                 if (getView() != null)
-                    getView().onError(getContext(), CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY, "当前没有可以播放的节目");
+                    getView().onError(getContext(), CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY,
+                            "当前没有可以播放的节目");
             }
         }
 
@@ -348,7 +350,7 @@ public class PlayerAlternateContract {
                         }
                     }
                     if (getView() != null) {
-                        getView().onAlterItemResult(uuid, content, isLive,isFirstChangeAlternate);
+                        getView().onAlterItemResult(uuid, content, isLive, isFirstChangeAlternate);
                     }
 
 
@@ -371,6 +373,18 @@ public class PlayerAlternateContract {
         public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
             if (getView() != null)
                 getView().onAlternateError(code, desc);
+        }
+
+        @Override
+        public void onChange(@NotNull String id, @NotNull Alternate title) {
+
+        }
+
+        @Override
+        public void onError(@NotNull String id, @Nullable String code, @Nullable String desc) {
+            if (TextUtils.equals(currentAlternateId, id)) {
+                onError(getContext(), code, desc);
+            }
         }
     }
 }

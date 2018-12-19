@@ -68,6 +68,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"600001\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
         }
     }
     sourceSets {
@@ -288,8 +289,8 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    compile 'com.tencent.bugly:crashreport:2.6.6'
-    compile 'com.tencent.bugly:nativecrashreport:3.3.1'
+    compile 'com.tencent.bugly:crashreport:2.8.6'
+    compile 'com.tencent.bugly:nativecrashreport:3.6.0'
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

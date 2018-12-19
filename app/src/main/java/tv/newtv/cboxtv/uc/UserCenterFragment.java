@@ -365,7 +365,7 @@ public class UserCenterFragment extends BaseFragment implements
                 @Override
                 public void dealwithUserOffline() {
                     Log.i(TAG, "dealwithUserOffline: ");
-                    ToastUtil.showToast(getActivity(),R.string.user_offline_becauce_login_on_mutiple_teminal);
+                    ToastUtil.showToast(getActivity(), R.string.user_offline_becauce_login_on_mutiple_teminal);
 //                    requestUserInfo();
                 }
 
@@ -536,6 +536,7 @@ public class UserCenterFragment extends BaseFragment implements
                         mProgramInfo.set_imageurl(programInfoList.get(i).getImg());
                         mProgramInfo.set_actiontype(programInfoList.get(i).getL_actionType());
                         mProgramInfo.setGrade(programInfoList.get(i).getGrade());
+                        mProgramInfo.setRecentMsg(programInfoList.get(i).getRecentMsg());
                         mRecommendBean.add(mProgramInfo);
                     }
                 } else {

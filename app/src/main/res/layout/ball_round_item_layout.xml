@@ -10,6 +10,6 @@
         android:focusable="true"
         android:id="@+id/round_ball_poster"
         android:layout_width="@dimen/width_1448px"
-        android:layout_height="@dimen/height_352px"
+        android:layout_height="@dimen/height_353px"
         android:scaleType="fitXY"/>
 </RelativeLayout>

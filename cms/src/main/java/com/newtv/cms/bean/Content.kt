@@ -32,6 +32,7 @@ open class Content  : Serializable {
     var videoType: String? = null //一级分类
     var director: String? = null //导演
     var recentNum:String? = null //已更新集数
+    var recentMsg: String? = null //更新剧集文本
     var new_realExclusive:String? = null //内容标识
     var is4k:String? = null //是否4K
     var isFinish:String? = null //是否已更新完  0-未完成  1-已完成

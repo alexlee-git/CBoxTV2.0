@@ -27,6 +27,7 @@ import com.newtv.libs.util.PicassoBuilder;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.YSLogUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -165,9 +166,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
      * 初始化bugly
      */
     private void initBugly() {
-
-//        CrashReport.initCrashReport(getApplicationContext(), "e8a44dd463", false);
-
+        CrashReport.initCrashReport(getApplicationContext(), "a308a1dc85", false);
     }
 
     @SuppressLint("CheckResult")
@@ -363,6 +362,11 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
     @Override
     public void detailsJumpActivity(Context context, String contentType, String contentUUID, String seriesSubUUID) {
         JumpUtil.detailsJumpActivity(context,contentType,contentUUID,seriesSubUUID);
+    }
+
+    @Override
+    public void getUserRecords(String type, DBCallback<String> dbCallback) {
+        UserCenterRecordManager.getInstance().getUserRecords(type,dbCallback);
     }
 
 }

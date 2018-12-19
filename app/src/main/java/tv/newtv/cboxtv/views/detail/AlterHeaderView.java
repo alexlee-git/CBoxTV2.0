@@ -103,9 +103,9 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             if (!alternateView.isReleased()) {
                 playerViewConfig = alternateView.getDefaultConfig();
             }
-            viewContainer.removeView(alternateView);
             alternateView.release();
             alternateView.destory();
+            viewContainer.removeView(alternateView);
             alternateView = null;
         }
     }
@@ -138,6 +138,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             }
 
             alternateView.setPlayerCallback(this);
+            alternateView.setAlternateCallback(this);
         }
     }
 
@@ -148,7 +149,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateIdText = findViewById(R.id.id_detail_title);
         alternateFromText = findViewById(R.id.id_detail_from);
         alternateDescText = findViewById(R.id.id_detail_desc);
-        alternateView = findViewById(R.id.video_player);
         mMoreView = findViewById(R.id.more_view_stub);
         mMoreView.setOnInflateListener(new ViewStub.OnInflateListener() {
             @Override
@@ -170,8 +170,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 }
             });
         }
-        alternateView.setPlayerCallback(this);
-        alternateView.setAlternateCallback(this);
 
         fullScreenBtn = findViewById(R.id.full_screen);
 
@@ -185,6 +183,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
 
+        prepareMediaPlayer();
         updateUI();
     }
 
@@ -332,6 +331,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             }
 
         }
+
+        prepareMediaPlayer();
 
         if (alternateView != null) {
             alternateView.setSeriesInfo(content);

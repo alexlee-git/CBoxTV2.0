@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,9 +54,6 @@ public class AlternateActivity extends DetailPageActivity implements
     public void prepareMediaPlayer() {
         super.prepareMediaPlayer();
 
-        if (headerView != null) {
-            headerView.prepareMediaPlayer();
-        }
     }
 
     @Override
@@ -141,18 +140,21 @@ public class AlternateActivity extends DetailPageActivity implements
         scrollView = findViewById(R.id.root_view);
         headerView = findViewById(R.id.header_view);
         mPlayListView = findViewById(R.id.play_list);
-        EpisodeAdView adView = findViewById(R.id.ad_view);
         mPlayListView.setOnItemClick(this);
 
         headerView.setCallback(this);
         headerView.setContentUUID(contentUUID);
-        adView.requestAD();
     }
 
     @Override
     public void onAlternateResult(@org.jetbrains.annotations.Nullable List<Alternate> result) {
         if (mPlayListView != null) {
             mPlayListView.onAlternateResult(result);
+        }
+
+        EpisodeAdView adView = findViewById(R.id.ad_view);
+        if(adView != null) {
+            adView.requestAD();
         }
     }
 

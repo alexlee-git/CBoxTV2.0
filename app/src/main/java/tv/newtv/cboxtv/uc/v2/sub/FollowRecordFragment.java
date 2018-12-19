@@ -27,6 +27,7 @@ import com.newtv.libs.util.SystemUtils;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -66,6 +67,9 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
 
     private int move = -1;
     private Observable<Integer> observable;
+    private Observable<Map<String, String>> operationObs;
+    private String operationType;
+    private String operationId;
 
     @Override
     protected int getLayoutId() {
@@ -117,6 +121,10 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
 
     @Override
     protected void inflate(List<UserCenterPageBean.Bean> bean) {
+        inflatePage(bean);
+    }
+
+    protected void inflatePage(List<UserCenterPageBean.Bean> bean) {
         if (contentView == null) {
             return;
         }
@@ -124,38 +132,44 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
             inflatePageWhenNoData();
             return;
         }
-
+        hideView(emptyTextView);
+        showView(mRecyclerView);
         if (mDatas == null) {
             mDatas = bean;
             mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN_COUNT));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_FOLLOW);
             mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView.setHasFixedSize(true);
+//            mRecyclerView.setHasFixedSize(true);
 
             mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
-                public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                                           RecyclerView.State state) {
-                    outRect.bottom = 72;
-                    outRect.top = 23;
+                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                     int index = parent.getChildLayoutPosition(view);
-
-                    if (index <= COLUMN_COUNT) {
-
+                    if (index < COLUMN_COUNT) {
+                        outRect.top = 23;
                     }
+
+                    outRect.bottom = 72;
                 }
             });
         } else {
-            if (mAdapter != null && mDatas != null) {
-                boolean refresh = (bean.size() == mDatas.size());
-                mAdapter.setRefresh(refresh);
-                mDatas.clear();
-                mDatas.addAll(bean);
-                if (!refresh) {
-                    mAdapter.notifyItemRemoved(move);
+            if (mAdapter != null) {
+                Log.e(TAG, "wqs:operationType:" + operationType);
+                if (TextUtils.equals(operationType, "delete")) {
+                    boolean refresh = (bean.size() == mDatas.size());
+                    mAdapter.setRefresh(refresh);
+                    mDatas.clear();
+                    mDatas.addAll(bean);
+                    if (!refresh) {
+                        mAdapter.notifyItemRemoved(move);
+                    }
+                } else if (TextUtils.equals(operationType, "add")) {
+                    mDatas.clear();
+                    mDatas.addAll(bean);
+                    mAdapter.notifyDataSetChanged();
+                } else {
                 }
-
             }
         }
     }
@@ -188,6 +202,7 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(TAG, "wqs:onResume");
         observable = RxBus.get().register("recordPosition");
         observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Integer>() {
@@ -197,7 +212,16 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
                     }
                 });
 
-
+        operationObs = RxBus.get().register("follow_operation_map");
+        operationObs.observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Map<String, String>>() {
+                    @Override
+                    public void accept(Map<String, String> map) throws Exception {
+                        operationType = map.get("follow_operation_type");
+                        operationId = map.get("follow_operation_id");
+                        Log.d(TAG, "type : " + operationType + ", id : " + operationId);
+                    }
+                });
         //关注页面上报日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,4");
         //获取用户登录状态
@@ -259,22 +283,29 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
                     @Override
                     public void onResult(int code, String result) {
                         if (code == 0) {
+                            UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
                             Gson gson = new Gson();
                             Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                             }.getType();
-                            List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result,
-                                    type);
-                            inflate(universalBeans);
+                            List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
+                            userCenterUniversalBean.data = universalBeans;
+                            if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
+                                Log.d(TAG, "wqs:query follow info from " + tableName + ", size : " + userCenterUniversalBean.data.size());
+                                inflatePage(userCenterUniversalBean.data);
+                            } else {
+                                inflatePageWhenNoData();
+                            }
+                        } else {
+                            inflatePageWhenNoData();
                         }
                     }
-                })
-                .excute();
+                }).excute();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         RxBus.get().unregister("recordPosition", observable);
+        RxBus.get().unregister("follow_operation_map", operationObs);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
 
 import com.newtv.libs.Constant;
 
@@ -22,6 +23,7 @@ public class SmallWindowView extends BaseAdView implements IEpisode {
 
     public SmallWindowView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setVisibility(View.INVISIBLE);
     }
 
     @Override

@@ -35,4 +35,6 @@ public interface PlayerObserver {
     void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback);
 
     void detailsJumpActivity(Context context, String contentType, String contentUUID, String seriesSubUUID);
+
+    void getUserRecords(String type, DBCallback<String> dbCallback);
 }

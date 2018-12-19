@@ -115,6 +115,12 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 finish();
                 return;
             }
+            if(i.hasExtra("vod")){
+                Constant.TIP_VOD_DURATION = i.getLongExtra("vod",Constant.TIP_VOD_DURATION);
+            }
+            if(i.hasExtra("live")){
+                Constant.TIP_LIVE_DURATION = i.getLongExtra("live",Constant.TIP_LIVE_DURATION);
+            }
         }
 
         setContentView(R.layout.activity_splash);
@@ -365,9 +371,11 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 if (jump) {
                     finish();
                     return;
+                }else{
+                    intent = new Intent(EntryActivity.this, MainActivity.class);
+                    //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
+                    startActivity(intent);
                 }
-                //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
-                startActivity(intent);
             }
         } else {
             intent = new Intent(EntryActivity.this, MainActivity.class);

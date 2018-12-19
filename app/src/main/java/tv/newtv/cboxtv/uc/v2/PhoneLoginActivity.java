@@ -67,6 +67,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 
     public static final int DELAY_MILLIS = 1000;
     public static final int CODE_SUCCESS = 1002;
+    public static final int TICKET_SUCCESS = 1003;
 
     private RelativeLayout rel_phone, rel_code;
     private TextView tv_code_phone, tv_code_status, tv_code_inval;
@@ -91,6 +92,8 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private String mContentUUID;
     private String mExternalAction;
     private String mExternalParams;
+    private int loginType; // 登陆方式 0:newtv;1:cctv，此参数只在手机验证码这种登录方式的情况下会用到, M站登录不需要考虑这个变量
+    private String ticket;//央视网登录后返回值
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,7 +106,8 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         mExternalAction = getIntent().getStringExtra("action");
         mExternalParams = getIntent().getStringExtra("params");
-        Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay);
+        loginType = getIntent().getIntExtra("loginType",0);
+        Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay+"============loginType="+loginType);
         if (mExterPayBean != null) {
             Log.i(TAG, "mExterPayBean = " + mExterPayBean.toString());
             mVipFlag = mExterPayBean.getVipFlag();
@@ -260,8 +264,15 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             isSendOK = true;
             return;
         }
-        getToken(Constant.Authorization, Constant.GRANT_TYPE_SMS,
-                Constant.CLIENT_ID, mMobile, mPhoneCodeInput.getText().toString());
+        if (TextUtils.isEmpty(mMobile)){
+            mMobile = mPhoneLoginInput.getText().toString().trim();
+        }
+        if (loginType == 1){
+            verifyLoginByCNTV(mMobile,mPhoneCodeInput.getText().toString());
+        }else {
+            getToken(Constant.Authorization, Constant.GRANT_TYPE_SMS,
+                    Constant.CLIENT_ID, mMobile, mPhoneCodeInput.getText().toString());
+        }
 
     }
 
@@ -274,8 +285,11 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         if (TextUtils.isEmpty(Constant.Authorization)) {
             Constant.Authorization = Utils.getAuthorization(PhoneLoginActivity.this);
         }
-        sendSMSCode(Constant.Authorization,
-                Constant.GRANT_TYPE_SMS, Constant.CLIENT_ID, mMobile);
+        if (loginType == 1){
+            sendSMSCodeByCNTV(mMobile);
+        }else {
+            sendSMSCode(Constant.Authorization, Constant.GRANT_TYPE_SMS, Constant.CLIENT_ID, mMobile);
+        }
         rel_phone.setVisibility(View.INVISIBLE);
         rel_code.setVisibility(View.VISIBLE);
         tv_code_phone.setText(getResources().getString(R.string.phone_login_tip_code) + mMobile +
@@ -303,10 +317,18 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                     if (mHandler != null) {
                         mHandler.removeMessages(DELAY_MILLIS);
                     }
-                    mTime = 5 * 60;
+                    if (loginType == 1){
+                        //央视网验证码获取有效期为3分钟
+                        mTime = 3 * 60;
+                    }else {
+                        mTime = 5 * 60;
+                    }
                     rel_code.setVisibility(View.INVISIBLE);
                     rel_phone.setVisibility(View.VISIBLE);
                     mPhoneLoginInput.requestFocus();
+                    break;
+                case TICKET_SUCCESS:
+                    getTokenByTicket(Constant.Authorization, Constant.CLIENT_ID,ticket);
                     break;
                 case CODE_SUCCESS:
                     isSendOK = false;
@@ -513,6 +535,127 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         }
     }
 
+    /**
+     * 央视网登陆获取验证码
+     */
+    private void sendSMSCodeByCNTV(String mobile) {
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .sendSMSCodeByCNTV("getRequestVerifiCodeM", mobile, "4", "1")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            disposable_sendcode = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String data = responseBody.string().trim();
+                                Log.e(TAG, "sendSMSCodeByCNTV----Login Qrcode :data=" + data);
+                                if (TextUtils.equals(data,"success")){
+                                    //央视网默认验证码有效时间是3分钟，服务器未返回，前端写定
+                                    mTime = 180;
+                                    btn_refresh.setText(getResources().getString(R.string.phone_login_status1));
+                                    tv_code_status.setText("请输入6位数验证码");
+                                    tv_code_inval.setText(getResources().getString(R.string.phone_login_tip_5) + " , " + mTime + getResources().getString(R.string.phone_login_tip_6));
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessageDelayed(DELAY_MILLIS, 1000);
+                                    }
+                                }else {
+                                    String error = getCNTVErrMSg(data);
+                                    Toast.makeText(PhoneLoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(2);
+                                    }
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                mTime = 3 * 60;
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.e(TAG, "----sendSMSCodeByCNTV---GetToken  onError" + e);
+                            if (disposable_sendcode != null) {
+                                disposable_sendcode.dispose();
+                                disposable_sendcode = null;
+                            }
+                            String error = getResources().getString(R.string.send_phone_err);
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    error = jsonObject.getString("msg");
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            Toast.makeText(PhoneLoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                            if (mHandler != null) {
+                                mHandler.sendEmptyMessage(2);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (disposable_sendcode != null) {
+                                disposable_sendcode.dispose();
+                                disposable_sendcode = null;
+                            }
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 将获取验证码时返回的错误码转化为中文内容
+     */
+    private String  getCNTVErrMSg(String dataMSg){
+        String errorMsg;
+        if (TextUtils.equals(dataMSg,"registered")){
+            errorMsg = "该手机号已注册";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"failed")){
+            errorMsg = "校验码发送失败（内部错误）";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"sendagain")){
+            errorMsg = "三分钟内频繁发送短信";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"ipsendagain")){
+            errorMsg = "（24h）同一IP用户请求校验码超过2000次";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"mobileoften")){
+            errorMsg = "（24h）同一手机号用户请求校验码超过5次";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"mobilecodeerror")){
+            errorMsg = "验证码不正确";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"unregistered")){
+            errorMsg = "该手机号未注册";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"timeout")){
+            errorMsg = "校验码已超过有效时间";
+            return errorMsg;
+        }else if (TextUtils.equals(dataMSg,"error")){
+            errorMsg = "手机校验码输入有误";
+            return errorMsg;
+        }else {
+            errorMsg = "发送验证码失败";
+            return errorMsg;
+        }
+
+    }
     private void getToken(String Authorization, String response_type, String client_id, String phone, String code) {
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
@@ -563,6 +706,181 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                             }
                             isSendOK = true;
                             String error = getResources().getString(R.string.send_phone_err);
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    error = jsonObject.getString("msg");
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            Toast.makeText(PhoneLoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                            tv_code_status.setText(getResources().getString(R.string.phone_login_status3));
+                            mPhoneCodeInput.setText("");
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (disposable_sendok != null) {
+                                disposable_sendok.dispose();
+                                disposable_sendok = null;
+                            }
+                            isSendOK = true;
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 通过央视网返回的ticket换取accessToken接口
+     */
+    private void getTokenByTicket(String Authorization, String client_id, String ticket) {
+        Log.e(TAG, "getTokenByTicket:-----------ticket= "+ticket );
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .transTicketToToken(Authorization, client_id, ticket)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            disposable_sendok = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String data = responseBody.string();
+                                Log.i(TAG, "Login Qrcode :" + data.toString());
+                                JSONObject mJsonObject = new JSONObject(data);
+                                String accessToken = mJsonObject.optString("access_token");
+                                String refreshToken = mJsonObject.optString("refresh_token");
+
+                                Log.i(TAG, "mVerifySMSCodeSubscriber--onSuccess: refreshToken = " + refreshToken);
+                                Log.i(TAG, "mVerifySMSCodeSubscriber--onSuccess: accessToken = " + accessToken);
+                                SharePreferenceUtils.saveToken(PhoneLoginActivity.this, accessToken, refreshToken);
+
+                                UserCenterRecordManager.getInstance().synchronizationUserBehavior(getApplicationContext());
+                                uploadUserExterLog();
+                                uploadUserExter();
+                                UserCenterUtils.setLogin(true);
+                                if (mHandler != null) {
+                                    mTime_success = 3;
+                                    mHandler.sendEmptyMessage(CODE_SUCCESS);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i(TAG, "GetToken  onError" + e);
+                            if (disposable_sendok != null) {
+                                disposable_sendok.dispose();
+                                disposable_sendok = null;
+                            }
+                            isSendOK = true;
+                            String error = getResources().getString(R.string.send_phone_err);
+                            if (e instanceof HttpException) {
+                                HttpException httpException = (HttpException) e;
+                                try {
+                                    String responseString = httpException.response().errorBody().string();
+                                    JSONObject jsonObject = new JSONObject(responseString);
+                                    error = jsonObject.getString("msg");
+                                    Log.i(TAG, "error: " + responseString);
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            Toast.makeText(PhoneLoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                            tv_code_status.setText(getResources().getString(R.string.phone_login_status3));
+                            mPhoneCodeInput.setText("");
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (disposable_sendok != null) {
+                                disposable_sendok.dispose();
+                                disposable_sendok = null;
+                            }
+                            isSendOK = true;
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 央视网手机验证码登陆获取ticket值
+     */
+    private void verifyLoginByCNTV(String mMobile, String verifyCode) {
+        /**
+         * {
+         "timestamp": "",
+         "userSeqId": "62853273",
+         "ticket": "2bb56868-67b0-484d-bbeb-900b7611154c",
+         "uct": "uct-062055d5-d676-44f4-8973-d64f5fe1eba3-CD31F9DB9C85632F0629C6E80B7C7260",
+         "errType": "0",
+         "errMsg": "成功",
+         "verifycode": "token-7b09c619-8280-414f-b857-aa602b554d06-85FFA51AEB2B8221EA28450C0F504175-4702fe5d-c777-4ef4-aa3c-ec8dea3cab75",
+         "sso": [],
+         "usrid": "628532731533191308850",
+         "newUser": ""
+         }
+         */
+        try {
+            NetClient.INSTANCE.getUserCenterLoginApi()
+                    .verifySMSCodeByCNTV(mMobile, verifyCode, "https://ucenter.ottcn.com", "client_transaction", "1")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            disposable_sendok = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String data = responseBody.string();
+                                Log.i(TAG, "Login Qrcode onNext----data=" + data.toString());
+                                JSONObject mJsonObject = new JSONObject(data);
+                                ticket = mJsonObject.optString("ticket");
+                                String errMsg = mJsonObject.optString("errMsg");
+                                if (!TextUtils.isEmpty(ticket)){
+                                    Log.e(TAG, "onNext: --------ticket = "+ticket );
+                                    if (mHandler != null) {
+                                        mHandler.sendEmptyMessage(TICKET_SUCCESS);
+                                    }
+                                }else {
+                                    Toast.makeText(PhoneLoginActivity.this, errMsg, Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i(TAG, "GetToken  onError" + e);
+                            if (disposable_sendok != null) {
+                                disposable_sendok.dispose();
+                                disposable_sendok = null;
+                            }
+                            isSendOK = true;
+                            String error = "央视网登陆失败！";
                             if (e instanceof HttpException) {
                                 HttpException httpException = (HttpException) e;
                                 try {

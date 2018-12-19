@@ -52,52 +52,74 @@ public class Player implements PlayerObserver {
 
     @Override
     public void onFinish(Content playInfo, int index, int position, int duration) {
-
-        mObserver.onFinish(playInfo, index, position, duration);
+        if (mObserver != null)
+            mObserver.onFinish(playInfo, index, position, duration);
     }
 
     @Override
     public void onExitApp() {
-        mObserver.onExitApp();
+        if (mObserver != null)
+            mObserver.onExitApp();
     }
 
     @Override
     public Activity getCurrentActivity() {
-        return mObserver.getCurrentActivity();
+        if (mObserver != null)
+            return mObserver.getCurrentActivity();
+        return null;
     }
 
     @Override
     public Intent getPlayerActivityIntent() {
-        return mObserver.getPlayerActivityIntent();
+        if (mObserver != null)
+            return mObserver.getPlayerActivityIntent();
+        return null;
+
     }
 
     @Override
     public boolean isVip() {
-        return mObserver.isVip();
+        if (mObserver != null)
+            return mObserver.isVip();
+        return false;
     }
 
     @Override
     public void addLBHistory(String alternateID) {
-        mObserver.addLBHistory(alternateID);
+        if (mObserver != null)
+            mObserver.addLBHistory(alternateID);
     }
 
     @Override
-    public void activityJump(Context context, String actionType, String contentType, String contentUUID, String actionUri) {
-        mObserver.activityJump(context,actionType,contentType,contentUUID,actionUri);
+    public void activityJump(Context context, String actionType, String contentType, String
+            contentUUID, String actionUri) {
+        if (mObserver != null)
+            mObserver.activityJump(context, actionType, contentType, contentUUID, actionUri);
     }
 
     @Override
     public void addLbCollect(Bundle bundle, DBCallback<String> dbCallback) {
-        mObserver.addLbCollect(bundle,dbCallback);
+        if (mObserver != null)
+            mObserver.addLbCollect(bundle, dbCallback);
     }
 
     @Override
     public void deleteLbCollect(String contentUUID, DBCallback<String> dbCallback) {
-        mObserver.deleteLbCollect(contentUUID,dbCallback);
+        if (mObserver != null)
+            mObserver.deleteLbCollect(contentUUID, dbCallback);
     }
 
     @Override
-    public void detailsJumpActivity(Context context, String contentType, String contentUUID, String seriesSubUUID) {
-        mObserver.detailsJumpActivity(context,contentType,contentUUID,seriesSubUUID);
+    public void detailsJumpActivity(Context context, String contentType, String contentUUID,
+                                    String seriesSubUUID) {
+        if (mObserver != null)
+            mObserver.detailsJumpActivity(context, contentType, contentUUID, seriesSubUUID);
+    }
+
+    @Override
+    public void getUserRecords(String type, DBCallback<String> dbCallback) {
+        if(mObserver != null){
+            mObserver.getUserRecords(type,dbCallback);
+        }
     }
 }

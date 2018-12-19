@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.views.custom;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -86,6 +87,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private NewTVLauncherPlayerView.PlayerViewConfig mPlayerViewConfig;
     private String mUUID;
 
+    private boolean useAlternateUI = false;
+
     private boolean playerReady = false;
 
     private int mIndex = 0;
@@ -134,7 +137,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public LivePlayView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
+        init(context,attrs);
     }
 
     public void setAlternateChange(NewTVLauncherPlayerView.ChangeAlternateListener listener) {
@@ -154,7 +157,12 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             if (mPlayerViewConfig != null) {
                 mVideoPlayerView = new VideoPlayerView(mPlayerViewConfig, getContext());
             } else {
-                mVideoPlayerView = new VideoPlayerView(getContext());
+                NewTVLauncherPlayerView.PlayerViewConfig config = null;
+                if(useAlternateUI){
+                    config = new NewTVLauncherPlayerView.PlayerViewConfig();
+                    config.useAlternateUI = true;
+                }
+                mVideoPlayerView = new VideoPlayerView(config,getContext());
                 mVideoPlayerView.setSingleRepeat(true);
                 mVideoPlayerView.setTag("videoPlayer");
                 FrameLayout.LayoutParams layoutParams = null;
@@ -320,7 +328,17 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         }
     }
 
-    private void init(AttributeSet attrs) {
+    private void init(Context context,AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable
+                .LivePlayView);
+        if(typedArray != null){
+            int type = typedArray.getInt(R.styleable.LivePlayView_play_type,0);
+            if(type == 3){
+                useAlternateUI = true;
+            }
+            typedArray.recycle();
+        }
+
         setClipChildren(false);
         setClipToPadding(false);
 

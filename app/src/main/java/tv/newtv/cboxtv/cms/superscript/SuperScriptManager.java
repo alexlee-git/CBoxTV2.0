@@ -267,7 +267,7 @@ public class SuperScriptManager implements CornerContract.View {
                                 "color='#955D06'>%s</font>", value));
                         CharSequence charSequence = Html.fromHtml(message);
                         recentText.setText(charSequence);
-                    }else {
+                    } else {
                         removeRecentMsg(parent);
                     }
                     return;

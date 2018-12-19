@@ -27,6 +27,7 @@ public class Program {
     private String premiereTime;
     private String startTime;
     private String duration;
+    private String vipFlag;
     /**
      * 节目集或者栏目的id，相当于
      */
@@ -212,6 +213,14 @@ public class Program {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public String getVipFlag() {
+        return vipFlag;
+    }
+
+    public void setVipFlag(String vipFlag) {
+        this.vipFlag = vipFlag;
     }
 
     public Content convertProgramInfo(){

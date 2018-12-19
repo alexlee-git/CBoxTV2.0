@@ -35,11 +35,17 @@ public class Constant {
     //是否启用轮播
     public static final boolean canUseAlternate  = true;
 
+
+    public static long TIP_LIVE_DURATION = 3600 * 2;
+    public static long TIP_VOD_DURATION = 3600 * 4;
+
     public static final boolean isLocalData = false;
     public static final String AdCache = Environment.getExternalStorageDirectory()
             .getAbsolutePath() +
             "/ad_cache";
     public static final String TAG = "CBoxTV";
+
+    public static final String STAGE = "_stage";
 
     //广告位类型
     public static final String AD_TOPIC = "topic";//专题广告
@@ -152,6 +158,7 @@ public class Constant {
     public static final int LOG_NODE_DETAIL_SUGGESt = 16;               // 详情推荐
     public static final int LOG_NODE_SPECIAL = 17;               // 专题
     public static final int LOG_NODE_HISTORY = 15;               // 历史记录
+    public static final int LOG_NODE_FILTER = 14;               // 筛选
     public static final int LOG_NODE_RECOMMEND = 18;               // 推荐位
     public static final int LOG_NODE_COLLECT = 5;               // 收藏
     public static final int LOG_NODE_SUBSCRIP = 21;               // 订阅
