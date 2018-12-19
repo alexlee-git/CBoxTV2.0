@@ -78,7 +78,7 @@ public class UserCenterRecordManager {
     private final int SYNC_SWITCH_OFF = 1; // 数据无需同步
 
     public static final String REQUEST_RECORD_OFFSET = "1";
-    public static final String REQUEST_RECORD_LIMIT = "300";
+    public static final String REQUEST_RECORD_LIMIT = "100";
 
     // private String tableName;
     private final String TAG = "UserCenterRecordManager";
