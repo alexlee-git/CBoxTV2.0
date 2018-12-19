@@ -149,7 +149,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void prepareVideoPlayer() {
-        if (mVideoPlayerView != null) {
+        if (mVideoPlayerView != null && mVideoPlayerView.isReleased()) {
             releaseVideoPlayer();
             mPlayerViewConfig = null;
         }
@@ -309,6 +309,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private void doPlay() {
         Log.d(TAG, "currentMode : " + currentMode + " visible=" + mIsShow +" uuid="+mUUID);
         if (!mIsShow) return;
+        if(mVideoPlayerView != null && !mVideoPlayerView.isReleased() && mVideoPlayerView
+                .isPlaying()) return;
         if (currentMode == MODE_LIVE) {
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
             if (liveInfo.isLiveTime()) {
