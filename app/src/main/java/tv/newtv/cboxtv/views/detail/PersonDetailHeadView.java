@@ -119,14 +119,17 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode,Vie
     public void setTopView(){
         LinearLayout upTop = view.findViewById(R.id.up_top);
         ImageView arrowsDark = view.findViewById(R.id.nav_arrows_dark);
-        hintAnimator(upTop,arrowsDark);
+        ImageView navTitle = view.findViewById(R.id.nav_title);
+        hintAnimator(upTop,arrowsDark,navTitle);
 
     }
 
-    private void hintAnimator(LinearLayout upTop, ImageView arrowsDark) {
+    private void hintAnimator(LinearLayout upTop, ImageView arrowsDark,ImageView navTitle) {
         ObjectAnimator translationX = ObjectAnimator.ofFloat(arrowsDark, "alpha", 0.1f, 1.0f, 0.1f, 1.0f, 0.1f,
                 1.0f,0.1f,1.0f,0.1f,1.0f);
         ObjectAnimator translationY = ObjectAnimator.ofFloat(arrowsDark, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
+        ObjectAnimator alphaY = ObjectAnimator.ofFloat(navTitle, "alpha", 1.0f, 0.1f);
+        alphaY.setStartDelay(4000);
         AnimatorSet animator = new AnimatorSet();
         animator.playTogether(translationX,translationY);
         animator.setInterpolator(new LinearInterpolator());
