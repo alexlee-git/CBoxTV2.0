@@ -1917,7 +1917,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             buyGoodsBusiness.getAd();
         }
 
-        if (videoDataStruct.isTrySee()) {
+        if (videoDataStruct.isTrySee() && !defaultConfig.isAlternate) {
             isTrySee = true;
             hintVip.setVisibility(View.VISIBLE);
             String freeDuration = videoDataStruct.getFreeDuration();
