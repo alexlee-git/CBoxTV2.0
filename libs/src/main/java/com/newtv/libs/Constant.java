@@ -31,7 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 
 public class Constant {
-
+    //付费标识地址
+    public static String FILE_PATH;
     //是否启用轮播
     public static final boolean canUseAlternate  = true;
 

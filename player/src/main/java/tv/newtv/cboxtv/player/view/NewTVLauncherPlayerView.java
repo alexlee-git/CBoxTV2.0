@@ -713,7 +713,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public boolean onBackPressed() {
-        if (!defaultConfig.startIsFullScreen) {
+        if (defaultConfig!=null && !defaultConfig.startIsFullScreen) {
             if (defaultConfig.isFullScreen) {
                 ExitFullScreen();
             }
@@ -731,7 +731,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mPlayerContract.screenSizeChange(right - left, bottom - top);
         }
 
-        if (!defaultConfig.isFullScreen) {
+        if (defaultConfig!=null && !defaultConfig.isFullScreen) {
             defaultConfig.defaultWidth = getLayoutParams().width;
             defaultConfig.defaultHeight = getLayoutParams().height;
         }
@@ -1438,7 +1438,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 
-        if (!defaultConfig.isLiving) {
+        if (defaultConfig!=null && !defaultConfig.isLiving) {
             mPlayerTimer.reset();
         }
 

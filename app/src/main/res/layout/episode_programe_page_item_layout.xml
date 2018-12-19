@@ -39,14 +39,13 @@
                  />
             <ImageView
                 android:id="@+id/img_vip_30_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -77,14 +76,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -115,14 +113,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -153,14 +150,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -191,14 +187,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -229,14 +224,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -267,14 +261,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -305,14 +298,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -343,14 +335,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -381,14 +372,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -419,14 +409,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_11"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -457,14 +446,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -495,14 +483,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -533,14 +520,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -571,14 +557,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_15"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -609,14 +594,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -645,14 +629,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -682,14 +665,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_18"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -720,14 +702,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_19"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -758,14 +739,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -796,14 +776,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_21"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -834,14 +813,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_22"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -872,14 +850,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_23"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -910,14 +887,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -948,14 +924,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_25"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -986,14 +961,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_26"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -1024,14 +998,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_27"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -1061,14 +1034,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_28"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -1099,14 +1071,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_29"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />
@@ -1136,14 +1107,13 @@
                 android:textColor="@color/detail_tvcolor" />
             <ImageView
                 android:id="@+id/img_vip_30_30"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/width_20px"
                 android:layout_gravity="right"
                 android:scaleType="fitEnd"
-                android:layout_marginTop="@dimen/height_12px"
+                android:layout_marginTop="@dimen/height_10px"
                 android:layout_marginRight="@dimen/height_14px"
                 android:layout_marginEnd="@dimen/height_14px"
-                android:background="@drawable/vip"
                 android:tag="tag_img_vip"
                 android:visibility="visible"
                 />

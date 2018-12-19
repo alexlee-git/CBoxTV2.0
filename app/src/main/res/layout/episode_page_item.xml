@@ -43,11 +43,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
@@ -99,11 +98,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
@@ -154,11 +152,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
@@ -209,11 +206,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
@@ -262,11 +258,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
@@ -318,11 +313,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
@@ -373,11 +367,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
@@ -427,11 +420,10 @@
                 android:visibility="invisible"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/vip"
-                android:layout_marginLeft="@dimen/width_360px"
-                android:layout_marginTop="@dimen/width_50px"
+                android:layout_width="@dimen/width_45px"
+                android:layout_height="@dimen/height_25px"
+                android:layout_marginLeft="@dimen/width_370px"
+                android:layout_marginTop="@dimen/width_40px"
                 android:tag="tag_img_vip"
                 android:visibility="gone"
                 />
