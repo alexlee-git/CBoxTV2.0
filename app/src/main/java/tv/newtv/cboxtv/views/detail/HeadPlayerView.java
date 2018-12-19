@@ -406,10 +406,10 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     private void hintAnimator(View view,ImageView arrow,ImageView navTitle) {
-        ObjectAnimator translationX = ObjectAnimator.ofFloat(arrow, "alpha", 0.1f, 1.0f, 0.1f, 1.0f, 0.1f,
-                1.0f,0.1f,1.0f,0.1f,1.0f);
+        ObjectAnimator translationX = ObjectAnimator.ofFloat(arrow, "alpha", 0.6f, 1.0f, 0.6f, 1.0f, 0.6f,
+                1.0f,0.6f,1.0f,0.6f,1.0f);
         ObjectAnimator translationY = ObjectAnimator.ofFloat(arrow, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
-        ObjectAnimator alphaY = ObjectAnimator.ofFloat(navTitle, "alpha", 1.0f, 0.1f);
+        ObjectAnimator alphaY = ObjectAnimator.ofFloat(navTitle, "alpha", 1.0f, 0.6f);
         alphaY.setStartDelay(4000);
         alphaY.setDuration(1000);
         alphaY.start();

@@ -188,10 +188,10 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     }
 
     private void darkAnimator(ImageView view ,ImageView navTitle){
-        ObjectAnimator alphaX = ObjectAnimator.ofFloat(view, "alpha", 0.1f, 1.0f, 0.1f, 1.0f, 0.1f,
-                1.0f,0.1f,1.0f,0.1f,1.0f);
+        ObjectAnimator alphaX = ObjectAnimator.ofFloat(view, "alpha", 0.6f, 1.0f, 0.6f, 1.0f, 0.6f,
+                1.0f,0.6f,1.0f,0.6f,1.0f);
         ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
-        ObjectAnimator alphaY = ObjectAnimator.ofFloat(navTitle, "alpha", 1.0f, 0.1f);
+        ObjectAnimator alphaY = ObjectAnimator.ofFloat(navTitle, "alpha", 1.0f, 0.6f);
         alphaY.setStartDelay(4000);
         alphaY.setDuration(1000);
         alphaY.start();
@@ -204,8 +204,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                view.setVisibility(View.GONE);
                 navTitle.setVisibility(GONE);
+                view.setVisibility(View.GONE);
             }
         });
 
