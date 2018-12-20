@@ -327,6 +327,10 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 moveFlag = 0;
                 childData.clear();
                 childData.addAll(data.get(position).getChild());
+                if (labelRecyclerView.getVisibility()==View.GONE) {
+                    labelRecyclerView.setVisibility(View.VISIBLE);
+                    labelRecyclerView.requestFocus();
+                }
                 adapter.notifyDataSetChanged();
 
 
