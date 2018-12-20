@@ -174,7 +174,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             animList.clear();
 //            animList = null;
         }
-        arrowHead = null;
+//        arrowHead = null;
         if (focusHandler != null) {
             focusHandler.removeCallbacksAndMessages(null);
 //            focusHandler = null;
