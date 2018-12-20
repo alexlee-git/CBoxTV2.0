@@ -182,10 +182,6 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             lineList.clear();
 //            lineList = null;
         }
-        if (onSelectListenerList != null) {
-            onSelectListenerList.clear();
-//            onSelectListenerList = null;
-        }
     }
 
     public void addOnSelectListener(OnSelectListener onSelectListener) {
