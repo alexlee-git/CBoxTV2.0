@@ -276,6 +276,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public void dispatchClick() {
         Log.d(TAG, "enterFullScreen");
+        if(mProgramInfo == null) return;
         LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
         if (liveInfo.isLiveTime()) {
             Log.d(TAG, "直播中，特殊处理");

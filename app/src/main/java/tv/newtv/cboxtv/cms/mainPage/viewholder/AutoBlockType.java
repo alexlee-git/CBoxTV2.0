@@ -30,7 +30,9 @@ import java.util.List;
 
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
+import tv.newtv.cboxtv.views.custom.BlockPosterView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -202,7 +204,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                     frameLayout.setVisibility(VISIBLE);
 
                     //屏幕适配
-                    if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
+                    if (!"005".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
                         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -276,14 +278,28 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                     blockBuilder.showPosterByCMS(recycleImageView, info.getVImage(),
                             hasCorner);
                 }
+
+                ViewGroup parentFrameLayout = frameLayout;
+                int postIndex = 0;
+                if (posterView != null) {
+                    parentFrameLayout = (ViewGroup) posterView.getParent();
+                    postIndex = parentFrameLayout.indexOfChild(posterView);
+                }
+
+                // 按需添加角标控件
+                SuperScriptManager.getInstance().processSuperscript(getContext(),
+                        layoutCode,
+                        postIndex + 1,
+                        info, parentFrameLayout);
             }
+
         }
 
         if (layoutList.size() > 0) {
             for (String layout : layoutList) {
                 View target = holder.itemView.findViewWithTag(layout);
                 if(target != null){
-                    target.setVisibility(View.GONE);
+                    target.setVisibility(View.INVISIBLE);
                 }
             }
         }
