@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -26,6 +27,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -177,7 +179,13 @@ public class ColumnPageActivity extends DetailPageActivity {
                                 mAdView.requestAD();
                             }
                         } else {
-                            ToastUtil.showToast(getApplicationContext(), "内容信息错误");
+                            if (fromOuter){
+                                ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将进入应用首页");
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                intent.putExtra("action", "");
+                                intent.putExtra("params", "");
+                                startActivity(intent);
+                            }
                             ColumnPageActivity.this.finish();
                         }
                     }

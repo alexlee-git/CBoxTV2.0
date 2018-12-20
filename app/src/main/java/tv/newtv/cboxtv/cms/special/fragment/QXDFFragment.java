@@ -134,6 +134,10 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
                         return true;
                     }
                 }
+            }else if (event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN){
+                if (recyclerView!=null){
+                    recyclerView.requestFocus();
+                }
             }
         }
         return super.dispatchKeyEvent(event);

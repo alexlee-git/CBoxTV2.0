@@ -582,7 +582,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
                 .append(mVipProductId + ",")
                 .append(amount + ",")
                 .append(payChannelId + ",")
-                .append(orderId)
+                .append(code)
                 .trimToSize();
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_PAY, dataBuff.toString());

@@ -416,38 +416,40 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         if (modelResult != null) {
             container.removeAllViews();
             dataBeans = modelResult.getData();
-            for (int i = 0; i < dataBeans.size(); i++) {
-                HorizontalRecyclerView horizontalRecyclerView = new HorizontalRecyclerView(this);
-                FilterItem dataBean = dataBeans.get(i);
-                List<FilterValue> filterValue = dataBean.getFilterValue();
-                secondLabelAdapter secondMenuAdapter = new secondLabelAdapter(filterValue, this, dataBean);
-                for (int j = 0; j < filterValue.size(); j++) {
-                    if (focusBean != null && !TextUtils.isEmpty(focusBean.getClassTypes())) {
-                        if (focusBean.getClassTypes().equals(filterValue.get(j).getTitle())) {
-                            default_record_position = j;
+            if(dataBeans != null && dataBeans.size() > 0){
+                for (int i = 0; i < dataBeans.size(); i++) {
+                    HorizontalRecyclerView horizontalRecyclerView = new HorizontalRecyclerView(this);
+                    FilterItem dataBean = dataBeans.get(i);
+                    List<FilterValue> filterValue = dataBean.getFilterValue();
+                    secondLabelAdapter secondMenuAdapter = new secondLabelAdapter(filterValue, this, dataBean);
+                    for (int j = 0; j < filterValue.size(); j++) {
+                        if (focusBean != null && !TextUtils.isEmpty(focusBean.getClassTypes())) {
+                            if (focusBean.getClassTypes().equals(filterValue.get(j).getTitle())) {
+                                default_record_position = j;
+                            }
+                        }
+                        if (focusBean != null && !TextUtils.isEmpty(focusBean.getYears())) {
+                            if (focusBean.getYears().equals(filterValue.get(j).getTitle())) {
+                                default_record_position_second = j;
+                            }
                         }
                     }
-                    if (focusBean != null && !TextUtils.isEmpty(focusBean.getYears())) {
-                        if (focusBean.getYears().equals(filterValue.get(j).getTitle())) {
-                            default_record_position_second = j;
+                    horizontalRecyclerView.setAdapter(secondMenuAdapter);
+                    if (hasDefaultFocusSecond) {
+                        if (i == 0) {
+                            secondMenuAdapter.setDefaultFocusFirst(default_record_position);
+                        } else if (i == 1) {
+                            secondMenuAdapter.setDefaultFocusSecond(default_record_position_second);
                         }
                     }
-                }
-                horizontalRecyclerView.setAdapter(secondMenuAdapter);
-                if (hasDefaultFocusSecond) {
-                    if (i == 0) {
-                        secondMenuAdapter.setDefaultFocusFirst(default_record_position);
-                    } else if (i == 1) {
-                        secondMenuAdapter.setDefaultFocusSecond(default_record_position_second);
-                    }
-                }
 
-                int height = DisplayUtils.translate(50, 1);
-                int topMargin = DisplayUtils.translate(36, 1);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-                params.topMargin = topMargin;
-                horizontalRecyclerView.setLayoutParams(params);
-                container.addView(horizontalRecyclerView);
+                    int height = DisplayUtils.translate(50, 1);
+                    int topMargin = DisplayUtils.translate(36, 1);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+                    params.topMargin = topMargin;
+                    horizontalRecyclerView.setLayoutParams(params);
+                    container.addView(horizontalRecyclerView);
+                }
             }
         }
 
@@ -476,8 +478,16 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
             list.addAll(contents);
             labelDataAdapter.notifyDataSetChanged();
         } else {
+//            int index = list.size();
             list.addAll(contents);
             labelDataAdapter.notifyDataSetChanged();
+
+//            int index = list.size();
+//            list.addAll(contents);
+//            int end = list.size();
+//
+//            labelDataAdapter.notifyItemRangeInserted(index,end);
+            Log.e("yml", "showData: "+total );
         }
     }
 
@@ -623,9 +633,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     moveFlag--;
                     presenter.getLabelData();
                     return true;
-                }
-                if (tab.hasFocus()) {
-                    super.checkIsTop(event);
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:

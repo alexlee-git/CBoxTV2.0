@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.details;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
@@ -14,7 +15,9 @@ import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.ToastUtil;
 
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
@@ -147,6 +150,16 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                         @Override
                         public void onResult(Content info) {
+                            if (info==null){
+                                if (fromOuter){
+                                    ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将进入应用首页");
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    intent.putExtra("action", "");
+                                    intent.putExtra("params", "");
+                                    startActivity(intent);
+                                }
+                                SingleDetailPageActivity.this.finish();
+                            }
                             mProgramSeriesInfo = info;
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null, "PS");
                             mAdView.requestAD();

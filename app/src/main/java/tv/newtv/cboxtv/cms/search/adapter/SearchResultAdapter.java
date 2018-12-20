@@ -106,10 +106,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
 
                     if (hasFocus) {
                         holder.mPosterTitle.setSelected(true);
-                        onItemGetFocus(holder.itemView);
+                        onItemGetFocus(holder.allRootView);
                     } else {
                         holder.mPosterTitle.setSelected(false);
-                        onItemLoseFocus(holder.itemView);
+                        onItemLoseFocus(holder.allRootView);
                     }
                 }
             });
@@ -177,9 +177,11 @@ class ResultHolder extends RecyclerView.ViewHolder {
     public ImageView mPosterImageView;
     public View mFocusImageView;
     public TextView mPosterTitle;
+    public FrameLayout allRootView;
 
     public ResultHolder(View itemView) {
         super(itemView);
+        allRootView = itemView.findViewById(R.id.id_module_view_search);
         mPosterImageView = itemView.findViewWithTag("cell_poster");
         mFocusImageView = itemView.findViewWithTag("cell_focus");
         mPosterTitle = itemView.findViewWithTag("cell_title");

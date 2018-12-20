@@ -113,11 +113,11 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     public void onStop() {
 
         if (videoPlayerView != null) {
-            defaultPlayerConfig = videoPlayerView.getDefaultConfig();
-
-            mPlayIndex = videoPlayerView.getIndex();
-            mPlayPosition = videoPlayerView.getCurrentPosition();
-
+            if(!videoPlayerView.isReleased()) {
+                defaultPlayerConfig = videoPlayerView.getDefaultConfig();
+                mPlayIndex = videoPlayerView.getIndex();
+                mPlayPosition = videoPlayerView.getCurrentPosition();
+            }
 
             videoPlayerView.release();
             videoPlayerView.destory();

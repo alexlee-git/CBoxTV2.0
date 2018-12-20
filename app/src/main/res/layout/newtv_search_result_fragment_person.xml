@@ -22,6 +22,7 @@
         android:paddingTop="@dimen/height_20px"
         android:paddingLeft="@dimen/width_10px"
         android:paddingRight="@dimen/width_100px"
+        android:paddingBottom="@dimen/width_35px"
         android:clipChildren="false"
         android:clipToPadding="false" />
 

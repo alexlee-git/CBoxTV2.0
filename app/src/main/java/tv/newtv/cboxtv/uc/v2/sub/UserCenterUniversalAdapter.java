@@ -46,6 +46,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
     private String mContentType; // 用来区分历史 or 收藏 or 关注 or 订阅
     int recordPosition = -1;
     Boolean refresh = true;
+    private int type = 0;
 
     public UserCenterUniversalAdapter(Context context, List<UserCenterPageBean.Bean> datas,
                                       String contentType) {
@@ -54,10 +55,25 @@ public class UserCenterUniversalAdapter extends RecyclerView
         this.mContentType = contentType;
     }
 
+    public UserCenterUniversalAdapter(Context context, List<UserCenterPageBean.Bean> datas,
+                                      String contentType, int type) {
+        this.mContext = context;
+        this.mDatas = datas;
+        this.mContentType = contentType;
+        this.type = type;
+    }
+
     @Override
     public UserCenterUniversalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new UserCenterUniversalViewHolder(LayoutInflater.from(mContext).inflate(R.layout
-                .item_usercenter_universal, parent, false));
+        View view;
+        if (type == 1) {
+            view = LayoutInflater.from(mContext).inflate(R.layout
+                    .item_usercenter_universal_live, parent, false);
+        } else {
+            view = LayoutInflater.from(mContext).inflate(R.layout
+                    .item_usercenter_universal, parent, false);
+        }
+        return new UserCenterUniversalViewHolder(view);
     }
 
     @Override
@@ -166,15 +182,30 @@ public class UserCenterUniversalAdapter extends RecyclerView
         // 海报
         String posterUrl = info.get_imageurl();
         if (!TextUtils.isEmpty(posterUrl) && !TextUtils.isEmpty("null") && holder.poster != null) {
-            Picasso.get().load(posterUrl)
-                    .placeholder(R.drawable.default_member_center_240_360_v2)
-                    .error(R.drawable.deful_user)
-                    .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
-                    .transform(new PosterCircleTransform(mContext, 4))
-                    .into(holder.poster);
+            if (type == 1) {
+                Picasso.get().load(posterUrl)
+                        .placeholder(R.drawable.focus_384_216)
+                        .error(R.drawable.deful_user_h)
+                        .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
+                        .resize(384, 216)
+                        .centerInside()
+                        .transform(new PosterCircleTransform(mContext, mContext.getResources().getDimensionPixelOffset(R.dimen.collect_lb)))
+                        .into(holder.poster);
+            } else {
+                Picasso.get().load(posterUrl)
+                        .placeholder(R.drawable.default_member_center_240_360_v2)
+                        .error(R.drawable.deful_user)
+                        .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
+                        .transform(new PosterCircleTransform(mContext, 4))
+                        .into(holder.poster);
+            }
         } else {
             if (holder.poster != null) {
-                holder.poster.setImageResource(R.drawable.deful_user);
+                if (type == 1) {
+                    holder.poster.setImageResource(R.drawable.deful_user_h);
+                } else {
+                    holder.poster.setImageResource(R.drawable.deful_user);
+                }
             }
         }
 
@@ -205,8 +236,13 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 RxBus.get().post("recordPosition", holder.getLayoutPosition());
 
                 Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
-                JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
-                        info.getContentId(), "");
+                if (type == 1) {
+                    JumpUtil.activityJump(mContext, Constant.OPEN_VIDEO, info.get_contenttype(),
+                            info.getContentId(), "");
+                } else {
+                    JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
+                            info.getContentId(), "");
+                }
             }
         });
     }

@@ -9,6 +9,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -102,9 +103,9 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             if (!alternateView.isReleased()) {
                 playerViewConfig = alternateView.getDefaultConfig();
             }
-            viewContainer.removeView(alternateView);
             alternateView.release();
             alternateView.destory();
+            viewContainer.removeView(alternateView);
             alternateView = null;
         }
     }
@@ -137,6 +138,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             }
 
             alternateView.setPlayerCallback(this);
+            alternateView.setAlternateCallback(this);
         }
     }
 
@@ -147,7 +149,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         alternateIdText = findViewById(R.id.id_detail_title);
         alternateFromText = findViewById(R.id.id_detail_from);
         alternateDescText = findViewById(R.id.id_detail_desc);
-        alternateView = findViewById(R.id.video_player);
         mMoreView = findViewById(R.id.more_view_stub);
         mMoreView.setOnInflateListener(new ViewStub.OnInflateListener() {
             @Override
@@ -169,8 +170,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 }
             });
         }
-        alternateView.setPlayerCallback(this);
-        alternateView.setAlternateCallback(this);
 
         fullScreenBtn = findViewById(R.id.full_screen);
 
@@ -184,15 +183,20 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
         mPresenter = new ContentContract.ContentPresenter(getContext(), this);
 
+        prepareMediaPlayer();
         updateUI();
     }
 
     private void darkAnimator(ImageView view ,ImageView navTitle){
-        ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "alpha", 0.1f, 1.0f, 0.1f, 1.0f, 0.1f,
-                1.0f,0.1f,1.0f,0.1f,1.0f);
-        ObjectAnimator translationY = ObjectAnimator.ofFloat(view, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
+        ObjectAnimator alphaX = ObjectAnimator.ofFloat(view, "alpha", 0.6f, 1.0f, 0.6f, 1.0f, 0.6f,
+                1.0f,0.6f,1.0f,0.6f,1.0f);
+        ObjectAnimator translationX = ObjectAnimator.ofFloat(view, "TranslationY", 0,12,0,12,0,12,0,12,0,12);
+        ObjectAnimator alphaY = ObjectAnimator.ofFloat(navTitle, "alpha", 1.0f, 0.6f);
+        alphaY.setStartDelay(4000);
+        alphaY.setDuration(1000);
+        alphaY.start();
         AnimatorSet animator = new AnimatorSet();
-        animator.playTogether(translationX,translationY);
+        animator.playTogether(alphaX,translationX);
         animator.setDuration(5000);
         animator.setInterpolator(new LinearInterpolator());
         animator.start();
@@ -200,8 +204,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                view.setVisibility(View.GONE);
                 navTitle.setVisibility(GONE);
+                view.setVisibility(View.GONE);
             }
         });
 
@@ -301,7 +305,10 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             alternateDescText.setText(content.getDescription().replace("\r\n", ""));
             int ellipsisCount = alternateDescText.getLayout().getEllipsisCount(alternateDescText.getLineCount
                     () - 1);
-            if (ellipsisCount > 0 && mMoreView != null && !isInflate) {
+//            int lineCount = alternateDescText.getLineCount();
+            int lineCount = alternateDescText.length();
+            int length = content.getDescription().length();
+            if (lineCount<length && mMoreView != null && !isInflate) {
                 final View view = mMoreView.inflate();
                 view.setOnFocusChangeListener(new OnFocusChangeListener() {
                     @Override
@@ -324,6 +331,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             }
 
         }
+
+        prepareMediaPlayer();
 
         if (alternateView != null) {
             alternateView.setSeriesInfo(content);

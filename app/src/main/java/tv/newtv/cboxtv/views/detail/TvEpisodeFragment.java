@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADHelper;
 import com.newtv.libs.ad.AdEventContent;
 import com.newtv.libs.util.GsonUtil;
@@ -326,6 +328,9 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
 //                int vipFlag = Integer.parseInt(programsInfo.getVipFlag());
                 if (VipCheck.isPay(programsInfo.getVipFlag())) {
                     mImageView.setVisibility(View.VISIBLE);
+                    Glide.with(getContext())
+                            .load(Constant.FILE_PATH)
+                            .into(mImageView);
                 } else {
                     mImageView.setVisibility(View.GONE);
                 }

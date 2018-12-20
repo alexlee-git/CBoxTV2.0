@@ -15,7 +15,6 @@ public class CmsErrorCode {
     public static final String ALTERNATE_ERROR_PLAYLIST_EMPTY = "2004";
     public static final String ALTERNATE_ERROR_NOT_FOUND_TOPLAY = "2005";
 
-
     public static final String CMS_APP_KEY_EMPTY = "1001"; //appkey不存在
     public static final String CMS_APP_KEY_EMPTY_CHANNELCODE = "1002"; //	该appkey下不存在channelCode
     public static final String CMS_NO_ONLINE_CONTENT = "1003"; //	该站点下不存在已上线的该内容
@@ -38,4 +37,12 @@ public class CmsErrorCode {
     public static final String CMS_GET_LAYOUT_FAILED = "1020"; //	 获取页面布局失败
     public static final String CMS_GET_CELL_FAIELD = "1021"; //	 获取布局cell失败
     public static final String CMS_LIVE_INFO_EMPTY = "1022"; //	 配置直播但直播信息是空
+
+
+    public static String getErrorMessage(String code) {
+        switch (code){
+            case CMS_NO_ONLINE_CONTENT: return "节目走丢了，请稍后再试";
+        }
+        return "";
+    }
 }

@@ -149,7 +149,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void prepareVideoPlayer() {
-        if (mVideoPlayerView != null) {
+        if (mVideoPlayerView != null && mVideoPlayerView.isReleased()) {
             releaseVideoPlayer();
             mPlayerViewConfig = null;
         }
@@ -157,9 +157,13 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             if (mPlayerViewConfig != null) {
                 mVideoPlayerView = new VideoPlayerView(mPlayerViewConfig, getContext());
             } else {
-                mVideoPlayerView = new VideoPlayerView(getContext());
+                NewTVLauncherPlayerView.PlayerViewConfig config = null;
+                if(useAlternateUI){
+                    config = new NewTVLauncherPlayerView.PlayerViewConfig();
+                    config.useAlternateUI = true;
+                }
+                mVideoPlayerView = new VideoPlayerView(config,getContext());
                 mVideoPlayerView.setSingleRepeat(true);
-                mVideoPlayerView.setUseAlternateUI();
                 mVideoPlayerView.setTag("videoPlayer");
                 FrameLayout.LayoutParams layoutParams = null;
                 layoutParams = new FrameLayout.LayoutParams
@@ -305,6 +309,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private void doPlay() {
         Log.d(TAG, "currentMode : " + currentMode + " visible=" + mIsShow +" uuid="+mUUID);
         if (!mIsShow) return;
+        if(mVideoPlayerView != null && !mVideoPlayerView.isReleased() && mVideoPlayerView
+                .isPlaying()) return;
         if (currentMode == MODE_LIVE) {
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
             if (liveInfo.isLiveTime()) {

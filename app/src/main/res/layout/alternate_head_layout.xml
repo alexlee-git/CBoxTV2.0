@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-                android:layout_height="@dimen/height_550px"
+                android:layout_height="@dimen/height_500px"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:paddingEnd="@dimen/width_87px"
@@ -24,23 +24,17 @@
         android:layout_marginLeft="@dimen/width_93px"
         android:layout_marginTop="@dimen/height_62px"
         android:background="@drawable/selector_pos_background">
-        <tv.newtv.cboxtv.player.videoview.VideoPlayerView
-            android:focusable="true"
-            android:id="@+id/video_player"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-        >
-        </tv.newtv.cboxtv.player.videoview.VideoPlayerView>
+
     </FrameLayout>
 
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/width_22px"
-        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginStart="@dimen/width_38px"
+        android:layout_marginLeft="@dimen/width_38px"
         android:layout_marginTop="@dimen/height_88px"
-        android:layout_marginRight="@dimen/width_90px"
+        android:layout_marginRight="@dimen/width_120px"
         android:layout_toEndOf="@+id/video_container"
         android:layout_toRightOf="@+id/video_container"
         tools:ignore="RtlHardcoded">
@@ -62,7 +56,7 @@
             android:layout_below="@+id/id_detail_title"
             android:layout_marginTop="@dimen/height_16px"
             android:textColor="@color/detail_tvcolor"
-            android:textSize="@dimen/height_30px"/>
+            android:textSize="@dimen/height_30px" />
 
 
         <TextView
@@ -74,29 +68,30 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:lineSpacingExtra="@dimen/height_8px"
-            android:maxEms="100"
-            android:maxLines="3"
-            android:textColor="@color/detail_tvcolor"
+            android:maxLength="80"
+            android:maxLines="2"
+            android:singleLine="false"
+            android:textColor="@color/color_authing"
             android:textSize="@dimen/height_30px"/>
 
         <ViewStub
             android:id="@+id/more_view_stub"
             android:layout="@layout/layout_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/id_detail_desc"
+            android:layout_width="@dimen/width_109px"
+            android:layout_height="@dimen/height_30px"
             android:layout_alignParentRight="true"
-            />
+            android:layout_alignBottom="@+id/id_detail_desc"
+            android:layout_marginRight="@dimen/width_25px"/>
 
     </RelativeLayout>
 
     <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/full_screen"
-        android:layout_width="@dimen/width_152px"
-        android:layout_height="@dimen/height_76px"
+        android:layout_width="@dimen/width_192px"
+        android:layout_height="@dimen/height_90px"
         android:layout_alignBottom="@+id/video_container"
-        android:layout_marginStart="@dimen/width_22px"
-        android:layout_marginLeft="@dimen/width_22px"
+        android:layout_marginStart="@dimen/width_38px"
+        android:layout_marginLeft="@dimen/width_38px"
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toEndOf="@+id/video_container"
         android:layout_toRightOf="@+id/video_container"
@@ -106,11 +101,11 @@
 
     <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/collect"
-        android:layout_width="@dimen/width_152px"
-        android:layout_height="@dimen/height_76px"
+        android:layout_width="@dimen/width_192px"
+        android:layout_height="@dimen/height_90px"
         android:layout_alignBottom="@+id/video_container"
-        android:layout_marginStart="@dimen/width_54px"
-        android:layout_marginLeft="@dimen/width_54px"
+        android:layout_marginStart="@dimen/width_48px"
+        android:layout_marginLeft="@dimen/width_48px"
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toEndOf="@+id/full_screen"
         android:layout_toRightOf="@+id/video_container"
