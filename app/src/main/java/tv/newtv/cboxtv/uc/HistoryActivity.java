@@ -444,6 +444,7 @@ public class HistoryActivity extends BaseActivity implements
     private void requestDataByDB(String tableName) {
         DataSupport.search(tableName)
                 .condition()
+                .limit(UserCenterRecordManager.REQUEST_LIST_PAGE_RECORD_LIMIT)
                 .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
