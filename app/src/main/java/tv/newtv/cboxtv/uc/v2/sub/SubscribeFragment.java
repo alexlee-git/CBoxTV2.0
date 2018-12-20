@@ -47,6 +47,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 /**
  * 项目名称:         央视影音
@@ -100,7 +101,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     public void onResume() {
         super.onResume();
         observable = RxBus.get().register("recordPosition");
-        observable.observeOn(AndroidSchedulers .mainThread())
+        observable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Integer>() {
                     @Override
                     public void accept(Integer integer) throws Exception {
@@ -109,7 +110,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                 });
 
         operationObs = RxBus.get().register("operation_param");
-        operationObs.observeOn(AndroidSchedulers .mainThread())
+        operationObs.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Map<String, String>>() {
                     @Override
                     public void accept(Map<String, String> map) throws Exception {
@@ -180,6 +181,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     private void requestDataByDB(String tableName) {
         DataSupport.search(tableName)
                 .condition()
+                .limit(UserCenterRecordManager.REQUEST_LIST_PAGE_RECORD_LIMIT)
                 .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
@@ -190,7 +192,8 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
                         if (code == 0) {
                             UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
                             Gson gson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                            }.getType();
                             List<UserCenterPageBean.Bean> universalBeans = gson.fromJson(result, type);
                             userCenterUniversalBean.data = universalBeans;
                             if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
@@ -397,7 +400,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RxBus.get().unregister("recordPosition",observable);
+        RxBus.get().unregister("recordPosition", observable);
         RxBus.get().unregister("operation_param", operationObs);
     }
 }

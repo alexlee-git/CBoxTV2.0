@@ -411,6 +411,7 @@ public class UserCenterFragment extends BaseFragment implements
         try {
             DataSupport.search(tableNameSubscribe)
                     .condition()
+                    .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
@@ -434,6 +435,7 @@ public class UserCenterFragment extends BaseFragment implements
                 }
             }).excute();
             DataSupport.search(tableNameCollect).condition()
+                    .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
@@ -457,6 +459,7 @@ public class UserCenterFragment extends BaseFragment implements
                 }
             }).excute();
             DataSupport.search(tableNameHistory).condition()
+                    .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
                     .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
                     .OrderBy(DBConfig.ORDER_BY_TIME)
@@ -480,6 +483,7 @@ public class UserCenterFragment extends BaseFragment implements
                 }
             }).excute();
             DataSupport.search(TableNameAttention).condition()
+                    .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {

@@ -80,6 +80,8 @@ public class UserCenterRecordManager {
 
     public static final String REQUEST_RECORD_OFFSET = "1";
     public static final String REQUEST_RECORD_LIMIT = "100";
+    public static final String REQUEST_LIST_PAGE_RECORD_LIMIT = "100";//各个记录列表页面获取数据上限
+    public static final String REQUEST_HOME_PAGE_RECORD_LIMIT = "6";//我的首页推荐页面获取数据上限
 
     // private String tableName;
     private final String TAG = "UserCenterRecordManager";
@@ -1532,7 +1534,7 @@ public class UserCenterRecordManager {
                 .condition()
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME);
-        if(TextUtils.equals(type,"history")){
+        if (TextUtils.equals(type, "history")) {
             sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
         sqlCondition.build().withCallback(dbCallback).excute();
