@@ -439,7 +439,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         Log.d("TopicTwoFragment", infoResult.getData().toString());
         if (infoResult.getBackground() == null) {
-            frame_container.setBackgroundResource(R.drawable.bg);
+            //frame_container.setBackgroundResource(R.drawable.bg);
         }
         moduleInfoResult = infoResult;
 

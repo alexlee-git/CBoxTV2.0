@@ -356,7 +356,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         if (mModuleInfoResult != null) {
             String url = mModuleInfoResult.getBackground();
             if (TextUtils.isEmpty(url)) {
-                mNewSpecialLayout.setBackgroundResource(R.drawable.new_special_bg);
+                //mNewSpecialLayout.setBackgroundResource(R.drawable.new_special_bg);
             }
         }
 
