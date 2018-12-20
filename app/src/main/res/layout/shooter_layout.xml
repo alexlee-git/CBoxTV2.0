@@ -19,26 +19,27 @@
             android:id="@+id/shooter_up"
             android:layout_width="@dimen/width_39px"
             android:layout_height="@dimen/height_21px"
-            android:layout_marginTop="@dimen/height_24px"
+            android:layout_marginTop="@dimen/height_20px"
             android:src="@drawable/shooter_indicator_up" />
 
         <tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView
             android:id="@+id/shooter_recycle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/height_30px"
-            android:layout_marginTop="@dimen/height_22px"
+            android:layout_marginBottom="@dimen/height_15px"
+            android:layout_marginTop="@dimen/height_15px"
             android:layout_weight="1"
-            android:clipChildren="false"
-            android:clipToPadding="false"
+            android:clipChildren="true"
+            android:clipToPadding="true"
             android:paddingBottom="@dimen/height_8px"
-            android:paddingLeft="@dimen/width_30px" />
+            android:paddingLeft="@dimen/width_30px"
+            />
 
         <ImageView
             android:id="@+id/shooter_down"
             android:layout_width="@dimen/width_39px"
             android:layout_height="@dimen/height_21px"
-            android:layout_marginBottom="@dimen/height_24px"
+            android:layout_marginBottom="@dimen/height_20px"
             android:src="@drawable/shooter_indicator" />
     </LinearLayout>
 
