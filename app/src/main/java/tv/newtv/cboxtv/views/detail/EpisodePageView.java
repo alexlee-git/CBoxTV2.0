@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -492,17 +493,20 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
                 mTitleView.setText("剧集列表");
                 mTitleView.setVisibility(VISIBLE);
 
-                if (seriesContent != null && "0".equals(seriesContent.isFinish())) {//没有更新完
+                /*if (seriesContent != null && "0".equals(seriesContent.isFinish())) {//没有更新完
                     mUpTitle.setText("已更新" + seriesContent.getRecentNum() + "集");
                 } else if(seriesContent != null && "1".equals(seriesContent.isFinish())){
                     mUpTitle.setText("共"+seriesContent.getSeriesSum()+"集已剧终");
-                }
-            }else {
-                if (seriesContent != null && "0".equals(seriesContent.isFinish())) {//没有更新完
+                }*/
+            } else {
+                /*if (seriesContent != null && "0".equals(seriesContent.isFinish())) {//没有更新完
                     mUpTitle.setText("更新到"+seriesContent.getUpdateDate()+"第"+seriesContent.getRecentNum()+"期");
                 } else if(seriesContent != null && "1".equals(seriesContent.isFinish())){
                     mUpTitle.setText("已收官");
-                }
+                }*/
+            }
+            if (seriesContent != null && !TextUtils.isEmpty(seriesContent.getRecentMsg())) {
+                mUpTitle.setText(seriesContent.getRecentMsg());
             }
             LayoutParams layoutParams = (LayoutParams) TitleView.getLayoutParams();
             TitleView.measure(widthMeasureSpec,
