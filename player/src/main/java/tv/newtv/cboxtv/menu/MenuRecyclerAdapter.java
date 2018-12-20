@@ -33,6 +33,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
         this.data = data;
         this.playNode = node;
         this.menuGroup = menuGroup;
+        setHasStableIds(true);
     }
 
     @Override
@@ -118,6 +119,11 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
             return 1;
         }
         return 0;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return data.get(position).hashCode();
     }
 
     public Node getItem(int position) {

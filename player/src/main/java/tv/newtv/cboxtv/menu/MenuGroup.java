@@ -312,6 +312,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         Node currentNode = this.currentNode;
         for (int i = 0; i <= level; i++) {
             MenuRecyclerView lv = new MenuRecyclerView(getContext());
+            lv.setItemAnimator(null);
             MenuRecyclerAdapter adapter;
             if (i == level) {
                 adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode,this);
@@ -704,6 +705,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public MenuRecyclerView createRecyclerView(int level) {
         MenuRecyclerView lv = new MenuRecyclerView(getContext());
+        lv.setItemAnimator(null);
         MenuRecyclerAdapter adapter = new MenuRecyclerAdapter(getContext(), new ArrayList<Node>()
                 , null,this);
         lv.setAdapter(adapter);
@@ -1337,7 +1339,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
             outRect.bottom = space;
-            Log.i(TAG, "getItemOffsets: "+outRect);
+//            Log.i(TAG, "getItemOffsets: "+outRect);
         }
     }
 }
