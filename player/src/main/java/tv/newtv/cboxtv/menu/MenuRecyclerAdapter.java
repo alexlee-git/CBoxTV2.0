@@ -66,14 +66,13 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
             lbHolder.title.setText(node.getTitle());
             if (node instanceof LastNode) {
                 LastNode lastNode = (LastNode) node;
+                lbHolder.playTitle.setText("");
                 lbHolder.lbNumber.setText(lastNode.alternateNumber);
                 if (node.getPrograms().size() > 0) {
                     List<Program> programs = node.getPrograms();
                     lbHolder.playTitle.setText(programs.get(binarySearch(programs)).getTitle());
                 } else if (!node.isRequest() || !node.isRequesting()) {
                     menuGroup.requestData(node);
-                } else {
-                    lbHolder.playTitle.setText("");
                 }
             }
         }
