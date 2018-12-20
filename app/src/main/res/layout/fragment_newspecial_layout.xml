@@ -19,15 +19,15 @@
             android:id="@+id/fragment_newspecial_left_up"
             android:layout_width="@dimen/width_32px"
             android:layout_height="@dimen/height_16px"
-            android:layout_marginBottom="@dimen/height_37px"
-            android:layout_marginTop="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_20px"
+            android:layout_marginBottom="@dimen/height_8px"
             android:visibility="invisible"
             android:src="@drawable/ic_fragment_newspecial_up" />
 
         <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
             android:id="@+id/fragment_newspecial_left_list"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_900px"
+            android:layout_height="@dimen/height_1000px"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintVertical_bias="1.0"
             android:focusable="true"/>
@@ -36,8 +36,8 @@
             android:id="@+id/fragment_newspecial_left_down"
             android:layout_width="@dimen/width_32px"
             android:layout_height="@dimen/height_16px"
-            android:layout_marginBottom="@dimen/height_37px"
-            android:layout_marginTop="@dimen/height_37px"
+            android:layout_marginBottom="@dimen/height_20px"
+            android:layout_marginTop="@dimen/height_8px"
             android:visibility="invisible"
             android:src="@drawable/ic_fragment_newspecial_down" />
 
@@ -54,15 +54,15 @@
             android:id="@+id/fragment_newspecial_center_up"
             android:layout_width="@dimen/width_32px"
             android:layout_height="@dimen/height_16px"
-            android:layout_marginBottom="@dimen/height_37px"
-            android:layout_marginTop="@dimen/height_37px"
+            android:layout_marginTop="@dimen/height_20px"
+            android:layout_marginBottom="@dimen/height_8px"
             android:visibility="invisible"
             android:src="@drawable/ic_fragment_newspecial_up" />
 
         <tv.newtv.cboxtv.cms.special.doubleList.view.FocusRecyclerView
             android:id="@+id/fragment_newspecial_center_list"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_900px"
+            android:layout_height="@dimen/height_1000px"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintVertical_bias="1.0"
             android:focusable="true"/>
@@ -71,8 +71,8 @@
             android:id="@+id/fragment_newspecial_center_down"
             android:layout_width="@dimen/width_32px"
             android:layout_height="@dimen/height_16px"
-            android:layout_marginBottom="@dimen/height_37px"
-            android:layout_marginTop="@dimen/height_37px"
+            android:layout_marginBottom="@dimen/height_20px"
+            android:layout_marginTop="@dimen/height_8px"
             android:src="@drawable/ic_fragment_newspecial_down" />
 
     </LinearLayout>
@@ -105,7 +105,8 @@
             android:layout_marginTop="@dimen/height_16px"
             android:ellipsize="end"
             android:focusable="false"
-            android:maxLines="2"
+            android:maxLines="1"
+            android:maxEms="30"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/height_28px" />
 
@@ -130,7 +131,7 @@
                 android:background="@drawable/special_video_title_bg"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/height_15px"
-                android:textColor="#FF5500"
+                android:textColor="@color/colorWhite"
                 android:visibility="gone" />
 
             <ImageView
