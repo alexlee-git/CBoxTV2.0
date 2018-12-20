@@ -183,7 +183,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        "",contentID )
+                        "", contentID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
@@ -269,7 +269,7 @@ public class SubRemoteDataSource implements SubDataSource {
                                 entity.setIsUpdate(item.optString("update_superscript"));
                                 entity.setPlayIndex(item.optString("episode_num"));
                                 entity.setRecentMsg(item.optString("recent_msg"));
-                                entity.setUpdateTime(Long.parseLong(item.optString("create_time")) / 1000);
+                                entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 infos.add(entity);
                             }
 

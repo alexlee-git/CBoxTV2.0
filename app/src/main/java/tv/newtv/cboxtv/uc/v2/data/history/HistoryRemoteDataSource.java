@@ -336,7 +336,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                 entity.setPlayIndex(item.optString("latest_episode"));
                                 entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setIsUpdate(item.optString("update_superscript"));
-                                entity.setUpdateTime(Long.parseLong(item.optString("program_watch_date")) / 1000);
+                                entity.setUpdateTime(Long.parseLong(item.optString("program_watch_date")));
                                 entity.setDuration(String.valueOf(item.optLong("program_dur")));
                                 entity.setPlayPosition(String.valueOf(item.optLong("program_watch_dur")));
                                 entity.setRecentMsg(item.optString("recent_msg"));
