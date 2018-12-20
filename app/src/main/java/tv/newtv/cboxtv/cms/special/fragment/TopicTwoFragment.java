@@ -231,6 +231,8 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 } else {
                     subTitle.setText(moduleInfoResult.getSubTitle());
                 }
+                subTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                subTitle.getPaint().setFakeBoldText(true);
             }
             adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
