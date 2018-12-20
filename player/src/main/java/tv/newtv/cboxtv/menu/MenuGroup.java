@@ -26,6 +26,7 @@ import com.newtv.cms.Request;
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
+import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
@@ -313,10 +314,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             MenuRecyclerView lv = new MenuRecyclerView(getContext());
             MenuRecyclerAdapter adapter;
             if (i == level) {
-                adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode);
+                adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode,this);
             } else {
                 adapter = new MenuRecyclerAdapter(getContext(), currentNode.getParent()
-                        .getChild(), currentNode);
+                        .getChild(), currentNode,this);
             }
             lv.setAdapter(adapter);
 
@@ -704,7 +705,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     public MenuRecyclerView createRecyclerView(int level) {
         MenuRecyclerView lv = new MenuRecyclerView(getContext());
         MenuRecyclerAdapter adapter = new MenuRecyclerAdapter(getContext(), new ArrayList<Node>()
-                , null);
+                , null,this);
         lv.setAdapter(adapter);
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -730,6 +731,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     private void getLastData2(final Node node, final RecreateListener l) {
         lastListView.setTag(node);
+        if(node.isRequesting()){
+            return;
+        }
+        node.setRequesting(true);
         String nodeId = node.getId();
         Observable<ResponseBody> observable = null;
         if (Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
@@ -744,6 +749,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 .subscribe(new Consumer<ResponseBody>() {
                     @Override
                     public void accept(ResponseBody responseBody) throws Exception {
+                        node.setRequesting(false);
                         if (node.isRequest()) {
                             return;
                         }
@@ -768,6 +774,52 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                 l.success(null);
                             }
 
+                        }
+                    }
+                });
+    }
+
+    public void requestData(final Node node){
+        if(node.isRequest() || node.isRequesting()){
+            return;
+        }
+        String nodeId = node.getId();
+        Request.INSTANCE.getAlternate()
+                .getInfo(Libs.get().getAppKey(), Libs.get().getChannelId(), nodeId)
+                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBody>() {
+                    @Override
+                    public void accept(ResponseBody responseBody) throws Exception {
+                        node.setRequesting(false);
+                        if (node.isRequest()) {
+                            return;
+                        }
+                        node.setRequest(true);
+                        String result = responseBody.string();
+                        final SeriesContent seriesContent = GsonUtil.fromjson(result, SeriesContent.class);
+                        if (seriesContent != null && seriesContent.data != null && seriesContent.data.size() > 0) {
+                            node.setPrograms(seriesContent.data);
+                            for (Program p : seriesContent.data) {
+                                p.setParent(node);
+                            }
+
+                            MainLooper.get().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (lastListView != null && lastListView.getTag() == node) {
+                                        lastProgram = seriesContent.data;
+                                        LastMenuRecyclerAdapter adapter =
+                                                (LastMenuRecyclerAdapter) lastListView.getAdapter();
+                                        adapter.setData(lastProgram);
+                                    }
+
+                                    MenuRecyclerView menuRecyclerView = listViews.get(node.getLevel());
+                                    MenuRecyclerAdapter menuRecyclerViewAdapter = (MenuRecyclerAdapter)
+                                            menuRecyclerView.getAdapter();
+                                    menuRecyclerViewAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
                     }
                 });
