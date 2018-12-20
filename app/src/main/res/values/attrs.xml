@@ -83,6 +83,12 @@
 
         <attr name="block_poster_include_padding" format="boolean"/>
 
+        <attr name="block_poster_padding" format="dimension"/>
+        <attr name="block_auto_location" format="boolean"/>
+        <attr name="block_last" format="boolean"/>
+
+        <attr name="block_tag" format="string"/>
+
 
         <attr name="block_poster_type" format="enum">
             <enum name="image" value="0"/>

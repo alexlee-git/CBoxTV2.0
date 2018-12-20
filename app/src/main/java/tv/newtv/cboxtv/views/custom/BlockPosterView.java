@@ -23,8 +23,8 @@ import com.newtv.libs.util.UsefulBitmapFactory;
 
 import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
  * 项目名称:         CBoxTV2.0
@@ -33,33 +33,36 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/16
  */
-public class BlockPosterView extends FrameLayout implements Navigation
-        .NavigationChange, View.OnClickListener, View.OnFocusChangeListener, ScreenListener {
+public class BlockPosterView extends FrameLayout implements View.OnClickListener, View.OnFocusChangeListener, ScreenListener {
     private static final String TAG = BlockPosterView.class.getSimpleName();
     private static final int BLOCK_TYPE_IMAGE = 0;
     private static final int BLOCK_TYPE_VIDEO = 1;
     private View focusBackground;
     private RecycleImageView mPosterImage;
+    private FrameLayout mPoster;
     private TextView mPosterTitle;
     private int marginSpace = 0;
     private int titleHeight = 0;
     private int poster_width = 0;
     private int poster_height = 0;
+    private boolean auto_location = true;
     private int poster_resource_holder = 0;
     private boolean show_title = false;
     private int block_type = BLOCK_TYPE_IMAGE;
+    private String block_tag = "block";
 
     private boolean enterFullScreen = false;
 
+    private boolean isLast = false;
     private Bitmap bitmap;
     private Paint mPaint;
 
     private String mPageUUID;
 
     private LivePlayView mLivePlayView;
-//    private AlternateView mAlternateView;
 
     private boolean isVideoMode = false;
+    private Program mProgram;
 
     public BlockPosterView(Context context) {
         this(context, null);
@@ -78,7 +81,7 @@ public class BlockPosterView extends FrameLayout implements Navigation
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
 
-        if(mLivePlayView != null){
+        if (mLivePlayView != null) {
             mLivePlayView.dispatchWindowVisibilityChanged(visibility);
         }
     }
@@ -96,25 +99,28 @@ public class BlockPosterView extends FrameLayout implements Navigation
 
     public void setPageUUID(String uuid) {
         mPageUUID = uuid;
-        if(mLivePlayView != null){
+        if (mLivePlayView != null) {
             mLivePlayView.setPageUUID(uuid);
         }
+    }
 
+    public void setUseable(boolean useable) {
+        if (focusBackground != null) {
+            focusBackground.setFocusable(true);
+            focusBackground.setClickable(false);
+        }
     }
 
     @Override
-    public void onChange(String uuid) {
-//        if (Navigation.get().isCurrentPage(mPageUUID)) {
-//            onVisibleChange(VISIBLE);
-//        } else {
-//            onVisibleChange(GONE);
-//        }
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+
+        refreshLayout();
     }
 
     public void setData(Program program) {
-        if (mLivePlayView != null) {
-            mLivePlayView.setProgramInfo(program);
-        }
+
+        mProgram = program;
 
         GlideUtil.loadImage(getContext(), mPosterImage, program.getImg(), poster_resource_holder,
                 poster_resource_holder, true);
@@ -146,18 +152,44 @@ public class BlockPosterView extends FrameLayout implements Navigation
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
+        refreshLayout();
+    }
+
+    private void refreshLayout() {
         if (focusBackground != null) {
-            focusBackground.layout(0, 0, getBlockWidth(), getBlockHeight() - titleHeight);
-        }
+            ViewGroup.LayoutParams layoutParams = getLayoutParams();
+            layoutParams.width = poster_width + marginSpace;
+            layoutParams.height = poster_height + marginSpace;
 
-        if (mPosterImage != null) {
-            mPosterImage.layout(marginSpace, marginSpace, getBlockWidth() - marginSpace,
-                    getBlockHeight() - marginSpace - titleHeight);
-        }
+            int hmargin = getResources().getDimensionPixelSize(R.dimen.width_48px);
+            int vmargin = getResources().getDimensionPixelSize(R.dimen.height_48px);
 
-        if (block_type == BLOCK_TYPE_VIDEO && mLivePlayView != null) {
-            mLivePlayView.layout(marginSpace, marginSpace, getBlockWidth() - marginSpace * 2,
-                    getBlockHeight() - marginSpace * 2 - titleHeight);
+            marginSpace = focusBackground.getPaddingLeft();
+            if (marginSpace == 0) return;
+
+            if (layoutParams instanceof MarginLayoutParams) {
+                if (!isLast) {
+                    ((MarginLayoutParams) layoutParams).rightMargin = hmargin - marginSpace * 2;
+                }
+                ((MarginLayoutParams) layoutParams).bottomMargin = vmargin - marginSpace * 2;
+            }
+
+            setLayoutParams(layoutParams);
+
+            focusBackground.layout(0, 0, poster_width + marginSpace * 2, poster_height +
+                    marginSpace * 2);
+
+            if (mPoster != null) {
+                mPoster.layout(marginSpace, marginSpace, poster_width + marginSpace,
+                        poster_height + marginSpace);
+            }
+
+            if (mLivePlayView != null) {
+                mLivePlayView.layout(0, 0, poster_width + marginSpace,
+                        poster_height + marginSpace);
+            }
+
+            requestLayout();
         }
     }
 
@@ -187,17 +219,30 @@ public class BlockPosterView extends FrameLayout implements Navigation
                     R.styleable.BlockPosterView_block_show_title, false);
             poster_resource_holder = typedArray.getResourceId(
                     R.styleable.BlockPosterView_block_poster_holder, 0);
-            block_type = typedArray.getInteger(
+            int block = typedArray.getInteger(
                     R.styleable.BlockPosterView_block_poster_type, BLOCK_TYPE_IMAGE);
+            if(block > 0){
+                block_type = BLOCK_TYPE_VIDEO;
+            }else{
+                block_type = BLOCK_TYPE_IMAGE;
+            }
             focusResource = typedArray.getResourceId(R.styleable
                     .BlockPosterView_block_poster_focus, R.drawable.selector_pos_background_27px);
             include = typedArray.getBoolean(R.styleable
                     .BlockPosterView_block_poster_include_padding, true);
 
+            block_tag = typedArray.getString(R.styleable.BlockPosterView_block_tag);
+
+            isLast = typedArray.getBoolean(R.styleable.BlockPosterView_block_last, false);
+
+            auto_location = typedArray.getBoolean(R.styleable
+                    .BlockPosterView_block_auto_location, true);
+
             typedArray.recycle();
         }
 
-        if (block_type == BLOCK_TYPE_VIDEO) {
+
+        if (block_type > BLOCK_TYPE_IMAGE) {
             mPaint = new Paint();
 
             int width = (int) (getContext().getResources().getDimensionPixelOffset(R.dimen
@@ -209,9 +254,12 @@ public class BlockPosterView extends FrameLayout implements Navigation
                     .playing_icon2), width, height);
         }
 
-        Navigation.get().attach(this);
+
+        setTag(block_tag);
+
         setClipChildren(false);
         setClipToPadding(false);
+
         marginSpace = context.getResources().getDimensionPixelSize(R.dimen.width_27px);
         titleHeight = context.getResources().getDimensionPixelSize(R.dimen.height_65px);
 
@@ -219,21 +267,25 @@ public class BlockPosterView extends FrameLayout implements Navigation
         focusBackground.setBackgroundResource(focusResource);
         focusBackground.setFocusable(true);
         focusBackground.setClickable(true);
-        focusBackground.setOnClickListener(this);
         focusBackground.setOnFocusChangeListener(this);
+        focusBackground.setOnClickListener(this);
         addView(focusBackground, 0);
 
+        mPoster = new FrameLayout(getContext());
+        LayoutParams poster_layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup
+                .LayoutParams.WRAP_CONTENT);
+        mPoster.setLayoutParams(poster_layoutParams);
         mPosterImage = new RecycleImageView(context);
         mPosterImage.setTag("POSTER");
         mPosterImage.setScaleType(ImageView.ScaleType.FIT_XY);
-
         LayoutParams layoutParams = new LayoutParams(poster_width, poster_height);
         mPosterImage.setLayoutParams(layoutParams);
         if (!include) {
             mPosterImage.setPadding(marginSpace, marginSpace, marginSpace, marginSpace);
         }
         mPosterImage.setImageResource(poster_resource_holder);
-        addView(mPosterImage, 1, layoutParams);
+        mPoster.addView(mPosterImage);
+        addView(mPoster, 1, poster_layoutParams);
 
         addOtherWidget(layoutParams);
 
@@ -251,12 +303,16 @@ public class BlockPosterView extends FrameLayout implements Navigation
             titleLayoutParam.rightMargin = marginSpace;
             mPosterTitle.setLayoutParams(titleLayoutParam);
             mPosterTitle.setText("央视影音测试标题");
+            mPosterTitle.setTag(String.format("%s_%s", block_tag, "title"));
             addView(mPosterTitle, titleLayoutParam);
         } else {
             titleHeight = 0;
         }
 
-        setOnClickListener(this);
+
+        if(mProgram != null){
+            setData(mProgram);
+        }
     }
 
     private void addOtherWidget(LayoutParams layoutParams) {
@@ -268,10 +324,12 @@ public class BlockPosterView extends FrameLayout implements Navigation
                     mLivePlayView.setLayoutParams(layoutParams);
                     mLivePlayView.attachScreenListener(this);
                     mLivePlayView.setPageUUID(mPageUUID);
-                    addView(mLivePlayView, 2, layoutParams);
+                    mLivePlayView.setTag(String.format("%s_%s", block_tag, "poster"));
+                    mPoster.addView(mLivePlayView, layoutParams);
                 }
                 break;
             default:
+                mPosterImage.setTag(String.format("%s_%s", block_tag, "poster"));
                 break;
         }
     }
@@ -280,20 +338,25 @@ public class BlockPosterView extends FrameLayout implements Navigation
     public void onClick(View view) {
         if (mLivePlayView != null) {
             mLivePlayView.dispatchClick();
+        } else {
+            if (mProgram != null) {
+                JumpUtil.activityJump(getContext(), mProgram);
+            }
         }
     }
 
     @Override
     public void onFocusChange(View view, boolean gainFocus) {
         if (show_title) {
-            if (mPosterImage != null) {
-                mPosterImage.setActivated(gainFocus);
-            }
             if (mPosterTitle != null) {
                 mPosterTitle.setSelected(gainFocus);
             }
+
+            if (mPosterImage != null) {
+                mPosterImage.setActivated(gainFocus);
+            }
         }
-        if (!isVideoMode) {
+        if (!isVideoMode || (mLivePlayView != null && !mLivePlayView.isVideoType())) {
             if (gainFocus) {
                 ScaleUtils.getInstance().onItemGetFocus(this);
             } else {

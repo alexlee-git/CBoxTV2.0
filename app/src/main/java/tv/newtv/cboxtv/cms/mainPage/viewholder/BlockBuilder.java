@@ -37,13 +37,13 @@ import java.util.Locale;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AlternatePageView;
-import tv.newtv.cboxtv.cms.search.SearchFragmentNew;
 import tv.newtv.cboxtv.cms.search.view.SearchEditView;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.views.custom.AutoSizeTextView;
+import tv.newtv.cboxtv.views.custom.BlockPosterView;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
@@ -57,12 +57,9 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
 public class BlockBuilder extends BaseBlockBuilder {
 
     public static final String TAG = BlockBuilder.class.getSimpleName();
+    private static final int SEARCH_EDIT_VIEW = 6;
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
-
-    private static final int SEARCH_EDIT_VIEW = 6;
-
-
     private Context mContext;
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
@@ -85,15 +82,24 @@ public class BlockBuilder extends BaseBlockBuilder {
     public UniversalViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         UniversalViewHolder holder = null;
         if (viewType > 0) {
-            if (viewType == SEARCH_EDIT_VIEW){
-                return new UniversalViewHolder(new SearchEditView(mContext),"");
-            }else {
+            if (viewType == SEARCH_EDIT_VIEW) {
+                return new UniversalViewHolder(new SearchEditView(mContext), "");
+            } else {
                 // 根据viewType获取相应的布局文件
                 int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType
                         (viewType);
                 if (layoutResId == R.layout.layout_module_32 && !Constant.canUseAlternate) {
                     //不允许使用轮播
                     layoutResId = R.layout.layout_module_1;
+                }
+                if (layoutResId == R.layout.layout_module_8) {
+                    layoutResId = R.layout.layout_module_8_v2;
+                }
+                if (layoutResId == R.layout.layout_module_17) {
+                    layoutResId = R.layout.layout_module_17_v2;
+                }
+                if (layoutResId == R.layout.layout_module_9) {
+                    layoutResId = R.layout.layout_module_9_v2;
                 }
                 holder = new UniversalViewHolder(LayoutInflater.from(parent
                         .getContext()).inflate
@@ -117,7 +123,7 @@ public class BlockBuilder extends BaseBlockBuilder {
     public int getItemViewType(int position, Page item) {
         try {
             if (item != null) {
-                if ("search".equals( item.getBlockType())){
+                if ("search".equals(item.getBlockType())) {
                     return SEARCH_EDIT_VIEW;
                 }
                 if (!"6".equals(item.getBlockType())) {
@@ -236,7 +242,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                         ("poster") - 1);
 
                 // 给推荐位设置监听器
-                final FrameLayout frameLayout = (FrameLayout) itemView.findViewWithTag
+                final ViewGroup frameLayout = (ViewGroup) itemView.findViewWithTag
                         (frameLayoutId);
 
                 if (frameLayout != null) {
@@ -247,19 +253,22 @@ public class BlockBuilder extends BaseBlockBuilder {
                         ((AlternatePageView) frameLayout).setProgram(moduleItem);
                         return;
                     }
+
+                    if (frameLayout instanceof BlockPosterView) {
+                        ((BlockPosterView) frameLayout).setData(info);
+                    }
+
                     //屏幕适配
-                    if (!"005".equals(layoutId) && !"008".equals(layoutId)) {
+                    if (!"005".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
                         params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                         frameLayout.setLayoutParams(params);
                     }
 
+
                     // 按需添加角标控件
 //                    processSuperscript(layoutCode, info, frameLayout);
-
-                    // 按需添加标题控件
-                    processTitle(layoutCode, info.getTitle(), info.getSubTitle(), frameLayout);
 
                     // onFocusChangeListener
                     frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -294,8 +303,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     });
 
                     // 如果是第5和第8号组件,则设置推荐位标题.因为按照约定只有第5和第8套组件留有推荐位标题控件
-                    if (TextUtils.equals("005", layoutId) || TextUtils.equals("008",
-                            layoutId)) {
+                    if (TextUtils.equals("005", layoutId) || TextUtils.equals("008", layoutId)) {
                         TextView textView = (TextView) itemView.findViewWithTag(titleWidgetId);
                         View focusView = (View) itemView.findViewWithTag(focusWidgetId);
 
@@ -332,7 +340,7 @@ public class BlockBuilder extends BaseBlockBuilder {
 
                 ViewGroup parentFrameLayout = frameLayout;
                 int postIndex = 0;
-                if (posterView != null) {
+                if (posterView != null && parentFrameLayout != null) {
                     parentFrameLayout = (ViewGroup) posterView.getParent();
                     postIndex = parentFrameLayout.indexOfChild(posterView);
                 }
@@ -342,13 +350,18 @@ public class BlockBuilder extends BaseBlockBuilder {
                         layoutCode,
                         postIndex + 1,
                         info, parentFrameLayout);
+
+                // 按需添加标题控件
+                processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
+                        posterView != null && posterView.getParent() != null ? (ViewGroup) posterView
+                                .getParent() : frameLayout);
             }
 
             if (layoutList.size() > 0) {
                 for (String layout : layoutList) {
                     View target = itemView.findViewWithTag(layout);
                     if (target != null) {
-                        target.setVisibility(View.GONE);
+                        target.setVisibility(View.INVISIBLE);
                     }
                 }
             }
@@ -406,7 +419,7 @@ public class BlockBuilder extends BaseBlockBuilder {
     }
 
     protected void onItemGetFocus(String layoutId, final View view) {
-        if (TextUtils.equals("005", layoutId) || TextUtils.equals("008", layoutId)) {
+        if (TextUtils.equals("005", layoutId)) {
             View focusView = (View) view.getTag(R.id.tag_imageview);
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
             focusTextView.setSelected(true);
@@ -448,7 +461,7 @@ public class BlockBuilder extends BaseBlockBuilder {
     }
 
     protected void onItemLoseFocus(String layoutId, View view) {
-        if (TextUtils.equals("005", layoutId) || TextUtils.equals("008", layoutId)) {
+        if (TextUtils.equals("005", layoutId)) {
             View focusView = (View) view.getTag(R.id.tag_imageview);
             TextView focusTextView = (TextView) view.getTag(R.id.tag_textview);
             focusTextView.setSelected(false);
