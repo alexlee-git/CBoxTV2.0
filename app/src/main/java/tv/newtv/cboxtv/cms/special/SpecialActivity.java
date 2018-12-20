@@ -185,7 +185,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     @Override
     protected void onResume() {
         super.onResume();
-        uploadExitLog();
+        uploadEnterLog();
     }
 
     @Override
