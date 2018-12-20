@@ -48,6 +48,10 @@ public class Node {
      * 是否必须请求数据
      */
     private boolean mustRequest = false;
+    /**
+     * 是否正在请求数据
+     */
+    private boolean requesting = false;
 
     public boolean isLeaf(){
 //        if(child != null && child.size() > 0)
@@ -275,5 +279,13 @@ public class Node {
         program.setContentUUID(LastMenuRecyclerAdapter.NO_CONTENTS);
         program.setParent(this);
         list.add(program);
+    }
+
+    public boolean isRequesting() {
+        return requesting;
+    }
+
+    public void setRequesting(boolean requesting) {
+        this.requesting = requesting;
     }
 }

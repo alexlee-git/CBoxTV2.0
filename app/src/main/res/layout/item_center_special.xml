@@ -3,6 +3,8 @@
     android:id="@+id/topic_center_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/height_100px"
+    android:layout_marginTop="@dimen/height_12px"
+    android:layout_marginBottom="@dimen/height_12px"
     android:focusable="true">
 
     <TextView

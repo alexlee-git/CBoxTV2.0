@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/width_586px"
+    android:layout_width="@dimen/width_720px"
     android:layout_height="@dimen/height_262px"
+    android:paddingLeft="@dimen/width_35px"
+    android:paddingRight="@dimen/width_35px"
     android:focusable="true">
 
     <tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup
         android:id="@+id/shooter_poster"
         android:layout_width="@dimen/width_518px"
-        android:layout_height="@dimen/height_200px"
+        android:layout_height="@dimen/height_199px"
         android:layout_marginLeft="@dimen/width_33px"
         android:layout_marginStart="@dimen/width_33px"
-        android:layout_marginTop="@dimen/height_33px"
         android:scaleType="fitXY" />
 
     <ImageView
