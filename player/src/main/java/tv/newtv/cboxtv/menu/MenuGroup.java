@@ -1254,6 +1254,23 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         getLastAdapter().notifyDataSetChanged();
     }
 
+    protected void setRecyclerViewSpacesItem(Node node){
+        if(node.getLevel() >= listViews.size()){
+            return;
+        }
+        MenuRecyclerView recyclerView = getMenuRecyclerViewByLevel(node.getLevel());
+        if(Constant.CONTENTTYPE_LB.equals(node.getContentType())
+                || Constant.CONTENTTYPE_LV.equals(node.getContentType())){
+            if(recyclerView.getItemDecorationCount() == 0){
+                recyclerView.addItemDecoration(spacesItemDecoration);
+            }
+        } else {
+            if(recyclerView.getItemDecorationCount() > 0){
+                recyclerView.removeItemDecoration(spacesItemDecoration);
+            }
+        }
+    }
+
     protected void addLastAdapterSpacesItem(){
         if(lastListView.getItemDecorationCount() == 0){
             lastListView.addItemDecoration(spacesItemDecoration);

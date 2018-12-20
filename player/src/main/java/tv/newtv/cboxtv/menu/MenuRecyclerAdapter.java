@@ -33,6 +33,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
         this.data = data;
         this.playNode = node;
         this.menuGroup = menuGroup;
+        notifyItemDecoration();
         setHasStableIds(true);
     }
 
@@ -53,6 +54,9 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         final Node node = data.get(position);
         holder.itemView.setBackgroundResource(R.color.color_transparent);
+        if(position == 0){
+            menuGroup.setRecyclerViewSpacesItem(node);
+        }
 
         if (holder instanceof Holder) {
             final Holder h = (Holder) holder;
@@ -62,12 +66,14 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
             lbHolder.title.setText(node.getTitle());
             if (node instanceof LastNode) {
                 LastNode lastNode = (LastNode) node;
+                lbHolder.lbNumber.setText(lastNode.alternateNumber);
                 if (node.getPrograms().size() > 0) {
                     List<Program> programs = node.getPrograms();
-                    lbHolder.lbNumber.setText(lastNode.alternateNumber);
                     lbHolder.playTitle.setText(programs.get(binarySearch(programs)).getTitle());
                 } else if (!node.isRequest() || !node.isRequesting()) {
                     menuGroup.requestData(node);
+                } else {
+                    lbHolder.playTitle.setText("");
                 }
             }
         }
@@ -132,6 +138,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
 
     public void setData(List<Node> data) {
         this.data = data;
+        notifyItemDecoration();
         notifyDataSetChanged();
     }
 
@@ -139,7 +146,14 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
         this.data = data;
         this.playNode = node;
         this.selectView = null;
+        notifyItemDecoration();
         notifyDataSetChanged();
+    }
+
+    private void notifyItemDecoration(){
+        if(data != null && data.size() > 0){
+            menuGroup.setRecyclerViewSpacesItem(data.get(0));
+        }
     }
 
     class Holder extends RecyclerView.ViewHolder {
