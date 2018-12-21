@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -21,14 +20,13 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.newtv.cms.Request;
-import com.newtv.cms.bean.Content;
 import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.GsonUtil;
-import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScreenUtils;
 
@@ -51,7 +49,6 @@ import tv.newtv.cboxtv.menu.model.SeriesContent;
 import tv.newtv.cboxtv.player.util.LbUtils;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.player.R;
-import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
@@ -127,25 +124,25 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
      * AllNode初始化是否完成
      */
     private boolean allNodeInit = false;
-    private Context mcontext;
+    private Context mContext;
     private Node defaultFocusNode = null;
     private SpacesItemDecoration spacesItemDecoration = new SpacesItemDecoration(getResources()
             .getDimensionPixelOffset(R.dimen.width_26px));
 
     public MenuGroup(Context context) {
         this(context, null);
-        mcontext = context;
+        mContext = context;
     }
 
     public MenuGroup(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
-        mcontext = context;
+        mContext = context;
     }
 
     @SuppressLint("ResourceAsColor")
     public MenuGroup(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mcontext = context;
+        mContext = context;
         setOrientation(HORIZONTAL);
         recyclerViewWidth = DEFAULT_WIDTH = getResources().getDimensionPixelOffset(R.dimen.width_430px);
     }
@@ -652,6 +649,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             lastListView.setTag(node.getId());
             resetLastRecyclerViewData();
             setRecyclerViewsGoneByLevel(level - 1);
+            if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
+                Toast.makeText(mContext, "节目走丢了 请继续观看", Toast.LENGTH_SHORT).show();
+            }
         } else {
             lastListView.setVisibility(View.VISIBLE);
             lastListView.setTag(node.getId());
@@ -789,6 +789,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                 l.success(null);
                             }
 
+                        } else {
+                            if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
+                                Toast.makeText(mContext, "节目走丢了 请继续观看", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
