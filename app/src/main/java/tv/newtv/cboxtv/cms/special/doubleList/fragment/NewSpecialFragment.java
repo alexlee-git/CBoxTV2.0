@@ -663,7 +663,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         if (mCenterData != null && mCenterData.get(index) != null) {
             if (videoPlayerView != null && mCacheSubContents.get(leftPosition + mLeftContentId) != null) {
                 Log.d("NewTVLauncherPlayerView", "2  content : " + mCacheSubContents.get(leftPosition + mLeftContentId).toString());
-                videoPlayerView.setSeriesInfo(mCacheSubContents.get(leftPosition + mLeftContentId));
+                videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
                 videoPlayerView.playSingleOrSeries(index, 0);
             }
         } else {
@@ -773,7 +773,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         if (info != null) {
                             mVideoPlayerTitle.setText(info.getTitle());
                         }
-                        if (centerPosition <= mCenterData.size()) {
+                        if (centerPosition < mCenterData.size()) {
                             mNewSpecialCenterAdapter.setSelected(centerPosition);
                         }
                     }
