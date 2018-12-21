@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.newtv.cms.bean.Page;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import tv.newtv.cboxtv.BuildConfig;
 import tv.newtv.cboxtv.R;
 
 /**
@@ -23,6 +25,7 @@ import tv.newtv.cboxtv.R;
 public class ModuleLayoutManager {
 
     private static ModuleLayoutManager mInstance;
+    private boolean isAdaptationVesion = false;
     private Map<String, List<String>> mModuleDataBase; //
     private Map<Integer, Integer> mViewTypeAndLayoutResFileMap;// viewType<----映射---->布局文件
     private Map<String, Integer> mWidgetCounter; // 组件<----映射---->组件内推荐位个数
@@ -34,7 +37,6 @@ public class ModuleLayoutManager {
             "layout_018", "layout_019", "layout_020", "layout_021", "layout_022", "layout_023",
             "layout_024", "layout_025", "layout_026", "layout_027", "layout_028", "layout_029",
             "layout_030", "layout_031", "layout_032"};
-
     private int[] layoutResIds = new int[]{R.layout.layout_module_1, R.layout.layout_module_2,
             R.layout.layout_module_3, R.layout.layout_module_4, R.layout.layout_module_5, R
             .layout.layout_module_6,
@@ -50,6 +52,23 @@ public class ModuleLayoutManager {
             .layout.layout_module_26,
             R.layout.layout_module_27_other, R.layout.layout_module_28_other, R.layout
             .layout_module_29,
+            R.layout.layout_module_30, R.layout.layout_module_31, R.layout.layout_module_32};
+
+    private int[] layoutResIds_V2 = new int[]{R.layout.layout_module_1, R.layout.layout_module_2_v2,
+            R.layout.layout_module_3_v2, R.layout.layout_module_4_v2, R.layout.layout_module_5, R
+            .layout.layout_module_6_v2,
+            R.layout.layout_module_7_v2, R.layout.layout_module_8_v2, R.layout.layout_module_9_v2, R
+            .layout.layout_module_10_v2,
+            R.layout.layout_module_11_v2, R.layout.layout_module_12_v2, R.layout.layout_module_13_v2, R
+            .layout.layout_module_14_v2,
+            R.layout.layout_module_15_v2, R.layout.layout_module_16_v2, R.layout.layout_module_17_v2, R
+            .layout.layout_module_18_v2,
+            R.layout.layout_module_19_v2, R.layout.layout_module_20_v2, R.layout.layout_module_21_v2, R
+            .layout.layout_module_22_v2,
+            R.layout.layout_module_23_v2, R.layout.layout_module_24_v2, R.layout.layout_module_25_v2, R
+            .layout.layout_module_26_v2,
+            R.layout.layout_module_27_other_v2, R.layout.layout_module_28_other_v2, R.layout
+            .layout_module_29_v2,
             R.layout.layout_module_30, R.layout.layout_module_31, R.layout.layout_module_32};
 
     private String[] rightEdgeIds = new String[]{"cell_001_1", "cell_002_2", "cell_003_3",
@@ -70,6 +89,10 @@ public class ModuleLayoutManager {
 
 
     private ModuleLayoutManager() {
+        if (BuildConfig.FLAVOR.equals(DeviceUtil.LETV)|| BuildConfig.FLAVOR.equals(DeviceUtil.XIONG_MAO)
+                ||BuildConfig.FLAVOR.equals(DeviceUtil.CBOXTEST)){
+            isAdaptationVesion = true;
+        }
         if (mModuleDataBase == null) {
             mModuleDataBase = new ConcurrentHashMap<String, List<String>>(Constant.BUFFER_SIZE_64) {
             };
@@ -334,8 +357,13 @@ public class ModuleLayoutManager {
         }
 
         for (int i = 0; i < layoutIds.length; ++i) {
-            registerModuleById(layoutIds[i], layoutResIds[i], Integer.parseInt(layoutIds[i]
-                    .substring(layoutIds[i].indexOf("_") + 1)), subViewSizes[i]);
+            if (isAdaptationVesion) {
+                registerModuleById(layoutIds[i], layoutResIds_V2[i], Integer.parseInt(layoutIds[i]
+                        .substring(layoutIds[i].indexOf("_") + 1)), subViewSizes[i]);
+            }else {
+                registerModuleById(layoutIds[i], layoutResIds[i], Integer.parseInt(layoutIds[i]
+                        .substring(layoutIds[i].indexOf("_") + 1)), subViewSizes[i]);
+            }
         }
     }
 

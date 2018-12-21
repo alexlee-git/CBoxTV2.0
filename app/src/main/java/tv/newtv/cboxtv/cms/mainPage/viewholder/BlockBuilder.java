@@ -92,15 +92,15 @@ public class BlockBuilder extends BaseBlockBuilder {
                     //不允许使用轮播
                     layoutResId = R.layout.layout_module_1;
                 }
-                if (layoutResId == R.layout.layout_module_8) {
-                    layoutResId = R.layout.layout_module_8_v2;
-                }
-                if (layoutResId == R.layout.layout_module_17) {
-                    layoutResId = R.layout.layout_module_17_v2;
-                }
-                if (layoutResId == R.layout.layout_module_9) {
-                    layoutResId = R.layout.layout_module_9_v2;
-                }
+//                if (layoutResId == R.layout.layout_module_8) {
+//                    layoutResId = R.layout.layout_module_8_v2;
+//                }
+//                if (layoutResId == R.layout.layout_module_17) {
+//                    layoutResId = R.layout.layout_module_17_v2;
+//                }
+//                if (layoutResId == R.layout.layout_module_9) {
+//                    layoutResId = R.layout.layout_module_9_v2;
+//                }
                 holder = new UniversalViewHolder(LayoutInflater.from(parent
                         .getContext()).inflate
                         (layoutResId, parent, false), PlayerUUID);

@@ -306,7 +306,9 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             titleLayoutParam.leftMargin = marginSpace;
             titleLayoutParam.rightMargin = marginSpace;
             mPosterTitle.setLayoutParams(titleLayoutParam);
-            mPosterTitle.setText("央视影音测试标题");
+            if(isInEditMode()) {
+                mPosterTitle.setText("央视影音测试标题");
+            }
             mPosterTitle.setTag(String.format("%s_%s", block_tag, "title"));
             addView(mPosterTitle, titleLayoutParam);
         } else {
