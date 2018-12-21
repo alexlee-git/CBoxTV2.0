@@ -27,7 +27,6 @@ import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.EntryContract;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
-import com.newtv.libs.HeadersInterceptor;
 import com.newtv.libs.ad.AdEventContent;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
@@ -47,6 +46,7 @@ import java.util.Locale;
 
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.ad.ADPlayerView;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 
 /**
  * Created by TCP on 2018/4/12.
@@ -189,6 +189,8 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         mAdPresenter = new AdContract.AdPresenter(getApplicationContext(), this);
         mSplashPresenter = new EntryContract.EntryPresenter(getApplicationContext(), this);
         mSplashPresenter.initCNTVLog(getApplication());
+        //2018.12.21 wqs 补充由于代码合并导致未调用时钟工具类，实现时钟同步功能
+        TimeUtil.getInstance().synchronizeTime();
     }
 
     private void initRetryUrls() {
