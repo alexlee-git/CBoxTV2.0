@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -232,22 +233,13 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                             ProgramCollectionActivity.this.finish();
                         }
                         mContent = info;
-                        mListView.setContentUUID(contentUUID);
-                        mListView.onSubContentResult(contentUUID, new ArrayList<>(info.getData()));
-                        suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH,
-                                info, null);
-
-                        if (mAdView != null) {
-                            mAdView.requestAD();
-                        }
                         ArrayList<String> productId = new ArrayList<>();
                         if (mContent != null ) {
-
                             if (!TextUtils.isEmpty(mContent.getVipFlag())){
                                 int vipState = Integer.parseInt(mContent.getVipFlag());
                                 if ((vipState == 1||vipState == 3||vipState == 4)&&mContent.getVipProductId()!=null){
                                     productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),mContent.getVipProductId()));
-                                    //Constant.FILE_PATH = String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),mContent.getVipProductId());
+                                    Constant.COLLECTION_FILE_PATH = String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),mContent.getVipProductId());
                                 }
                             }
                             if (!TextUtils.isEmpty(mContent.is4k())){
@@ -271,6 +263,15 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                             default:
                                 break;
                         }
+                        mListView.setContentUUID(contentUUID);
+                        mListView.onSubContentResult(contentUUID, new ArrayList<>(info.getData()));
+                        suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH,
+                                info, null);
+
+                        if (mAdView != null) {
+                            mAdView.requestAD();
+                        }
+
                     }
                 }));
         mListView.setOnItemClick(new onEpisodeItemClick<SubContent>() {

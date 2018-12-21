@@ -31,8 +31,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 
 public class Constant {
-    //付费标识地址
+    //剧集综艺动画儿童节目付费标识地址
     public static String FILE_PATH;
+    //合计个人详情付费标识地址
+    public static String COLLECTION_FILE_PATH;
     //是否启用轮播
     public static final boolean canUseAlternate  = true;
 

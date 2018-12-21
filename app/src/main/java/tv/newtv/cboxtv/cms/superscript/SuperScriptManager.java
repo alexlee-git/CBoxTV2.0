@@ -436,7 +436,8 @@ public class SuperScriptManager implements CornerContract.View {
         if (!TextUtils.isEmpty(superUrl)) {
             if ("2".equals(corner.getCornerPosition()) && TextUtils.equals("vip", corner
                     .getCornerImg())) {
-                target.load(R.drawable.vip);
+                //target.load(R.drawable.vip);
+                target.load(Constant.COLLECTION_FILE_PATH);
                 return;
             }
             target.hasCorner(false).useResize(true).load(superUrl);

@@ -24,6 +24,13 @@
             android:scaleType="fitXY"
             android:tag="tag_poster_image"/>
 
+        <FrameLayout
+            android:tag="corner_container"
+            android:layout_width="@dimen/width_390px"
+            android:layout_height="@dimen/height_214px">
+
+        </FrameLayout>
+
         <TextView
             android:textColor="@android:color/white"
             android:background="#40000000"
