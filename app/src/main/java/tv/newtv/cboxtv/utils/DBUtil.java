@@ -13,6 +13,7 @@ import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SystemUtils;
 
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 
 /**
  * 项目名称:         CBoxTV
@@ -77,7 +78,7 @@ public class DBUtil {
         }
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (TextUtils.isEmpty(updateTime)) {
-            contentValues.put(DBConfig.UPDATE_TIME, System.currentTimeMillis());
+            contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
         } else {
             contentValues.put(DBConfig.UPDATE_TIME, updateTime);
         }
@@ -169,7 +170,7 @@ public class DBUtil {
             }
             String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
             if (TextUtils.isEmpty(updateTime)) {
-                contentValues.put(DBConfig.UPDATE_TIME, System.currentTimeMillis());
+                contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
             } else {
                 contentValues.put(DBConfig.UPDATE_TIME, updateTime);
             }
@@ -245,7 +246,7 @@ public class DBUtil {
         if (!TextUtils.isEmpty(updateTime)) {
             contentValues.put(DBConfig.UPDATE_TIME, updateTime);
         } else {
-            contentValues.put(DBConfig.UPDATE_TIME, System.currentTimeMillis());
+            contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
         }
         contentValues.put(DBConfig.USERID, userId);
         // contentValues.put(DBConfig.SUPERSCRIPT, mInfo.getrSuperScript());
@@ -295,7 +296,7 @@ public class DBUtil {
 
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (TextUtils.isEmpty(updateTime)) {
-            contentValues.put(DBConfig.UPDATE_TIME, System.currentTimeMillis());
+            contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
         } else {
             contentValues.put(DBConfig.UPDATE_TIME, updateTime);
         }

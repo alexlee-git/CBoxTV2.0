@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.SpannableBuilderUtils;
 
 /**
  * Created by gaoleichao on 2018/3/29.
@@ -122,7 +123,7 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                     (entity.getPlayPosition(), entity.getDuration()));
 
             // 更新剧集
-            SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(entity.getRecentMsg());
+            SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(entity.getRecentMsg());
             if (!TextUtils.isEmpty(spannableRecentMsg)) {
                 viewHolder.mEpisode.setText(spannableRecentMsg);
             } else {

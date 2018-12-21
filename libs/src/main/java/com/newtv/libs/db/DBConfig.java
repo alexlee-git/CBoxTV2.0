@@ -68,6 +68,7 @@ public final class DBConfig {
     public static final String PROGRAM_CHILD_NAME = "_program_child_name";
 
     public static final String ORDER_BY_TIME = UPDATE_TIME + " desc";//排序条件
+    public static final String ORDER_BY_TIME_ASC = UPDATE_TIME + " asc";//正序
     public static final String IS_FINISH = "is_finish";//是否结束
     public static final String REAL_EXCLUSIVE = "real_exclusive";//运营标识
     public static final String ISSUE_DATE = "issue_date";

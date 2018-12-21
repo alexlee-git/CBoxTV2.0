@@ -27,6 +27,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
@@ -59,7 +60,8 @@ public class SubRemoteDataSource implements SubDataSource {
     public void addRemoteSubscribe(@NonNull UserCenterPageBean.Bean bean) {
         String mType = "0";
         String type = bean.get_contenttype();
-
+        int versionCode = 0;
+        String extend = "";
         String parentId = "";
         String subId = "";
 
@@ -68,7 +70,15 @@ public class SubRemoteDataSource implements SubDataSource {
             parentId = bean.get_contentuuid();
             subId = bean.getPlayId();
         }
+        long updateTime;
+        if (bean.getUpdateTime() > 0) {
+            updateTime = bean.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
 
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
@@ -92,7 +102,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
-                        bean.getContentId()
+                        bean.getContentId(), updateTime, extend
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -317,12 +327,22 @@ public class SubRemoteDataSource implements SubDataSource {
 
         String parentId = "";
         String subId = "";
-
+        int versionCode = 0;
+        String extend = "";
         if (Constant.CONTENTTYPE_CL.equals(type) || Constant.CONTENTTYPE_TV.equals(type)) {
             mType = "0";
             parentId = bean.get_contentuuid();
             subId = bean.getPlayId();
         }
+        long updateTime;
+        if (bean.getUpdateTime() > 0) {
+            updateTime = bean.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
+
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
@@ -342,7 +362,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
-                        bean.getContentId()
+                        bean.getContentId(), updateTime, extend
                 )
                 .subscribe(new Observer<ResponseBody>() {
                     @Override

@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.SpannableBuilderUtils;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -608,7 +609,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                     setTitleView(subTitleTextView, subTitle);
                     setTitleView(scoreTitleTextView, scoreTitle);
                     // 更新剧集
-                    SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(bean.getRecentMsg());
+                    SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(bean.getRecentMsg());
                     if (!TextUtils.isEmpty(spannableRecentMsg)) {
                         recentTitleTextView.setText(spannableRecentMsg);
                     } else {

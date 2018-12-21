@@ -28,6 +28,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.utils.BaseObserver;
 
@@ -59,12 +60,11 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
 
     @Override
     public void addRemoteHistory(final @NonNull UserCenterPageBean.Bean entity) {
-//        uploadEnterLog(history.getProgramset_id());
-
         String mType = "0";
         String parentId = "";
         String subId = "";
-
+        int versionCode = 0;
+        String extend = "";
         String type = entity.get_contenttype();
         if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
@@ -75,11 +75,17 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
             subId = entity.getPlayId();
         }
 
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String userId = SharePreferenceUtils.getUserId(mContext);
-
         Log.d(TAG, "report history item, user_id " + userId + ", content_id : " + entity.getContentId());
-
+        long updateTime;
+        if (entity.getUpdateTime() > 0) {
+            updateTime = entity.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
                 .addHistory(Authorization,
@@ -105,7 +111,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.getPlayIndex(),
                         entity.get_actiontype(),
                         entity.getProgramChildName(),
-                        entity.getContentId())
+                        entity.getContentId(), updateTime, extend)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -406,7 +412,8 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         String mType = "0";
         String parentId = "";
         String subId = "";
-
+        int versionCode = 0;
+        String extend = "";
         String type = bean.get_contenttype();
         if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
@@ -416,7 +423,14 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
             parentId = bean.get_contentuuid();
             subId = bean.getPlayId();
         }
-
+        long updateTime;
+        if (bean.getUpdateTime() > 0) {
+            updateTime = bean.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
@@ -443,7 +457,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
-                        bean.getContentId())
+                        bean.getContentId(), updateTime, extend)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
@@ -476,4 +490,5 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                     }
                 });
     }
+
 }

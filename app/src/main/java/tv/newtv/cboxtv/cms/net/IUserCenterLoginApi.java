@@ -111,15 +111,15 @@ public interface IUserCenterLoginApi {
                                                  @Field("verifyCode") String verifyCode,
                                                  @Field("from") String from,
                                                  @Field("service") String service,
-                                                @Field("checkCode") String checkCode);
+                                                 @Field("checkCode") String checkCode);
 
     //通过ticket换取accessToken接口
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/service/cctv/getAccessToken")
     Observable<ResponseBody> transTicketToToken(@Header("Authorization") String Authorization,
-                                            @Field("client_id") String response_type,
-                                            @Field("ticket") String channel_code);
+                                                @Field("client_id") String response_type,
+                                                @Field("ticket") String channel_code);
 
     //获取订单
     @Headers("host_type: " + BootGuide.PAY)
@@ -209,7 +209,9 @@ public interface IUserCenterLoginApi {
                                         @Field("latest_episode") String curEpisode,
                                         @Field("action_type") String actionType,
                                         @Field("program_child_name") String programChildId,
-                                        @Field("content_id") String contentId);
+                                        @Field("content_id") String contentId,
+                                        @Field("program_watch_date") long program_watch_date,
+                                        @Field("ext") String ext);
 
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
@@ -256,7 +258,9 @@ public interface IUserCenterLoginApi {
                                         @Field("latest_episode") String latest_episode,
                                         @Field("action_type") String action_type,
                                         @Field("program_child_name") String programChildName,
-                                        @Field("content_id") String contentId);
+                                        @Field("content_id") String contentId,
+                                        @Field("create_time") long create_time,
+                                        @Field("ext") String ext);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @DELETE("/gazella/service/collections/del")
@@ -298,7 +302,9 @@ public interface IUserCenterLoginApi {
                                        @Field("poster") String poster,
                                        @Field("content_type") String content_type,
                                        @Field("action_type") String action_type,
-                                       @Field("content_id") String contentId);
+                                       @Field("content_id") String contentId,
+                                       @Field("create_time") long create_time,
+                                       @Field("ext") String ext);
 
     ;
 
@@ -342,7 +348,9 @@ public interface IUserCenterLoginApi {
                                            @Field("content_type") String content_type,
                                            @Field("latest_episode") String latest_episode,
                                            @Field("action_type") String action_type,
-                                           @Field("content_id") String contentId);
+                                           @Field("content_id") String contentId,
+                                           @Field("create_time") long create_time,
+                                           @Field("ext") String ext);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @DELETE("/gazella/service/subscribes/del")
