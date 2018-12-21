@@ -120,14 +120,20 @@ public class UserCenterUniversalAdapter extends RecyclerView
 
             holder.subTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(info
                     .getPlayPosition(), info.getDuration()));
-            // 更新剧集
-            SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
-            if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
-                holder.episode.setText(spannableRecentMsg);
+            if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
+                // 更新剧集
+                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
+                if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
+                    holder.episode.setText(spannableRecentMsg);
+                } else {
+                    holder.episode.setText("");
+                    holder.episode.setVisibility(View.INVISIBLE);
+                }
             } else {
                 holder.episode.setText("");
                 holder.episode.setVisibility(View.INVISIBLE);
             }
+
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
                 if (!TextUtils.isEmpty(info.getSuperscript())) {
@@ -149,16 +155,20 @@ public class UserCenterUniversalAdapter extends RecyclerView
             } else {
                 holder.score.setVisibility(View.INVISIBLE);
             }
-
-            // 更新剧集
-
-            SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
-            if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                holder.episode.setText(spannableRecentMsg);
+            if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
+                // 更新剧集
+                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
+                if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                    holder.episode.setText(spannableRecentMsg);
+                } else {
+                    holder.episode.setText("");
+                    holder.episode.setVisibility(View.INVISIBLE);
+                }
             } else {
                 holder.episode.setText("");
                 holder.episode.setVisibility(View.INVISIBLE);
             }
+
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
                 if (!TextUtils.isEmpty(info.getSuperscript())) {

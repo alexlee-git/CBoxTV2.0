@@ -123,13 +123,19 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
                     (entity.getPlayPosition(), entity.getDuration()));
 
             // 更新剧集
-            SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(entity.getRecentMsg());
-            if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                viewHolder.mEpisode.setText(spannableRecentMsg);
-            } else {
+            if (!TextUtils.isEmpty(entity.getRecentMsg()) && !TextUtils.equals(entity.getRecentMsg(), "null")) {
+                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(entity.getRecentMsg());
+                if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                    viewHolder.mEpisode.setText(spannableRecentMsg);
+                } else {
+                    viewHolder.mEpisode.setText("");
+                    viewHolder.mEpisode.setVisibility(View.INVISIBLE);
+                }
+            }else{
                 viewHolder.mEpisode.setText("");
                 viewHolder.mEpisode.setVisibility(View.INVISIBLE);
             }
+
 
             //            String episode = entity.getEpisode_num();
 //            if (!TextUtils.isEmpty(episode) && !TextUtils.equals("null", episode)) {
