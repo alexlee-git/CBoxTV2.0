@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.player.ChkPlayResult;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.PlayerConstants;
 import tv.newtv.cboxtv.player.PlayerErrorCode;
+import tv.newtv.cboxtv.player.model.Program;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.util.PlayerNetworkRequestUtils;
 import tv.newtv.cboxtv.player.vip.VipCheck;
@@ -227,11 +228,14 @@ public class VodContract {
             ADConfig.getInstance().setCategoryIds(playResult.getCategoryIds());
             ADConfig.getInstance().setDuration(playResult.getDuration());
             if (playResult.getPrograms() != null && playResult.getPrograms().size() > 0) {
-                String contentId = playResult.getPrograms().get(0).getProgramSeriesId();
+                Program program = playResult.getPrograms().get(0);
+                String contentId = program.getProgramSeriesId();
                 ADConfig.getInstance().setSeriesID(contentId, false);
+                ADConfig.getInstance().setSeriesUUID(program.getProgramSeriesUUID());
                 videoDataStruct.setSeriesId(contentId);
             } else {
                 ADConfig.getInstance().setSeriesID("", false);
+                ADConfig.getInstance().setSeriesUUID("");
             }
 
             String vipFlag = playResult.getVipFlag();

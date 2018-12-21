@@ -34,6 +34,7 @@ import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.KeyEventUtils;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ScreenUtils;
@@ -538,6 +539,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (isReleased) return;
         isReleased = true;
         addHistory();
+        uploadExitLbLog();
         Log.i(TAG, "release: ");
         if (listener != null) {
             listener.clear();
@@ -976,6 +978,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mAlternatePresenter.requestAlternate(alternateId, title, channelId);
 
         mPlayerTimer.start();
+        LogUploadUtils.uploadLog(Constant.LOG_LB,"0,"+channelId);
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
@@ -1234,6 +1237,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         dismissChildView();
 
         if (defaultConfig.playType != type) {
+            if(defaultConfig.isAlternate){
+                uploadExitLbLog();
+            }
             PlayTypeChange(type);
         }
 
@@ -2215,6 +2221,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
                             }
                         });
+    }
+
+    private void uploadExitLbLog(){
+        try {
+            if(defaultConfig.isAlternate){
+                LogUploadUtils.uploadLog(Constant.LOG_LB,"1,"+mAlternatePresenter.getCurrrentChannel());
+            }
+        }catch (Exception e){}
     }
 
     protected void onTipFinishPlay(boolean timeOver) {

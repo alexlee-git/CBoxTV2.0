@@ -17,6 +17,7 @@ import java.util.List;
 import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
+import tv.newtv.cboxtv.player.util.LbUtils;
 import tv.newtv.player.R;
 
 /**
@@ -70,7 +71,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
                 lbHolder.lbNumber.setText(lastNode.alternateNumber);
                 if (node.getPrograms().size() > 0) {
                     List<Program> programs = node.getPrograms();
-                    lbHolder.playTitle.setText(programs.get(binarySearch(programs)).getTitle());
+                    lbHolder.playTitle.setText(programs.get(LbUtils.binarySearch(programs,0)).getTitle());
                 } else if (!node.isRequest() || !node.isRequesting()) {
                     menuGroup.requestData(node);
                 }
@@ -80,6 +81,11 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
             holder.itemView.setBackgroundResource(R.drawable.xuanhong);
             selectView = holder.itemView;
             pathView = holder.itemView;
+        }
+
+        if(holder.itemView.hasFocus()){
+            holder.itemView.setBackgroundResource(R.drawable.one_focus);
+            setSelect(holder, true);
         }
         holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -199,33 +205,5 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
             return true;
         }
         return false;
-    }
-
-    private int binarySearch(List<Program> list) {
-        long current = System.currentTimeMillis();
-        int start = 0;
-        int end = list.size();
-        while ((end - start) > 10) {
-            int mid = (end + start) / 2;
-            long midValue = parse(list.get(mid).getStartTime());
-            if (midValue > current) {
-                end = mid;
-            } else {
-                start = mid;
-            }
-        }
-
-        for (int i = start; i < end; i++) {
-            long startTime = parse(list.get(i).getStartTime());
-            long endTime = startTime + Integer.parseInt(list.get(i).getDuration()) *1000;
-            if(startTime < current && current < endTime){
-                return i;
-            }
-        }
-        return 0;
-    }
-
-    private long parse(String time) {
-        return PlayerTimeUtils.parseTime(time, "yyyy-MM-dd HH:mm:ss.S");
     }
 }

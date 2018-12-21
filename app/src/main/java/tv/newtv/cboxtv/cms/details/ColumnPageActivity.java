@@ -225,7 +225,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 })
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
-                    public void videoEitFullScreen() {
+                    public void videoEitFullScreen(boolean isLiving) {
                         isFullScreenIng = false;
                         if (currentIndex > 8) {
                             playListView.moveToPosition(currentIndex);

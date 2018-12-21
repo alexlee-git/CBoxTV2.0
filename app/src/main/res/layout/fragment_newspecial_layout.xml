@@ -73,6 +73,7 @@
             android:layout_height="@dimen/height_16px"
             android:layout_marginBottom="@dimen/height_20px"
             android:layout_marginTop="@dimen/height_8px"
+            android:visibility="invisible"
             android:src="@drawable/ic_fragment_newspecial_down" />
 
     </LinearLayout>
