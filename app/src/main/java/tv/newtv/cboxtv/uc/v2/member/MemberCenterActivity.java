@@ -470,14 +470,12 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                 List<Program> programInfoList = null;
                 if (i == 0) {
                     if (pageList.get(i) != null) {
-                        Log.e(TAG,"wqs:pageList.get(0):"+pageList.get(i).getBlockTitle());
                         mPromotionRecommendBean.add(pageList.get(i).getPrograms().get(0));
                     } else {
                         Log.d(TAG, "wqs:inflateRecommendData：i == 0:page.getPrograms().get(0) == null");
                     }
                 } else if (i == 1) {
                     if (pageList.get(i) != null) {
-                        Log.e(TAG,"wqs:pageList.get(1):"+pageList.get(i).getBlockTitle());
                         mInterestsRecommendBean.add(pageList.get(i).getPrograms().get(0));
                     } else {
                         Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0) == null");
@@ -487,7 +485,6 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                         if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
                             programInfoList = pageList.get(i).getPrograms();
                             title = pageList.get(i).getBlockTitle();
-                            Log.e(TAG,"wqs:pageList.get(2):"+pageList.get(i).getBlockTitle());
                             for (int j = 0; j < programInfoList.size(); j++) {
                                 mProgramInfo = programInfoList.get(j);
                                 mDramaRecommendBean.add(mProgramInfo);
