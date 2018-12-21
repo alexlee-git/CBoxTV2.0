@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.special.fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,13 +42,14 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
  * 创建日期:          2018/4/25
  */
 public class ProgramPageFragment extends BaseSpecialContentFragment implements PlayerCallback {
+    private static final String TAG = ProgramPageFragment.class.getSimpleName();
     private AiyaRecyclerView recyclerView;
     private ModelResult<ArrayList<Page>> moduleInfoResult;
     private int currentIndex = 0;
     private TextView tvProgramaTitle;
     private Program currentProgram;
     private boolean playPs = false; //是否按节目集指定位置播完之后，顺序播放同节目集内的下一集
-
+    private ShooterAdapter adapter;
     @Override
     protected int getVideoPlayIndex() {
         return currentIndex;
@@ -59,26 +61,13 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content content) {
+    protected void onItemContentResult(String uuid, Content content, int playIndex) {
         if (content == null || content.getData() == null) {
             ToastUtil.showToast(getContext(), "播放内容为空");
             return;
         }
-        int index = 0;
-        for (SubContent subContent : content.getData()) {
-            if (TextUtils.equals(subContent.getContentID(), currentProgram.getL_focusId())) {
-                index = content.getData().indexOf(subContent);
-                break;
-            }
-        }
-        if(!playPs){
-            ArrayList<SubContent> datas = new ArrayList<>();
-            datas.add(content.getData().get(index));
-            content.setData(datas);
-            index = 0;
-        }
         videoPlayerView.setSeriesInfo(content);
-        videoPlayerView.playSingleOrSeries(index, 0);
+        videoPlayerView.playSingleOrSeries(playIndex, 0);
     }
 
     @Override
@@ -96,7 +85,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         recyclerView.setSpace(0, space);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
-        ShooterAdapter adapter = new ShooterAdapter();
+        adapter = new ShooterAdapter();
         adapter.setOnItemAction(new OnItemAction<Program>() {
             @Override
             public void onItemFocus(View item) {
@@ -123,7 +112,6 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(adapter);
 
-
         if (moduleInfoResult != null) {
             adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
@@ -143,8 +131,9 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             }
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
                 if (focusView instanceof VideoPlayerView) {
-                    if (recyclerView != null && recyclerView.getDefaultFocusView() != null) {
-                        recyclerView.getDefaultFocusView().requestFocus();
+                    if (recyclerView != null && adapter != null) {
+                        Log.d(TAG,"position : "+adapter.getFocusedPosition());
+                        recyclerView.getLayoutManager().findViewByPosition(adapter.getFocusedPosition()).requestFocus();
                         return true;
                     }
                 }
@@ -156,7 +145,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     private void playVideo(Program programInfo) {
         currentProgram = programInfo;
         if (programInfo == null) return;
-        getContent(programInfo.getL_id(), programInfo.getL_contentType());
+        getContent(programInfo.getL_id(), programInfo);
     }
 
     @Override
@@ -218,6 +207,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         private OnItemAction<Program> onItemAction;
         private String currentID;
         private int playPosition = 0;
+        private int mFocusedPosition = 0;
 
         ShooterAdapter refreshData(List<Program> datas) {
             ModuleItems = datas;
@@ -242,6 +232,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             holder.container.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
+                    mFocusedPosition = position;
                     if (hasFocus) {
                         ScaleUtils.getInstance().onItemGetFocus(view, holder.poster_focus);
                     } else {
@@ -286,6 +277,10 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
                     }
                 }
             }
+        }
+
+        public int getFocusedPosition(){
+            return mFocusedPosition;
         }
 
         private Program getItem(int position) {

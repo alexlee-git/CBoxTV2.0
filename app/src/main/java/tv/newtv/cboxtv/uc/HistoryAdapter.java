@@ -191,7 +191,8 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             }
 
             if (!viewHolder.itemView.hasFocus()) {
-                viewHolder.mFocusIv.setVisibility(View.GONE);
+//                viewHolder.mFocusIv.setVisibility(View.GONE);
+                onItemLoseFocus(viewHolder.itemView, viewHolder.mFocusIv);
             }
         }
     }

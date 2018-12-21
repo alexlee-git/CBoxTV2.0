@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:clipChildren="true"
+    android:clipToPadding="true">
 
     <TextView
         android:id="@+id/tv_programa_title"
@@ -15,7 +15,6 @@
         android:maxEms="18"
         android:singleLine="true"
         android:ellipsize="end"
-        android:text="你是不是啥你是不是啥你是不是啥你是不是啥你是不是啥"
         android:textSize="@dimen/height_38px" />
 
 
@@ -28,14 +27,20 @@
         android:layout_marginLeft="@dimen/width_80px"
         android:layout_marginStart="@dimen/width_80px"
         android:layout_marginTop="@dimen/height_710px"
-        android:layout_marginEnd="@dimen/width_80px" />
+        android:layout_marginEnd="@dimen/width_80px"
+        android:paddingTop="@dimen/width_10px"
+        android:paddingLeft="@dimen/height_10px"
+        android:paddingRight="@dimen/width_10px"
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        />
 
     <ImageView
         android:id="@+id/right_direction"
         android:layout_width="@dimen/width_46px"
         android:layout_height="@dimen/height_84px"
-        android:layout_marginLeft="@dimen/width_1810px"
-        android:layout_marginStart="@dimen/width_1810px"
+        android:layout_marginLeft="@dimen/width_1820px"
+        android:layout_marginStart="@dimen/width_1820px"
         android:layout_marginTop="@dimen/height_814px"
         android:src="@drawable/right_direction"
         android:focusable="false"
@@ -72,17 +77,8 @@
         android:layout_marginLeft="@dimen/width_75px"
         android:layout_marginStart="@dimen/width_75px"
         android:layout_marginTop="@dimen/height_177px"
+        android:background="@drawable/selector_pos_background"
         android:focusable="false">
-
-
-        <ImageView
-            android:id="@+id/video_player_focus"
-            android:layout_width="@dimen/width_882px"
-            android:layout_height="@dimen/height_524px"
-            android:layout_centerInParent="true"
-            android:background="@drawable/pos_zui"
-            android:focusable="false"
-            android:visibility="gone"></ImageView>
 
         <tv.newtv.cboxtv.player.videoview.VideoPlayerView
             android:id="@+id/video_player"

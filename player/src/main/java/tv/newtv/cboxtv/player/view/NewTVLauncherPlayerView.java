@@ -713,7 +713,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public boolean onBackPressed() {
-        if (!defaultConfig.startIsFullScreen) {
+        if (defaultConfig!=null && !defaultConfig.startIsFullScreen) {
             if (defaultConfig.isFullScreen) {
                 ExitFullScreen();
             }
@@ -731,7 +731,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mPlayerContract.screenSizeChange(right - left, bottom - top);
         }
 
-        if (!defaultConfig.isFullScreen) {
+        if (defaultConfig!=null && !defaultConfig.isFullScreen) {
             defaultConfig.defaultWidth = getLayoutParams().width;
             defaultConfig.defaultHeight = getLayoutParams().height;
         }
@@ -1438,7 +1438,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 
-        if (!defaultConfig.isLiving) {
+        if (defaultConfig!=null && !defaultConfig.isLiving) {
             mPlayerTimer.reset();
         }
 
@@ -1685,8 +1685,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (defaultConfig.playType != PLAY_TYPE_LIVE) {
                 addHistory();
             }
-            Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                    .play_complete), Toast.LENGTH_SHORT).show();
             AllComplete(false, "播放结束");
 
             if (defaultConfig.startIsFullScreen) {
@@ -1712,8 +1710,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 if (isNextPlay) {
                     RxBus.get().post(Constant.IS_VIDEO_END, true);
                 } else {
-                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .play_complete), Toast.LENGTH_SHORT).show();
                     if (defaultConfig.startIsFullScreen) {
                         NewTVLauncherPlayerViewManager.getInstance().release();
                     }
@@ -1919,13 +1915,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
 
-        if (defaultConfig.playType != PLAY_TYPE_ALTERNATE) {
-            if (buyGoodsBusiness == null) {
-                buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
-            }
-            buyGoodsBusiness.getAd();
-        }
-
         if (videoDataStruct.isTrySee() && !defaultConfig.isAlternate) {
             isTrySee = true;
             hintVip.setVisibility(View.VISIBLE);
@@ -1936,12 +1925,23 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     mNewTVLauncherPlayerSeekbar.setFreeDuration(duration, freeDurationListener);
                 }
             } else {
-                goToBuy();
+//                goToBuy();
+                onChkError(PlayerErrorCode.USER_NOT_BUY,PlayerErrorCode.getErrorDesc
+                        (getContext(),PlayerErrorCode.USER_NOT_BUY));
+                return;
             }
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
             mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
+        }
+
+
+        if (defaultConfig.playType != PLAY_TYPE_ALTERNATE) {
+            if (buyGoodsBusiness == null) {
+                buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
+            }
+            buyGoodsBusiness.getAd();
         }
 
         if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals

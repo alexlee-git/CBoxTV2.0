@@ -152,6 +152,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                     int vipState = Integer.parseInt(pageContent.getVipFlag());
                                     if ((vipState == 1||vipState == 3||vipState == 4)&&pageContent.getVipProductId()!=null){
                                         productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId()));
+                                        Constant.FILE_PATH = String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),pageContent.getVipProductId());
                                     }
                                 }
                                 if (!TextUtils.isEmpty(pageContent.is4k())){
@@ -194,7 +195,13 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 })
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
-                    public void videoEitFullScreen() {
+                    public void videoEitFullScreen(boolean isLiving) {
+
+                        if (!isLiving){
+                            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
+                            + ","+content.getContentID() + "," + content.getContentUUID() + "," +content.getContentType()
+                            + ","+content.getDuration());
+                        }
                         isFullScreenIng = false;
                     }
                 })

@@ -180,7 +180,7 @@ public class CollectionLiveFragment extends BaseDetailSubFragment {
             mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                 @Override
                 public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                    outRect.bottom = 23;
+                    outRect.bottom = 46;
                     int index = parent.getChildLayoutPosition(view);
                     if (index < COLUMN_COUNT) {
                         outRect.top = 23;

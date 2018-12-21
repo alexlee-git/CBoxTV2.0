@@ -19,11 +19,12 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
     override fun getCurrentList(appKey: String, channelid: String, pageuuid: String,
                                 observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
-            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY))
             return 0
         }
         if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
-            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
             return 0
         }
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
@@ -38,11 +39,12 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
     override fun getHistoryList(appKey: String, channelid: String, pageuuid: String,
                                 observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
-            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY))
             return 0
         }
         if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
-            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
             return 0
         }
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
@@ -57,11 +59,12 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
     override fun getTvFigureList(appKey: String, channelid: String, pageuuid: String,
                                  observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
-            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY))
             return 0
         }
         if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
-            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
             return 0
         }
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =
@@ -76,11 +79,12 @@ internal class TvProgramModel : BaseModel(), ITvProgram {
     override fun getTvFigureTvList(appKey: String, channelid: String, pageuuid: String,
                                    observer: DataObserver<ModelResult<ArrayList<SubContent>>>): Long {
         if (TextUtils.isEmpty(appKey) || TextUtils.isEmpty(channelid)) {
-            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY))
             return 0
         }
         if (TextUtils.isEmpty(pageuuid) || pageuuid.length < 2) {
-            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is to short")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
             return 0
         }
         val executor: Executor<ModelResult<ArrayList<SubContent>>> =

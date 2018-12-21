@@ -4,6 +4,8 @@
     android:id="@+id/topic_container"
     android:layout_width="@dimen/width_322px"
     android:layout_height="@dimen/width_100px"
+    android:layout_marginTop="@dimen/height_12px"
+    android:layout_marginBottom="@dimen/height_12px"
     android:focusable="true">
 
     <TextView

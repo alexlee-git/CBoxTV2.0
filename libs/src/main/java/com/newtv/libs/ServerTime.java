@@ -25,7 +25,7 @@ public final class ServerTime {
     private Long serverTime = 0L;
     private Long difference = 0L;
 
-    private Long DIFFERENCE_CHECK_INNER = 1000 * 10L;//容错范围  10秒以内的话，忽略时差
+    private static final Long DIFFERENCE_CHECK_INNER = 1000 * 10L;//容错范围  10秒以内的话，忽略时差
 
     private ServerTime() {
         String timeZone = TimeZone.getDefault().getDisplayName();

@@ -20,7 +20,7 @@ class NavModel : BaseModel(), INav {
     override fun getNav(appkey: String, channelId: String,
                         observer: DataObserver<ModelResult<List<Nav>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY))
             return 0
         }
 

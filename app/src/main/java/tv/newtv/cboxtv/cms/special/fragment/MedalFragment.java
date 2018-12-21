@@ -29,7 +29,7 @@ public class MedalFragment extends BaseSpecialContentFragment{
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content content) {
+    protected void onItemContentResult(String uuid, Content content, int playIndex) {
 
     }
 
