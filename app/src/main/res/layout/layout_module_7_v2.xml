@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+        <!--八个-->
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:id="@+id/id_module_7_title_icon"
+            android:layout_width="@dimen/width_17px"
+            android:layout_height="@dimen/height_17px"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginTop="@dimen/height_68px"
+            android:background="@drawable/tuoyuan"
+            android:tag="module_007_title_icon"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/id_module_7_title"
+            style="@style/ModuleTitleStyle"
+            android:layout_width="@dimen/width_1600px"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginLeft="@dimen/width_8px"
+            android:layout_marginTop="@dimen/height_59px"
+            android:layout_toRightOf="@id/id_module_7_title_icon"
+            android:includeFontPadding="false"
+            android:tag="module_007_title"
+            android:visibility="gone" />
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_1">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            android:layout_toEndOf="@id/id_module_7_view1"
+            android:layout_toRightOf="@id/id_module_7_view1"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_2">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            android:layout_toEndOf="@id/id_module_7_view2"
+            android:layout_toRightOf="@id/id_module_7_view2"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_3">
+
+            <!--海报-->
+            <tv.newtv.cboxtv.views.custom.RecycleImageView
+                android:layout_width="@dimen/width_168px"
+                android:layout_height="@dimen/height_100px"
+                android:tag="cell_007_3_poster" />
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            android:layout_toEndOf="@id/id_module_7_view3"
+            android:layout_toRightOf="@id/id_module_7_view3"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_4">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            android:layout_toEndOf="@id/id_module_7_view4"
+            android:layout_toRightOf="@id/id_module_7_view4"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_5">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            android:layout_toEndOf="@id/id_module_7_view5"
+            android:layout_toRightOf="@id/id_module_7_view5"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_6">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            android:layout_toEndOf="@id/id_module_7_view6"
+            android:layout_toRightOf="@id/id_module_7_view6"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_7">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_7_view8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_7_title"
+            android:layout_toEndOf="@id/id_module_7_view7"
+            android:layout_toRightOf="@id/id_module_7_view7"
+            app:block_poster_height="@dimen/height_100px"
+            app:block_last="true"
+            app:block_poster_holder="@drawable/focus_168_100"
+            app:block_poster_width="@dimen/width_168px"
+            app:block_tag="cell_007_8">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+    </RelativeLayout>
+</RelativeLayout>
+

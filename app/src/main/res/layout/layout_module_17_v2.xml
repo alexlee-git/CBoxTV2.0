@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             app:block_poster_height="@dimen/height_480px"
             app:block_poster_holder="@drawable/focus_816_480"
-            app:block_poster_type="image"
+            app:block_poster_type="video"
             app:block_poster_width="@dimen/width_816px"
             app:block_tag="cell_017_1">
 

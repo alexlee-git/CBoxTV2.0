@@ -72,28 +72,31 @@
 
 
     <declare-styleable name="BlockPosterView">
+        <!-- 海报宽度  -->
         <attr name="block_poster_width" format="dimension"/>
+        <!-- 海报高度  -->
         <attr name="block_poster_height" format="dimension"/>
-
+        <!-- 显示标题  -->
         <attr name="block_show_title" format="boolean"/>
-
+        <!-- 占位图  -->
         <attr name="block_poster_holder" format="reference"/>
+        <!-- 默认显示高亮框的对象  -->
         <attr name="block_poster_focus" format="reference"/>
         <attr name="block_poster_focus_size" format="reference"/>
-
+        <!-- 海报是否包含Padding  -->
         <attr name="block_poster_include_padding" format="boolean"/>
-
+        <!-- 海报Padding  -->
         <attr name="block_poster_padding" format="dimension"/>
         <attr name="block_auto_location" format="boolean"/>
+        <!-- 是否为最后一个海报  -->
         <attr name="block_last" format="boolean"/>
-
+        <!-- 基准TAG  -->
         <attr name="block_tag" format="string"/>
 
-
+        <!-- 海报类型  -->
         <attr name="block_poster_type" format="enum">
             <enum name="image" value="0"/>
             <enum name="video" value="1"/>
-            <enum name="alternate" value="2"/>
         </attr>
     </declare-styleable>
 

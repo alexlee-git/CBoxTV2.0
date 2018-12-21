@@ -78,7 +78,7 @@ object CmsUtil {
     fun binarySearch(alternateList: List<Alternate>, now: Long, beginIndex: Int, endIndex: Int): Int {
         val midIndex = (beginIndex + endIndex) / 2
         if (endIndex - beginIndex < 20) {
-            for (index in beginIndex until endIndex) {
+            for (index in beginIndex .. endIndex) {
                 val startTime = parse(alternateList[index].startTime)
                 val endTime = startTime + Integer.parseInt(alternateList[index]
                         .duration) * 1000
@@ -101,7 +101,7 @@ object CmsUtil {
         } else if (now > midLong) {
             binarySearch(alternateList, now, midIndex, endIndex)
         } else {
-            midIndex
+            return midIndex
         }
     }
 
