@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,6 +50,7 @@ import tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout;
 import tv.newtv.cboxtv.cms.screenList.view.LabelView;
 import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.uc.listener.RecScrollListener;
 
 
 /**
@@ -73,10 +73,12 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private String type_key;
     private String year_key;
     private String place_key;
+    private String sour_key;
     private TextView title_label;
     private TextView type_text;
     private TextView year_text;
     private TextView place_text;
+    private TextView sour_text;
     private TextView result_total;
     private boolean loadMore;
     private int pageNum = 1;
@@ -107,7 +109,9 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private boolean hasDefaultFocusSecond = true;
     List<FilterItem> dataBeans;
     private String recordId = "";
-
+    private View four_record_view;
+    private int currentPos = -1;
+    private int totalSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,6 +239,12 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                         place_text.setVisibility(View.VISIBLE);
                                     }
 
+                                }else if (i==3){
+                                    sour_key = key;
+                                    if (filterValue!=null){
+                                        sour_text.setText(filterValue.getTitle());
+                                        sour_text.setVisibility(View.VISIBLE);
+                                    }
                                 }
                             }
                         }
@@ -265,6 +275,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                 } else if (i == 2) {
                                     third_Record_View = view;
 
+                                }else if (i==3){
+                                    four_record_view = view;
                                 }
                             }
                         }
@@ -284,7 +296,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         year_text = findViewById(R.id.year_text);
         result_total = findViewById(R.id.number);
         place_text = findViewById(R.id.place_text);
-
+        sour_text = findViewById(R.id.sour_text);
 
 
         tab.setScaleValue(1.2f);
@@ -316,6 +328,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 type_text.setVisibility(View.GONE);
                 year_text.setVisibility(View.GONE);
                 place_text.setVisibility(View.GONE);
+                sour_text.setVisibility(View.GONE);
 
                 int position = tab.getPosition();
                 categoryId = data.get(position).getId();
@@ -332,7 +345,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     labelRecyclerView.requestFocus();
                 }
                 adapter.notifyDataSetChanged();
-
 
                 for (int i = 0; i < childData.size(); i++) {
                     if (focusBean != null && !TextUtils.isEmpty(focusBean.getCateLv2())) {
@@ -420,6 +432,16 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         if (modelResult != null) {
             container.removeAllViews();
             dataBeans = modelResult.getData();
+            if(dataBeans != null) {
+
+                List list = new ArrayList<FilterValue>();
+                FilterValue value = new FilterValue("1", "最新发布");
+                FilterValue value1 = new FilterValue("2","热门排行");
+                list.add(value);
+                list.add(value1);
+                FilterItem item = new FilterItem("orderby", "排序方式", list);
+                dataBeans.add(item);
+            }
             if(dataBeans != null && dataBeans.size() > 0){
                 for (int i = 0; i < dataBeans.size(); i++) {
                     HorizontalRecyclerView horizontalRecyclerView = new HorizontalRecyclerView(this);
@@ -476,6 +498,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
     @Override
     public void showData(ArrayList<SubContent> contents, int total) {
+        totalSize = total;
         result_total.setText(total + "个结果");
         if (!loadMore) {
             list.clear();
@@ -491,7 +514,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 //            int end = list.size();
 //
 //            labelDataAdapter.notifyItemRangeInserted(index,end);
-            Log.e("yml", "showData: "+total );
         }
     }
 
@@ -599,6 +621,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     return true;
                 }
                 if (moveFlag == 5) {
+                    sour_text.setVisibility(View.GONE);
                     View view3 = container.getChildAt(2);
                     View view2 = container.getChildAt(1);
                     View view1 = container.getChildAt(0);
@@ -638,10 +661,60 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     presenter.getLabelData();
                     return true;
                 }
+                if (moveFlag==6){
+                    View view4 = container.getChildAt(3);
+                    View view3 = container.getChildAt(2);
+                    View view2 = container.getChildAt(1);
+                    View view1 = container.getChildAt(0);
+                    if (view4 != null) {
+                        view4.setVisibility(View.VISIBLE);
+                        if (four_record_view != null) {
+                            four_record_view.requestFocus();
+                        }
+                    } else {
+                        if (view3 != null) {
+                            view3.setVisibility(View.VISIBLE);
+                            if (third_Record_View != null) {
+                                third_Record_View.requestFocus();
+                                moveFlag = 5;
+                                map.remove(sour_key);
+                            }
+                        } else {
+                            if (view2 != null) {
+                                view2.setVisibility(View.VISIBLE);
+                                if (second_Record_View != null) {
+                                    second_Record_View.requestFocus();
+                                    moveFlag = 4;
+                                    map.remove(place_key);
+                                }
+                            } else {
+                                if (view1 != null) {
+                                    view1.setVisibility(View.VISIBLE);
+                                    if (first_Record_View != null) {
+                                        first_Record_View.requestFocus();
+                                        moveFlag = 3;
+                                        map.remove(year_key);
+                                    }
+                                }else {
+                                    if (labelRecordView != null) {
+                                        labelRecyclerView.setVisibility(View.VISIBLE);
+                                        labelRecyclerView.requestFocus();
+                                        moveFlag = 2;
+                                        map.remove(type_key);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    moveFlag--;
+                    presenter.getLabelData();
+                    return true;
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
-
+                Log.e("yml", "onKeyDown: "+moveFlag );
                 if (!tvRecyclerView.hasFocus()) {
                     moveFlag++;
                     if (tab.hasFocus()) {
@@ -666,10 +739,15 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                     container.getChildAt(2).requestFocus();
                                     moveFlag = 4;
                                 } else {
-                                    if (tvRecyclerView.getChildAt(0) != null) {
-                                        tvRecyclerView.getChildAt(0).requestFocus();
+                                    if (container.getChildAt(3)!=null){
+                                        container.getChildAt(3).requestFocus();
+                                        moveFlag = 5;
+                                    }else {
+                                        if (tvRecyclerView.getChildAt(0) != null) {
+                                            tvRecyclerView.getChildAt(0).requestFocus();
+                                            moveFlag = 6;
+                                        }
                                     }
-                                    moveFlag = 5;
                                 }
                             }
                         }
@@ -687,9 +765,14 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                 container.getChildAt(2).requestFocus();
                                 moveFlag = 4;
                             } else {
-                                if (tvRecyclerView.getChildAt(0) != null) {
-                                    tvRecyclerView.requestFocus();
+                                if (container.getChildAt(3)!=null){
+                                    container.getChildAt(3).requestFocus();
                                     moveFlag = 5;
+                                }else {
+                                    if (tvRecyclerView.getChildAt(0) != null) {
+                                        tvRecyclerView.requestFocus();
+                                        moveFlag = 6;
+                                    }
                                 }
                             }
                         }
@@ -703,24 +786,43 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                             container.getChildAt(2).setFocusable(true);
                             container.getChildAt(2).requestFocus();
                         } else {
-                            if (tvRecyclerView.getChildAt(0) != null) {
-                                tvRecyclerView.getChildAt(0).requestFocus();
+                            if (container.getChildAt(3)!=null){
+                                container.getChildAt(3).setFocusable(true);
+                                container.getChildAt(3).requestFocus();
                                 moveFlag = 5;
+                            }else {
+                                if (tvRecyclerView.getChildAt(0) != null) {
+                                    tvRecyclerView.getChildAt(0).requestFocus();
+                                    moveFlag = 6;
+                                }
                             }
                         }
                         return true;
                     }
                     if (moveFlag == 5 && container.getChildAt(2) != null && container.getChildAt(2).hasFocus()) {
                         container.getChildAt(2).setVisibility(View.GONE);
-
+                        if (container.getChildAt(3)!=null){
+                            container.getChildAt(3).requestFocus();
+                            moveFlag = 5;
+                        }else {
+                            if (tvRecyclerView.getChildAt(0) != null) {
+                                tvRecyclerView.getChildAt(0).requestFocus();
+                                moveFlag = 6;
+                            }
+                        }
+                        return true;
+                    }
+                    if (moveFlag==6&&container.getChildAt(3)!=null&&container.getChildAt(3).hasFocus()){
+                        container.getChildAt(3).setVisibility(View.GONE);
                         if (tvRecyclerView.getChildAt(0) != null) {
                             tvRecyclerView.getChildAt(0).requestFocus();
                         }
                         return true;
                     }
+
                 }
                 if (isBottom(tvRecyclerView)) {
-                    moveFlag = 5;
+                    moveFlag = 6;
                     pageNum++;
                     loadMore = true;
                     presenter.getLabelData();
@@ -812,6 +914,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                     return true;
                 }
                 if (moveFlag == 5) {
+                    sour_text.setVisibility(View.GONE);
                     View view3 = container.getChildAt(2);
                     View view2 = container.getChildAt(1);
                     View view1 = container.getChildAt(0);
@@ -842,6 +945,56 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                     labelRecyclerView.requestFocus();
                                     moveFlag = 2;
                                     map.remove(type_key);
+                                }
+                            }
+                        }
+
+                    }
+                    moveFlag--;
+                    presenter.getLabelData();
+                    return true;
+                }
+                if (moveFlag==6){
+                    View view4 = container.getChildAt(3);
+                    View view3 = container.getChildAt(2);
+                    View view2 = container.getChildAt(1);
+                    View view1 = container.getChildAt(0);
+                    if (view4 != null) {
+                        view4.setVisibility(View.VISIBLE);
+                        if (four_record_view != null) {
+                            four_record_view.requestFocus();
+                        }
+                    } else {
+                        if (view3 != null) {
+                            view3.setVisibility(View.VISIBLE);
+                            if (third_Record_View != null) {
+                                third_Record_View.requestFocus();
+                                moveFlag = 5;
+                                map.remove(sour_key);
+                            }
+                        } else {
+                            if (view2 != null) {
+                                view2.setVisibility(View.VISIBLE);
+                                if (second_Record_View != null) {
+                                    second_Record_View.requestFocus();
+                                    moveFlag = 4;
+                                    map.remove(place_key);
+                                }
+                            } else {
+                                if (view1 != null) {
+                                    view1.setVisibility(View.VISIBLE);
+                                    if (first_Record_View != null) {
+                                        first_Record_View.requestFocus();
+                                        moveFlag = 3;
+                                        map.remove(year_key);
+                                    }
+                                }else {
+                                    if (labelRecordView != null) {
+                                        labelRecyclerView.setVisibility(View.VISIBLE);
+                                        labelRecyclerView.requestFocus();
+                                        moveFlag = 2;
+                                        map.remove(type_key);
+                                    }
                                 }
                             }
                         }

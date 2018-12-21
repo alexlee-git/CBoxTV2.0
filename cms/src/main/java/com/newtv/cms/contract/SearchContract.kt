@@ -9,6 +9,7 @@ import com.newtv.cms.api.ISearch
 import com.newtv.cms.bean.ModelResult
 import com.newtv.cms.bean.SubContent
 import com.newtv.libs.Libs
+import java.nio.ByteOrder
 import java.util.*
 
 
@@ -50,6 +51,7 @@ class SearchContract {
         internal var page = "0"          //第几页
         internal var rows = "40"         //每页条数
         internal var keywordType = ""
+        internal var orderby = "1"
 
         fun setRows(rows: String): SearchCondition {
             this.rows = rows
@@ -101,6 +103,11 @@ class SearchContract {
             return this
         }
 
+        fun  setOrderby(orderby: String):SearchCondition{
+            this.orderby = orderby
+            return this
+        }
+
         companion object {
             /**
              * @return
@@ -138,7 +145,7 @@ class SearchContract {
                         Libs.get().channelId, condition.categoryId,
                         condition.contentType, condition.videoType, condition.videoClass, condition
                         .area, condition.year, condition.keyword, condition.page, condition
-                        .rows, condition.keywordType, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
+                        .rows, condition.keywordType, condition.orderby, object : DataObserver<ModelResult<ArrayList<SubContent>>> {
                     override fun onResult(result: ModelResult<ArrayList<SubContent>>, requestCode: Long) {
                         if (result.isOk()) {
                             view?.let {

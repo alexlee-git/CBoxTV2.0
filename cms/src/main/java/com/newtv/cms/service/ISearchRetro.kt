@@ -27,6 +27,7 @@ interface ISearchRetro {
             @Query(value = "keyword", encoded = false) keyword: String?,
             @Query(value = "page", encoded = false) page: String?,
             @Query(value = "rows", encoded = false) rows: String?,
-            @Query(value = "keywordType", encoded = false) keywordType: String?
+            @Query(value = "keywordType", encoded = false) keywordType: String?,
+            @Query(value = "orderby", encoded = false) orderby: String?
     ): Observable<ResponseBody>
 }
