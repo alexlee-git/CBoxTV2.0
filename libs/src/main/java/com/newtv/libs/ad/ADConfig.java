@@ -74,8 +74,7 @@ public class ADConfig {
         int result = 0;
         if(!TextUtils.isEmpty(duration)){
             try {
-                int i = Integer.parseInt(duration);
-                result = 60 * i;
+                result = Integer.parseInt(duration);
             }catch (Exception e){}
         }
         return result;
@@ -86,7 +85,7 @@ public class ADConfig {
         if(!TextUtils.isEmpty(duration)){
             try {
                 int i = Integer.parseInt(duration);
-                result = 60 * i * 1000;
+                result = i * 1000;
             }catch (Exception e){}
         }
         return result;

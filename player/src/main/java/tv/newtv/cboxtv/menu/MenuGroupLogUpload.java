@@ -38,9 +38,10 @@ public class MenuGroupLogUpload {
             boolean isPay = VipCheck.isPay(ADConfig.getInstance().getVipFlag());
             String chargeType = isPay ? "1": "0";
 
-            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, number + "," + ADConfig.getInstance().getSeriesUUID() + ","
+            String content = number + "," + ADConfig.getInstance().getSeriesUUID() + ","
                     + ADConfig.getInstance().getProgramId() + "," + chargeType + "," + definition + ","
-                    + ADConfig.getInstance().getIntMillisDuration() + "," + NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() * 1000 + "," + Constants.vodPlayId);
+                    + ADConfig.getInstance().getIntMillisDuration() + "," + NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() + "," + Constants.vodPlayId;
+            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, content);
 
         } catch (Exception e) {
             e.printStackTrace();
