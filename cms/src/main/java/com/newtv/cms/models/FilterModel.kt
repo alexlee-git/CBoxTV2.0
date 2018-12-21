@@ -22,11 +22,12 @@ internal class FilterModel : BaseModel(), IFilter {
     override fun getFilterKeyWords(appkey: String, channelId: String, categoryId: String,
                                    observer: DataObserver<ModelResult<List<FilterItem>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY))
             return 0
         }
         if (TextUtils.isEmpty(categoryId)) {
-            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "CategoryId is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
             return 0
         }
         val executor: Executor<ModelResult<List<FilterItem>>> =

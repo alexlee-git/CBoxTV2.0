@@ -1930,7 +1930,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             } else {
 //                goToBuy();
-                onChkError(PlayerErrorCode.USER_NOT_BUY,"付费内容需购买后才能观看");
+                onChkError(PlayerErrorCode.USER_NOT_BUY,PlayerErrorCode.getErrorDesc
+                        (getContext(),PlayerErrorCode.USER_NOT_BUY));
                 return;
             }
         } else {

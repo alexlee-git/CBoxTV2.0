@@ -23,7 +23,6 @@ public final class PlayerErrorCode {
     public static final String INTERNET_ERROR = "80024";                    //网络错误
     public static final String PERMISSION_CHECK_RESULT_EMPTY = "80025";     //播控鉴权结果为空
 
-
     public static String getErrorDesc(Context context, String code) {
         switch (code) {
             case USER_NOT_BUY:
@@ -34,9 +33,13 @@ public final class PlayerErrorCode {
                 return "用户登录状态过期";
             case INTERNET_ERROR:
                 return "网络不好，请重试";
-            case PROGRAM_CDN_EMPTY:
             case PERMISSION_CHECK_RESULT_EMPTY:
                 return context.getResources().getString(R.string.check_error);
+            case LIVE_INFO_EMPTY:
+            case PROGRAM_CDN_EMPTY:
+            case PROGRAM_SERIES_EMPTY:
+            case PROGRAM_PLAY_URL_EMPTY:
+                return "暂无相关内容";
             default:
                 return "";
         }
