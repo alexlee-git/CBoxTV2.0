@@ -539,6 +539,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (isReleased) return;
         isReleased = true;
         addHistory();
+        uploadExitLbLog();
         Log.i(TAG, "release: ");
         if (listener != null) {
             listener.clear();
@@ -1236,6 +1237,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         dismissChildView();
 
         if (defaultConfig.playType != type) {
+            if(defaultConfig.isAlternate){
+                uploadExitLbLog();
+            }
             PlayTypeChange(type);
         }
 
@@ -2217,6 +2221,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
                             }
                         });
+    }
+
+    private void uploadExitLbLog(){
+        try {
+            if(defaultConfig.isAlternate){
+                LogUploadUtils.uploadLog(Constant.LOG_LB,"1,"+mAlternatePresenter.getCurrrentChannel());
+            }
+        }catch (Exception e){}
     }
 
     protected void onTipFinishPlay(boolean timeOver) {
