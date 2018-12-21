@@ -161,7 +161,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         Log.i("Collection", "退出全屏");
 
         if (videoExitFullScreenCallBack != null) {
-            videoExitFullScreenCallBack.videoEitFullScreen();
+            videoExitFullScreenCallBack.videoEitFullScreen(isLiving());
         }
     }
 

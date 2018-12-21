@@ -8,6 +8,6 @@ package tv.newtv.cboxtv.player.videoview;
 
 public interface VideoExitFullScreenCallBack {
 
-    void videoEitFullScreen();
+    void videoEitFullScreen(boolean isLiving);
 
 }

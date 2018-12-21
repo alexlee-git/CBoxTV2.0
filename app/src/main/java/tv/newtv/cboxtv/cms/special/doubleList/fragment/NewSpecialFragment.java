@@ -612,7 +612,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         setVideoPlayerVisibility();
         videoPlayerView.setVideoExitCallback(new VideoExitFullScreenCallBack() {
             @Override
-            public void videoEitFullScreen() {
+            public void videoEitFullScreen(boolean isLiving) {
                 setVideoPlayerTipStatus();
             }
         });
