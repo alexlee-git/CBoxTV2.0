@@ -137,7 +137,7 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
         isDestory = true;
         dispose();
         handler.removeCallbacksAndMessages(null);
-        ADConfig.getInstance().reset();
+//        ADConfig.getInstance().reset();
         ADConfig.getInstance().removeListener(this);
     }
 
