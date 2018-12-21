@@ -1002,6 +1002,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
             NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                     .SHOWING_PROGRAM_TREE);
+            MenuGroupLogUpload.showLogUpload();
         }
     }
 
@@ -1016,6 +1017,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
             NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                     .SHOWING_PROGRAM_TREE);
+            MenuGroupLogUpload.showLogUpload();
         }
     }
 
@@ -1056,37 +1058,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
         NewTVLauncherPlayerViewManager.getInstance().setShowingView
                 (NewTVLauncherPlayerView.SHOWING_NO_VIEW);
-        reportLog(mcontext, 15);
-
-
-    }
-
-    private void reportLog(Context context, int number) {
-
-        try {
-            Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
-            String definition = programSeriesInfo.getDefinition();
-            if (!TextUtils.isEmpty(definition)) {
-                if (TextUtils.equals(definition, "SD")) {
-                    definition = "1";
-                } else if (TextUtils.equals(definition, "HD")) {
-                    definition = "0";
-                }
-            }
-
-            SharedPreferences sp = context.getSharedPreferences("durationConfig", Context.MODE_PRIVATE);
-            String duration = sp.getString("duration", "");
-            String seriesUUID = sp.getString("seriesUUID", "");
-            String vipflag = sp.getString("  vipFlag", "");
-
-            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, number + "," + seriesUUID + ","
-                    + playProgram.getContentUUID() + "," + vipflag + "," + definition + "," + Integer.parseInt(duration) * 60 * 1000 + "," + NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() + "," + Constants.vodPlayId);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
+        MenuGroupLogUpload.goneLogUpload();
     }
 
     private int getVisibleNumber() {
@@ -1104,9 +1076,6 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         float current = currentX;
         currentX = currentX + recyclerViewWidth * VISIBLE_COLUMN;
         startAnim(new AnimEntity(current, currentX));
-
-        reportLog(mcontext, 6);
-
     }
 
     private void goneAnimator() {
