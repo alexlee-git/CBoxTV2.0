@@ -48,6 +48,7 @@ import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.Node;
 import tv.newtv.cboxtv.menu.model.Program;
 import tv.newtv.cboxtv.menu.model.SeriesContent;
+import tv.newtv.cboxtv.player.util.LbUtils;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.player.R;
 import tv.icntv.icntvplayersdk.Constants;
@@ -462,8 +463,20 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                     MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerViewRight.getAdapter();
                     Node item = adapter.getItem(position);
                     if (item instanceof LastNode && Constant.CONTENTTYPE_LB.equals(item.getContentType())) {
-                        playProgram = null;
-                        defaultFocusNode = item;
+                        if(item.getPrograms().size() > 0){
+                            int result = LbUtils.binarySearch(item.getPrograms(), -1);
+                            if(result >= 0){
+                                Program program = item.getPrograms().get(result);
+                                playProgram = program;
+                                setPlayId(program);
+                            } else {
+                                playProgram = null;
+                                defaultFocusNode = item;
+                            }
+                        } else {
+                            playProgram = null;
+                            defaultFocusNode = item;
+                        }
                     }
                     if (onSelectListenerList.size() > 0) {
                         for (OnSelectListener l : onSelectListenerList) {

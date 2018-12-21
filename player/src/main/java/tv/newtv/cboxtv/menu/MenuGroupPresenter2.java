@@ -218,7 +218,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
                     playProgram = null;
                     LastNode lastNode = (LastNode) node;
-                    NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, "11488346", lastNode.getTitle());
+                    NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
                 } else if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LV.equals(node.getContentType())) {
                     playLive(node);
                 }
