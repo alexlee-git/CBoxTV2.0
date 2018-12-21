@@ -329,8 +329,11 @@ public class BlockBuilder extends BaseBlockBuilder {
                     } else if (posterView instanceof LivePlayView) {
                         ((LivePlayView) posterView).setProgramInfo(info);
                         ((LivePlayView) posterView).setPageUUID(PlayerUUID);
+
                         recycleImageView = ((LivePlayView) posterView).getPosterImageView();
-                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
+                        if (recycleImageView != null) {
+                            recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
+                        }
                     }
 
                     if (recycleImageView != null) {
@@ -353,7 +356,8 @@ public class BlockBuilder extends BaseBlockBuilder {
 
                 // 按需添加标题控件
                 processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
-                        posterView != null && posterView.getParent() != null ? (ViewGroup) posterView
+                        posterView != null && posterView.getParent() != null ? (ViewGroup)
+                                posterView
                                 .getParent() : frameLayout);
             }
 

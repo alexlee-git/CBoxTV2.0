@@ -21,7 +21,6 @@ import com.newtv.libs.util.ScaleUtils;
 import com.newtv.libs.util.ScreenUtils;
 import com.newtv.libs.util.UsefulBitmapFactory;
 
-import tv.newtv.cboxtv.Navigation;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
@@ -33,7 +32,8 @@ import tv.newtv.cboxtv.player.listener.ScreenListener;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/16
  */
-public class BlockPosterView extends FrameLayout implements View.OnClickListener, View.OnFocusChangeListener, ScreenListener {
+public class BlockPosterView extends FrameLayout implements View.OnClickListener, View
+        .OnFocusChangeListener, ScreenListener {
     private static final String TAG = BlockPosterView.class.getSimpleName();
     private static final int BLOCK_TYPE_IMAGE = 0;
     private static final int BLOCK_TYPE_VIDEO = 1;
@@ -121,6 +121,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     public void setData(Program program) {
 
         mProgram = program;
+
+        if (mLivePlayView != null) {
+            mLivePlayView.setProgramInfo(mProgram);
+        }
 
         GlideUtil.loadImage(getContext(), mPosterImage, program.getImg(), poster_resource_holder,
                 poster_resource_holder, true);
@@ -221,9 +225,9 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
                     R.styleable.BlockPosterView_block_poster_holder, 0);
             int block = typedArray.getInteger(
                     R.styleable.BlockPosterView_block_poster_type, BLOCK_TYPE_IMAGE);
-            if(block > 0){
+            if (block > 0) {
                 block_type = BLOCK_TYPE_VIDEO;
-            }else{
+            } else {
                 block_type = BLOCK_TYPE_IMAGE;
             }
             focusResource = typedArray.getResourceId(R.styleable
@@ -310,7 +314,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         }
 
 
-        if(mProgram != null){
+        if (mProgram != null) {
             setData(mProgram);
         }
     }
@@ -337,12 +341,15 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if (mLivePlayView != null) {
-            mLivePlayView.dispatchClick();
-        } else {
-            if (mProgram != null) {
-                JumpUtil.activityJump(getContext(), mProgram);
+            if (mLivePlayView.isVideoType()) {
+                mLivePlayView.dispatchClick();
+                return;
             }
         }
+        if (mProgram != null) {
+            JumpUtil.activityJump(getContext(), mProgram);
+        }
+
     }
 
     @Override
