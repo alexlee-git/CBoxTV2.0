@@ -33,6 +33,7 @@
 
         <!-- 1 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,6 +48,7 @@
 
         <!-- 2 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,6 +64,7 @@
 
         <!-- 3 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,6 +80,7 @@
 
         <!-- 4 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,6 +96,7 @@
 
         <!-- 5 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,6 +112,7 @@
 
         <!-- 6 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -122,6 +128,7 @@
 
         <!-- 7 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -137,6 +144,7 @@
 
         <!-- 8 -->
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_6_view8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

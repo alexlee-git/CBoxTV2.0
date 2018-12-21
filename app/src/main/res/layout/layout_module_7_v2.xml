@@ -32,6 +32,7 @@
             android:visibility="gone" />
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,6 +45,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,6 +60,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,15 +72,10 @@
             app:block_poster_width="@dimen/width_168px"
             app:block_tag="cell_007_3">
 
-            <!--海报-->
-            <tv.newtv.cboxtv.views.custom.RecycleImageView
-                android:layout_width="@dimen/width_168px"
-                android:layout_height="@dimen/height_100px"
-                android:tag="cell_007_3_poster" />
-
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,6 +90,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,6 +105,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -120,6 +120,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -134,6 +135,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_7_view8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

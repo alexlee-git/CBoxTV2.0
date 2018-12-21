@@ -72,6 +72,7 @@
 
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_29_view4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -129,6 +130,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_29_view8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

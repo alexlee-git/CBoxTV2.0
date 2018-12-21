@@ -32,6 +32,7 @@
             android:visibility="gone" />
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_15_view1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,6 +45,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_15_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,6 +60,7 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_15_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,7 +122,7 @@
             android:layout_below="@id/id_module_15_view2"
             android:layout_toEndOf="@id/id_module_15_view6"
             android:layout_toRightOf="@id/id_module_15_view6"
-            android:tag="cell_015_7"
+            app:block_tag="cell_015_7"
             app:block_last="true"
             app:block_poster_height="@dimen/height_216px"
             app:block_poster_holder="@drawable/focus_384_216"
