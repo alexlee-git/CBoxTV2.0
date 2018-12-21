@@ -23,6 +23,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.util.CmsUtil;
+import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -477,7 +478,9 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         if (!TextUtils.isEmpty(videoType) && (
                 TextUtils.equals(videoType, "电视剧")
                 || TextUtils.equals(videoType, "动漫")
-                || TextUtils.equals(videoType, "少儿"))) {
+                || (TextUtils.equals(videoType, "少儿"))
+                        && seriesContent != null
+                        && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType()))) {
             return false;
         }
         return true;
