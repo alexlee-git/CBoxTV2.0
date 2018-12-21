@@ -276,4 +276,22 @@ public class UserCenterPageBean {
 
 
     }
+
+    //2018.12.21 wqs 添加记录扩展字段使用
+    public static class ExtendBean {
+
+        /**
+         * versionCode :
+         */
+
+        private String versionCode;//应用版本号
+
+        public String getVersionCode() {
+            return versionCode;
+        }
+
+        public void setVersionCode(String versionCode) {
+            this.versionCode = versionCode;
+        }
+    }
 }

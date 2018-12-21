@@ -56,7 +56,6 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
-import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.CodeExChangeActivity;
 import tv.newtv.cboxtv.uc.v2.LoginActivity;
@@ -79,7 +78,7 @@ import tv.newtv.cboxtv.views.widget.ScrollSpeedLinearLayoutManger;
  * 修改日期：
  * 修改备注：
  */
-public class MemberCenterActivity extends BaseActivity implements OnRecycleItemClickListener<UserCenterPageBean.Bean>, PageContract.View {
+public class MemberCenterActivity extends BaseActivity implements OnRecycleItemClickListener<Program>, PageContract.View {
     private final String TAG = "MemberCenterActivity";
     public static final int HEAD = 0;
     public static final int RECOMMEND_PROMOTION = 1;//会员促销推荐位
@@ -89,7 +88,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
     public static final int QR_CODE_INVALID = 5;//推荐位
     private MemberCenterRecyclerView mRecyclerView;
     private TextView mEmptyView;
-    private List<UserCenterPageBean> pageData;
+    private List<Page> pageData;
     private MemberCenterAdapter mAdapter;
     private MemberHandler mHandler;
     private PopupWindow mPopupWindow;
@@ -126,9 +125,9 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                 .AppContext));
         mHandler = new MemberHandler(this);
         pageData = new ArrayList<>();
-        pageData.add(new UserCenterPageBean(""));
-        pageData.add(new UserCenterPageBean(""));
-        pageData.add(new UserCenterPageBean(""));
+        pageData.add(new Page());
+        pageData.add(new Page());
+        pageData.add(new Page());
         mAdapter = new MemberCenterAdapter(this, this);
         mAdapter.setHasStableIds(true);
         mAdapter.appendToList(pageData);
@@ -457,12 +456,12 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
      */
     private void inflateRecommendData(List<Page> pageList) {
         Log.d(TAG, "wqs:inflateRecommendData");
-        UserCenterPageBean UserCenterPageBean = null;
-        UserCenterPageBean.Bean mProgramInfo = null;
-        String title = "";
-        List<UserCenterPageBean.Bean> mPromotionRecommendBean = new ArrayList<>();//会员促销推荐数据
-        List<UserCenterPageBean.Bean> mInterestsRecommendBean = new ArrayList<>();//会员权益介绍推荐数据
-        List<UserCenterPageBean.Bean> mDramaRecommendBean = new ArrayList<>();//会员片库推荐数据
+        List<Program> mPromotionRecommendBean = new ArrayList<>();//会员促销推荐数据
+        List<Program> mInterestsRecommendBean = new ArrayList<>();//会员权益介绍推荐数据
+        List<Program> mDramaRecommendBean = new ArrayList<>();//会员片库推荐数据
+        Program mProgramInfo;
+        Page page = null;
+        String title = null;
         try {
             if (pageList == null && pageList.size() <= 0) {
                 return;
@@ -471,46 +470,13 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                 List<Program> programInfoList = null;
                 if (i == 0) {
                     if (pageList.get(i) != null) {
-                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
-                            programInfoList = pageList.get(i).getPrograms();
-                            if (programInfoList != null && programInfoList.size() > 0) {
-                                mProgramInfo = new UserCenterPageBean.Bean();
-                                mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                                mProgramInfo.setContentId(programInfoList.get(0).getL_id());
-                                mProgramInfo.set_contentuuid(programInfoList.get(0).getL_uuid());
-                                mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
-                                mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
-                                mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
-                                mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                                mProgramInfo.setRecentMsg(programInfoList.get(0).getRecentMsg());
-//                                mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
-                                mPromotionRecommendBean.add(mProgramInfo);
-                            }
-                        } else {
-                            Log.d(TAG, "wqs:inflateRecommendData：i == 0:page.getPrograms().get(0).getDatas()== null");
-                        }
+                        mPromotionRecommendBean.add(pageList.get(i).getPrograms().get(0));
                     } else {
                         Log.d(TAG, "wqs:inflateRecommendData：i == 0:page.getPrograms().get(0) == null");
                     }
                 } else if (i == 1) {
                     if (pageList.get(i) != null) {
-                        if (pageList.get(i).getPrograms() != null && pageList.get(i).getPrograms().size() > 0) {
-                            programInfoList = pageList.get(i).getPrograms();
-                            mProgramInfo = new UserCenterPageBean.Bean();
-                            mProgramInfo.set_title_name(programInfoList.get(0).getTitle());
-                            mProgramInfo.setContentId(programInfoList.get(0).getL_id());
-                            mProgramInfo.set_contentuuid(programInfoList.get(0).getL_uuid());
-                            mProgramInfo.set_contenttype(programInfoList.get(0).getL_contentType());
-                            mProgramInfo.set_imageurl(programInfoList.get(0).getImg());
-                            mProgramInfo.set_actiontype(programInfoList.get(0).getL_actionType());
-                            mProgramInfo.setGrade(programInfoList.get(0).getGrade());
-                            mProgramInfo.setRecentMsg(programInfoList.get(0).getRecentMsg());
-//
-//                            mProgramInfo.setSuperscript(programInfoList.get(0).getRSuperScript());
-                            mInterestsRecommendBean.add(mProgramInfo);
-                        } else {
-                            Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0).getDatas()== null");
-                        }
+                        mInterestsRecommendBean.add(pageList.get(i).getPrograms().get(0));
                     } else {
                         Log.d(TAG, "wqs:inflateRecommendData：i == 1:page.getPrograms().get(0) == null");
                     }
@@ -520,16 +486,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                             programInfoList = pageList.get(i).getPrograms();
                             title = pageList.get(i).getBlockTitle();
                             for (int j = 0; j < programInfoList.size(); j++) {
-                                mProgramInfo = new UserCenterPageBean.Bean();
-                                mProgramInfo.set_title_name(programInfoList.get(j).getTitle());
-                                mProgramInfo.setContentId(programInfoList.get(j).getL_id());
-                                mProgramInfo.set_contentuuid(programInfoList.get(j).getL_uuid());
-                                mProgramInfo.set_contenttype(programInfoList.get(j).getL_contentType());
-                                mProgramInfo.set_imageurl(programInfoList.get(j).getImg());
-                                mProgramInfo.set_actiontype(programInfoList.get(j).getL_actionType());
-                                mProgramInfo.setGrade(programInfoList.get(j).getGrade());
-                                mProgramInfo.setRecentMsg(programInfoList.get(j).getRecentMsg());
-//                                mProgramInfo.setSuperscript(programInfoList.get(j).getRSuperScript());
+                                mProgramInfo = programInfoList.get(j);
                                 mDramaRecommendBean.add(mProgramInfo);
                             }
                         } else {
@@ -543,24 +500,23 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                     break;
                 }
             }
-
             if (mAdapter != null) {
-                UserCenterPageBean = mAdapter.getItem(RECOMMEND_PROMOTION - 1);
-                if (UserCenterPageBean != null) {
-                    UserCenterPageBean.data = mPromotionRecommendBean;
+                page = mAdapter.getItem(RECOMMEND_PROMOTION - 1);
+                if (page != null) {
+                    page.setPrograms(mPromotionRecommendBean);
                 } else {
                     Log.d(TAG, "wqs:inflateRecommendData：PromotionRecommend==null");
                 }
-                UserCenterPageBean = mAdapter.getItem(RECOMMEND_INTERESTS - 1);
-                if (UserCenterPageBean != null) {
-                    UserCenterPageBean.data = mInterestsRecommendBean;
+                page = mAdapter.getItem(RECOMMEND_INTERESTS - 1);
+                if (page != null) {
+                    page.setPrograms(mInterestsRecommendBean);
                 } else {
                     Log.d(TAG, "wqs:inflateRecommendData：mInterestsRecommendBean==null");
                 }
-                UserCenterPageBean = mAdapter.getItem(RECOMMEND_DRAMA - 1);
-                if (UserCenterPageBean != null) {
-                    UserCenterPageBean.data = mDramaRecommendBean;
-                    UserCenterPageBean.title = title;
+                page = mAdapter.getItem(RECOMMEND_DRAMA - 1);
+                if (page != null) {
+                    page.setBlockTitle(title);
+                    page.setPrograms(mDramaRecommendBean);
                 } else {
                     Log.d(TAG, "wqs:inflateRecommendData：mDramaRecommendBean==null");
                 }
@@ -645,7 +601,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
 
 
     @Override
-    public void onItemClick(View view, int Position, UserCenterPageBean.Bean entity) {
+    public void onItemClick(View view, int Position, Program entity) {
         try {
             Intent intent = new Intent();
             Class mPageClass = null;
@@ -713,8 +669,8 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                 case R.id.id_module_8_view5:
                 case R.id.id_module_8_view6:
                     if (entity != null) {
-                        JumpUtil.activityJump(this, entity.get_actiontype(), entity.get_contenttype(),
-                                entity.getContentId(), "");
+                        JumpUtil.activityJump(this, entity.getL_actionType(), entity.getL_contentType(),
+                                entity.getL_id(), "");
                     }
                     break;
                 default:
@@ -738,7 +694,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
     }
 
     @Override
-    public void onItemFocusChange(View view, boolean hasFocus, int Position, UserCenterPageBean.Bean object) {
+    public void onItemFocusChange(View view, boolean hasFocus, int Position, Program object) {
         try {
             if (view != null && view.getId() == R.id.id_member_center_promotion_recommend && hasFocus) {
                 if (mRecyclerView.canScrollVertically(-1)) {

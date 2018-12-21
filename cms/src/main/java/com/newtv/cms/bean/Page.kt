@@ -9,15 +9,15 @@ package com.newtv.cms.bean
  */
 
 data class Page(
-    val programs: List<Program>?,
-    val blockId: String,
-    val blockTitle: String,
-    val blockImg: String,
-    val haveBlockTitle: String,
-    val rowNum: String,
-    val colNum: String,
-    val layoutCode: String,         //
-    val blockType: String           //区块类型
+        var programs: List<Program>? = null,
+        var blockId: String? = null,
+        var blockTitle: String? = null,
+        var blockImg: String? = null,
+        var haveBlockTitle: String? = null,
+        var rowNum: String? = null,
+        var colNum: String? = null,
+        var layoutCode: String? = null,         //
+        var blockType: String? = null           //区块类型
 ) {
     override fun toString(): String {
         return "Page(programs=$programs, blockId='$blockId', blockTitle='$blockTitle', blockImg='$blockImg', haveBlockTitle='$haveBlockTitle', rowNum='$rowNum', colNum='$colNum', layoutCode='$layoutCode', blockType='$blockType')"

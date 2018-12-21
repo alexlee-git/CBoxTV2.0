@@ -27,6 +27,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 
@@ -60,13 +61,23 @@ public class FollowRemoteDataSource implements FollowDataSource {
     public void addRemoteFollow(@NonNull UserCenterPageBean.Bean bean) {
         String mType = "0";
         String parentId = "";
+        int versionCode = 0;
+        String extend = "";
         String type = bean.get_contenttype();
 
         if (Constant.CONTENTTYPE_FG.equals(type) || Constant.CONTENTTYPE_CR.equals(type)) {
             mType = "0";
             parentId = bean.get_contentuuid();
         }
+        long updateTime;
+        if (bean.getUpdateTime() > 0) {
+            updateTime = bean.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
 
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
@@ -84,7 +95,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         bean.get_imageurl(),
                         bean.get_contenttype(),
                         bean.get_actiontype(),
-                        bean.getContentId()
+                        bean.getContentId(), updateTime, extend
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -259,7 +270,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                                 entity.setIsUpdate(item.optString("update_superscript"));
                                 entity.setPlayIndex(item.optString("episode_num"));
                                 entity.setRecentMsg(item.optString("recent_msg"));
-                                entity.setUpdateTime(Long.parseLong(item.optString("create_time")) / 1000);
+                                entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 infos.add(entity);
                             }
 
@@ -304,13 +315,23 @@ public class FollowRemoteDataSource implements FollowDataSource {
     private void addRemoteFollowRecord(String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
         String mType = "0";
         String parentId = "";
+        int versionCode = 0;
+        String extend = "";
         String type = bean.get_contenttype();
 
         if (Constant.CONTENTTYPE_FG.equals(type) || Constant.CONTENTTYPE_CR.equals(type)) {
             mType = "0";
             parentId = bean.get_contentuuid();
         }
+        long updateTime;
+        if (bean.getUpdateTime() > 0) {
+            updateTime = bean.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
 
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
@@ -324,7 +345,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         bean.get_imageurl(),
                         bean.get_contenttype(),
                         bean.get_actiontype(),
-                        bean.getContentId()
+                        bean.getContentId(), updateTime, extend
                 )
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
