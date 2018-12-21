@@ -45,7 +45,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private int videoIndex = 0;
     private int playIndex = 0;
     private AiyaRecyclerView news_recycle;
-    private TextView title;
+    private TextView subTitle;
     private TextView title_direction;
     private FrameLayout video_player_rl;
     private FrameLayout frame_container;
@@ -136,7 +136,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     protected void setUpUI(final View view) {
         news_recycle = view.findViewById(R.id.news_recycle);
         frame_container = view.findViewById(R.id.frame_container);
-        title = view.findViewById(R.id.title);
+        subTitle = view.findViewById(R.id.title);
         title_direction = view.findViewById(R.id.title_direction);
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.outerControl();
@@ -225,7 +225,15 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                 }
             }
 
-
+            if (!TextUtils.isEmpty(moduleInfoResult.getSubTitle())) {
+                if (moduleInfoResult.getSubTitle().length() >= 30) {
+                    subTitle.setText(moduleInfoResult.getSubTitle().substring(0, 30));
+                } else {
+                    subTitle.setText(moduleInfoResult.getSubTitle());
+                }
+                subTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                subTitle.getPaint().setFakeBoldText(true);
+            }
             adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
         }
@@ -431,7 +439,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     public void setModuleInfo(ModelResult<ArrayList<Page>> infoResult) {
         Log.d("TopicTwoFragment", infoResult.getData().toString());
         if (infoResult.getBackground() == null) {
-            frame_container.setBackgroundResource(R.drawable.bg);
+            //frame_container.setBackgroundResource(R.drawable.bg);
         }
         moduleInfoResult = infoResult;
 
@@ -630,15 +638,15 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         Program programInfo = getItem(defaultFocusIndex);
                         if (programInfo != null) {
                             if (!TextUtils.isEmpty(programInfo.getSubTitle())) {
-                                if (programInfo.getSubTitle().length() > 15) {
-                                    title.setText(programInfo.getSubTitle().substring(0, 15));
-                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                    title.getPaint().setFakeBoldText(true);
-                                } else {
-                                    title.setText(programInfo.getSubTitle());
-                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                    title.getPaint().setFakeBoldText(true);
-                                }
+//                                if (programInfo.getSubTitle().length() > 15) {
+//                                    title.setText(programInfo.getSubTitle().substring(0, 15));
+//                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+//                                    title.getPaint().setFakeBoldText(true);
+//                                } else {
+//                                    title.setText(programInfo.getSubTitle());
+//                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+//                                    title.getPaint().setFakeBoldText(true);
+//                                }
                                 if (programInfo.getSubTitle().length() > 30) {
                                     videoTitle.setText(programInfo.getSubTitle().substring(0, 30));
                                 } else {
@@ -663,15 +671,15 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
                         final Program moduleItem = getItem(holder.getAdapterPosition());
                         if (moduleItem != null) {
                             if (!TextUtils.isEmpty(moduleItem.getSubTitle())) {
-                                if (moduleItem.getSubTitle().length() > 15) {
-                                    title.setText(moduleItem.getSubTitle().substring(0, 15));
-                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                    title.getPaint().setFakeBoldText(true);
-                                } else {
-                                    title.setText(moduleItem.getSubTitle());
-                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-                                    title.getPaint().setFakeBoldText(true);
-                                }
+//                                if (moduleItem.getSubTitle().length() > 15) {
+//                                    title.setText(moduleItem.getSubTitle().substring(0, 15));
+//                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+//                                    title.getPaint().setFakeBoldText(true);
+//                                } else {
+//                                    title.setText(moduleItem.getSubTitle());
+//                                    title.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+//                                    title.getPaint().setFakeBoldText(true);
+//                                }
                                 if (moduleItem.getSubTitle().length() > 30) {
                                     videoTitle.setText(moduleItem.getSubTitle().substring(0, 30));
                                 } else {

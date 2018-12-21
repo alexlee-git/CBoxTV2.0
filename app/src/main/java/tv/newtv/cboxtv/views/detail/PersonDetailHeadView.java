@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.util.LogUploadUtils;
@@ -70,6 +71,8 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode, Vi
     ImageView mFocusIv;
     @BindView(R.id.tv_detail_title)
     TextView detailTitleTv;
+    @BindView(R.id.id_detail_mark)
+    ImageView detailMark;
     @BindView(R.id.detail_tv_type)
     TextView detailTypeTv;
     @BindView(R.id.detail_tv_content)
@@ -310,6 +313,11 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode, Vi
     }
 
     private void setHeadData(Content dataInfo) {
+        if (dataInfo!=null){
+            if (!TextUtils.isEmpty(dataInfo.getNew_realExclusive())){
+                Picasso.get().load(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),dataInfo.getNew_realExclusive())).into(detailMark);
+            }
+        }
         String img = dataInfo.getVImage();
         detailTypeTv.setText(String.format("%s | %s", dataInfo.getDistrict(), dataInfo.getCountry()));
 

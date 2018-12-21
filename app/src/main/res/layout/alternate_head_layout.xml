@@ -18,7 +18,7 @@
 
     <FrameLayout
         android:id="@+id/video_container"
-        android:layout_width="@dimen/width_736px"
+        android:layout_width="@dimen/width_735px"
         android:layout_height="@dimen/height_420px"
         android:layout_marginStart="@dimen/width_93px"
         android:layout_marginLeft="@dimen/width_93px"
@@ -31,8 +31,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/width_38px"
-        android:layout_marginLeft="@dimen/width_38px"
+        android:layout_marginStart="@dimen/width_20px"
+        android:layout_marginLeft="@dimen/width_20px"
         android:layout_marginTop="@dimen/height_88px"
         android:layout_marginRight="@dimen/width_120px"
         android:layout_toEndOf="@+id/video_container"
@@ -87,11 +87,11 @@
 
     <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/full_screen"
-        android:layout_width="@dimen/width_192px"
-        android:layout_height="@dimen/height_90px"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
         android:layout_alignBottom="@+id/video_container"
-        android:layout_marginStart="@dimen/width_38px"
-        android:layout_marginLeft="@dimen/width_38px"
+        android:layout_marginStart="@dimen/width_19px"
+        android:layout_marginLeft="@dimen/width_19px"
         android:layout_marginBottom="@dimen/height_26px"
         android:layout_toEndOf="@+id/video_container"
         android:layout_toRightOf="@+id/video_container"
@@ -101,8 +101,8 @@
 
     <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/collect"
-        android:layout_width="@dimen/width_192px"
-        android:layout_height="@dimen/height_90px"
+        android:layout_width="@dimen/width_152px"
+        android:layout_height="@dimen/height_76px"
         android:layout_alignBottom="@+id/video_container"
         android:layout_marginStart="@dimen/width_48px"
         android:layout_marginLeft="@dimen/width_48px"

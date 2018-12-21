@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.screenList.model;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.SearchContract;
@@ -40,6 +41,7 @@ public class LabelDataModelImpl implements LabelDataModel, SearchContract.View {
         Object rows = map.get("rows");
         Object areas = map.get("areas");
         Object page = map.get("page");
+        Object orderby = map.get("orderby");
         if (categoryId != null) {
             condition.setCategoryId(categoryId.toString());
         }
@@ -51,6 +53,10 @@ public class LabelDataModelImpl implements LabelDataModel, SearchContract.View {
         }
         if (years != null) {
             condition.setYear(years.toString());
+        }
+        if (orderby!=null){
+            Log.e("MainActivityMap", "requestLabelData: "+orderby );
+            condition.setOrderby(orderby.toString());
         }
         condition.setRows(rows.toString());
         condition.setPage(page.toString());

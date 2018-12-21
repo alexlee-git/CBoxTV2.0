@@ -34,6 +34,7 @@ import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.KeyEventUtils;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ScreenUtils;
@@ -538,6 +539,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (isReleased) return;
         isReleased = true;
         addHistory();
+        uploadExitLbLog();
         Log.i(TAG, "release: ");
         if (listener != null) {
             listener.clear();
@@ -976,6 +978,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mAlternatePresenter.requestAlternate(alternateId, title, channelId);
 
         mPlayerTimer.start();
+        LogUploadUtils.uploadLog(Constant.LOG_LB,"0,"+channelId);
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
@@ -1234,6 +1237,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         dismissChildView();
 
         if (defaultConfig.playType != type) {
+            if(defaultConfig.isAlternate){
+                uploadExitLbLog();
+            }
             PlayTypeChange(type);
         }
 
@@ -1680,6 +1686,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             goToBuy();
             return;
         }
+        if(defaultConfig == null){
+            return;
+        }
         if (defaultConfig.playType == PLAY_TYPE_SINGLE || defaultConfig.playType ==
                 PLAY_TYPE_LIVE) {
             if (defaultConfig.playType != PLAY_TYPE_LIVE) {
@@ -1728,7 +1737,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     protected void AllComplete(boolean isError, String info) {
-        if (defaultConfig.isAlternate) {
+        if (defaultConfig!=null&&defaultConfig.isAlternate) {
 
         } else {
             if (mNewTVLauncherPlayer != null) {
@@ -1855,37 +1864,39 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private void addHistory() {
         if (isLiving()) return;
 
-        if (defaultConfig.isAlternate) {
+        if (defaultConfig!=null&&defaultConfig.isAlternate) {
             if (mAlternatePresenter != null) {
                 mAlternatePresenter.addHistory();
             }
 //            return;
         }
 
-        if (defaultConfig.programSeriesInfo == null) {
+        if (defaultConfig!=null&&defaultConfig.programSeriesInfo == null) {
             return;
         }
+        if (defaultConfig!=null){
+            int index = CmsUtil.translateIndex(defaultConfig.programSeriesInfo, getIndex());
 
-        int index = CmsUtil.translateIndex(defaultConfig.programSeriesInfo, getIndex());
+            RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
+                    getCurrentPosition(), defaultConfig.programSeriesInfo.getContentUUID()));
 
-        RxBus.get().post(Constant.UPDATE_VIDEO_PLAY_INFO, new VideoPlayInfo(index,
-                getCurrentPosition(), defaultConfig.programSeriesInfo.getContentUUID()));
+            if (defaultConfig.programSeriesInfo == null
+                    || getDuration() <= 0 || getCurrentPosition() <= 0) {
+                return;
+            }
+            int historyPosition = 0;
+            if (getCurrentPosition() < getDuration() - 30 * 1000) {
+                historyPosition = getCurrentPosition();
+            } else {
+                Log.i(TAG, "History postion reach the end, ignore");
+            }
 
-        if (defaultConfig.programSeriesInfo == null
-                || getDuration() <= 0 || getCurrentPosition() <= 0) {
-            return;
+            if (getDuration() != 0) {
+                Player.get().onFinish(defaultConfig.programSeriesInfo, index, historyPosition,
+                        getDuration());
+            }
         }
-        int historyPosition = 0;
-        if (getCurrentPosition() < getDuration() - 30 * 1000) {
-            historyPosition = getCurrentPosition();
-        } else {
-            Log.i(TAG, "History postion reach the end, ignore");
-        }
 
-        if (getDuration() != 0) {
-            Player.get().onFinish(defaultConfig.programSeriesInfo, index, historyPosition,
-                    getDuration());
-        }
     }
 
     public boolean isADPlaying() {
@@ -1915,7 +1926,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mNewTVLauncherPlayerSeekbar.setmNewTVLauncherPlayer(mNewTVLauncherPlayer);
         }
 
-        if (videoDataStruct.isTrySee() && !defaultConfig.isAlternate) {
+        if (videoDataStruct.isTrySee() && defaultConfig!=null&&!defaultConfig.isAlternate) {
             isTrySee = true;
             hintVip.setVisibility(View.VISIBLE);
             String freeDuration = videoDataStruct.getFreeDuration();
@@ -1937,14 +1948,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
 
-        if (defaultConfig.playType != PLAY_TYPE_ALTERNATE) {
+        if (defaultConfig!=null&&defaultConfig.playType != PLAY_TYPE_ALTERNATE) {
             if (buyGoodsBusiness == null) {
                 buyGoodsBusiness = new BuyGoodsBusiness(getContext().getApplicationContext(), this);
             }
             buyGoodsBusiness.getAd();
         }
 
-        if (defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals
+        if (defaultConfig!=null&&defaultConfig.programSeriesInfo != null && (Constant.CONTENTTYPE_CG.equals
                 (defaultConfig.programSeriesInfo.getContentType())
                 || Constant.CONTENTTYPE_TV.equals(defaultConfig.programSeriesInfo.getContentType
                 ()))) {
@@ -1952,21 +1963,25 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             ADConfig.getInstance().setSeriesID(defaultConfig.programSeriesInfo.getContentID(),
                     false);
         }
-        if (defaultConfig.programSeriesInfo != null) {
+        if (defaultConfig!=null&&defaultConfig.programSeriesInfo != null) {
             ADConfig.getInstance().setVideoType(defaultConfig.programSeriesInfo.getVideoType());
             ADConfig.getInstance().setVideoClass(defaultConfig.programSeriesInfo.getVideoClass());
         }
-
-        videoDataStruct.setAlternate(defaultConfig.isAlternate, defaultConfig.isFirstAlternate);
-        videoDataStruct.setAlternateId(defaultConfig.alternateID);
-        videoDataStruct.setHistoryPosition(mHistoryPostion);
-        mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
-                videoDataStruct);
+        if (defaultConfig!=null){
+            videoDataStruct.setAlternate(defaultConfig.isAlternate, defaultConfig.isFirstAlternate);
+            videoDataStruct.setAlternateId(defaultConfig.alternateID);
+            videoDataStruct.setHistoryPosition(mHistoryPostion);
+            mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
+                    videoDataStruct);
+        }
     }
 
     @Override
     public void liveChkResult(LiveInfo liveInfo) {
-        defaultConfig.liveInfo = liveInfo;
+        if (defaultConfig!=null){
+            defaultConfig.liveInfo = liveInfo;
+        }
+
         playAlive(liveInfo);
     }
 
@@ -2041,39 +2056,41 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     private void goToBuy() {
-        ExterPayBean exterPayBean = new ExterPayBean();
-        exterPayBean.setContentUUID(defaultConfig.programSeriesInfo.getContentUUID());
-        exterPayBean.setContentid(defaultConfig.programSeriesInfo.getContentID());
-        exterPayBean.setContentType(defaultConfig.programSeriesInfo.getContentType());
-        exterPayBean.setVipProductId(defaultConfig.programSeriesInfo.getVipProductId());
-        exterPayBean.setMAMID(defaultConfig.programSeriesInfo.getMAMID());
-        exterPayBean.setVipFlag(defaultConfig.programSeriesInfo.getVipFlag());
-        exterPayBean.setAction(getContext().getClass().getName());
-        exterPayBean.setTitle(defaultConfig.programSeriesInfo.getTitle());
+        if (defaultConfig!=null){
+            ExterPayBean exterPayBean = new ExterPayBean();
+            exterPayBean.setContentUUID(defaultConfig.programSeriesInfo.getContentUUID());
+            exterPayBean.setContentid(defaultConfig.programSeriesInfo.getContentID());
+            exterPayBean.setContentType(defaultConfig.programSeriesInfo.getContentType());
+            exterPayBean.setVipProductId(defaultConfig.programSeriesInfo.getVipProductId());
+            exterPayBean.setMAMID(defaultConfig.programSeriesInfo.getMAMID());
+            exterPayBean.setVipFlag(defaultConfig.programSeriesInfo.getVipFlag());
+            exterPayBean.setAction(getContext().getClass().getName());
+            exterPayBean.setTitle(defaultConfig.programSeriesInfo.getTitle());
 
-        String vipFlag = defaultConfig.programSeriesInfo.getVipFlag();
-        if (UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag) ||
-                VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag))) {
-            Intent intent = new Intent();
-            intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity");
-            intent.putExtra("ispay", true);
-            intent.putExtra("payBean", exterPayBean);
-            getContext().startActivity(intent);
-        } else if (UserStatus.isLogin() && VipCheck.VIP_FLAG_BUY.equals(vipFlag)) {
-            Intent intent = new Intent();
-            intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity");
-            intent.putExtra("ispay", true);
-            intent.putExtra("payBean", exterPayBean);
-            getContext().startActivity(intent);
-        } else if (!UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag)
-                || VipCheck.VIP_FLAG_BUY.equals(vipFlag) || VipCheck.VIP_FLAG_VIP_BUY.equals
-                (vipFlag))) {
-            Intent intent = new Intent();
-            intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.LoginActivity");
-            intent.putExtra("ispay", true);
-            intent.putExtra("payBean", exterPayBean);
-            intent.putExtra("isAuth", true);
-            getContext().startActivity(intent);
+            String vipFlag = defaultConfig.programSeriesInfo.getVipFlag();
+            if (UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag) ||
+                    VipCheck.VIP_FLAG_VIP_BUY.equals(vipFlag))) {
+                Intent intent = new Intent();
+                intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity");
+                intent.putExtra("ispay", true);
+                intent.putExtra("payBean", exterPayBean);
+                getContext().startActivity(intent);
+            } else if (UserStatus.isLogin() && VipCheck.VIP_FLAG_BUY.equals(vipFlag)) {
+                Intent intent = new Intent();
+                intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity");
+                intent.putExtra("ispay", true);
+                intent.putExtra("payBean", exterPayBean);
+                getContext().startActivity(intent);
+            } else if (!UserStatus.isLogin() && (VipCheck.VIP_FLAG_VIP.equals(vipFlag)
+                    || VipCheck.VIP_FLAG_BUY.equals(vipFlag) || VipCheck.VIP_FLAG_VIP_BUY.equals
+                    (vipFlag))) {
+                Intent intent = new Intent();
+                intent.setClassName(getContext(), "tv.newtv.cboxtv.uc.v2.LoginActivity");
+                intent.putExtra("ispay", true);
+                intent.putExtra("payBean", exterPayBean);
+                intent.putExtra("isAuth", true);
+                getContext().startActivity(intent);
+            }
         }
     }
 
@@ -2100,18 +2117,18 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (isReleased) return;
         updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
 
-        if (defaultConfig.alternateCallback != null) {
+        if (defaultConfig!=null&&defaultConfig.alternateCallback != null) {
             defaultConfig.alternateCallback.onAlternateResult(alternateList);
         }
 
         if (mAlternatePresenter != null && mAlternatePresenter
                 .getCurrentAlternate() != null) {
-            if (alterTitle != null) {
+            if (alterTitle != null&&defaultConfig!=null) {
                 alterTitle.setText(defaultConfig.useAlternateUI ? String.format(Locale.getDefault(),
                         "即将播放 %s",
                         mAlternatePresenter.getCurrentAlternate().getTitle()) : "");
             }
-            if (defaultConfig.isFullScreen) {
+            if (defaultConfig!=null&&defaultConfig.isFullScreen) {
                 if (mNewTvAlterChange != null) {
                     mNewTvAlterChange.setTitleText(String.format(Locale.getDefault(),
                             "%s %s",
@@ -2134,16 +2151,16 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         setSeriesInfo(content);
 
         if (alterTitle != null) {
-            if (!defaultConfig.isFullScreen) {
+            if (defaultConfig!=null&&!defaultConfig.isFullScreen) {
                 alterTitle.setVisibility(VISIBLE);
             }
-            alterTitle.setText(defaultConfig.useAlternateUI ? mAlternatePresenter
+            alterTitle.setText(defaultConfig!=null&&defaultConfig.useAlternateUI ? mAlternatePresenter
                     .getCurrentAlternate().getTitle() : "");
         }
-
+        if (defaultConfig!=null)
         defaultConfig.isFirstAlternate = isFirst;
 
-        if (!isLive) {
+        if (!isLive&&defaultConfig!=null) {
             if (defaultConfig.alternateCallback != null) {
                 defaultConfig.alternateCallback.onPlayIndexChange(mAlternatePresenter
                         .getCurrentPlayIndex());
@@ -2170,6 +2187,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void setAlternateCallback(AlternateCallback callback) {
+        if (defaultConfig!=null)
         defaultConfig.alternateCallback = callback;
     }
 
@@ -2198,7 +2216,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                     if (defaultConfig.startIsFullScreen) {
                                         NewTVLauncherPlayerViewManager.getInstance().release();
                                     } else {
-                                        if (defaultConfig.isFullScreen) {
+                                        if (defaultConfig!=null&&defaultConfig.isFullScreen) {
                                             ExitFullScreen();
                                         }
                                     }
@@ -2217,13 +2235,21 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         });
     }
 
+    private void uploadExitLbLog(){
+        try {
+            if(defaultConfig.isAlternate){
+                LogUploadUtils.uploadLog(Constant.LOG_LB,"1,"+mAlternatePresenter.getCurrrentChannel());
+            }
+        }catch (Exception e){}
+    }
+
     protected void onTipFinishPlay(boolean timeOver) {
 
     }
 
     @Override
     public void onKeepLookTimeChange(int currentSecond) {
-        if (defaultConfig.isLiving) {
+        if (defaultConfig!=null&&defaultConfig.isLiving) {
             if (currentSecond % Constant.TIP_LIVE_DURATION == 0) {
                 //直播两小时以上
                 tipUserToRest();

@@ -27,6 +27,7 @@ interface ISearch : IService {
             page: String? = "",
             rows: String? = "",
             keywordType: String? = "",
+            orderby:String?="",
             observer: DataObserver<ModelResult<ArrayList<SubContent>>>
     ):Long
 }

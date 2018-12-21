@@ -72,11 +72,6 @@ public interface IUserCenterLoginApi {
     @GET("/kangaroo/user/info")
     Observable<ResponseBody> getUser(@Header("Authorization") String Authorization);
 
-    @Headers("host_type: " + BootGuide.USER)
-    @GET("/goldenpheasant/api/programRights")
-    Observable<ResponseBody> getUserTime(@Header("Authorization") String Authorization,
-                                         @Query("productId") String productId,
-                                         @Query("appKey") String appKey);
 
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
@@ -139,7 +134,9 @@ public interface IUserCenterLoginApi {
     //获取地址
     @Headers("host_type: " + BootGuide.PAY)
     @GET("/goldenpheasant/api/orders/queryOrderById")
-    Observable<ResponseBody> getPayResult(@Header("Authorization") String Authorization, @Query("orderId") String orderId);
+    Observable<ResponseBody> getPayResult(@Header("Authorization") String Authorization,
+                                          @Query("orderId") String orderId,
+                                          @Query("renewalFlag") boolean renewalFlag);
 
 
     //询价3和4
@@ -160,11 +157,6 @@ public interface IUserCenterLoginApi {
     @GET("/mandrill/service/products/brief/vip")
     Observable<ResponseBody> getProduct(@Query("appKey") String prdId);
 
-    //结果
-    @Headers("host_type: " + BootGuide.PAY)
-    @POST("/goldenpheasant/api/programRights")
-    Observable<ResponseBody> getPayFlag(@Header("Authorization") String Authorization, @Query("productIds") String[] productIds,
-                                        @Query("appKey") String appKey, @Query("channelId") String channelId, @Query("contentUuid") String contentUuid);
 
     //刷新二维码
     @Headers("host_type: " + BootGuide.PAY)
