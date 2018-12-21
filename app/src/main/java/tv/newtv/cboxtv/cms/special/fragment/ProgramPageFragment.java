@@ -61,26 +61,13 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content content) {
+    protected void onItemContentResult(String uuid, Content content, int playIndex) {
         if (content == null || content.getData() == null) {
             ToastUtil.showToast(getContext(), "播放内容为空");
             return;
         }
-        int index = 0;
-        for (SubContent subContent : content.getData()) {
-            if (TextUtils.equals(subContent.getContentID(), currentProgram.getL_focusId())) {
-                index = content.getData().indexOf(subContent);
-                break;
-            }
-        }
-        if(!playPs){
-            ArrayList<SubContent> datas = new ArrayList<>();
-            datas.add(content.getData().get(index));
-            content.setData(datas);
-            index = 0;
-        }
         videoPlayerView.setSeriesInfo(content);
-        videoPlayerView.playSingleOrSeries(index, 0);
+        videoPlayerView.playSingleOrSeries(playIndex, 0);
     }
 
     @Override
@@ -125,7 +112,6 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
         recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(adapter);
 
-
         if (moduleInfoResult != null) {
             adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
@@ -159,7 +145,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
     private void playVideo(Program programInfo) {
         currentProgram = programInfo;
         if (programInfo == null) return;
-        getContent(programInfo.getL_id(), programInfo.getL_contentType());
+        getContent(programInfo.getL_id(), programInfo);
     }
 
     @Override

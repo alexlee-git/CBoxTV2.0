@@ -131,7 +131,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
     private void onItemClickAction(Program programInfo) {
         videoPlayerView.beginChange();
-        getContent(programInfo.getL_id(),programInfo.getL_contentType());
+        getContent(programInfo.getL_id(),programInfo);
     }
 
     @Override
@@ -217,13 +217,13 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
     }
 
     @Override
-    public void onItemContentResult(String uuid, @Nullable Content content) {
+    public void onItemContentResult(String uuid, @Nullable Content content, int playIndex) {
         if (content != null) {
             mProgramSeriesInfo = content;
             Log.e("info", content.toString());
             if (videoPlayerView != null) {
                 videoPlayerView.setSeriesInfo(content);
-                videoPlayerView.playSingleOrSeries(0, 0);
+                videoPlayerView.playSingleOrSeries(playIndex, 0);
             }
         } else {
             if (videoPlayerView != null) {

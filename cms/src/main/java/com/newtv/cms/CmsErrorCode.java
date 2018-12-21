@@ -40,9 +40,20 @@ public class CmsErrorCode {
 
 
     public static String getErrorMessage(String code) {
-        switch (code){
-            case CMS_NO_ONLINE_CONTENT: return "节目走丢了，请稍后再试";
+        switch (code) {
+            case APP_ERROR_KEY_CHANNEL_EMPTY:
+                return "设备不可用";
+            case APP_ERROR_CONTENT_ID_EMPTY:
+                return "节目ID为空";
+            case APP_ERROR_EXCEPTION:
+                return "出错误了";
+            case ALTERNATE_ERROR_PLAYLIST_EMPTY:
+            case ALTERNATE_ERROR_NOT_FOUND_TOPLAY:
+            case CMS_NO_ONLINE_CONTENT:
+                return "节目走丢了，请稍后再试";
+            default:
+                return "节目走丢了，请稍后再试";
+
         }
-        return "";
     }
 }

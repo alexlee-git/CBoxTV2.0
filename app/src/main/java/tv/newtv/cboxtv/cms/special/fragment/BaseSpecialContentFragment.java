@@ -14,21 +14,22 @@ import android.view.ViewGroup;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
-
-import io.reactivex.Observable;
-
 import com.newtv.libs.bean.VideoPlayInfo;
-import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import com.newtv.libs.util.RxBus;
 import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Observable;
+import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 
 /**
  * 项目名称:         CBoxTV
@@ -41,12 +42,13 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     protected boolean UiReady = false;
     protected View contentView;
     protected VideoPlayerView videoPlayerView;
+    protected boolean activityReady = false;
     private Observable<VideoPlayInfo> mUpdateVideoInfoObservable;
     private int mPlayPosition = 0;
     private int mPlayIndex = 0;
     private ContentContract.Presenter mPresenter;
     private NewTVLauncherPlayerView.PlayerViewConfig defaultPlayerConfig;
-    protected boolean activityReady = false;
+    private String mActionType, mFocusId, mUUID;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
 
     protected abstract int getLayoutId();
 
-    protected abstract void onItemContentResult(String uuid, Content content);
+    protected abstract void onItemContentResult(String uuid, Content content, int playIndex);
 
     protected abstract void setUpUI(View view);
 
@@ -68,33 +70,76 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
         return mPlayIndex;
     }
 
-    protected void getContent(String uuid,String contentType){
-        if(TextUtils.isEmpty(uuid)){
-            onError(getContext(), "" , "播放ID不能为空");
-            return;
-        }
-        mPresenter.getContent(uuid,true,contentType);
+    protected void getContent(String uuid, Program program) {
+        mActionType = program.getL_actionType();
+        mFocusId = program.getL_focusId();
+        mUUID = uuid;
+
+        mPresenter.getContent(uuid, true, program.getL_contentType());
     }
 
-    protected void getSubContents(String uuid){
-        if(TextUtils.isEmpty(uuid)){
-            onError(getContext(), "" , "播放ID不能为空");
+    protected void getContent(String uuid, String contentType, String actionType) {
+        if (TextUtils.isEmpty(uuid)) {
+            onError(getContext(), "", "播放ID不能为空");
             return;
         }
+        mActionType = actionType;
+        mPresenter.getContent(uuid, true, contentType);
+    }
+
+    protected void getSubContents(String uuid) {
+        if (TextUtils.isEmpty(uuid)) {
+            onError(getContext(), "", "播放ID不能为空");
+            return;
+        }
+        mActionType = null;
         mPresenter.getSubContent(uuid);
     }
 
-    protected void getContent(String uuid){
-        mPresenter.getContent(uuid,true);
+    protected void getContent(String uuid) {
+        mPresenter.getContent(uuid, true);
     }
 
     @Override
-    public void onContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable Content content) {
-        onItemContentResult(uuid, content);
+    public void onContentResult(@NotNull String uuid, @Nullable Content
+            content) {
+        if (content == null) return;
+        if (!TextUtils.equals(mUUID, uuid)) return;
+
+        if (!TextUtils.isEmpty(mFocusId)) {
+            if (Constant.OPEN_VIDEO.equals(mActionType)) {
+                List<SubContent> infos = content.getData();
+                ArrayList<SubContent> playList = new ArrayList<>();
+                if (infos != null && infos.size() > 0) {
+                    for (SubContent subContent : infos) {
+                        if (TextUtils.equals(subContent.getContentID(), mFocusId)) {
+                            playList.add(subContent);
+                            break;
+                        }
+                    }
+                    content.setData(playList);
+                }
+                onItemContentResult(uuid, content, 0);
+            } else if (Constant.OPEN_DETAILS.equals(mActionType)) {
+                List<SubContent> infos = content.getData();
+                int playIndex = 0;
+                if (infos != null && infos.size() > 0) {
+                    for (SubContent subContent : infos) {
+                        if (TextUtils.equals(subContent.getContentID(), mFocusId)) {
+                            playIndex = infos.indexOf(subContent);
+                        }
+                    }
+                }
+                onItemContentResult(uuid, content, playIndex);
+            }
+        }else{
+            onItemContentResult(uuid, content, 0);
+        }
     }
 
     @Override
-    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable ArrayList<SubContent> result) {
+    public void onSubContentResult(@NotNull String uuid, @org.jetbrains.annotations.Nullable
+            ArrayList<SubContent> result) {
 
     }
 
@@ -106,14 +151,13 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @org.jetbrains
             .annotations.Nullable String desc) {
-        ToastUtil.showToast(context.getApplicationContext(),desc);
+        ToastUtil.showToast(context.getApplicationContext(), desc);
     }
 
     @Override
     public void onStop() {
-
         if (videoPlayerView != null) {
-            if(!videoPlayerView.isReleased()) {
+            if (!videoPlayerView.isReleased()) {
                 defaultPlayerConfig = videoPlayerView.getDefaultConfig();
                 mPlayIndex = videoPlayerView.getIndex();
                 mPlayPosition = videoPlayerView.getCurrentPosition();
@@ -131,7 +175,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     public void onDestroy() {
         super.onDestroy();
 
-        if(mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.destroy();
             mPresenter = null;
         }
@@ -142,7 +186,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     }
 
 
-    protected boolean isLiveVideo(){
+    protected boolean isLiveVideo() {
         return false;
     }
 
@@ -150,7 +194,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
     public void onResume() {
         super.onResume();
 
-        if(videoPlayerView != null && videoPlayerView.isReleased()){
+        if (videoPlayerView != null && videoPlayerView.isReleased()) {
             ViewGroup parent = (ViewGroup) videoPlayerView.getParent();
             if (parent != null) {
                 parent.removeView(videoPlayerView);
@@ -161,7 +205,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
         if (defaultPlayerConfig != null && videoPlayerView == null) {
             mPlayPosition = defaultPlayerConfig.playPosition;
             videoPlayerView = new VideoPlayerView(defaultPlayerConfig, getContext());
-            if(defaultPlayerConfig.defaultFocusView instanceof NewTVLauncherPlayerView){
+            if (defaultPlayerConfig.defaultFocusView instanceof NewTVLauncherPlayerView) {
                 videoPlayerView.requestFocus();
             }
         }
@@ -195,7 +239,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
         if (contentView == null) {
             contentView = inflater.inflate(getLayoutId(), container, false);
 
-            mPresenter = new ContentContract.ContentPresenter(contentView.getContext(),this);
+            mPresenter = new ContentContract.ContentPresenter(contentView.getContext(), this);
             setUpUI(contentView);
         }
         return contentView;

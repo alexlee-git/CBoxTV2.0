@@ -45,6 +45,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     private View downView;
     private int videoIndex = 0;
     private Content mProgramSeriesInfo;
+    private ShooterAdapter adapter;
 
     @Override
     public void onDestroy() {
@@ -72,12 +73,12 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content info) {
+    protected void onItemContentResult(String uuid, Content info, int playIndex) {
         mProgramSeriesInfo = info;
         if (info != null) {
             Log.e("info", info.toString());
             videoPlayerView.setSeriesInfo(info);
-            videoPlayerView.playSingleOrSeries(0, 0);
+            videoPlayerView.playSingleOrSeries(playIndex, 0);
         } else {
             videoPlayerView.showProgramError();
         }
@@ -95,7 +96,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
         recyclerView.setDirIndicator(null, downView);
         int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen.width_10px);
         recyclerView.setSpace(0, space * -1);
-        ShooterAdapter adapter = new ShooterAdapter();
+        adapter = new ShooterAdapter();
         adapter.setOnItemAction(this);
         recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(adapter);
@@ -135,8 +136,18 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
                     }
                 }
             }else if (event.getKeyCode()==KeyEvent.KEYCODE_DPAD_DOWN){
-                if (recyclerView!=null){
-                    recyclerView.requestFocus();
+                if (focusView instanceof VideoPlayerView) {
+                    if (recyclerView != null && adapter != null && adapter.getFocusedPosition() !=-1) {
+                        recyclerView.scrollToPosition(adapter.getFocusedPosition());
+                        Runnable updateFocus = new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerView.getLayoutManager().findViewByPosition(adapter.getFocusedPosition()).requestFocus();
+                            }
+                        };
+                        MainLooper.get().postDelayed(updateFocus, 50);
+                        return true;
+                    }
                 }
             }
         }
@@ -162,8 +173,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     @Override
     public void onItemClick(Program item, final int index) {
 //        videoPlayerView.beginChange();
-
-        getContent(item.getL_id(),item.getL_contentType());
+        getContent(item.getL_id(),item);
     }
 
     @Override
@@ -231,6 +241,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
         private OnItemAction<Program> mOnItemAction;
         private int currentIndex = 0;
         private boolean isStart = true;
+        private int mFocusedPosition = -1;
 
         ShooterAdapter refreshData(List<Program> datas) {
             ModuleItems = datas;
@@ -273,6 +284,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mFocusedPosition = holder.getAdapterPosition();
                     Program moduleItem = getItem(holder.getAdapterPosition());
                     if (moduleItem != null) {
                         currentUUID = moduleItem.getContentId();
@@ -312,6 +324,13 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
                     isStart = false;
                 }
             }
+        }
+
+        public int getFocusedPosition(){
+            if (mFocusedPosition != -1){
+                return mFocusedPosition;
+            }
+            return -1;
         }
 
         private Program getItem(int position) {

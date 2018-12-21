@@ -190,8 +190,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     })
                     .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                         @Override
-                        public void videoEitFullScreen() {
-
+                        public void videoEitFullScreen(boolean isLiving) {
 
                         }
                     }).SetClickListener(new View.OnClickListener() {

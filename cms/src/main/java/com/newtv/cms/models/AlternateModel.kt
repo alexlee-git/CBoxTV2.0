@@ -22,12 +22,13 @@ internal class AlternateModel : BaseModel(), IAlternate {
     override fun getTodayAlternate(appkey: String, channelId: String, contentId: String,
                                    observer: DataObserver<ModelResult<List<Alternate>>>): Long {
         if (TextUtils.isEmpty(appkey) || TextUtils.isEmpty(channelId)) {
-            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, "AppKey or ChannelCode is Empty")
+            observer.onError(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_KEY_CHANNEL_EMPTY))
             return 0
         }
 
         if (TextUtils.isEmpty(contentId)) {
-            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentId size is invalid")
+            observer.onError(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
             return 0
         }
 

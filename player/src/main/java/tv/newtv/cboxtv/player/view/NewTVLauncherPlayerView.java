@@ -1687,8 +1687,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (defaultConfig.playType != PLAY_TYPE_LIVE) {
                 addHistory();
             }
-            Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                    .play_complete), Toast.LENGTH_SHORT).show();
             AllComplete(false, "播放结束");
 
             if (defaultConfig.startIsFullScreen) {
@@ -1714,8 +1712,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 if (isNextPlay) {
                     RxBus.get().post(Constant.IS_VIDEO_END, true);
                 } else {
-                    Toast.makeText(getContext(), getContext().getResources().getString(R.string
-                            .play_complete), Toast.LENGTH_SHORT).show();
                     if (defaultConfig.startIsFullScreen) {
                         NewTVLauncherPlayerViewManager.getInstance().release();
                     }
@@ -1932,7 +1928,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 }
             } else {
 //                goToBuy();
-                onChkError(PlayerErrorCode.USER_NOT_BUY,"付费内容需购买后才能观看");
+                onChkError(PlayerErrorCode.USER_NOT_BUY,PlayerErrorCode.getErrorDesc
+                        (getContext(),PlayerErrorCode.USER_NOT_BUY));
                 return;
             }
         } else {

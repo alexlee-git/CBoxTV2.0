@@ -10,10 +10,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.FocusFinder;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -22,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
+import java.util.Locale;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.R;
@@ -51,8 +56,24 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
     protected ImageView operationIcon;
     protected TextView operationText;
 
+    private View defaultTab;
+    private RadioGroup radioGroup;
+
     protected boolean getUsePresenter() {
         return true;
+    }
+
+    protected boolean requestDefaultTab(){
+        if(radioGroup != null && radioGroup.getChildCount()>0) {
+            if (defaultTab != null) {
+                defaultTab.requestFocus();
+                return true;
+            }
+            defaultTab = radioGroup.getChildAt(0);
+            defaultTab.requestFocus();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -73,18 +94,21 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
             }
         }
 
-        RadioGroup radioGroup = findViewById(R.id.menu_group);
+        radioGroup = findViewById(R.id.menu_group);
         if (radioGroup != null) {
             String[] tabList = getTabList();
             if (tabList != null && tabList.length > 0) {
+                int index = 0;
                 for (String title : tabList) {
                     BottomLineRadioButton radioButton = (BottomLineRadioButton) LayoutInflater
                             .from(getApplicationContext
                                     ()).inflate(R.layout.userinfo_tab_item, radioGroup, false);
                     radioButton.setText(title);
                     radioButton.setId(radioGroup.getChildCount());
+                    radioButton.setTag(String.format(Locale.getDefault(),"TAB_%d",index));
                     radioGroup.addView(radioButton);
                     radioButton.setOnCheckedChangeListener(this);
+                    index++;
                 }
             }
         }
@@ -138,6 +162,7 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
+            defaultTab = buttonView;
             buttonView.setTextColor(Color.parseColor("#FFFFFFFF"));
             onTabChange(buttonView.getText().toString(), buttonView);
         } else {
@@ -184,6 +209,33 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
 
     protected @DetailType
     abstract int getDetailType();
+
+    @SuppressWarnings("PointlessNullCheck")
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        View focusView = getCurrentFocus();
+        if(focusView != null){
+            if (event.getAction() == KeyEvent.ACTION_DOWN){
+                if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP){
+                    View next = FocusFinder.getInstance().findNextFocus(
+                            (ViewGroup) this.getWindow().getDecorView(),
+                            focusView,
+                            View.FOCUS_UP);
+                    if(next != null && next instanceof RadioButton && next.getParent() instanceof
+                            RadioGroup){
+                        if(!radioGroup.hasFocus()){
+                            if(requestDefaultTab()) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
 
     @IntDef({DETAIL_TYPE_NOTHING, DETAIL_TYPE_HISTORY, DETAIL_TYPE_COLLECTION,
             DETAIL_TYPE_ATTENTION, DETAIL_TYPE_SUBSCRIBE})
