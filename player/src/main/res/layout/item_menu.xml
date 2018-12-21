@@ -6,8 +6,6 @@
     android:focusableInTouchMode="true"
     >
 
-
-
     <TextView
         android:id="@+id/tv_video_name"
         android:layout_width="@dimen/width_430px"

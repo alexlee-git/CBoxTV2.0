@@ -74,7 +74,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
         if (dataList != null && dataList.size() > 0) {
 
             final SubContent subContent = dataList.get(position);
-            Picasso.get().load(dataList.get(position).getVImage()).transform(new
+            Picasso.get().load(dataList.get(position).getVImage())
+                    .transform(new
                     PosterCircleTransform(mContext, 4))
                     .fit()
                     .memoryPolicy(MemoryPolicy.NO_STORE)

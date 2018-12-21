@@ -44,7 +44,6 @@ import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
@@ -140,8 +139,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         break;
                     case VIDEO_NEXT_PLAY:
                         if (mLeftFocusedData != null && mLeftFocusedData.size() > 0) {
-                            mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
-                            mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
+                            setPageNameAndTitle();
                         } else {
                             if (mLeftData != null) {
                                 printLogAndToast("Handler", "video next playVod data: " + mLeftData.toString(), false);
@@ -177,7 +175,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content content) {
+    protected void onItemContentResult(String uuid, Content content, int playIndex) {
         //处理返回的数据
         printLogAndToast("onItemContentResult", "leftPosition : " + leftPosition +
                 "  uuid : " + uuid + "  content : " + content.toString(), false);
@@ -222,7 +220,8 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     mDefaultContentUUID = mLeftData.get(i).getL_id();
                     printLogAndToast("setLeftDefaultFocusedP", "default leftPosition : " + leftPosition + "  mDefaultContentUUID : " + mDefaultContentUUID, false);
                 } else {
-                    mLiftListData.add(mLeftData.get(i));
+                    //测试
+                    //mLiftListData.add(mLeftData.get(i));
                 }
             }
         } else {
@@ -353,18 +352,21 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         mNewSpecialLayout = view.findViewById(R.id.fragment_newspecial_layout);
         mSpecialTopicName = view.findViewById(R.id.fragment_newspecial_video_name);
         mSpecialTopicTitle = view.findViewById(R.id.fragment_newspecial_video_title);
-        if (mLeftData != null && mLeftData.size() > 0) {
-            mSpecialTopicName.setText(mLeftData.get(leftPosition).getTitle());
-        }
-
+        setPageNameAndTitle();
         if (mModuleInfoResult != null) {
-            mSpecialTopicTitle.setText(mModuleInfoResult.getDescription());
             String url = mModuleInfoResult.getBackground();
             if (TextUtils.isEmpty(url)) {
                 mNewSpecialLayout.setBackgroundResource(R.drawable.new_special_bg);
             }
         }
 
+    }
+
+    private void setPageNameAndTitle() {
+        if (mModuleInfoResult != null) {
+            mSpecialTopicName.setText(mModuleInfoResult.getSubTitle());
+            mSpecialTopicTitle.setText(mModuleInfoResult.getDescription());
+        }
     }
 
     private void setLeftUpVisible(String tag, int leftFocusPt) {
@@ -397,6 +399,13 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             mLeftDown.setVisibility(View.VISIBLE);
         } else {
             mLeftDown.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setLeftArrowVisible(int visible) {
+        if (mLeftUp != null && mLeftDown != null) {
+            mLeftUp.setVisibility(visible);
+            mLeftDown.setVisibility(visible);
         }
     }
 
@@ -475,6 +484,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     msg.arg1 = centerPosition;
                     mSpecialHandler.sendMessageDelayed(msg, 50);
                 }
+                setLeftArrowVisible(View.INVISIBLE);
             }
 
             @Override
@@ -559,6 +569,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 } else {
                     printLogAndToast(TAG, "ywy GetLeftPositionListener is null", false);
                 }
+                setLeftArrowVisible(View.VISIBLE);
             }
         });
         mNewSpecialCenterAdapter.setOnVideoChangeListener(new NewSpecialCenterAdapter.OnVideoChangeListener() {
@@ -568,8 +579,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 mLeftFocusedData = mLeftData;
                 mCenterFocusedData = mCenterData;
                 if (mCenterData.get(position) != null && (position <= mCenterData.size() - 1)) {
-                    mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
-                    mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
+                    setPageNameAndTitle();
                     printLogAndToast("initCenterList", "centerTitle : " + mCenterFocusedData.get(centerPosition).getTitle()
                             + "centerPosition : " + centerPosition, false);
                     mVideoPlayerTitle.setText(mCenterFocusedData.get(centerPosition).getTitle());
@@ -662,7 +672,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 if (null != mCacheSubContents.get(leftPosition + contentID).getData()) {
                     onSubContentResult(contentID, (ArrayList<SubContent>) mCacheSubContents.get(leftPosition + contentID).getData());
                 } else {
-                    getContent(contentID, mLeftData.get(position).getL_contentType());
+                    getContent(contentID, mLeftData.get(position));
                 }
                 if (isPlayNextProgram) {
                     setVideoFocusedPlay(0);
@@ -670,7 +680,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 }
                 return;
             } else {
-                getContent(contentID, mLeftData.get(position).getL_contentType());
+                getContent(contentID, mLeftData.get(position));
             }
         }
     }
@@ -691,8 +701,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     isFristPlay = false;
                 }
                 if (isPlayNextProgram) {
-                    mSpecialTopicName.setText(mLeftData.get(leftPosition).getTitle());
-                    mSpecialTopicTitle.setText(mLeftData.get(leftPosition).getSubTitle());
+                    setPageNameAndTitle();
                     mSpecialHandler.sendEmptyMessageDelayed(SELECT_DEFAULT_ITEM, 50);
                 }
             } else {
@@ -745,8 +754,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         mCenterMenu.scrollToPosition(centerPosition);
 
                         if (mLeftFocusedData != null && mLeftFocusedData.size() > 0) {
-                            mSpecialTopicName.setText(mLeftFocusedData.get(leftPosition).getTitle());
-                            mSpecialTopicTitle.setText(mLeftFocusedData.get(leftPosition).getSubTitle());
+                            setPageNameAndTitle();
                         } else {
                             if (mLeftData != null) {
                                 printLogAndToast("Handler", "video next playVod data: " + mLeftData.toString(), false);
@@ -780,8 +788,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 isFristPlay = false;
             }
             if (isPlayNextProgram) {
-                mSpecialTopicName.setText(mLeftData.get(leftPosition).getTitle());
-                mSpecialTopicTitle.setText(mLeftData.get(leftPosition).getSubTitle());
+                setPageNameAndTitle();
                 mSpecialHandler.sendEmptyMessageDelayed(SELECT_DEFAULT_ITEM, 50);
             }
         } else {
@@ -834,8 +841,8 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
 
     private void printLogAndToast(String method, String content, boolean showToast) {
         if (showToast) {
-            Toast.makeText(LauncherApplication.AppContext, method + " ywy " + content, Toast.LENGTH_SHORT).show();
+            Toast.makeText(LauncherApplication.AppContext, method + " _ " + content, Toast.LENGTH_SHORT).show();
         }
-        Log.d(TAG, method + " ywy " + content);
+        Log.d(TAG, content);
     }
 }

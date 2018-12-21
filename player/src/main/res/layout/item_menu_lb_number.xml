@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/width_430px"
+    android:layout_height="@dimen/height_104px"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    >
+
+    <TextView
+        android:id="@+id/tv_lb_number"
+        android:layout_width="@dimen/width_99px"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/height_12px"
+        android:gravity="center"
+        android:textColor="@color/color_font"
+        android:singleLine="true"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:id="@+id/tv_video_name"
+        android:layout_width="@dimen/width_430px"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/width_99px"
+        android:paddingRight="@dimen/width_24px"
+        android:layout_marginTop="@dimen/height_12px"
+        android:gravity="left|center_vertical"
+        android:background="@color/color_transparent"
+        android:textColor="@color/color_font"
+        android:ellipsize="marquee"
+        android:focusable="false"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:singleLine="true"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_play_title"
+        android:layout_width="@dimen/width_430px"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/width_99px"
+        android:paddingRight="@dimen/width_24px"
+        android:layout_below="@id/tv_video_name"
+        android:layout_marginTop="@dimen/width_8px"
+        android:gravity="left|center_vertical"
+        android:background="@color/color_transparent"
+        android:textColor="@color/color_font"
+        android:textSize="14sp"
+        android:singleLine="true"
+        />
+
+</RelativeLayout>
