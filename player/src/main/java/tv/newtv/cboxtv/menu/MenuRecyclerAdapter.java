@@ -82,6 +82,11 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
             selectView = holder.itemView;
             pathView = holder.itemView;
         }
+
+        if(holder.itemView.hasFocus()){
+            holder.itemView.setBackgroundResource(R.drawable.one_focus);
+            setSelect(holder, true);
+        }
         holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
