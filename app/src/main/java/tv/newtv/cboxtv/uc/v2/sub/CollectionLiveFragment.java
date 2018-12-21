@@ -36,6 +36,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.MainLooper;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
 import tv.newtv.cboxtv.cms.net.NetClient;
@@ -59,10 +60,11 @@ public class CollectionLiveFragment extends BaseDetailSubFragment {
     private RecyclerView mHotRecommendRecyclerView;
     private TextView mHotRecommendTitle;
     private TextView emptyTextView;
+    private TextView id_fouse_tv;
     private List<UserCenterPageBean.Bean> mDatas;
     private String mLoginTokenString;//登录token,用于判断登录状态
     private String userId;
-    private UserCenterUniversalAdapter mAdapter;
+    public UserCenterUniversalAdapter mAdapter;
     private final int COLUMN_COUNT = 4;
 
     @Override
@@ -75,6 +77,11 @@ public class CollectionLiveFragment extends BaseDetailSubFragment {
         super.onResume();
         //获取用户登录状态
         requestUserInfo();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -145,12 +152,9 @@ public class CollectionLiveFragment extends BaseDetailSubFragment {
 //                                    }
 //                                }
 //                            }
-                            if (universalBeans!=null){
-                                Log.e(TAG, "onResult: "+universalBeans.toString() );
-                            }
                             userCenterUniversalBean.data = universalBeans;
                             if (userCenterUniversalBean.data != null && userCenterUniversalBean.data.size() > 0) {
-                                inflatePage(userCenterUniversalBean);
+                                inflatePage(userCenterUniversalBean.data);
                             } else {
                                 inflatePageWhenNoData();
                             }
@@ -161,19 +165,19 @@ public class CollectionLiveFragment extends BaseDetailSubFragment {
                 }).excute();
     }
 
-    private void inflatePage(UserCenterPageBean bean) {
+    private void inflatePage(List<UserCenterPageBean.Bean> datas) {
         if (contentView == null) {
             return;
         }
 
-        if (bean == null || bean.data == null || bean.data.size() == 0) {
+        if (datas == null || datas.size() == 0) {
             inflatePageWhenNoData();
             return;
         }
-
         if (mDatas == null) {
-            mDatas = bean.data;
+            mDatas = datas;
             mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
+            id_fouse_tv = contentView.findViewById(R.id.id_fouse_tv);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_COLLECTION, 1);
             mRecyclerView.setAdapter(mAdapter);
@@ -189,13 +193,40 @@ public class CollectionLiveFragment extends BaseDetailSubFragment {
             });
         } else {
             if (mDatas != null && mAdapter != null) {
+                boolean refresh = isEqual(datas, mDatas);
+                Log.e(TAG, "inflatePage: refresh: " + refresh);
+                if (refresh) {
+                    return;
+                }
+                id_fouse_tv.setFocusable(true);
+                id_fouse_tv.requestFocus();
                 mDatas.clear();
-                mDatas.addAll(bean.data);
+                mDatas.addAll(datas);
+                mRecyclerView.scrollToPosition(0);
                 mAdapter.notifyDataSetChanged();
+                MainLooper.get().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRecyclerView.requestFocus();
+                        id_fouse_tv.setFocusable(false);
+                    }
+                }, 200);
             }
         }
     }
 
+    private boolean isEqual(List<UserCenterPageBean.Bean> datas, List<UserCenterPageBean.Bean> datas1) {
+        if (datas.size() == datas1.size()) {
+            for (int i = 0; i < datas.size(); i++) {
+                if (!datas.get(i).getContentId().equals(datas1.get(i).getContentId())) {
+                    return false;
+                }
+            }
+        }else{
+            return false;
+        }
+        return true;
+    }
 
     @Override
     public void inflatePageWhenNoData() {
@@ -269,7 +300,7 @@ public class CollectionLiveFragment extends BaseDetailSubFragment {
                                         @Override
                                         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                                             int index = parent.getChildLayoutPosition(view);
-                                            if (index < COLUMN_COUNT) {
+                                            if (index < 6) {
                                                 outRect.top = 23;
                                             }
                                         }

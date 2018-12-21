@@ -256,6 +256,27 @@ public class SuperScriptManager implements CornerContract.View {
             }
 
             recentText.setVisibility(View.VISIBLE);
+
+            if(message.contains("-")){
+                Matcher matcherDate= Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}").matcher(message);
+                if(matcherDate.find()){
+                    String date = matcherDate.group(0);
+                    if (!TextUtils.isEmpty(date)) {
+                        if (!TextUtils.equals("0", date)) {
+                            message = message.replace(date, String.format("<font " +
+                                    "color='#955D06'>%s</font>", date));
+                            CharSequence charSequence = Html.fromHtml(message);
+                            recentText.setText(charSequence);
+                        } else {
+                            removeRecentMsg(parent);
+                        }
+                        return;
+                    }
+                    recentText.setText(message);
+                }
+                return;
+            }
+
             Pattern pattern = Pattern.compile("\\d+");
             Matcher matcher = pattern.matcher(message);
             if (matcher.find()) {
