@@ -52,6 +52,13 @@
             android:scaleType="fitXY"
             android:tag="tag_poster_image"/>
 
+        <FrameLayout
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:tag="tag_corner_container"></FrameLayout>
+
         <ImageView
             android:layout_width="@dimen/width_294px"
             android:layout_height="@dimen/height_414px"
@@ -91,7 +98,6 @@
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
 
         <!-- 主标题-->
@@ -133,6 +139,13 @@
             android:layout_marginTop="@dimen/height_27px"
             android:tag="tag_poster_image"/>
 
+        <FrameLayout
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:tag="tag_corner_container"></FrameLayout>
+
         <ImageView
             android:layout_width="@dimen/width_294px"
             android:layout_height="@dimen/height_414px"
@@ -170,7 +183,6 @@
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
@@ -212,6 +224,13 @@
             android:layout_marginTop="@dimen/height_27px"
             android:tag="tag_poster_image"/>
 
+        <FrameLayout
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:tag="tag_corner_container"></FrameLayout>
+
         <ImageView
             android:layout_width="@dimen/width_294px"
             android:layout_height="@dimen/height_414px"
@@ -249,7 +268,6 @@
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
@@ -291,6 +309,13 @@
             android:layout_marginTop="@dimen/height_27px"
             android:tag="tag_poster_image"/>
 
+        <FrameLayout
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:tag="tag_corner_container"></FrameLayout>
+
         <ImageView
             android:layout_width="@dimen/width_294px"
             android:layout_height="@dimen/height_414px"
@@ -328,7 +353,6 @@
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
@@ -369,6 +393,13 @@
             android:layout_marginTop="@dimen/height_27px"
             android:tag="tag_poster_image"/>
 
+        <FrameLayout
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:tag="tag_corner_container"></FrameLayout>
+
         <ImageView
             android:layout_width="@dimen/width_294px"
             android:layout_height="@dimen/height_414px"
@@ -406,7 +437,6 @@
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
@@ -448,6 +478,13 @@
             android:layout_marginTop="@dimen/height_27px"
             android:tag="tag_poster_image"/>
 
+        <FrameLayout
+            android:layout_width="@dimen/width_240px"
+            android:layout_height="@dimen/height_360px"
+            android:layout_marginLeft="@dimen/width_27px"
+            android:layout_marginTop="@dimen/height_27px"
+            android:tag="tag_corner_container"></FrameLayout>
+
         <ImageView
             android:layout_width="@dimen/width_294px"
             android:layout_height="@dimen/height_414px"
@@ -486,7 +523,6 @@
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
