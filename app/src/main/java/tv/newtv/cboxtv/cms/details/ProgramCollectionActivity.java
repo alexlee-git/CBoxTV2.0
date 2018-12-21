@@ -3,16 +3,20 @@ package tv.newtv.cboxtv.cms.details;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -216,6 +220,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
+
                         if (info == null){
                             if (fromOuter){
                                 ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将进入应用首页");
@@ -234,6 +239,37 @@ public class ProgramCollectionActivity extends DetailPageActivity {
 
                         if (mAdView != null) {
                             mAdView.requestAD();
+                        }
+                        ArrayList<String> productId = new ArrayList<>();
+                        if (mContent != null ) {
+
+                            if (!TextUtils.isEmpty(mContent.getVipFlag())){
+                                int vipState = Integer.parseInt(mContent.getVipFlag());
+                                if ((vipState == 1||vipState == 3||vipState == 4)&&mContent.getVipProductId()!=null){
+                                    productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),mContent.getVipProductId()));
+                                    //Constant.FILE_PATH = String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),mContent.getVipProductId());
+                                }
+                            }
+                            if (!TextUtils.isEmpty(mContent.is4k())){
+                                int is4k = Integer.parseInt(mContent.is4k());
+                                if (is4k == 1){
+                                    productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                }
+                            }
+                            if (!TextUtils.isEmpty(mContent.getNew_realExclusive())){
+                                productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),mContent.getNew_realExclusive()));
+                            }
+                        }
+
+                        switch (productId.size()){
+                            case 3:
+                                Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
+                            case 2:
+                                Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
+                            case 1:
+                                Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
+                            default:
+                                break;
                         }
                     }
                 }));
