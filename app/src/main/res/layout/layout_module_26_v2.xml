@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="true"
+    android:clipToPadding="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="test26"-->
+        <!--android:textColor="#fff" />-->
+        <!--1-->
+        <!--组件标题-->
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:id="@+id/id_module_3_title_icon"
+            android:layout_width="@dimen/width_17px"
+            android:layout_height="@dimen/height_17px"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginStart="@dimen/width_120px"
+            android:layout_marginTop="@dimen/height_68px"
+            android:background="@drawable/tuoyuan"
+            android:tag="module_026_title_icon"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/id_module_3_title"
+            style="@style/ModuleTitleStyle"
+            android:layout_width="@dimen/width_1600px"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginLeft="@dimen/width_8px"
+            android:layout_marginStart="@dimen/width_8px"
+            android:layout_marginTop="@dimen/height_59px"
+            android:layout_toEndOf="@id/id_module_3_title_icon"
+            android:layout_toRightOf="@id/id_module_3_title_icon"
+            android:includeFontPadding="false"
+            android:tag="module_026_title"
+            android:visibility="gone" />
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_3_view1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/id_module_3_title"
+            android:layout_marginTop="@dimen/height_15px"
+            app:block_poster_height="@dimen/height_296px"
+            app:block_poster_holder="@drawable/focus_528_296"
+            app:block_poster_width="@dimen/width_528px"
+            app:block_tag="cell_026_1">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+
+        <!--2-->
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_3_view2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_3_title"
+            android:layout_marginTop="@dimen/height_15px"
+            android:layout_toEndOf="@id/id_module_3_view1"
+            android:layout_toRightOf="@id/id_module_3_view1"
+            app:block_poster_height="@dimen/height_296px"
+            app:block_poster_holder="@drawable/focus_528_296"
+            app:block_poster_width="@dimen/width_528px"
+            app:block_tag="cell_026_2">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+        <!--3-->
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:id="@+id/id_module_3_view3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_3_title"
+            android:layout_marginTop="@dimen/height_15px"
+            android:layout_toRightOf="@id/id_module_3_view2"
+            app:block_last="true"
+            app:block_poster_height="@dimen/height_296px"
+            app:block_poster_holder="@drawable/focus_528_296"
+            app:block_poster_width="@dimen/width_528px"
+            app:block_tag="cell_026_3"
+            android:layout_toEndOf="@id/id_module_3_view2">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+    </RelativeLayout>
+</RelativeLayout>
+
