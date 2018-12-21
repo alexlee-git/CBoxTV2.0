@@ -179,6 +179,7 @@ public class Constant {
     public static final int LOG_NODE_AUTH_INFO = 10;          // 认证
     public static final int LOG_BUY_GOODS = 47;              //边看边买日志
     public static final int FLOATING_LAYER = 4;
+    public static final int LOG_LB = 41;         //轮播频道
     public static final String BACK_FIRST_NAV = "back_first_nav"; // 返回一级导航
     public static final String BG_EVENT = "bg_event";
     public static final String UPDATE_UC_DATA = "update_uc_data";

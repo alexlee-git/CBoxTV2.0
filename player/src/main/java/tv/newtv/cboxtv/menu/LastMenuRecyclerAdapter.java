@@ -165,16 +165,15 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             }
         }
 
+        if(holder.itemView.hasFocus()){
+            setFocusBg(holder.itemView,program,holder);
+        }
+
         holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-                    if (isCollect(program) || holder instanceof LbHolder) {
-                        v.setBackgroundResource(R.drawable.menu_group_item_focus);
-                    } else {
-                        v.setBackgroundResource(R.drawable.one_focus);
-                        setSelect(holder, true);
-                    }
+                    setFocusBg(holder.itemView,program,holder);
                 } else if (isCurrentPlay(program)) {
                     v.setBackgroundResource(R.drawable.xuanhong);
                     setSelect(holder, false);
@@ -187,6 +186,15 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
 
         if (position == 0) {
             firstPositionView = holder.itemView;
+        }
+    }
+
+    private void setFocusBg(View v,Program program,RecyclerView.ViewHolder holder){
+        if (isCollect(program) || holder instanceof LbHolder) {
+            v.setBackgroundResource(R.drawable.menu_group_item_focus);
+        } else {
+            v.setBackgroundResource(R.drawable.one_focus);
+            setSelect(holder, true);
         }
     }
 

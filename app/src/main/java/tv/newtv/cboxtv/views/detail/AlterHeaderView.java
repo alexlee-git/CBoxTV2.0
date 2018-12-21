@@ -30,9 +30,11 @@ import com.newtv.cms.bean.Alternate;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
+import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.SystemUtils;
 import com.newtv.libs.util.ToastUtil;
 
@@ -392,7 +394,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                                     if (code == 0) {
                                         Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT)
                                                 .show();
-
+                                        LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0,"+mContent.getContentUUID());
                                         mIsCollect = true;
                                         updateUI();
                                     }
@@ -410,6 +412,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                                     if (code == 0) {
                                         Toast.makeText(getContext(), "取消收藏成功", Toast.LENGTH_SHORT)
                                                 .show();
+                                        LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"1,"+mContent.getContentUUID());
                                         mIsCollect = false;
                                         updateUI();
                                     }

@@ -218,7 +218,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
                     playProgram = null;
                     LastNode lastNode = (LastNode) node;
-                    NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, "11488346", lastNode.getTitle());
+                    NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
                 } else if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LV.equals(node.getContentType())) {
                     playLive(node);
                 }
@@ -291,10 +291,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
         switch (programSeriesInfo.getContentType()) {
             case Constant.CONTENTTYPE_PG:
-                contentId = "";
-                categoryId = "";
-                Log.i(TAG, "单节目不显示栏目树");
-                break;
+//                contentId = "";
+//                categoryId = "";
+//                Log.i(TAG, "单节目不显示栏目树");
+//                break;
             case Constant.CONTENTTYPE_CP:
                 splitIds(programSeriesInfo.getTvContentIDs(), seriesIdList);
                 splitIds(programSeriesInfo.getCsContentIDs(), seriesIdList);
@@ -1115,7 +1115,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void dealIds(CategoryContent categoryContent) {
-        if (Constant.CONTENTTYPE_CP.equals(contentType)) {
+        if (Constant.CONTENTTYPE_CP.equals(contentType) || Constant.CONTENTTYPE_PG.equals(contentType)) {
             if (TextUtils.isEmpty(programSeries)) {
                 for (String str : seriesIdList) {
                     for (LastNode lastNode : categoryContent.data) {
