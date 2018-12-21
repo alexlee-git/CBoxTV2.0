@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/id_fouse_tv"
+        android:layout_width="@dimen/width_1762px"
+        android:layout_height="match_parent"
+        android:focusable="false" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/id_history_record_rv"
         android:layout_width="@dimen/width_1762px"
@@ -21,15 +27,15 @@
     <!-- 提示信息区域(提示没有任何数据等) -->
     <ViewStub
         android:id="@+id/id_empty_view_vs"
-        android:layout="@layout/empty_userinfo_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/height_201px" />
+        android:layout_marginTop="@dimen/height_201px"
+        android:layout="@layout/empty_userinfo_view" />
 
     <ViewStub
         android:id="@+id/id_hot_recommend_area_vs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/height_534px"
         android:layout="@layout/layout_hot_recommend_area" />
 

@@ -402,7 +402,7 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
         String Authorization = "Bearer " + mToken;
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getPayResult(Authorization, orderId + "")
+                    .getPayResult(Authorization, orderId + "", false)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {
