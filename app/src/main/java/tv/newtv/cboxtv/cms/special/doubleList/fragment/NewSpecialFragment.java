@@ -44,7 +44,6 @@ import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 
 /**
@@ -176,7 +175,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content content) {
+    protected void onItemContentResult(String uuid, Content content, int playIndex) {
         //处理返回的数据
         printLogAndToast("onItemContentResult", "leftPosition : " + leftPosition +
                 "  uuid : " + uuid + "  content : " + content.toString(), false);
@@ -673,7 +672,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 if (null != mCacheSubContents.get(leftPosition + contentID).getData()) {
                     onSubContentResult(contentID, (ArrayList<SubContent>) mCacheSubContents.get(leftPosition + contentID).getData());
                 } else {
-                    getContent(contentID, mLeftData.get(position).getL_contentType());
+                    getContent(contentID, mLeftData.get(position));
                 }
                 if (isPlayNextProgram) {
                     setVideoFocusedPlay(0);
@@ -681,7 +680,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 }
                 return;
             } else {
-                getContent(contentID, mLeftData.get(position).getL_contentType());
+                getContent(contentID, mLeftData.get(position));
             }
         }
     }

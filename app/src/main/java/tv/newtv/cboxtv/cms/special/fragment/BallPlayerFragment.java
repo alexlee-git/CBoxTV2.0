@@ -65,7 +65,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content content) {
+    protected void onItemContentResult(String uuid, Content content, int playIndex) {
 
     }
 
@@ -218,12 +218,13 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
         }
     }
 
-    public void setComplete(){
+    private void setComplete(){
         mImageView.setVisibility(View.VISIBLE);
         if (mHintText != null) {
             mHintText.setText("暂无播放");
         }
     }
+
     @Override
     public void onComplete() {
         setComplete();

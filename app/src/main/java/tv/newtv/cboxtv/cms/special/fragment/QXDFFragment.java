@@ -73,12 +73,12 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     }
 
     @Override
-    protected void onItemContentResult(String uuid, Content info) {
+    protected void onItemContentResult(String uuid, Content info, int playIndex) {
         mProgramSeriesInfo = info;
         if (info != null) {
             Log.e("info", info.toString());
             videoPlayerView.setSeriesInfo(info);
-            videoPlayerView.playSingleOrSeries(0, 0);
+            videoPlayerView.playSingleOrSeries(playIndex, 0);
         } else {
             videoPlayerView.showProgramError();
         }
@@ -173,8 +173,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     @Override
     public void onItemClick(Program item, final int index) {
 //        videoPlayerView.beginChange();
-
-        getContent(item.getL_id(),item.getL_contentType());
+        getContent(item.getL_id(),item);
     }
 
     @Override

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 import tv.newtv.cboxtv.views.widget.HorizontalRecycleView;
@@ -241,6 +242,15 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                             }
                             title = ((SubContent) data).getTitle();
                             year = ((SubContent) data).getYear();
+
+                            ((SubContent) data).setVipFlag("3");
+                            SuperScriptManager.getInstance().processVipSuperScript(
+                                    holder.itemView.getContext(),
+                                    (SubContent) data,
+                                    "layout_008",
+                                    ((ViewGroup) holder.itemView).indexOfChild(holder.posterView),
+                                    (ViewGroup) holder.posterView.getParent()
+                            );
                         } else if (data instanceof Alternate) {
                             image = ((Alternate) data).getHImage();
                             title = ((Alternate) data).getTitle();
@@ -294,6 +304,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                                 }
                             }
                         }
+
+
                     }
 
                     @Override

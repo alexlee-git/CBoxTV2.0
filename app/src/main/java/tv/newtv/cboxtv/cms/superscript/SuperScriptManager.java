@@ -103,7 +103,6 @@ public class SuperScriptManager implements CornerContract.View {
                 parent.removeView(imageView);
             }
         }
-
     }
 
     private void addVipSuperscript(Context context, Corner corner, ViewGroup parent, int
@@ -113,7 +112,7 @@ public class SuperScriptManager implements CornerContract.View {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-            lp.gravity = Gravity.RIGHT | Gravity.END;
+            lp.gravity = Gravity.RIGHT | Gravity.END | Gravity.TOP;
             imageView = new RecycleImageView(context);
             imageView.setTag(BLOCK_VIP_CORNER_RIGHT_TOP);
             imageView.setLayoutParams(lp);
