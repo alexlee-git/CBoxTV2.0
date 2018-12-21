@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
@@ -22,7 +21,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.newtv.cms.bean.Corner;
+import com.newtv.cms.bean.Page;
+import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.squareup.picasso.Picasso;
@@ -34,10 +34,8 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.BaseRecyclerAdapter;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.uc.bean.MemberInfoBean;
-import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
-import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -52,7 +50,7 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
  * 修改备注：
  * 修改备注：
  */
-public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, RecyclerView
+public class MemberCenterAdapter extends BaseRecyclerAdapter<Page, RecyclerView
         .ViewHolder> {
     private final String TAG = "MemberCenterAdapter";
     private static final int TYPE_MEMBER_INFO = 1001;
@@ -69,9 +67,10 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     private final String TAG_POSTER_PROGRAM_UPDATE_TITLE = "tag_poster_program_recent_title";//海报图节目更新状态标题
     private final String TAG_POSTER_SCORE_TITLE = "tag_poster_score_title";//海报图评分标题
     private final String TAG_BUTTON_TEXT = "tag_member_center_btn_text";//会员中心按钮文本
+    private final String TAG_COENER_CONTAINER = "tag_corner_container";//会员中心添加评分、更新剧集、角标的控件
     private Context mContext;
     private Interpolator mSpringInterpolator;
-    private OnRecycleItemClickListener<UserCenterPageBean.Bean> listener;
+    private OnRecycleItemClickListener<Program> listener;
     private ImageView mMemberHead, mMemberMark;
     private TextView mMemberName, mMemberTime;
     private FrameLayout mBtnLogin, mBtnOpen, mBtnExchange, mBtnOrder, mBtnDrama, mPromotionRecommend;
@@ -83,7 +82,7 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     private QrcodeUtil mQrcodeUtil;
     private Bitmap mBitmap;
 
-    MemberCenterAdapter(Context context, OnRecycleItemClickListener<UserCenterPageBean.Bean>
+    MemberCenterAdapter(Context context, OnRecycleItemClickListener<Program>
             listener) {
         this.mContext = context;
         this.listener = listener;
@@ -145,17 +144,19 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 PromotionRecommendViewHolder viewHolder = (PromotionRecommendViewHolder) holder;
                 mRecommendQrCodeImageView = viewHolder.mQrCodeImageView;
                 mPromotionRecommend = viewHolder.mPromotionRecommend;
-                UserCenterPageBean UserCenterPageBean = mList.get(0);
-                setRecommendPosterData(viewHolder.mPromotionRecommend, UserCenterPageBean);
+                Page page = mList.get(0);
+                Log.e(TAG, "wqs:PromotionRecommendViewHolder:" + page.toString());
+                setRecommendPosterData(viewHolder.mPromotionRecommend, page);
             } else if (holder instanceof InterestsRecommendViewHolder) {
                 InterestsRecommendViewHolder viewHolder = (InterestsRecommendViewHolder) holder;
-                UserCenterPageBean UserCenterPageBean = mList.get(1);
-                setRecommendPosterData(viewHolder.mInterestsIntroduce, UserCenterPageBean);
+                Page page = mList.get(1);
+                setRecommendPosterData(viewHolder.mInterestsIntroduce, page);
+                Log.e(TAG, "wqs:InterestsRecommendViewHolder:" + page.toString());
             } else if (holder instanceof ContentViewHolder) {
                 ContentViewHolder viewHolder = (ContentViewHolder) holder;
-                UserCenterPageBean moduleItem = null;
-                moduleItem = mList.get(position - 1);
-                setDataList(position, viewHolder, moduleItem);
+                Page page = null;
+                page = mList.get(position - 1);
+                setDataList(position, viewHolder, page);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -338,12 +339,15 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
         }
     }
 
-    private void setDataList(int position, ContentViewHolder viewHolder, UserCenterPageBean entity) {
+    private void setDataList(int position, ContentViewHolder viewHolder, Page entity) {
         try {
+            if (entity == null) {
+                return;
+            }
             viewHolder.titleIconIv.setVisibility(View.VISIBLE);
             viewHolder.titleTv.setVisibility(View.VISIBLE);
-            viewHolder.titleTv.setText(entity.title);
-            List<UserCenterPageBean.Bean> data = entity.data;
+            viewHolder.titleTv.setText(entity.getBlockTitle());
+            List<Program> data = entity.getPrograms();
             if (data == null || data.size() == 0) {
                 //暂无数据
                 viewHolder.titleTv.setText("");
@@ -354,10 +358,10 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 for (int i = 0; i <= 5; i++) {
                     if (data.size() > i) {
                         setViewGVisible(viewHolder.viewList.get(i));
-                        if (TextUtils.isEmpty(data.get(i).get_imageurl())) {
+                        if (TextUtils.isEmpty(data.get(i).getImg())) {
                             setPosterData(viewHolder.viewList.get(i), R.drawable.default_member_center_240_360_v2, data.get(i));
                         } else {
-                            setPosterData(viewHolder.viewList.get(i), data.get(i).get_imageurl(), data.get(i));
+                            setPosterData(viewHolder.viewList.get(i), data.get(i).getImg(), data.get(i));
                         }
                     } else {
                         if (viewHolder.viewList.get(i).hasFocus()) {
@@ -475,15 +479,15 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
     }
 
     //设置会员推荐位海报
-    private void setRecommendPosterData(View mModuleView, UserCenterPageBean UserCenterPageBean) {
+    private void setRecommendPosterData(View mModuleView, Page page) {
         try {
             String imageUrl = null;
             int defaultHolder = 0;
             ImageView posterImageView = (ImageView) mModuleView.findViewWithTag
                     (TAG_POSTER_IMAGE);
-            if (UserCenterPageBean != null) {
-                if (UserCenterPageBean.data != null && UserCenterPageBean.data.size() > 0) {
-                    imageUrl = UserCenterPageBean.data.get(0).get_imageurl();
+            if (page != null) {
+                if (page.getPrograms() != null && page.getPrograms().size() > 0) {
+                    imageUrl = page.getPrograms().get(0).getImg();
                 } else {
                     Log.e(TAG, "wqs:setRecommendPosterData:UserCenterPageBean.data == null");
                 }
@@ -523,10 +527,8 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
         }
     }
 
-    private void setPosterData(View mModuleView, Object img, UserCenterPageBean.Bean bean) {
+    private void setPosterData(View mModuleView, Object img, Program bean) {
         try {
-            String mainTitle = null;
-            String scoreTitle = null;
             if (mModuleView != null) {
                 mModuleView.setVisibility(View.VISIBLE);
                 RecycleImageView posterImageview = (RecycleImageView) mModuleView.findViewWithTag
@@ -538,8 +540,11 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                 RecycleImageView rightTopMarkImageView = (RecycleImageView) mModuleView.findViewWithTag(TAG_POSTER_RIGHT_TOP_MARK);
                 //海报图节目更新状态标题
                 TextView recentTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_PROGRAM_UPDATE_TITLE);
+                hideView(recentTitleTextView);
                 //海报图评分标题
                 TextView scoreTitleTextView = (TextView) mModuleView.findViewWithTag(TAG_POSTER_SCORE_TITLE);
+                hideView(scoreTitleTextView);
+                FrameLayout superScriptFrameLayout = mModuleView.findViewWithTag(TAG_COENER_CONTAINER);
                 if (posterImageview != null && img != null) {
                     if (img instanceof String) {
                         if (!TextUtils.isEmpty((String) img)) {
@@ -561,27 +566,13 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                     }
                 }
                 if (bean != null) {
-                    mainTitle = bean.get_title_name();
-                    scoreTitle = bean.getGrade();
-                    setTitleView(mainTitleTextView, mainTitle);
-                    setTitleView(scoreTitleTextView, scoreTitle);
-                    // 更新剧集
-                    SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(bean.getRecentMsg());
-                    if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                        recentTitleTextView.setText(spannableRecentMsg);
-                    } else {
-                        recentTitleTextView.setText("");
-                    }
-                    String superscript = bean.getSuperscript();
-                    if (!TextUtils.isEmpty(superscript) && !TextUtils.equals(superscript, "null")) {
-                        Corner superscriptInfo;
-                        superscriptInfo = SuperScriptManager.getInstance().getSuperscriptInfoById(superscript);
-                        Log.e(TAG, "wqs:superscript:" + bean.getSuperscript());
-                        if (superscriptInfo != null && !TextUtils.isEmpty(superscriptInfo.getCornerImg())) {
-                            rightTopMarkImageView.load(superscriptInfo.getCornerImg());
-                        }
-                        Log.e(TAG, "wqs:superscriptInfo.getCornerImg():" + superscriptInfo.getCornerImg());
-                    }
+                    setTitleView(mainTitleTextView, bean.getTitle());
+                    SuperScriptManager.getInstance().processSuperscript(
+                            mModuleView.getContext(),
+                            "layout_008",
+                            ((ViewGroup) mModuleView).indexOfChild(posterImageview),
+                            bean,
+                            (ViewGroup) superScriptFrameLayout);
                 } else {
                     //由于数据为空，令各个显示的view隐藏，副标题gone
                     hideView(mainTitleTextView);
@@ -681,11 +672,11 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean,
                                     break;
                             }
                             if (mList != null && mList.size() != 0) {
-                                if (mList.get(getAdapterPosition() - 1).data != null && mList.get
-                                        (getAdapterPosition() - 1).data.size() != 0) {
+                                if (mList.get(getAdapterPosition() - 1).getPrograms() != null && mList.get
+                                        (getAdapterPosition() - 1).getPrograms().size() != 0) {
 
                                     listener.onItemClick(v, position, mList.get(getAdapterPosition() - 1)
-                                            .data.get(position));
+                                            .getPrograms().get(position));
                                 }
                             }
 

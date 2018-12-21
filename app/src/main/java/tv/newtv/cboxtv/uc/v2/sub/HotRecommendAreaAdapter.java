@@ -20,7 +20,7 @@ import java.util.List;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
-import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.SpannableBuilderUtils;
 
 /**
  * 项目名称:         央视影音
@@ -58,7 +58,7 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
             holder.score.setText(score);
         }
         if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
-            holder.episode.setText(UserCenterRecordManager.getInstance().getSpannableRecentMsg(info.getRecentMsg()));
+            holder.episode.setText(SpannableBuilderUtils.builderMsg(info.getRecentMsg()));
         } else {
             if (holder.episode != null) {
                 holder.episode.setVisibility(View.INVISIBLE);

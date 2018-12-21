@@ -27,6 +27,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.utils.BaseObserver;
 
@@ -61,6 +62,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
         String mType = "0";
         String parentId = "";
         String subId = "";
+        int versionCode = 0;
+        String extend = "";
         String type = bean.get_contenttype();
 
         if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
@@ -71,7 +74,15 @@ public class CollectRemoteDataSource implements CollectDataSource {
             mType = "1";
             subId = bean.get_contentuuid();
         }
+        long updateTime;
+        if (bean.getUpdateTime() > 0) {
+            updateTime = bean.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
 
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
@@ -96,7 +107,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
-                        bean.getContentId())
+                        bean.getContentId(), updateTime, extend)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -309,7 +320,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setIsUpdate(item.optString("update_superscript"));
                                 entity.setPlayIndex(item.optString("episode_num"));
-                                entity.setUpdateTime(Long.parseLong(item.optString("create_time")) / 1000);
+                                entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 entity.setRecentMsg(item.optString("recent_msg"));
                                 infos.add(entity);
                             }
@@ -365,6 +376,8 @@ public class CollectRemoteDataSource implements CollectDataSource {
         String mType = "0";
         String parentId = "";
         String subId = "";
+        int versionCode = 0;
+        String extend = "";
         String type = bean.get_contenttype();
 
         if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
@@ -375,7 +388,15 @@ public class CollectRemoteDataSource implements CollectDataSource {
             mType = "1";
             subId = bean.get_contentuuid();
         }
+        long updateTime;
+        if (bean.getUpdateTime() > 0) {
+            updateTime = bean.getUpdateTime();
+        } else {
+            updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
+        }
 
+        versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
         String Authorization = "Bearer " + token;
 
         NetClient.INSTANCE
@@ -397,7 +418,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
-                        bean.getContentId())
+                        bean.getContentId(), updateTime, extend)
                 .subscribe(new Observer<ResponseBody>() {
 
                     @Override

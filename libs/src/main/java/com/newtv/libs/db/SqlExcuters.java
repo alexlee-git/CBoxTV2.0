@@ -417,7 +417,7 @@ class SqlExcuters {
                 int type = cursor.getType(index);
                 switch (type) {
                     case Cursor.FIELD_TYPE_INTEGER:
-                        int intValue = cursor.getInt(index);
+                        long intValue = cursor.getLong(index);
                         videoInfo.addProperty(name, intValue);
                         break;
                     default:

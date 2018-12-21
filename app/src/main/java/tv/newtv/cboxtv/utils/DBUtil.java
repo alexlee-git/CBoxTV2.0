@@ -11,9 +11,9 @@ import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.SystemUtils;
-import com.newtv.libs.util.Utils;
 
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 
 /**
  * 项目名称:         CBoxTV
@@ -78,7 +78,7 @@ public class DBUtil {
         }
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (TextUtils.isEmpty(updateTime)) {
-            contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
+            contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
         } else {
             contentValues.put(DBConfig.UPDATE_TIME, updateTime);
         }
@@ -170,7 +170,7 @@ public class DBUtil {
             }
             String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
             if (TextUtils.isEmpty(updateTime)) {
-                contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
+                contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
             } else {
                 contentValues.put(DBConfig.UPDATE_TIME, updateTime);
             }
@@ -246,7 +246,7 @@ public class DBUtil {
         if (!TextUtils.isEmpty(updateTime)) {
             contentValues.put(DBConfig.UPDATE_TIME, updateTime);
         } else {
-            contentValues.put(DBConfig.UPDATE_TIME, Utils.getSysTime());
+            contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
         }
         contentValues.put(DBConfig.USERID, userId);
         // contentValues.put(DBConfig.SUPERSCRIPT, mInfo.getrSuperScript());
@@ -296,7 +296,7 @@ public class DBUtil {
 
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (TextUtils.isEmpty(updateTime)) {
-            contentValues.put(DBConfig.UPDATE_TIME, com.newtv.libs.util.Utils.getSysTime());
+            contentValues.put(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis());
         } else {
             contentValues.put(DBConfig.UPDATE_TIME, updateTime);
         }
@@ -358,7 +358,7 @@ public class DBUtil {
         contentValues.put(DBConfig.VIP_FLAG, bundle.getString(DBConfig.VIP_FLAG));
         contentValues.put(DBConfig.CONTENTTYPE, bundle.getString(DBConfig.CONTENTTYPE));
         contentValues.put(DBConfig.ACTIONTYPE, bundle.getString(DBConfig.ACTIONTYPE));
-        contentValues.put(DBConfig.ALTERNATE_NUMBER,bundle.getString(DBConfig.ALTERNATE_NUMBER));
+        contentValues.put(DBConfig.ALTERNATE_NUMBER, bundle.getString(DBConfig.ALTERNATE_NUMBER));
 
         DataSupport.insertOrReplace(tableName)
                 .condition()
