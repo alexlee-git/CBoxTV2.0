@@ -31,6 +31,8 @@ public class DBProgram {
     //栏目树历史播放节点必须数据
     @SerializedName("_play_id")
     public String playId;
+    @SerializedName("alternate_number")
+    public String alternateNumber;
 
     public static List<Program> convertProgram(List<DBProgram> list) {
         List<Program> result = new ArrayList<>();

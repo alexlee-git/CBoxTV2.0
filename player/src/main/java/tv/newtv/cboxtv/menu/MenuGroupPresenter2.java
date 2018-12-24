@@ -1038,13 +1038,14 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 if (TextUtils.isEmpty(program._title_name) || TextUtils.isEmpty(program._contentuuid))
                     continue;
 
-                Node node = new LastNode();
+                LastNode node = new LastNode();
                 node.setId(program._content_id);
                 node.setPid(parent.getId());
                 node.setTitle(program._title_name);
                 node.setActionUri(program._content_id);
                 node.setContentType(program._contenttype);
                 node.setForbidAddCollect(true);
+                node.alternateNumber = program.alternateNumber;
 
                 Log.i(TAG, "setLbNode: " + node.getId());
                 node.setParent(parent);

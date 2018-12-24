@@ -251,6 +251,8 @@ class DataHelper extends SQLiteOpenHelper {
             case 2:
             case 3:
                 sqLiteDatabase.execSQL("alter table " + DBConfig.LB_COLLECT_TABLE_NAME + " add " + DBConfig.ALTERNATE_NUMBER + " varchar2(1000)");
+                sqLiteDatabase.execSQL(String.format("alter table %s add %s varchar2(1000)", DBConfig.CREATE_HISTORY_TABLE_SQL, DBConfig.ALTERNATE_NUMBER));
+                sqLiteDatabase.execSQL(String.format("alter table %s add %s varchar2(1000)", DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL, DBConfig.ALTERNATE_NUMBER));
         }
     }
 }

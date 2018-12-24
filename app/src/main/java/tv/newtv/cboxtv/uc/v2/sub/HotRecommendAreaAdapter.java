@@ -35,10 +35,18 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
 
     private List<Program> mDatas;
     private Context mContext;
+    private int type = 0;
 
     public HotRecommendAreaAdapter(Context context, List<Program> datas) {
         mContext = context;
         mDatas = datas;
+        type = 0;
+    }
+
+    public HotRecommendAreaAdapter(Context context, List<Program> datas, int type) {
+        mContext = context;
+        mDatas = datas;
+        this.type = type;
     }
 
     @Override
@@ -95,7 +103,7 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
             }
         });
 
-        if (position == 0) {
+        if (position == 0 && type == 0) {
             holder.itemView.requestFocus();
         }
 
