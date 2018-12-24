@@ -55,6 +55,7 @@ import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.Player;
 import tv.newtv.cboxtv.player.PlayerConfig;
 import tv.newtv.cboxtv.player.model.LiveInfo;
+import tv.newtv.cboxtv.player.util.LbUtils;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -214,9 +215,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
 
             @Override
-            public void select(Node node) {
+            public void select(Node node,Program playProgram) {
                 if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
-                    playProgram = null;
+                    MenuGroupPresenter2.this.playProgram = playProgram;
                     LastNode lastNode = (LastNode) node;
                     NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
                 } else if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LV.equals(node.getContentType())) {
@@ -709,6 +710,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 case KeyEvent.KEYCODE_DPAD_UP:
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
                         if (playProgram != null) {
+                            updateLbPlayProgram();
                             menuGroup.show(playProgram);
                         } else {
                             menuGroup.show();
@@ -729,6 +731,19 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return true;
         } else {
             return false;
+        }
+    }
+
+    private void updateLbPlayProgram(){
+        if (playProgram != null && Constant.CONTENTTYPE_LB.equals(playProgram.getParent().getContentType())) {
+            Node item = playProgram.getParent();
+            if(playProgram.getParent().getPrograms().size() > 0){
+                int result = LbUtils.binarySearch(item.getPrograms(), -1);
+                if(result >= 0){
+                    Program program = item.getPrograms().get(result);
+                    playProgram = program;
+                }
+            }
         }
     }
 
