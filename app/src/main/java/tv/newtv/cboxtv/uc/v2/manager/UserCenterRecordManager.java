@@ -39,6 +39,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectRemoteDataSource;
@@ -274,7 +275,8 @@ public class UserCenterRecordManager {
                 progress = "0";
             }
             bundle.putString(DBConfig.PLAY_PROGRESS, progress);
-
+            //2018.12.21 wqs 防止插入时间有误，统一插入时间
+            bundle.putString(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis() + "");
             String tableName = "";
             if (TextUtils.isEmpty(token)) { // 如果用户未登录
                 tableName = DBConfig.HISTORY_TABLE_NAME;
