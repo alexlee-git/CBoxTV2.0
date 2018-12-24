@@ -833,6 +833,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                         adapter.setData(lastProgram);
                                     }
 
+                                    if(listViews.size() <= node.getLevel()){
+                                        return;
+                                    }
                                     MenuRecyclerView menuRecyclerView = listViews.get(node.getLevel());
                                     MenuRecyclerAdapter menuRecyclerViewAdapter = (MenuRecyclerAdapter)
                                             menuRecyclerView.getAdapter();

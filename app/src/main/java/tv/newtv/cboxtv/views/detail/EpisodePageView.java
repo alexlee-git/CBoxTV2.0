@@ -200,6 +200,9 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     public void moveToPosition(int n) {
+        if(mLinearLayoutManager == null || aiyaRecyclerView == null){
+            return;
+        }
         //先从RecyclerView的LayoutManager中获取第一项和最后一项的Position
         int firstItem = mLinearLayoutManager.findFirstVisibleItemPosition();
         int lastItem = mLinearLayoutManager.findLastVisibleItemPosition();
