@@ -267,12 +267,12 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         if (TextUtils.isEmpty(mMobile)){
             mMobile = mPhoneLoginInput.getText().toString().trim();
         }
-        if (loginType == 1){
-            verifyLoginByCNTV(mMobile,mPhoneCodeInput.getText().toString());
-        }else {
+//        if (loginType == 1){
+//            verifyLoginByCNTV(mMobile,mPhoneCodeInput.getText().toString());
+//        }else {
             getToken(Constant.Authorization, Constant.GRANT_TYPE_SMS,
                     Constant.CLIENT_ID, mMobile, mPhoneCodeInput.getText().toString());
-        }
+//        }
 
     }
 
@@ -285,11 +285,11 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         if (TextUtils.isEmpty(Constant.Authorization)) {
             Constant.Authorization = Utils.getAuthorization(PhoneLoginActivity.this);
         }
-        if (loginType == 1){
-            sendSMSCodeByCNTV(mMobile);
-        }else {
+//        if (loginType == 1){
+//            sendSMSCodeByCNTV(mMobile);
+//        }else {
             sendSMSCode(Constant.Authorization, Constant.GRANT_TYPE_SMS, Constant.CLIENT_ID, mMobile);
-        }
+//        }
         rel_phone.setVisibility(View.INVISIBLE);
         rel_code.setVisibility(View.VISIBLE);
         tv_code_phone.setText(getResources().getString(R.string.phone_login_tip_code) + mMobile +
@@ -317,19 +317,19 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                     if (mHandler != null) {
                         mHandler.removeMessages(DELAY_MILLIS);
                     }
-                    if (loginType == 1){
-                        //央视网验证码获取有效期为3分钟
-                        mTime = 3 * 60;
-                    }else {
+//                    if (loginType == 1){
+//                        //央视网验证码获取有效期为3分钟
+//                        mTime = 3 * 60;
+//                    }else {
                         mTime = 5 * 60;
-                    }
+//                    }
                     rel_code.setVisibility(View.INVISIBLE);
                     rel_phone.setVisibility(View.VISIBLE);
                     mPhoneLoginInput.requestFocus();
                     break;
-                case TICKET_SUCCESS:
-                    getTokenByTicket(Constant.Authorization, Constant.CLIENT_ID,ticket);
-                    break;
+//                case TICKET_SUCCESS:
+//                    getTokenByTicket(Constant.Authorization, Constant.CLIENT_ID,ticket);
+//                    break;
                 case CODE_SUCCESS:
                     isSendOK = false;
                     if (mTime_success > 0) {
