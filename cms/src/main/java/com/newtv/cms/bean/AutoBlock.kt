@@ -75,5 +75,9 @@ data class Row(
     val firstCategoryId: String,
     val firstCategoryTitle: String,
     val secondCategoryId: String,
-    val secondCategoryTitle: String
+    val secondCategoryTitle: String,
+    val categoryContentId:String,
+    val categoryContentVisibility:String,
+    val taxis:String,
+    val recentMsg:String
 )
