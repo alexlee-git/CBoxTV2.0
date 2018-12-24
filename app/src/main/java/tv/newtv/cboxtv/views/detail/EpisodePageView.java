@@ -480,7 +480,6 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private boolean videoType(String videoType) {
         if (!TextUtils.isEmpty(videoType) && (
                 TextUtils.equals(videoType, "电视剧")
-                || TextUtils.equals(videoType, "动漫")
                 || (TextUtils.equals(videoType, "少儿"))
                         && seriesContent != null
                         && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType()))) {
