@@ -103,6 +103,7 @@ public class UserCenterUtils {
                 bundle.putString(DBConfig.PLAYINDEX, valueOf(index));
                 bundle.putString(DBConfig.ACTIONTYPE, Constant.OPEN_DETAILS);
                 bundle.putString(DBConfig.CONTENT_ID, mProgramSeriesInfo.getContentID());
+                bundle.putString(DBConfig.ALTERNATE_NUMBER, mProgramSeriesInfo.getAlternateNumber());
 
                 List<SubContent> subContents = mProgramSeriesInfo.getData();
                 if (subContents != null && subContents.size() > 0) {
