@@ -134,6 +134,7 @@ public class Constant {
     public static final String CONTENT_CHILD_UUID = "content_child_uuid";
     public static final String DEFAULT_UUID = "default_uuid";
     public static final String FOCUSPARAM = "focusParam";
+    public static final String FOCUS_ID = "focusId";
     public static final String NAV_ID = "nav_id";//导航id
     public static final String FIRST_CHANNEL_ID = "FIRST_CHANNEL_ID";   //用于视频获取广告 一级频道
     public static final String SECOND_CHANNEL_ID = "SECOND_CHANNEL_ID"; //用于视频获取广告 二级频道

@@ -151,6 +151,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                                 .DB_TYPE_VIPTIP))
                 .SetPlayerId(R.id.video_container)
                 .SetContentUUID(contentUUID,getChildContentUUID())
+                .setFocusId(mFocusId)
                 .autoGetSubContents()
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)

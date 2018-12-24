@@ -140,6 +140,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetContentUUID(contentUUID, getChildContentUUID())
+                .setFocusId(mFocusId)
                 .autoGetSubContents()
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
