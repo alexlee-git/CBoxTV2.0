@@ -584,7 +584,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
                                                                                             .LOG_NODE_SUBSCRIP, "1," +
-                                                                                            mInfo.getContentUUID());
+                                                                                            mInfo.getContentID());
                                                                             Toast.makeText
                                                                                     (getContext()
                                                                                                     .getApplicationContext(), "取消订阅成功",
@@ -619,7 +619,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         LogUploadUtils.uploadLog
                                                                                 (Constant
                                                                                         .LOG_NODE_SUBSCRIP, "0," +
-                                                                                        mInfo.getContentUUID());
+                                                                                        mInfo.getContentID());
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
                                                                                 "添加订阅成功", Toast
