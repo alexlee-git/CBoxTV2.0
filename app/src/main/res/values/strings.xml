@@ -205,4 +205,9 @@
     <string name="code_exchange_tip2">兑换记录请到订单管理中查看。</string>
     <string name="user_offline_becauce_login_on_mutiple_teminal">您登录的终端已经超过数量限制，即将下线</string>
     <string name="more">更多</string>
+
+    //收藏
+    <string name="collect_lb">轮播</string>
+    <string name="collect_ps">节目集</string>
+    <string name="collect">我的收藏</string>
 </resources>
