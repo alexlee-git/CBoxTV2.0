@@ -952,6 +952,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (mAlternatePresenter != null && mAlternatePresenter.equalsAlternate(alternateId)) {
             return;
         }
+        if(defaultConfig.isAlternate){
+            uploadExitLbLog();
+        }
         if (mChangeAlternateListener != null) {
             mChangeAlternateListener.changeAlternate(alternateId, title, channelId);
         }

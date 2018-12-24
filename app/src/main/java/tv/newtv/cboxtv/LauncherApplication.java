@@ -307,6 +307,7 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
             LogUtils.e("LauncherApplication", "addLBHistory alternateID is Empty");
             return;
         }
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + alternateID);
         mContentPresenter.getContent(alternateID, true, new ContentContract.View() {
             @Override
             public void onContentResult(@NotNull String uuid, @Nullable Content content) {

@@ -37,7 +37,6 @@ import java.util.Locale;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.AlternatePageView;
-import tv.newtv.cboxtv.cms.search.SearchFragmentNew;
 import tv.newtv.cboxtv.cms.search.view.SearchEditView;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
@@ -512,6 +511,24 @@ public class BlockBuilder extends BaseBlockBuilder {
                     .append(((Program) info).getL_actionType())
                     .append(",")
                     .append(((Program) info).getL_actionUri())
+                    .trimToSize();
+        }
+        if (info instanceof Row){
+            logBuff.append(0)
+                    .append(",")
+                    .append(blockId)
+                    .append("+")
+                    .append(layoutCode)
+                    .append("+")
+                    .append(" ")
+                    .append(",")
+                    .append(((Row) info).getContentId())
+                    .append(",")
+                    .append(((Row) info).getContentType())
+                    .append(",")
+                    .append(" ")
+                    .append(",")
+                    .append(" ")
                     .trimToSize();
         }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_RECOMMEND, logBuff

@@ -108,7 +108,6 @@ public class AlternateActivity extends DetailPageActivity implements
             return;
         }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
         setUp();
     }
 
