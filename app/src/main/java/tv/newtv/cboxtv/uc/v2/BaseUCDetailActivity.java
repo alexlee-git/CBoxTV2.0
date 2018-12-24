@@ -9,12 +9,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -58,13 +61,14 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
 
     private View defaultTab;
     private RadioGroup radioGroup;
+    private int positionItem = 5;
 
     protected boolean getUsePresenter() {
         return true;
     }
 
-    protected boolean requestDefaultTab(){
-        if(radioGroup != null && radioGroup.getChildCount()>0) {
+    protected boolean requestDefaultTab() {
+        if (radioGroup != null && radioGroup.getChildCount() > 0) {
             if (defaultTab != null) {
                 defaultTab.requestFocus();
                 return true;
@@ -105,7 +109,7 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
                                     ()).inflate(R.layout.userinfo_tab_item, radioGroup, false);
                     radioButton.setText(title);
                     radioButton.setId(radioGroup.getChildCount());
-                    radioButton.setTag(String.format(Locale.getDefault(),"TAB_%d",index));
+                    radioButton.setTag(String.format(Locale.getDefault(), "TAB_%d", index));
                     radioGroup.addView(radioButton);
                     radioButton.setOnCheckedChangeListener(this);
                     index++;
@@ -215,17 +219,56 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
     public boolean dispatchKeyEvent(KeyEvent event) {
 
         View focusView = getCurrentFocus();
-        if(focusView != null){
-            if (event.getAction() == KeyEvent.ACTION_DOWN){
-                if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP){
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                if (focusView != null) {
+                    ViewParent focusParent = focusView.getParent();
+                    if (focusParent != null && focusParent instanceof RecyclerView) {
+                        View view = ((RecyclerView) focusParent).findFocus();
+                        if (view != null) {
+                            int position = ((RecyclerView) focusParent).getChildAdapterPosition(view);
+                            Log.i("---", "dispatchKeyEvent: positionItem" + positionItem);
+                            Log.i("---", "dispatchKeyEvent: position" + position);
+                            if (radioGroup != null && radioGroup.getChildCount() > 0) {
+                                RadioButton radioButton = (RadioButton) radioGroup.getChildAt(radioGroup.getCheckedRadioButtonId());
+                                if (radioButton != null && TextUtils.equals(radioButton.getText(), getResources().getString(R.string.collect_lb))) {
+                                    positionItem = 3;
+                                } else {
+                                    positionItem = 5;
+                                }
+                                if (position > positionItem) {
+                                    return super.dispatchKeyEvent(event);
+                                } else {
+                                    View next = FocusFinder.getInstance().findNextFocus(
+                                            (ViewGroup) this.getWindow().getDecorView(),
+                                            focusView,
+                                            View.FOCUS_UP);
+                                    if (next != null && next instanceof RadioButton && next.getParent() instanceof
+                                            RadioGroup) {
+                                        if (!radioGroup.hasFocus()) {
+                                            if (requestDefaultTab()) {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                if (focusView != null && focusView instanceof RadioButton && focusView.getParent() instanceof
+                        RadioGroup) {
                     View next = FocusFinder.getInstance().findNextFocus(
                             (ViewGroup) this.getWindow().getDecorView(),
                             focusView,
-                            View.FOCUS_UP);
-                    if(next != null && next instanceof RadioButton && next.getParent() instanceof
-                            RadioGroup){
-                        if(!radioGroup.hasFocus()){
-                            if(requestDefaultTab()) {
+                            View.FOCUS_DOWN);
+                    if (next != null) {
+                        ViewParent focusParent = next.getParent();
+                        if (focusParent instanceof RecyclerView) {
+                            View view = ((RecyclerView) focusParent).getChildAt(0);
+                            if (view != null) {
+                                view.requestFocus();
                                 return true;
                             }
                         }
