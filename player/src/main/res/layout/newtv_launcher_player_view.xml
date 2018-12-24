@@ -43,6 +43,7 @@
         android:layout_marginTop="@dimen/width_20px"
         android:layout_marginRight="@dimen/width_20px"
         android:text="按确定键购买VIP可完整观看本片"
+        android:textColor="@color/colorWhite"
         android:visibility="gone"
     />
 
