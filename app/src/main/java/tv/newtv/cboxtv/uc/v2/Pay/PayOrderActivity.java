@@ -749,6 +749,17 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        JSONObject activityDTOObject = new JSONObject();
+        ProductPricesInfo.ResponseBean.PricesBean.ActivityBean activityBean = mProductPricesInfo.getResponse().getPrices().get(position).getActivity();
+        if (activityBean != null) {
+            try {
+                activityDTOObject.put("id", activityBean.getId());
+                activityDTOObject.put("name", activityBean.getName());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -759,12 +770,11 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
             } else {
                 jsonObject.put("source", "");
             }
-
-
             jsonObject.put("contentCheckDTO", contentDTOForCheckObject);
             jsonObject.put("paymentChannelDTO", paymentChannelObject);
             jsonObject.put("priceDTO", priceObject);
             jsonObject.put("terminalDTO", terminalDTOObject);
+            jsonObject.put("activityDTO", activityDTOObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -778,7 +788,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         String Authorization = "Bearer " + mToken;
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getPayResult(Authorization, orderId + "" ,mIfContinued)
+                    .getPayResult(Authorization, orderId + "", mIfContinued)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {

@@ -297,14 +297,23 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
 
     @Override
     public void inflatePageWhenNoData() {
-        hideView(mRecyclerView);
+//        hideView(mRecyclerView);
         showEmptyTip();
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
             mContentPresenter.getPageContent(hotRecommendParam);
         } else {
-            Log.e(TAG, "wqs:PAGE_SUBSCRIPTION==null");
+            Log.i(TAG, "wqs:PAGE_SUBSCRIPTION==null");
+        }
+        if (mRecyclerView != null) {
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            if (contentView == null) {
+                return;
+            }
+            mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
+            mRecyclerView.setVisibility(View.GONE);
         }
     }
 
@@ -350,7 +359,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                             return false;
                         }
                     });
-                    mHotRecommendRecyclerView.setAdapter(new HotRecommendAreaAdapter(getActivity(), programInfos));
+                    mHotRecommendRecyclerView.setAdapter(new HotRecommendAreaAdapter(getActivity(), programInfos, 1));
                     mHotRecommendRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
                         @Override
                         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
