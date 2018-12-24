@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     android:clipChildren="false"
-    android:clipToPadding="false">
-    <ImageView
-        android:background="@drawable/selector_pos_background"
-        android:focusable="true"
-        android:id="@+id/round_ball_poster"
-        android:layout_width="@dimen/width_1448px"
-        android:layout_height="@dimen/height_353px"
-        android:scaleType="fitXY"/>
-</RelativeLayout>
+    android:clipToPadding="false"
+    android:background="@drawable/selector_pos_background"
+    android:focusable="true"
+    android:id="@+id/round_ball_poster"
+    android:layout_width="@dimen/width_1448px"
+    android:layout_height="@dimen/height_354px"
+    android:scaleType="fitXY"/>
