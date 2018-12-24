@@ -1828,6 +1828,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     public void stop() {
         if (mNewTVLauncherPlayer != null) {
+            addHistory();
             mNewTVLauncherPlayer.stop();
         }
         stopAllRequest();
