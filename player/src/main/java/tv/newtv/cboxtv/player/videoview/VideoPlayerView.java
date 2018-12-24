@@ -139,7 +139,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             if (defaultFocusView instanceof VideoPlayerView) {
                 VideoPlayerView.this.requestFocus();
                 if (videoTitle != null)
-                    videoTitle.setVisibility(VISIBLE);
+                    //videoTitle.setVisibility(VISIBLE);
                 if (full_screen != null){
 //                    full_screen.setVisibility(VISIBLE);
                 }
