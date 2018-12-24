@@ -1974,6 +1974,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             videoDataStruct.setAlternate(defaultConfig.isAlternate, defaultConfig.isFirstAlternate);
             videoDataStruct.setAlternateId(defaultConfig.alternateID);
             videoDataStruct.setHistoryPosition(mHistoryPostion);
+            videoDataStruct.setDefinitionStr(defaultConfig.programSeriesInfo.getDefinition());
             mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
                     videoDataStruct);
         }
