@@ -258,7 +258,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                                 });
                                 mPaiseView.startDiverges(0);
                                 LogUploadUtils.uploadLog(Constant.LOG_NODE_LIKE, "0," +
-                                        pageContent.getContentUUID());
+                                        pageContent.getContentID());
                                 break;
 
                             case R.id.full_screen:
