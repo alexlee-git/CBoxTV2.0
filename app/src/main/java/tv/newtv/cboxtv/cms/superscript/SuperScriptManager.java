@@ -16,6 +16,7 @@ import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.CornerCondition;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.Row;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.CornerContract;
 import com.newtv.libs.Constant;
@@ -210,6 +211,11 @@ public class SuperScriptManager implements CornerContract.View {
                                 } else {
                                     removeGradeMsg(parent);
                                 }
+                            }else if(info instanceof Row){
+                                addRecentMsgText(context, ((Row) info).getRecentMsg(),
+                                        parent, corners.contains(Corner.LEFT_BOTTOM));
+                                addGradeMsgText(context, ((Row) info).getGrade(), parent,
+                                        corners.contains(Corner.RIGHT_BOTTOM));
                             }
                         }
                     }

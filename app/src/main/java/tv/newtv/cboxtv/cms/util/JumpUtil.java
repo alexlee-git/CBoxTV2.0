@@ -79,6 +79,7 @@ public class JumpUtil {
             jumpIntent.putExtra(Constant.ACTION_TYPE, info.getL_actionType());
             jumpIntent.putExtra(Constant.ACTION_URI, info.getL_actionUri());
             jumpIntent.putExtra(Constant.DEFAULT_UUID, info.getL_focusId());
+            jumpIntent.putExtra(Constant.FOCUS_ID, info.getL_focusId());//默认播放的集数
             jumpIntent.putExtra(Constant.FOCUSPARAM, info.getL_focusParam());
 
 

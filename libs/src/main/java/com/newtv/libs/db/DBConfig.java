@@ -225,7 +225,8 @@ public final class DBConfig {
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
                     RECENT_MSG + " varchar2(1000)," +
-                    UPDATE_SUPERSCRIPT + " varchar2(1000)" +
+                    UPDATE_SUPERSCRIPT + " varchar2(1000)," +
+                    ALTERNATE_NUMBER + " varchar2(1000)" +
                     ")";
 
     static final String CREATE_HISTORY_TABLE_SQL =
@@ -249,6 +250,7 @@ public final class DBConfig {
                     EPISODE_NUM + " varchar2(1000)," +
                     TOTAL_CNT + " varchar2(1000)," +
                     RECENT_MSG + " varchar2(1000)," +
-                    UPDATE_SUPERSCRIPT + " varchar2(1000)" +
+                    UPDATE_SUPERSCRIPT + " varchar2(1000)," +
+                    ALTERNATE_NUMBER + " varchar2(1000)" +
                     ")";
 }
