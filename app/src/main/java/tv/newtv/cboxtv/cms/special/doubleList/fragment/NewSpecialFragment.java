@@ -661,9 +661,9 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             videoPlayerView.beginChange();
         }
         if (mCenterData != null && mCenterData.get(index) != null) {
-            if (videoPlayerView != null && mCacheSubContents.get(leftPosition + mLeftContentId) != null) {
-                Log.d("NewTVLauncherPlayerView", "2  content : " + mCacheSubContents.get(leftPosition + mLeftContentId).toString());
-                videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+            if (videoPlayerView != null && mCacheSubContents.get(leftPosition + uuidTag) != null) {
+                Log.d("NewTVLauncherPlayerView", "2  content : " + mCacheSubContents.get(leftPosition + uuidTag).toString());
+                videoPlayerView.setSeriesInfo(mCacheSubContents.get(leftPosition + uuidTag));
                 videoPlayerView.playSingleOrSeries(index, 0);
             }
         } else {
