@@ -30,6 +30,7 @@ import java.util.List;
 
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.ModuleLayoutManager;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
@@ -276,6 +277,15 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                     blockBuilder.showPosterByCMS(recycleImageView, info.getVImage(),
                             hasCorner);
                 }
+
+                SuperScriptManager.getInstance().processSuperscript(
+                        getContext(),
+                        "layout_008",
+                        ((ViewGroup) holder.itemView).indexOfChild(posterView),
+                        info,
+                        (ViewGroup) posterView.getParent()
+                );
+
             }
         }
 
