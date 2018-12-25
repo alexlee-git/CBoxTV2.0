@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 
 import tv.newtv.cboxtv.BaseActivity;
@@ -26,6 +27,7 @@ public abstract class DetailPageActivity extends BaseActivity {
 
     private String contentUUID;
     private String childContentUUID;
+    public String contentLUuid;
 
     protected String mFocusId; //从推荐位进入的默认位置(选集) 推荐位优先级高于历史记录
 
@@ -70,6 +72,9 @@ public abstract class DetailPageActivity extends BaseActivity {
             if (intent.hasExtra(Constant.CONTENT_UUID))
                 contentUUID = intent.getStringExtra(Constant.CONTENT_UUID);
 
+            if (intent.hasExtra(Constant.CONTENT_L_UUID))
+                contentLUuid = intent.getStringExtra(Constant.CONTENT_L_UUID);
+
             if (intent.hasExtra(Constant.CONTENT_CHILD_UUID))
                 childContentUUID = intent.getStringExtra(Constant.CONTENT_CHILD_UUID);
 
@@ -89,11 +94,11 @@ public abstract class DetailPageActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         ViewGroup viewGroup = findViewById(R.id.root_view);
         destroyViewGroup(viewGroup);
         BitmapUtil.recycleImageBitmap(viewGroup);
+
+        super.onDestroy();
     }
 
     private void destroyViewGroup(ViewGroup viewGroup) {
@@ -103,6 +108,7 @@ public abstract class DetailPageActivity extends BaseActivity {
                 View view = viewGroup.getChildAt(index);
                 if (view instanceof IEpisode) {
                     ((IEpisode) view).destroy();
+                    LogUtils.d("DetailPageActivity","destroy IEpisode ->" + view);
                 } else if (view instanceof ViewGroup) {
                     destroyViewGroup((ViewGroup) view);
                 }

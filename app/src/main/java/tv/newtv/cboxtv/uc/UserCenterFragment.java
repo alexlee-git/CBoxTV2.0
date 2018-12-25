@@ -859,6 +859,7 @@ public class UserCenterFragment extends BaseFragment implements
                         intent.putExtra("member_status", memberStatusString);
                         clazz = MemberCenterActivity.class;
                     } else {
+                        intent.putExtra("page", "member");
                         clazz = LoginActivity.class;
                     }
                     break;
@@ -866,6 +867,7 @@ public class UserCenterFragment extends BaseFragment implements
                     if (!TextUtils.isEmpty(mLoginTokenString)) {
                         clazz = MyOrderActivity.class;
                     } else {
+                        intent.putExtra("page", "orders");
                         clazz = LoginActivity.class;
                     }
                     break;

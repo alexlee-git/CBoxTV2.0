@@ -54,6 +54,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
         this.mContext = context;
         this.mDatas = datas;
         this.mContentType = contentType;
+        type = 0;
     }
 
     public UserCenterUniversalAdapter(Context context, List<UserCenterPageBean.Bean> datas,

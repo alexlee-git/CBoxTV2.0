@@ -48,6 +48,7 @@ import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 
@@ -88,6 +89,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private String mExternalAction;
     private String mExternalParams;
     private int loginType; // 登陆方式 0:newtv;1:cctv，此参数只在手机验证码这种登录方式的情况下会用到, M站登录不需要考虑这个变量
+    private String page;   // member ,  orders  ,
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,7 +97,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         setContentView(R.layout.activity_login);
 
         init();
-        location = getIntent().getIntExtra("location", -1);
+        location = getIntent().getIntExtra("location", -1);  //登录页面跳转
+        page = getIntent().getStringExtra("page");
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
         mFlagAuth = getIntent().getBooleanExtra("isAuth", false);
         mExternalAction = getIntent().getStringExtra("action");
@@ -161,7 +164,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 intent.putExtra("action", mExternalAction);
                 intent.putExtra("params", mExternalParams);
                 intent.putExtra("loginType", loginType);
-                Log.e(TAG, "onClick: mobile_login_btn------loginType="+loginType );
+                intent.putExtra("page", page);
+                Log.e(TAG, "onClick: mobile_login_btn------loginType=" + loginType);
                 startActivity(intent);
                 finish();
                 break;
@@ -334,11 +338,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                         }
                                     }
 
-                                    if (TextUtils.isEmpty(mExternalAction)&&TextUtils.isEmpty(mExternalParams)){
-                                        finish();
-                                    }else {
+                                    if (!TextUtils.isEmpty(mExternalAction) && !TextUtils.isEmpty(mExternalParams)) {
                                         jumpActivity();
                                     }
+                                    if (!TextUtils.isEmpty(page)) {
+                                        Intent intent = new Intent();
+                                        if (TextUtils.equals("member", page)) {
+                                            intent.setClass(LoginActivity.this, MemberCenterActivity.class);
+                                        } else if (TextUtils.equals("orders", page)) {
+                                            intent.setClass(LoginActivity.this, MyOrderActivity.class);
+                                        }
+                                        startActivity(intent);
+                                    }
+                                    finish();
                                 }
 
                             } catch (Exception e) {
@@ -378,8 +390,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         if (!isBackground && clazz == MainActivity.class) {
             ActivityStacks.get().finishAllActivity();
         }
-        finish();
-
     }
 
     @Override

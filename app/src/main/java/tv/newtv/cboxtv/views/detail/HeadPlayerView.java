@@ -267,7 +267,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     str.append(getResources().getString(R.string.vip_tip2));
                     Log.d(TAG, "str : " + str.toString());
                     vipTip.setText(str.toString());
-
+                    vipPay.setVisibility(View.GONE);
                 }
 
             }
@@ -584,7 +584,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
                                                                                             .LOG_NODE_SUBSCRIP, "1," +
-                                                                                            mInfo.getContentUUID());
+                                                                                            mInfo.getContentID());
                                                                             Toast.makeText
                                                                                     (getContext()
                                                                                                     .getApplicationContext(), "取消订阅成功",
@@ -619,7 +619,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         LogUploadUtils.uploadLog
                                                                                 (Constant
                                                                                         .LOG_NODE_SUBSCRIP, "0," +
-                                                                                        mInfo.getContentUUID());
+                                                                                        mInfo.getContentID());
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
                                                                                 "添加订阅成功", Toast
@@ -652,8 +652,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         vipPay = contentView.findViewById(value.viewId);
                         break;
                     case Builder.DB_TYPE_VIPTIP:
-                        vipTip = contentView.findViewById
-                                (value.viewId);
+                        vipTip = contentView.findViewById(value.viewId);
                         break;
                 }
             }

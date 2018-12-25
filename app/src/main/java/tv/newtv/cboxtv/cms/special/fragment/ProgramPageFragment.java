@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
@@ -31,6 +32,7 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
 
@@ -118,6 +120,13 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             tvProgramaTitle.setText(moduleInfoResult.getSubTitle());
 
         }
+        videoPlayerView.setVideoExitCallback(new VideoExitFullScreenCallBack() {
+            @Override
+            public void videoEitFullScreen(boolean isLiving) {
+                int position = adapter.getFocusedPosition();
+                recyclerView.scrollToPosition(position);
+            }
+        });
     }
 
     @Override
@@ -133,7 +142,8 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
                 if (focusView instanceof VideoPlayerView) {
                     if (recyclerView != null && adapter != null) {
                         Log.d(TAG,"position : "+adapter.getFocusedPosition());
-                        recyclerView.getLayoutManager().findViewByPosition(adapter.getFocusedPosition()).requestFocus();
+                        int position = adapter.getFocusedPosition();
+                        recyclerView.getLayoutManager().findViewByPosition(position).requestFocus();
                         return true;
                     }
                 }

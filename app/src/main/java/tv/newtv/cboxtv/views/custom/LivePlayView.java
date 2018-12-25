@@ -91,6 +91,8 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     private boolean playerReady = false;
 
+
+
     private int mIndex = 0;
     private int mPosition = 0;
     private Runnable playRunnable = new Runnable() {
@@ -138,6 +140,16 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public LivePlayView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context,attrs);
+    }
+
+    public void stop(){
+        if(mVideoPlayerView != null){
+            if(currentMode != MODE_LIVE) {
+                mVideoPlayerView.stop();
+            }else{
+                mVideoPlayerView.release();
+            }
+        }
     }
 
     public void setAlternateChange(NewTVLauncherPlayerView.ChangeAlternateListener listener) {

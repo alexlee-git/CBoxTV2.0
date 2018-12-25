@@ -1,7 +1,6 @@
 package tv.newtv.cboxtv.views.detail;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -20,7 +19,6 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.AlternateContract;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.cms.contract.PersonDetailsConstract;
-import com.newtv.libs.Libs;
 import com.newtv.libs.util.LogUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +60,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private TextView mTitleText;
     private NewTvRecycleAdapter mAdapter;
     private onEpisodeItemClick onItemClickListener;
+    private LinearLayoutManager mLayoutManager;
 
     private View currentFocusView;
 
@@ -82,19 +81,32 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private int direction = DIRECTION_HORIZONTAL;
     private RecycleItemDecoration mItemDecoration;
 
+    public EpisodeHorizontalListView(Context context) {
+        this(context, null);
+    }
+
+    public EpisodeHorizontalListView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public EpisodeHorizontalListView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initialize(context, attrs);
+    }
+
     @Override
     public void destroy() {
         mRecycleView = null;
         mProgramSeriesInfo = null;
-        mOnSeriesInfoResult =  null;
+        mOnSeriesInfoResult = null;
         controlView = null;
         onItemClickListener = null;
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.destroy();
         }
         mAdapter = null;
 
-        if(mAlternatePresenter != null){
+        if (mAlternatePresenter != null) {
             mAlternatePresenter.destroy();
             mAlternatePresenter = null;
         }
@@ -110,24 +122,9 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         }
     }
 
-    public EpisodeHorizontalListView(Context context) {
-        this(context, null);
-    }
-
-    public EpisodeHorizontalListView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-
-    public EpisodeHorizontalListView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initialize(context, attrs);
-    }
-
     public void setOnSeriesInfoResult(OnSeriesInfoResult infoResult) {
         mOnSeriesInfoResult = infoResult;
     }
-
 
 
     public void setOnItemClick(onEpisodeItemClick listener) {
@@ -177,17 +174,19 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         if (infos.size() > 0) {
             mProgramSeriesInfo = infos;
             if (getChildCount() == 0) {
-                LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout.episode_horizontal_layout,
+                LayoutInflater.from(getContext().getApplicationContext()).inflate(R.layout
+                                .episode_horizontal_layout,
                         this,
                         true);
                 mRecycleView = findViewById(R.id.list_view);
 
-                mRecycleView.setLayoutManager(new LinearLayoutManager(getContext(),
-                        LinearLayoutManager.HORIZONTAL, false));
+                mLayoutManager = new LinearLayoutManager(getContext(),
+                        LinearLayoutManager.HORIZONTAL, false);
+                mRecycleView.setLayoutManager(mLayoutManager);
                 mRecycleView.setShowCounts(mHorizontalCount);
-                if(mItemDecoration != null){
+                if (mItemDecoration != null) {
                     mRecycleView.addItemDecoration(mItemDecoration);
-                }else {
+                } else {
                     if (item_layout != R.layout.item_details_horizontal_episode) {
                         mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
                                 .getDimensionPixelOffset(R.dimen.width_48px)));
@@ -222,21 +221,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         String title = "";
                         String year = "";
 
-//                        if(Libs.get().isDebug()) {
-//                            int pos = holder.getAdapterPosition();
-//                            if (data != null && data instanceof SubContent) {
-//                                if (pos == 0) {
-//                                    ((SubContent) data).setYear("2016");
-//                                }else if(pos == 3){
-//                                    ((SubContent) data).setYear("2015");
-//                                }else if(pos == 5){
-//                                    ((SubContent) data).setYear("2014");
-//                                }
-//                            }
-//                        }
-
                         if (data instanceof SubContent) {
-                            if(holder.mCornerContaner!=null) {
+                            if (holder.mCornerContaner != null) {
                                 SuperScriptManager.getInstance().processVipSuperScript(
                                         getContext(),
                                         (SubContent) data,
@@ -277,16 +263,20 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         }
 
                         if (item_layout == R.layout.item_details_horizontal_episode) {
-                            if (TextUtils.isEmpty(((SubContent) mProgramSeriesInfo.get(0)).getYear())) {
+                            if (TextUtils.isEmpty(((SubContent) mProgramSeriesInfo.get(0))
+                                    .getYear())) {
                                 holder.mUpdateLayout.setVisibility(GONE);
                             } else {
                                 String beforeYear = "";
                                 String beforeTitle = "";
-                                if(holder.getAdapterPosition() > 0) {
+                                if (holder.getAdapterPosition() > 0) {
                                     int beforePosition = holder.getAdapterPosition() - 1;
-                                    beforeYear = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getYear();
-                                    beforeTitle = ((SubContent) mProgramSeriesInfo.get(beforePosition)).getTitle();
-                                    if (TextUtils.isEmpty(year) && !TextUtils.isEmpty(beforeYear) && data instanceof SubContent) {
+                                    beforeYear = ((SubContent) mProgramSeriesInfo.get
+                                            (beforePosition)).getYear();
+                                    beforeTitle = ((SubContent) mProgramSeriesInfo.get
+                                            (beforePosition)).getTitle();
+                                    if (TextUtils.isEmpty(year) && !TextUtils.isEmpty(beforeYear)
+                                            && data instanceof SubContent) {
                                         ((SubContent) data).setYear(beforeYear);
                                         year = beforeYear;
                                     }
@@ -303,7 +293,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                                                 + " , before Title : " + beforeTitle
                                         );
 
-                                        if (!TextUtils.equals(year,beforeYear)) {
+                                        if (!TextUtils.equals(year, beforeYear)) {
                                             holder.columnUpdateDateTV.setVisibility(VISIBLE);
                                             holder.columnUpdateDateTV.setText(year);
                                         } else {
@@ -315,8 +305,6 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                                 }
                             }
                         }
-
-
                     }
 
                     @Override
@@ -340,8 +328,10 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                 };
 
                 mRecycleView.setAdapter(mAdapter);
+            } else {
+                mAdapter.notifyItemRangeChanged(mLayoutManager.findFirstVisibleItemPosition(),
+                        getChildCount());
             }
-            mAdapter.notifyDataSetChanged();
         } else {
             onLoadError();
         }
@@ -387,8 +377,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         direction = dir;
     }
 
-    public void setHorizontalItemLayout(int layout, int count, int placeHolder, int dir,int
-            scaleView,RecycleItemDecoration itemDecoration,int layoutId,int columnUpdateDateId) {
+    public void setHorizontalItemLayout(int layout, int count, int placeHolder, int dir, int
+            scaleView, RecycleItemDecoration itemDecoration, int layoutId, int columnUpdateDateId) {
         item_layout = layout;
         mHorizontalCount = count;
         place_holder = placeHolder;
@@ -445,7 +435,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
-        LogUtils.e("parseDataError","data error : " + desc);
+        LogUtils.e("parseDataError", "data error : " + desc);
     }
 
     @Override
@@ -459,7 +449,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
     @Override
     public void setPersonProgramList(@Nullable ArrayList<SubContent> contents) {
-        LogUtils.e("setPersonProgramList","content data : " + contents);
+        LogUtils.e("setPersonProgramList", "content data : " + contents);
         if (contents == null || contents.size() <= 0) {
             onLoadError();
             return;
@@ -481,14 +471,20 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         buildUI(contents, TYPE_PROGRAM_SERICE_LV);
     }
 
+    public boolean equalResult(Object any) {
+        return mProgramSeriesInfo != null && mProgramSeriesInfo.equals(any);
+    }
+
     @Override
-    public void onAlternateResult(@Nullable List<Alternate> alternates) {
+    public void onAlternateResult(@NotNull String alternateId, @Nullable List<Alternate> alternates) {
+        if(!TextUtils.equals(alternateId,mContentUuid)) return;
         if (alternates == null || alternates.size() <= 0) {
             onLoadError();
             return;
         }
-        buildUI(alternates, TYPE_ALTERNATE_LIST);
-
+        if (!equalResult(alternates)) {
+            buildUI(alternates, TYPE_ALTERNATE_LIST);
+        }
     }
 
     public interface OnSeriesInfoResult<T> {
@@ -498,7 +494,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private class ViewHolder extends NewTvRecycleAdapter.NewTvViewHolder implements
             OnFocusChangeListener {
         private RecycleImageView posterView;
-        private TextView titleText,columnUpdateDateTV;//人物详情（栏目最近更新日期）
+        private TextView titleText, columnUpdateDateTV;//人物详情（栏目最近更新日期）
         private FocusRelativeLayout modleView;
         private LinearLayout mUpdateLayout;
         private FrameLayout mCornerContaner;
@@ -511,10 +507,10 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             modleView = itemView.findViewById(R.id.id_module_view);
             posterView = itemView.findViewWithTag("tag_poster_image");
             titleText = itemView.findViewWithTag("tag_poster_title");
-            mCornerContaner  = itemView.findViewWithTag("corner_container");
+            mCornerContaner = itemView.findViewWithTag("corner_container");
 
             modleView.setOnFocusChangeListener(this);
-            if (mScaleView != -1){
+            if (mScaleView != -1) {
                 itemView = itemView.findViewById(mScaleView);
             }
             modleView.setResizeView(itemView);

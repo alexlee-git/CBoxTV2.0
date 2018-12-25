@@ -62,7 +62,7 @@ public class LabelDataAdapter extends RecyclerView.Adapter<LabelDataAdapter.MyHo
         //更新
         if (!TextUtils.isEmpty(list.get(i).getRecentMsg())) {
             myHolder.labelNum.setVisibility(View.VISIBLE);
-            myHolder.labelNum.setText(SpannableBuilderUtils.builderMsg(list.get(i).getRecentMsg()));
+            myHolder.labelNum.setText(SpannableBuilderUtils.builderMsgByRegular(list.get(i).getRecentMsg()));
         } else if (!TextUtils.isEmpty(list.get(i).getRecentNum())){
             myHolder.labelNum.setText(SpannableBuilderUtils.builderNum(list.get(i).getRecentNum()));
         }

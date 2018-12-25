@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.menu.LastMenuRecyclerAdapter;
+import tv.newtv.cboxtv.menu.MenuGroupPresenter2;
 
 /**
  * Created by TCP on 2018/4/18.
@@ -246,6 +247,12 @@ public class Node {
             }
         }
         return null;
+    }
+
+    public boolean isLbCollectNodeOrChild(){
+        boolean result;
+        result = searchNodeInParent(MenuGroupPresenter2.LB_ID_COLLECT) != null ? true : false;
+        return result;
     }
 
     public void initParent(){

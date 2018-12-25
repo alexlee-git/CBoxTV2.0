@@ -45,6 +45,7 @@ import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
+import tv.newtv.cboxtv.uc.v2.CollectionDetailActivity;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
@@ -299,6 +300,10 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     public void inflatePageWhenNoData() {
 //        hideView(mRecyclerView);
         showEmptyTip();
+        CollectionDetailActivity parentActivity = (CollectionDetailActivity) getActivity();
+        if (parentActivity != null) {
+            parentActivity.currentNavFouse();
+        }
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);

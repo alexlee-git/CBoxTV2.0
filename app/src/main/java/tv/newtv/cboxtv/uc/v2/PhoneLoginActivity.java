@@ -49,6 +49,7 @@ import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.v2.Pay.PayChannelActivity;
 import tv.newtv.cboxtv.uc.v2.Pay.PayOrderActivity;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.uc.v2.member.MemberCenterActivity;
 import tv.newtv.cboxtv.uc.v2.member.UserAgreementActivity;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 
@@ -94,6 +95,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     private String mExternalParams;
     private int loginType; // 登陆方式 0:newtv;1:cctv，此参数只在手机验证码这种登录方式的情况下会用到, M站登录不需要考虑这个变量
     private String ticket;//央视网登录后返回值
+    private String page;   // member ,  orders  ,
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,13 +103,14 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         setContentView(R.layout.activity_phone_login);
         initView();
 
+        page = getIntent().getStringExtra("page");
         mFlagPay = getIntent().getBooleanExtra("ispay", false);
         mFlagAuth = getIntent().getBooleanExtra("isAuth", false);
         mExterPayBean = (ExterPayBean) getIntent().getSerializableExtra("payBean");
         mExternalAction = getIntent().getStringExtra("action");
         mExternalParams = getIntent().getStringExtra("params");
-        loginType = getIntent().getIntExtra("loginType",0);
-        Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay+"============loginType="+loginType);
+        loginType = getIntent().getIntExtra("loginType", 0);
+        Log.i(TAG, "PhoneLoginActivity--onCreate: mFlagPay = " + mFlagPay + "============loginType=" + loginType);
         if (mExterPayBean != null) {
             Log.i(TAG, "mExterPayBean = " + mExterPayBean.toString());
             mVipFlag = mExterPayBean.getVipFlag();
@@ -264,14 +267,14 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
             isSendOK = true;
             return;
         }
-        if (TextUtils.isEmpty(mMobile)){
+        if (TextUtils.isEmpty(mMobile)) {
             mMobile = mPhoneLoginInput.getText().toString().trim();
         }
 //        if (loginType == 1){
 //            verifyLoginByCNTV(mMobile,mPhoneCodeInput.getText().toString());
 //        }else {
-            getToken(Constant.Authorization, Constant.GRANT_TYPE_SMS,
-                    Constant.CLIENT_ID, mMobile, mPhoneCodeInput.getText().toString());
+        getToken(Constant.Authorization, Constant.GRANT_TYPE_SMS,
+                Constant.CLIENT_ID, mMobile, mPhoneCodeInput.getText().toString());
 //        }
 
     }
@@ -288,7 +291,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 //        if (loginType == 1){
 //            sendSMSCodeByCNTV(mMobile);
 //        }else {
-            sendSMSCode(Constant.Authorization, Constant.GRANT_TYPE_SMS, Constant.CLIENT_ID, mMobile);
+        sendSMSCode(Constant.Authorization, Constant.GRANT_TYPE_SMS, Constant.CLIENT_ID, mMobile);
 //        }
         rel_phone.setVisibility(View.INVISIBLE);
         rel_code.setVisibility(View.VISIBLE);
@@ -321,7 +324,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
 //                        //央视网验证码获取有效期为3分钟
 //                        mTime = 3 * 60;
 //                    }else {
-                        mTime = 5 * 60;
+                    mTime = 5 * 60;
 //                    }
                     rel_code.setVisibility(View.INVISIBLE);
                     rel_phone.setVisibility(View.VISIBLE);
@@ -357,11 +360,19 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                     startActivity(mIntent);
                                 }
                             }
-                            if (TextUtils.isEmpty(mExternalAction) && TextUtils.isEmpty(mExternalParams)) {
-                                finish();
-                            } else {
+                            if (!TextUtils.isEmpty(mExternalAction) && !TextUtils.isEmpty(mExternalParams)) {
                                 jumpActivity();
                             }
+                            if (!TextUtils.isEmpty(page)) {
+                                Intent intent = new Intent();
+                                if (TextUtils.equals("member", page)) {
+                                    intent.setClass(PhoneLoginActivity.this, MemberCenterActivity.class);
+                                } else if (TextUtils.equals("orders", page)) {
+                                    intent.setClass(PhoneLoginActivity.this, MyOrderActivity.class);
+                                }
+                                startActivity(intent);
+                            }
+                            finish();
                         }
                     }
                     break;
@@ -381,7 +392,6 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
         if (!isBackground && clazz == MainActivity.class) {
             ActivityStacks.get().finishAllActivity();
         }
-        finish();
     }
 
     public boolean checkMobile(String mobile) {
@@ -418,6 +428,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                 intent.putExtra("location", 1);
                 intent.putExtra("ispay", mFlagPay);
                 intent.putExtra("payBean", mExterPayBean);
+                intent.putExtra("page", page);
                 startActivity(intent);
                 finish();
             }
@@ -556,7 +567,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                             try {
                                 String data = responseBody.string().trim();
                                 Log.e(TAG, "sendSMSCodeByCNTV----Login Qrcode :data=" + data);
-                                if (TextUtils.equals(data,"success")){
+                                if (TextUtils.equals(data, "success")) {
                                     //央视网默认验证码有效时间是3分钟，服务器未返回，前端写定
                                     mTime = 180;
                                     btn_refresh.setText(getResources().getString(R.string.phone_login_status1));
@@ -565,7 +576,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                     if (mHandler != null) {
                                         mHandler.sendEmptyMessageDelayed(DELAY_MILLIS, 1000);
                                     }
-                                }else {
+                                } else {
                                     String error = getCNTVErrMSg(data);
                                     Toast.makeText(PhoneLoginActivity.this, error, Toast.LENGTH_SHORT).show();
                                     if (mHandler != null) {
@@ -621,41 +632,42 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
     /**
      * 将获取验证码时返回的错误码转化为中文内容
      */
-    private String  getCNTVErrMSg(String dataMSg){
+    private String getCNTVErrMSg(String dataMSg) {
         String errorMsg;
-        if (TextUtils.equals(dataMSg,"registered")){
+        if (TextUtils.equals(dataMSg, "registered")) {
             errorMsg = "该手机号已注册";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"failed")){
+        } else if (TextUtils.equals(dataMSg, "failed")) {
             errorMsg = "校验码发送失败（内部错误）";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"sendagain")){
+        } else if (TextUtils.equals(dataMSg, "sendagain")) {
             errorMsg = "三分钟内频繁发送短信";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"ipsendagain")){
+        } else if (TextUtils.equals(dataMSg, "ipsendagain")) {
             errorMsg = "（24h）同一IP用户请求校验码超过2000次";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"mobileoften")){
+        } else if (TextUtils.equals(dataMSg, "mobileoften")) {
             errorMsg = "（24h）同一手机号用户请求校验码超过5次";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"mobilecodeerror")){
+        } else if (TextUtils.equals(dataMSg, "mobilecodeerror")) {
             errorMsg = "验证码不正确";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"unregistered")){
+        } else if (TextUtils.equals(dataMSg, "unregistered")) {
             errorMsg = "该手机号未注册";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"timeout")){
+        } else if (TextUtils.equals(dataMSg, "timeout")) {
             errorMsg = "校验码已超过有效时间";
             return errorMsg;
-        }else if (TextUtils.equals(dataMSg,"error")){
+        } else if (TextUtils.equals(dataMSg, "error")) {
             errorMsg = "手机校验码输入有误";
             return errorMsg;
-        }else {
+        } else {
             errorMsg = "发送验证码失败";
             return errorMsg;
         }
 
     }
+
     private void getToken(String Authorization, String response_type, String client_id, String phone, String code) {
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
@@ -740,7 +752,7 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
      * 通过央视网返回的ticket换取accessToken接口
      */
     private void getTokenByTicket(String Authorization, String client_id, String ticket) {
-        Log.e(TAG, "getTokenByTicket:-----------ticket= "+ticket );
+        Log.e(TAG, "getTokenByTicket:-----------ticket= " + ticket);
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
                     .transTicketToToken(Authorization, client_id, ticket)
@@ -857,12 +869,12 @@ public class PhoneLoginActivity extends BaseActivity implements View.OnClickList
                                 JSONObject mJsonObject = new JSONObject(data);
                                 ticket = mJsonObject.optString("ticket");
                                 String errMsg = mJsonObject.optString("errMsg");
-                                if (!TextUtils.isEmpty(ticket)){
-                                    Log.e(TAG, "onNext: --------ticket = "+ticket );
+                                if (!TextUtils.isEmpty(ticket)) {
+                                    Log.e(TAG, "onNext: --------ticket = " + ticket);
                                     if (mHandler != null) {
                                         mHandler.sendEmptyMessage(TICKET_SUCCESS);
                                     }
-                                }else {
+                                } else {
                                     Toast.makeText(PhoneLoginActivity.this, errMsg, Toast.LENGTH_SHORT).show();
                                 }
 

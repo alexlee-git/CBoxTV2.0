@@ -72,37 +72,25 @@ object CmsUtil {
      * @param now           当前时间
      * @param beginIndex    开始查找索引值
      * @param endIndex      结束查找索引值
+     *
      * @return 返回时间段内播放的index
      */
     @JvmStatic
     fun binarySearch(alternateList: List<Alternate>, now: Long, beginIndex: Int, endIndex: Int): Int {
-        val midIndex = (beginIndex + endIndex) / 2
-        if (endIndex - beginIndex < 20) {
-            for (index in beginIndex .. endIndex) {
-                val startTime = parse(alternateList[index].startTime)
-                val endTime = startTime + Integer.parseInt(alternateList[index]
-                        .duration) * 1000
-                if (now in startTime..(endTime - 1)) {
-                    return index
-                }
+        val count = alternateList.size
+        var returnIndex = -1
+        var index = 0
+        while (index < count) {
+            val alternate = alternateList[index]
+            val begin = parse(alternate.startTime)
+            val end = begin + (Integer.parseInt(alternate.duration) * 1000)
+            if(now < begin || (now in (begin + 1)..(end - 1))){
+                returnIndex = index
+                break
             }
+            index++
         }
-        val midLong = parse(alternateList[midIndex].startTime)
-        val beginLong = parse(alternateList[beginIndex].startTime)
-        val endLong = parse(alternateList[endIndex].startTime)
-        LogUtils.e("Alternate", "start=$beginIndex time=" + alternateList[beginIndex]
-                .startTime +
-                " end=" + endIndex + " time=" + alternateList[endIndex].startTime)
-        if (now < beginLong || now > endLong || beginIndex > endIndex) {
-            return -1
-        }
-        return if (now < midLong) {
-            binarySearch(alternateList, now, beginIndex, midIndex)
-        } else if (now > midLong) {
-            binarySearch(alternateList, now, midIndex, endIndex)
-        } else {
-            return endIndex
-        }
+        return returnIndex
     }
 
 
@@ -135,7 +123,7 @@ object CmsUtil {
     @JvmStatic
     fun isUIDataDesc(content: Content?): Boolean {
         content?.let {
-            if(!TextUtils.isEmpty(it.sortType)) {
+            if (!TextUtils.isEmpty(it.sortType)) {
                 return "1".equals(it.sortType)
             }
         }
@@ -150,7 +138,7 @@ object CmsUtil {
     @JvmStatic
     fun isPlayDesc(content: Content?): Boolean {
         content?.let {
-            if(!TextUtils.isEmpty(it.playOrder)) {
+            if (!TextUtils.isEmpty(it.playOrder)) {
                 return "1".equals(it.playOrder)
             }
         }

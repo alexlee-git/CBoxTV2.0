@@ -126,6 +126,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     private Node lbCollectNode;
     private List<String> seriesIdList = new ArrayList<>();
+    private boolean willRefreshLbNode = false;
 
     @Override
     public void release() {
@@ -183,7 +184,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             @Override
             public void select(Program program) {
                 if (LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())) {
-                    playProgram = program;
+//                    playProgram = program;
                     if (program.isCollect()) {
                         deleteLbCollect(program);
                     } else {
@@ -709,6 +710,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 case KeyEvent.KEYCODE_DPAD_DOWN:
                 case KeyEvent.KEYCODE_DPAD_UP:
                     if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
+                        if(willRefreshLbNode){
+                            refreshLbNode();
+                            willRefreshLbNode = false;
+                        }
                         if (playProgram != null) {
                             updateLbPlayProgram();
                             menuGroup.show(playProgram);
@@ -969,7 +974,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT).show();
                     program.setCollect(true);
                     menuGroup.notifyLastAdapter();
-                    refreshLbNode();
+                    if(!program.getParent().isLbCollectNodeOrChild()){
+                        refreshLbNode();
+                    } else {
+                        willRefreshLbNode = true;
+                    }
                 }
             }
         });
@@ -991,7 +1000,11 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
                     program.setCollect(false);
                     menuGroup.notifyLastAdapter();
-                    refreshLbNode();
+                    if(!program.getParent().isLbCollectNodeOrChild()){
+                        refreshLbNode();
+                    } else {
+                        willRefreshLbNode = true;
+                    }
                 }
             }
         });
@@ -1059,7 +1072,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 node.setTitle(program._title_name);
                 node.setActionUri(program._content_id);
                 node.setContentType(program._contenttype);
-                node.setForbidAddCollect(true);
+                node.contentUUID = program._contentuuid;
+//                node.setForbidAddCollect(true);
                 node.alternateNumber = program.alternateNumber;
 
                 Log.i(TAG, "setLbNode: " + node.getId());

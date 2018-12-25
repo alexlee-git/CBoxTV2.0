@@ -131,6 +131,7 @@ public class Constant {
     public static final String ACTION_TYPE = "action_type";
     public static final String ACTION_AD_ENTRY = "action_ad_entry";//判断是不是从广告点击进入
     public static final String CONTENT_UUID = "content_uuid";
+    public static final String CONTENT_L_UUID = "content_l_uuid";//日志上传的uuid
     public static final String CONTENT_CHILD_UUID = "content_child_uuid";
     public static final String DEFAULT_UUID = "default_uuid";
     public static final String FOCUSPARAM = "focusParam";

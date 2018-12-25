@@ -14,7 +14,7 @@ import java.util.List;
  * 创建日期:          2018/11/30
  */
 public interface AlternateCallback {
-    void onAlternateResult(@Nullable List<Alternate> result);
+    void onAlternateResult(String alternateId, @Nullable List<Alternate> result);
     void onError(String code,String desc);
     void onPlayIndexChange(int index);
 }
