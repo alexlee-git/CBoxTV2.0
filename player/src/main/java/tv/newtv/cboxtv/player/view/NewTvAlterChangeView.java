@@ -38,6 +38,7 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
 
     private String currentChannel, currentTitle;
     private boolean needTip = true;
+    private boolean needShowAd = true;
     private String currentId;
     private Runnable closeRunnalbe = new Runnable() {
         @Override
@@ -45,13 +46,6 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
             dismiss();
         }
     };
-
-    public void destroy(){
-        if(mAdPresenter != null){
-            mAdPresenter.destroy();
-            mAdPresenter = null;
-        }
-    }
 
     public NewTvAlterChangeView(Context context) {
         this(context, null);
@@ -69,6 +63,13 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         channelText = findViewById(R.id.alter_channel);
         titleText = findViewById(R.id.alter_title);
         background = findViewById(R.id.background_ad);
+    }
+
+    public void destroy() {
+        if (mAdPresenter != null) {
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
     }
 
     public void setCurrentId(String id) {
@@ -94,15 +95,20 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         }
     }
 
-    public void show() {
+    public void show(String showAd) {
         removeCallbacks(closeRunnalbe);
 
-        mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE,  PlayerConfig.getInstance()
-                .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), currentId);
+        needTip = false;
+        needShowAd = "0".equals(showAd);
+
+        background.setVisibility(needShowAd ? GONE : VISIBLE);
+
+        if(needShowAd) {
+            mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE, PlayerConfig.getInstance()
+                    .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), currentId);
+        }
         setVisibility(VISIBLE);
         postDelayed(closeRunnalbe, 5000);
-
-        needTip = false;
 
         NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView
                 .SHOWING_ALTER_CHANGE_VIEW);
@@ -130,6 +136,7 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
                     background.setImageURI(Uri.parse(url));
                 }
             }
+
         }
     }
 

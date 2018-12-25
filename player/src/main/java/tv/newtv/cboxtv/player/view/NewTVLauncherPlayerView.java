@@ -414,7 +414,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                     mAlternatePresenter.getCurrrentChannel(), mAlternatePresenter
                                             .getCurrrentTitle()));
                             mNewTvAlterChange.setTitleText(current.getTitle());
-                            mNewTvAlterChange.show();
+                            mNewTvAlterChange.show(defaultConfig.currentAlternate.isAd());
                             return true;
                         }
                     }
