@@ -541,7 +541,7 @@ public class BlockBuilder extends BaseBlockBuilder {
         }
         if (info instanceof Program) {
             Program pInfo = (Program) info;
-            JumpUtil.activityJump(mContext, (Program) info);
+            JumpUtil.activityJump(mContext, pInfo);
         } else if (info instanceof Row) {
             Row row = (Row) info;
             JumpUtil.detailsJumpActivity(mContext, row.getContentType(), row.getContentId());
