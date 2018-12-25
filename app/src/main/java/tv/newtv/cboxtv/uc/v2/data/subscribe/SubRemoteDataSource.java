@@ -257,18 +257,21 @@ public class SubRemoteDataSource implements SubDataSource {
 
 
                                 String contentType = item.optString("content_type");
+                                String contentUUID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    entity.set_contentuuid(item.optString("program_child_id"));
+                                    contentUUID = item.optString("program_child_id");
                                 } else {
-                                    entity.set_contentuuid(item.optString("programset_id"));
+                                    contentUUID = item.optString("programset_id");
                                 }
-                                //2018.12.25 wqs 兼容2.0版本用户行为数据
-                                String contentID = item.optString("content_id");
-                                if (!TextUtils.isEmpty(contentID)) {
-                                    entity.setContentId(contentID);
-                                } else {
-                                    entity.setContentId(entity.get_contentuuid());
-                                }
+                                entity.set_contentuuid(contentUUID);
+//                                //2018.12.25 wqs 兼容2.0版本用户行为数据
+//                                String contentID = item.optString("content_id");
+//                                if (!TextUtils.isEmpty(contentID)) {
+//                                    entity.setContentId(contentID);
+//                                } else {
+//                                    entity.setContentId(contentUUID);
+//                                }
+                                entity.setContentId(item.optString("content_id"));
                                 Log.d(TAG, "getRemoteSubscribeList contentId : " + entity.getContentId() + ", contentuuid : " + entity.get_contentuuid());
                                 entity.set_contenttype(contentType);
                                 entity.setPlayId(item.optString("program_child_id"));

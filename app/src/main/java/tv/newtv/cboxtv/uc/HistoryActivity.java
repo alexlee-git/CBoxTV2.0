@@ -556,14 +556,16 @@ public class HistoryActivity extends BaseActivity implements
 
     @Override
     public void onItemClick(View view, int Position, UserCenterPageBean.Bean object) {
-        //2018.12.25 wqs 兼容2.0版本用户行为数据
-        if (!TextUtils.isEmpty(object.getContentId()) && !TextUtils.equals(object.getContentId(), "null")) {
-            JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
-                    object.getContentId(), "");
-        } else {
-            JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
-                    object.get_contentuuid(), "");
-        }
+//        //2018.12.25 wqs 兼容2.0版本用户行为数据
+//        if (!TextUtils.isEmpty(object.getContentId()) && !TextUtils.equals(object.getContentId(), "null")) {
+//            JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
+//                    object.getContentId(), "");
+//        } else {
+//            JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
+//                    object.get_contentuuid(), "");
+//        }
+        JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
+                object.getContentId(), "");
     }
 
     @Override

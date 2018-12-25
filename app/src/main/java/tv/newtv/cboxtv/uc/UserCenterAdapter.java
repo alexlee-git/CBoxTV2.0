@@ -613,8 +613,10 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                         SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(bean.getRecentMsg());
                         if (!TextUtils.isEmpty(spannableRecentMsg)) {
                             recentTitleTextView.setText(spannableRecentMsg);
+                            showView(recentTitleTextView);
                         } else {
                             recentTitleTextView.setText("");
+                            goneView(recentTitleTextView);
                         }
                     }
 

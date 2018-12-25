@@ -817,14 +817,16 @@ public class UserCenterFragment extends BaseFragment implements
                 case R.id.id_module_8_view6:
                     if (entity != null) {
                         Log.d(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype() + "--- entity.getContentId():" + entity.getContentId());
-                        //2018.12.25 wqs 兼容2.0版本用户行为数据
-                        if (!TextUtils.isEmpty(entity.getContentId()) && !TextUtils.equals(entity.getContentId(), "null")) {
-                            JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
-                                    entity.getContentId(), "");
-                        } else {
-                            JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
-                                    entity.get_contentuuid(), "");
-                        }
+//                        //2018.12.25 wqs 兼容2.0版本用户行为数据
+//                        if (!TextUtils.isEmpty(entity.getContentId())&&TextUtils.equals(entity.getContentId(),"null")) {
+//                            JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
+//                                    entity.getContentId(), "");
+//                        } else {
+//                            JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
+//                                    entity.get_contentuuid(), "");
+//                        }
+                        JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
+                                entity.getContentId(), "");
                     } else {
                         switch (position) {
                             case SUBSCRIBE:
