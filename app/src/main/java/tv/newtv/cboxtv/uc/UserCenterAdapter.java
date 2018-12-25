@@ -618,6 +618,9 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                             recentTitleTextView.setText("");
                             goneView(recentTitleTextView);
                         }
+                    } else {
+                        recentTitleTextView.setText("");
+                        goneView(recentTitleTextView);
                     }
 
                     String isUpdate = bean.getIsUpdate();

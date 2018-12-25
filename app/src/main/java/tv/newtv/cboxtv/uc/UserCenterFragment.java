@@ -462,6 +462,8 @@ public class UserCenterFragment extends BaseFragment implements
                     .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
                     .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
+                    .noteq(DBConfig.CONTENTTYPE, "null")
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
                 @Override
