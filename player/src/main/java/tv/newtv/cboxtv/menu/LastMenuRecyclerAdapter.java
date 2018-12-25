@@ -194,14 +194,17 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
             v.setBackgroundResource(R.drawable.menu_group_item_focus);
         } else {
             v.setBackgroundResource(R.drawable.one_focus);
-            setSelect(holder, true);
         }
+        setSelect(holder, true);
     }
 
     private void setSelect(RecyclerView.ViewHolder holder, boolean select) {
         if (holder instanceof Holder) {
             Holder h = (Holder) holder;
             h.tv.setSelected(select);
+        } else if(holder instanceof LbHolder){
+            LbHolder h = (LbHolder) holder;
+            h.title.setSelected(select);
         }
     }
 

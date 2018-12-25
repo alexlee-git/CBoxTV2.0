@@ -45,6 +45,9 @@
         android:background="@color/color_transparent"
         android:textColor="@color/color_font"
         android:textSize="14sp"
+        android:ellipsize="marquee"
+        android:focusable="false"
+        android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
         />
 
