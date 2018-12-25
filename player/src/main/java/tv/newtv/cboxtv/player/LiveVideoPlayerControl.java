@@ -63,7 +63,7 @@ public class LiveVideoPlayerControl implements IVideoPlayerControlInterface {
 
     @Override
     public boolean stopVideo() {
-
+        releaseVideo();
         return false;
     }
 
@@ -128,9 +128,7 @@ public class LiveVideoPlayerControl implements IVideoPlayerControlInterface {
             mLiveVideoPlayer.releaseVideo();
             mLiveVideoPlayer = null;
         }
-
         mCallback = null;
-
     }
 
     @Override

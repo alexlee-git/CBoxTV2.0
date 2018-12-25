@@ -217,6 +217,11 @@ public class PlayerAlternateContract {
                                 if (result.isOk()) {
                                     mAlternateRefresh.attach(currentAlternateId);
                                     mAlternates = result.getData();
+                                    if(mAlternates != null && mAlternates.size()>0) {
+                                        for (Alternate alternate : mAlternates) {
+                                            alternate.setAd(result.isAd());
+                                        }
+                                    }
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
