@@ -283,6 +283,15 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
         } else {
             Log.e(TAG, "wqs:PAGE_SUBSCRIPTION==null");
         }
+        if (mRecyclerView != null) {
+            mRecyclerView.setVisibility(View.GONE);
+        } else {
+            if (contentView == null) {
+                return;
+            }
+            mRecyclerView = contentView.findViewById(R.id.id_history_record_rv);
+            mRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     /**

@@ -266,7 +266,7 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                     holder.img_discount_price.setVisibility(View.VISIBLE);
                     int price_discount = pricesBean.getPriceDiscount();
                     int percentage = activityBean.getPercentage() / 10;
-                    holder.tv_price_discount.setText("已省" + (price - price_discount) + "元");
+                    holder.tv_price_discount.setText("已省" + tranPrices(price - price_discount) + "元");
                     holder.tv_discount.setText(percentage + "折");
                     holder.tv_price.setText(tranPrices(price_discount));
                 } else {

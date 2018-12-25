@@ -196,6 +196,21 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
                             isBuyOnly = false;
                             type = 1;
+                            if (mProductPricesInfo.getResponse() != null) {
+                                if (mProductPricesInfo.getResponse().getPrices() != null && mProductPricesInfo.getResponse().getPrices().size() > 0) {
+                                    ProductPricesInfo.ResponseBean.PricesBean pricesBean = mProductPricesInfo.getResponse().getPrices().get(position);
+                                    if (pricesBean == null) {
+                                        return;
+                                    }
+                                    mIfContinued = pricesBean.isIfContinued();
+                                    Log.i(TAG, "handleMessage: mIfContinued=" + mIfContinued);
+                                    if (mIfContinued) {
+                                        tv_ap.setVisibility(View.GONE);
+                                    }
+                                }
+                            }
+
+
                             if (mHandler != null) {
                                 mHandler.sendEmptyMessage(MSG_SETMESSAGE);
                             }
@@ -528,6 +543,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                     } else {
                         getPayResult();
                         if (mHandler != null) {
+                            mHandler.removeMessages(MSG_RESULT);
                             mHandler.sendEmptyMessageDelayed(MSG_RESULT, 3000);
                         }
                     }
@@ -558,12 +574,12 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                 if (pricesBean == null) {
                                     return true;
                                 }
-                                //判断是否为连续包月，如是则隐藏支付宝
+//                                //判断是否为连续包月，如是则隐藏支付宝
                                 mIfContinued = pricesBean.isIfContinued();
                                 Log.i(TAG, "handleMessage: mIfContinued=" + mIfContinued);
-                                if (mIfContinued) {
-                                    tv_ap.setVisibility(View.GONE);
-                                }
+//                                if (mIfContinued) {
+//                                    tv_ap.setVisibility(View.GONE);
+//                                }
 
                                 ProductPricesInfo.ResponseBean.PricesBean.ActivityBean activityBean = pricesBean.getActivity();
 
@@ -584,30 +600,16 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                             price = pricesBean.getPrice();
                                         }
                                     } else {
-                                        String actType = activityBean.getActType();
-                                        if (TextUtils.equals(actType, ACTTYPE)) {
-                                            if (isBuyOnly) {
-                                                if (isVip) {
-                                                    price = pricesBean.getVipPriceDiscount();
-                                                } else {
-                                                    price = pricesBean.getPriceDiscount();
-                                                }
+                                        if (isBuyOnly) {
+                                            if (isVip) {
+                                                price = pricesBean.getVipPriceDiscount();
                                             } else {
                                                 price = pricesBean.getPriceDiscount();
                                             }
                                         } else {
-                                            if (isBuyOnly) {
-                                                if (isVip) {
-                                                    price = pricesBean.getVipPrice();
-                                                } else {
-                                                    price = pricesBean.getPrice();
-                                                }
-                                            } else {
-                                                price = pricesBean.getPrice();
-                                            }
+                                            price = pricesBean.getPriceDiscount();
                                         }
                                     }
-
 
                                     tv_price.setText(getResources().getString(R.string.usercenter_pay_price) + tranPrices(price) + getResources().getString(R.string.usercenter_pay_price_unit));
                                     long duration = pricesBean.getRealDuration() * 60 * 60 * 1000;
@@ -747,6 +749,17 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        JSONObject activityDTOObject = new JSONObject();
+        ProductPricesInfo.ResponseBean.PricesBean.ActivityBean activityBean = mProductPricesInfo.getResponse().getPrices().get(position).getActivity();
+        if (activityBean != null) {
+            try {
+                activityDTOObject.put("id", activityBean.getId());
+                activityDTOObject.put("name", activityBean.getName());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -757,12 +770,11 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
             } else {
                 jsonObject.put("source", "");
             }
-
-
             jsonObject.put("contentCheckDTO", contentDTOForCheckObject);
             jsonObject.put("paymentChannelDTO", paymentChannelObject);
             jsonObject.put("priceDTO", priceObject);
             jsonObject.put("terminalDTO", terminalDTOObject);
+            jsonObject.put("activityDTO", activityDTOObject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -776,7 +788,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         String Authorization = "Bearer " + mToken;
         try {
             NetClient.INSTANCE.getUserCenterLoginApi()
-                    .getPayResult(Authorization, orderId + "")
+                    .getPayResult(Authorization, orderId + "", mIfContinued)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ResponseBody>() {

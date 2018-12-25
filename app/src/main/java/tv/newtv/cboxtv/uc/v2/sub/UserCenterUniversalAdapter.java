@@ -27,6 +27,7 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.utils.SpannableBuilderUtils;
 
 /**
  * 项目名称:         央视影音
@@ -119,14 +120,20 @@ public class UserCenterUniversalAdapter extends RecyclerView
 
             holder.subTitle.setText(UserCenterRecordManager.getInstance().getWatchProgress(info
                     .getPlayPosition(), info.getDuration()));
-            // 更新剧集
-            SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(info.getRecentMsg());
-            if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
-                holder.episode.setText(spannableRecentMsg);
+            if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
+                // 更新剧集
+                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
+                if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
+                    holder.episode.setText(spannableRecentMsg);
+                } else {
+                    holder.episode.setText("");
+                    holder.episode.setVisibility(View.INVISIBLE);
+                }
             } else {
                 holder.episode.setText("");
                 holder.episode.setVisibility(View.INVISIBLE);
             }
+
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
                 if (!TextUtils.isEmpty(info.getSuperscript())) {
@@ -148,16 +155,20 @@ public class UserCenterUniversalAdapter extends RecyclerView
             } else {
                 holder.score.setVisibility(View.INVISIBLE);
             }
-
-            // 更新剧集
-
-            SpannableStringBuilder spannableRecentMsg = UserCenterRecordManager.getInstance().getSpannableRecentMsg(info.getRecentMsg());
-            if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                holder.episode.setText(spannableRecentMsg);
+            if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
+                // 更新剧集
+                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
+                if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                    holder.episode.setText(spannableRecentMsg);
+                } else {
+                    holder.episode.setText("");
+                    holder.episode.setVisibility(View.INVISIBLE);
+                }
             } else {
                 holder.episode.setText("");
                 holder.episode.setVisibility(View.INVISIBLE);
             }
+
             holder.mask.setVisibility(View.VISIBLE);
             if (holder.superscript != null) {
                 if (!TextUtils.isEmpty(info.getSuperscript())) {

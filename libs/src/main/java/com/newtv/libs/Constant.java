@@ -31,8 +31,10 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 
 public class Constant {
-    //付费标识地址
+    //剧集综艺动画儿童节目付费标识地址
     public static String FILE_PATH;
+    //合计个人详情付费标识地址
+    public static String COLLECTION_FILE_PATH;
     //是否启用轮播
     public static final boolean canUseAlternate  = true;
 
@@ -132,6 +134,7 @@ public class Constant {
     public static final String CONTENT_CHILD_UUID = "content_child_uuid";
     public static final String DEFAULT_UUID = "default_uuid";
     public static final String FOCUSPARAM = "focusParam";
+    public static final String FOCUS_ID = "focusId";
     public static final String NAV_ID = "nav_id";//导航id
     public static final String FIRST_CHANNEL_ID = "FIRST_CHANNEL_ID";   //用于视频获取广告 一级频道
     public static final String SECOND_CHANNEL_ID = "SECOND_CHANNEL_ID"; //用于视频获取广告 二级频道
@@ -179,6 +182,7 @@ public class Constant {
     public static final int LOG_NODE_AUTH_INFO = 10;          // 认证
     public static final int LOG_BUY_GOODS = 47;              //边看边买日志
     public static final int FLOATING_LAYER = 4;
+    public static final int LOG_LB = 41;         //轮播频道
     public static final String BACK_FIRST_NAV = "back_first_nav"; // 返回一级导航
     public static final String BG_EVENT = "bg_event";
     public static final String UPDATE_UC_DATA = "update_uc_data";

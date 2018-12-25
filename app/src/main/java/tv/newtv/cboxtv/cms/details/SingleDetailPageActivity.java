@@ -7,15 +7,21 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.newtv.cms.bean.Content;
+import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
@@ -163,6 +169,37 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                             mProgramSeriesInfo = info;
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null, "PS");
                             mAdView.requestAD();
+                            ArrayList<String> productId = new ArrayList<>();
+                            if (mProgramSeriesInfo != null ) {
+
+                                if (!TextUtils.isEmpty(mProgramSeriesInfo.getVipFlag())){
+                                    int vipState = Integer.parseInt(mProgramSeriesInfo.getVipFlag());
+                                    if ((vipState == 1||vipState == 3||vipState == 4)&&mProgramSeriesInfo.getVipProductId()!=null){
+                                        productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),mProgramSeriesInfo.getVipProductId()));
+                                        //Constant.FILE_PATH = String.format(BootGuide.getBaseUrl(BootGuide.MARK_VIPPRODUCTID),mContent.getVipProductId());
+                                    }
+                                }
+                                if (!TextUtils.isEmpty(mProgramSeriesInfo.is4k())){
+                                    int is4k = Integer.parseInt(mProgramSeriesInfo.is4k());
+                                    if (is4k == 1){
+                                        productId.add(BootGuide.getBaseUrl(BootGuide.MARK_IS4K));
+                                    }
+                                }
+                                if (!TextUtils.isEmpty(mProgramSeriesInfo.getNew_realExclusive())){
+                                    productId.add(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),mProgramSeriesInfo.getNew_realExclusive()));
+                                }
+                            }
+
+                            switch (productId.size()){
+                                case 3:
+                                    Picasso.get().load(productId.get(2)).into((ImageView) findViewById(R.id.id_detail_mark3));
+                                case 2:
+                                    Picasso.get().load(productId.get(1)).into((ImageView) findViewById(R.id.id_detail_mark2));
+                                case 1:
+                                    Picasso.get().load(productId.get(0)).into((ImageView) findViewById(R.id.id_detail_mark1));
+                                default:
+                                    break;
+                            }
                         }
                     })
                     .SetPlayerCallback(new PlayerCallback() {
@@ -190,8 +227,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     })
                     .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                         @Override
-                        public void videoEitFullScreen() {
-
+                        public void videoEitFullScreen(boolean isLiving) {
 
                         }
                     }).SetClickListener(new View.OnClickListener() {

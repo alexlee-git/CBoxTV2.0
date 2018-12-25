@@ -10,11 +10,13 @@ public class ADConfig {
     private String columnId; //一级栏目
     private String secondColumnId; //二级栏目
     private String categoryIds;
-    private String seriesID;
+    private String seriesID;//内容id
+    private String seriesUUID;//节目集uuid
     private String programId;
     private String duration;
     private String videoType;//一级分类
     private String videoClass;//二级分类
+    private String vipFlag;
     private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
@@ -49,6 +51,8 @@ public class ADConfig {
             duration = "";
             videoType = "";
             videoClass = "";
+            seriesUUID = "";
+            vipFlag = "";
         }
     }
 
@@ -70,11 +74,37 @@ public class ADConfig {
         int result = 0;
         if(!TextUtils.isEmpty(duration)){
             try {
-                int i = Integer.parseInt(duration);
-                result = 60 * i;
+                result = Integer.parseInt(duration);
             }catch (Exception e){}
         }
         return result;
+    }
+
+    public int getIntMillisDuration(){
+        int result = 0;
+        if(!TextUtils.isEmpty(duration)){
+            try {
+                int i = Integer.parseInt(duration);
+                result = i * 1000;
+            }catch (Exception e){}
+        }
+        return result;
+    }
+
+    public String getSeriesUUID() {
+        return seriesUUID;
+    }
+
+    public void setSeriesUUID(String seriesUUID) {
+        this.seriesUUID = seriesUUID;
+    }
+
+    public String getVipFlag() {
+        return vipFlag;
+    }
+
+    public void setVipFlag(String vipFlag) {
+        this.vipFlag = vipFlag;
     }
 
     public String getDuration() {
@@ -208,5 +238,7 @@ public class ADConfig {
         duration = "";
         videoType = "";
         videoClass = "";
+        seriesUUID = "";
+        vipFlag = "";
     }
 }

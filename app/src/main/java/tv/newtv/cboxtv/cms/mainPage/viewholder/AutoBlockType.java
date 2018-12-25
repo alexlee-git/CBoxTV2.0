@@ -279,18 +279,26 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                             hasCorner);
                 }
 
-                ViewGroup parentFrameLayout = frameLayout;
-                int postIndex = 0;
-                if (posterView != null) {
-                    parentFrameLayout = (ViewGroup) posterView.getParent();
-                    postIndex = parentFrameLayout.indexOfChild(posterView);
-                }
+//                ViewGroup parentFrameLayout = frameLayout;
+//                int postIndex = 0;
+//                if (posterView != null) {
+//                    parentFrameLayout = (ViewGroup) posterView.getParent();
+//                    postIndex = parentFrameLayout.indexOfChild(posterView);
+//                }
+//
+//                // 按需添加角标控件
+//                SuperScriptManager.getInstance().processSuperscript(getContext(),
+//                        layoutCode,
+//                        postIndex + 1,
+//                        info, parentFrameLayout);
+                SuperScriptManager.getInstance().processSuperscript(
+                        getContext(),
+                        "layout_008",
+                        ((ViewGroup) holder.itemView).indexOfChild(posterView),
+                        info,
+                        (ViewGroup) posterView.getParent()
+                );
 
-                // 按需添加角标控件
-                SuperScriptManager.getInstance().processSuperscript(getContext(),
-                        layoutCode,
-                        postIndex + 1,
-                        info, parentFrameLayout);
             }
 
         }

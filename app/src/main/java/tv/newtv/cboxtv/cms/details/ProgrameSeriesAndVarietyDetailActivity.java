@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
@@ -134,12 +135,13 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         headPlayerView = ((HeadPlayerView) findViewById(R.id.header_video));
         headPlayerView.Build(HeadPlayerView.Builder.build(R.layout.variety_item_head)
                 .CheckFromDB(new HeadPlayerView.CustomFrame(R.id.collect, HeadPlayerView.Builder.DB_TYPE_COLLECT),
-                new HeadPlayerView.CustomFrame(R.id.vip_pay,HeadPlayerView.Builder.DB_TYPE_VIPPAY),
+                        new HeadPlayerView.CustomFrame(R.id.vip_pay,HeadPlayerView.Builder.DB_TYPE_VIPPAY),
                         new HeadPlayerView.CustomFrame(R.id.vip_pay_tip,HeadPlayerView.Builder.DB_TYPE_VIPTIP))
                 .SetPlayerId(R.id.video_container)
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetContentUUID(contentUUID, getChildContentUUID())
+                .setFocusId(mFocusId)
                 .autoGetSubContents()
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
@@ -195,7 +197,13 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 })
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
-                    public void videoEitFullScreen() {
+                    public void videoEitFullScreen(boolean isLiving) {
+
+                        if (!isLiving){
+                            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
+                                    + ","+content.getContentID() + "," + content.getContentUUID() + "," +" " + ","+" "
+                                    + ","+content.getDuration() + ","+" " + ","+"0" + ","+ Constants.vodPlayId);
+                        }
                         isFullScreenIng = false;
                     }
                 })
@@ -221,7 +229,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             if (videoPlayerView != null) {
                                 videoPlayerView.EnterFullScreen
                                         (ProgrameSeriesAndVarietyDetailActivity
-                                        .this, false);
+                                                .this, false);
                             }
                         }
                     }
@@ -260,6 +268,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             case R.id.full_screen:
                                 if (System.currentTimeMillis() - lastClickTime >= 2000)
                                 {//判断距离上次点击小于2秒
+                                    LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
+                                            + ","+content.getContentID() + "," + content.getContentUUID() + "," +" " + ","+" "
+                                            + ","+content.getDuration() + ","+" " + ","+"1" + ","+Constants.vodPlayId);
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);
@@ -371,8 +382,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private boolean videoType() {
         if (!TextUtils.isEmpty(videoType) && (
                 TextUtils.equals(videoType, "电视剧")
-                || TextUtils.equals(videoType, "动漫")
-                || TextUtils.equals(videoType, "少儿"))) {
+                        || TextUtils.equals(videoType, "动漫")
+                        || TextUtils.equals(videoType, "少儿"))) {
             return false;
         }
         return true;

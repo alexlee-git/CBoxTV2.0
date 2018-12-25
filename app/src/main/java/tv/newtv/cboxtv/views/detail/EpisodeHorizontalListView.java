@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.views.custom.CurrentPlayImageView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 import tv.newtv.cboxtv.views.widget.HorizontalRecycleView;
@@ -234,6 +236,16 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 //                        }
 
                         if (data instanceof SubContent) {
+                            if(holder.mCornerContaner!=null) {
+                                SuperScriptManager.getInstance().processVipSuperScript(
+                                        getContext(),
+                                        (SubContent) data,
+                                        "layout_008",
+                                        0,
+                                        holder.mCornerContaner
+                                );
+                            }
+
                             if (direction == DIRECTION_HORIZONTAL) {
                                 image = ((SubContent) data).getHImage();
                             } else {
@@ -241,6 +253,15 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                             }
                             title = ((SubContent) data).getTitle();
                             year = ((SubContent) data).getYear();
+
+                            ((SubContent) data).setVipFlag("3");
+                            SuperScriptManager.getInstance().processVipSuperScript(
+                                    holder.itemView.getContext(),
+                                    (SubContent) data,
+                                    "layout_008",
+                                    ((ViewGroup) holder.itemView).indexOfChild(holder.posterView),
+                                    (ViewGroup) holder.posterView.getParent()
+                            );
                         } else if (data instanceof Alternate) {
                             image = ((Alternate) data).getHImage();
                             title = ((Alternate) data).getTitle();
@@ -294,6 +315,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                                 }
                             }
                         }
+
+
                     }
 
                     @Override
@@ -478,6 +501,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
         private TextView titleText,columnUpdateDateTV;//人物详情（栏目最近更新日期）
         private FocusRelativeLayout modleView;
         private LinearLayout mUpdateLayout;
+        private FrameLayout mCornerContaner;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -487,6 +511,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
             modleView = itemView.findViewById(R.id.id_module_view);
             posterView = itemView.findViewWithTag("tag_poster_image");
             titleText = itemView.findViewWithTag("tag_poster_title");
+            mCornerContaner  = itemView.findViewWithTag("corner_container");
 
             modleView.setOnFocusChangeListener(this);
             if (mScaleView != -1){

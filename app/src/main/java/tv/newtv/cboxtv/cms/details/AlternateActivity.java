@@ -14,6 +14,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 
@@ -106,6 +107,7 @@ public class AlternateActivity extends DetailPageActivity implements
             finish();
             return;
         }
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
         setUp();
     }
 

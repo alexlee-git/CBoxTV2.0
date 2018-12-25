@@ -531,6 +531,24 @@ public class BlockBuilder extends BaseBlockBuilder {
                     .append(((Program) info).getL_actionUri())
                     .trimToSize();
         }
+        if (info instanceof Row){
+            logBuff.append(0)
+                    .append(",")
+                    .append(blockId)
+                    .append("+")
+                    .append(layoutCode)
+                    .append("+")
+                    .append(" ")
+                    .append(",")
+                    .append(((Row) info).getContentId())
+                    .append(",")
+                    .append(((Row) info).getContentType())
+                    .append(",")
+                    .append(" ")
+                    .append(",")
+                    .append(" ")
+                    .trimToSize();
+        }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_RECOMMEND, logBuff
                 .toString());//由首页进入下个推荐位
 

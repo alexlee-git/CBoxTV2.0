@@ -72,11 +72,6 @@ public interface IUserCenterLoginApi {
     @GET("/kangaroo/user/info")
     Observable<ResponseBody> getUser(@Header("Authorization") String Authorization);
 
-    @Headers("host_type: " + BootGuide.USER)
-    @GET("/goldenpheasant/api/programRights")
-    Observable<ResponseBody> getUserTime(@Header("Authorization") String Authorization,
-                                         @Query("productId") String productId,
-                                         @Query("appKey") String appKey);
 
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
@@ -111,15 +106,15 @@ public interface IUserCenterLoginApi {
                                                  @Field("verifyCode") String verifyCode,
                                                  @Field("from") String from,
                                                  @Field("service") String service,
-                                                @Field("checkCode") String checkCode);
+                                                 @Field("checkCode") String checkCode);
 
     //通过ticket换取accessToken接口
     @Headers("host_type: " + BootGuide.USER)
     @FormUrlEncoded
     @POST("/kangaroo/service/cctv/getAccessToken")
     Observable<ResponseBody> transTicketToToken(@Header("Authorization") String Authorization,
-                                            @Field("client_id") String response_type,
-                                            @Field("ticket") String channel_code);
+                                                @Field("client_id") String response_type,
+                                                @Field("ticket") String channel_code);
 
     //获取订单
     @Headers("host_type: " + BootGuide.PAY)
@@ -139,7 +134,9 @@ public interface IUserCenterLoginApi {
     //获取地址
     @Headers("host_type: " + BootGuide.PAY)
     @GET("/goldenpheasant/api/orders/queryOrderById")
-    Observable<ResponseBody> getPayResult(@Header("Authorization") String Authorization, @Query("orderId") String orderId);
+    Observable<ResponseBody> getPayResult(@Header("Authorization") String Authorization,
+                                          @Query("orderId") String orderId,
+                                          @Query("renewalFlag") boolean renewalFlag);
 
 
     //询价3和4
@@ -160,11 +157,6 @@ public interface IUserCenterLoginApi {
     @GET("/mandrill/service/products/brief/vip")
     Observable<ResponseBody> getProduct(@Query("appKey") String prdId);
 
-    //结果
-    @Headers("host_type: " + BootGuide.PAY)
-    @POST("/goldenpheasant/api/programRights")
-    Observable<ResponseBody> getPayFlag(@Header("Authorization") String Authorization, @Query("productIds") String[] productIds,
-                                        @Query("appKey") String appKey, @Query("channelId") String channelId, @Query("contentUuid") String contentUuid);
 
     //刷新二维码
     @Headers("host_type: " + BootGuide.PAY)
@@ -209,7 +201,9 @@ public interface IUserCenterLoginApi {
                                         @Field("latest_episode") String curEpisode,
                                         @Field("action_type") String actionType,
                                         @Field("program_child_name") String programChildId,
-                                        @Field("content_id") String contentId);
+                                        @Field("content_id") String contentId,
+                                        @Field("program_watch_date") long program_watch_date,
+                                        @Field("ext") String ext);
 
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
@@ -256,7 +250,9 @@ public interface IUserCenterLoginApi {
                                         @Field("latest_episode") String latest_episode,
                                         @Field("action_type") String action_type,
                                         @Field("program_child_name") String programChildName,
-                                        @Field("content_id") String contentId);
+                                        @Field("content_id") String contentId,
+                                        @Field("create_time") long create_time,
+                                        @Field("ext") String ext);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @DELETE("/gazella/service/collections/del")
@@ -298,7 +294,9 @@ public interface IUserCenterLoginApi {
                                        @Field("poster") String poster,
                                        @Field("content_type") String content_type,
                                        @Field("action_type") String action_type,
-                                       @Field("content_id") String contentId);
+                                       @Field("content_id") String contentId,
+                                       @Field("create_time") long create_time,
+                                       @Field("ext") String ext);
 
     ;
 
@@ -342,7 +340,9 @@ public interface IUserCenterLoginApi {
                                            @Field("content_type") String content_type,
                                            @Field("latest_episode") String latest_episode,
                                            @Field("action_type") String action_type,
-                                           @Field("content_id") String contentId);
+                                           @Field("content_id") String contentId,
+                                           @Field("create_time") long create_time,
+                                           @Field("ext") String ext);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @DELETE("/gazella/service/subscribes/del")

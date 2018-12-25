@@ -3,14 +3,12 @@ package tv.newtv.cboxtv.uc.v2.manager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -40,7 +38,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.LauncherApplication;
-import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
@@ -990,6 +987,7 @@ public class UserCenterRecordManager {
     public void queryDataBase(String tableName, DBCallback<String> callback) {
         DataSupport.search(tableName)
                 .condition()
+                .OrderBy(DBConfig.ORDER_BY_TIME_ASC)
                 .build().withCallback(callback).excute();
     }
 
@@ -1459,30 +1457,6 @@ public class UserCenterRecordManager {
         return result;
     }
 
-    public SpannableStringBuilder getSpannableRecentMsg(String recentMsg) {
-        try {
-            if (TextUtils.isEmpty(recentMsg) || TextUtils.equals(recentMsg, "null")) {
-                return null;
-            }
-            SpannableStringBuilder mStrMsg = new SpannableStringBuilder(recentMsg);
-            if (recentMsg.length() > 4 && recentMsg.contains
-                    (LauncherApplication.AppContext.getResources().getString(R.string.user_poster_program_update_title_left_being))) {
-                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), 0, 4, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                mStrMsg.setSpan(new ForegroundColorSpan(Color.parseColor("#FFF5A623")), 3, recentMsg.length() - 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), recentMsg.length() - 1, recentMsg.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            } else {
-                mStrMsg.setSpan(new ForegroundColorSpan(Color.parseColor("#FFF5A623")), 0, recentMsg.length() - 2, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                mStrMsg.setSpan(new ForegroundColorSpan(LauncherApplication.AppContext.getResources().getColor(R.color.colorWhite)), recentMsg.length() - 2, recentMsg.length(), Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            }
-            return mStrMsg;
-        } catch (Exception e) {
-            Log.e(TAG, "wqs:getSpannableRecentMsg:Exception:" + e.toString());
-            e.printStackTrace();
-            return null;
-        }
-
-    }
-
     /**
      * 获取用户数据接口函数
      *
@@ -1538,5 +1512,58 @@ public class UserCenterRecordManager {
             sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
         sqlCondition.build().withCallback(dbCallback).excute();
+    }
+
+    //用户中心扩展字段转json格式的String数据
+    public String setExtendJsonString(int versionCode) {
+        try {
+            String extend = "";
+            Gson gson = new Gson();
+            UserCenterPageBean.ExtendBean userCenterExtendBean = new UserCenterPageBean.ExtendBean();
+            if (versionCode > 0) {
+                userCenterExtendBean.setVersionCode(versionCode + "");
+            } else {
+                userCenterExtendBean.setVersionCode("");
+            }
+
+            if (userCenterExtendBean != null) {
+                extend = gson.toJson(userCenterExtendBean);
+            }
+            return extend;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:setExtendJsonString:Exception:" + e.toString());
+            return "";
+        }
+
+    }
+
+    public int getAppVersionCode(Context context) {
+        int versionCode = 0;
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(
+                    context.getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+            return versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:getAppVersionCode:Exception:" + e.toString());
+            return versionCode;
+        }
+
+    }
+
+    public String getAppVersionName(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(
+                    context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:getAppVersionCode:Exception:" + e.toString());
+            return "";
+        }
     }
 }

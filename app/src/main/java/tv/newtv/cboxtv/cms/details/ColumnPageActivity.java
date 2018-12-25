@@ -124,6 +124,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .SetDefaultFocusID(R.id.full_screen)
                 .SetClickableIds(R.id.full_screen, R.id.add, R.id.vip_pay)
                 .SetContentUUID(contentUUID, getChildContentUUID())
+                .setFocusId(mFocusId)
                 .SetOnInfoResult(new HeadPlayerView.InfoResult() {
                     @Override
                     public void onResult(Content info) {
@@ -225,7 +226,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                 })
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
-                    public void videoEitFullScreen() {
+                    public void videoEitFullScreen(boolean isLiving) {
                         isFullScreenIng = false;
                         if (currentIndex > 8) {
                             playListView.moveToPosition(currentIndex);

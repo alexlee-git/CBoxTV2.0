@@ -87,6 +87,19 @@
             android:visibility="gone" />
 
         <TextView
+            android:id="@+id/sour_text"
+            android:layout_width="@dimen/width_192px"
+            android:layout_height="@dimen/height_50px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/width_24px"
+            android:layout_toRightOf="@id/place_text"
+            android:background="@drawable/screen_list"
+            android:gravity="center"
+            android:textColor="#ffffffff"
+            android:textSize="@dimen/width_36px"
+            android:visibility="gone" />
+
+        <TextView
             android:id="@+id/number"
             android:layout_width="@dimen/width_198px"
             android:layout_height="@dimen/height_32px"

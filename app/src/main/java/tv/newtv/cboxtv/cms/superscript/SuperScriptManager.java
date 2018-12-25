@@ -16,6 +16,7 @@ import com.newtv.cms.bean.Corner;
 import com.newtv.cms.bean.CornerCondition;
 import com.newtv.cms.bean.ModelResult;
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.Row;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.CornerContract;
 import com.newtv.libs.Constant;
@@ -103,7 +104,6 @@ public class SuperScriptManager implements CornerContract.View {
                 parent.removeView(imageView);
             }
         }
-
     }
 
     private void addVipSuperscript(Context context, Corner corner, ViewGroup parent, int
@@ -113,7 +113,7 @@ public class SuperScriptManager implements CornerContract.View {
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(CORNER_WIDTH, CORNER_HEIGHT);
             lp.rightMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_WIDTH);
             lp.topMargin = DisplayUtils.translate(12, DisplayUtils.SCALE_TYPE_HEIGHT);
-            lp.gravity = Gravity.RIGHT | Gravity.END;
+            lp.gravity = Gravity.RIGHT | Gravity.END | Gravity.TOP;
             imageView = new RecycleImageView(context);
             imageView.setTag(BLOCK_VIP_CORNER_RIGHT_TOP);
             imageView.setLayoutParams(lp);
@@ -211,6 +211,11 @@ public class SuperScriptManager implements CornerContract.View {
                                 } else {
                                     removeGradeMsg(parent);
                                 }
+                            }else if(info instanceof Row){
+                                addRecentMsgText(context, ((Row) info).getRecentMsg(),
+                                        parent, corners.contains(Corner.LEFT_BOTTOM));
+                                addGradeMsgText(context, ((Row) info).getGrade(), parent,
+                                        corners.contains(Corner.RIGHT_BOTTOM));
                             }
                         }
                     }
@@ -257,6 +262,27 @@ public class SuperScriptManager implements CornerContract.View {
             }
 
             recentText.setVisibility(View.VISIBLE);
+
+            if(message.contains("-")){
+                Matcher matcherDate= Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}").matcher(message);
+                if(matcherDate.find()){
+                    String date = matcherDate.group(0);
+                    if (!TextUtils.isEmpty(date)) {
+                        if (!TextUtils.equals("0", date)) {
+                            message = message.replace(date, String.format("<font " +
+                                    "color='#955D06'>%s</font>", date));
+                            CharSequence charSequence = Html.fromHtml(message);
+                            recentText.setText(charSequence);
+                        } else {
+                            removeRecentMsg(parent);
+                        }
+                        return;
+                    }
+                    recentText.setText(message);
+                }
+                return;
+            }
+
             Pattern pattern = Pattern.compile("\\d+");
             Matcher matcher = pattern.matcher(message);
             if (matcher.find()) {
@@ -437,7 +463,8 @@ public class SuperScriptManager implements CornerContract.View {
         if (!TextUtils.isEmpty(superUrl)) {
             if ("2".equals(corner.getCornerPosition()) && TextUtils.equals("vip", corner
                     .getCornerImg())) {
-                target.load(R.drawable.vip);
+                //target.load(R.drawable.vip);
+                target.load(Constant.COLLECTION_FILE_PATH);
                 return;
             }
             target.hasCorner(false).useResize(true).load(superUrl);

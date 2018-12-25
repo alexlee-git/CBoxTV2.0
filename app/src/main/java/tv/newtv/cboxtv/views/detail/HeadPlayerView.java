@@ -106,9 +106,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     private VideoExitFullScreenCallBack videoExitFullScreenCallBack = new
             VideoExitFullScreenCallBack() {
                 @Override
-                public void videoEitFullScreen() {
+                public void videoEitFullScreen(boolean isLiving) {
                     if (mBuilder != null && mBuilder.videoExitFullScreenCallBack != null) {
-                        mBuilder.videoExitFullScreenCallBack.videoEitFullScreen();
+                        mBuilder.videoExitFullScreenCallBack.videoEitFullScreen(isLiving);
                     }
                 }
             };
@@ -495,41 +495,41 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                             } else {
                                                 UserCenterUtils.addCollect(mInfo,
                                                         currentPlayIndex, new
-                                                        DBCallback<String>() {
-                                                            @Override
-                                                            public void onResult(int code, String
-                                                                    result) {
-                                                                ((FocusToggleSelect) collect)
-                                                                        .setSelect
-                                                                                (code == 0 &&
-                                                                                        !TextUtils
-                                                                                                .isEmpty(result));
-                                                                RxBus.get().post(Constant
-                                                                                .UPDATE_UC_DATA,
-                                                                        true);
+                                                                DBCallback<String>() {
+                                                                    @Override
+                                                                    public void onResult(int code, String
+                                                                            result) {
+                                                                        ((FocusToggleSelect) collect)
+                                                                                .setSelect
+                                                                                        (code == 0 &&
+                                                                                                !TextUtils
+                                                                                                        .isEmpty(result));
+                                                                        RxBus.get().post(Constant
+                                                                                        .UPDATE_UC_DATA,
+                                                                                true);
 
-                                                                Map<String, String> map = new
-                                                                        HashMap<>();
-                                                                map.put("col_operation_type",
-                                                                        "add");
-                                                                map.put("col_operation_id", mInfo
-                                                                        .getContentID());
-                                                                RxBus.get().post
-                                                                        ("col_operation_map", map);
-                                                                if (code == 0) {
-                                                                    LogUploadUtils.uploadLog
-                                                                            (Constant
-                                                                                            .LOG_NODE_COLLECT,
-                                                                                    "0," +
-                                                                                            mInfo.getContentID());
-                                                                    Toast.makeText(getContext()
-                                                                                    .getApplicationContext(),
-                                                                            R.string.collect_success,
-                                                                            Toast.LENGTH_SHORT)
-                                                                            .show();
-                                                                }
-                                                            }
-                                                        });
+                                                                        Map<String, String> map = new
+                                                                                HashMap<>();
+                                                                        map.put("col_operation_type",
+                                                                                "add");
+                                                                        map.put("col_operation_id", mInfo
+                                                                                .getContentID());
+                                                                        RxBus.get().post
+                                                                                ("col_operation_map", map);
+                                                                        if (code == 0) {
+                                                                            LogUploadUtils.uploadLog
+                                                                                    (Constant
+                                                                                                    .LOG_NODE_COLLECT,
+                                                                                            "0," +
+                                                                                                    mInfo.getContentID());
+                                                                            Toast.makeText(getContext()
+                                                                                            .getApplicationContext(),
+                                                                                    R.string.collect_success,
+                                                                                    Toast.LENGTH_SHORT)
+                                                                                    .show();
+                                                                        }
+                                                                    }
+                                                                });
                                             }
                                         }
 
@@ -702,6 +702,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             if (TextUtils.isEmpty(playId) && historyBean != null) {
                 playId = historyBean.playId;
             }
+
+            if (!TextUtils.isEmpty(mBuilder.focusId)) {
+                for (SubContent content : programSeriesInfo.getData()) {
+                    if (TextUtils.equals(content.getContentID(), mBuilder.focusId)) {
+                        playId = content.getContentUUID();
+                        break;
+                    }
+                }
+            }
+
             if (!TextUtils.isEmpty(playId)) {
                 for (SubContent content : programSeriesInfo.getData()) {
                     if (TextUtils.equals(content.getContentUUID(), playId)) {
@@ -1074,6 +1084,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private int defaultFocusID = 0;
         private boolean fromOuter;
 
+        //用于推荐位点击进入到默认的位置
+        private String focusId;
+
         private ExitVideoFullCallBack videoFullCallBack;
 
         private Builder(int layout) {
@@ -1129,6 +1142,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         public Builder SetPlayerFocusId(int id) {
             mPlayerFocusId = id;
+            return this;
+        }
+
+        public Builder setFocusId(String focusId) {
+            this.focusId = focusId;
             return this;
         }
 

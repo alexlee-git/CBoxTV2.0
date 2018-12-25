@@ -22,11 +22,13 @@ class ModelResult<T> {
     @SerializedName(value = "errorMessage",alternate = arrayOf("resultMessage"))
     var errorMessage: String? = null
         get() {
-            field = CmsErrorCode.getErrorMessage(errorCode)
-            if (TextUtils.isEmpty(field)) {
-                return "UNKNOWN ERROR"
+            errorCode?.let {
+                field = CmsErrorCode.getErrorMessage(errorCode)
+                if (!TextUtils.isEmpty(field)) {
+                    return field
+                }
             }
-            return field
+            return "UNKNOWN ERROR"
         }
     var updateTime: String? = null
     val isNav: Int? = null

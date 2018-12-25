@@ -35,7 +35,7 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
     override fun onAlternateResult(cid: String, alternates: List<Alternate>) {
         if (!TextUtils.equals(mId, cid)) return
         if (alternates.size <= 0) {
-            mCallback?.onError(cid, CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY, "数据为空")
+            mCallback?.onError(cid, CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY))
             return
         }
         val index: Int = CmsUtil.binarySearch(alternates, System.currentTimeMillis(),
@@ -109,7 +109,8 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
         if (!TextUtils.isEmpty(mId)) {
             mPresenter?.requestAlternateWithCallback(mId!!, this)
         } else {
-            onFailed(alternateId, CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, "ContentID is Empty")
+            onFailed(alternateId, CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
         }
     }
 }

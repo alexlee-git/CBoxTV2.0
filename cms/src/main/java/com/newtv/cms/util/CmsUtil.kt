@@ -101,7 +101,7 @@ object CmsUtil {
         } else if (now > midLong) {
             binarySearch(alternateList, now, midIndex, endIndex)
         } else {
-            return midIndex
+            return endIndex
         }
     }
 

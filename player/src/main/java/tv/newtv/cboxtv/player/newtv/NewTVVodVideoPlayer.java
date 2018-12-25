@@ -309,6 +309,7 @@ public class NewTVVodVideoPlayer implements IVodVideoPlayerInterface {
                 icntvPlayerInfo.setAdModel(Constants.AD_MODEL_CAROUSEL);
             }
         }
+        icntvPlayerInfo.setResolution(videoDataStruct.getDefinitionStr());
         //extend字段
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId
                 (), PlayerConfig.getInstance().getSecondColumnId(), PlayerConfig.getInstance()
