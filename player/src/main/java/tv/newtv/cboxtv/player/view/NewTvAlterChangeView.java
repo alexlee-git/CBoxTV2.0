@@ -89,9 +89,10 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
 
     public void show() {
         removeCallbacks(closeRunnalbe);
-
-        mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE,  PlayerConfig.getInstance()
-                .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), currentId);
+        if (!TextUtils.isEmpty(PlayerConfig.getInstance().getSecondChannelId())) {
+            mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE, PlayerConfig.getInstance()
+                    .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), currentId);
+        }
         setVisibility(VISIBLE);
         postDelayed(closeRunnalbe, 5000);
 

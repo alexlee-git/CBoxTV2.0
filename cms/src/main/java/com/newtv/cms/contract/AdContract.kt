@@ -41,7 +41,7 @@ class AdContract {
 
         fun getAdByUrl(url: String)
 
-        fun getCarouselAd(adType: String, panel: String, secondPannel: String, carousel: String)
+        fun getCarouselAd(adType: String, panel: String, secondPannel: String?, carousel: String)
 
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?)
 
@@ -77,7 +77,7 @@ class AdContract {
 
     class AdPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
-        override fun getCarouselAd(adType: String, panel: String, secondPannel: String, carousel: String) {
+        override fun getCarouselAd(adType: String, panel: String, secondPannel: String?, carousel: String) {
             val sb = StringBuffer()
             Observable.create(ObservableOnSubscribe<Int> { e ->
                 val config = ADConfig.getInstance()
