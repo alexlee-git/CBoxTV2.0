@@ -77,7 +77,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode,null);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
@@ -331,7 +331,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode,null);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()

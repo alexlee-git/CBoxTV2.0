@@ -35,23 +35,23 @@ public class CollectRepository implements CollectDataSource {
     }
 
     @Override
-    public void addRemoteCollect(@NonNull UserCenterPageBean.Bean Collect) {
-        mRemoteDataSource.addRemoteCollect(Collect);
+    public void addRemoteCollect(String collectType,@NonNull UserCenterPageBean.Bean Collect) {
+        mRemoteDataSource.addRemoteCollect(collectType,Collect);
     }
 
     @Override
-    public void addRemoteCollectList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
-        mRemoteDataSource.addRemoteCollectList(token, userID, beanList, callback);
+    public void addRemoteCollectList(String collectType,String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
+        mRemoteDataSource.addRemoteCollectList(collectType,token, userID, beanList, callback);
     }
 
     @Override
-    public void deleteRemoteCollect(@NonNull UserCenterPageBean.Bean Collect) {
-        mRemoteDataSource.deleteRemoteCollect(Collect);
+    public void deleteRemoteCollect(String collectType,@NonNull UserCenterPageBean.Bean Collect) {
+        mRemoteDataSource.deleteRemoteCollect(collectType,Collect);
     }
 
     @Override
-    public void getRemoteCollectList(String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetCollectListCallback callback) {
-        mRemoteDataSource.getRemoteCollectList(token, userId, appKey, channelCode, offset, limit, callback);
+    public void getRemoteCollectList(String collectType,String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetCollectListCallback callback) {
+        mRemoteDataSource.getRemoteCollectList(collectType,token, userId, appKey, channelCode, offset, limit, callback);
     }
 
     @Override

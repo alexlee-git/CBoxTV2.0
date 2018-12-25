@@ -58,20 +58,28 @@ public class CollectRemoteDataSource implements CollectDataSource {
     }
 
     @Override
-    public void addRemoteCollect(@NonNull UserCenterPageBean.Bean bean) {
+    public void addRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean bean) {
         String mType = "0";
-        String parentId = "";
+        String parentId = bean.get_contentuuid();
         String subId = "";
         int versionCode = 0;
         String extend = "";
         String type = bean.get_contenttype();
-
+        String collectTypeString = "0";
+        if (!TextUtils.isEmpty(collectType)) {
+            if (TextUtils.equals(collectType, "0")) {
+                collectTypeString = "0";
+            } else {
+                collectTypeString = "1";
+            }
+        }
         if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
             mType = "0";
             parentId = bean.get_contentuuid();
             subId = bean.getPlayId();
         } else if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
+            parentId = "";
             subId = bean.get_contentuuid();
         }
         long updateTime;
@@ -80,9 +88,14 @@ public class CollectRemoteDataSource implements CollectDataSource {
         } else {
             updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
         }
-
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        if (TextUtils.equals(collectTypeString, "1")) {
+            extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, bean);
+        } else {
+            extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
+        }
+
+
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
@@ -102,11 +115,12 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.getGrade(),
                         bean.getVideoType(),
                         bean.getTotalCnt(),
-                        bean.getTotalCnt(),
+                        bean.getSuperscript(),
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
+                        collectTypeString,
                         bean.getContentId(), updateTime, extend)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -153,7 +167,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
     }
 
     @Override
-    public void addRemoteCollectList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
+    public void addRemoteCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(ObservableEmitter<Integer> e) throws Exception {
@@ -161,7 +175,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                     if (!TextUtils.isEmpty(userID)) {
                         if (beanList != null && beanList.size() > 0) {
                             for (int i = 0; i < beanList.size(); i++) {
-                                addRemoteCollectRecord(token, userID, beanList.get(i));
+                                addRemoteCollectRecord(collectType, token, userID, beanList.get(i));
                             }
                             e.onNext(beanList.size());
                         } else {
@@ -192,10 +206,17 @@ public class CollectRemoteDataSource implements CollectDataSource {
     }
 
     @Override
-    public void deleteRemoteCollect(@NonNull UserCenterPageBean.Bean Collect) {
+    public void deleteRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean Collect) {
         String mType = "0";
         String type = Collect.get_contenttype();
-
+        String collectTypeString = "0";
+        if (!TextUtils.isEmpty(collectType)) {
+            if (TextUtils.equals(collectType, "0")) {
+                collectTypeString = "0";
+            } else {
+                collectTypeString = "1";
+            }
+        }
         if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
             mType = "0";
         } else if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
@@ -214,7 +235,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        "", contentID)
+                        "", contentID, collectTypeString)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -261,11 +282,19 @@ public class CollectRemoteDataSource implements CollectDataSource {
     }
 
     @Override
-    public void getRemoteCollectList(String token, final String userId, String appKey, String channelCode, String offset, final String limit, @NonNull final CollectRemoteDataSource.GetCollectListCallback callback) {
+    public void getRemoteCollectList(final String collectType, String token, final String userId, String appKey, String channelCode, String offset, final String limit, @NonNull final CollectRemoteDataSource.GetCollectListCallback callback) {
         String Authorization = "Bearer " + token;
+        String collectTypeString = "0";
+        if (!TextUtils.isEmpty(collectType)) {
+            if (TextUtils.equals(collectType, "0")) {
+                collectTypeString = "0";
+            } else {
+                collectTypeString = "1";
+            }
+        }
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
-                .getCollectList(Authorization, userId, "", Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit)
+                .getCollectList(Authorization, userId, "", Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, collectTypeString)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -322,6 +351,21 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity.setPlayIndex(item.optString("episode_num"));
                                 entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 entity.setRecentMsg(item.optString("recent_msg"));
+                                if (TextUtils.equals(collectType, "1")) {
+                                    String extend = item.optString("ext");
+                                    if (!TextUtils.isEmpty(extend)) {
+                                        JSONObject jsonExtend = new JSONObject(extend);
+                                        entity.setIs_finish(jsonExtend.optString("is_finish"));
+                                        entity.setReal_exclusive(jsonExtend.optString("real_exclusive"));
+                                        entity.setIssue_date(jsonExtend.optString("issue_date"));
+                                        entity.setLast_publish_date(jsonExtend.optString("last_publish_date"));
+                                        entity.setSub_title(jsonExtend.optString("sub_title"));
+                                        entity.setV_image(jsonExtend.optString("v_image"));
+                                        entity.setH_image(jsonExtend.optString("h_image"));
+                                        entity.setVip_flag(jsonExtend.optString("vip_flag"));
+                                        entity.setAlternate_number(jsonExtend.optString("alternate_number"));
+                                    }
+                                }
                                 infos.add(entity);
                             }
 
@@ -372,20 +416,21 @@ public class CollectRemoteDataSource implements CollectDataSource {
         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
     }
 
-    private void addRemoteCollectRecord(String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
+    private void addRemoteCollectRecord(String collectType, String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
         String mType = "0";
-        String parentId = "";
+        String parentId = bean.get_contentuuid();
         String subId = "";
         int versionCode = 0;
         String extend = "";
         String type = bean.get_contenttype();
-
+        String collectTypeString = "0";
         if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
             mType = "0";
             parentId = bean.get_contentuuid();
             subId = bean.getPlayId();
         } else if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
+            parentId = "";
             subId = bean.get_contentuuid();
         }
         long updateTime;
@@ -396,7 +441,11 @@ public class CollectRemoteDataSource implements CollectDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        if (TextUtils.equals(collectTypeString, "1")) {
+            extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, bean);
+        } else {
+            extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
+        }
         String Authorization = "Bearer " + token;
 
         NetClient.INSTANCE
@@ -413,11 +462,12 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.getGrade(),
                         bean.getVideoType(),
                         bean.getTotalCnt(),
-                        bean.getTotalCnt(),
+                        bean.getSuperscript(),
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
+                        collectTypeString,
                         bean.getContentId(), updateTime, extend)
                 .subscribe(new Observer<ResponseBody>() {
 

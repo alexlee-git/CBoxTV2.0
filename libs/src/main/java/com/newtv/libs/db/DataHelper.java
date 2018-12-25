@@ -45,6 +45,7 @@ class DataHelper extends SQLiteOpenHelper {
         db.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
 
         db.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
+        db.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
     }
 
     @Override
@@ -143,7 +144,7 @@ class DataHelper extends SQLiteOpenHelper {
          */
         if (newVersion == 4 && oldVersion == 3) {
             sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
-
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
             sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
@@ -184,7 +185,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
-
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
             String[] params = new String[]{DBConfig.SUPERSCRIPT, DBConfig.PLAYINDEX,
                     DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
                     DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT,
@@ -220,7 +221,7 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
-
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
             String[] params = new String[]{DBConfig.UPDATE_TIME, DBConfig.SUPERSCRIPT,
                     DBConfig.PLAYINDEX, DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
                     DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT, DBConfig.PLAYID,
@@ -246,7 +247,7 @@ class DataHelper extends SQLiteOpenHelper {
 
             sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
         }
-        switch (oldVersion){
+        switch (oldVersion) {
             case 1:
             case 2:
             case 3:

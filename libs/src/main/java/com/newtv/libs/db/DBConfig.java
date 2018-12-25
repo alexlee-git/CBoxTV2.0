@@ -42,7 +42,7 @@ public final class DBConfig {
     public static final String REMOTE_ATTENTION_TABLE_NAME = "remote_user_attention_info";//我的关注
     public static final String REMOTE_SUBSCRIBE_TABLE_NAME = "remote_user_subscribe_info";//我的订阅
     public static final String REMOTE_HISTORY_TABLE_NAME = "remote_user_history_info";//历史记录
-
+    public static final String REMOTE_LB_COLLECT_TABLE_NAME = "remote_user_lb_collect_info";//云端数据库轮播台收藏
 
     /* VideoDetail db fields */
 
@@ -82,6 +82,26 @@ public final class DBConfig {
 
     static final String CREATE_LB_COLLECT_TABLE_SQL =
             "create table " + LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    CONTENTUUID + " varchar2(1000)," +
+                    CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
+                    TITLE_NAME + " varchar2(1000)," +
+                    IS_FINISH + " varchar2(1000)," +
+                    REAL_EXCLUSIVE + " varchar2(1000)," +
+                    ISSUE_DATE + " varchar2(1000)," +
+                    LAST_PUBLISH_DATE + " varchar2(1000)," +
+                    SUB_TITLE + " varchar2(1000)," +
+                    UPDATE_TIME + " long," +
+                    USERID + " varchar2(1000)," +
+                    IMAGEURL + " varchar2(1000)," +
+                    H_IMAGE + " varchar2(1000)," +
+                    VIP_FLAG + " varchar2(1000)," +
+                    CONTENTTYPE + " varchar2(1000)," +
+                    ACTIONTYPE + " varchar2(1000)," +
+                    ALTERNATE_NUMBER + " varchar2(1000)" +
+                    ")";
+
+    static final String CREATE_REMOTE_LB_COLLECT_TABLE_SQL =
+            "create table " + REMOTE_LB_COLLECT_TABLE_NAME + "(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                     CONTENTUUID + " varchar2(1000)," +
                     CONTENT_ID + " varchar2(1000) UNIQUE ON CONFLICT REPLACE," +
                     TITLE_NAME + " varchar2(1000)," +

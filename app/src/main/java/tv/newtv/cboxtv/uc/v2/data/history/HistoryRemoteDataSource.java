@@ -76,7 +76,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode,null);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String userId = SharePreferenceUtils.getUserId(mContext);
         Log.d(TAG, "report history item, user_id " + userId + ", content_id : " + entity.getContentId());
@@ -430,7 +430,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
             updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
         }
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode,null);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()

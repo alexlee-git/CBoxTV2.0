@@ -250,6 +250,7 @@ public interface IUserCenterLoginApi {
                                         @Field("latest_episode") String latest_episode,
                                         @Field("action_type") String action_type,
                                         @Field("program_child_name") String programChildName,
+                                        @Field("type") String type,
                                         @Field("content_id") String contentId,
                                         @Field("create_time") long create_time,
                                         @Field("ext") String ext);
@@ -262,7 +263,8 @@ public interface IUserCenterLoginApi {
                                            @Query("channel_code") String channel_code,
                                            @Query("app_key") String app_key,
                                            @Query("programset_ids") String programset_id,
-                                           @Query("content_ids") String content_id);
+                                           @Query("content_ids") String content_id,
+                                           @Query("type") String type);
 
 //    @FormUrlEncoded
 //    @POST("collections")
@@ -277,7 +279,8 @@ public interface IUserCenterLoginApi {
                                             @Query("app_key") String app_key,
                                             @Query("channel_code") String channel_code,
                                             @Query("offset") String offset,
-                                            @Query("limit") String limit);
+                                            @Query("limit") String limit,
+                                            @Query("type") String type);
 
 
     // 关注
