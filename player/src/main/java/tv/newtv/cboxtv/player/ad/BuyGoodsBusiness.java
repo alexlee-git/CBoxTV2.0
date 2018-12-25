@@ -430,9 +430,10 @@ public class BuyGoodsBusiness{
                                 disposable.dispose();
                                 return;
                             }
+                            boolean adPlaying = NewTVLauncherPlayerViewManager.getInstance().isADPlaying();
                             int currentPosition = NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() / 1000;
                             Log.i(TAG, "onNext: "+currentPosition+","+start+","+duration);
-                            if(currentPosition >= start && currentPosition <= (start + duration)){
+                            if(!adPlaying && currentPosition >= start && currentPosition <= (start + duration)){
                                 show();
                                 disposable.dispose();
                             }

@@ -54,6 +54,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
         this.mContext = context;
         this.mDatas = datas;
         this.mContentType = contentType;
+        type = 0;
     }
 
     public UserCenterUniversalAdapter(Context context, List<UserCenterPageBean.Bean> datas,
@@ -248,7 +249,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
 
                 Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
                 if (type == 1) {
-                    JumpUtil.activityJump(mContext, Constant.OPEN_DETAILS, info.get_contenttype(),
+                    JumpUtil.activityJump(mContext, Constant.OPEN_VIDEO, info.get_contenttype(),
                             info.getContentId(), "");
                 } else {
                     JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
