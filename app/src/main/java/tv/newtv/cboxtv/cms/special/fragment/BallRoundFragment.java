@@ -143,9 +143,9 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
             });
             if (programInfo != null) {
                 holder.setData(programInfo,holder.itemView.getContext());
-                if(TextUtils.isEmpty(currentUUID) && position == 0){
-                    holder.poster.requestFocus();
-                }
+//                if(TextUtils.isEmpty(currentUUID) && position == 0){
+//                    holder.poster.requestFocus();
+//                }
             }
         }
 
