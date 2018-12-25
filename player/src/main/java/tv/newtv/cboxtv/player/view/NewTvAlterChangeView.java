@@ -46,6 +46,13 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         }
     };
 
+    public void destroy(){
+        if(mAdPresenter != null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
+    }
+
     public NewTvAlterChangeView(Context context) {
         this(context, null);
     }

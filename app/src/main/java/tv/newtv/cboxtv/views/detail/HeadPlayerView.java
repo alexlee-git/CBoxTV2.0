@@ -652,8 +652,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         vipPay = contentView.findViewById(value.viewId);
                         break;
                     case Builder.DB_TYPE_VIPTIP:
-                        vipTip = contentView.findViewById
-                                (value.viewId);
+                        vipTip = contentView.findViewById(value.viewId);
                         break;
                 }
             }

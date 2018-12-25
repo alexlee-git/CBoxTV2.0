@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 
 import tv.newtv.cboxtv.BaseActivity;
@@ -89,11 +90,11 @@ public abstract class DetailPageActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         ViewGroup viewGroup = findViewById(R.id.root_view);
         destroyViewGroup(viewGroup);
         BitmapUtil.recycleImageBitmap(viewGroup);
+
+        super.onDestroy();
     }
 
     private void destroyViewGroup(ViewGroup viewGroup) {
@@ -103,6 +104,7 @@ public abstract class DetailPageActivity extends BaseActivity {
                 View view = viewGroup.getChildAt(index);
                 if (view instanceof IEpisode) {
                     ((IEpisode) view).destroy();
+                    LogUtils.d("DetailPageActivity","destroy IEpisode ->" + view);
                 } else if (view instanceof ViewGroup) {
                     destroyViewGroup((ViewGroup) view);
                 }
