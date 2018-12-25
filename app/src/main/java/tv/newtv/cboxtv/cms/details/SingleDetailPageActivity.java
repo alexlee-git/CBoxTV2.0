@@ -134,7 +134,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
 
         //进入节目详情页上传日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "1," + contentLUuid);
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentLUuid);
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
 
         initHeadPlayerView(contentUUID);
     }
