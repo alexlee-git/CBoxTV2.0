@@ -116,4 +116,8 @@ public class CollectionDetailActivity extends BaseUCDetailActivity<UserCenterPag
         LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "3,0");
         super.onResume();
     }
+
+    public void currentNavFouse(){
+        requestDefaultTab() ;
+    }
 }

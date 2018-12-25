@@ -477,7 +477,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                     }
                     if (onSelectListenerList.size() > 0) {
                         for (OnSelectListener l : onSelectListenerList) {
-                            l.select(item);
+                            l.select(item,playProgram);
                         }
                     }
                 }
@@ -833,6 +833,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                         adapter.setData(lastProgram);
                                     }
 
+                                    if(listViews.size() <= node.getLevel()){
+                                        return;
+                                    }
                                     MenuRecyclerView menuRecyclerView = listViews.get(node.getLevel());
                                     MenuRecyclerAdapter menuRecyclerViewAdapter = (MenuRecyclerAdapter)
                                             menuRecyclerView.getAdapter();
@@ -1279,7 +1282,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
         void select(Program program);
 
-        void select(Node node);
+        void select(Node node,Program playProgram);
     }
 
     private static class MyHandler extends android.os.Handler {

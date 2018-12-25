@@ -29,10 +29,10 @@ import java.util.HashMap;
 
 import tv.newtv.cboxtv.BaseActivity;
 import tv.newtv.cboxtv.BuildConfig;
-import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
 import tv.newtv.cboxtv.MainActivity;
+import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
+import tv.newtv.cboxtv.cms.special.fragment.BaseSpecialContentFragment;
 import tv.newtv.cboxtv.cms.special.util.ActivityUtils;
 import tv.newtv.cboxtv.player.PlayerConfig;
 
@@ -50,6 +50,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     private SpecialContract.Presenter mSpecialPresenter;
     private AdContract.AdPresenter mAdPresenter;
     private String templateZT="";
+    private boolean isAgainFlag = false;//增加标识：从专题详情页返回到专题页
 
     @Override
     protected void onDestroy() {
@@ -71,6 +72,8 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
         mSpecialFragment = null;
 
         PlayerConfig.getInstance().setTopicId(null);
+
+        isAgainFlag = false;
     }
 
     @Override
@@ -156,14 +159,14 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     private void uploadEnterLog() {
 
 
-            StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
-            dataBuff.append("0,")
-                    .append(mPageUUid + ",")
-                    .append(templateZT)//专题模板
-                    .trimToSize();
-            Log.e("SpecialActivity", dataBuff.toString());
+        StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
+        dataBuff.append("0,")
+                .append(mPageUUid + ",")
+                .append(templateZT)//专题模板
+                .trimToSize();
+        Log.e("SpecialActivity", dataBuff.toString());
 
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_SPECIAL_PAGE, dataBuff.toString());
     }
 
     private void uploadExitLog() {
@@ -178,6 +181,7 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
 
     @Override
     protected void onStop() {
+        isAgainFlag = true;
         uploadExitLog();
         super.onStop();
     }
@@ -185,7 +189,9 @@ public class SpecialActivity extends BaseActivity implements SpecialContract.Mod
     @Override
     protected void onResume() {
         super.onResume();
-        uploadEnterLog();
+        if (isAgainFlag) {
+            uploadEnterLog();
+        }
     }
 
     @Override

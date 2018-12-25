@@ -273,10 +273,11 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         public void bind(Program data, AlternateViewHolder holder, boolean selected) {
             holder.mAlternateId.setText(data.getAlternateNumber());
             holder.mAlternateTitle.setText(data.getTitle());
-            holder.mAlternateSubTitle.setText(data.getSubTitle());
             holder.itemView.setActivated(selected);
             if (Constant.CONTENTTYPE_LB.equals(data.getL_contentType())) {
                 holder.bindObserver(data.getL_id());
+            }else{
+                holder.clearObserver();
             }
         }
 
@@ -322,6 +323,13 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                 if (mObservable.equals(contentId)) return;
                 mAlternateSubTitle.setText("正在获取信息...");
                 mObservable.attach(contentId);
+            }
+        }
+
+        void clearObserver(){
+            mAlternateSubTitle.setText("");
+            if(mObservable != null){
+                mObservable.detach();
             }
         }
 

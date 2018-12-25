@@ -250,10 +250,10 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 if (type == 1) {
                     //2018.12.25 wqs 兼容2.0版本用户行为数据
                     if (!TextUtils.isEmpty(info.getContentId()) && !TextUtils.equals(info.getContentId(), "null")) {
-                        JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
+                        JumpUtil.activityJump(mContext, Constant.OPEN_DETAILS, info.get_contenttype(),
                                 info.getContentId(), "");
                     } else {
-                        JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
+                        JumpUtil.activityJump(mContext, Constant.OPEN_DETAILS, Constant.OPEN_DETAILS, info.get_contenttype(),
                                 info.get_contentuuid(), "");
                     }
                 } else {

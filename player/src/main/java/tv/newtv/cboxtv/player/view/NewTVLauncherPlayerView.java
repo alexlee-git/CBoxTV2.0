@@ -19,7 +19,6 @@ import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.letv.LetvDeviceUtil;
 import com.newtv.cms.CmsErrorCode;
@@ -952,6 +951,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (mAlternatePresenter != null && mAlternatePresenter.equalsAlternate(alternateId)) {
             return;
         }
+        if(defaultConfig.isAlternate){
+            uploadExitLbLog();
+        }
         if (mChangeAlternateListener != null) {
             mChangeAlternateListener.changeAlternate(alternateId, title, channelId);
         }
@@ -1828,6 +1830,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     public void stop() {
         if (mNewTVLauncherPlayer != null) {
+            addHistory();
             mNewTVLauncherPlayer.stop();
         }
         stopAllRequest();
@@ -1971,6 +1974,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             videoDataStruct.setAlternate(defaultConfig.isAlternate, defaultConfig.isFirstAlternate);
             videoDataStruct.setAlternateId(defaultConfig.alternateID);
             videoDataStruct.setHistoryPosition(mHistoryPostion);
+            videoDataStruct.setDefinitionStr(defaultConfig.programSeriesInfo.getDefinition());
             mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
                     videoDataStruct);
         }
@@ -2112,13 +2116,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     @Override
-    public void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String
+    public void onAlternateResult(String alternateId,List<Alternate> alternateList, int currentPlayIndex, String
             title, String channelId) {
         if (isReleased) return;
         updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
 
         if (defaultConfig!=null&&defaultConfig.alternateCallback != null) {
-            defaultConfig.alternateCallback.onAlternateResult(alternateList);
+            defaultConfig.alternateCallback.onAlternateResult(alternateId, alternateList);
         }
 
         if (mAlternatePresenter != null && mAlternatePresenter
@@ -2145,8 +2149,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     @Override
-    public void onAlterItemResult(String contentId, Content content, boolean isLive, boolean
-            isFirst) {
+    public void onAlterItemResult(String contentId, Content content, boolean isLive, boolean isFirst) {
         if (isReleased) return;
         setSeriesInfo(content);
 

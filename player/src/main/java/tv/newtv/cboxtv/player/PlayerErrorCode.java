@@ -37,9 +37,10 @@ public final class PlayerErrorCode {
                 return context.getResources().getString(R.string.check_error);
             case LIVE_INFO_EMPTY:
             case PROGRAM_CDN_EMPTY:
-            case PROGRAM_SERIES_EMPTY:
             case PROGRAM_PLAY_URL_EMPTY:
                 return "暂无相关内容";
+            case PROGRAM_SERIES_EMPTY:
+                return "节目走丢了，错误代码：";
             default:
                 return "";
         }

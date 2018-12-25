@@ -1,12 +1,10 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 
 import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Alternate;
@@ -15,7 +13,6 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,6 +52,9 @@ public class AlternateActivity extends DetailPageActivity implements
     public void prepareMediaPlayer() {
         super.prepareMediaPlayer();
 
+        if (headerView != null) {
+            headerView.prepareMediaPlayer();
+        }
     }
 
     @Override
@@ -84,7 +84,7 @@ public class AlternateActivity extends DetailPageActivity implements
     protected void onDestroy() {
         super.onDestroy();
 
-        if(mPresenter != null){
+        if (mPresenter != null) {
             mPresenter.destroy();
             mPresenter = null;
         }
@@ -108,7 +108,6 @@ public class AlternateActivity extends DetailPageActivity implements
             return;
         }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
         setUp();
     }
 
@@ -147,24 +146,28 @@ public class AlternateActivity extends DetailPageActivity implements
 
         headerView.setCallback(this);
         headerView.setContentUUID(contentUUID);
+
+        mPlayListView.setContentUUID(contentUUID);
     }
 
     @Override
-    public void onAlternateResult(@org.jetbrains.annotations.Nullable List<Alternate> result) {
+    public void onAlternateResult(String alternateId, @org.jetbrains.annotations.Nullable List<Alternate> result) {
+        if(!TextUtils.equals(alternateId,contentUUID)) return;
+
         if (mPlayListView != null) {
-            mPlayListView.onAlternateResult(result);
+            mPlayListView.onAlternateResult(alternateId, result);
         }
 
         EpisodeAdView adView = findViewById(R.id.ad_view);
-        if(adView != null) {
+        if (adView != null) {
             adView.requestAD();
         }
     }
 
     @Override
     public void onError(String code, String desc) {
-        if(CmsErrorCode.CMS_NO_ONLINE_CONTENT.equals(code)){
-            ToastUtil.showToast(getApplicationContext(),"节目走丢了，即将返回");
+        if (CmsErrorCode.CMS_NO_ONLINE_CONTENT.equals(code)) {
+            ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将返回");
             finish();
         }
     }

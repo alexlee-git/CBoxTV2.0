@@ -261,6 +261,9 @@ public class DBUtil {
         if (!TextUtils.isEmpty(mInfo.getRecentMsg())) {
             contentValues.put(DBConfig.RECENT_MSG, mInfo.getRecentMsg());
         }
+        if(!TextUtils.isEmpty(mInfo.getAlternateNumber())){
+            contentValues.put(DBConfig.ALTERNATE_NUMBER,mInfo.getAlternateNumber());
+        }
         DataSupport.insertOrUpdate(tableName)
                 .condition()
                 .eq(DBConfig.CONTENT_ID, contentID)

@@ -584,7 +584,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
                                                                                             .LOG_NODE_SUBSCRIP, "1," +
-                                                                                            mInfo.getContentUUID());
+                                                                                            mInfo.getContentID());
                                                                             Toast.makeText
                                                                                     (getContext()
                                                                                                     .getApplicationContext(), "取消订阅成功",
@@ -619,7 +619,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         LogUploadUtils.uploadLog
                                                                                 (Constant
                                                                                         .LOG_NODE_SUBSCRIP, "0," +
-                                                                                        mInfo.getContentUUID());
+                                                                                        mInfo.getContentID());
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
                                                                                 "添加订阅成功", Toast
@@ -702,6 +702,16 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
             if (TextUtils.isEmpty(playId) && historyBean != null) {
                 playId = historyBean.playId;
             }
+
+            if (!TextUtils.isEmpty(mBuilder.focusId)) {
+                for (SubContent content : programSeriesInfo.getData()) {
+                    if (TextUtils.equals(content.getContentID(), mBuilder.focusId)) {
+                        playId = content.getContentUUID();
+                        break;
+                    }
+                }
+            }
+
             if (!TextUtils.isEmpty(playId)) {
                 for (SubContent content : programSeriesInfo.getData()) {
                     if (TextUtils.equals(content.getContentUUID(), playId)) {
@@ -1074,6 +1084,9 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         private int defaultFocusID = 0;
         private boolean fromOuter;
 
+        //用于推荐位点击进入到默认的位置
+        private String focusId;
+
         private ExitVideoFullCallBack videoFullCallBack;
 
         private Builder(int layout) {
@@ -1129,6 +1142,11 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
         public Builder SetPlayerFocusId(int id) {
             mPlayerFocusId = id;
+            return this;
+        }
+
+        public Builder setFocusId(String focusId) {
+            this.focusId = focusId;
             return this;
         }
 

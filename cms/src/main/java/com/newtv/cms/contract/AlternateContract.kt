@@ -20,7 +20,7 @@ import com.newtv.libs.Libs
 class AlternateContract {
 
     interface View : ICmsView {
-        fun onAlternateResult(alternates: List<Alternate>?)
+        fun onAlternateResult(alternateId: String, alternates: List<Alternate>?)
     }
 
     interface Callback {
@@ -81,7 +81,7 @@ class AlternateContract {
                                     view.loadComplete()
                                 }
                                 if (result.isOk()) {
-                                    view?.onAlternateResult(result.data)
+                                    view?.onAlternateResult(contentId, result.data)
                                 } else {
                                     view?.onError(context, result.errorCode, result.errorMessage)
                                 }

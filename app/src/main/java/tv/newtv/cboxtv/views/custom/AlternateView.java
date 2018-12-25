@@ -448,7 +448,7 @@ public class AlternateView extends VideoFrameLayout implements ContentContract.V
     }
 
     @Override
-    public void onAlternateResult(@Nullable List<Alternate> alternates) {
+    public void onAlternateResult(@NotNull String alternateId, @Nullable List<Alternate> alternates) {
         mAlternates = alternates;
         isRequesting = false;
         handleAlternates();

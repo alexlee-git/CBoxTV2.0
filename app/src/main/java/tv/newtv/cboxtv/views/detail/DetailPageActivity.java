@@ -27,6 +27,8 @@ public abstract class DetailPageActivity extends BaseActivity {
     private String contentUUID;
     private String childContentUUID;
 
+    protected String mFocusId; //从推荐位进入的默认位置(选集) 推荐位优先级高于历史记录
+
     protected String getChildContentUUID() {
         return childContentUUID;
     }
@@ -70,6 +72,10 @@ public abstract class DetailPageActivity extends BaseActivity {
 
             if (intent.hasExtra(Constant.CONTENT_CHILD_UUID))
                 childContentUUID = intent.getStringExtra(Constant.CONTENT_CHILD_UUID);
+
+            if (intent.hasExtra(Constant.FOCUS_ID)) {
+                mFocusId = intent.getStringExtra(Constant.FOCUS_ID);
+            }
         }
 
         if (TextUtils.isEmpty(contentUUID)) {

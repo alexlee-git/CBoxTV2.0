@@ -36,6 +36,7 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.player.view.popupMenuWidget;
 
 public class TopicTwoFragment extends BaseSpecialContentFragment implements PlayerCallback {
@@ -69,6 +70,7 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
     private boolean isHaveAD = false;
     private int focusPosition;
     private View focusView;
+    private int currentIndex;
 
     public static boolean isBottom(AiyaRecyclerView recyclerView) {
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -378,8 +380,13 @@ public class TopicTwoFragment extends BaseSpecialContentFragment implements Play
 
     @Override
     public void ProgramChange() {
-        videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
-        videoPlayerView.playSingleOrSeries(playIndex, 0);
+        Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+        if (programSeriesInfo != null && TextUtils.equals(programSeriesInfo.getContentID(), mProgramSeriesInfo.getContentID())) {
+            currentIndex = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+        } else {
+            videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+            videoPlayerView.playSingleOrSeries(currentIndex, 0);
+        }
     }
 
     @Override
