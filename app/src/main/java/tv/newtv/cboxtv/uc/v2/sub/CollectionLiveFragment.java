@@ -20,7 +20,6 @@ import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
-import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -37,18 +36,11 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.MainLooper;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
-import tv.newtv.cboxtv.cms.mainPage.model.ModuleItem;
-import tv.newtv.cboxtv.cms.net.NetClient;
-import tv.newtv.cboxtv.cms.util.ModuleUtils;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.CollectionDetailActivity;
@@ -133,7 +125,7 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
         //收藏数据表表名
         String tableNameCollect = DBConfig.LB_COLLECT_TABLE_NAME;
         if (!TextUtils.isEmpty(mLoginTokenString)) {
-            tableNameCollect = DBConfig.LB_COLLECT_TABLE_NAME;
+            tableNameCollect = DBConfig.REMOTE_LB_COLLECT_TABLE_NAME;
         }
         DataSupport.search(tableNameCollect)
                 .condition()
