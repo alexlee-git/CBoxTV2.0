@@ -14,13 +14,12 @@
     </tv.newtv.cboxtv.player.view.VideoFrameLayout>
 
     <TextView
-        android:text="正在读取数据..."
         android:id="@+id/loading"
-        android:gravity="center"
-        android:textSize="@dimen/height_30px"
-        android:textColor="@android:color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/height_30px"/>
 
 </FrameLayout>
 
