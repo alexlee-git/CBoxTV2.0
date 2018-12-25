@@ -115,6 +115,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 holder.score.setText(score);
                 holder.score.setVisibility(View.VISIBLE);
             } else {
+                holder.score.setText("");
                 holder.score.setVisibility(View.INVISIBLE);
             }
 
@@ -125,6 +126,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
                 if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
                     holder.episode.setText(spannableRecentMsg);
+                    holder.episode.setVisibility(View.VISIBLE);
                 } else {
                     holder.episode.setText("");
                     holder.episode.setVisibility(View.INVISIBLE);

@@ -115,7 +115,9 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             String score = entity.getGrade();
             if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null") && !TextUtils.equals(score, "0.0") && !TextUtils.equals(score, "0")) {
                 viewHolder.mScore.setText(entity.getGrade());
+                viewHolder.mScore.setVisibility(View.VISIBLE);
             } else {
+                viewHolder.mScore.setText("");
                 viewHolder.mScore.setVisibility(View.INVISIBLE);
             }
             // 观看进度
@@ -126,12 +128,13 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             if (!TextUtils.isEmpty(entity.getRecentMsg()) && !TextUtils.equals(entity.getRecentMsg(), "null")) {
                 SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(entity.getRecentMsg());
                 if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                    viewHolder.mEpisode.setVisibility(View.VISIBLE);
                     viewHolder.mEpisode.setText(spannableRecentMsg);
                 } else {
                     viewHolder.mEpisode.setText("");
                     viewHolder.mEpisode.setVisibility(View.INVISIBLE);
                 }
-            }else{
+            } else {
                 viewHolder.mEpisode.setText("");
                 viewHolder.mEpisode.setVisibility(View.INVISIBLE);
             }
