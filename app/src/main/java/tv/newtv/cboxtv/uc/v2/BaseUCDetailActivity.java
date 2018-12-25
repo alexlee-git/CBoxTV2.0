@@ -108,6 +108,7 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
                             .from(getApplicationContext
                                     ()).inflate(R.layout.userinfo_tab_item, radioGroup, false);
                     radioButton.setText(title);
+                    radioButton.setTextColor(Color.parseColor("#80FFFFFF"));
                     radioButton.setId(radioGroup.getChildCount());
                     radioButton.setTag(String.format(Locale.getDefault(), "TAB_%d", index));
                     radioGroup.addView(radioButton);
@@ -166,11 +167,18 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
+            if (defaultTab != null && defaultTab instanceof RadioButton) {
+                ((RadioButton) defaultTab).setTextColor(Color.parseColor("#80FFFFFF"));
+            }
             defaultTab = buttonView;
             buttonView.setTextColor(Color.parseColor("#FFFFFFFF"));
             onTabChange(buttonView.getText().toString(), buttonView);
         } else {
-            buttonView.setTextColor(Color.parseColor("#CCFFFFFF"));
+            if (defaultTab.equals(buttonView)) {
+                buttonView.setTextColor(Color.parseColor("#FFFFFFFF"));
+            } else {
+                buttonView.setTextColor(Color.parseColor("#80FFFFFF"));
+            }
         }
     }
 
