@@ -929,7 +929,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mPlayerTimer = new PlayerTimer();
         mPlayerTimer.setCallback(this);
 
-        updateUIPropertys(defaultConfig.startIsFullScreen);
+        updateUIPropertys(defaultConfig.isFullScreen());
     }
 
     public void setSeriesInfo(Content seriesInfo) {
@@ -1497,7 +1497,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         //有限处理BACK按键事件，关闭进度条显示
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (mShowingChildView != SHOWING_NO_VIEW) {
+                if (mShowingChildView != SHOWING_NO_VIEW && mShowingChildView != SHOWING_ALTER_CHANGE_VIEW) {
                     dismissChildView();
                 } else {
                     onBackPressed();
@@ -2022,7 +2022,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             }
             onError(code, desc);
         } else {
-            onError("000", "UNKONWN ERROR");
+            onError(PlayerErrorCode.PERMISSION_CHECK_SERVER_ERROR, PlayerErrorCode.getErrorDesc
+                    (getContext(),PlayerErrorCode.PERMISSION_CHECK_SERVER_ERROR));
         }
     }
 
@@ -2345,6 +2346,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         ViewParent parentViewGroup;      //父级容器
         private AlternateCallback alternateCallback;
         private Alternate currentAlternate;
+
+        public boolean isFullScreen() {
+            return startIsFullScreen || isFullScreen;
+        }
 
         public boolean canUse() {
             return parentViewGroup != null && layoutParams != null;
