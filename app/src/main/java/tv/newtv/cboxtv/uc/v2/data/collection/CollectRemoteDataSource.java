@@ -44,7 +44,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
     private static CollectRemoteDataSource INSTANCE;
     private Context mContext;
-    private Disposable mAddDisposable, mGetListDisposable, mDeleteDisposable;
+    private Disposable mAddDisposable, mGetListDisposable, mGetLbListDisposable, mDeleteDisposable;
 
     public static CollectRemoteDataSource getInstance(Context mContext) {
         if (INSTANCE == null) {
@@ -300,14 +300,14 @@ public class CollectRemoteDataSource implements CollectDataSource {
                 .subscribe(new BaseObserver<ResponseBody>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.i(TAG, "getRemoteCollectList onSubscribe: ");
+                        Log.d(TAG, "getRemoteCollectList onSubscribe: ");
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                         mGetListDisposable = d;
                     }
 
                     @Override
                     public void onNext(ResponseBody responseBody) {
-                        Log.i(TAG, "getRemoteCollectList onNext: ");
+                        Log.d(TAG, "getRemoteCollectList onNext: ");
 
                         try {
                             int totalSize = 0;
@@ -385,7 +385,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.i(TAG, "getRemoteCollectList onError: ");
+                        Log.e(TAG, "wqs:getRemoteCollectList onError: ");
 
                         if (callback != null) {
                             callback.onCollectListLoaded(null, 0);
@@ -395,15 +395,142 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
                     @Override
                     public void dealwithUserOffline() {
-                        Log.i(TAG, "getRemoteCollectList dealwithUserOffline: ");
+                        Log.d(TAG, "wqs:getRemoteCollectList dealwithUserOffline: ");
 
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.i(TAG, "getRemoteCollectList onComplete: ");
+                        Log.d(TAG, "getRemoteCollectList onComplete: ");
 
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
+                    }
+                });
+    }
+
+    @Override
+    public void getRemoteLbCollectList(String collectType, String token, String userId, String appKey, String channelCode, String offset, String limit, @NonNull GetCollectListCallback callback) {
+        String Authorization = "Bearer " + token;
+        String collectTypeString = "0";
+        if (!TextUtils.isEmpty(collectType)) {
+            if (TextUtils.equals(collectType, "0")) {
+                collectTypeString = "0";
+            } else {
+                collectTypeString = "1";
+            }
+        }
+        NetClient.INSTANCE
+                .getUserCenterLoginApi()
+                .getCollectList(Authorization, userId, "", Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, collectTypeString)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new BaseObserver<ResponseBody>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.d(TAG, "wqs:getRemoteLbCollectList onSubscribe: ");
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetLbListDisposable);
+                        mGetLbListDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        Log.d(TAG, "getRemoteLbCollectList onNext: ");
+
+                        try {
+                            int totalSize = 0;
+                            String responseString = responseBody.string();
+                            checkUserOffline(responseString);
+                            JSONObject jsonObject = new JSONObject(responseString);
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            JSONArray list = data.optJSONArray("list");
+                            totalSize = data.optInt("end");
+                            List<UserCenterPageBean.Bean> infos = new ArrayList<>();
+                            int size = list.length();
+                            JSONObject item = null;
+                            UserCenterPageBean.Bean entity = null;
+                            for (int i = 0; i < size; ++i) {
+                                item = list.optJSONObject(i);
+                                entity = new UserCenterPageBean.Bean();
+
+                                String contentType = item.optString("content_type");
+
+                                if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
+                                    entity.set_contentuuid(item.optString("program_child_id"));
+                                } else {
+                                    entity.set_contentuuid(item.optString("programset_id"));
+
+                                }
+                                entity.setContentId(item.optString("content_id"));
+                                entity.set_contenttype(contentType);
+
+                                entity.setPlayId(item.optString("program_child_id"));
+                                entity.set_title_name(item.optString("programset_name"));
+                                entity.setIs_program(item.optString("is_program"));
+                                entity.set_actiontype(item.optString("action_type"));
+                                entity.set_imageurl(item.optString("poster"));
+                                entity.setGrade(item.optString("score"));
+                                entity.setVideoType(item.optString("video_type"));
+                                entity.setSuperscript(item.optString("superscript"));
+                                entity.setTotalCnt(item.optString("total_count"));
+                                entity.setPlayIndex(item.optString("latest_episode"));
+                                entity.setEpisode_num(item.optString("episode_num"));
+                                entity.setIsUpdate(item.optString("update_superscript"));
+                                entity.setPlayIndex(item.optString("episode_num"));
+                                entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
+                                entity.setRecentMsg(item.optString("recent_msg"));
+                                if (TextUtils.equals(collectType, "1")) {
+                                    String extend = item.optString("ext");
+                                    if (!TextUtils.isEmpty(extend)) {
+                                        JSONObject jsonExtend = new JSONObject(extend);
+                                        entity.setIs_finish(jsonExtend.optString("is_finish"));
+                                        entity.setReal_exclusive(jsonExtend.optString("real_exclusive"));
+                                        entity.setIssue_date(jsonExtend.optString("issue_date"));
+                                        entity.setLast_publish_date(jsonExtend.optString("last_publish_date"));
+                                        entity.setSub_title(jsonExtend.optString("sub_title"));
+                                        entity.setV_image(jsonExtend.optString("v_image"));
+                                        entity.setH_image(jsonExtend.optString("h_image"));
+                                        entity.setVip_flag(jsonExtend.optString("vip_flag"));
+                                        entity.setAlternate_number(jsonExtend.optString("alternate_number"));
+                                    }
+                                }
+                                infos.add(entity);
+                            }
+
+                            if (callback != null) {
+                                callback.onCollectListLoaded(infos, totalSize);
+                                return;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        if (callback != null) {
+                            callback.onDataNotAvailable();
+                        }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetLbListDisposable);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "wqs:getRemoteCollectList onError: ");
+
+                        if (callback != null) {
+                            callback.onCollectListLoaded(null, 0);
+                        }
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetLbListDisposable);
+                    }
+
+                    @Override
+                    public void dealwithUserOffline() {
+                        Log.d(TAG, "wqs:getRemoteCollectList dealwithUserOffline: ");
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "wqs:getRemoteCollectList onComplete: ");
+
+                        UserCenterRecordManager.getInstance().unSubscribe(mGetLbListDisposable);
                     }
                 });
     }

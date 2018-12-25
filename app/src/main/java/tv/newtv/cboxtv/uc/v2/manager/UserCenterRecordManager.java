@@ -514,6 +514,11 @@ public class UserCenterRecordManager {
                 .getRemoteCollectList(collectType, token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
     }
 
+    public void getRemoteLbCollectionList(String collectType, Context context, String token, String userId, String offset, String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback) {
+        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
+                .getRemoteLbCollectList(collectType, token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
+    }
+
     public void getRemoteFollowList(Context context, String token, String userId, String offset, String limit, FollowDataSource.GetFollowListCallback callback) {
         FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context))
                 .getRemoteFollowList(token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
@@ -899,7 +904,7 @@ public class UserCenterRecordManager {
 
                             }
                         });
-                        getRemoteCollectionList("1", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
+                        getRemoteLbCollectionList("1", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
                             @Override
                             public void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize) {
                                 Log.d(TAG, "wqs:LbCollectList.size():" + totalSize);
