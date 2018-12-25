@@ -134,7 +134,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
         setContentView(R.layout.activity_program_collec_page);
         //进入节目详情页上传日志
         LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
         ADConfig.getInstance().setSeriesID(contentUUID);
 
         headPlayerView = findViewById(R.id.header_video);
