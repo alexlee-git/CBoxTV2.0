@@ -229,7 +229,6 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
     public void setData(List<Program> data, Program program) {
         if (data != null && data.size() > 0 && (Constant.CONTENTTYPE_LB.equals(data.get(0).getParent().getContentType())
                 || Constant.CONTENTTYPE_LV.equals(data.get(0).getParent().getContentType()))
-                && data.get(0).getParent().searchNodeInParent(MenuGroupPresenter2.LB_ID_COLLECT) == null
                 && !data.get(0).getParent().isForbidAddCollect()) {
             Node node = data.get(0).getParent();
             addCollectDataToList(data, node);
@@ -260,6 +259,7 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         }
 
         if (COLLECT.equals(data.get(0).getTitle())) {
+            refreshCollectNode(data.get(0));
             return;
         }
         final Program program = new Program();
@@ -268,11 +268,21 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         program.setParent(node);
         data.add(0, program);
 
-        LastNode lastNode = (LastNode) node;
+        refreshCollectNode(program);
+    }
+
+    private void refreshCollectNode(final Program program){
+        if (program == null || program.getParent() == null || !(program.getParent() instanceof LastNode)) {
+            return;
+        }
+        LastNode lastNode = (LastNode) program.getParent();
+        if(TextUtils.isEmpty(lastNode.contentId)){
+            return;
+        }
 
         DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
                 .condition()
-                .eq(DBConfig.CONTENTUUID, lastNode.contentUUID)
+                .eq(DBConfig.CONTENT_ID, lastNode.contentId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
                 .withCallback(new DBCallback<String>() {
