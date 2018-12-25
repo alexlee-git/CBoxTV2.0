@@ -33,10 +33,10 @@
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
             android:layout_marginTop="@dimen/height_15px"
+            android:layout_below="@id/id_module_13_title"
             android:id="@+id/id_module_13_view1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/id_module_13_view4"
             app:block_poster_height="@dimen/height_320px"
             app:block_poster_holder="@drawable/focus_816_320"
             app:block_poster_width="@dimen/width_816px"
