@@ -10,11 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -25,7 +23,6 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
 
@@ -41,7 +38,7 @@ import tv.newtv.cboxtv.annotation.BuyGoodsAD;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -198,11 +195,29 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen(boolean isLiving) {
-
+                        String definition = content.getDefinition();
+                        if (!TextUtils.isEmpty(definition)){
+                            if (definition.equals("HD")){//高清
+                                definition = "0";
+                            }
+                            if (definition.equals("SD")){//标清
+                                definition = "1";
+                            }
+                        }
+                        String chatTpe = content.getVipFlag();
+                        if (!TextUtils.isEmpty(chatTpe)){
+                            if (chatTpe.equals("1")||chatTpe.equals("3")||chatTpe.equals("4")){
+                                chatTpe = "1";
+                            }
+                        }
                         if (!isLiving){
                             LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
-                                    + ","+content.getContentID() + "," + content.getContentUUID() + "," +" " + ","+" "
-                                    + ","+content.getDuration() + ","+" " + ","+"0" + ","+ Constants.vodPlayId);
+                                    + ","+ADConfig.getInstance().getSeriesID() + ","
+                                    + ADConfig.getInstance().getProgramId()
+                                    + "," + chatTpe + ","+ definition
+                                    + ","+ADConfig.getInstance().getIntMillisDuration()
+                                    + ","+ NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() + ","+"0" + ","
+                                    + Constants.vodPlayId);
                         }
                         isFullScreenIng = false;
                     }
@@ -268,9 +283,28 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             case R.id.full_screen:
                                 if (System.currentTimeMillis() - lastClickTime >= 2000)
                                 {//判断距离上次点击小于2秒
+                                    String definition = content.getDefinition();
+                                    if (!TextUtils.isEmpty(definition)){
+                                        if (definition.equals("HD")){//高清
+                                            definition = "0";
+                                        }
+                                        if (definition.equals("SD")){//标清
+                                            definition = "1";
+                                        }
+                                    }
+                                    String chatTpe = content.getVipFlag();
+                                    if (!TextUtils.isEmpty(chatTpe)){
+                                        if (chatTpe.equals("1")||chatTpe.equals("3")||chatTpe.equals("4")){
+                                            chatTpe = "1";
+                                        }
+                                    }
                                     LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
-                                            + ","+content.getContentID() + "," + content.getContentUUID() + "," +" " + ","+" "
-                                            + ","+content.getDuration() + ","+" " + ","+"1" + ","+Constants.vodPlayId);
+                                            + ","+ADConfig.getInstance().getSeriesID() + ","
+                                            + ADConfig.getInstance().getProgramId()
+                                            + "," + chatTpe + ","+ definition
+                                            + ","+ADConfig.getInstance().getIntMillisDuration()
+                                            + ","+ NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() + ","+"1" + ","
+                                            + Constants.vodPlayId);
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);
