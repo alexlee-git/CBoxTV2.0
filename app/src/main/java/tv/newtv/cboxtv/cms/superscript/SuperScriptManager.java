@@ -684,6 +684,11 @@ public class SuperScriptManager implements CornerContract.View {
     @Override
     public void onCornerResult(@NotNull Context context, @Nullable String data) {
         try {
+            if(mPresenter != null){
+                mPresenter.destroy();
+                mPresenter = null;
+            }
+
             JSONObject json = new JSONObject(data);
 
             String updateTime = json.optString("updateTime");

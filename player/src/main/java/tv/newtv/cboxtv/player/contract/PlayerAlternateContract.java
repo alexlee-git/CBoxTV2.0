@@ -45,8 +45,8 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
  */
 public class PlayerAlternateContract {
     public interface View extends ICmsView {
-        void onAlternateResult(List<Alternate> alternateList, int currentPlayIndex, String title,
-                               String channelId);
+        void onAlternateResult(String alternateId,List<Alternate> alternateList, int
+                currentPlayIndex, String title, String channelId);
 
         void onAlternateTimeChange(String current, String end);
 
@@ -217,6 +217,11 @@ public class PlayerAlternateContract {
                                 if (result.isOk()) {
                                     mAlternateRefresh.attach(currentAlternateId);
                                     mAlternates = result.getData();
+                                    if(mAlternates != null && mAlternates.size()>0) {
+                                        for (Alternate alternate : mAlternates) {
+                                            alternate.setAd(result.isAd());
+                                        }
+                                    }
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
@@ -303,7 +308,7 @@ public class PlayerAlternateContract {
                     currentAlternate = mAlternates.get(currentPlayIndex);
                     playAlternateItem(currentAlternate);
                     if (getView() != null) {
-                        getView().onAlternateResult(mAlternates,
+                        getView().onAlternateResult(currentAlternateId,mAlternates,
                                 currentPlayIndex, title, channelId);
                     }
                 } else {

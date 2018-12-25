@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/width_720px"
-    android:layout_height="@dimen/height_262px"
+    android:layout_height="@dimen/height_245px"
     android:paddingLeft="@dimen/width_35px"
     android:paddingRight="@dimen/width_35px"
     android:focusable="true">
@@ -17,7 +17,7 @@
     <ImageView
         android:id="@+id/shooter_poster_onfocus"
         android:layout_width="@dimen/width_586px"
-        android:layout_height="@dimen/height_262px"
+        android:layout_height="@dimen/height_245px"
         android:background="@drawable/pos_zui"
         android:visibility="gone" />
 

@@ -107,8 +107,15 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         }
 
         mPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
-
         mPlayerFrameLayoutContainer = (FrameLayout) findViewById(R.id.player_view_container);
+        NewTVLauncherPlayerView newTVLauncherPlayerView = new NewTVLauncherPlayerView(this);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
+                .LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
+        newTVLauncherPlayerView.setLayoutParams(layoutParams);
+        newTVLauncherPlayerView.setFromFullScreen();
+        mPlayerFrameLayoutContainer.addView(newTVLauncherPlayerView,layoutParams);
+
+
 //        menuGroupPresenter = new MenuGroupPresenter2(this.getApplicationContext());
 //        rootView.addView(menuGroupPresenter.getRootView());
         Bundle extras;

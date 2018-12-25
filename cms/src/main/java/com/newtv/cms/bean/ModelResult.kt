@@ -37,6 +37,11 @@ class ModelResult<T> {
     val background: String? = null
     val description: String? = null
     val isAd: String? = null
+    get() {
+        if(field == null)
+            return "0"
+        return field
+    }
     val templateZT: String? = null
     var data: T? = null
     var total:Int?=0

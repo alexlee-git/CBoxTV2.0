@@ -233,10 +233,14 @@ public class NewTVLiveVideoPlayer implements ILiveVideoPlayerInterface {
                 icntvPlayerInfo.setAdModel(PlayerConfig.getInstance().getJumpAD());
             }
         }else{
-            if(videoDataStruct.isFirstAlternate()){
-                icntvPlayerInfo.setAdModel(Constants.AD_MODEL_NONE);
+            if(videoDataStruct.isCanRequestAd()) {
+                if (videoDataStruct.isFirstAlternate()) {
+                    icntvPlayerInfo.setAdModel(Constants.AD_MODEL_NONE);
+                } else {
+                    icntvPlayerInfo.setAdModel(Constants.AD_MODEL_CAROUSEL);
+                }
             }else{
-                icntvPlayerInfo.setAdModel(Constants.AD_MODEL_CAROUSEL);
+                icntvPlayerInfo.setAdModel(Constants.AD_MODEL_NONE);
             }
         }
         icntvPlayerInfo.setExtend(Utils.buildExtendString(PlayerConfig.getInstance().getColumnId

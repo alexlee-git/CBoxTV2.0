@@ -62,7 +62,7 @@ class PlayerLocation {
         if (mPlayerView == null || mContainer == null) return;
         Rect rect = new Rect();
         if (!mPlayerView.getLocalVisibleRect(rect)) return;
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mContainer
+        final ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mContainer
                 .getLayoutParams();
         int[] location = new int[2];
         mPlayerView.getLocationInWindow(location);
@@ -71,6 +71,12 @@ class PlayerLocation {
                 location[1]));
         layoutParams.leftMargin = -location[0];
         layoutParams.topMargin = -location[1];
-        mContainer.setLayoutParams(layoutParams);
+        mContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                mContainer.setLayoutParams(layoutParams);
+            }
+        });
+
     }
 }

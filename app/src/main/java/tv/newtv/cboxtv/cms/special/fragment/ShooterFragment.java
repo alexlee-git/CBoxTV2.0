@@ -255,12 +255,12 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         public ShooterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout
                     .shooter_item_layout, parent, false);
-            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view
-                    .getLayoutParams();
-            int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen
-                    .height_18px) * -1;
-            layoutParams.topMargin = space;
-            view.setLayoutParams(layoutParams);
+//            RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view
+//                    .getLayoutParams();
+//            int space = view.getContext().getResources().getDimensionPixelOffset(R.dimen
+//                    .height_18px) * -1;
+//            layoutParams.topMargin = space;
+//            view.setLayoutParams(layoutParams);
             return new ShooterViewHolder(view);
         }
 
