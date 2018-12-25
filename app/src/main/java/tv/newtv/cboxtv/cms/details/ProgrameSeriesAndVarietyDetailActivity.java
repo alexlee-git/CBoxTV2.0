@@ -10,11 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.newtv.cms.bean.Content;
@@ -25,7 +23,6 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
-import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ToastUtil;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +39,6 @@ import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -208,7 +204,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                 definition = "1";
                             }
                         }
-                        LogUtils.e("definition","definition : " + definition);
                         String chatTpe = content.getVipFlag();
                         if (!TextUtils.isEmpty(chatTpe)){
                             if (chatTpe.equals("1")||chatTpe.equals("3")||chatTpe.equals("4")){
