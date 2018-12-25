@@ -20,6 +20,7 @@ import com.newtv.cms.bean.Video;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.GlideUtil;
+import com.newtv.libs.util.LogUploadUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +30,6 @@ import java.util.List;
 
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.widget.NewTvRecycleAdapter;
 import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
@@ -51,6 +51,8 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     private View firstFocusView;
     private ImageView posterView;
     private String mPageUUID;
+    private String mBlockId;
+    private String mLayoutCode;
     private Program mProgram;
 
     private ContentContract.Presenter mContentPresenter;
@@ -68,8 +70,10 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         initialize(context, attrs, defStyle);
     }
 
-    public void setPageUUID(String uuid) {
+    public void setPageUUID(String uuid,String blockId,String layoutCode) {
         mPageUUID = uuid;
+        mBlockId = blockId;
+        mLayoutCode = layoutCode;
         mBlockPosterView.setPageUUID(mPageUUID);
     }
 
@@ -97,6 +101,27 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         findViewById(R.id.focus_layout).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_16);
+                if (mProgram instanceof Program) {
+                    logBuff.append(0)
+                            .append(",")
+                            .append(mBlockId)
+                            .append("+")
+                            .append(mLayoutCode)
+                            .append("+")
+                            .append((mProgram).getCellCode())
+                            .append(",")
+                            .append((mProgram).getL_id())
+                            .append(",")
+                            .append((mProgram).getL_contentType())
+                            .append(",")
+                            .append((mProgram).getL_actionType())
+                            .append(",")
+                            .append((mProgram).getL_actionUri())
+                            .trimToSize();
+                }
+                LogUploadUtils.uploadLog(Constant.LOG_NODE_RECOMMEND, logBuff
+                        .toString());
                 mBlockPosterView.dispatchClick();
             }
         });
