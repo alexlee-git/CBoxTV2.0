@@ -535,6 +535,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mLiveListener = null;
 
+        if(defaultConfig != null){
+            defaultConfig.release();
+        }
+        defaultConfig = null;
         mNewTVLauncherPlayer = null;
         mNewTVLauncherPlayerSeekbar = null;
 
@@ -866,7 +870,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         return this.getWidth() == ScreenUtils.getScreenW() && this.getHeight() == ScreenUtils
                 .getScreenH();
     }
-
 
     public boolean isReleased() {
         return isReleased;
@@ -2346,6 +2349,22 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         ViewParent parentViewGroup;      //父级容器
         private AlternateCallback alternateCallback;
         private Alternate currentAlternate;
+
+        public void release(){
+            layoutParams = null;
+            defaultFocusView = null;
+            playerCallback = null;
+            playCenter = null;
+            if(widgetMap!=null){
+                widgetMap.clear();
+                widgetMap = null;
+            }
+            programSeriesInfo = null;
+            videoFrameLayout = null;
+            parentViewGroup = null;
+            alternateCallback = null;
+            currentAlternate = null;
+        }
 
         public boolean isFullScreen() {
             return startIsFullScreen || isFullScreen;
