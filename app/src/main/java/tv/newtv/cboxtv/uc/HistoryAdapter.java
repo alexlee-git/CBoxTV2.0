@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -115,7 +114,9 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
             String score = entity.getGrade();
             if (!TextUtils.isEmpty(score) && !TextUtils.equals(score, "null") && !TextUtils.equals(score, "0.0") && !TextUtils.equals(score, "0")) {
                 viewHolder.mScore.setText(entity.getGrade());
+                viewHolder.mScore.setVisibility(View.VISIBLE);
             } else {
+                viewHolder.mScore.setText("");
                 viewHolder.mScore.setVisibility(View.INVISIBLE);
             }
             // 观看进度
@@ -124,14 +125,15 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
 
             // 更新剧集
             if (!TextUtils.isEmpty(entity.getRecentMsg()) && !TextUtils.equals(entity.getRecentMsg(), "null")) {
-                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(entity.getRecentMsg());
-                if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                    viewHolder.mEpisode.setText(spannableRecentMsg);
+                CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(entity.getRecentMsg());
+                if (!TextUtils.isEmpty(charSequenceRecentMsg)) {
+                    viewHolder.mEpisode.setVisibility(View.VISIBLE);
+                    viewHolder.mEpisode.setText(charSequenceRecentMsg);
                 } else {
                     viewHolder.mEpisode.setText("");
                     viewHolder.mEpisode.setVisibility(View.INVISIBLE);
                 }
-            }else{
+            } else {
                 viewHolder.mEpisode.setText("");
                 viewHolder.mEpisode.setVisibility(View.INVISIBLE);
             }

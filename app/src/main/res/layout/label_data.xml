@@ -50,8 +50,8 @@
         android:layout_height="@dimen/height_30px"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="@dimen/width_39px"
-        android:layout_marginTop="@dimen/height_360px"
-        android:background="#99000000"
+        android:layout_marginTop="@dimen/height_350px"
+        android:background="@drawable/update_item_black_bg"
         android:includeFontPadding="false"
         android:visibility="invisible"/>
     <!--评分-->
@@ -62,7 +62,7 @@
         android:layout_height="@dimen/height_30px"
         android:layout_marginLeft="@dimen/width_220px"
         android:layout_marginTop="@dimen/height_350px"
-        android:background="#99000000"
+        android:background="@drawable/update_item_black_bg"
         android:includeFontPadding="false"
         android:visibility="invisible" />
 

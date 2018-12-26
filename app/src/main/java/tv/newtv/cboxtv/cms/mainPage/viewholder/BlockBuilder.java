@@ -242,7 +242,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     layoutList.remove(frameLayoutId);
                     frameLayout.setVisibility(View.VISIBLE);
                     if (frameLayout instanceof AlternatePageView) {
-                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID);
+                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID, moduleItem.getBlockId(), layoutCode);
                         ((AlternatePageView) frameLayout).setProgram(moduleItem);
                         return;
                     }

@@ -26,7 +26,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
+import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.PlayerUrlConfig;
+import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -36,7 +38,7 @@ import tv.newtv.player.R;
  */
 @BuyGoodsAD
 public class NewTVLauncherPlayerActivity extends BaseActivity implements ContentContract
-        .LoadingView {
+        .LoadingView, LiveListener {
 
     private static String TAG = "NewTVLauncherPlayerActivity";
     NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
@@ -46,6 +48,14 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
     private String contentUUID;
     private String contentType;
+
+
+    private static final int PLAY_TYPE_LIVE = 0;
+    private static final int PLAY_TYPE_VOD = 1;
+    private static final int PLAY_TYPE_ALTERNATE = 2;
+    private static final int PLAY_TYPE_UNKNOWN = -1;
+
+    private int PLAY_TYPE = PLAY_TYPE_UNKNOWN;
 
 
     private View loadingView;
@@ -116,8 +126,6 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         mPlayerFrameLayoutContainer.addView(newTVLauncherPlayerView,layoutParams);
 
 
-//        menuGroupPresenter = new MenuGroupPresenter2(this.getApplicationContext());
-//        rootView.addView(menuGroupPresenter.getRootView());
         Bundle extras;
         if (savedInstanceState == null) {
             extras = getIntent().getExtras();
@@ -133,7 +141,15 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                 return;
             }
 
-            if (!Constant.CONTENTTYPE_LB.equals(contentType)) {
+            if(Constant.CONTENTTYPE_LB.equals(contentType)){
+                PLAY_TYPE = PLAY_TYPE_ALTERNATE;
+            }else if(Constant.CONTENTTYPE_LV.equals(contentType)){
+                PLAY_TYPE = PLAY_TYPE_LIVE;
+            }else{
+                PLAY_TYPE = PLAY_TYPE_VOD;
+            }
+
+            if (PLAY_TYPE == PLAY_TYPE_VOD) {
                 mPresenter.getContent(contentUUID, true, contentType);
             } else {
                 mPresenter.getContent(contentUUID, false, contentType);
@@ -246,11 +262,9 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         mProgramSeriesInfo = content;
-        if (content == null || !(Constant.CONTENTTYPE_CP.equals(content.getContentType()) ||
-                Constant.CONTENTTYPE_PG
-                        .equals(content.getContentType()) || Constant.CONTENTTYPE_LB.equals(content
-                .getContentType()))
-                && (content.getData() == null || content.getData().size() == 0)) {
+        if (content == null || (PLAY_TYPE == PLAY_TYPE_VOD &&
+                (content.getData() == null
+                        || content.getData().size() == 0))) {
             Toast.makeText(this, "节目内容为空", Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -266,13 +280,24 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     private void doPlay(Content content) {
         initListener();
         if (!isFinishing()) {
-            if (!Constant.CONTENTTYPE_LB.equals(content.getContentType())) {
+            if (PLAY_TYPE == PLAY_TYPE_VOD) {
                 NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay,
                         playPostion);
                 mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();
-            } else {
+            } else if(PLAY_TYPE == PLAY_TYPE_ALTERNATE) {
                 NewTVLauncherPlayerViewManager.getInstance().changeAlternate(content.getContentID(),
                         content.getAlternateNumber(), content.getTitle());
+            }else if(PLAY_TYPE == PLAY_TYPE_LIVE){
+                LiveInfo liveInfo = new LiveInfo();
+                liveInfo.setLiveUrl(content.getPlayUrl());
+                liveInfo.setContentUUID(content.getContentUUID());
+                liveInfo.setAlwaysPlay(true);
+                liveInfo.setmTitle(content.getTitle());
+                NewTVLauncherPlayerViewManager.getInstance().playLive(liveInfo,this);
+            }else{
+                Toast.makeText(this, "不支持的节目类型", Toast.LENGTH_LONG).show();
+                finish();
+                return;
             }
             if (mPlayerFrameLayoutContainer != null) {
                 NewTVLauncherPlayerViewManager.getInstance().setPlayerViewContainer
@@ -307,6 +332,16 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
     @Override
     public void loadComplete() {
+
+    }
+
+    @Override
+    public void onTimeChange(String current, String end) {
+
+    }
+
+    @Override
+    public void onComplete() {
 
     }
 }

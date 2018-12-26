@@ -39,6 +39,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TimeUtil;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectDataSource;
 import tv.newtv.cboxtv.uc.v2.data.collection.CollectRemoteDataSource;
@@ -187,7 +188,7 @@ public class UserCenterRecordManager {
                         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
                             procAddHistoryRecord(userId, context, token, bundle, info, dbCallback);
                         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
-                            procAddCarouselPlayRecord(userId, token, bundle, dbCallback);
+                            procAddCarouselPlayRecord(userId, token, context, bundle, dbCallback);
                         } else {
                             Log.e(TAG, "unresolved record type : " + type);
                         }
@@ -242,7 +243,10 @@ public class UserCenterRecordManager {
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_HISTORY) {
             procDeleteHistoryRecord(dataUserId, context, contentID, contentType, dbCallback);
         } else if (type == USER_CENTER_RECORD_TYPE.TYPE_LUNBO) {
-            procDeleteCarouselChannelRecord(contentID, dbCallback);
+            Bundle bundle = new Bundle();
+            bundle.putString(DBConfig.CONTENT_ID, contentID);
+            bundle.putString(DBConfig.CONTENTTYPE, contentType);
+            procDeleteCarouselChannelRecord(context, bundle, dbCallback);
         }
     }
 
@@ -274,7 +278,8 @@ public class UserCenterRecordManager {
                 progress = "0";
             }
             bundle.putString(DBConfig.PLAY_PROGRESS, progress);
-
+            //2018.12.21 wqs 防止插入时间有误，统一插入时间
+            bundle.putString(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis() + "");
             String tableName = "";
             if (TextUtils.isEmpty(token)) { // 如果用户未登录
                 tableName = DBConfig.HISTORY_TABLE_NAME;
@@ -314,7 +319,7 @@ public class UserCenterRecordManager {
         } else {
             tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) { // 依据同步开关状态判断是否需上报用户中心服务端
-                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).addRemoteCollect(packageData(bundle));
+                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).addRemoteCollect("0", packageData(bundle));
             }
         }
 
@@ -338,9 +343,19 @@ public class UserCenterRecordManager {
         Log.d(TAG, "proAddFollow add follow complete, tableName : " + tableName + ", userId : " + userId + ", name : " + info.getTitle());
     }
 
-    private void procAddCarouselPlayRecord(String userId, String token, Bundle bundle, DBCallback<String> callback) {
-        String tableName = DBConfig.LB_COLLECT_TABLE_NAME;
+    private void procAddCarouselPlayRecord(String userId, String token, Context context, Bundle bundle, DBCallback<String> callback) {
+        String tableName = "";
+        if (TextUtils.isEmpty(token)) { // 如果用户未登录
+            tableName = DBConfig.LB_COLLECT_TABLE_NAME;
+        } else {
+            tableName = DBConfig.REMOTE_LB_COLLECT_TABLE_NAME;
+            if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) { // 依据同步开关状态判断是否需上报用户中心服务端
+                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).addRemoteCollect("1", packageData(bundle));
+            }
+        }
+
         DBUtil.addCarouselChannelRecord(userId, tableName, bundle, callback);
+        Log.d(TAG, "procAddCarouselPlayRecord add collection complete, tableName : " + tableName + ", userId : " + userId);
     }
 
 
@@ -410,9 +425,19 @@ public class UserCenterRecordManager {
         Log.d(TAG, "procDeleteHistoryRecord delete history complete, userId : " + userId + ", id : " + contentID);
     }
 
-    private void procDeleteCarouselChannelRecord(String contentID, DBCallback<String> callback) {
-        Log.d(TAG, "procDeleteCarouselChannelRecord contentid : " + contentID);
-        DBUtil.deleteCarouselChannelRecord(contentID, callback);
+    private void procDeleteCarouselChannelRecord(Context context, Bundle bundle, DBCallback<String> callback) {
+        String contentID = bundle.getString(DBConfig.CONTENT_ID);
+        String token = SharePreferenceUtils.getToken(context);
+        if (TextUtils.isEmpty(token)) {
+            DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, callback, DBConfig.LB_COLLECT_TABLE_NAME);
+        } else {
+            if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
+                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect("1", packageData(bundle));
+            }
+
+            Log.d(TAG, "登录用户, 删除远程收藏表数据, contentID : " + contentID);
+            DBUtil.deleteCarouselChannelRecord(SharePreferenceUtils.getUserId(LauncherApplication.AppContext), contentID, callback, DBConfig.REMOTE_LB_COLLECT_TABLE_NAME);
+        }
     }
 
     private void procDeleteCollectionRecord(Context context, Bundle bundle, DBCallback<String> callback) {
@@ -422,7 +447,7 @@ public class UserCenterRecordManager {
             DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, callback, DBConfig.COLLECT_TABLE_NAME);
         } else {
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
-                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect(packageData(bundle));
+                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect("0", packageData(bundle));
             }
 
             Log.d(TAG, "登录用户, 删除远程表数据, contentID : " + contentID);
@@ -484,9 +509,14 @@ public class UserCenterRecordManager {
                 .getRemoteHistoryList(token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
     }
 
-    public void getRemoteCollectionList(Context context, String token, String userId, String offset, String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback) {
+    public void getRemoteCollectionList(String collectType, Context context, String token, String userId, String offset, String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback) {
         CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
-                .getRemoteCollectList(token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
+                .getRemoteCollectList(collectType, token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
+    }
+
+    public void getRemoteLbCollectionList(String collectType, Context context, String token, String userId, String offset, String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback) {
+        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
+                .getRemoteLbCollectList(collectType, token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
     }
 
     public void getRemoteFollowList(Context context, String token, String userId, String offset, String limit, FollowDataSource.GetFollowListCallback callback) {
@@ -514,9 +544,9 @@ public class UserCenterRecordManager {
                 .addRemoteHistoryList(token, userId, beanList, callback);
     }
 
-    public void addRemoteCollectList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, CollectDataSource.AddRemoteCollectListCallback callback) {
+    public void addRemoteCollectList(String collectType, Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, CollectDataSource.AddRemoteCollectListCallback callback) {
         CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
-                .addRemoteCollectList(token, userId, beanList, callback);
+                .addRemoteCollectList(collectType, token, userId, beanList, callback);
     }
 
     public void addRemoteFollowList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, FollowRemoteDataSource.AddRemoteFollowListCallback callback) {
@@ -557,6 +587,44 @@ public class UserCenterRecordManager {
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             DBUtil.PutCollect(userId, info, bundle, callback, tableName);
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "wqs:addCollectToDataBase:Exception:" + e.toString());
+        }
+    }
+
+    /**
+     * 批量插入数据至数据库
+     */
+    public void addLbCollectToDataBase(final String userId, final List<UserCenterPageBean.Bean> list, final DBCallback<String> callback, final String tableName) {
+        try {
+            if (list != null) {
+                DBUtil.clearTableAll(tableName, new DBCallback<String>() {
+                    @Override
+                    public void onResult(int code, String result) {
+                        Log.d(TAG, "wqs:addCollectToDataBase:clear:code:" + code);
+                        Iterator<UserCenterPageBean.Bean> iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            UserCenterPageBean.Bean bean = iterator.next();
+                            Bundle bundle = new Bundle();
+                            bundle.putString(DBConfig.CONTENTUUID, bean.get_contentuuid());
+                            bundle.putString(DBConfig.CONTENT_ID, bean.getContentId());
+                            bundle.putString(DBConfig.TITLE_NAME, bean.get_title_name());
+                            bundle.putString(DBConfig.IS_FINISH, bean.getIs_finish());
+                            bundle.putString(DBConfig.REAL_EXCLUSIVE, bean.getReal_exclusive());
+                            bundle.putString(DBConfig.ISSUE_DATE, bean.getIssue_date());
+                            bundle.putString(DBConfig.LAST_PUBLISH_DATE, bean.getLast_publish_date());
+                            bundle.putString(DBConfig.SUB_TITLE, bean.getSub_title());
+                            bundle.putString(DBConfig.V_IMAGE, bean.getV_image());
+                            bundle.putString(DBConfig.H_IMAGE, bean.getH_image());
+                            bundle.putString(DBConfig.VIP_FLAG, bean.getVip_flag());
+                            bundle.putString(DBConfig.CONTENTTYPE, bean.get_contenttype());
+                            bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
+                            DBUtil.addCarouselChannelRecord(userId, tableName, bundle, callback);
                         }
                     }
                 });
@@ -695,9 +763,11 @@ public class UserCenterRecordManager {
     public int currentHistoryIndex = 1;//历史记录当前插入数据完成的个数
     public int currentSubIndex = 1;//订阅列表当前插入数据完成的个数
     public int currentCollectIndex = 1;//收藏列表当前插入数据完成的个数
+    public int currentLbCollectIndex = 1;//轮播收藏列表当前插入数据完成的个数
     public int currentFollowIndex = 1;//关注列表当前插入数据完成的个数
     private boolean getHistoryRecordComplete = false;//获取历史记录完成状态
     private boolean getCollectionRecordComplete = false;//获取收藏记录完成状态
+    private boolean getLbCollectionRecordComplete = false;//获取轮播收藏记录完成状态
     private boolean getFollowRecordComplete = false;//获取关注记录完成状态
     private boolean getSubscribeRecordComplete = false;//获取订阅记录完成状态
 
@@ -713,10 +783,12 @@ public class UserCenterRecordManager {
         currentSubIndex = 1;
         currentCollectIndex = 1;
         currentFollowIndex = 1;
+        currentLbCollectIndex = 1;
         getHistoryRecordComplete = false;
         getCollectionRecordComplete = false;
         getFollowRecordComplete = false;
         getSubscribeRecordComplete = false;
+        getLbCollectionRecordComplete = false;
         QueryUserStatusUtil.getInstance().getLoginStatus(context, new INotifyLoginStatusCallback() {
             @Override
             public void notifyLoginStatusCallback(boolean status) {
@@ -741,7 +813,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_HISTORY_TABLE_NAME);
                                 } else {
-                                    getHistoryRecordComplete = true;
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_HISTORY_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getHistoryRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -767,7 +846,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
                                 } else {
-                                    getSubscribeRecordComplete = true;
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getSubscribeRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -776,7 +862,7 @@ public class UserCenterRecordManager {
 
                             }
                         });
-                        getRemoteCollectionList(context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
+                        getRemoteCollectionList("0", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
                             @Override
                             public void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize) {
                                 Log.d(TAG, "wqs:CollectList.size():" + totalSize);
@@ -793,7 +879,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_COLLECT_TABLE_NAME);
                                 } else {
-                                    getCollectionRecordComplete = true;
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_COLLECT_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getCollectionRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -819,7 +912,47 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_ATTENTION_TABLE_NAME);
                                 } else {
-                                    getFollowRecordComplete = true;
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_ATTENTION_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getFollowRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onDataNotAvailable() {
+
+                            }
+                        });
+                        getRemoteLbCollectionList("1", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
+                            @Override
+                            public void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize) {
+                                Log.d(TAG, "wqs:LbCollectList.size():" + totalSize);
+                                if (CollectList != null && CollectList.size() > 0) {
+                                    addLbCollectToDataBase(userId, CollectList, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            Log.d(TAG, "wqs:currentLbCollectIndex:" + currentLbCollectIndex);
+                                            if (currentLbCollectIndex == totalSize) {
+                                                getLbCollectionRecordComplete = true;
+                                                getUserBehaviorComplete(context);
+                                            }
+                                            currentLbCollectIndex++;
+                                        }
+                                    }, DBConfig.REMOTE_LB_COLLECT_TABLE_NAME);
+                                } else {
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_LB_COLLECT_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getLbCollectionRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -841,11 +974,11 @@ public class UserCenterRecordManager {
     //数据获取完成，向用户中心首页发送广播
     private void getUserBehaviorComplete(Context context) {
         if (getHistoryRecordComplete && getCollectionRecordComplete
-                && getFollowRecordComplete && getSubscribeRecordComplete) {
+                && getFollowRecordComplete && getSubscribeRecordComplete && getLbCollectionRecordComplete) {
             Log.d(TAG, "wqs:getUserBehaviorComplete:sendBroadcast");
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("action.uc.data.sync.complete"));
         } else {
-            Log.d(TAG, "wqs:getUserBehaviorComplete:error");
+            Log.e(TAG, "wqs:getUserBehaviorComplete:error");
         }
 
     }
@@ -861,13 +994,14 @@ public class UserCenterRecordManager {
 
     private boolean AddHistoryRecordComplete = false;//批量上报历史记录数据至远程数据库完成状态
     private boolean AddCollectionRecordComplete = false;//批量上报收藏记录数据至远程数据库完成状态
+    private boolean AddLbCollectionRecordComplete = false;//批量上报轮播收藏记录数据至远程数据库完成状态
     private boolean AddFollowRecordComplete = false;//批量上报关注记录数据至远程数据库完成状态
     private boolean AddSubscribeRecordComplete = false;//批量上报订阅记录数据至远程数据库完成状态
 
     //数据批量上报完成，下一步获取云端数据库数据同步到本地数据库中
     private void AddUserBehaviorListComplete(Context context) {
         if (AddHistoryRecordComplete && AddCollectionRecordComplete
-                && AddFollowRecordComplete && AddSubscribeRecordComplete) {
+                && AddFollowRecordComplete && AddSubscribeRecordComplete && AddLbCollectionRecordComplete) {
             Log.d(TAG, "wqs:AddUserBehaviorListComplete:complete");
             getUserBehavior(context, UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
         } else {
@@ -886,6 +1020,8 @@ public class UserCenterRecordManager {
         final String tableNameSubscribe = DBConfig.SUBSCRIBE_TABLE_NAME;
         //收藏数据表表名
         final String tableNameCollect = DBConfig.COLLECT_TABLE_NAME;
+        //轮播收藏数据表表名
+        final String tableNameLbCollect = DBConfig.LB_COLLECT_TABLE_NAME;
         //历史记录数据表表名
         final String tableNameHistory = DBConfig.HISTORY_TABLE_NAME;
         //关注数据表表名
@@ -924,7 +1060,7 @@ public class UserCenterRecordManager {
                                     Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                                     }.getType();
                                     List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
-                                    addRemoteCollectList(context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
+                                    addRemoteCollectList("0", context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
                                         @Override
                                         public void onAddRemoteCollectListComplete(int totalSize) {
                                             Log.e(TAG, "wqs:onAddRemoteCollectListComplete:size:" + totalSize);
@@ -973,6 +1109,25 @@ public class UserCenterRecordManager {
                                 }
                             }
                         });
+                        queryDataBase(tableNameLbCollect, new DBCallback<String>() {
+                            @Override
+                            public void onResult(int code, String result) {
+                                if (code == 0) {
+                                    Gson mGson = new Gson();
+                                    Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                                    }.getType();
+                                    List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
+                                    addRemoteCollectList("1", context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
+                                        @Override
+                                        public void onAddRemoteCollectListComplete(int totalSize) {
+                                            Log.e(TAG, "wqs:onAddLbRemoteCollectListComplete:size:" + totalSize);
+                                            AddLbCollectionRecordComplete = true;
+                                            AddUserBehaviorListComplete(context);
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -1014,6 +1169,15 @@ public class UserCenterRecordManager {
         pageBean.setPlayId(bundle.getString(DBConfig.PLAYID));
         pageBean.setProgramChildName(bundle.getString(DBConfig.PROGRAM_CHILD_NAME));
         pageBean.setContentId(bundle.getString(DBConfig.CONTENT_ID));
+        pageBean.setIs_finish(bundle.getString(DBConfig.IS_FINISH));
+        pageBean.setReal_exclusive(bundle.getString(DBConfig.REAL_EXCLUSIVE));
+        pageBean.setIssue_date(bundle.getString(DBConfig.ISSUE_DATE));
+        pageBean.setLast_publish_date(bundle.getString(DBConfig.LAST_PUBLISH_DATE));
+        pageBean.setSub_title(bundle.getString(DBConfig.SUB_TITLE));
+        pageBean.setV_image(bundle.getString(DBConfig.V_IMAGE));
+        pageBean.setH_image(bundle.getString(DBConfig.H_IMAGE));
+        pageBean.setVip_flag(bundle.getString(DBConfig.VIP_FLAG));
+        pageBean.setAlternate_number(bundle.getString(DBConfig.ALTERNATE_NUMBER));
         return pageBean;
     }
 
@@ -1517,7 +1681,7 @@ public class UserCenterRecordManager {
     }
 
     //用户中心扩展字段转json格式的String数据
-    public String setExtendJsonString(int versionCode) {
+    public String setExtendJsonString(int versionCode, UserCenterPageBean.Bean bean) {
         try {
             String extend = "";
             Gson gson = new Gson();
@@ -1527,7 +1691,17 @@ public class UserCenterRecordManager {
             } else {
                 userCenterExtendBean.setVersionCode("");
             }
-
+            if (bean != null) {
+                userCenterExtendBean.setIs_finish(bean.getIs_finish());
+                userCenterExtendBean.setReal_exclusive(bean.getReal_exclusive());
+                userCenterExtendBean.setIssue_date(bean.getIssue_date());
+                userCenterExtendBean.setLast_publish_date(bean.getLast_publish_date());
+                userCenterExtendBean.setSub_title(bean.getSub_title());
+                userCenterExtendBean.setV_image(bean.getV_image());
+                userCenterExtendBean.setH_image(bean.getH_image());
+                userCenterExtendBean.setVip_flag(bean.getVip_flag());
+                userCenterExtendBean.setAlternate_number(bean.getAlternate_number());
+            }
             if (userCenterExtendBean != null) {
                 extend = gson.toJson(userCenterExtendBean);
             }

@@ -67,7 +67,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
 
         if (Constant.CONTENTTYPE_FG.equals(type) || Constant.CONTENTTYPE_CR.equals(type)) {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
         }
         long updateTime;
         if (bean.getUpdateTime() > 0) {
@@ -77,7 +77,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
@@ -95,7 +95,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         bean.get_imageurl(),
                         bean.get_contenttype(),
                         bean.get_actiontype(),
-                        bean.getContentId(), updateTime, extend
+                        bean.get_contentuuid(), updateTime, extend
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -175,8 +175,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
-        String programset_id = bean.get_contentuuid();
-        String contentID = bean.getContentId();
+        String programset_id = bean.getContentId();
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
                 .deleteFollow(Authorization,
@@ -184,7 +183,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        "", contentID)
+                        programset_id, "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
@@ -248,13 +247,14 @@ public class FollowRemoteDataSource implements FollowDataSource {
                                 entity = new UserCenterPageBean.Bean();
 
                                 String contentType = item.optString("content_type");
-
+                                String contentID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    entity.set_contentuuid(item.optString("program_child_id"));
+                                    contentID = item.optString("program_child_id");
                                 } else {
-                                    entity.set_contentuuid(item.optString("programset_id"));
+                                    contentID = item.optString("programset_id");
                                 }
-                                entity.setContentId(item.optString("content_id"));
+                                entity.setContentId(contentID);
+                                entity.set_contentuuid(item.optString("content_uuid"));
                                 entity.set_contenttype(contentType);
                                 entity.setPlayId(item.optString("program_child_id"));
                                 entity.set_title_name(item.optString("programset_name"));
@@ -321,7 +321,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
 
         if (Constant.CONTENTTYPE_FG.equals(type) || Constant.CONTENTTYPE_CR.equals(type)) {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
         }
         long updateTime;
         if (bean.getUpdateTime() > 0) {
@@ -331,7 +331,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
@@ -345,7 +345,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         bean.get_imageurl(),
                         bean.get_contenttype(),
                         bean.get_actiontype(),
-                        bean.getContentId(), updateTime, extend
+                        bean.get_contentuuid(), updateTime, extend
                 )
                 .subscribe(new Observer<ResponseBody>() {
                     @Override

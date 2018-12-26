@@ -68,15 +68,14 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         String type = entity.get_contenttype();
         if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
-            subId = entity.get_contentuuid();
+            subId = entity.getContentId();
         } else {
             mType = "0";
-            parentId = entity.get_contentuuid();
+            parentId = entity.getContentId();
             subId = entity.getPlayId();
         }
-
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String userId = SharePreferenceUtils.getUserId(mContext);
         Log.d(TAG, "report history item, user_id " + userId + ", content_id : " + entity.getContentId());
@@ -92,7 +91,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         userId,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        /*entity.get_contentuuid()*/parentId,
+                        /*entity.getContentId()*/parentId,
                         entity.get_title_name(),
                         mType,
                         entity.get_imageurl(),
@@ -111,7 +110,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         entity.getPlayIndex(),
                         entity.get_actiontype(),
                         entity.getProgramChildName(),
-                        entity.getContentId(), updateTime, extend)
+                        entity.get_contentuuid(), updateTime, extend)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -196,15 +195,6 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                 });
     }
 
-//    private void uploadEnterLog(String contentUUID) {
-//        //添加历史记录
-//        StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
-//        dataBuff.append(0 + ",")
-//                .append(contentUUID)
-//                .trimToSize();
-//
-//        LogUtil.getInstance().logUpLoad(Constant.LOG_NODE_HISTORY, dataBuff.toString());
-//    }
 
     @Override
     public void deleteRemoteHistory(String token, @NonNull String userId, String contentType, String appKey, String channelCode, String contentID) {
@@ -234,7 +224,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
                         program_child,
-                        "", content_id)
+                        content_id, "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -320,13 +310,15 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                 item = list.optJSONObject(i);
                                 entity = new UserCenterPageBean.Bean();
                                 String contentType = item.optString("content_type");
-
+                                String contentID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    entity.set_contentuuid(item.optString("program_child_id"));
+                                    contentID = item.optString("program_child_id");
                                 } else {
-                                    entity.set_contentuuid(item.optString("programset_id"));
+                                    contentID = item.optString("programset_id");
                                 }
-                                entity.setContentId(item.optString("content_id"));
+                                entity.setContentId(contentID);
+                                Log.e(TAG, "wqs:entity.getContentId:" + contentID);
+                                entity.set_contentuuid(item.optString("content_uuid"));
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
@@ -417,10 +409,10 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
         String type = bean.get_contenttype();
         if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
-            subId = bean.get_contentuuid();
+            subId = bean.getContentId();
         } else {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
             subId = bean.getPlayId();
         }
         long updateTime;
@@ -430,7 +422,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
             updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
         }
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
@@ -438,7 +430,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         userID,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        /*bean.get_contentuuid()*/parentId,
+                        /*bean.getContentId()*/parentId,
                         bean.get_title_name(),
                         mType,
                         bean.get_imageurl(),
@@ -457,7 +449,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
-                        bean.getContentId(), updateTime, extend)
+                        bean.get_contentuuid(), updateTime, extend)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
