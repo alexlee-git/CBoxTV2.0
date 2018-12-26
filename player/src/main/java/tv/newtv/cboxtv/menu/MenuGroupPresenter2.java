@@ -24,7 +24,6 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
-import com.newtv.libs.db.DataSupport;
 import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.SystemUtils;
@@ -1098,23 +1097,19 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void searchLbCollect(final Node node, final boolean reset) {
-        DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
-                .condition()
-                .OrderBy(DBConfig.ORDER_BY_TIME)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, String result) {
-                        if (code == 0 && !TextUtils.isEmpty(result)) {
-                            Gson gson = new Gson();
-                            Type type = new TypeToken<List<DBLastNode>>() {
-                            }.getType();
-                            List<DBLastNode> list = gson.fromJson(result, type);
-                            List<LastNode> lastNodeList = DBLastNode.converLastNode(list);
-                            node.addChild(lastNodeList, reset);
-                        }
-                    }
-                }).excute();
+        Player.get().getUserRecords("lbCollect", new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                if (code == 0 && !TextUtils.isEmpty(result)) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<List<DBLastNode>>() {
+                    }.getType();
+                    List<DBLastNode> list = gson.fromJson(result, type);
+                    List<LastNode> lastNodeList = DBLastNode.converLastNode(list);
+                    node.addChild(lastNodeList, reset);
+                }
+            }
+        });
     }
 
     private void refreshLbNode() {
@@ -1125,24 +1120,19 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private void searchLbHistory(final Node node) {
-        DataSupport.search(DBConfig.HISTORY_TABLE_NAME)
-                .condition()
-                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
-                .OrderBy(DBConfig.ORDER_BY_TIME)
-                .build()
-                .withCallback(new DBCallback<String>() {
-                    @Override
-                    public void onResult(int code, final String result) {
-                        Log.e(TAG, "request local data complete result : " + result);
-                        if (code == 0 && !TextUtils.isEmpty(result)) {
-                            Gson gson = new Gson();
-                            Type type = new TypeToken<List<DBProgram>>() {
-                            }.getType();
-                            List<DBProgram> list = gson.fromJson(result, type);
-                            setLbNode(list, node);
-                        }
-                    }
-                }).excute();
+        Player.get().getUserRecords("lbHistory", new DBCallback<String>() {
+            @Override
+            public void onResult(int code, String result) {
+                Log.e(TAG, "request local data complete result : " + result);
+                if (code == 0 && !TextUtils.isEmpty(result)) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<List<DBProgram>>() {
+                    }.getType();
+                    List<DBProgram> list = gson.fromJson(result, type);
+                    setLbNode(list, node);
+                }
+            }
+        });
     }
 
     private void setLbNode(List<DBProgram> list, Node parent) {

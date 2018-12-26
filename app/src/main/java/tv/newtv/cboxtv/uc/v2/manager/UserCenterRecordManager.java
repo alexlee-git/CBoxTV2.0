@@ -1626,12 +1626,20 @@ public class UserCenterRecordManager {
                 tableName = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
                 userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
             }
-        } else if (TextUtils.equals(type, "history")) {
+        } else if (TextUtils.equals(type, "history") || TextUtils.equals(type,"lbHistory")) {
             if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
                 tableName = DBConfig.HISTORY_TABLE_NAME;
                 userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
             } else {
                 tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
+                userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
+            }
+        } else if(TextUtils.equals(type,"lbCollect")) {
+            if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
+                tableName = DBConfig.LB_COLLECT_TABLE_NAME;
+                userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
+            } else {
+                tableName = DBConfig.REMOTE_LB_COLLECT_TABLE_NAME;
                 userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
             }
         } else {
@@ -1646,6 +1654,9 @@ public class UserCenterRecordManager {
                 .OrderBy(DBConfig.ORDER_BY_TIME);
         if (TextUtils.equals(type, "history")) {
             sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
+        }
+        if(TextUtils.equals(type,"lbHistory")){
+            sqlCondition.eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
         sqlCondition.build().withCallback(dbCallback).excute();
     }
