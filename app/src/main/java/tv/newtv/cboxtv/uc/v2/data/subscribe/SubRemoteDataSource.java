@@ -67,7 +67,7 @@ public class SubRemoteDataSource implements SubDataSource {
 
         if (Constant.CONTENTTYPE_CL.equals(type) || Constant.CONTENTTYPE_TV.equals(type)) {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
             subId = bean.getPlayId();
         }
         long updateTime;
@@ -102,7 +102,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
-                        bean.getContentId(), updateTime, extend
+                        bean.get_contentuuid(), updateTime, extend
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -184,8 +184,7 @@ public class SubRemoteDataSource implements SubDataSource {
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
         Log.e("UserId", User_id + "");
-        String programset_ids = bean.get_contentuuid();
-        String contentID = bean.getContentId();
+        String programset_ids = bean.getContentId();
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
                 .deleteSubscribes(Authorization,
@@ -193,7 +192,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        "", contentID)
+                        programset_ids, "")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResponseBody>() {
@@ -257,21 +256,14 @@ public class SubRemoteDataSource implements SubDataSource {
 
 
                                 String contentType = item.optString("content_type");
-                                String contentUUID;
+                                String contentID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    contentUUID = item.optString("program_child_id");
+                                    contentID = item.optString("program_child_id");
                                 } else {
-                                    contentUUID = item.optString("programset_id");
+                                    contentID = item.optString("programset_id");
                                 }
-                                entity.set_contentuuid(contentUUID);
-//                                //2018.12.25 wqs 兼容2.0版本用户行为数据
-//                                String contentID = item.optString("content_id");
-//                                if (!TextUtils.isEmpty(contentID)) {
-//                                    entity.setContentId(contentID);
-//                                } else {
-//                                    entity.setContentId(contentUUID);
-//                                }
-                                entity.setContentId(item.optString("content_id"));
+                                entity.setContentId(contentID);
+                                entity.set_contentuuid(item.optString("content_uuid"));
                                 Log.d(TAG, "getRemoteSubscribeList contentId : " + entity.getContentId() + ", contentuuid : " + entity.get_contentuuid());
                                 entity.set_contenttype(contentType);
                                 entity.setPlayId(item.optString("program_child_id"));
@@ -340,7 +332,7 @@ public class SubRemoteDataSource implements SubDataSource {
         String extend = "";
         if (Constant.CONTENTTYPE_CL.equals(type) || Constant.CONTENTTYPE_TV.equals(type)) {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
             subId = bean.getPlayId();
         }
         long updateTime;
@@ -371,7 +363,7 @@ public class SubRemoteDataSource implements SubDataSource {
                         bean.get_contenttype(),
                         bean.getPlayIndex(),
                         bean.get_actiontype(),
-                        bean.getContentId(), updateTime, extend
+                        bean.get_contentuuid(), updateTime, extend
                 )
                 .subscribe(new Observer<ResponseBody>() {
                     @Override

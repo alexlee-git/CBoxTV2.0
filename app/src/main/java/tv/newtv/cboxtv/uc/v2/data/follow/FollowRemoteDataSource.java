@@ -67,7 +67,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
 
         if (Constant.CONTENTTYPE_FG.equals(type) || Constant.CONTENTTYPE_CR.equals(type)) {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
         }
         long updateTime;
         if (bean.getUpdateTime() > 0) {
@@ -95,7 +95,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         bean.get_imageurl(),
                         bean.get_contenttype(),
                         bean.get_actiontype(),
-                        bean.getContentId(), updateTime, extend
+                        bean.get_contentuuid(), updateTime, extend
                 )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -248,21 +248,14 @@ public class FollowRemoteDataSource implements FollowDataSource {
                                 entity = new UserCenterPageBean.Bean();
 
                                 String contentType = item.optString("content_type");
-                                String contentUUID;
+                                String contentID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    contentUUID = item.optString("program_child_id");
+                                    contentID = item.optString("program_child_id");
                                 } else {
-                                    contentUUID = item.optString("programset_id");
+                                    contentID = item.optString("programset_id");
                                 }
-                                entity.set_contentuuid(contentUUID);
-//                                //2018.12.25 wqs 兼容2.0版本用户行为数据
-//                                String contentID = item.optString("content_id");
-//                                if (!TextUtils.isEmpty(contentID)) {
-//                                    entity.setContentId(contentID);
-//                                } else {
-//                                    entity.setContentId(contentUUID);
-//                                }
-                                entity.setContentId(item.optString("content_id"));
+                                entity.setContentId(contentID);
+                                entity.set_contentuuid(item.optString("content_uuid"));
                                 entity.set_contenttype(contentType);
                                 entity.setPlayId(item.optString("program_child_id"));
                                 entity.set_title_name(item.optString("programset_name"));
