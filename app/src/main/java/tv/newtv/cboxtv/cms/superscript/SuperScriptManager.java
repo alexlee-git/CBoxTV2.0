@@ -198,10 +198,9 @@ public class SuperScriptManager implements CornerContract.View {
                                 addGradeMsgText(context, ((Program) info).getGrade(), parent,
                                         corners.contains(Corner.RIGHT_BOTTOM));
                             } else if (info instanceof SubContent) {
-                                if (!TextUtils.isEmpty(((SubContent) info).getRecentNum())) {
-                                    addRecentMsgText(context, String.format("更新至%s集", (
-                                            (SubContent) info).getRecentNum()), parent, corners
-                                            .contains(Corner.LEFT_BOTTOM));
+                                if (!TextUtils.isEmpty(((SubContent) info).getRecentMsg())) {
+                                    addRecentMsgText(context, ((SubContent) info).getRecentMsg(),
+                                            parent, corners.contains(Corner.LEFT_BOTTOM));
                                 } else {
                                     removeRecentMsg(parent);
                                 }
