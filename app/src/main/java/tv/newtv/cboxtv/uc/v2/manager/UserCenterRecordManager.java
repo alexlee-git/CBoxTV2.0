@@ -813,8 +813,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_HISTORY_TABLE_NAME);
                                 } else {
-                                    getHistoryRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_HISTORY_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getHistoryRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -840,8 +846,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
                                 } else {
-                                    getSubscribeRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getSubscribeRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -867,8 +879,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_COLLECT_TABLE_NAME);
                                 } else {
-                                    getCollectionRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_COLLECT_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getCollectionRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -894,8 +912,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_ATTENTION_TABLE_NAME);
                                 } else {
-                                    getFollowRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_ATTENTION_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getFollowRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -921,8 +945,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_LB_COLLECT_TABLE_NAME);
                                 } else {
-                                    getLbCollectionRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_LB_COLLECT_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getLbCollectionRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
