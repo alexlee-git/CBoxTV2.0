@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.google.gson.Gson;
 import com.newtv.cms.bean.CategoryTreeNode;
 import com.newtv.cms.bean.FilterItem;
@@ -27,6 +26,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.SPrefUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,6 @@ import tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout;
 import tv.newtv.cboxtv.cms.screenList.view.LabelView;
 import tv.newtv.cboxtv.cms.screenList.views.FocusRecyclerView;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
-import tv.newtv.cboxtv.uc.listener.RecScrollListener;
 
 
 /**
@@ -112,6 +111,9 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private View four_record_view;
     private int currentPos = -1;
     private int totalSize;
+    private String videoType;
+    private String videoClassType;
+    private boolean menuSecondFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +131,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         Gson gson = new Gson();
         if (!TextUtils.isEmpty(s)) {
             focusBean = gson.fromJson(s, FocusBean.class);
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + s);
         }
     }
 
@@ -184,6 +185,9 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                @Override
                                public void accept(CategoryTreeNode categoryTreeNode) throws Exception {
                                    if (categoryTreeNode != null) {
+                                       menuSecondFlag = true;
+                                       videoClassType = categoryTreeNode.getTitle();
+                                       SPrefUtils.setValue(ScreenListActivity.this,"screenVideoClassType",videoClassType);
                                        categoryId = categoryTreeNode.getId();
                                        presenter.getSecondLabel();
                                        map.put("categoryId", categoryTreeNode.getId());
@@ -332,7 +336,10 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
 
                 int position = tab.getPosition();
                 categoryId = data.get(position).getId();
+                videoType = data.get(position).getTitle();
                 recordId = categoryId;
+                SPrefUtils.setValue(ScreenListActivity.this,"screenVideoType",videoType);
+                LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
 
                 presenter.getSecondLabel();
                 map.put("categoryId", categoryId);
@@ -537,6 +544,20 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                if (labelRecyclerView.hasFocus()){
+                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",true);
+                }else {
+                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",false);
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                if (labelRecyclerView.hasFocus()){
+                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",true);
+                }else {
+                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",false);
+                }
+                break;
             case KeyEvent.KEYCODE_DPAD_UP:
                 hasDefaultFocusSecond = false;
                 pageNum = 1;

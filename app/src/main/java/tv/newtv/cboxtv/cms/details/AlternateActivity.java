@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.cms.details;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -21,8 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.JumpScreen;
+import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.AlternateCallback;
+import tv.newtv.cboxtv.player.LifeCallback;
 import tv.newtv.cboxtv.views.detail.AlterHeaderView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
@@ -38,7 +41,7 @@ import tv.newtv.cboxtv.views.detail.onEpisodeItemClick;
  * 创建日期:          2018/11/13
  */
 public class AlternateActivity extends DetailPageActivity implements
-        AlternateCallback, onEpisodeItemClick<Alternate>, ContentContract.LoadingView {
+        AlternateCallback, onEpisodeItemClick<Alternate>, ContentContract.LoadingView,LifeCallback {
     private String contentUUID;
     private SmoothScrollView scrollView;
     private AlterHeaderView headerView;
@@ -145,6 +148,7 @@ public class AlternateActivity extends DetailPageActivity implements
         mPlayListView.setOnItemClick(this);
 
         headerView.setCallback(this);
+        headerView.setLifeCallback(this);
         headerView.setContentUUID(contentUUID);
 
         mPlayListView.setContentUUID(contentUUID);
@@ -166,8 +170,17 @@ public class AlternateActivity extends DetailPageActivity implements
 
     @Override
     public void onError(String code, String desc) {
-        if (CmsErrorCode.CMS_NO_ONLINE_CONTENT.equals(code)) {
-            ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将返回");
+        if (CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY.equals(code) || CmsErrorCode
+                .CMS_NO_ONLINE_CONTENT.equals(code)) {
+            if (fromOuter){
+                ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将进入应用首页");
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("action", "");
+                intent.putExtra("params", "");
+                startActivity(intent);
+            }else {
+                ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将返回");
+            }
             finish();
         }
     }

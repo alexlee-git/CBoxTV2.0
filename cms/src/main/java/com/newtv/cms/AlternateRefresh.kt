@@ -30,12 +30,14 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
     override fun onFailed(cid: String, code: String?, desc: String?) {
         if (!TextUtils.equals(mId, cid)) return
         mCallback?.onError(cid, code, desc)
+        detach()
     }
 
     override fun onAlternateResult(cid: String, alternates: List<Alternate>) {
         if (!TextUtils.equals(mId, cid)) return
         if (alternates.size <= 0) {
             mCallback?.onError(cid, CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY, CmsErrorCode.getErrorMessage(CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY))
+            detach()
             return
         }
         val index: Int = CmsUtil.binarySearch(alternates, System.currentTimeMillis(),
@@ -51,6 +53,7 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
     private var mPresenter: AlternateContract.Presenter? = null
     private var mObserver: Observable<Long>? = null
     private var mDisposable: Disposable? = null
+    private var mIsDetached: Boolean = false;
 
     init {
         LogUtils.d("AlternateRefresh", "new instance()")
@@ -75,7 +78,12 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
                 })
     }
 
+    fun isDetached(): Boolean {
+        return mIsDetached
+    }
+
     fun detach() {
+        mIsDetached = true
         if (mDisposable != null) {
             if (!mDisposable!!.isDisposed) {
                 mDisposable!!.dispose()
@@ -111,6 +119,7 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
         } else {
             onFailed(alternateId, CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY, CmsErrorCode
                     .getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY))
+            detach()
         }
     }
 }

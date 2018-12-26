@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.special;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.CmsServicePresenter;
 import com.newtv.cms.ICmsPresenter;
 import com.newtv.cms.ICmsView;
@@ -56,8 +57,10 @@ class SpecialContract {
 
         @Override
         public void start(String appkey, String channelId, String pageUUID) {
-            if(TextUtils.isEmpty(pageUUID)){
-                getView().onError(getContext(), "" , "页面ID不能为空");
+            if (TextUtils.isEmpty(pageUUID)) {
+                if (getView() != null)
+                    getView().onError(getContext(), CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY,
+                            CmsErrorCode.getErrorMessage(CmsErrorCode.APP_ERROR_CONTENT_ID_EMPTY));
                 return;
             }
             getPageData(appkey, channelId, pageUUID);

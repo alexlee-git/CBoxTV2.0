@@ -441,6 +441,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
+
         mPlayInfo.contentType = programInfo.getL_contentType();
         mPlayInfo.actionType = programInfo.getL_actionType();
         if (programInfo.getVideo() != null) {

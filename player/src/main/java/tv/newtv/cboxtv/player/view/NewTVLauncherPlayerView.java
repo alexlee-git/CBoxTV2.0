@@ -56,6 +56,7 @@ import tv.newtv.cboxtv.player.AlternateCallback;
 import tv.newtv.cboxtv.player.FocusWidget;
 import tv.newtv.cboxtv.player.IFocusWidget;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
+import tv.newtv.cboxtv.player.LifeCallback;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.NewTVLauncherPlayer;
 import tv.newtv.cboxtv.player.Player;
@@ -666,6 +667,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             alterTitle.setText("");
         }
         stopLoading();
+
+        if(defaultConfig.lifeCallback!=null){
+            defaultConfig.lifeCallback.onError(code, messgae);
+        }
     }
 
     protected boolean NeedRepeat() {
@@ -2330,6 +2335,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         boolean processKeyEvent(KeyEvent keyEvent);
     }
 
+    public void setLifeCallback(LifeCallback callback){
+        defaultConfig.lifeCallback = callback;
+    }
+
     public static class PlayerViewConfig {
         public ViewGroup.LayoutParams layoutParams;     //布局属性
         public boolean isFullScreen;            //当前是否为全屏状态
@@ -2358,6 +2367,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         boolean prepared = false;
         ViewParent parentViewGroup;      //父级容器
         private AlternateCallback alternateCallback;
+        private LifeCallback lifeCallback;
         private Alternate currentAlternate;
 
         public void release() {

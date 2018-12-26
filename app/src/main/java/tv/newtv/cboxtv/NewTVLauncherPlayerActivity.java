@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.newtv.cms.CmsErrorCode;
 import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
+import tv.newtv.cboxtv.player.LifeCallback;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.PlayerUrlConfig;
 import tv.newtv.cboxtv.player.model.LiveInfo;
@@ -38,7 +40,7 @@ import tv.newtv.player.R;
  */
 @BuyGoodsAD
 public class NewTVLauncherPlayerActivity extends BaseActivity implements ContentContract
-        .LoadingView, LiveListener {
+        .LoadingView, LiveListener, LifeCallback {
 
     private static String TAG = "NewTVLauncherPlayerActivity";
     NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
@@ -121,6 +123,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
         NewTVLauncherPlayerView newTVLauncherPlayerView = new NewTVLauncherPlayerView(this);
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
                 .LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT);
+        newTVLauncherPlayerView.setLifeCallback(this);
         newTVLauncherPlayerView.setLayoutParams(layoutParams);
         newTVLauncherPlayerView.setFromFullScreen();
         mPlayerFrameLayoutContainer.addView(newTVLauncherPlayerView,layoutParams);
@@ -343,5 +346,22 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     @Override
     public void onComplete() {
 
+    }
+
+    @Override
+    public void onError(String code, String message) {
+        if (CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY.equals(code) || CmsErrorCode
+                .CMS_NO_ONLINE_CONTENT.equals(code)) {
+            if (fromOuter){
+                ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将进入应用首页");
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("action", "");
+                intent.putExtra("params", "");
+                startActivity(intent);
+            }else {
+                ToastUtil.showToast(getApplicationContext(), "节目走丢了，即将返回");
+            }
+            finish();
+        }
     }
 }
