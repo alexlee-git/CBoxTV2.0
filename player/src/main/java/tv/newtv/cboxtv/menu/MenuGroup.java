@@ -1052,10 +1052,11 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
             int size = currentNode.getLevel() + 2;
             currentX = -(size * recyclerViewWidth);
-            showView(null);
             if(currentNode.getPrograms().size() == 0){
                 lastListView.setTag(currentNode.getId());
             }
+            showView(null);
+
 
             menuRecyclerView.scrollToPosition(menuRecyclerViewAdapter.calculatePlayIdPosition(0));
             Message msg = Message.obtain();
