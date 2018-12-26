@@ -25,6 +25,7 @@ import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.LogUtils;
 
 import tv.newtv.cboxtv.player.PlayerErrorCode;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.player.R;
@@ -184,7 +185,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     }
 
     public void enterFullScreen(final Activity activity) {
-        if (!defaultConfig.playCenter.isReady() && !isLiving()) {
+        if (defaultConfig != null &&! defaultConfig.playCenter.isReady() && !isLiving()) {
             return;
         }
         EnterFullScreen(activity, false);
@@ -223,6 +224,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     public void EnterFullScreen(Activity activity, boolean bringFront) {
         defaultFocusView = activity.getWindow().getDecorView().findFocus();
+        if (defaultConfig != null)
         super.EnterFullScreen(activity, bringFront);
     }
 

@@ -23,6 +23,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.contract.LiveContract;
 import tv.newtv.cboxtv.player.model.LiveInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.TimeDialog;
@@ -150,6 +151,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     public void onResume() {
         super.onResume();
         startPlay(mLiveInfo);
+        PlayInfoUtil.configBool1 = true;
     }
 
     private void stopPlay() {
@@ -181,6 +183,7 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
             livePresenter.destroy();
             livePresenter = null;
         }
+        PlayInfoUtil.configBool2 = false;
         LiveTimingUtil.clearListener();
     }
 
