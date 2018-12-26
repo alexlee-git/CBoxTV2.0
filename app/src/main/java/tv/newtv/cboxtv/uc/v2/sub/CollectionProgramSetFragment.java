@@ -48,6 +48,7 @@ import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.CollectionDetailActivity;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.views.GridRecycleView;
 
 /**
  * 项目名称:         央视影音
@@ -60,7 +61,7 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 public class CollectionProgramSetFragment extends BaseDetailSubFragment implements PageContract.View {
     private final String TAG = "cpsf";
-    private RecyclerView mRecyclerView;
+    private GridRecycleView mRecyclerView;
     private View mHotRecommendArea;
     private ImageView mHotRecommendTitleIcon;
     private RecyclerView mHotRecommendRecyclerView;
@@ -266,16 +267,16 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_COLLECTION);
             mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                @Override
-                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                    outRect.bottom = 72;
-                    int index = parent.getChildLayoutPosition(view);
-                    if (index < COLUMN_COUNT) {
-                        outRect.top = 23;
-                    }
-                }
-            });
+//            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                @Override
+//                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                    outRect.bottom = 72;
+//                    int index = parent.getChildLayoutPosition(view);
+//                    if (index < COLUMN_COUNT) {
+//                        outRect.top = 23;
+//                    }
+//                }
+//            });
         } else {
             if (mAdapter != null) {
                 if (TextUtils.equals(operationType, "delete")) {
