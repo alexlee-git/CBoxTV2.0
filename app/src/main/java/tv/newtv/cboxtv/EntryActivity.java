@@ -99,7 +99,10 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
             videoView.release();
             videoView = null;
         }
-
+        if(mAdPresenter != null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
         isShowingAD = false;
     }
 
@@ -335,10 +338,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
     private void enterMain() {
 
-        if(mAdPresenter != null){
-            mAdPresenter.destroy();
-            mAdPresenter = null;
-        }
+
 
         authLogSuccess();//认证成功
 
