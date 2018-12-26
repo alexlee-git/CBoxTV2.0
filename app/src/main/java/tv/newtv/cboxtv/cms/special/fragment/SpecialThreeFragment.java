@@ -1,5 +1,6 @@
 package tv.newtv.cboxtv.cms.special.fragment;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -105,6 +106,8 @@ public class SpecialThreeFragment extends BaseSpecialContentFragment {
         //display page title
         if (!TextUtils.isEmpty(moduleInfoResult.getPageTitle())) {
             mPageTitle.setVisibility(View.VISIBLE);
+            mPageTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            mPageTitle.getPaint().setFakeBoldText(true);
             mPageTitle.setText(moduleInfoResult.getSubTitle());
         } else {
             mPageTitle.setVisibility(View.GONE);
