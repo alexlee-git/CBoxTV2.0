@@ -208,6 +208,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                 .condition()
                 .limit(UserCenterRecordManager.REQUEST_LIST_PAGE_RECORD_LIMIT)
                 .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()

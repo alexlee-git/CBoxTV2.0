@@ -1,6 +1,7 @@
 package com.newtv.libs.db;
 
-import java.util.IdentityHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 项目名称:         DanceTv_Android
@@ -22,7 +23,7 @@ import java.util.IdentityHashMap;
  */
 
 public class SqlCondition {
-    private IdentityHashMap<String, String> conditionClause = new IdentityHashMap<>();
+    //    private IdentityHashMap<String, String> conditionClause = new IdentityHashMap<>();
     private String orderBy = null;
     private String groupBy = null;
     private String limit = null;
@@ -30,12 +31,15 @@ public class SqlCondition {
     private boolean distinct = false;
     private SqlBuilder sqlBuilder;
 
-    static SqlCondition prepare(SqlBuilder sqlBuilder) {
-        return new SqlCondition(sqlBuilder);
-    }
+    private StringBuilder clause = new StringBuilder();
+    private List<String> args = new ArrayList<>();
 
     private SqlCondition(SqlBuilder builder) {
         sqlBuilder = builder;
+    }
+
+    static SqlCondition prepare(SqlBuilder sqlBuilder) {
+        return new SqlCondition(sqlBuilder);
     }
 
     public SqlBuilder build() {
@@ -65,19 +69,12 @@ public class SqlCondition {
         return distinct;
     }
 
-    String getClause() {
-        StringBuilder builder = new StringBuilder();
-        for (String key : conditionClause.keySet()) {
-            if (builder.length() > 0) {
-                builder.append(" and ");
-            }
-            builder.append(key);
-        }
-        return builder.toString();
+    public String getClause() {
+        return clause.toString();
     }
 
     String[] getArgs() {
-        return conditionClause.values().toArray(new String[]{});
+        return args.toArray(new String[]{});
     }
 
     public SqlCondition select(String[] fields) {
@@ -85,38 +82,92 @@ public class SqlCondition {
         return this;
     }
 
+    public SqlCondition eq(String field, String... values) {
+        StringBuilder builder = new StringBuilder();
+        for (String value : values) {
+            builder.append(builder.length() > 0 ? " or " : "").append(field).append(" = ? ");
+            args.add(value);
+        }
+        clause.append(builder);
+        System.out.println(builder);
+        System.out.println(args);
+        return this;
+    }
+
     public SqlCondition eq(String field, String value) {
-        conditionClause.put(field + " = ? ", value);
+        if (clause.length() > 0) {
+            clause.append(" and ");
+        }
+        clause.append(field).append(" = ? ");
+        args.add(value);
+        return this;
+    }
+
+    public SqlCondition noteq(String field, String... values) {
+        StringBuilder builder = new StringBuilder();
+        for (String value : values) {
+            builder.append(builder.length() > 0 ? " or " : "").append(field).append(" != ? ");
+            args.add(value);
+        }
+        clause.append(builder);
+        System.out.println(builder);
+        System.out.println(args);
         return this;
     }
 
     public SqlCondition noteq(String field, String value) {
-        conditionClause.put(field + " != ? ", value);
+        if (clause.length() > 0) {
+            clause.append(" and ");
+        }
+        clause.append(field).append(" != ? ");
+        args.add(value);
         return this;
     }
 
     public SqlCondition gt(String field, String value) {
-        conditionClause.put(field + " > ? ", value);
+        if (clause.length() > 0) {
+            clause.append(" and ");
+        }
+        clause.append(field).append(" > ? ");
+        args.add(value);
         return this;
     }
+
 
     public SqlCondition lt(String field, String value) {
-        conditionClause.put(field + " < ? ", value);
+        if (clause.length() > 0) {
+            clause.append(" and ");
+        }
+        clause.append(field).append(" < ? ");
+        args.add(value);
         return this;
     }
 
+
     public SqlCondition ge(String field, String value) {
-        conditionClause.put(field + " >= ? ", value);
+        if (clause.length() > 0) {
+            clause.append(" and ");
+        }
+        clause.append(field).append(" >= ? ");
+        args.add(value);
         return this;
     }
 
     public SqlCondition le(String field, String value) {
-        conditionClause.put(field + " <= ? ", value);
+        if (clause.length() > 0) {
+            clause.append(" and ");
+        }
+        clause.append(field).append(" <= ? ");
+        args.add(value);
         return this;
     }
 
     public SqlCondition like(String field, String value) {
-        conditionClause.put(field + " like ?", "%" + value + "%");
+        if (clause.length() > 0) {
+            clause.append(" and ");
+        }
+        clause.append(field).append(field).append(" like ?");
+        args.add("%" + value + "%");
         return this;
     }
 

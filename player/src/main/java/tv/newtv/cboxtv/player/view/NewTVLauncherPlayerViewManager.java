@@ -233,6 +233,13 @@ public class NewTVLauncherPlayerViewManager {
         return null;
     }
 
+    public LiveInfo getLiveInfo(){
+        if (mNewTVLauncherPlayerView != null) {
+            return mNewTVLauncherPlayerView.defaultConfig.liveInfo;
+        }
+        return null;
+    }
+
     public int getTypeIndex() {
         return typeIndex;
     }

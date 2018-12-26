@@ -1471,8 +1471,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
 
-        if (mPlayerContract != null && mPlayerContract.processKeyEvent(event) &&
-                mShowingChildView == SHOWING_TIP_VIEW) {
+        if (mPlayerContract != null && mShowingChildView == SHOWING_TIP_VIEW
+                && mPlayerContract.processKeyEvent(event)) {
             return true;
         }
 
@@ -1506,6 +1506,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     onBackPressed();
                 }
             }
+            return true;
+        }
+
+        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
             return true;
         }
 
@@ -1578,10 +1582,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
                         || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
             mNewTVLauncherPlayerSeekbar.dispatchKeyEvent(event);
-            return true;
-        }
-
-        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
             return true;
         }
 
