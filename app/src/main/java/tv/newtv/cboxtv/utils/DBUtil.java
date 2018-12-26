@@ -219,15 +219,15 @@ public class DBUtil {
             contentValues.put(DBConfig.PLAY_PROGRESS, progress);
         }
 
-        String seriesUUID = mInfo.getContentID();
+        String seriesID = mInfo.getContentID();
         if (Constant.CONTENTTYPE_CP.equals(mInfo.getContentType())) {
             if (!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
-                seriesUUID = mInfo.getCsContentIDs().split("\\|")[0];
+                seriesID = mInfo.getCsContentIDs().split("\\|")[0];
             }
             contentValues.put(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
             contentValues.put(DBConfig.PLAYID, mInfo.getContentUUID());
         } else {
-            seriesUUID = mInfo.getContentUUID();
+            seriesID = mInfo.getContentID();
             if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
                 if (mInfo.getData() != null && mInfo.getData().size() != 0) {
                     contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
@@ -235,10 +235,9 @@ public class DBUtil {
             }
         }
         //2018.12.17 wqs 修改插入历史的条件为contentID
-        String contentID = mInfo.getContentID();
-        contentValues.put(DBConfig.CONTENT_ID, contentID);
+        contentValues.put(DBConfig.CONTENT_ID, seriesID);
         contentValues.put(DBConfig.PLAYPOSITION, bundle.getString(DBConfig.PLAYPOSITION));
-        contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
+        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentUUID());
 
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (!TextUtils.isEmpty(updateTime)) {
@@ -261,12 +260,12 @@ public class DBUtil {
         if (!TextUtils.isEmpty(mInfo.getRecentMsg())) {
             contentValues.put(DBConfig.RECENT_MSG, mInfo.getRecentMsg());
         }
-        if(!TextUtils.isEmpty(mInfo.getAlternateNumber())){
-            contentValues.put(DBConfig.ALTERNATE_NUMBER,mInfo.getAlternateNumber());
+        if (!TextUtils.isEmpty(mInfo.getAlternateNumber())) {
+            contentValues.put(DBConfig.ALTERNATE_NUMBER, mInfo.getAlternateNumber());
         }
         DataSupport.insertOrUpdate(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentID)
+                .eq(DBConfig.CONTENT_ID, seriesID)
                 .build()
                 .withValue(contentValues)
                 .withCallback(callback).excute();
