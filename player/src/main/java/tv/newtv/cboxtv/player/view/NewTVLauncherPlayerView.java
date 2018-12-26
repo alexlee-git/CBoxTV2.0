@@ -74,6 +74,7 @@ import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
 import tv.newtv.cboxtv.player.model.VideoPlayInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.ExitVideoFullCallBack;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
@@ -541,6 +542,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void release() {
+        if (PlayInfoUtil.configBool1){
+            PlayInfoUtil.setConfig1(defaultConfig);
+        }
+        if (PlayInfoUtil.configBool2){
+            PlayInfoUtil.setConfig2(defaultConfig);
+        }
         if (isReleased) return;
         isReleased = true;
         addHistory();
@@ -720,6 +727,14 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public boolean onBackPressed() {
+        if (defaultConfig == null && PlayInfoUtil.configBool1){
+
+            defaultConfig = PlayInfoUtil.getConfig1();
+        }
+        if (defaultConfig == null && PlayInfoUtil.configBool2){
+
+            defaultConfig = PlayInfoUtil.getConfig2();
+        }
         if (defaultConfig != null && !defaultConfig.startIsFullScreen) {
             if (defaultConfig.isFullScreen) {
                 ExitFullScreen();
