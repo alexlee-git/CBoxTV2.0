@@ -281,6 +281,23 @@ public class UserCenterRecordManager {
             //2018.12.21 wqs 防止插入时间有误，统一插入时间
             bundle.putString(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis() + "");
             String tableName = "";
+            String seriesID = info.getContentID();
+            String indexStr = bundle.getString(DBConfig.PLAYINDEX);
+            int index = Integer.parseInt(indexStr);
+            if (Constant.CONTENTTYPE_CP.equals(info.getContentType())) {
+                if (!TextUtils.isEmpty(info.getCsContentIDs())) {
+                    seriesID = info.getCsContentIDs().split("\\|")[0];
+                    bundle.putString(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
+                }
+            } else {
+                seriesID = info.getContentID();
+                if (index >= 0 && info.getData() != null && index < info.getData().size()) {
+                    if (info.getData() != null && info.getData().size() != 0) {
+                        bundle.putString(DBConfig.PLAYID, info.getData().get(index).getContentUUID());
+                    }
+                }
+            }
+            bundle.putString(DBConfig.CONTENT_ID, seriesID);
             if (TextUtils.isEmpty(token)) { // 如果用户未登录
                 tableName = DBConfig.HISTORY_TABLE_NAME;
             } else {
