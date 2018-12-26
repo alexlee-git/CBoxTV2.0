@@ -267,7 +267,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                     str.append(getResources().getString(R.string.vip_tip2));
                     Log.d(TAG, "str : " + str.toString());
                     vipTip.setText(str.toString());
-
+                    vipPay.setVisibility(View.GONE);
                 }
 
             }
@@ -652,8 +652,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                         vipPay = contentView.findViewById(value.viewId);
                         break;
                     case Builder.DB_TYPE_VIPTIP:
-                        vipTip = contentView.findViewById
-                                (value.viewId);
+                        vipTip = contentView.findViewById(value.viewId);
                         break;
                 }
             }

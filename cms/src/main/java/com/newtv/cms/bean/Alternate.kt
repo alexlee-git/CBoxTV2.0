@@ -18,13 +18,18 @@ data class Alternate(
         val duration: String,
         val hImage: String,
         val startTime: String,
-        val title: String
+        val title: String,
+        var isAd: String? = "0"
 ) {
     override fun equals(other: Any?): Boolean {
         other?.let {
             return hashCode() == it.hashCode()
         }
         return super.equals(other)
+    }
+
+    fun IsAd():String?{
+        return isAd
     }
 
     override fun hashCode(): Int {

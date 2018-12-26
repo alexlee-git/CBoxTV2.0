@@ -116,6 +116,10 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
         if (holder instanceof Holder) {
             Holder h = (Holder) holder;
             h.tv.setSelected(select);
+        } else if(holder instanceof LbHolder){
+            LbHolder h = (LbHolder) holder;
+            h.playTitle.setSelected(select);
+            h.title.setSelected(select);
         }
     }
 

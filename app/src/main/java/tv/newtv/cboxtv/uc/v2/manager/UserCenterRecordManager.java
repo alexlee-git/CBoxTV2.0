@@ -1283,6 +1283,7 @@ public class UserCenterRecordManager {
                                 unSubscribe(sendCallback.mDisposable);
                             }
                         }
+                        removeCallback(callbackId);
                     }
 
                     @Override
@@ -1424,6 +1425,7 @@ public class UserCenterRecordManager {
                                             .notifySubScribeStatus(false, callbackId);
                                 }
                             }
+                            removeCallback(callbackId);
                         }
                     }
                 }).excute();

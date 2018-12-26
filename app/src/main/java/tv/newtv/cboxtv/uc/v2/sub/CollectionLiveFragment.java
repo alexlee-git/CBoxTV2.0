@@ -130,11 +130,13 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
         DataSupport.search(tableNameCollect)
                 .condition()
                 .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
                 .withCallback(new DBCallback<String>() {
                     @Override
                     public void onResult(int code, String result) {
+                        Log.i(TAG, "onResult: " + result);
                         if (code == 0) {
                             UserCenterPageBean userCenterUniversalBean = new UserCenterPageBean("");
                             Gson gson = new Gson();
@@ -239,13 +241,13 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
         if (parentActivity != null) {
             parentActivity.currentNavFouse();
         }
-        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
-        if (!TextUtils.isEmpty(hotRecommendParam)) {
-            mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
-            mContentPresenter.getPageContent(hotRecommendParam);
-        } else {
-            Log.i(TAG, "wqs:PAGE_SUBSCRIPTION==null");
-        }
+//        String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
+//        if (!TextUtils.isEmpty(hotRecommendParam)) {
+//            mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
+//            mContentPresenter.getPageContent(hotRecommendParam);
+//        } else {
+//            Log.i(TAG, "wqs:PAGE_SUBSCRIPTION==null");
+//        }
         if (mRecyclerView != null) {
             mRecyclerView.setVisibility(View.GONE);
         } else {

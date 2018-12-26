@@ -22,6 +22,7 @@ public final class PlayerErrorCode {
     public static final String PROGRAM_PLAY_URL_EMPTY = "80023";            //播放地址为空
     public static final String INTERNET_ERROR = "80024";                    //网络错误
     public static final String PERMISSION_CHECK_RESULT_EMPTY = "80025";     //播控鉴权结果为空
+    public static final String PERMISSION_CHECK_SERVER_ERROR = "80026";     //播控鉴权服务器异常
 
     public static String getErrorDesc(Context context, String code) {
         switch (code) {
@@ -34,6 +35,7 @@ public final class PlayerErrorCode {
             case INTERNET_ERROR:
                 return "网络不好，请重试";
             case PERMISSION_CHECK_RESULT_EMPTY:
+            case PERMISSION_CHECK_SERVER_ERROR:
                 return context.getResources().getString(R.string.check_error);
             case LIVE_INFO_EMPTY:
             case PROGRAM_CDN_EMPTY:

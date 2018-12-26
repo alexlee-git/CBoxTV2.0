@@ -446,7 +446,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 if (level == MenuRecyclerView.MAX_LEVEL) {
                     Program program = lastProgram.get(position);
                     if(!Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())
-                            || LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())){
+                            && !LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())){
                         playProgram = program;
                         setPlayId(program);
                     }

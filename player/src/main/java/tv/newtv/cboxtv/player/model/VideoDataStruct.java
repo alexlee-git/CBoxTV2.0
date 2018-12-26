@@ -23,6 +23,7 @@ public class VideoDataStruct implements Serializable {
 	private boolean isAlternate;// 是否轮播
 	private boolean isFirstAlternate;// 是否首次切换轮播台
 	private String alternateId;//轮播台ID
+	private boolean canRequestAd = true;
 	private int dataSource = -1;// -1:不明 0:icntv 1:tencent 2:sohu
 								// 3:icntv-tentcent-sohu 4......1000:other
 	private String dataSourceStr = "";// -1:不明 0:icntv 1:tencent 2:sohu
@@ -83,6 +84,14 @@ public class VideoDataStruct implements Serializable {
 	 * 历史记录位置，在开始创建Player的时候传递给player，决定是否要在历史记录位置播放
 	 */
 	private int historyPosition;
+
+	public void setCanRequestAd(boolean canRequestAd) {
+		this.canRequestAd = canRequestAd;
+	}
+
+	public boolean isCanRequestAd() {
+		return canRequestAd;
+	}
 
 	public String getFreeDuration() {
 		return freeDuration;
@@ -507,6 +516,9 @@ public class VideoDataStruct implements Serializable {
 				", desc='" + desc + '\'' +
 				", isCollect=" + isCollect +
 				", isAlternate=" + isAlternate +
+				", isFirstAlternate=" + isFirstAlternate +
+				", alternateId='" + alternateId + '\'' +
+				", canRequestAd=" + canRequestAd +
 				", dataSource=" + dataSource +
 				", dataSourceStr='" + dataSourceStr + '\'' +
 				", duration=" + duration +
@@ -534,6 +546,9 @@ public class VideoDataStruct implements Serializable {
 				", programCount=" + programCount +
 				", key='" + key + '\'' +
 				", categoryIds='" + categoryIds + '\'' +
+				", isTrySee=" + isTrySee +
+				", freeDuration='" + freeDuration + '\'' +
+				", historyPosition=" + historyPosition +
 				'}';
 	}
 }
