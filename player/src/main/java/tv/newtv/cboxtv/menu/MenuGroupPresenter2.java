@@ -128,6 +128,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private List<String> seriesIdList = new ArrayList<>();
     private boolean willRefreshLbNode = false;
 
+    private Node lbNode;
+
     @Override
     public void release() {
         if (handler != null) {
@@ -202,6 +204,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     return;
                 }
                 playProgram = program;
+                updateLbStatus(false,null);
 
                 com.newtv.cms.bean.Content content = program.getParent().getContent();
                 if (content != null) {
@@ -216,13 +219,15 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
 
             @Override
-            public void select(Node node,Program playProgram) {
+            public void select(Node node, Program playProgram) {
                 if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
                     MenuGroupPresenter2.this.playProgram = playProgram;
                     LastNode lastNode = (LastNode) node;
                     NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
+                    updateLbStatus(true,node);
                 } else if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LV.equals(node.getContentType())) {
                     playLive(node);
+                    updateLbStatus(true,node);
                 }
             }
         });
@@ -359,7 +364,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 }
                 break;
         }
-        Log.i(TAG, "updateExitContentId: "+exitContentId);
+        Log.i(TAG, "updateExitContentId: " + exitContentId);
         return true;
     }
 
@@ -704,31 +709,37 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         if (NewTVLauncherPlayerViewManager.getInstance().isADPlaying()) {
             return false;
         }
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            switch (event.getKeyCode()) {
-                case KeyEvent.KEYCODE_MENU:
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
-                        if(willRefreshLbNode){
-                            refreshLbNode();
-                            willRefreshLbNode = false;
+
+        if (isAlternate && menuGroup.getVisibility() == View.GONE) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN && menuGroupIsInit) {
+                switch (event.getKeyCode()) {
+                    case KeyEvent.KEYCODE_MENU:
+                    case KeyEvent.KEYCODE_DPAD_CENTER:
+                        if (show()) {
+                            return true;
                         }
-                        if (playProgram != null) {
-                            updateLbPlayProgram();
-                            menuGroup.show(playProgram);
-                        } else {
-                            menuGroup.show();
+                        break;
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                        changeAlternate(1);
+                        break;
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                        changeAlternate(-1);
+                        break;
+                }
+            }
+        } else {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                switch (event.getKeyCode()) {
+                    case KeyEvent.KEYCODE_MENU:
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                        if (show()) {
+                            return true;
                         }
-                        NewTVLauncherPlayerViewManager.getInstance().setShowingView
-                                (NewTVLauncherPlayerView.SHOWING_PROGRAM_TREE);
-                        setHintGone();
-                        return true;
-                    }
-                    break;
+                        break;
+                }
             }
         }
-
 
         if (menuGroupIsInit && menuGroup.getVisibility() == View.VISIBLE) {
             send();
@@ -739,12 +750,64 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
     }
 
-    private void updateLbPlayProgram(){
+    private void changeAlternate(int number) {
+        if (lbNode != null) {
+            if (number < 0) {
+                changeAlternate(lbNode.getLeftNode());
+            } else {
+                changeAlternate(lbNode.getRightNode());
+            }
+        } else if (playProgram != null && playProgram.getParent().isLbNodeOrChild()) {
+            lbNode = playProgram.getParent();
+            if (number < 0) {
+                changeAlternate(lbNode.getLeftNode());
+            } else {
+                changeAlternate(lbNode.getRightNode());
+            }
+        } else {
+            Log.i(TAG, "lbNode != null: " + (lbNode != null)
+                    + ",playProgram != null" + (playProgram != null));
+        }
+    }
+
+    private void changeAlternate(Node node) {
+        if (node != null || node instanceof LastNode) {
+            LastNode lastNode = (LastNode) node;
+            Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
+            NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
+            playProgram = menuGroup.switchLbNode(lastNode);
+            lbNode = node;
+        } else {
+            Log.i(TAG, "nodeTitle: " + node.getTitle());
+        }
+    }
+
+    private boolean show() {
+        if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
+            if (willRefreshLbNode) {
+                refreshLbNode();
+                willRefreshLbNode = false;
+            }
+            if (playProgram != null) {
+                updateLbPlayProgram();
+                menuGroup.show(playProgram);
+            } else {
+                menuGroup.show();
+            }
+            NewTVLauncherPlayerViewManager.getInstance().setShowingView
+                    (NewTVLauncherPlayerView.SHOWING_PROGRAM_TREE);
+            setHintGone();
+            return true;
+        }
+        return false;
+    }
+
+    private void updateLbPlayProgram() {
         if (playProgram != null && Constant.CONTENTTYPE_LB.equals(playProgram.getParent().getContentType())) {
             Node item = playProgram.getParent();
-            if(playProgram.getParent().getPrograms().size() > 0){
+            if (playProgram.getParent().getPrograms().size() > 0) {
                 int result = LbUtils.binarySearch(item.getPrograms(), -1);
-                if(result >= 0){
+                if (result >= 0) {
                     Program program = item.getPrograms().get(result);
                     playProgram = program;
                 }
@@ -826,8 +889,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     public void enterFullScreen() {
         if (!NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             getProgramSeriesAndContentId();
-            if(TextUtils.isEmpty(contentId) || TextUtils.isEmpty(exitContentId) && !menuGroupIsInit
-                    || TextUtils.equals(exitContentId,contentId)){
+            if (TextUtils.isEmpty(contentId) || TextUtils.isEmpty(exitContentId) && !menuGroupIsInit
+                    || TextUtils.equals(exitContentId, contentId)) {
                 return;
             }
             if (updatePlayProgram()) {
@@ -841,7 +904,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
 
-    private void reset(){
+    private void reset() {
         programSeries = "";
         contentId = "";
         categoryId = "";
@@ -965,7 +1028,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         bundle.putString(DBConfig.H_IMAGE, lastNode.hImage);
         bundle.putString(DBConfig.VIP_FLAG, lastNode.vipFlag);
         bundle.putString(DBConfig.CONTENTTYPE, lastNode.getContentType());
-        bundle.putString(DBConfig.ALTERNATE_NUMBER,lastNode.alternateNumber);
+        bundle.putString(DBConfig.ALTERNATE_NUMBER, lastNode.alternateNumber);
 
         Player.get().addLbCollect(bundle, new DBCallback<String>() {
             @Override
@@ -974,7 +1037,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     Toast.makeText(context, "收藏成功", Toast.LENGTH_SHORT).show();
                     program.setCollect(true);
                     menuGroup.notifyLastAdapter();
-                    if(!program.getParent().isLbCollectNodeOrChild()){
+                    if (!program.getParent().isLbCollectNodeOrChild()) {
                         refreshLbNode();
                     } else {
                         willRefreshLbNode = true;
@@ -1000,7 +1063,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     Toast.makeText(context, "取消收藏成功", Toast.LENGTH_SHORT).show();
                     program.setCollect(false);
                     menuGroup.notifyLastAdapter();
-                    if(!program.getParent().isLbCollectNodeOrChild()){
+                    if (!program.getParent().isLbCollectNodeOrChild()) {
                         refreshLbNode();
                     } else {
                         willRefreshLbNode = true;
@@ -1266,5 +1329,15 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         }
                     }
                 });
+    }
+
+    private void updateLbStatus(boolean isLb,Node node){
+        if(isLb){
+            isAlternate = true;
+            lbNode = node;
+        } else {
+            isAlternate = false;
+            lbNode = null;
+        }
     }
 }
