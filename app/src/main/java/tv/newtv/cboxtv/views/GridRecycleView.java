@@ -121,8 +121,13 @@ public class GridRecycleView extends RecyclerView {
                         if (canScrollVertically(1) && getScrollState() == SCROLL_STATE_IDLE) {
                             mInvokeScroll = true;
                             mKeyEvent = event;
-                            int height = mLayoutManager.findViewByPosition(mLayoutManager
-                                    .findFirstVisibleItemPosition()).getMeasuredHeight();
+                            //2018.12.26 wqs 此view有可能为空，需要判空
+                            View firstView = mLayoutManager.findViewByPosition(mLayoutManager
+                                    .findFirstVisibleItemPosition());
+                            if (firstView == null) {
+                                return true;
+                            }
+                            int height = firstView.getMeasuredHeight();
                             smoothScrollBy(0, -(height + mTop * 2 + mBottom * 2));
                             return true;
                         } else {
@@ -141,8 +146,13 @@ public class GridRecycleView extends RecyclerView {
                             if (mInvokeScroll) return true;
                             mInvokeScroll = true;
                             mKeyEvent = event;
-                            smoothScrollBy(0, mLayoutManager.findViewByPosition(mLayoutManager
-                                    .findFirstVisibleItemPosition()).getMeasuredHeight() + mTop +
+                            //2018.12.26 wqs 此view有可能为空，需要判空
+                            View firstView = mLayoutManager.findViewByPosition(mLayoutManager
+                                    .findFirstVisibleItemPosition());
+                            if (firstView == null) {
+                                return true;
+                            }
+                            smoothScrollBy(0, firstView.getMeasuredHeight() + mTop +
                                     mBottom);
                             return true;
                         } else {
