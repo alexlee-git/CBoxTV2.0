@@ -111,6 +111,7 @@
         android:layout_toEndOf="@+id/full_screen"
         android:layout_toRightOf="@+id/video_container"
         android:focusable="true"
+        android:visibility="gone"
         app:type="collect"
     />
 
