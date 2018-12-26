@@ -736,7 +736,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         }
 
         if ((isAlternate || isLive) && menuGroup.getVisibility() == View.GONE) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && menuGroupIsInit) {
+            if (event.getAction() == KeyEvent.ACTION_UP && menuGroupIsInit) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_MENU:
                     case KeyEvent.KEYCODE_DPAD_CENTER:
@@ -753,7 +753,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 }
             }
         } else {
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getAction() == KeyEvent.ACTION_UP) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_MENU:
                     case KeyEvent.KEYCODE_DPAD_DOWN:
