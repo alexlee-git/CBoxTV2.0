@@ -282,12 +282,21 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public boolean setLastProgram(List<Program> lastProgram, String pId, String detailContentUUID) {
+        return setLastProgram(lastProgram,pId,detailContentUUID,false);
+    }
+
+    public boolean setLastProgram(List<Program> lastProgram, String pId, String detailContentUUID,boolean isLive) {
         this.lastProgram = lastProgram;
         this.detailcontentUUID = detailContentUUID;
+        String ignoreId = searchIgnoreId();
         for (Node node : allNodes) {
-            if (TextUtils.equals(node.getId(), pId) && !node.containId(MenuGroupPresenter2.LB_ID_COLLECT)) {
+            if (TextUtils.equals(node.getId(), pId) && !node.containId(MenuGroupPresenter2.LB_ID_COLLECT)
+                    && !node.containId(ignoreId)) {
                 node.setPrograms(lastProgram);
                 currentNode = node;
+                if(isLive){
+                    defaultFocusNode = currentNode;
+                }
                 for (Program p : lastProgram) {
                     p.setParent(node);
                     if (p.getContentID().equals(detailContentUUID)) {
@@ -303,6 +312,16 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
         initView();
         return true;
+    }
+
+    private String searchIgnoreId(){
+        for(Node node : rootNodes){
+            if (TextUtils.equals(node.getCategoryType(), Constant.CONTENTTYPE_LB)
+                    && node.getChild() != null) {
+                return node.getChild().get(0).getId();
+            }
+        }
+        return "";
     }
 
     private void initView() {
@@ -459,22 +478,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                     MenuRecyclerView menuRecyclerViewRight = getMenuRecyclerViewByLevel(level);
                     MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerViewRight.getAdapter();
                     Node item = adapter.getItem(position);
-                    if (item instanceof LastNode && Constant.CONTENTTYPE_LB.equals(item.getContentType())) {
-                        if (item.getPrograms().size() > 0) {
-                            int result = LbUtils.binarySearch(item.getPrograms(), -1);
-                            if (result >= 0) {
-                                Program program = item.getPrograms().get(result);
-                                playProgram = program;
-                                setPlayId(program);
-                            } else {
-                                playProgram = null;
-                                defaultFocusNode = item;
-                            }
-                        } else {
-                            playProgram = null;
-                            defaultFocusNode = item;
-                        }
-                    }
+                    switchLbNode(item);
+
                     if (onSelectListenerList.size() > 0) {
                         for (OnSelectListener l : onSelectListenerList) {
                             l.select(item, playProgram);
@@ -483,6 +488,30 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 }
                 break;
         }
+    }
+
+    public Program switchLbNode(Node item){
+        if (item instanceof LastNode && Constant.CONTENTTYPE_LB.equals(item.getContentType())) {
+            if (item.getPrograms().size() > 0) {
+                int result = LbUtils.binarySearch(item.getPrograms(), -1);
+                if (result >= 0) {
+                    Program program = item.getPrograms().get(result);
+                    playProgram = program;
+                    setPlayId(program);
+                } else {
+                    playProgram = null;
+                    defaultFocusNode = item;
+                }
+            } else {
+                playProgram = null;
+                defaultFocusNode = item;
+            }
+        } else if(item instanceof LastNode && Constant.CONTENTTYPE_LV.equals(item.getContentType())
+                && item.isLbNodeOrChild()){
+            playProgram = null;
+            defaultFocusNode = item;
+        }
+        return playProgram;
     }
 
     /**
@@ -1229,6 +1258,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public boolean isFinshAnim() {
         return isFinshAnim;
+    }
+
+    public Node getCurrentNode() {
+        return currentNode;
     }
 
     /**

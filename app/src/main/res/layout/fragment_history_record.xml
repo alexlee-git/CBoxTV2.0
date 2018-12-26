@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:orientation="vertical">
 
     <TextView
         android:id="@+id/id_fouse_tv"
@@ -10,19 +12,21 @@
         android:layout_height="match_parent"
         android:focusable="false" />
 
-    <android.support.v7.widget.RecyclerView
+    <tv.newtv.cboxtv.views.GridRecycleView
         android:id="@+id/id_history_record_rv"
-        android:layout_width="@dimen/width_1762px"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/width_78px"
-        android:layout_marginRight="@dimen/width_0px"
-        android:layout_marginTop="@dimen/height_132px"
-        android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingLeft="@dimen/width_15px"
-        android:paddingRight="@dimen/width_15px">
+        android:paddingStart="@dimen/width_90px"
+        android:paddingLeft="@dimen/width_90px"
+        android:paddingRight="@dimen/width_78px"
+        android:layout_marginTop="@dimen/height_132px"
+        app:decoration_bottom="@dimen/height_72px"
+        app:decoration_top="@dimen/height_23px"
+        app:spanCount="6"
+        tools:ignore="RtlSymmetry">
 
-    </android.support.v7.widget.RecyclerView>
+    </tv.newtv.cboxtv.views.GridRecycleView>
 
     <!-- 提示信息区域(提示没有任何数据等) -->
     <ViewStub

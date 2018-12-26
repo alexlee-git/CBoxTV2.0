@@ -11,10 +11,19 @@ import tv.newtv.cboxtv.menu.model.Program;
 
 public class LbUtils {
 
-    public static int binarySearch(List<Program> list, int defaultResult) {
+    public static int binarySearch(List<Program> list,int defaultResult){
+        try {
+            int start = 0;
+            if(TextUtils.isEmpty(list.get(0).getStartTime())){
+                start = 1;
+            }
+            return binarySearch(list,start,list.size(),defaultResult);
+        }catch (Exception e){ }
+        return defaultResult;
+    }
+
+    public static int binarySearch(List<Program> list,int start,int end,int defaultResult) {
         long current = System.currentTimeMillis();
-        int start = 0;
-        int end = list.size();
         while ((end - start) > 10) {
             int mid = (end + start) / 2;
             long midValue = parse(list.get(mid).getStartTime());
