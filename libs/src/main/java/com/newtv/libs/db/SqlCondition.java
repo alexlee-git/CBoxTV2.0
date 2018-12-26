@@ -1,6 +1,6 @@
 package com.newtv.libs.db;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 
 /**
  * 项目名称:         DanceTv_Android
@@ -22,7 +22,7 @@ import java.util.HashMap;
  */
 
 public class SqlCondition {
-    private HashMap<String, String> conditionClause = new HashMap<>();
+    private IdentityHashMap<String, String> conditionClause = new IdentityHashMap<>();
     private String orderBy = null;
     private String groupBy = null;
     private String limit = null;

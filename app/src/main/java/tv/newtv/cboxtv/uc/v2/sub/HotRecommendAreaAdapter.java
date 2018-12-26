@@ -64,9 +64,11 @@ public class HotRecommendAreaAdapter extends RecyclerView.Adapter<HotRecommendAr
             }
         } else {
             holder.score.setText(score);
+            holder.score.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
-            holder.episode.setText(SpannableBuilderUtils.builderMsg(info.getRecentMsg()));
+            holder.episode.setText(SpannableBuilderUtils.builderMsgByRegular(info.getRecentMsg()));
+            holder.episode.setVisibility(View.VISIBLE);
         } else {
             if (holder.episode != null) {
                 holder.episode.setVisibility(View.INVISIBLE);
