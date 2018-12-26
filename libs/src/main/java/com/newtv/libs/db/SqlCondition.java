@@ -22,7 +22,7 @@ import java.util.List;
  * notIn            不在某个值内
  */
 
-class SqlCondition {
+public class SqlCondition {
     //    private IdentityHashMap<String, String> conditionClause = new IdentityHashMap<>();
     private String orderBy = null;
     private String groupBy = null;
