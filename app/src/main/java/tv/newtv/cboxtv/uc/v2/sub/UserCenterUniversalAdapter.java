@@ -4,7 +4,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -250,12 +249,17 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 RxBus.get().post("recordPosition", holder.getLayoutPosition());
 
                 Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
+                //2018.12.26 wqs 兼容2.0版本用户行为数据
+                String contentID = info.get_contentuuid();
+                if (!TextUtils.isEmpty(info.getContentId())) {
+                    contentID = info.getContentId();
+                }
                 if (type == 1) {
                     JumpUtil.activityJump(mContext, Constant.OPEN_VIDEO, info.get_contenttype(),
-                            info.getContentId(), "");
+                            contentID, "");
                 } else {
                     JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
-                            info.getContentId(), "");
+                            contentID, "");
                 }
 
             }

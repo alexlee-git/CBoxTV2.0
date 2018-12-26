@@ -60,7 +60,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
     @Override
     public void addRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean bean) {
         String mType = "0";
-        String parentId = bean.get_contentuuid();
+        String parentId = bean.getContentId();
         String subId = "";
         int versionCode = 0;
         String extend = "";
@@ -75,12 +75,12 @@ public class CollectRemoteDataSource implements CollectDataSource {
         }
         if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
             subId = bean.getPlayId();
         } else if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
             parentId = "";
-            subId = bean.get_contentuuid();
+            subId = bean.getContentId();
         }
         long updateTime;
         if (bean.getUpdateTime() > 0) {
@@ -121,7 +121,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
                         collectTypeString,
-                        bean.getContentId(), updateTime, extend)
+                        bean.get_contentuuid(), updateTime, extend)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -226,8 +226,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
         Log.e("UserId", User_id + "");
-        String[] programset_ids = new String[]{Collect.get_contentuuid()};
-        String contentID = Collect.getContentId();
+        String programset_ids = Collect.getContentId();
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
                 .deleteCollect(Authorization,
@@ -235,7 +234,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         mType,
                         Libs.get().getChannelId(),
                         Libs.get().getAppKey(),
-                        "", contentID, collectTypeString)
+                        programset_ids, "", collectTypeString)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new BaseObserver<ResponseBody>() {
@@ -326,21 +325,14 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity = new UserCenterPageBean.Bean();
 
                                 String contentType = item.optString("content_type");
-                                String contentUUID;
+                                String contentID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    contentUUID = item.optString("program_child_id");
+                                    contentID = item.optString("program_child_id");
                                 } else {
-                                    contentUUID = item.optString("programset_id");
+                                    contentID = item.optString("programset_id");
                                 }
-                                entity.set_contentuuid(contentUUID);
-//                                //2018.12.25 wqs 兼容2.0版本用户行为数据
-//                                String contentID = item.optString("content_id");
-//                                if (!TextUtils.isEmpty(contentID)) {
-//                                    entity.setContentId(contentID);
-//                                } else {
-//                                    entity.setContentId(entity.get_contentuuid());
-//                                }
-                                entity.setContentId(item.optString("content_id"));
+                                entity.setContentId(contentID);
+                                entity.set_contentuuid(item.optString("content_uuid"));
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
@@ -460,21 +452,14 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity = new UserCenterPageBean.Bean();
 
                                 String contentType = item.optString("content_type");
-                                String contentUUID;
+                                String contentID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    contentUUID = item.optString("program_child_id");
+                                    contentID = item.optString("program_child_id");
                                 } else {
-                                    contentUUID = item.optString("programset_id");
+                                    contentID = item.optString("programset_id");
                                 }
-                                entity.set_contentuuid(contentUUID);
-//                                //2018.12.25 wqs 兼容2.0版本用户行为数据
-//                                String contentID = item.optString("content_id");
-//                                if (!TextUtils.isEmpty(contentID)) {
-//                                    entity.setContentId(contentID);
-//                                } else {
-//                                    entity.setContentId(entity.get_contentuuid());
-//                                }
-                                entity.setContentId(item.optString("content_id"));
+                                entity.setContentId(contentID);
+                                entity.set_contentuuid(item.optString("content_uuid"));
                                 entity.set_contenttype(contentType);
 
                                 entity.setPlayId(item.optString("program_child_id"));
@@ -559,7 +544,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
     private void addRemoteCollectRecord(String collectType, String token, String userID, @NonNull UserCenterPageBean.Bean bean) {
         String mType = "0";
-        String parentId = bean.get_contentuuid();
+        String parentId = bean.getContentId();
         String subId = "";
         int versionCode = 0;
         String extend = "";
@@ -567,12 +552,12 @@ public class CollectRemoteDataSource implements CollectDataSource {
         String collectTypeString = "0";
         if (Constant.CONTENTTYPE_PS.equals(type) || Constant.CONTENTTYPE_CG.equals(type) || Constant.CONTENTTYPE_CS.equals(type)) {
             mType = "0";
-            parentId = bean.get_contentuuid();
+            parentId = bean.getContentId();
             subId = bean.getPlayId();
         } else if (Constant.CONTENTTYPE_PG.equals(type) || Constant.CONTENTTYPE_CP.equals(type)) {
             mType = "1";
             parentId = "";
-            subId = bean.get_contentuuid();
+            subId = bean.getContentId();
         }
         long updateTime;
         if (bean.getUpdateTime() > 0) {
@@ -609,7 +594,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         bean.get_actiontype(),
                         bean.getProgramChildName(),
                         collectTypeString,
-                        bean.getContentId(), updateTime, extend)
+                        bean.get_contentuuid(), updateTime, extend)
                 .subscribe(new Observer<ResponseBody>() {
 
                     @Override
