@@ -377,11 +377,13 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                 @Override
                 public void onFocusChange(View view, boolean b) {
                     BaseHolder.this.onFocusChange(view, b);
-                    FocusView.setVisibility(b ? View.VISIBLE : View.GONE);
-                    if (b) {
-                        ScaleUtils.getInstance().onItemGetFocus(itemView);
-                    } else {
-                        ScaleUtils.getInstance().onItemLoseFocus(itemView);
+                    if (FocusView != null) {
+                        FocusView.setVisibility(b ? View.VISIBLE : View.GONE);
+                        if (b) {
+                            ScaleUtils.getInstance().onItemGetFocus(itemView);
+                        } else {
+                            ScaleUtils.getInstance().onItemLoseFocus(itemView);
+                        }
                     }
                 }
             });
