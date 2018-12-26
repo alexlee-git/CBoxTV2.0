@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -126,10 +125,10 @@ public class HistoryAdapter extends BaseRecyclerAdapter<UserCenterPageBean.Bean,
 
             // 更新剧集
             if (!TextUtils.isEmpty(entity.getRecentMsg()) && !TextUtils.equals(entity.getRecentMsg(), "null")) {
-                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(entity.getRecentMsg());
-                if (!TextUtils.isEmpty(spannableRecentMsg)) {
+                CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(entity.getRecentMsg());
+                if (!TextUtils.isEmpty(charSequenceRecentMsg)) {
                     viewHolder.mEpisode.setVisibility(View.VISIBLE);
-                    viewHolder.mEpisode.setText(spannableRecentMsg);
+                    viewHolder.mEpisode.setText(charSequenceRecentMsg);
                 } else {
                     viewHolder.mEpisode.setText("");
                     viewHolder.mEpisode.setVisibility(View.INVISIBLE);

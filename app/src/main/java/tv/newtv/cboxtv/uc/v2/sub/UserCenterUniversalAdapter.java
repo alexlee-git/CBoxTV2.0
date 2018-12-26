@@ -124,9 +124,9 @@ public class UserCenterUniversalAdapter extends RecyclerView
                     .getPlayPosition(), info.getDuration()));
             if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
                 // 更新剧集
-                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
-                if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
-                    holder.episode.setText(spannableRecentMsg);
+                CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(info.getRecentMsg());
+                if (!TextUtils.isEmpty(charSequenceRecentMsg)) {
+                    holder.episode.setText(charSequenceRecentMsg);
                     holder.episode.setVisibility(View.VISIBLE);
                 } else {
                     holder.episode.setText("");
@@ -160,9 +160,9 @@ public class UserCenterUniversalAdapter extends RecyclerView
             }
             if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
                 // 更新剧集
-                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
-                if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                    holder.episode.setText(spannableRecentMsg);
+                CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(info.getRecentMsg());
+                if (!TextUtils.isEmpty(charSequenceRecentMsg)) {
+                    holder.episode.setText(charSequenceRecentMsg);
                 } else {
                     holder.episode.setText("");
                     holder.episode.setVisibility(View.INVISIBLE);
