@@ -114,7 +114,6 @@ public class PlayerAlternateContract {
             mAlternate = getService(SERVICE_ALTERNATE);
             mContent = new ContentContract.ContentPresenter(getContext(), this);
             observable = Observable.interval(1000, TimeUnit.MILLISECONDS);
-            mAlternateRefresh = new AlternateRefresh(context, this);
         }
 
         public boolean equalsAlternate(String id) {
@@ -215,7 +214,6 @@ public class PlayerAlternateContract {
                             public void onResult(ModelResult<List<Alternate>> result, long
                                     requestCode) {
                                 if (result.isOk()) {
-                                    mAlternateRefresh.attach(currentAlternateId);
                                     mAlternates = result.getData();
                                     if(mAlternates != null && mAlternates.size()>0) {
                                         for (Alternate alternate : mAlternates) {
@@ -307,26 +305,32 @@ public class PlayerAlternateContract {
                 if (currentPlayIndex > 0 && currentPlayIndex < mAlternates.size()) {
                     currentAlternate = mAlternates.get(currentPlayIndex);
                     playAlternateItem(currentAlternate);
+
+                    if(mAlternateRefresh != null && mAlternateRefresh.isDetached()){
+                        mAlternateRefresh = null;
+                    }
+                    if(mAlternateRefresh == null) {
+                        mAlternateRefresh = new AlternateRefresh(getContext(), this);
+                        mAlternateRefresh.attach(currentAlternateId);
+                    }
                     if (getView() != null) {
                         getView().onAlternateResult(currentAlternateId,mAlternates,
                                 currentPlayIndex, title, channelId);
                     }
                 } else {
                     if (getView() != null)
-                        getView().onError(getContext(), CmsErrorCode
-                                        .ALTERNATE_ERROR_NOT_FOUND_TOPLAY,
-                                "当前没有可以播放的节目");
+                        getView().onError(getContext(), CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY,
+                                CmsErrorCode.getErrorMessage(CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY));
                 }
             } else {
                 if (getView() != null)
                     getView().onError(getContext(), CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY,
-                            "当前没有可以播放的节目");
+                            CmsErrorCode.getErrorMessage(CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY));
             }
         }
 
         @Override
         public void playAlternateItem(Alternate current) {
-
             dispose();
 
             currentRequestId = current.getContentID();
