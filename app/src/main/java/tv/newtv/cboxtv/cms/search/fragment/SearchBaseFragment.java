@@ -111,7 +111,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (recyclerView.getFocusedChild() != null) {
+                if (recyclerView.getFocusedChild() != null && recyclerView.getFocusedChild().getTop()<(int) getResources().getDimension(R.dimen.width_480px)) {
                     recyclerView.smoothScrollBy(0, recyclerView.getFocusedChild().getTop()-(int) getResources().getDimension(R.dimen.width_25px));
                     recyclerView.getFocusedChild().requestFocus();
                 }
