@@ -208,7 +208,6 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     @Override
     public void onChange(Program data, int position) {
 
-        int target = position + 1;
         String id = data.getL_id();
 
         if (TextUtils.equals(curPlayContentId,id)) {
@@ -217,8 +216,6 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                 return;
             }
         }
-
-
 
         curPlayContentId = id;
         play(data);

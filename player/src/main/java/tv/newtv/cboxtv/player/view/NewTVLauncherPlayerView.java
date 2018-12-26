@@ -153,7 +153,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             FreeDuration();
 
     private BuyGoodsBusiness buyGoodsBusiness = null;
-    private PlayerLocation mPlayerLocation;
     private LiveListener mLiveListener;
     private PlayerContract mPlayerContract;
     private iPlayCallBackEvent mLiveCallBackEvent = new iPlayCallBackEvent() {
@@ -492,11 +491,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             menuPopupWindow = null;
         }
 
-        if (mPlayerLocation != null) {
-            mPlayerLocation.destroy();
-            mPlayerLocation = null;
-        }
-
         if (mVodPresenter != null) {
             mVodPresenter.destroy();
             mVodPresenter = null;
@@ -535,7 +529,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mLiveListener = null;
 
-        if(defaultConfig != null){
+        if (defaultConfig != null) {
             defaultConfig.release();
         }
         defaultConfig = null;
@@ -647,7 +641,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (defaultConfig.playCenter == null) {
             defaultConfig.playCenter = new VPlayCenter();
         }
-
     }
 
     public PlayerViewConfig getDefaultConfig() {
@@ -677,10 +670,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         defaultConfig.isFullScreen = false;
         callBackScreenListener(false);
 
-        if (mPlayerLocation != null) {
-            mPlayerLocation.destroy();
-            mPlayerLocation = null;
-        }
+        PlayerLocation.get().destroy();
 
         Activity activity = Player.get().getCurrentActivity();
         dismissChildView();
@@ -761,12 +751,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                     layoutParams.leftMargin = 0;
                     layoutParams.topMargin = 0;
                     viewGroup.setLayoutParams(layoutParams);
+
+                    PlayerLocation.get().destroy();
                 } else {
-                    if (mPlayerLocation != null) {
-                        mPlayerLocation.destroy();
-                        mPlayerLocation = null;
-                    }
-                    mPlayerLocation = PlayerLocation.build(this, bringFront);
+                    PlayerLocation.get().attach(this, bringFront);
                 }
                 return;
             }
@@ -859,6 +847,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (defaultConfig.videoFrameLayout != null) {
             defaultConfig.videoFrameLayout.updateTimeTextView(getResources().getDimensionPixelSize
                     (isFullScreen ? R.dimen.height_20px : R.dimen.height_10px));
+        }
+        if (defaultConfig.isFullScreen && !defaultConfig.startIsFullScreen) {
+            PlayerLocation.get().attach(this, false);
         }
         if (mLoading != null) {
             mLoading.updatePropertys(getResources().getDimensionPixelSize(isFullScreen ? R.dimen
@@ -1158,6 +1149,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             return;
         }
 
+        LogUtils.d("LiveInfo", liveInfo.toString());
 
         VideoDataStruct videoDataStruct = new VideoDataStruct();
         videoDataStruct.setPlayType(PlayerConstants.PLAYTYPE_LIVE);
@@ -1170,7 +1162,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         videoDataStruct.setDataSource(PlayerConstants.DATASOURCE_ICNTV);
         videoDataStruct.setDeviceID(Constant.UUID);
         videoDataStruct.setKey(liveInfo.getKey());
+        videoDataStruct.setCanRequestAd(liveInfo.isCanRequestAd());
         videoDataStruct.setContentUUID(liveInfo.getContentUUID());
+        videoDataStruct.setAlternate(liveInfo.isFromAlternate(), liveInfo.isFirstAlternate());
         mNewTVLauncherPlayer.playAlive(getContext(), defaultConfig.videoFrameLayout, liveInfo,
                 mLiveCallBackEvent,
                 videoDataStruct);
@@ -1500,7 +1494,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         //有限处理BACK按键事件，关闭进度条显示
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             if (event.getAction() == KeyEvent.ACTION_UP) {
-                if (mShowingChildView != SHOWING_NO_VIEW && mShowingChildView != SHOWING_ALTER_CHANGE_VIEW) {
+                if (mShowingChildView != SHOWING_NO_VIEW && mShowingChildView !=
+                        SHOWING_ALTER_CHANGE_VIEW) {
                     dismissChildView();
                 } else {
                     onBackPressed();
@@ -1976,7 +1971,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         if (defaultConfig != null && defaultConfig.programSeriesInfo != null && (Constant
                 .CONTENTTYPE_CG.equals
-                (defaultConfig.programSeriesInfo.getContentType())
+                        (defaultConfig.programSeriesInfo.getContentType())
                 || Constant.CONTENTTYPE_TV.equals(defaultConfig.programSeriesInfo.getContentType
                 ()))) {
             videoDataStruct.setSeriesId(defaultConfig.programSeriesInfo.getContentID());
@@ -1988,10 +1983,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             ADConfig.getInstance().setVideoClass(defaultConfig.programSeriesInfo.getVideoClass());
         }
         if (defaultConfig != null) {
-            if(defaultConfig.currentAlternate != null){
-                if("1".equals(defaultConfig.currentAlternate.isAd())){
-                    videoDataStruct.setCanRequestAd(true);
-                }
+            if (defaultConfig.currentAlternate != null) {
+                videoDataStruct.setCanRequestAd("1".equals(defaultConfig.currentAlternate.isAd()));
             }
             videoDataStruct.setAlternate(defaultConfig.isAlternate, defaultConfig.isFirstAlternate);
             videoDataStruct.setAlternateId(defaultConfig.alternateID);
@@ -2026,7 +2019,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             onError(code, desc);
         } else {
             onError(PlayerErrorCode.PERMISSION_CHECK_SERVER_ERROR, PlayerErrorCode.getErrorDesc
-                    (getContext(),PlayerErrorCode.PERMISSION_CHECK_SERVER_ERROR));
+                    (getContext(), PlayerErrorCode.PERMISSION_CHECK_SERVER_ERROR));
         }
     }
 
@@ -2073,7 +2066,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (screenListeners == null) {
             screenListeners = new ArrayList<>();
         }
-        screenListeners.add(listener);
+        if (!screenListeners.contains(listener)) {
+            screenListeners.add(listener);
+        }
     }
 
     public void unregisterScreenListener(ScreenListener listener) {
@@ -2141,7 +2136,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     @Override
     public void onAlternateResult(String alternateId, List<Alternate> alternateList, int
             currentPlayIndex, String
-            title, String channelId) {
+                                          title, String channelId) {
         if (isReleased) return;
         updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
 
@@ -2185,7 +2180,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             }
             alterTitle.setText(defaultConfig != null && defaultConfig.useAlternateUI ?
                     mAlternatePresenter
-                    .getCurrentAlternate().getTitle() : "");
+                            .getCurrentAlternate().getTitle() : "");
         }
         if (defaultConfig != null)
             defaultConfig.isFirstAlternate = isFirst;
@@ -2350,12 +2345,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         private AlternateCallback alternateCallback;
         private Alternate currentAlternate;
 
-        public void release(){
+        public void release() {
             layoutParams = null;
             defaultFocusView = null;
             playerCallback = null;
             playCenter = null;
-            if(widgetMap!=null){
+            if (widgetMap != null) {
                 widgetMap.clear();
                 widgetMap = null;
             }

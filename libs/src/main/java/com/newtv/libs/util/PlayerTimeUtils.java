@@ -36,7 +36,7 @@ public class PlayerTimeUtils {
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08:00"));
         try {
             return dateFormat.parse(time).getTime();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return 0L;
         }

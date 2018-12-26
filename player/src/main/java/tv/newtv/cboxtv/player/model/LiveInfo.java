@@ -33,6 +33,56 @@ public class LiveInfo {
     private String mTitle;      //
     private String mLiveUrl;    //
     private String key;         //
+    private boolean fromAlternate; // 来源于轮播
+    private boolean isFirstAlternate; // 来源于轮播
+    private boolean canRequestAd; // 是否可以请求广告
+
+    @Override
+    public String toString() {
+        return "LiveInfo{" +
+                "mLiveParam=" + mLiveParam +
+                ", alwaysPlay=" + alwaysPlay +
+                ", delay=" + delay +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", mTitle='" + mTitle + '\'' +
+                ", mLiveUrl='" + mLiveUrl + '\'' +
+                ", key='" + key + '\'' +
+                ", fromAlternate=" + fromAlternate +
+                ", isFirstAlternate=" + isFirstAlternate +
+                ", canRequestAd=" + canRequestAd +
+                ", dayFormat=" + dayFormat +
+                ", mTimeFormat=" + mTimeFormat +
+                ", timeFormat=" + timeFormat +
+                ", time=" + time +
+                ", contentUUID='" + contentUUID + '\'' +
+                ", isTimeShift='" + isTimeShift + '\'' +
+                '}';
+    }
+
+    public void setFromAlternate(boolean fromAlternate) {
+        this.fromAlternate = fromAlternate;
+    }
+
+    public void setCanRequestAd(boolean canRequestAd) {
+        this.canRequestAd = canRequestAd;
+    }
+
+    public boolean isCanRequestAd() {
+        return canRequestAd;
+    }
+
+    public void setFirstAlternate(boolean firstAlternate) {
+        isFirstAlternate = firstAlternate;
+    }
+
+    public boolean isFirstAlternate() {
+        return isFirstAlternate;
+    }
+
+    public boolean isFromAlternate() {
+        return fromAlternate;
+    }
 
     private SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
@@ -122,12 +172,6 @@ public class LiveInfo {
             e.printStackTrace();
             mLiveParam = null;
         }
-    }
-
-    @Override
-    public String toString() {
-        return String.format("[LiveInfo startTime=%s endTime=%s current=%s]", getStartTimeStr(),
-                getEndTimeStr(), getCurrentTimeStr());
     }
 
     public String getTitle() {

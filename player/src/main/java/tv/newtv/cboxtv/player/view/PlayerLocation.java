@@ -23,7 +23,7 @@ class PlayerLocation {
     @SuppressWarnings("FieldCanBeLocal")
     private boolean mBringToFront = false;
     private NewTVLauncherPlayerView mPlayerView;
-    private FrameLayout mContainer;
+    private static PlayerLocation instance;
 
     private ViewTreeObserver.OnScrollChangedListener mScrollChangeListener = new ViewTreeObserver.OnScrollChangedListener() {
         @Override
@@ -32,36 +32,39 @@ class PlayerLocation {
         }
     };
 
-    private PlayerLocation() {
+    private PlayerLocation() { }
+
+    public static PlayerLocation get() {
+        if(instance == null){
+            synchronized (PlayerLocation.class){
+                if(instance == null) instance = new PlayerLocation();
+            }
+        }
+        return instance;
     }
 
-    public static PlayerLocation build(NewTVLauncherPlayerView playerView, boolean bringFront) {
-        return new PlayerLocation().attach(playerView, bringFront);
-    }
-
-    private PlayerLocation attach(NewTVLauncherPlayerView playerView, boolean bringFront) {
+    void attach(NewTVLauncherPlayerView playerView, boolean bringFront) {
         mPlayerView = playerView;
         mBringToFront = bringFront;
         Activity activity = Player.get().getCurrentActivity();
-        mContainer = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         resetLocation();
         activity.getWindow().getDecorView().getViewTreeObserver().addOnScrollChangedListener(mScrollChangeListener);
-        return this;
     }
 
-    public void destroy() {
+    void destroy() {
         Activity activity = Player.get().getCurrentActivity();
         activity.getWindow().getDecorView().getViewTreeObserver().removeOnScrollChangedListener
                 (mScrollChangeListener);
         mPlayerView = null;
-        mContainer = null;
-        mScrollChangeListener = null;
     }
 
     private void resetLocation() {
-        if (mPlayerView == null || mContainer == null) return;
+        if (mPlayerView == null) return;
         Rect rect = new Rect();
         if (!mPlayerView.getLocalVisibleRect(rect)) return;
+        Activity activity = Player.get().getCurrentActivity();
+        final ViewGroup mContainer = activity.getWindow().getDecorView().findViewById(android.R.id
+                .content);
         final ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mContainer
                 .getLayoutParams();
         int[] location = new int[2];
