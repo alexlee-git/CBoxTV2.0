@@ -129,6 +129,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private boolean mIfContinued; //是否是连续包月
     private String message;
     private int type = 1;
+    private boolean firstOrderFlag;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -600,15 +601,41 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                             price = pricesBean.getPrice();
                                         }
                                     } else {
-                                        if (isBuyOnly) {
-                                            if (isVip) {
-                                                price = pricesBean.getVipPriceDiscount();
+                                        int suitable = activityBean.getSuitable();
+                                        if (suitable == 1) {
+                                            if (firstOrderFlag) {
+                                                if (isBuyOnly) {
+                                                    if (isVip) {
+                                                        price = pricesBean.getVipPriceDiscount();
+                                                    } else {
+                                                        price = pricesBean.getPriceDiscount();
+                                                    }
+                                                } else {
+                                                    price = pricesBean.getPriceDiscount();
+                                                }
+                                            } else {
+                                                if (isBuyOnly) {
+                                                    if (isVip) {
+                                                        price = pricesBean.getVipPrice();
+                                                    } else {
+                                                        price = pricesBean.getPrice();
+                                                    }
+                                                } else {
+                                                    price = pricesBean.getPrice();
+                                                }
+                                            }
+                                        } else {
+                                            if (isBuyOnly) {
+                                                if (isVip) {
+                                                    price = pricesBean.getVipPriceDiscount();
+                                                } else {
+                                                    price = pricesBean.getPriceDiscount();
+                                                }
                                             } else {
                                                 price = pricesBean.getPriceDiscount();
                                             }
-                                        } else {
-                                            price = pricesBean.getPriceDiscount();
                                         }
+
                                     }
 
                                     tv_price.setText(getResources().getString(R.string.usercenter_pay_price) + tranPrices(price) + getResources().getString(R.string.usercenter_pay_price_unit));
@@ -699,15 +726,12 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
 
         JSONObject contentDTOForCheckObject = new JSONObject();
         try {
-            if (isBuyOnly) {
+            if (mExterPayBean != null) {
                 contentDTOForCheckObject.put("id", mContentUUID);
                 contentDTOForCheckObject.put("name", mTitle);
                 contentDTOForCheckObject.put("contentId", mContentID);
                 contentDTOForCheckObject.put("contentType", mContentType);
                 contentDTOForCheckObject.put("source", mMAMID);
-            } else {
-                contentDTOForCheckObject.put("id", "");
-                contentDTOForCheckObject.put("source", "");
             }
             contentDTOForCheckObject.put("appKey", Libs.get().getAppKey());
             contentDTOForCheckObject.put("channelId", Libs.get().getChannelId());
@@ -765,10 +789,8 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
         try {
             jsonObject.put("id", mProductPricesInfo.getResponse().getId());
             jsonObject.put("type", mProductPricesInfo.getResponse().getPrdType());
-            if (isBuyOnly) {
+            if (!TextUtils.isEmpty(mMAMID)) {
                 jsonObject.put("source", mMAMID);
-            } else {
-                jsonObject.put("source", "");
             }
             jsonObject.put("contentCheckDTO", contentDTOForCheckObject);
             jsonObject.put("paymentChannelDTO", paymentChannelObject);
@@ -1001,6 +1023,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                 JSONArray jsonArray = new JSONArray(data);
                                 if (jsonArray != null && jsonArray.length() > 0) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                    firstOrderFlag = jsonObject.optBoolean("firstOrderFlag", false);
                                     Exp_time = jsonObject.optString("expireTime");
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(Exp_time));
@@ -1051,14 +1074,23 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private void uploadUnPayLog(int action) {
 
         StringBuilder dataBuff = new StringBuilder(32);
-        dataBuff.append(type + ",")
-                .append(action + ",")
-                .append(mVipProductId + ",")
-                .append(price + ",")
-                .append(payChannelId + ",")
-                .append(code)
-                .trimToSize();
-
+        if (isBuyOnly) {
+            dataBuff.append(type + ",")
+                    .append(action + ",")
+                    .append(mContentUUID + ",")
+                    .append(price + ",")
+                    .append(payChannelId + ",")
+                    .append(code)
+                    .trimToSize();
+        } else {
+            dataBuff.append(type + ",")
+                    .append(action + ",")
+                    .append(mVipProductId + ",")
+                    .append(price + ",")
+                    .append(payChannelId + ",")
+                    .append(code)
+                    .trimToSize();
+        }
         LogUploadUtils.uploadLog(Constant.LOG_NODE_PAY, dataBuff.toString());
 
     }

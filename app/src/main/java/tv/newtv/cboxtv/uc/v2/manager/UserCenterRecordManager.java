@@ -281,6 +281,23 @@ public class UserCenterRecordManager {
             //2018.12.21 wqs 防止插入时间有误，统一插入时间
             bundle.putString(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis() + "");
             String tableName = "";
+            String seriesID = info.getContentID();
+            String indexStr = bundle.getString(DBConfig.PLAYINDEX);
+            int index = Integer.parseInt(indexStr);
+            if (Constant.CONTENTTYPE_CP.equals(info.getContentType())) {
+                if (!TextUtils.isEmpty(info.getCsContentIDs())) {
+                    seriesID = info.getCsContentIDs().split("\\|")[0];
+                    bundle.putString(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
+                }
+            } else {
+                seriesID = info.getContentID();
+                if (index >= 0 && info.getData() != null && index < info.getData().size()) {
+                    if (info.getData() != null && info.getData().size() != 0) {
+                        bundle.putString(DBConfig.PLAYID, info.getData().get(index).getContentUUID());
+                    }
+                }
+            }
+            bundle.putString(DBConfig.CONTENT_ID, seriesID);
             if (TextUtils.isEmpty(token)) { // 如果用户未登录
                 tableName = DBConfig.HISTORY_TABLE_NAME;
             } else {
@@ -813,8 +830,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_HISTORY_TABLE_NAME);
                                 } else {
-                                    getHistoryRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_HISTORY_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getHistoryRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -840,8 +863,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
                                 } else {
-                                    getSubscribeRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getSubscribeRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -867,8 +896,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_COLLECT_TABLE_NAME);
                                 } else {
-                                    getCollectionRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_COLLECT_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getCollectionRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -894,8 +929,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_ATTENTION_TABLE_NAME);
                                 } else {
-                                    getFollowRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_ATTENTION_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getFollowRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 
@@ -921,8 +962,14 @@ public class UserCenterRecordManager {
                                         }
                                     }, DBConfig.REMOTE_LB_COLLECT_TABLE_NAME);
                                 } else {
-                                    getLbCollectionRecordComplete = true;
-                                    getUserBehaviorComplete(context);
+                                    DBUtil.clearTableAll(DBConfig.REMOTE_LB_COLLECT_TABLE_NAME, new DBCallback<String>() {
+                                        @Override
+                                        public void onResult(int code, String result) {
+                                            getLbCollectionRecordComplete = true;
+                                            getUserBehaviorComplete(context);
+                                        }
+                                    });
+
                                 }
                             }
 

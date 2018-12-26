@@ -15,6 +15,5 @@ import java.util.List;
  */
 public interface AlternateCallback {
     void onAlternateResult(String alternateId, @Nullable List<Alternate> result);
-    void onError(String code,String desc);
     void onPlayIndexChange(int index);
 }

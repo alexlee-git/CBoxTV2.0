@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.player.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.newtv.libs.util.PlayerTimeUtils;
 
@@ -34,9 +35,20 @@ public class LbUtils {
         }
 
         for (int i = start; i < end; i++) {
-            long startTime = parse(list.get(i).getStartTime());
-            long endTime = startTime + Integer.parseInt(list.get(i).getDuration()) *1000;
-            if(startTime < current && current < endTime){
+
+            String starttime = list.get(i).getStartTime();
+            String duration = list.get(i).getDuration();
+            Log.i("LbUtils", "binarySearch: starttime: " + starttime);
+            Log.i("LbUtils", "binarySearch: duration: " + duration);
+            long startTime = 0;
+            long endTime = 0;
+            if (!TextUtils.isEmpty(starttime)) {
+                startTime = parse(starttime);
+            }
+            if (!TextUtils.isEmpty(duration)) {
+                endTime = startTime + Integer.parseInt(list.get(i).getDuration()) * 1000;
+            }
+            if (startTime < current && current < endTime) {
                 return i;
             }
         }

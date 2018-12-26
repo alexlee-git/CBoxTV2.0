@@ -439,6 +439,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
+
         mPlayInfo.contentType = programInfo.getL_contentType();
         mPlayInfo.actionType = programInfo.getL_actionType();
         if (programInfo.getVideo() != null) {
@@ -458,6 +459,11 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             //如果有playurl并且在直播的时间段内，则判断是直播
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
             if (liveInfo.isLiveTime()) {
+                liveInfo.setFromAlternate(isAlternate);
+                if(isAlternate){
+                    liveInfo.setFirstAlternate(true);
+                    liveInfo.setCanRequestAd(false);
+                }
                 mLiveInfo = liveInfo;
                 currentMode = MODE_LIVE;
                 playLiveVideo(useDelay ? 2000 : 0);

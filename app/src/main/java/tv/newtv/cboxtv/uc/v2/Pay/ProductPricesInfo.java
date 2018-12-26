@@ -471,7 +471,7 @@ public class ProductPricesInfo implements Serializable {
                  * focusIcon : http://bzo.cloud.ottcn.com/tiger/imgs/1521010608838.png
                  * product : null
                  */
-
+                @SerializedName("id")
                 private int id;
                 @SerializedName("prcId")
                 private int prcId;
@@ -489,6 +489,8 @@ public class ProductPricesInfo implements Serializable {
                 private Object givePrcId;
                 private Object price;
                 private Object vipPrice;
+                @SerializedName("suitable")
+                private int suitable ;
                 private Object point;
                 private Object vipPoint;
                 private String memo;
@@ -590,6 +592,14 @@ public class ProductPricesInfo implements Serializable {
 
                 public void setVipPrice(Object vipPrice) {
                     this.vipPrice = vipPrice;
+                }
+
+                public int getSuitable() {
+                    return suitable;
+                }
+
+                public void setSuitable(int suitable) {
+                    this.suitable = suitable;
                 }
 
                 public Object getPoint() {

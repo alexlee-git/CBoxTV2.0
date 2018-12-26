@@ -99,6 +99,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         firstFocusView = findViewById(R.id.focus_layout);
         posterView = findViewWithTag("poster_view");
         findViewById(R.id.focus_layout).setOnClickListener(new OnClickListener() {
+            @SuppressWarnings("ConstantConditions")
             @Override
             public void onClick(View v) {
                 StringBuilder logBuff = new StringBuilder(Constant.BUFFER_SIZE_16);
@@ -208,7 +209,6 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     @Override
     public void onChange(Program data, int position) {
 
-        int target = position + 1;
         String id = data.getL_id();
 
         if (TextUtils.equals(curPlayContentId,id)) {
@@ -217,8 +217,6 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                 return;
             }
         }
-
-
 
         curPlayContentId = id;
         play(data);
@@ -232,6 +230,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (mProgram != null && TextUtils.equals(mProgram.getL_id(), uuid)) {
@@ -351,6 +350,9 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         void bindObserver(String contentId) {
             mId = contentId;
             if (!TextUtils.isEmpty(contentId)) {
+                if(mObservable != null && mObservable.isDetached()){
+                    mObservable = null;
+                }
                 if (mObservable == null) {
                     mObservable = new AlternateRefresh(itemView.getContext(), this);
                 }
@@ -363,6 +365,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
             mAlternateSubTitle.setText("");
             if (mObservable != null) {
                 mObservable.detach();
+                mObservable = null;
             }
         }
 

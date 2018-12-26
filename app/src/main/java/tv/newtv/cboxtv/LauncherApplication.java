@@ -250,7 +250,6 @@ public class LauncherApplication extends MultiDexApplication implements PlayerOb
         }else{
             addHistory(playInfo,index,position,duration);
         }
-
     }
 
     private void addHistory(final Content playInfo, final int index, final int position, final

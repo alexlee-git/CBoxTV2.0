@@ -200,8 +200,8 @@ public interface IUserCenterLoginApi {
                                         @Field("content_type") String contentType,
                                         @Field("latest_episode") String curEpisode,
                                         @Field("action_type") String actionType,
-                                        @Field("program_child_name") String programChildId,
-                                        @Field("content_id") String contentId,
+                                        @Field("program_child_name") String programChildName,
+                                        @Field("content_uuid") String contentUUID,
                                         @Field("program_watch_date") long program_watch_date,
                                         @Field("ext") String ext);
 
@@ -214,7 +214,7 @@ public interface IUserCenterLoginApi {
                                            @Query("app_key") String app_key,
                                            @Query("program_child_ids") String program_child_ids,
                                            @Query("programset_ids") String programset_id,
-                                           @Query("content_ids") String content_id);
+                                           @Query("content_uuids") String content_uuid);
 
 //    @FormUrlEncoded
 //    @POST("content/history/info")
@@ -251,7 +251,7 @@ public interface IUserCenterLoginApi {
                                         @Field("action_type") String action_type,
                                         @Field("program_child_name") String programChildName,
                                         @Field("type") String type,
-                                        @Field("content_id") String contentId,
+                                        @Field("content_uuid") String contentUUID,
                                         @Field("create_time") long create_time,
                                         @Field("ext") String ext);
 
@@ -263,7 +263,7 @@ public interface IUserCenterLoginApi {
                                            @Query("channel_code") String channel_code,
                                            @Query("app_key") String app_key,
                                            @Query("programset_ids") String programset_id,
-                                           @Query("content_ids") String content_id,
+                                           @Query("content_uuids") String content_uuid,
                                            @Query("type") String type);
 
 //    @FormUrlEncoded
@@ -297,7 +297,7 @@ public interface IUserCenterLoginApi {
                                        @Field("poster") String poster,
                                        @Field("content_type") String content_type,
                                        @Field("action_type") String action_type,
-                                       @Field("content_id") String contentId,
+                                       @Field("content_uuid") String contentUUID,
                                        @Field("create_time") long create_time,
                                        @Field("ext") String ext);
 
@@ -311,7 +311,7 @@ public interface IUserCenterLoginApi {
                                           @Query("channel_code") String channel_code,
                                           @Query("app_key") String app_key,
                                           @Query("programset_ids") String programset_id,
-                                          @Query("content_ids") String content_id);
+                                          @Query("content_uuids") String content_uuid);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/concerns")
@@ -343,7 +343,7 @@ public interface IUserCenterLoginApi {
                                            @Field("content_type") String content_type,
                                            @Field("latest_episode") String latest_episode,
                                            @Field("action_type") String action_type,
-                                           @Field("content_id") String contentId,
+                                           @Field("content_uuid") String contentUUID,
                                            @Field("create_time") long create_time,
                                            @Field("ext") String ext);
 
@@ -355,7 +355,7 @@ public interface IUserCenterLoginApi {
                                               @Query("channel_code") String channel_code,
                                               @Query("app_key") String app_key,
                                               @Query("programset_ids") String programset_id,
-                                              @Query("content_ids") String content_id);
+                                              @Query("content_uuids") String content_uuid);
 
     @Headers("host_type: " + BootGuide.USER_BEHAVIOR)
     @GET("/gazella/service/subscribes")

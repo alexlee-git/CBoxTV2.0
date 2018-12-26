@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 import tv.newtv.cboxtv.JumpScreen;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.search.adapter.SearchResultAdapter;
 import tv.newtv.cboxtv.cms.search.custom.SearchRecyclerView;
 import tv.newtv.cboxtv.cms.search.listener.SearchResultDataInfo;
@@ -82,9 +83,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
 
     @Override
     public void onItemClick(int position, SubContent subContent) {
-//        JumpUtil.detailsJumpActivity(getContext(), subContent.getContentType(), subContent
-//                .getContentID());
-//        ToastUtil.showToast(getContext(),"当前是第 ：" + position +"项");//测试使用
+//        LogUtils.e("position1212","当前是第 ：" + position +"项");
         JumpScreen.jumpDetailActivity(getContext(), subContent.getContentID(), subContent
                 .getContentType());
 
@@ -112,13 +111,17 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
+                if (recyclerView.getFocusedChild() != null) {
+                    if (recyclerView.getFocusedChild().getTop()<(int) getResources().getDimension(R.dimen.width_480px)) {
+                        recyclerView.smoothScrollBy(0, recyclerView.getFocusedChild().getTop() - (int) getResources().getDimension(R.dimen.width_25px));
+                        recyclerView.getFocusedChild().requestFocus();
+                    }
+                }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
                 int[] position;
                 if (recycleView.getScrollY() == 0) {
                     position = layoutManager.findFirstVisibleItemPositions(new int[6]);
@@ -134,7 +137,6 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
                     LogUtils.d("scroll", "requestPage =" + getPageNum());
                     requestNextPageData();
                 }
-
             }
         });
     }
