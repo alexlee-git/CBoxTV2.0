@@ -260,7 +260,10 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 if (!hasFocus() && alternateView != null) {
                     alternateView.requestFocus();
                     return true;
-                } else return hasFocus();
+                } else if (hasFocus()&&alternateView!=null){
+                    alternateView.requestFocus();
+                    return hasFocus();
+                }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                 return alternateView != null && alternateView.hasFocus();
             }if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
