@@ -1,12 +1,10 @@
 package tv.newtv.cboxtv.uc.v2.sub;
 
 import android.annotation.SuppressLint;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +38,7 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.views.GridRecycleView;
 
 /**
  * 项目名称:         熊猫ROM-launcher应用
@@ -53,7 +52,7 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
     public static final int INFLATE_DATA_BASE = 1001;//填充数据库数据
     private final String TAG = "FollowRecordFragment";
     private final int COLUMN_COUNT = 6;
-    private RecyclerView mRecyclerView;
+    private GridRecycleView mRecyclerView;
     private List<UserCenterPageBean.Bean> mDatas;
     private String mLoginTokenString;//登录token,用于判断登录状态
     private TextView emptyTextView;
@@ -143,17 +142,17 @@ public class FollowRecordFragment extends BaseDetailSubFragment {
             mRecyclerView.setAdapter(mAdapter);
 //            mRecyclerView.setHasFixedSize(true);
 
-            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                @Override
-                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                    int index = parent.getChildLayoutPosition(view);
-                    if (index < COLUMN_COUNT) {
-                        outRect.top = 23;
-                    }
-
-                    outRect.bottom = 72;
-                }
-            });
+//            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                @Override
+//                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                    int index = parent.getChildLayoutPosition(view);
+//                    if (index < COLUMN_COUNT) {
+//                        outRect.top = 23;
+//                    }
+//
+//                    outRect.bottom = 72;
+//                }
+//            });
         } else {
             if (mAdapter != null) {
                 Log.e(TAG, "wqs:operationType:" + operationType);
