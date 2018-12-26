@@ -69,11 +69,13 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
                 LastNode lastNode = (LastNode) node;
                 lbHolder.playTitle.setText("");
                 lbHolder.lbNumber.setText(lastNode.alternateNumber);
-                if (node.getPrograms().size() > 0) {
-                    List<Program> programs = node.getPrograms();
-                    lbHolder.playTitle.setText(programs.get(LbUtils.binarySearch(programs,0)).getTitle());
-                } else if (!node.isRequest() || !node.isRequesting()) {
-                    menuGroup.requestData(node);
+                if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
+                    if (node.getPrograms().size() > 0) {
+                        List<Program> programs = node.getPrograms();
+                        lbHolder.playTitle.setText(programs.get(LbUtils.binarySearch(programs,0)).getTitle());
+                    } else if (!node.isRequest() || !node.isRequesting()) {
+                        menuGroup.requestData(node);
+                    }
                 }
             }
         }
@@ -130,7 +132,8 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (Constant.CONTENTTYPE_LB.equals(data.get(position).getContentType())) {
+        if (Constant.CONTENTTYPE_LB.equals(data.get(position).getContentType())
+                || Constant.CONTENTTYPE_LV.equals(data.get(position).getContentType())) {
             return 1;
         }
         return 0;
