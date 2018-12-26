@@ -42,6 +42,7 @@ import tv.newtv.cboxtv.DetailTextPopuView;
 import tv.newtv.cboxtv.MultipleClickListener;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.player.AlternateCallback;
+import tv.newtv.cboxtv.player.LifeCallback;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -56,7 +57,7 @@ import tv.newtv.cboxtv.views.custom.FocusToggleView2;
  * 创建日期:          2018/11/13
  */
 public class AlterHeaderView extends FrameLayout implements IEpisode, ContentContract.View,
-        AlternateCallback, PlayerCallback {
+        AlternateCallback, PlayerCallback,LifeCallback {
 
     private Content mContent;
     private String mContentUUID;
@@ -78,6 +79,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     private NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig;
     private AlternateCallback mAlternateCallback;
+    private LifeCallback mLifeCallback;
 
 
     public AlterHeaderView(Context context) {
@@ -112,6 +114,10 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         return false;
     }
 
+    public void setLifeCallback(LifeCallback callback){
+        mLifeCallback = callback;
+    }
+
     public void setCallback(AlternateCallback callback) {
         mAlternateCallback = callback;
     }
@@ -132,6 +138,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                 viewContainer.addView(alternateView, layoutParams);
             }
 
+            alternateView.setLifeCallback(this);
             alternateView.setPlayerCallback(this);
             alternateView.setAlternateCallback(this);
         }
@@ -429,8 +436,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     @Override
     public void onError(String code, String desc) {
-        if(mAlternateCallback != null){
-            mAlternateCallback.onError(code, desc);
+        if(mLifeCallback != null){
+            mLifeCallback.onError(code, desc);
         }
     }
 
