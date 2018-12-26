@@ -28,10 +28,6 @@ data class Alternate(
         return super.equals(other)
     }
 
-    fun IsAd():String?{
-        return isAd
-    }
-
     override fun hashCode(): Int {
         var result = alternateListID.hashCode()
         result = 31 * result + contentID.hashCode()
