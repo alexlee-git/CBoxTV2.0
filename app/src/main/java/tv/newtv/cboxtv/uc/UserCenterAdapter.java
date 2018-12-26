@@ -2,7 +2,6 @@ package tv.newtv.cboxtv.uc;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
@@ -610,12 +609,17 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
                     setTitleView(scoreTitleTextView, scoreTitle);
                     if (!TextUtils.isEmpty(bean.getRecentMsg()) && !TextUtils.equals(bean.getRecentMsg(), "null")) {
                         // 更新剧集
-                        SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(bean.getRecentMsg());
-                        if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                            recentTitleTextView.setText(spannableRecentMsg);
+                        CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(bean.getRecentMsg());
+                        if (!TextUtils.isEmpty(charSequenceRecentMsg)) {
+                            recentTitleTextView.setText(charSequenceRecentMsg);
+                            showView(recentTitleTextView);
                         } else {
                             recentTitleTextView.setText("");
+                            goneView(recentTitleTextView);
                         }
+                    } else {
+                        recentTitleTextView.setText("");
+                        goneView(recentTitleTextView);
                     }
 
                     String isUpdate = bean.getIsUpdate();

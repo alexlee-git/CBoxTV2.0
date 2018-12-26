@@ -77,7 +77,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String User_id = SharePreferenceUtils.getUserId(mContext);
 
@@ -248,12 +248,20 @@ public class FollowRemoteDataSource implements FollowDataSource {
                                 entity = new UserCenterPageBean.Bean();
 
                                 String contentType = item.optString("content_type");
-
+                                String contentUUID;
                                 if (TextUtils.equals(Constant.CONTENTTYPE_CP, contentType) || TextUtils.equals(Constant.CONTENTTYPE_PG, contentType)) {
-                                    entity.set_contentuuid(item.optString("program_child_id"));
+                                    contentUUID = item.optString("program_child_id");
                                 } else {
-                                    entity.set_contentuuid(item.optString("programset_id"));
+                                    contentUUID = item.optString("programset_id");
                                 }
+                                entity.set_contentuuid(contentUUID);
+//                                //2018.12.25 wqs 兼容2.0版本用户行为数据
+//                                String contentID = item.optString("content_id");
+//                                if (!TextUtils.isEmpty(contentID)) {
+//                                    entity.setContentId(contentID);
+//                                } else {
+//                                    entity.setContentId(contentUUID);
+//                                }
                                 entity.setContentId(item.optString("content_id"));
                                 entity.set_contenttype(contentType);
                                 entity.setPlayId(item.optString("program_child_id"));
@@ -331,7 +339,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
         }
 
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()

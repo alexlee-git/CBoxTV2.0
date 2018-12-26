@@ -70,6 +70,17 @@ public class UserCenterPageBean {
         @SerializedName("_recent_msg")
         public String recentMsg;
 
+        //轮播收藏使用
+        public String is_finish;//是否结束
+        public String real_exclusive;//运营标识
+        public String issue_date;
+        public String last_publish_date;
+        public String sub_title;
+        public String v_image;
+        public String h_image;
+        public String vip_flag;//付费标识
+        public String alternate_number;
+
         public String get_contentuuid() {
             return _contentuuid;
         }
@@ -246,6 +257,78 @@ public class UserCenterPageBean {
             this.recentMsg = recentMsg;
         }
 
+        public String getIs_finish() {
+            return is_finish;
+        }
+
+        public void setIs_finish(String is_finish) {
+            this.is_finish = is_finish;
+        }
+
+        public String getReal_exclusive() {
+            return real_exclusive;
+        }
+
+        public void setReal_exclusive(String real_exclusive) {
+            this.real_exclusive = real_exclusive;
+        }
+
+        public String getIssue_date() {
+            return issue_date;
+        }
+
+        public void setIssue_date(String issue_date) {
+            this.issue_date = issue_date;
+        }
+
+        public String getLast_publish_date() {
+            return last_publish_date;
+        }
+
+        public void setLast_publish_date(String last_publish_date) {
+            this.last_publish_date = last_publish_date;
+        }
+
+        public String getSub_title() {
+            return sub_title;
+        }
+
+        public void setSub_title(String sub_title) {
+            this.sub_title = sub_title;
+        }
+
+        public String getV_image() {
+            return v_image;
+        }
+
+        public void setV_image(String v_image) {
+            this.v_image = v_image;
+        }
+
+        public String getH_image() {
+            return h_image;
+        }
+
+        public void setH_image(String h_image) {
+            this.h_image = h_image;
+        }
+
+        public String getVip_flag() {
+            return vip_flag;
+        }
+
+        public void setVip_flag(String vip_flag) {
+            this.vip_flag = vip_flag;
+        }
+
+        public String getAlternate_number() {
+            return alternate_number;
+        }
+
+        public void setAlternate_number(String alternate_number) {
+            this.alternate_number = alternate_number;
+        }
+
         @Override
         public String toString() {
             return "Bean{" +
@@ -285,6 +368,88 @@ public class UserCenterPageBean {
          */
 
         private String versionCode;//应用版本号
+        public String is_finish;//是否结束
+        public String real_exclusive;//运营标识
+        public String issue_date;
+        public String last_publish_date;
+        public String sub_title;
+        public String v_image;
+        public String h_image;
+        public String vip_flag;//付费标识
+        public String alternate_number;
+
+        public String getIs_finish() {
+            return is_finish;
+        }
+
+        public void setIs_finish(String is_finish) {
+            this.is_finish = is_finish;
+        }
+
+        public String getReal_exclusive() {
+            return real_exclusive;
+        }
+
+        public void setReal_exclusive(String real_exclusive) {
+            this.real_exclusive = real_exclusive;
+        }
+
+        public String getIssue_date() {
+            return issue_date;
+        }
+
+        public void setIssue_date(String issue_date) {
+            this.issue_date = issue_date;
+        }
+
+        public String getLast_publish_date() {
+            return last_publish_date;
+        }
+
+        public void setLast_publish_date(String last_publish_date) {
+            this.last_publish_date = last_publish_date;
+        }
+
+        public String getSub_title() {
+            return sub_title;
+        }
+
+        public void setSub_title(String sub_title) {
+            this.sub_title = sub_title;
+        }
+
+        public String getV_image() {
+            return v_image;
+        }
+
+        public void setV_image(String v_image) {
+            this.v_image = v_image;
+        }
+
+        public String getH_image() {
+            return h_image;
+        }
+
+        public void setH_image(String h_image) {
+            this.h_image = h_image;
+        }
+
+        public String getVip_flag() {
+            return vip_flag;
+        }
+
+        public void setVip_flag(String vip_flag) {
+            this.vip_flag = vip_flag;
+        }
+
+        public String getAlternate_number() {
+            return alternate_number;
+        }
+
+        public void setAlternate_number(String alternate_number) {
+            this.alternate_number = alternate_number;
+        }
+
 
         public String getVersionCode() {
             return versionCode;
@@ -294,4 +459,5 @@ public class UserCenterPageBean {
             this.versionCode = versionCode;
         }
     }
+
 }
