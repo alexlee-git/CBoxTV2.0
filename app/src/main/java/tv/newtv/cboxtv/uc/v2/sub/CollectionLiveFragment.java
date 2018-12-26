@@ -129,8 +129,8 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
         }
         DataSupport.search(tableNameCollect)
                 .condition()
-                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
-                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
+                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB,Constant.CONTENTTYPE_LV)
+                .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
                 .withCallback(new DBCallback<String>() {
