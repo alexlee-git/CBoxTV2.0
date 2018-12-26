@@ -129,6 +129,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private boolean willRefreshLbNode = false;
 
     private Node lbNode;
+    private boolean isLive;
 
     @Override
     public void release() {
@@ -226,6 +227,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
                     updateLbStatus(true,node);
                 } else if (node != null && node instanceof LastNode && Constant.CONTENTTYPE_LV.equals(node.getContentType())) {
+                    MenuGroupPresenter2.this.playProgram = playProgram;
                     playLive(node);
                     updateLbStatus(true,node);
                 }
@@ -277,8 +279,17 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private boolean getProgramSeriesAndContentId() {
         if (NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             Log.e(TAG, "isLiving");
-            return false;
+            isLive = true;
+            LiveInfo liveInfo = NewTVLauncherPlayerViewManager.getInstance().getLiveInfo();
+            if(liveInfo != null){
+                contentId = liveInfo.getContentUUID();
+            }
+            if(TextUtils.isEmpty(contentId)) {
+                return false;
+            }
+            return true;
         }
+        isLive = false;
         seriesIdList.clear();
         programSeries = "";
 
@@ -341,7 +352,10 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private boolean updateExitContentId() {
         exitContentId = "";
         if (NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
-            Log.e(TAG, "isLiving");
+            LiveInfo liveInfo = NewTVLauncherPlayerViewManager.getInstance().getLiveInfo();
+            if(liveInfo != null){
+                exitContentId = liveInfo.getContentUUID();
+            }
             return false;
         }
 
@@ -377,7 +391,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return;
         }
 
-        if (isAlternate) {
+        if(isLive){
+            getCategoryId(contentId);
+        }else if (isAlternate) {
             getCategoryId(alternateId);
         } else if (TextUtils.isEmpty(categoryId)) {
             getCategoryId(contentId);
@@ -466,7 +482,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         if (categoryContent != null && categoryContent.data != null && categoryContent.data.size() > 0) {
                             Node node = searchNodeById(categoryId);
                             node.addChild(categoryContent.data);
-                            if (isAlternate) {
+                            if(isLive){
+                                initLiveMenuGroup();
+                            } else if (isAlternate) {
                                 getAlternateContent();
                             } else {
                                 dealIds(categoryContent);
@@ -474,6 +492,13 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                         }
                     }
                 });
+    }
+
+    private void initLiveMenuGroup() {
+        menuGroup.addRootNodes(rootNode);
+        menuGroupIsInit = menuGroup.setLastProgram(new ArrayList<Program>(), contentId, "",true);
+        lbNode = menuGroup.getCurrentNode();
+        checkShowHinter();
     }
 
     private void getAlternateContent() {
@@ -710,7 +735,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             return false;
         }
 
-        if (isAlternate && menuGroup.getVisibility() == View.GONE) {
+        if ((isAlternate || isLive) && menuGroup.getVisibility() == View.GONE) {
             if (event.getAction() == KeyEvent.ACTION_DOWN && menuGroupIsInit) {
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_MENU:
@@ -887,19 +912,17 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
 
     @Override
     public void enterFullScreen() {
-        if (!NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
-            getProgramSeriesAndContentId();
-            if (TextUtils.isEmpty(contentId) || TextUtils.isEmpty(exitContentId) && !menuGroupIsInit
-                    || TextUtils.equals(exitContentId, contentId)) {
-                return;
-            }
-            if (updatePlayProgram()) {
-                refreshLbNode();
-            } else {
-                setHintGone();
-                reset();
-                initData();
-            }
+        getProgramSeriesAndContentId();
+        if (TextUtils.isEmpty(contentId) || TextUtils.isEmpty(exitContentId) && !menuGroupIsInit
+                || TextUtils.equals(exitContentId, contentId)) {
+            return;
+        }
+        if (updatePlayProgram()) {
+            refreshLbNode();
+        } else {
+            setHintGone();
+            reset();
+            initData();
         }
     }
 

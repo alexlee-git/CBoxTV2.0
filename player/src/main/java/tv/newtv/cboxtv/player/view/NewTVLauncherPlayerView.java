@@ -1509,6 +1509,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             return true;
         }
 
+        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
+            return true;
+        }
+
         if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP
                 || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN
                 || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
@@ -1578,10 +1582,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
                         || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT)) {
             mNewTVLauncherPlayerSeekbar.dispatchKeyEvent(event);
-            return true;
-        }
-
-        if (menuGroupPresenter != null && menuGroupPresenter.dispatchKeyEvent(event)) {
             return true;
         }
 

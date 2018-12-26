@@ -282,6 +282,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public boolean setLastProgram(List<Program> lastProgram, String pId, String detailContentUUID) {
+        return setLastProgram(lastProgram,pId,detailContentUUID,false);
+    }
+
+    public boolean setLastProgram(List<Program> lastProgram, String pId, String detailContentUUID,boolean isLive) {
         this.lastProgram = lastProgram;
         this.detailcontentUUID = detailContentUUID;
         String ignoreId = searchIgnoreId();
@@ -290,6 +294,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                     && !node.containId(ignoreId)) {
                 node.setPrograms(lastProgram);
                 currentNode = node;
+                if(isLive){
+                    defaultFocusNode = currentNode;
+                }
                 for (Program p : lastProgram) {
                     p.setParent(node);
                     if (p.getContentID().equals(detailContentUUID)) {
@@ -1251,6 +1258,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public boolean isFinshAnim() {
         return isFinshAnim;
+    }
+
+    public Node getCurrentNode() {
+        return currentNode;
     }
 
     /**
