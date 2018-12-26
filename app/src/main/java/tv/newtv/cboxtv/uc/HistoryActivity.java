@@ -296,7 +296,7 @@ public class HistoryActivity extends BaseActivity implements
 
         TextView textView = focusView.findViewById(R.id.id_title);
         if (textView != null) {
-           // textView.setEllipsize(null);
+            // textView.setEllipsize(null);
             textView.setSelected(false);
         }
 
@@ -445,7 +445,9 @@ public class HistoryActivity extends BaseActivity implements
         DataSupport.search(tableName)
                 .condition()
                 .limit(UserCenterRecordManager.REQUEST_LIST_PAGE_RECORD_LIMIT)
-                .noteq(DBConfig.CONTENTTYPE,Constant.CONTENTTYPE_LB)
+                .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
+                .noteq(DBConfig.CONTENTTYPE, "null")
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -455,7 +457,8 @@ public class HistoryActivity extends BaseActivity implements
                         Log.e(TAG, "---result = " + result);
                         if (code == 0) {
                             Gson mGson = new Gson();
-                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {}.getType();
+                            Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
+                            }.getType();
                             final List<UserCenterPageBean.Bean> mCollectBean = mGson.fromJson(result, type);
                             Message msg = Message.obtain();
                             msg.what = UPDATE;
@@ -555,7 +558,15 @@ public class HistoryActivity extends BaseActivity implements
 
     @Override
     public void onItemClick(View view, int Position, UserCenterPageBean.Bean object) {
-        JumpUtil.activityJump(getApplicationContext(), object._actiontype, object._contenttype,
+//        //2018.12.25 wqs 兼容2.0版本用户行为数据
+//        if (!TextUtils.isEmpty(object.getContentId()) && !TextUtils.equals(object.getContentId(), "null")) {
+//            JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
+//                    object.getContentId(), "");
+//        } else {
+//            JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
+//                    object.get_contentuuid(), "");
+//        }
+        JumpUtil.activityJump(this, object.get_actiontype(), object.get_contenttype(),
                 object.getContentId(), "");
     }
 

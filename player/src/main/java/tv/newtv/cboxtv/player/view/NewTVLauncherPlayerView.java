@@ -2073,7 +2073,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (screenListeners == null) {
             screenListeners = new ArrayList<>();
         }
-        screenListeners.add(listener);
+        if(!screenListeners.contains(listener)){
+            screenListeners.add(listener);
+        }
     }
 
     public void unregisterScreenListener(ScreenListener listener) {

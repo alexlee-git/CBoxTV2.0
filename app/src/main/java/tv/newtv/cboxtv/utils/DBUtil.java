@@ -10,9 +10,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
-import com.newtv.libs.util.SystemUtils;
 
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
 
 /**
@@ -355,7 +353,7 @@ public class DBUtil {
         contentValues.put(DBConfig.LAST_PUBLISH_DATE, bundle.getString(DBConfig.LAST_PUBLISH_DATE));
         contentValues.put(DBConfig.SUB_TITLE, bundle.getString(DBConfig.SUB_TITLE));
         contentValues.put(DBConfig.UPDATE_TIME, bundle.getString(DBConfig.UPDATE_TIME));
-        contentValues.put(DBConfig.USERID, bundle.getString(DBConfig.USERID));
+        contentValues.put(DBConfig.USERID, userId);
         contentValues.put(DBConfig.IMAGEURL, bundle.getString(DBConfig.H_IMAGE));
         contentValues.put(DBConfig.H_IMAGE, bundle.getString(DBConfig.H_IMAGE));
         contentValues.put(DBConfig.VIP_FLAG, bundle.getString(DBConfig.VIP_FLAG));
@@ -371,11 +369,11 @@ public class DBUtil {
                 .withCallback(callback).excute();
     }
 
-    public static void deleteCarouselChannelRecord(String contentID, DBCallback<String> callback) {
-        DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
+    public static void deleteCarouselChannelRecord(String userId, String contentID, DBCallback<String> callback, String tableName) {
+        DataSupport.delete(tableName)
                 .condition()
                 .eq(DBConfig.CONTENT_ID, contentID)
-                .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
     }
