@@ -542,12 +542,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void release() {
-        if (PlayInfoUtil.configBool1){
-            PlayInfoUtil.setConfig1(defaultConfig);
-        }
-        if (PlayInfoUtil.configBool2){
-            PlayInfoUtil.setConfig2(defaultConfig);
-        }
+
         if (isReleased) return;
         isReleased = true;
         addHistory();
@@ -727,14 +722,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public boolean onBackPressed() {
-        if (defaultConfig == null && PlayInfoUtil.configBool1){
-
-            defaultConfig = PlayInfoUtil.getConfig1();
-        }
-        if (defaultConfig == null && PlayInfoUtil.configBool2){
-
-            defaultConfig = PlayInfoUtil.getConfig2();
-        }
         if (defaultConfig != null && !defaultConfig.startIsFullScreen) {
             if (defaultConfig.isFullScreen) {
                 ExitFullScreen();
@@ -2059,7 +2046,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (mLiveListener != null) {
                 mLiveListener.onComplete();
             }
-            release();
+            stop();
         }
         if (mLiveListener != null) {
             mLiveListener.onTimeChange(current, end);
