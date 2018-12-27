@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -296,6 +298,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         }
 
         mContent = content;
+        ADConfig.getInstance().setContentType(mContent.getContentType());
 
         if (alternateIdText != null) {
             alternateIdText.setText(String.format("%s %s", content.getAlternateNumber(), content

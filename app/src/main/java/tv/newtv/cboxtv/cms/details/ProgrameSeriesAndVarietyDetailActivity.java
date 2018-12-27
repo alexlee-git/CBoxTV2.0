@@ -436,6 +436,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
         //这里跳转不同详情页 综艺、电视剧
         setContentView(R.layout.fragment_new_variety_show);
         ADConfig.getInstance().setSeriesID(uuid);
+        ADConfig.getInstance().setContentType(content.getContentType());
         initView(content, uuid);
     }
 

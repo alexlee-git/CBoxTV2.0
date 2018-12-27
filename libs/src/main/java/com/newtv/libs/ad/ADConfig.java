@@ -17,6 +17,25 @@ public class ADConfig {
     private String videoType;//一级分类
     private String videoClass;//二级分类
     private String vipFlag;
+    private String carousel;
+    private String contentType;
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public String getCarousel() {
+        return carousel;
+    }
+
+    public void setCarousel(String carousel) {
+        this.carousel = carousel;
+    }
+
     private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
