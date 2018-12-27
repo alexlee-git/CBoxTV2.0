@@ -167,7 +167,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
     }
 
     @Override
-    public void addRemoteCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
+    public void addRemoteCollectList(String collectType, String token, String userID, List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
         Observable.create(new ObservableOnSubscribe<Integer>() {
             @Override
             public void subscribe(ObservableEmitter<Integer> e) throws Exception {
@@ -190,6 +190,45 @@ public class CollectRemoteDataSource implements CollectDataSource {
                 } catch (Exception exception) {
                     exception.printStackTrace();
                     Log.e(TAG, "wqs:addRemoteCollectList:Exception:" + exception.toString());
+                    e.onNext(0);
+                }
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer size) throws Exception {
+                        if (callback != null) {
+                            callback.onAddRemoteCollectListComplete(size);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void addRemoteLbCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
+        Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+                try {
+                    if (!TextUtils.isEmpty(userID)) {
+                        if (beanList != null && beanList.size() > 0) {
+                            for (int i = 0; i < beanList.size(); i++) {
+                                addRemoteCollectRecord(collectType, token, userID, beanList.get(i));
+                            }
+                            e.onNext(beanList.size());
+                        } else {
+                            Log.e(TAG, "wqs:addRemoteLbCollectList:beanList==null||beanList.size==0");
+                            e.onNext(0);
+                        }
+                    } else {
+                        Log.e(TAG, "wqs:addRemoteLbCollectList:userID==null");
+                        e.onNext(0);
+                    }
+
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    Log.e(TAG, "wqs:addRemoteLbCollectList:Exception:" + exception.toString());
                     e.onNext(0);
                 }
             }
