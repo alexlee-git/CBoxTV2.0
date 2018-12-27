@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <tv.newtv.cboxtv.views.custom.RecycleImageView
+            android:id="@+id/id_module_1_title_icon"
+            android:layout_width="@dimen/width_17px"
+            android:layout_height="@dimen/height_17px"
+            android:layout_marginLeft="@dimen/width_20px"
+            android:layout_marginTop="@dimen/height_56px"
+            android:background="@drawable/tuoyuan"
+            android:tag="module_001_title_icon"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/id_module_1_title"
+            style="@style/ModuleTitleStyle"
+            android:layout_width="@dimen/width_1600px"
+            android:layout_height="@dimen/height_34px"
+            android:layout_marginLeft="@dimen/width_6px"
+            android:layout_marginTop="@dimen/height_47px"
+            android:layout_toRightOf="@id/id_module_1_title_icon"
+            android:includeFontPadding="false"
+            android:tag="module_001_title"
+            android:visibility="gone" />
+
+        <tv.newtv.cboxtv.views.custom.BlockPosterView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id_module_1_title"
+            android:layout_marginTop="@dimen/height_15px"
+            app:block_poster_height="@dimen/height_320px"
+            app:block_poster_holder="@drawable/focus_1680_320"
+            app:block_poster_width="@dimen/width_1680px"
+            app:block_tag="cell_001_1">
+
+        </tv.newtv.cboxtv.views.custom.BlockPosterView>
+
+
+    </RelativeLayout>
+</RelativeLayout>
+

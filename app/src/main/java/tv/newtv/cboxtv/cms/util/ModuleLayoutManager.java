@@ -54,7 +54,7 @@ public class ModuleLayoutManager {
             .layout_module_29,
             R.layout.layout_module_30, R.layout.layout_module_31, R.layout.layout_module_32};
 
-    private int[] layoutResIds_V2 = new int[]{R.layout.layout_module_1, R.layout.layout_module_2_v2,
+    private int[] layoutResIds_V2 = new int[]{R.layout.layout_module_1_v2, R.layout.layout_module_2_v2,
             R.layout.layout_module_3_v2, R.layout.layout_module_4_v2, R.layout.layout_module_5, R
             .layout.layout_module_6_v2,
             R.layout.layout_module_7_v2, R.layout.layout_module_8_v2, R.layout.layout_module_9_v2, R
