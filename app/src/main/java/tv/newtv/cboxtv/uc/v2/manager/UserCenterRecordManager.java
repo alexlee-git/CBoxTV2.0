@@ -278,6 +278,7 @@ public class UserCenterRecordManager {
                 progress = "0";
             }
             bundle.putString(DBConfig.PLAY_PROGRESS, progress);
+            bundle.putString(DBConfig.PLAYID, info.getContentUUID());
             //2018.12.21 wqs 防止插入时间有误，统一插入时间
             bundle.putString(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis() + "");
             String tableName = "";
@@ -766,6 +767,7 @@ public class UserCenterRecordManager {
                             bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(playPosition));
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             bundle.putString(DBConfig.CONTENT_DURATION, bean.getDuration());
+                            bundle.putString(DBConfig.PLAYID, bean.getPlayId());
                             DBUtil.addHistory(userId, info, bundle, callback, tableName);
                         }
                     }
@@ -1673,7 +1675,7 @@ public class UserCenterRecordManager {
                 tableName = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
                 userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
             }
-        } else if (TextUtils.equals(type, "history") || TextUtils.equals(type,"lbHistory")) {
+        } else if (TextUtils.equals(type, "history") || TextUtils.equals(type, "lbHistory")) {
             if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
                 tableName = DBConfig.HISTORY_TABLE_NAME;
                 userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
@@ -1681,7 +1683,7 @@ public class UserCenterRecordManager {
                 tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
                 userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
             }
-        } else if(TextUtils.equals(type,"lbCollect")) {
+        } else if (TextUtils.equals(type, "lbCollect")) {
             if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
                 tableName = DBConfig.LB_COLLECT_TABLE_NAME;
                 userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
@@ -1702,7 +1704,7 @@ public class UserCenterRecordManager {
         if (TextUtils.equals(type, "history")) {
             sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
-        if(TextUtils.equals(type,"lbHistory")){
+        if (TextUtils.equals(type, "lbHistory")) {
             sqlCondition.eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
         sqlCondition.build().withCallback(dbCallback).excute();
