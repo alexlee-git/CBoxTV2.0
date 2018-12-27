@@ -19,7 +19,8 @@ public interface FollowDataSource {
 
         void onFollowListLoaded(List<UserCenterPageBean.Bean> FollowList, final int totalSize);
 
-        void onDataNotAvailable();
+        void onError(String error);
+
     }
 
     interface AddRemoteFollowListCallback {

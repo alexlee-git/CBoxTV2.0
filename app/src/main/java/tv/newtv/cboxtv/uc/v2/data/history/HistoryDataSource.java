@@ -20,7 +20,8 @@ public interface HistoryDataSource {
 
         void onHistoryListLoaded(List<UserCenterPageBean.Bean> historyList, final int totalSize);
 
-        void onDataNotAvailable();
+        void onError(String error);
+
     }
 
     interface AddRemoteHistoryListCallback {

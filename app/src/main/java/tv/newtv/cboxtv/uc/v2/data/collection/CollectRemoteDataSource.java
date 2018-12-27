@@ -415,9 +415,6 @@ public class CollectRemoteDataSource implements CollectDataSource {
                             e.printStackTrace();
                         }
 
-                        if (callback != null) {
-                            callback.onDataNotAvailable();
-                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
@@ -426,7 +423,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         Log.e(TAG, "wqs:getRemoteCollectList onError: ");
 
                         if (callback != null) {
-                            callback.onCollectListLoaded(null, 0);
+                            callback.onError(e.toString());
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
@@ -542,9 +539,6 @@ public class CollectRemoteDataSource implements CollectDataSource {
                             e.printStackTrace();
                         }
 
-                        if (callback != null) {
-                            callback.onDataNotAvailable();
-                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetLbListDisposable);
                     }
 
@@ -553,7 +547,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                         Log.e(TAG, "wqs:getRemoteCollectList onError: ");
 
                         if (callback != null) {
-                            callback.onCollectListLoaded(null, 0);
+                            callback.onError(e.toString());
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetLbListDisposable);
                     }

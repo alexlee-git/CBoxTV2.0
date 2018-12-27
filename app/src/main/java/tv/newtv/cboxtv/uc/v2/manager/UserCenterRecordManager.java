@@ -849,9 +849,10 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteHistoryList:onError:" + error);
                             }
+
                         });
                         getRemoteSubscribe(context, token, userId, offset, limit, new SubDataSource.GetSubscribeListCallback() {
                             @Override
@@ -882,8 +883,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteSubscribe:onError:" + error);
                             }
                         });
                         getRemoteCollectionList("0", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
@@ -915,8 +916,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteCollectionList:onError:" + error);
                             }
                         });
                         getRemoteFollowList(context, token, userId, offset, limit, new FollowDataSource.GetFollowListCallback() {
@@ -948,8 +949,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteFollowList:onError:" + error);
                             }
                         });
                         getRemoteLbCollectionList("1", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
@@ -981,8 +982,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteLbCollectionList:onError:" + error);
                             }
                         });
                     } else {

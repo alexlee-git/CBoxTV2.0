@@ -291,10 +291,6 @@ public class SubRemoteDataSource implements SubDataSource {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        if (callback != null) {
-                            callback.onDataNotAvailable();
-                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
@@ -302,7 +298,7 @@ public class SubRemoteDataSource implements SubDataSource {
                     public void onError(Throwable e) {
                         Log.e(TAG, "get Subscribe list error:" + e.toString());
                         if (callback != null) {
-                            callback.onSubscribeListLoaded(null, 0);
+                            callback.onError(e.toString());
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }

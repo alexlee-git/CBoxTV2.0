@@ -19,7 +19,8 @@ public interface CollectDataSource {
 
         void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize);
 
-        void onDataNotAvailable();
+        void onError(String error);
+
     }
 
     interface AddRemoteCollectListCallback {
