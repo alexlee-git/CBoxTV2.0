@@ -211,8 +211,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             }
                         }
                         if (!isLiving){
-                            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
-                                    + ","+ADConfig.getInstance().getSeriesID() + ","
+                            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," +
+                                    ADConfig.getInstance().getSeriesID() + ","
                                     + ADConfig.getInstance().getProgramId()
                                     + "," + chatTpe + ","+ definition
                                     + ","+ADConfig.getInstance().getIntMillisDuration()
@@ -298,8 +298,8 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                                             chatTpe = "1";
                                         }
                                     }
-                                    LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
-                                            + ","+ADConfig.getInstance().getSeriesID() + ","
+                                    LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17,"
+                                            +ADConfig.getInstance().getSeriesID() + ","
                                             + ADConfig.getInstance().getProgramId()
                                             + "," + chatTpe + ","+ definition
                                             + ","+ADConfig.getInstance().getIntMillisDuration()

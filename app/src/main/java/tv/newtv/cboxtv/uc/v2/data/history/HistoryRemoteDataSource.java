@@ -342,7 +342,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                             }
 
                             if (callback != null) {
-                                callback.onHistoryListLoaded(infos, totalSize);
+                                callback.onHistoryListLoaded(infos, infos.size());
                                 return;
                             }
                         } catch (Exception e) {
