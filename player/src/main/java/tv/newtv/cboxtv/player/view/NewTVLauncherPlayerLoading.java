@@ -124,7 +124,6 @@ public class NewTVLauncherPlayerLoading extends FrameLayout {
     }
 
     public void setIsPrepared(boolean isPrepared) {
-//        findViewById(R.id.view_root).setVisibility(isPrepared ? View.GONE : View.VISIBLE);
         findViewById(R.id.view_root).setBackground(isPrepared ? null : getResources().getDrawable
                 (R.drawable.normalplayer_bg));
     }
