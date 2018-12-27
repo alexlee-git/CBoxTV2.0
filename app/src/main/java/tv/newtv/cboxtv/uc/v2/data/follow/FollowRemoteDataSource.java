@@ -268,14 +268,13 @@ public class FollowRemoteDataSource implements FollowDataSource {
                                 entity.setPlayIndex(item.optString("latest_episode"));
                                 entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setIsUpdate(item.optString("update_superscript"));
-                                entity.setPlayIndex(item.optString("episode_num"));
                                 entity.setRecentMsg(item.optString("recent_msg"));
                                 entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 infos.add(entity);
                             }
 
                             if (callback != null) {
-                                callback.onFollowListLoaded(infos, totalSize);
+                                callback.onFollowListLoaded(infos, infos.size());
                                 return;
                             }
                         } catch (Exception e) {
