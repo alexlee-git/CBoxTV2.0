@@ -19,13 +19,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tv.newtv.cboxtv.cms.details.view.myRecycleView.HorizontalRecyclerView;
+import com.newtv.cms.contract.NavContract;
 import com.newtv.libs.Cache;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.views.widget.RecycleSpaceDecoration;
 
-public class NavPopuView extends PopupWindow {
+public class NavPopuView extends PopupWindow implements NavContract.View{
     private View inflate;
     private AiyaRecyclerView navRecycle;
     private List<Nav> list;
@@ -36,10 +39,26 @@ public class NavPopuView extends PopupWindow {
     public void showPopup(Context context, View parents) {
         inflate = LayoutInflater.from(context).inflate(R.layout.navigation_popu, null);
         setContentView(inflate);
+        navRecycle = inflate.findViewById(R.id.nav_recycle);
+
         navs = Cache.getInstance().get(Cache.CACHE_TYPE_NAV, "navId");
         if (navs==null){
-            return;
+            new NavContract.MainNavPresenter(context, this).requestNav();
+        }else {
+          initRecycle(context);
         }
+
+        setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+        setAnimationStyle(R.style.popu_anim);
+        setFocusable(true);
+        inflate.requestFocus();
+        setBackgroundDrawable(new BitmapDrawable());
+        showAtLocation(parents, Gravity.TOP, 0, 0);
+
+    }
+
+    private void initRecycle(Context context) {
         list = new ArrayList<>(navs.size());
         map = new HashMap<>();
         Nav searchNav = null, meNav = null;
@@ -59,26 +78,29 @@ public class NavPopuView extends PopupWindow {
         if (meNav != null) {
             list.add(meNav);
         }
-
-        setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
-        setAnimationStyle(R.style.popu_anim);
-        setFocusable(true);
-        inflate.requestFocus();
-        setBackgroundDrawable(new BitmapDrawable());
-        initView(context, parents);
-    }
-
-    private void initView(Context context, final View parents) {
-        navRecycle = inflate.findViewById(R.id.nav_recycle);
-        showAtLocation(parents, Gravity.TOP, 0, 0);
         navRecycle.addItemDecoration(new RecycleSpaceDecoration(context.getResources().getDimensionPixelSize(R.dimen.width_72px), context.getResources().getDimensionPixelSize(R.dimen.width_72px)));//new SpacesItemDecoration(ScreenUtils.dp2px(30))
-
         PopuAdapter adapter = new PopuAdapter(context, list,map);
         navRecycle.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         navRecycle.setAlign(AiyaRecyclerView.ALIGN_CENTER);
         navRecycle.setAdapter(adapter);
 
+
+    }
+
+
+    @Override
+    public void onNavResult(@NotNull Context context, @Nullable List<Nav> result) {
+        navs = result;
+        initRecycle(context);
+    }
+
+    @Override
+    public void tip(@NotNull Context context, @NotNull String message) {
+
+    }
+
+    @Override
+    public void onError(@NotNull Context context, @Nullable String code, @Nullable String desc) {
 
     }
 }

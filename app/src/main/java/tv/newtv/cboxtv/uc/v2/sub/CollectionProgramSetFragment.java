@@ -88,6 +88,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private Observable<Map<String, String>> operationObs;
     private String operationType;
     private String operationId;
+    private List<Program> programDatas;
 
     @Override
     protected int getLayoutId() {
@@ -302,10 +303,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     public void inflatePageWhenNoData() {
 //        hideView(mRecyclerView);
         showEmptyTip();
-        CollectionDetailActivity parentActivity = (CollectionDetailActivity) getActivity();
-        if (parentActivity != null) {
-            parentActivity.currentNavFouse();
-        }
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
@@ -341,14 +338,38 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         }
     }
 
+    private boolean isEqual(List<Program> datas, List<Program> datas1) {
+        if (datas.size() == datas1.size()) {
+            for (int i = 0; i < datas.size(); i++) {
+                if (!datas.get(i).getL_id().equals(datas1.get(i).getL_id())) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onPageResult(@Nullable List<Page> page) {
+
         try {
             if (page == null && page.size() <= 0) {
                 return;
             }
+
             List<Program> programInfos = page.get(0).getPrograms();
 
+            if (programInfos == null) {
+                return;
+            }
+
+            if (programDatas != null && isEqual(programInfos, programDatas)) {
+                Log.i(TAG, "onPageResult: isEqual  ture");
+                return;
+            }
+            programDatas = programInfos;
             ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
             if (viewStub != null) {
                 View view = viewStub.inflate();

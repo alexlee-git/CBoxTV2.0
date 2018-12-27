@@ -186,16 +186,16 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_COLLECTION, 1);
             mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                @Override
-                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                    outRect.bottom = 46;
-                    int index = parent.getChildLayoutPosition(view);
-                    if (index < COLUMN_COUNT) {
-                        outRect.top = 23;
-                    }
-                }
-            });
+//            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                @Override
+//                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                    outRect.bottom = 46;
+//                    int index = parent.getChildLayoutPosition(view);
+//                    if (index < COLUMN_COUNT) {
+//                        outRect.top = 23;
+//                    }
+//                }
+//            });
         } else {
             if (mDatas != null && mAdapter != null) {
                 boolean refresh = isEqual(datas, mDatas);
@@ -278,48 +278,48 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
 
     @Override
     public void onPageResult(@Nullable List<Page> page) {
-        try {
-            if (page == null && page.size() <= 0) {
-                return;
-            }
-            List<Program> programInfos = page.get(0).getPrograms();
-
-            ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
-            if (viewStub != null) {
-                View view = viewStub.inflate();
-                if (view != null) {
-                    mHotRecommendTitle = view.findViewById(R.id.id_hot_recommend_area_title);
-                    mHotRecommendTitle.setText(page.get(0).getBlockTitle());
-                    mHotRecommendTitleIcon = view.findViewById(R.id.id_hot_recommend_area_icon);
-                    mHotRecommendRecyclerView = view.findViewById(R.id.id_hot_recommend_area_rv);
-                    mHotRecommendRecyclerView.setHasFixedSize(true);
-                    mHotRecommendRecyclerView.setItemAnimator(null);
-                    mHotRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false) {
-                        @Override
-                        public boolean canScrollHorizontally() {
-                            return false;
-                        }
-                    });
-                    mHotRecommendRecyclerView.setAdapter(new HotRecommendAreaAdapter(getActivity(), programInfos, 1));
-                    mHotRecommendRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                        @Override
-                        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                            int index = parent.getChildLayoutPosition(view);
-                            if (index < 6) {
-                                outRect.top = 23;
-                            }
-                        }
-                    });
-                }
-            }
-
-            showView(emptyTextView);
-            showView(mHotRecommendTitle);
-            showView(mHotRecommendTitleIcon);
-            showView(mHotRecommendRecyclerView);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (page == null && page.size() <= 0) {
+//                return;
+//            }
+//            List<Program> programInfos = page.get(0).getPrograms();
+//
+//            ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
+//            if (viewStub != null) {
+//                View view = viewStub.inflate();
+//                if (view != null) {
+//                    mHotRecommendTitle = view.findViewById(R.id.id_hot_recommend_area_title);
+//                    mHotRecommendTitle.setText(page.get(0).getBlockTitle());
+//                    mHotRecommendTitleIcon = view.findViewById(R.id.id_hot_recommend_area_icon);
+//                    mHotRecommendRecyclerView = view.findViewById(R.id.id_hot_recommend_area_rv);
+//                    mHotRecommendRecyclerView.setHasFixedSize(true);
+//                    mHotRecommendRecyclerView.setItemAnimator(null);
+//                    mHotRecommendRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false) {
+//                        @Override
+//                        public boolean canScrollHorizontally() {
+//                            return false;
+//                        }
+//                    });
+//                    mHotRecommendRecyclerView.setAdapter(new HotRecommendAreaAdapter(getActivity(), programInfos, 1));
+//                    mHotRecommendRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                        @Override
+//                        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                            int index = parent.getChildLayoutPosition(view);
+//                            if (index < 6) {
+//                                outRect.top = 23;
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//
+//            showView(emptyTextView);
+//            showView(mHotRecommendTitle);
+//            showView(mHotRecommendTitleIcon);
+//            showView(mHotRecommendRecyclerView);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

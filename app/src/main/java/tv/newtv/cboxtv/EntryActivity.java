@@ -335,10 +335,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
     private void enterMain() {
 
-        if(mAdPresenter != null){
-            mAdPresenter.destroy();
-            mAdPresenter = null;
-        }
+
 
         authLogSuccess();//认证成功
 
@@ -384,6 +381,12 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
             //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
             startActivity(intent);
         }
+
+        if(mAdPresenter != null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
+
         finish();
     }
 
