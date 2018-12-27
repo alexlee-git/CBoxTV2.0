@@ -39,6 +39,8 @@ public interface CollectDataSource {
 
     void addRemoteCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback);
 
+    void addRemoteLbCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback);
+
     void deleteRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean bean);
 
     void getRemoteCollectList(String collectType, String token, final String userId, String appKey, String channelCode, String offset, final String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback);

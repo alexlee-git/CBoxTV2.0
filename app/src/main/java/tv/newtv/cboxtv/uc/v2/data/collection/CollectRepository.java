@@ -45,6 +45,11 @@ public class CollectRepository implements CollectDataSource {
     }
 
     @Override
+    public void addRemoteLbCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback) {
+        mRemoteDataSource.addRemoteCollectList(collectType, token, userID, beanList, callback);
+    }
+
+    @Override
     public void deleteRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean Collect) {
         mRemoteDataSource.deleteRemoteCollect(collectType, Collect);
     }

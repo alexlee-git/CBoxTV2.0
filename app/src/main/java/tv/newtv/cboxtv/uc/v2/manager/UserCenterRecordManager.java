@@ -567,6 +567,11 @@ public class UserCenterRecordManager {
                 .addRemoteCollectList(collectType, token, userId, beanList, callback);
     }
 
+    public void addRemoteLbCollectList(String collectType, Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, CollectDataSource.AddRemoteCollectListCallback callback) {
+        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
+                .addRemoteLbCollectList(collectType, token, userId, beanList, callback);
+    }
+
     public void addRemoteFollowList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, FollowRemoteDataSource.AddRemoteFollowListCallback callback) {
         FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context))
                 .addRemoteFollowList(token, userId, beanList, callback);
@@ -1066,6 +1071,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteHistoryListComplete:size:" + totalSize);
                                             AddHistoryRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameHistory, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameHistory:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1085,6 +1096,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteCollectListComplete:size:" + totalSize);
                                             AddCollectionRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameCollect, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameCollect:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1104,6 +1121,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteSubscribeListComplete:size:" + totalSize);
                                             AddSubscribeRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameSubscribe, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameSubscribe:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1123,6 +1146,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteFollowListComplete:size:" + totalSize);
                                             AddFollowRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(TableNameAttention, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:TableNameAttention:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1136,12 +1165,18 @@ public class UserCenterRecordManager {
                                     Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                                     }.getType();
                                     List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
-                                    addRemoteCollectList("1", context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
+                                    addRemoteLbCollectList("1", context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
                                         @Override
                                         public void onAddRemoteCollectListComplete(int totalSize) {
                                             Log.e(TAG, "wqs:onAddLbRemoteCollectListComplete:size:" + totalSize);
                                             AddLbCollectionRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameLbCollect, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameLbCollect:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
