@@ -100,7 +100,8 @@
             app:block_poster_height="@dimen/height_216px"
             app:block_poster_holder="@drawable/focus_384_216"
             app:block_poster_width="@dimen/width_384px"
-            app:block_tag="cell_016_6">
+            app:block_tag="cell_016_6"
+            android:layout_toEndOf="@id/id_module_16_view3">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
@@ -116,7 +117,8 @@
             app:block_poster_height="@dimen/height_480px"
             app:block_poster_holder="@drawable/focus_384_480"
             app:block_poster_width="@dimen/width_384px"
-            app:block_tag="cell_016_3">
+            app:block_tag="cell_016_3"
+            android:layout_toEndOf="@id/id_module_16_view4">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 

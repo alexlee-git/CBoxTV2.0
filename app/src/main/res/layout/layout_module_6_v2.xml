@@ -151,7 +151,7 @@
             android:layout_below="@id/id_module_6_title"
             android:layout_toEndOf="@id/id_module_6_view7"
             android:layout_toRightOf="@id/id_module_6_view7"
-            android:tag="cell_006_8"
+            app:block_tag="cell_006_8"
             app:block_last="true"
             app:block_poster_height="@dimen/height_46px"
             app:block_poster_holder="@drawable/focus_168_46"

@@ -175,7 +175,8 @@
             app:block_poster_height="@dimen/height_96px"
             app:block_poster_holder="@drawable/focus_168_96"
             app:block_poster_width="@dimen/width_168px"
-            app:block_tag="cell_020_11">
+            app:block_tag="cell_020_11"
+            android:layout_toEndOf="@id/id_module_20_view7">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
