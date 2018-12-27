@@ -285,7 +285,7 @@ public class SubRemoteDataSource implements SubDataSource {
                             }
 
                             if (callback != null) {
-                                callback.onSubscribeListLoaded(infos, totalSize);
+                                callback.onSubscribeListLoaded(infos, infos.size());
                                 return;
                             }
                         } catch (Exception e) {

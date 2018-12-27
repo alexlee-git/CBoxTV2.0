@@ -369,7 +369,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                             }
 
                             if (callback != null) {
-                                callback.onCollectListLoaded(infos, totalSize);
+                                callback.onCollectListLoaded(infos, infos.size());
                                 return;
                             }
                         } catch (Exception e) {

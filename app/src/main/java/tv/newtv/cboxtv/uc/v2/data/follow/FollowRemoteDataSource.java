@@ -275,7 +275,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                             }
 
                             if (callback != null) {
-                                callback.onFollowListLoaded(infos, totalSize);
+                                callback.onFollowListLoaded(infos, infos.size());
                                 return;
                             }
                         } catch (Exception e) {
