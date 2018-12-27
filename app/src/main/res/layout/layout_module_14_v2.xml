@@ -98,7 +98,7 @@
             android:layout_below="@id/id_module_14_view4"
             android:layout_toEndOf="@id/id_module_14_view2"
             android:layout_toRightOf="@id/id_module_14_view2"
-            android:tag="cell_014_6"
+            app:block_tag="cell_014_6"
             app:block_last="true"
             app:block_poster_height="@dimen/height_320px"
             app:block_poster_holder="@drawable/focus_816_320"
