@@ -347,7 +347,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity.setPlayIndex(item.optString("latest_episode"));
                                 entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setIsUpdate(item.optString("update_superscript"));
-                                entity.setPlayIndex(item.optString("episode_num"));
+                                entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 entity.setRecentMsg(item.optString("recent_msg"));
                                 if (TextUtils.equals(collectType, "1")) {
@@ -474,7 +474,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity.setPlayIndex(item.optString("latest_episode"));
                                 entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setIsUpdate(item.optString("update_superscript"));
-                                entity.setPlayIndex(item.optString("episode_num"));
+                                entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 entity.setRecentMsg(item.optString("recent_msg"));
                                 if (TextUtils.equals(collectType, "1")) {

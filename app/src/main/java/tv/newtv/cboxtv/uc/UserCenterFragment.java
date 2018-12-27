@@ -826,7 +826,7 @@ public class UserCenterFragment extends BaseFragment implements
                         if (!TextUtils.isEmpty(entity.getContentId())) {
                             contentID = entity.getContentId();
                         }
-                        Log.d(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype() + "--- entity.getContentId():" + contentID);
+                        Log.d(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype() + "--- entity.getContentId():" + contentID+"---playindex:"+entity.getPlayIndex()+"---playID:"+entity.playId);
                         JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
                                 contentID, "");
                     } else {
