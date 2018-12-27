@@ -163,13 +163,13 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
                             if (item!=null&&!TextUtils.isEmpty( item.eventContent)){
                                 eventContent = item.eventContent;
                             }
-                            if (item != null && !TextUtils.isEmpty(item.mid) && !TextUtils
-                                    .isEmpty(item.aid) && !TextUtils.isEmpty(item.id)) {
-                                AdSDK.getInstance().report((item.mid + ""), item.aid + "", item
-                                                .id + "",
-                                        "", null, item.PlayTime + "", null);
-
-                            }
+//                            if (item != null && !TextUtils.isEmpty(item.mid) && !TextUtils
+//                                    .isEmpty(item.aid) && !TextUtils.isEmpty(item.id)) {
+//                                AdSDK.getInstance().report((item.mid + ""), item.aid + "", item
+//                                                .id + "",
+//                                        "", null, item.PlayTime + "", null);
+//
+//                            }
                         }
 
                         @Override
