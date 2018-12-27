@@ -106,7 +106,7 @@
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
-            android:tag="cell_031_6"
+            app:block_tag="cell_031_6"
             android:layout_toEndOf="@id/id_module_31_view1">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
