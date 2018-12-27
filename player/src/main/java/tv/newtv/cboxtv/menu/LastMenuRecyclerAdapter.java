@@ -12,9 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
+import com.newtv.libs.util.SharePreferenceUtils;
+import com.newtv.libs.util.SystemUtils;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -282,10 +285,20 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         if(TextUtils.isEmpty(lastNode.contentId)){
             return;
         }
+        String tableName = "";
+        String userId = "";
+        if (TextUtils.isEmpty(SharePreferenceUtils.getToken(Libs.get().getContext()))) {
+            tableName = DBConfig.COLLECT_TABLE_NAME;
+            userId = SystemUtils.getDeviceMac(Libs.get().getContext());
+        } else {
+            tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
+            userId = SharePreferenceUtils.getUserId(Libs.get().getContext());
+        }
 
-        DataSupport.search(DBConfig.LB_COLLECT_TABLE_NAME)
+        DataSupport.search(tableName)
                 .condition()
                 .eq(DBConfig.CONTENT_ID, lastNode.contentId)
+                .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
                 .withCallback(new DBCallback<String>() {

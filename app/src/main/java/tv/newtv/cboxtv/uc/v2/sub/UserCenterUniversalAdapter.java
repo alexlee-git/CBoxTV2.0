@@ -4,9 +4,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,6 +116,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 holder.score.setText(score);
                 holder.score.setVisibility(View.VISIBLE);
             } else {
+                holder.score.setText("");
                 holder.score.setVisibility(View.INVISIBLE);
             }
 
@@ -123,9 +124,10 @@ public class UserCenterUniversalAdapter extends RecyclerView
                     .getPlayPosition(), info.getDuration()));
             if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
                 // 更新剧集
-                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
-                if (!TextUtils.isEmpty(spannableRecentMsg) && !TextUtils.isEmpty("null")) {
-                    holder.episode.setText(spannableRecentMsg);
+                CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(info.getRecentMsg());
+                if (!TextUtils.isEmpty(charSequenceRecentMsg)) {
+                    holder.episode.setText(charSequenceRecentMsg);
+                    holder.episode.setVisibility(View.VISIBLE);
                 } else {
                     holder.episode.setText("");
                     holder.episode.setVisibility(View.INVISIBLE);
@@ -158,9 +160,9 @@ public class UserCenterUniversalAdapter extends RecyclerView
             }
             if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
                 // 更新剧集
-                SpannableStringBuilder spannableRecentMsg = SpannableBuilderUtils.builderMsg(info.getRecentMsg());
-                if (!TextUtils.isEmpty(spannableRecentMsg)) {
-                    holder.episode.setText(spannableRecentMsg);
+                CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(info.getRecentMsg());
+                if (!TextUtils.isEmpty(charSequenceRecentMsg)) {
+                    holder.episode.setText(charSequenceRecentMsg);
                 } else {
                     holder.episode.setText("");
                     holder.episode.setVisibility(View.INVISIBLE);
@@ -248,13 +250,33 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 RxBus.get().post("recordPosition", holder.getLayoutPosition());
 
                 Log.d(TAG, "contentType : " + info.get_contenttype() + ", actionType : " + info.get_actiontype());
+                //2018.12.26 wqs 兼容2.0版本用户行为数据
+                String contentID = info.get_contentuuid();
+                if (!TextUtils.isEmpty(info.getContentId())) {
+                    contentID = info.getContentId();
+                }
                 if (type == 1) {
                     JumpUtil.activityJump(mContext, Constant.OPEN_VIDEO, info.get_contenttype(),
-                            info.getContentId(), "");
+                            contentID, "");
                 } else {
                     JumpUtil.activityJump(mContext, info.get_actiontype(), info.get_contenttype(),
-                            info.getContentId(), "");
+                            contentID, "");
                 }
+
+            }
+        });
+        holder.itemView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (i == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        if (position >= mDatas.size() - 1) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
         });
     }

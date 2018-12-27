@@ -255,6 +255,52 @@ public class Node {
         return result;
     }
 
+    public Node searchNodeInParentByCategory(String type){
+        Node result = null;
+        if(TextUtils.equals(categoryType,type)){
+            return this;
+        }
+        if (getParent() != null){
+            result = getParent().searchNodeInParentByCategory(type);
+            if(result != null){
+                return result;
+            }
+        }
+        return null;
+    }
+
+    public boolean isLbNodeOrChild(){
+        boolean result;
+        result = searchNodeInParentByCategory(Constant.CONTENTTYPE_LB) != null ? true : false;
+        return result;
+    }
+
+    public Node getLeftNode(){
+        if(getParent() != null){
+            int size = getParent().getChild().size();
+            int number = getParent().getChild().indexOf(this);
+            number--;
+            if(number < 0) {
+                number = size - 1;
+            }
+            return getParent().getChild().get(number);
+        }
+        return null;
+    }
+
+    public Node getRightNode(){
+        if(getParent() != null){
+            int size = getParent().getChild().size();
+            int number = getParent().getChild().indexOf(this);
+            number++;
+            if(number >= size) {
+                number = 0;
+            }
+            return getParent().getChild().get(number);
+        }
+        return null;
+    }
+
     public void initParent(){
         for(Node node : child){
             node.initParent();

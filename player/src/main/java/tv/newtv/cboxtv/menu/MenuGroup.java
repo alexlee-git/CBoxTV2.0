@@ -282,12 +282,21 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     }
 
     public boolean setLastProgram(List<Program> lastProgram, String pId, String detailContentUUID) {
+        return setLastProgram(lastProgram,pId,detailContentUUID,false);
+    }
+
+    public boolean setLastProgram(List<Program> lastProgram, String pId, String detailContentUUID,boolean isLive) {
         this.lastProgram = lastProgram;
         this.detailcontentUUID = detailContentUUID;
+        String ignoreId = searchIgnoreId();
         for (Node node : allNodes) {
-            if (TextUtils.equals(node.getId(), pId) && !node.containId(MenuGroupPresenter2.LB_ID_COLLECT)) {
+            if (TextUtils.equals(node.getId(), pId) && !node.containId(MenuGroupPresenter2.LB_ID_COLLECT)
+                    && !node.containId(ignoreId)) {
                 node.setPrograms(lastProgram);
                 currentNode = node;
+                if(isLive){
+                    defaultFocusNode = currentNode;
+                }
                 for (Program p : lastProgram) {
                     p.setParent(node);
                     if (p.getContentID().equals(detailContentUUID)) {
@@ -305,6 +314,16 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         return true;
     }
 
+    private String searchIgnoreId(){
+        for(Node node : rootNodes){
+            if (TextUtils.equals(node.getCategoryType(), Constant.CONTENTTYPE_LB)
+                    && node.getChild() != null) {
+                return node.getChild().get(0).getId();
+            }
+        }
+        return "";
+    }
+
     private void initView() {
         int level = currentNode.getLevel();
         Node currentNode = this.currentNode;
@@ -313,10 +332,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             lv.setItemAnimator(null);
             MenuRecyclerAdapter adapter;
             if (i == level) {
-                adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode,this);
+                adapter = new MenuRecyclerAdapter(getContext(), rootNodes, currentNode, this);
             } else {
                 adapter = new MenuRecyclerAdapter(getContext(), currentNode.getParent()
-                        .getChild(), currentNode,this);
+                        .getChild(), currentNode, this);
             }
             lv.setAdapter(adapter);
 
@@ -335,7 +354,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         lastListView = new MenuRecyclerView(getContext());
         lastListView.setItemAnimator(null);
         LastMenuRecyclerAdapter adapter = new LastMenuRecyclerAdapter(getContext(), lastProgram,
-                detailcontentUUID,this);
+                detailcontentUUID, this);
         lastListView.setAdapter(adapter);
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -445,8 +464,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             case KeyEvent.KEYCODE_DPAD_CENTER:
                 if (level == MenuRecyclerView.MAX_LEVEL) {
                     Program program = lastProgram.get(position);
-                    if(!Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())
-                            && !LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())){
+                    if (!Constant.CONTENTTYPE_LB.equals(program.getParent().getContentType())
+                            && !LastMenuRecyclerAdapter.COLLECT_ID.equals(program.getContentUUID())) {
                         playProgram = program;
                         setPlayId(program);
                     }
@@ -459,30 +478,40 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                     MenuRecyclerView menuRecyclerViewRight = getMenuRecyclerViewByLevel(level);
                     MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerViewRight.getAdapter();
                     Node item = adapter.getItem(position);
-                    if (item instanceof LastNode && Constant.CONTENTTYPE_LB.equals(item.getContentType())) {
-                        if(item.getPrograms().size() > 0){
-                            int result = LbUtils.binarySearch(item.getPrograms(), -1);
-                            if(result >= 0){
-                                Program program = item.getPrograms().get(result);
-                                playProgram = program;
-                                setPlayId(program);
-                            } else {
-                                playProgram = null;
-                                defaultFocusNode = item;
-                            }
-                        } else {
-                            playProgram = null;
-                            defaultFocusNode = item;
-                        }
-                    }
+                    switchLbNode(item);
+
                     if (onSelectListenerList.size() > 0) {
                         for (OnSelectListener l : onSelectListenerList) {
-                            l.select(item,playProgram);
+                            l.select(item, playProgram);
                         }
                     }
                 }
                 break;
         }
+    }
+
+    public Program switchLbNode(Node item){
+        if (item instanceof LastNode && Constant.CONTENTTYPE_LB.equals(item.getContentType())) {
+            if (item.getPrograms().size() > 0) {
+                int result = LbUtils.binarySearch(item.getPrograms(), -1);
+                if (result >= 0) {
+                    Program program = item.getPrograms().get(result);
+                    playProgram = program;
+                    setPlayId(program);
+                } else {
+                    playProgram = null;
+                    defaultFocusNode = item;
+                }
+            } else {
+                playProgram = null;
+                defaultFocusNode = item;
+            }
+        } else if(item instanceof LastNode && Constant.CONTENTTYPE_LV.equals(item.getContentType())
+                && item.isLbNodeOrChild()){
+            playProgram = null;
+            defaultFocusNode = item;
+        }
+        return playProgram;
     }
 
     /**
@@ -649,7 +678,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             lastListView.setTag(node.getId());
             resetLastRecyclerViewData();
             setRecyclerViewsGoneByLevel(level - 1);
-            if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
+            if (Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
                 Toast.makeText(mContext, "节目走丢了 请继续观看", Toast.LENGTH_SHORT).show();
             }
         } else {
@@ -684,6 +713,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                 recyclerView.scrollToPosition(0);
                                 resetLastRecyclerView();
                             }
+                            checkHeadArrow();
                         }
                     }
                 });
@@ -716,11 +746,20 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         return result;
     }
 
+    public MenuRecyclerView getExistRecyclerViewByLevel(int level) {
+        MenuRecyclerView result = null;
+        int size = listViews.size();
+        if (level < size) {
+            result = listViews.get(level);
+        }
+        return result;
+    }
+
     public MenuRecyclerView createRecyclerView(int level) {
         MenuRecyclerView lv = new MenuRecyclerView(getContext());
         lv.setItemAnimator(null);
         MenuRecyclerAdapter adapter = new MenuRecyclerAdapter(getContext(), new ArrayList<Node>()
-                , null,this);
+                , null, this);
         lv.setAdapter(adapter);
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -746,7 +785,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     private void getLastData2(final Node node, final RecreateListener l) {
         lastListView.setTag(node);
-        if(node.isRequesting()){
+        if (node.isRequesting()) {
             return;
         }
         node.setRequesting(true);
@@ -790,7 +829,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                             }
 
                         } else {
-                            if(Constant.CONTENTTYPE_LB.equals(node.getContentType())){
+                            if (Constant.CONTENTTYPE_LB.equals(node.getContentType())) {
                                 Toast.makeText(mContext, "节目走丢了 请继续观看", Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -798,8 +837,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 });
     }
 
-    public void requestData(final Node node){
-        if(node.isRequest() || node.isRequesting()){
+    public void requestData(final Node node) {
+        if (node.isRequest() || node.isRequesting()) {
             return;
         }
         String nodeId = node.getId();
@@ -826,14 +865,15 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                             MainLooper.get().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (lastListView != null && lastListView.getTag() == node) {
+                                    if (lastListView != null && lastListView.getTag() != null
+                                            && lastListView.getTag().equals(node.getId())) {
                                         lastProgram = seriesContent.data;
                                         LastMenuRecyclerAdapter adapter =
                                                 (LastMenuRecyclerAdapter) lastListView.getAdapter();
                                         adapter.setData(lastProgram);
                                     }
 
-                                    if(listViews.size() <= node.getLevel()){
+                                    if (listViews.size() <= node.getLevel()) {
                                         return;
                                     }
                                     MenuRecyclerView menuRecyclerView = listViews.get(node.getLevel());
@@ -1012,7 +1052,11 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
             int size = currentNode.getLevel() + 2;
             currentX = -(size * recyclerViewWidth);
+            if(currentNode.getPrograms().size() == 0){
+                lastListView.setTag(currentNode.getId());
+            }
             showView(null);
+
 
             menuRecyclerView.scrollToPosition(menuRecyclerViewAdapter.calculatePlayIdPosition(0));
             Message msg = Message.obtain();
@@ -1157,13 +1201,23 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     private void checkHeadArrow() {
         if (arrowHead == null)
             return;
+        int number = getVisibleNumber();
         if (lastListView.getVisibility() == VISIBLE) {
             setHeadArrowVisible(View.GONE);
         } else {
-            setHeadArrowVisible(View.VISIBLE);
+            MenuRecyclerView menuRecyclerView = getExistRecyclerViewByLevel(number - 1);
+            if (menuRecyclerView != null && menuRecyclerView.getAdapter() != null) {
+                MenuRecyclerAdapter adapter = (MenuRecyclerAdapter) menuRecyclerView.getAdapter();
+                if (adapter.getItemCount() == 0) {
+                    setHeadArrowVisible(View.GONE);
+                } else {
+                    setHeadArrowVisible(View.VISIBLE);
+                }
+            } else {
+                setHeadArrowVisible(View.VISIBLE);
+            }
         }
 
-        int number = getVisibleNumber();
         if (number > VISIBLE_COLUMN) {
             arrowHead.setLeftArrowHeadVisible(View.VISIBLE);
         } else {
@@ -1211,6 +1265,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         return isFinshAnim;
     }
 
+    public Node getCurrentNode() {
+        return currentNode;
+    }
+
     /**
      * 根据id查找node
      *
@@ -1243,31 +1301,31 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         getLastAdapter().notifyDataSetChanged();
     }
 
-    protected void setRecyclerViewSpacesItem(Node node){
-        if(node.getLevel() >= listViews.size()){
+    protected void setRecyclerViewSpacesItem(Node node) {
+        if (node.getLevel() >= listViews.size()) {
             return;
         }
         MenuRecyclerView recyclerView = getMenuRecyclerViewByLevel(node.getLevel());
-        if(Constant.CONTENTTYPE_LB.equals(node.getContentType())
-                || Constant.CONTENTTYPE_LV.equals(node.getContentType())){
-            if(recyclerView.getItemDecorationCount() == 0){
+        if (Constant.CONTENTTYPE_LB.equals(node.getContentType())
+                || Constant.CONTENTTYPE_LV.equals(node.getContentType())) {
+            if (recyclerView.getItemDecorationCount() == 0) {
                 recyclerView.addItemDecoration(spacesItemDecoration);
             }
         } else {
-            if(recyclerView.getItemDecorationCount() > 0){
+            if (recyclerView.getItemDecorationCount() > 0) {
                 recyclerView.removeItemDecoration(spacesItemDecoration);
             }
         }
     }
 
-    protected void addLastAdapterSpacesItem(){
-        if(lastListView.getItemDecorationCount() == 0){
+    protected void addLastAdapterSpacesItem() {
+        if (lastListView.getItemDecorationCount() == 0) {
             lastListView.addItemDecoration(spacesItemDecoration);
         }
     }
 
-    protected void removeLastAdapterSpacesItem(){
-        if(lastListView.getItemDecorationCount() > 0){
+    protected void removeLastAdapterSpacesItem() {
+        if (lastListView.getItemDecorationCount() > 0) {
             lastListView.removeItemDecoration(spacesItemDecoration);
         }
     }
@@ -1282,7 +1340,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
         void select(Program program);
 
-        void select(Node node,Program playProgram);
+        void select(Node node, Program playProgram);
     }
 
     private static class MyHandler extends android.os.Handler {
@@ -1335,7 +1393,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         }
     }
 
-    static class SpacesItemDecoration extends RecyclerView.ItemDecoration{
+    static class SpacesItemDecoration extends RecyclerView.ItemDecoration {
         private int space;
 
         public SpacesItemDecoration(int space) {

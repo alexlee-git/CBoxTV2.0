@@ -48,6 +48,7 @@ import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.CollectionDetailActivity;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.views.GridRecycleView;
 
 /**
  * 项目名称:         央视影音
@@ -60,7 +61,7 @@ import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 public class CollectionProgramSetFragment extends BaseDetailSubFragment implements PageContract.View {
     private final String TAG = "cpsf";
-    private RecyclerView mRecyclerView;
+    private GridRecycleView mRecyclerView;
     private View mHotRecommendArea;
     private ImageView mHotRecommendTitleIcon;
     private RecyclerView mHotRecommendRecyclerView;
@@ -87,6 +88,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     private Observable<Map<String, String>> operationObs;
     private String operationType;
     private String operationId;
+    private List<Program> programDatas;
 
     @Override
     protected int getLayoutId() {
@@ -207,6 +209,7 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
                 .condition()
                 .limit(UserCenterRecordManager.REQUEST_LIST_PAGE_RECORD_LIMIT)
                 .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -266,16 +269,16 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 6));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_COLLECTION);
             mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                @Override
-                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                    outRect.bottom = 72;
-                    int index = parent.getChildLayoutPosition(view);
-                    if (index < COLUMN_COUNT) {
-                        outRect.top = 23;
-                    }
-                }
-            });
+//            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                @Override
+//                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                    outRect.bottom = 72;
+//                    int index = parent.getChildLayoutPosition(view);
+//                    if (index < COLUMN_COUNT) {
+//                        outRect.top = 23;
+//                    }
+//                }
+//            });
         } else {
             if (mAdapter != null) {
                 if (TextUtils.equals(operationType, "delete")) {
@@ -300,10 +303,6 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
     public void inflatePageWhenNoData() {
 //        hideView(mRecyclerView);
         showEmptyTip();
-        CollectionDetailActivity parentActivity = (CollectionDetailActivity) getActivity();
-        if (parentActivity != null) {
-            parentActivity.currentNavFouse();
-        }
         String hotRecommendParam = BootGuide.getBaseUrl(BootGuide.PAGE_COLLECTION);
         if (!TextUtils.isEmpty(hotRecommendParam)) {
             mContentPresenter = new PageContract.ContentPresenter(getActivity(), this);
@@ -339,14 +338,38 @@ public class CollectionProgramSetFragment extends BaseDetailSubFragment implemen
         }
     }
 
+    private boolean isEqual(List<Program> datas, List<Program> datas1) {
+        if (datas.size() == datas1.size()) {
+            for (int i = 0; i < datas.size(); i++) {
+                if (!datas.get(i).getL_id().equals(datas1.get(i).getL_id())) {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public void onPageResult(@Nullable List<Page> page) {
+
         try {
             if (page == null && page.size() <= 0) {
                 return;
             }
+
             List<Program> programInfos = page.get(0).getPrograms();
 
+            if (programInfos == null) {
+                return;
+            }
+
+            if (programDatas != null && isEqual(programInfos, programDatas)) {
+                Log.i(TAG, "onPageResult: isEqual  ture");
+                return;
+            }
+            programDatas = programInfos;
             ViewStub viewStub = contentView.findViewById(R.id.id_hot_recommend_area_vs);
             if (viewStub != null) {
                 View view = viewStub.inflate();

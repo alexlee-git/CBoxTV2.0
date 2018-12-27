@@ -10,9 +10,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
-import com.newtv.libs.util.SystemUtils;
 
-import tv.newtv.cboxtv.LauncherApplication;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
 
 /**
@@ -221,15 +219,15 @@ public class DBUtil {
             contentValues.put(DBConfig.PLAY_PROGRESS, progress);
         }
 
-        String seriesUUID = mInfo.getContentID();
+        String seriesID = mInfo.getContentID();
         if (Constant.CONTENTTYPE_CP.equals(mInfo.getContentType())) {
             if (!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
-                seriesUUID = mInfo.getCsContentIDs().split("\\|")[0];
+                seriesID = mInfo.getCsContentIDs().split("\\|")[0];
             }
             contentValues.put(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_PS);
             contentValues.put(DBConfig.PLAYID, mInfo.getContentUUID());
         } else {
-            seriesUUID = mInfo.getContentUUID();
+            seriesID = mInfo.getContentID();
             if (index >= 0 && mInfo.getData() != null && index < mInfo.getData().size()) {
                 if (mInfo.getData() != null && mInfo.getData().size() != 0) {
                     contentValues.put(DBConfig.PLAYID, mInfo.getData().get(index).getContentUUID());
@@ -237,10 +235,9 @@ public class DBUtil {
             }
         }
         //2018.12.17 wqs 修改插入历史的条件为contentID
-        String contentID = mInfo.getContentID();
-        contentValues.put(DBConfig.CONTENT_ID, contentID);
+        contentValues.put(DBConfig.CONTENT_ID, seriesID);
         contentValues.put(DBConfig.PLAYPOSITION, bundle.getString(DBConfig.PLAYPOSITION));
-        contentValues.put(DBConfig.CONTENTUUID, seriesUUID);
+        contentValues.put(DBConfig.CONTENTUUID, mInfo.getContentUUID());
 
         String updateTime = bundle.getString(DBConfig.UPDATE_TIME);
         if (!TextUtils.isEmpty(updateTime)) {
@@ -263,12 +260,12 @@ public class DBUtil {
         if (!TextUtils.isEmpty(mInfo.getRecentMsg())) {
             contentValues.put(DBConfig.RECENT_MSG, mInfo.getRecentMsg());
         }
-        if(!TextUtils.isEmpty(mInfo.getAlternateNumber())){
-            contentValues.put(DBConfig.ALTERNATE_NUMBER,mInfo.getAlternateNumber());
+        if (!TextUtils.isEmpty(mInfo.getAlternateNumber())) {
+            contentValues.put(DBConfig.ALTERNATE_NUMBER, mInfo.getAlternateNumber());
         }
         DataSupport.insertOrUpdate(tableName)
                 .condition()
-                .eq(DBConfig.CONTENT_ID, contentID)
+                .eq(DBConfig.CONTENT_ID, seriesID)
                 .build()
                 .withValue(contentValues)
                 .withCallback(callback).excute();
@@ -355,7 +352,7 @@ public class DBUtil {
         contentValues.put(DBConfig.LAST_PUBLISH_DATE, bundle.getString(DBConfig.LAST_PUBLISH_DATE));
         contentValues.put(DBConfig.SUB_TITLE, bundle.getString(DBConfig.SUB_TITLE));
         contentValues.put(DBConfig.UPDATE_TIME, bundle.getString(DBConfig.UPDATE_TIME));
-        contentValues.put(DBConfig.USERID, bundle.getString(DBConfig.USERID));
+        contentValues.put(DBConfig.USERID, userId);
         contentValues.put(DBConfig.IMAGEURL, bundle.getString(DBConfig.H_IMAGE));
         contentValues.put(DBConfig.H_IMAGE, bundle.getString(DBConfig.H_IMAGE));
         contentValues.put(DBConfig.VIP_FLAG, bundle.getString(DBConfig.VIP_FLAG));
@@ -371,11 +368,11 @@ public class DBUtil {
                 .withCallback(callback).excute();
     }
 
-    public static void deleteCarouselChannelRecord(String contentID, DBCallback<String> callback) {
-        DataSupport.delete(DBConfig.LB_COLLECT_TABLE_NAME)
+    public static void deleteCarouselChannelRecord(String userId, String contentID, DBCallback<String> callback, String tableName) {
+        DataSupport.delete(tableName)
                 .condition()
                 .eq(DBConfig.CONTENT_ID, contentID)
-                .eq(DBConfig.USERID, SystemUtils.getDeviceMac(LauncherApplication.AppContext))
+                .eq(DBConfig.USERID, userId)
                 .build()
                 .withCallback(callback).excute();
     }

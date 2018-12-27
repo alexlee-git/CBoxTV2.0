@@ -295,11 +295,11 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
         oldLeftPosition = 0;
         leftPosition = -1;
         centerPosition = 0;
-        mLeftData.clear();
+        /*mLeftData.clear();
         mLeftFocusedData.clear();
         mCenterData.clear();
         mCenterFocusedData.clear();
-        mNewSpecialCenterAdapter.clearList();
+        mNewSpecialCenterAdapter.clearList();*/
     }
 
     @Override

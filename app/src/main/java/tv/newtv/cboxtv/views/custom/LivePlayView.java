@@ -42,6 +42,7 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
+import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -344,6 +345,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void init(Context context,AttributeSet attrs) {
+        PlayInfoUtil.configBool2 = true;
         TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable
                 .LivePlayView);
         if(typedArray != null){
@@ -440,6 +442,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
+
         mPlayInfo.contentType = programInfo.getL_contentType();
         mPlayInfo.actionType = programInfo.getL_actionType();
         if (programInfo.getVideo() != null) {
@@ -459,6 +462,11 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             //如果有playurl并且在直播的时间段内，则判断是直播
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
             if (liveInfo.isLiveTime()) {
+                liveInfo.setFromAlternate(isAlternate);
+                if(isAlternate){
+                    liveInfo.setFirstAlternate(true);
+                    liveInfo.setCanRequestAd(false);
+                }
                 mLiveInfo = liveInfo;
                 currentMode = MODE_LIVE;
                 playLiveVideo(useDelay ? 2000 : 0);
@@ -579,7 +587,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void destroy() {
-
+        PlayInfoUtil.configBool2 = false;
     }
 
     @Override

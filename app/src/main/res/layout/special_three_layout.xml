@@ -11,12 +11,12 @@
         android:layout_marginTop="@dimen/height_154px"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:maxEms="18"
+        android:maxEms="12"
         android:singleLine="true"
         android:text="111111111111111111111111111111"
         android:textColor="#FFFFFF"
         android:textSize="@dimen/height_52px"
-        android:textStyle="bold" />
+        />
 
     <TextView
         android:id="@+id/page_desc"

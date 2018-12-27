@@ -41,7 +41,7 @@ class AdContract {
 
         fun getAdByUrl(url: String)
 
-        fun getCarouselAd(adType: String, panel: String, secondPannel: String?, carousel: String)
+        fun getCarouselAd(adType: String, panel: String?, secondPannel: String?, carousel: String?)
 
         fun getAdByType(adType: String?, adLoc: String?, flag: String?, extends: HashMap<*, *>?, callback: Callback?)
 
@@ -77,14 +77,18 @@ class AdContract {
 
     class AdPresenter(context: Context, view: View?) : CmsServicePresenter<View>(context, view),
             Presenter {
-        override fun getCarouselAd(adType: String, panel: String, secondPannel: String?, carousel: String) {
+        override fun getCarouselAd(adType: String, panel: String?, secondPannel: String?,
+                                   carousel: String?) {
             val sb = StringBuffer()
             Observable.create(ObservableOnSubscribe<Int> { e ->
                 val config = ADConfig.getInstance()
                 val stringBuilder = StringBuilder()
-                addExtend(stringBuilder, "panel", panel)
-                addExtend(stringBuilder, "secondpanel", secondPannel)
-                addExtend(stringBuilder, "carousel", carousel)
+                addExtend(stringBuilder, "panel",
+                        if(!TextUtils.isEmpty(panel)) panel else "")
+                addExtend(stringBuilder, "secondpanel",
+                        if(!TextUtils.isEmpty(secondPannel)) secondPannel else "")
+                addExtend(stringBuilder, "carousel",
+                        if(!TextUtils.isEmpty(carousel)) carousel else "")
                 e.onNext(AdSDK.getInstance().getAD(adType, config.columnId, config
                         .seriesID, "", null, stringBuilder.toString(), sb))
             }).subscribeOn(Schedulers.newThread())
