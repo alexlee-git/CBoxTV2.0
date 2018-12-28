@@ -749,6 +749,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     case KeyEvent.KEYCODE_MENU:
                     case KeyEvent.KEYCODE_DPAD_CENTER:
                         if (show()) {
+                            send();
                             return true;
                         }
                         break;
@@ -767,6 +768,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     case KeyEvent.KEYCODE_DPAD_DOWN:
                     case KeyEvent.KEYCODE_DPAD_UP:
                         if (show()) {
+                            send();
                             return true;
                         }
                         break;
