@@ -1394,6 +1394,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 defaultConfig.playType = PLAY_TYPE_SINGLE;
                 defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = false;
+                if(mNewTvAlterChange != null){
+                    mNewTvAlterChange.setCurrentId("");
+                    mNewTvAlterChange.dismiss();
+                }
                 if (mAlternatePresenter != null) {
                     mAlternatePresenter.destroy();
                     mAlternatePresenter = null;
@@ -1403,6 +1407,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 defaultConfig.playType = PLAY_TYPE_SERIES;
                 defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = false;
+                if(mNewTvAlterChange != null){
+                    mNewTvAlterChange.setCurrentId("");
+                    mNewTvAlterChange.dismiss();
+                }
                 if (mAlternatePresenter != null) {
                     mAlternatePresenter.destroy();
                     mAlternatePresenter = null;
@@ -1412,6 +1420,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 defaultConfig.playType = PLAY_TYPE_LIVE;
                 defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = true;
+                if(mNewTvAlterChange != null){
+                    mNewTvAlterChange.setCurrentId("");
+                    mNewTvAlterChange.dismiss();
+                }
                 if (mAlternatePresenter != null) {
                     mAlternatePresenter.destroy();
                     mAlternatePresenter = null;
