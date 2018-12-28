@@ -957,7 +957,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void playAlternate(String alternateId, String title, String channelId) {
-
         //设置播放的位置
         stop();
 
@@ -2061,7 +2060,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (mLiveListener != null) {
                 mLiveListener.onComplete();
             }
-            release();
+            stop();
         }
         if (mLiveListener != null) {
             mLiveListener.onTimeChange(current, end);
@@ -2148,6 +2147,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
 
     protected void changeAlternate(String contentId, String title, String channelCode) {
+        if(mLoading != null) {
+            unshowLoadBack  = false;
+            mLoading.setShowMessage("即将播放");
+        }
+        startLoading();
         playAlternate(contentId, title, channelCode);
     }
 

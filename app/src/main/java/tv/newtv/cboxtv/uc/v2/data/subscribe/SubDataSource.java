@@ -19,7 +19,8 @@ public interface SubDataSource {
 
         void onSubscribeListLoaded(List<UserCenterPageBean.Bean> subList, final int totalSize);
 
-        void onDataNotAvailable();
+        void onError(String error);
+
     }
 
     interface AddRemoteSubscribeListCallback {

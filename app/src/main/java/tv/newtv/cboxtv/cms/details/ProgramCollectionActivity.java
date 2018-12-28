@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -160,6 +161,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                     public void onClick(View v) {
                         switch (v.getId()) {
                             case R.id.full_screen:
+                                ExitScreenLogUpload.fullScreenLogUpload(mContent.getDefinition(),mContent.getVipFlag());
                                 headPlayerView.EnterFullScreen(ProgramCollectionActivity
                                         .this);
                                 break;
@@ -193,6 +195,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen(boolean isLiving) {
+                        ExitScreenLogUpload.exitScreenLogUpload(mContent.getDefinition(),mContent.getVipFlag());
                         isFullScreenIng = false;
                     }
                 })

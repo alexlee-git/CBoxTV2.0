@@ -145,33 +145,49 @@ class DataHelper extends SQLiteOpenHelper {
         if (newVersion == 4 && oldVersion == 3) {
             sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-
-
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("drop table " + DBConfig.HISTORY_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_HISTORY_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.COLLECT_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_COLLECT_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.SUBSCRIBE_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.ATTENTION_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_HISTORY_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_COLLECT_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_SUBSCRIBE_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_ATTENTION_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//
+//
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.COLLECT_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_COLLECT_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.SUBSCRIBE_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
         }
 
         /**
@@ -182,37 +198,55 @@ class DataHelper extends SQLiteOpenHelper {
          */
         if (newVersion == 4 && oldVersion == 2) {
             sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
-            String[] params = new String[]{DBConfig.SUPERSCRIPT, DBConfig.PLAYINDEX,
-                    DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
-                    DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT,
-                    DBConfig.PLAYID, DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG, DBConfig.CONTENT_ID};
-
-            String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
-            for (String table : tables) {
-                for (String param : params) {
-                    sqLiteDatabase.execSQL("alter table " + table + " add " + param + " varchar2(1000)");
-                }
-            }
-
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.SUPERSCRIPT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_GRADE + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.VIDEO_TYPE + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-
-
-            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("drop table " + DBConfig.HISTORY_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_HISTORY_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.COLLECT_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_COLLECT_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.SUBSCRIBE_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.ATTENTION_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_HISTORY_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_COLLECT_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_SUBSCRIBE_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_ATTENTION_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
+//            String[] params = new String[]{DBConfig.SUPERSCRIPT, DBConfig.PLAYINDEX,
+//                    DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
+//                    DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT,
+//                    DBConfig.PLAYID, DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG, DBConfig.CONTENT_ID};
+//
+//            String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
+//            for (String table : tables) {
+//                for (String param : params) {
+//                    sqLiteDatabase.execSQL("alter table " + table + " add " + param + " varchar2(1000)");
+//                }
+//            }
+//
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.SUPERSCRIPT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_GRADE + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.VIDEO_TYPE + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//
+//
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
         }
 
         /**
@@ -220,46 +254,63 @@ class DataHelper extends SQLiteOpenHelper {
          */
         if (newVersion == 4 && oldVersion == 1) {
             sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
-            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
-            String[] params = new String[]{DBConfig.UPDATE_TIME, DBConfig.SUPERSCRIPT,
-                    DBConfig.PLAYINDEX, DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
-                    DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT, DBConfig.PLAYID,
-                    DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG, DBConfig.CONTENT_ID};
-
-            String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
-            for (String table : tables) {
-                for (String param : params) {
-                    sqLiteDatabase.execSQL("alter table " + table + " add " + param + " varchar2(1000)");
-                }
-            }
-
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.SUPERSCRIPT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_GRADE + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.VIDEO_TYPE + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-
-
-
-            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
-            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+            sqLiteDatabase.execSQL("drop table " + DBConfig.HISTORY_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_HISTORY_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.COLLECT_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_COLLECT_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.SUBSCRIBE_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.ATTENTION_TABLE_NAME);
+            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_HISTORY_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_COLLECT_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_SUBSCRIBE_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_ATTENTION_TABLE_SQL);
+            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_COLLECT_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_ATTENTION_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_SUBSCRIBE_TABLE_SQL);
+//            sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
+//            String[] params = new String[]{DBConfig.UPDATE_TIME, DBConfig.SUPERSCRIPT,
+//                    DBConfig.PLAYINDEX, DBConfig.CONTENT_GRADE, DBConfig.PLAYPOSITION,
+//                    DBConfig.VIDEO_TYPE, DBConfig.UPDATE_SUPERSCRIPT, DBConfig.PLAYID,
+//                    DBConfig.EPISODE_NUM, DBConfig.TOTAL_CNT, DBConfig.RECENT_MSG, DBConfig.CONTENT_ID};
+//
+//            String[] tables = new String[]{DBConfig.COLLECT_TABLE_NAME, DBConfig.SUBSCRIBE_TABLE_NAME};
+//            for (String table : tables) {
+//                for (String param : params) {
+//                    sqLiteDatabase.execSQL("alter table " + table + " add " + param + " varchar2(1000)");
+//                }
+//            }
+//
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.SUPERSCRIPT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_GRADE + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.VIDEO_TYPE + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.UPDATE_SUPERSCRIPT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.EPISODE_NUM + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.TOTAL_CNT + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_DURATION + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.PLAY_PROGRESS + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.HISTORY_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//
+//
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.CONTENT_ID + " varchar2(1000)");
+//            sqLiteDatabase.execSQL("alter table " + DBConfig.ATTENTION_TABLE_NAME + " add " + DBConfig.RECENT_MSG + " varchar2(1000)");
         }
         switch (oldVersion) {
             case 1:
             case 2:
             case 3:
-                sqLiteDatabase.execSQL("alter table " + DBConfig.LB_COLLECT_TABLE_NAME + " add " + DBConfig.ALTERNATE_NUMBER + " varchar2(1000)");
-                sqLiteDatabase.execSQL(String.format("alter table %s add %s varchar2(1000)", DBConfig.CREATE_HISTORY_TABLE_SQL, DBConfig.ALTERNATE_NUMBER));
-                sqLiteDatabase.execSQL(String.format("alter table %s add %s varchar2(1000)", DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL, DBConfig.ALTERNATE_NUMBER));
+//                sqLiteDatabase.execSQL("alter table " + DBConfig.LB_COLLECT_TABLE_NAME + " add " + DBConfig.ALTERNATE_NUMBER + " varchar2(1000)");
+//                sqLiteDatabase.execSQL(String.format("alter table %s add %s varchar2(1000)", DBConfig.CREATE_HISTORY_TABLE_SQL, DBConfig.ALTERNATE_NUMBER));
+//                sqLiteDatabase.execSQL(String.format("alter table %s add %s varchar2(1000)", DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL, DBConfig.ALTERNATE_NUMBER));
         }
     }
 }

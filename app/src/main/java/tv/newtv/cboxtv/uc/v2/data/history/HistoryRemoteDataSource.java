@@ -348,10 +348,6 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        if (callback != null) {
-                            callback.onDataNotAvailable();
-                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
@@ -359,7 +355,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                     public void onError(Throwable e) {
                         Log.i(TAG, "getRemoteHistoryList onError: ");
                         if (callback != null) {
-                            callback.onHistoryListLoaded(null, 0);
+                            callback.onError(e.toString());
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
