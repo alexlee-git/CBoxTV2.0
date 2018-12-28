@@ -391,7 +391,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
         @Override
         public void onError(String id, @Nullable String code, @Nullable String desc) {
-            mAlternateSubTitle.setText("");
+            mAlternateSubTitle.setText("暂无相关信息");
         }
     }
 }
