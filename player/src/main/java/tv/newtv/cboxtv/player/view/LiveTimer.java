@@ -54,6 +54,10 @@ class LiveTimer {
                     public void accept(Long aLong) throws Exception {
                         LogUtils.e(TAG,  mLiveInfo.toString());
                         //TODO 直播时间结束
+                        boolean complete = mLiveInfo.isComplete();
+                        if(complete){
+                            cancel();
+                        }
                         if (mLiveTimerCallback != null) {
                             mLiveTimerCallback.onChange(mLiveInfo.getCurrentTimeStr(),
                                     mLiveInfo.getStartTimeStr(),

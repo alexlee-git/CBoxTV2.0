@@ -120,6 +120,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             tvProgramaTitle.setText(moduleInfoResult.getSubTitle());
 
         }
+        videoPlayerView.outerControl();
         videoPlayerView.setVideoExitCallback(new VideoExitFullScreenCallBack() {
             @Override
             public void videoEitFullScreen(boolean isLiving) {

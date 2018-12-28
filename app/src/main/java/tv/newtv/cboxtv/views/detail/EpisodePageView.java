@@ -79,6 +79,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private ContentContract.Presenter mContentPresenter;
     private int mPageSize;
     private String mVideoType;
+    private String seriesType;
     private TextView mTitleView;
     private TextView mUpTitle;
 
@@ -375,6 +376,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mControlView = controlView;
         mEpisodeType = episodeType;
         mVideoType = videoType;
+        seriesType = content.getSeriesType();
 
         if (content.getData() == null) {
             mContentPresenter = new ContentContract.ContentPresenter
@@ -479,15 +481,15 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     private boolean videoType(String videoType) {
         //节目集类型动漫
-        boolean dmPS = TextUtils.equals(videoType, "动漫")
+        boolean dmPS = TextUtils.equals(seriesType, "1")
                 && seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
 
         //节目集类型少儿
-        boolean sePs = TextUtils.equals(videoType, "少儿")
+        boolean sePs = TextUtils.equals(seriesType, "1")
                 && seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
 
-        if (!TextUtils.isEmpty(videoType) && (
-                TextUtils.equals(videoType, "电视剧")
+        if (!TextUtils.isEmpty(seriesType) && (
+                TextUtils.equals(seriesType, "1")
                 || dmPS || sePs)) {
             return false;
         }

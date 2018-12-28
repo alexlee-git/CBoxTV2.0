@@ -20,22 +20,6 @@ import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
  * 创建日期:          2018/4/27
  */
 public final class PlayInfoUtil {
-    private static NewTVLauncherPlayerView.PlayerViewConfig  mPlayerViewConfig1;
-    private static NewTVLauncherPlayerView.PlayerViewConfig  mPlayerViewConfig2;
-    public static Boolean configBool1 = false;
-    public static Boolean configBool2 = false;
-    public static void setConfig1(NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig){
-        mPlayerViewConfig1 =playerViewConfig;
-    }
-    public static NewTVLauncherPlayerView.PlayerViewConfig getConfig1(){
-        return  mPlayerViewConfig1;
-    }
-    public static void setConfig2(NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig){
-        mPlayerViewConfig2 =playerViewConfig;
-    }
-    public static NewTVLauncherPlayerView.PlayerViewConfig getConfig2(){
-        return  mPlayerViewConfig2;
-    }
     public static String formatSplitInfo(String... args) {
         StringBuilder result = new StringBuilder();
         for (String str : args) {

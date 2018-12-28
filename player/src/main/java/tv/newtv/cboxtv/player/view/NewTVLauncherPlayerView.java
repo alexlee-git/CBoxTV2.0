@@ -544,12 +544,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void release() {
-        if (PlayInfoUtil.configBool1){
-            PlayInfoUtil.setConfig1(defaultConfig);
-        }
-        if (PlayInfoUtil.configBool2){
-            PlayInfoUtil.setConfig2(defaultConfig);
-        }
+
         if (isReleased) return;
         isReleased = true;
         addHistory();
@@ -575,6 +570,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mPlayerTimer.cancel();
         }
         mPlayerTimer = null;
+
+        PlayerLocation.get().destroy();
 
         if (mNewTVLauncherPlayer != null) {
             mNewTVLauncherPlayer.release();
@@ -727,14 +724,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public boolean onBackPressed() {
-        if (defaultConfig == null && PlayInfoUtil.configBool1){
-
-            defaultConfig = PlayInfoUtil.getConfig1();
-        }
-        if (defaultConfig == null && PlayInfoUtil.configBool2){
-
-            defaultConfig = PlayInfoUtil.getConfig2();
-        }
         if (defaultConfig != null && !defaultConfig.startIsFullScreen) {
             if (defaultConfig.isFullScreen) {
                 ExitFullScreen();
@@ -960,6 +949,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         //设置播放的位置
         stop();
 
+        if(mLoading != null) {
+            unshowLoadBack  = false;
+            mLoading.setShowMessage("即将播放");
+        }
+        startLoading();
+
         if (!defaultConfig.isFullScreen) {
             if (alterTitle != null) alterTitle.setVisibility(VISIBLE);
             if (alterChannel != null) alterChannel.setVisibility(VISIBLE);
@@ -1009,6 +1004,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mPlayerTimer.start();
         LogUploadUtils.uploadLog(Constant.LOG_LB, "0," + channelId);
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + alternateId);
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
@@ -1132,6 +1128,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         stop();
 
         unshowLoadBack = false;
+        if(mLoading != null) {
+            mLoading.setShowMessage("即将播放");
+            mLoading.setIsPrepared(false);
+        }
+        startLoading();
+
         mLiveListener = listener;
         defaultConfig.liveInfo = liveInfo;
         LogUtils.i(TAG, "playlive playVideo");
@@ -2147,11 +2149,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
 
     protected void changeAlternate(String contentId, String title, String channelCode) {
-        if(mLoading != null) {
-            unshowLoadBack  = false;
-            mLoading.setShowMessage("即将播放");
-        }
-        startLoading();
         playAlternate(contentId, title, channelCode);
     }
 
@@ -2161,8 +2158,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     @Override
     public void onAlternateResult(String alternateId, List<Alternate> alternateList, int
-            currentPlayIndex, String
-                                          title, String channelId) {
+            currentPlayIndex, String title, String channelId) {
         if (isReleased) return;
         updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
 
