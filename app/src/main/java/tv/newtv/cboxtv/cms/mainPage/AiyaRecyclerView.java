@@ -294,31 +294,6 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
         if (focusView == null) {
             return result;
         } else {
-            View rootView = getRootView(focusView);
-            if (rootView != null) {
-                if (rootView instanceof RecyclerView && !(rootView instanceof AiyaRecyclerView)) {
-                    if (rootView.dispatchKeyEvent(event)) {
-                        switch (event.getKeyCode()) {
-                            case KeyEvent.KEYCODE_DPAD_LEFT:
-                            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                                if (rootView.canScrollHorizontally(-1) || rootView
-                                        .canScrollHorizontally
-                                                (1)) {
-                                    return true;
-                                }
-                                break;
-                            case KeyEvent.KEYCODE_DPAD_UP:
-                            case KeyEvent.KEYCODE_DPAD_DOWN:
-                                if (rootView.canScrollVertically(-1) || rootView
-                                        .canScrollVertically(1)) {
-                                    return true;
-                                }
-                                break;
-                        }
-                        return true;
-                    }
-                }
-            }
             int dy = 0;
             int dx = 0;
             if (getChildCount() > 0) {
@@ -338,6 +313,14 @@ public class AiyaRecyclerView extends RecyclerView implements IDefaultFocus {
                 View root = getRootView(focusView);
                 Log.e(Constant.TAG, "view tag : " + cellCode + ", height : " + focusView
                         .getHeight());
+                View specialView = root.findViewWithTag("cell_032_1");
+                if(specialView != null){
+                    if(specialView instanceof AlternatePageView) {
+                        if (((AlternatePageView) specialView).interruptKeyEvent(event)) {
+                            return true;
+                        }
+                    }
+                }
                 int index = getLayoutManager().getPosition(root);
                 @Nullable RecycleSpaceDecoration recycleSpaceDecoration = null;
                 int decorationCount = getItemDecorationCount();

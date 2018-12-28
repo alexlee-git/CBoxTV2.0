@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.mainPage;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tv.newtv.cboxtv.R;
+import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
+import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.views.custom.LivePlayView;
 import tv.newtv.cboxtv.views.widget.NewTvRecycleAdapter;
 import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
@@ -42,12 +46,13 @@ import tv.newtv.cboxtv.views.widget.VerticalRecycleView;
  * 创建日期:          2018/11/20
  */
 public class AlternatePageView extends FrameLayout implements IProgramChange,
-        NewTVLauncherPlayerView.ChangeAlternateListener, ContentContract.View {
+        NewTVLauncherPlayerView.ChangeAlternateListener, ContentContract.View, PlayerCallback {
 
     private LivePlayView mBlockPosterView;
     private VerticalRecycleView mRecycleView;
     private String curPlayContentId = "";
     private Page mPage;
+    private int recycleIndex = 0;
     private View firstFocusView;
     private ImageView posterView;
     private String mPageUUID;
@@ -70,7 +75,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         initialize(context, attrs, defStyle);
     }
 
-    public void setPageUUID(String uuid,String blockId,String layoutCode) {
+    public void setPageUUID(String uuid, String blockId, String layoutCode) {
         mPageUUID = uuid;
         mBlockId = blockId;
         mLayoutCode = layoutCode;
@@ -87,6 +92,23 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         setUp();
     }
 
+    public boolean interruptKeyEvent(KeyEvent event){
+        if(event.getAction() == KeyEvent.ACTION_DOWN){
+            switch (event.getKeyCode()){
+                case KeyEvent.KEYCODE_DPAD_RIGHT:
+                    if(firstFocusView.hasFocus()){
+                        AlternateAdapter adapter = (AlternateAdapter) mRecycleView.getAdapter();
+                        if(adapter != null){
+                            mRecycleView.getChildAt(adapter.getSelectedIndex()).requestFocus();
+                            return true;
+                        }
+                    }
+                    break;
+            }
+        }
+        return false;
+    }
+
     public View getFirstFocusView() {
         return firstFocusView;
     }
@@ -95,6 +117,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
         LayoutInflater.from(context).inflate(R.layout.content_alternate_view_layout, this, true);
         mBlockPosterView = findViewById(R.id.block_poster);
         mBlockPosterView.setAlternateChange(this);
+        mBlockPosterView.setPlayerCallback(this);
         mRecycleView = findViewById(R.id.alternate_list);
         firstFocusView = findViewById(R.id.focus_layout);
         posterView = findViewWithTag("poster_view");
@@ -155,7 +178,6 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     }
 
     private void play(Program program) {
-
         if (posterView != null) {
             GlideUtil.loadImage(getContext(), posterView, program.getImg(), R.drawable
                             .focus_528_296,
@@ -168,7 +190,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
         mProgram = program;
 
-        if(mBlockPosterView != null){
+        if (mBlockPosterView != null) {
             mBlockPosterView.stop();
         }
 
@@ -208,16 +230,23 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
     @Override
     public void onChange(Program data, int position) {
-
         String id = data.getL_id();
 
-        if (TextUtils.equals(curPlayContentId,id)) {
+        NewTVLauncherPlayerView.PlayerViewConfig playerViewConfig = NewTVLauncherPlayerViewManager
+                .getInstance()
+                .getDefaultConfig();
+        if (playerViewConfig != null && !playerViewConfig.isAlternate) {
+            curPlayContentId = "";
+        }
+
+        if (TextUtils.equals(curPlayContentId, id)) {
             if (mBlockPosterView != null) {
                 mBlockPosterView.dispatchClick();
                 return;
             }
         }
 
+        recycleIndex = position;
         curPlayContentId = id;
         play(data);
     }
@@ -262,6 +291,26 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
 
+    }
+
+    @Override
+    public void onEpisodeChange(int index, int position) {
+
+    }
+
+    @Override
+    public void onPlayerClick(VideoPlayerView videoPlayerView) {
+
+    }
+
+    @Override
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+
+    }
+
+    @Override
+    public void ProgramChange() {
+//        play(mProgram);
     }
 
     private static class AlternateAdapter extends NewTvRecycleAdapter<Program,
@@ -348,10 +397,14 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
             itemView.setOnClickListener(this);
         }
 
+        void requestFocus() {
+            itemView.requestFocus();
+        }
+
         void bindObserver(String contentId) {
             mId = contentId;
             if (!TextUtils.isEmpty(contentId)) {
-                if(mObservable != null && mObservable.isDetached()){
+                if (mObservable != null && mObservable.isDetached()) {
                     mObservable = null;
                 }
                 if (mObservable == null) {

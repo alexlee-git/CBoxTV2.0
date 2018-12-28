@@ -99,9 +99,10 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
         removeCallbacks(closeRunnalbe);
 
         needTip = false;
-        needShowAd = "0".equals(showAd);
+//        needShowAd = "1".equals(showAd);
+        needShowAd = true;
 
-        background.setVisibility(needShowAd ? GONE : VISIBLE);
+        background.setVisibility(needShowAd ? VISIBLE : GONE);
 
         if(needShowAd) {
             mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE, PlayerConfig.getInstance()

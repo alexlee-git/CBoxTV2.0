@@ -21,17 +21,17 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class GlideUtil {
 
     @SuppressWarnings("ConstantConditions")
-    public static void loadImage(Context context, ImageView imageView, String url,
+    public static void loadImage(Context context, ImageView imageView, Object url,
                                  int placeHolderResId, int errorResId, boolean isCorner) {
 
-        if (TextUtils.isEmpty(url)) return;
+        if (url == null || (url instanceof String && TextUtils.isEmpty((String) url))) return;
 
-        if (Libs.get().isDebug()) {
-            if (url.contains("http://172.25.102.19/")) {
-                url = url.replace("http://172.25.102.19/", "http://111.32.132.156/");
+        if (Libs.get().isDebug() && url instanceof String) {
+            if (((String) url).contains("http://172.25.102.19/")) {
+                url = ((String) url).replace("http://172.25.102.19/", "http://111.32.132.156/");
             }
-            if (url.contains("http://172.25.101.210/")) {
-                url = url.replace("http://172.25.101.210/", "http://111.32.132.156/");
+            if (((String) url).contains("http://172.25.101.210/")) {
+                url = ((String) url).replace("http://172.25.101.210/", "http://111.32.132.156/");
             }
         }
 
