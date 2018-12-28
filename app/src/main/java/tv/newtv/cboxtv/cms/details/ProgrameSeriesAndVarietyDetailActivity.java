@@ -65,6 +65,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     private SmoothScrollView scrollView;
     private EpisodeAdView mAdView;
     private String videoType;
+    private String seriesType;
     private long lastClickTime;
     private FragmentTransaction transaction;
     private ContentContract.Presenter mContentPresenter;
@@ -371,10 +372,13 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     }
 
     private boolean videoType() {
-        if (!TextUtils.isEmpty(videoType) && (
+        /*if (!TextUtils.isEmpty(videoType) && (
                 TextUtils.equals(videoType, "电视剧")
                         || TextUtils.equals(videoType, "动漫")
                         || TextUtils.equals(videoType, "少儿"))) {
+            return false;
+        }*/
+        if(!TextUtils.isEmpty(seriesType) && TextUtils.equals(seriesType,"1")){
             return false;
         }
         return true;
@@ -389,6 +393,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         if (content != null) {
             videoType = content.getVideoType();
+            seriesType = content.getSeriesType();
         }
         //这里跳转不同详情页 综艺、电视剧
         setContentView(R.layout.fragment_new_variety_show);

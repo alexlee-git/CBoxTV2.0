@@ -272,6 +272,10 @@ public class NewTVLauncherPlayerViewManager {
         return mNewTVLauncherPlayerView != null && mNewTVLauncherPlayerView.isADPlaying();
     }
 
+    public boolean isPlaying(){
+        return mNewTVLauncherPlayerView != null && mNewTVLauncherPlayerView.isPlaying();
+    }
+
     public boolean registerScreenListener(ScreenListener listener) {
         if (mNewTVLauncherPlayerView != null) {
             mNewTVLauncherPlayerView.registerScreenListener(listener);
