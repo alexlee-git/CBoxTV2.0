@@ -39,6 +39,7 @@
             app:block_poster_height="@dimen/height_320px"
             app:block_poster_holder="@drawable/focus_1680_320"
             app:block_poster_width="@dimen/width_1680px"
+            app:block_last="true"
             app:block_tag="cell_001_1">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>

@@ -115,6 +115,7 @@
             app:block_poster_height="@dimen/height_240px"
             app:block_poster_holder="@drawable/focus_240_240"
             app:block_poster_width="@dimen/width_240px"
+            app:block_last="true"
             app:block_tag="cell_030_6">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
