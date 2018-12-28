@@ -733,6 +733,10 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
+                if (tvRecyclerView.getChildAt(0)==null&&!container.hasFocus()){
+                    return true;
+                }
+
                 if (!labelRecyclerView.hasFocus() && tab.hasFocus()){
                     LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
                 }
