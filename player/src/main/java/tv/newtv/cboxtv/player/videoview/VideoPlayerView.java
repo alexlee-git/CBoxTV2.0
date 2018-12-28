@@ -44,7 +44,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     private ExitVideoFullCallBack videoFullCallBack;
     private View mFocusView;
     private boolean repeatPlay = false;
-    private TextView HintTextView;
     private TextView TipTextView;
 
     private View defaultFocusView;
@@ -121,18 +120,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     protected void onError(String code, String messgae) {
         super.onError(code, messgae);
-        String hint = null;
-        switch (code) {
-            case PlayerErrorCode.USER_NOT_LOGIN:
-            case PlayerErrorCode.USER_TOKEN_IS_EXPIRED:
-            case PlayerErrorCode.USER_NOT_BUY:
-                hint = "付费内容需购买后才能观看";
-                break;
-            default:
-                hint = String.format("%s 错误码:%s", messgae, code);
-                break;
-        }
-        setHintText(hint);
     }
 
     //退出全屏
@@ -175,11 +162,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     public void updateUIPropertys(boolean isFullScreen) {
         super.updateUIPropertys(isFullScreen);
-
-        if (HintTextView != null) {
-            HintTextView.setTextSize(getResources().getDimensionPixelSize(!isFullScreen ? R.dimen
-                    .height_12sp : R.dimen.height_18sp));
-        }
     }
 
     public void setFocusView(View view, boolean autoLayout) {
@@ -292,20 +274,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         defaultConfig.startIsFullScreen = false;
         setFocusable(true);
 
-        HintTextView = new TextView(getContext());
-        HintTextView.setBackgroundResource(R.drawable.normalplayer_bg);
-        HintTextView.setTextSize(getResources().getDimensionPixelSize(R.dimen.height_18px));
-        HintTextView.setTextColor(Color.WHITE);
-        HintTextView.setGravity(Gravity.CENTER);
-        HintTextView.setText("播放结束");
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
-                .MATCH_PARENT);
-        HintTextView.setVisibility(View.INVISIBLE);
-        layoutParams.gravity = Gravity.CENTER;
-        HintTextView.setLayoutParams(layoutParams);
-
         super.initView(context);
-        addView(HintTextView, layoutParams);
 
         TipTextView = new TextView(getContext());
         TipTextView.setTextSize(getResources().getDimensionPixelSize(R.dimen.height_12px));
@@ -358,19 +327,6 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
                 ((MarginLayoutParams) layoutParams).bottomMargin = 0;
                 setLayoutParams(layoutParams);
             }
-        }
-    }
-
-    public void setHintText(String text) {
-        if (HintTextView != null) {
-            HintTextView.setVisibility(View.VISIBLE);
-            HintTextView.setText(text);
-        }
-    }
-
-    public void setHintTextVisible(int visible) {
-        if (HintTextView != null) {
-            HintTextView.setVisibility(visible);
         }
     }
 

@@ -5,12 +5,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,6 +127,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private NewTVLauncherPlayerLoading mLoading;
     private NewTVLauncherPlayerSeekbar mNewTVLauncherPlayerSeekbar;
     private NewTvLauncherPlayerTip mNewTvTipView;
+    protected TextView hintTextView;
     private int mShowingChildView = SHOWING_NO_VIEW;
     private boolean mIsLoading; //是否在缓冲
     private boolean mIsPause; //是否在暂停
@@ -687,6 +690,19 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (defaultConfig.lifeCallback != null) {
             defaultConfig.lifeCallback.onError(code, messgae);
         }
+
+        String hint = null;
+        switch (code) {
+            case PlayerErrorCode.USER_NOT_LOGIN:
+            case PlayerErrorCode.USER_TOKEN_IS_EXPIRED:
+            case PlayerErrorCode.USER_NOT_BUY:
+                hint = "付费内容需购买后才能观看";
+                break;
+            default:
+                hint = String.format("%s 错误码:%s", messgae, code);
+                break;
+        }
+        setHintText(hint);
     }
 
     protected boolean NeedRepeat() {
@@ -881,6 +897,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             mLoading.updatePropertys(getResources().getDimensionPixelSize(isFullScreen ? R.dimen
                     .height_22sp : R.dimen.height_11sp), isFullScreen);
         }
+
+        if (hintTextView != null) {
+            hintTextView.setTextSize(getResources().getDimensionPixelSize(!isFullScreen ? R.dimen
+                    .height_12sp : R.dimen.height_18sp));
+        }
     }
 
     public boolean isFullScreen() {
@@ -948,6 +969,19 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mPlayerTimer = new PlayerTimer();
         mPlayerTimer.setCallback(this);
+
+        hintTextView = new TextView(getContext());
+        hintTextView.setBackgroundResource(R.drawable.normalplayer_bg);
+        hintTextView.setTextSize(getResources().getDimensionPixelSize(R.dimen.height_18px));
+        hintTextView.setTextColor(Color.WHITE);
+        hintTextView.setGravity(Gravity.CENTER);
+        hintTextView.setText("播放结束");
+        LayoutParams hintLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
+                .MATCH_PARENT);
+        hintTextView.setVisibility(View.INVISIBLE);
+        hintLayoutParams.gravity = Gravity.CENTER;
+        hintTextView.setLayoutParams(hintLayoutParams);
+        addView(hintTextView, hintLayoutParams);
 
         updateUIPropertys(defaultConfig.isFullScreen());
     }
@@ -2037,7 +2071,18 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         return mNewTVLauncherPlayer != null && mNewTVLauncherPlayer.isPlaying();
     }
 
+
+    public void setHintText(String text) {
+        if (hintTextView != null) {
+            hintTextView.setVisibility(View.VISIBLE);
+            hintTextView.setText(text);
+        }
+    }
+
     public void setHintTextVisible(int visible) {
+        if (hintTextView != null) {
+            hintTextView.setVisibility(visible);
+        }
     }
 
     public void setVideoSilent(boolean isSilent) {
