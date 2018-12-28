@@ -12,7 +12,6 @@
         android:layout_marginStart="@dimen/width_32px"
         android:layout_marginLeft="@dimen/width_32px"
         android:layout_marginTop="@dimen/height_21px"
-        android:text="666"
         android:textColor="@android:color/white"
         android:textSize="@dimen/height_32px"
         android:textStyle="bold"/>
@@ -27,7 +26,6 @@
         android:layout_marginTop="@dimen/height_22px"
         android:layout_marginEnd="@dimen/width_32px"
         android:layout_marginRight="@dimen/width_32px"
-        android:text="获奖大片"
         android:textColor="@android:color/white"
         android:textSize="@dimen/height_32px"
         android:textStyle="bold"/>
@@ -41,7 +39,6 @@
         android:layout_marginTop="@dimen/height_69px"
         android:layout_marginEnd="@dimen/width_32px"
         android:layout_marginRight="@dimen/width_32px"
-        android:text="正义联盟"
         android:singleLine="true"
         android:ellipsize="marquee"
         android:textColor="#60FFFFFF"

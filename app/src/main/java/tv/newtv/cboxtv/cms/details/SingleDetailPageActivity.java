@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
+import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -230,7 +231,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                         @Override
                         public void videoEitFullScreen(boolean isLiving) {
-
+                            ExitScreenLogUpload.exitScreenLogUpload(mProgramSeriesInfo.getDefinition(),mProgramSeriesInfo.getVipFlag());
                         }
                     }).SetClickListener(new View.OnClickListener() {
                         @Override
@@ -259,6 +260,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                     mPaiseView.startDiverges(0);
                                     break;
                                 case R.id.full_screen:
+                                    ExitScreenLogUpload.fullScreenLogUpload(mProgramSeriesInfo.getDefinition(),mProgramSeriesInfo.getVipFlag());
                                     headPlayerView.EnterFullScreen
                                             (SingleDetailPageActivity.this);
                                     break;

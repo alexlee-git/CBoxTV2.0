@@ -66,7 +66,7 @@ class PlayerLocation {
         Rect rect = new Rect();
         if (!mPlayerView.getLocalVisibleRect(rect)) return;
         Activity activity = Player.get().getCurrentActivity();
-        final ViewGroup mContainer = activity.getWindow().getDecorView().findViewById(android.R.id
+        final ViewGroup mContainer = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id
                 .content);
         final ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mContainer
                 .getLayoutParams();

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import com.newtv.cms.bean.Content;
@@ -64,8 +65,8 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
             }
 
             @Override
-            public void onItemClick(Program item,int index) {
-                JumpUtil.activityJump(LauncherApplication.AppContext,item);
+            public void onItemClick(Program item, int index) {
+                JumpUtil.activityJump(LauncherApplication.AppContext, item);
             }
 
             @Override
@@ -89,6 +90,15 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
     private void UpdateUI() {
         List<Program> infos = mModuleInfoResult.getData().get(0).getPrograms();
         ((BallRoundAdapter) recyclerView.getAdapter()).refresh(infos).notifyDataSetChanged();
+
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                recyclerView.getChildAt(0).requestFocus();
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
     }
 
     private static class BallRoundAdapter extends RecyclerView.Adapter<BallRoundViewHolder> {
@@ -135,14 +145,14 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
                 @Override
                 public void onClick(View view) {
                     Program info = getItem(holder.getAdapterPosition());
-                    if(info != null) {
+                    if (info != null) {
                         currentUUID = info.getContentId();
-                        onItemFocus.onItemClick(info,holder.getAdapterPosition());
+                        onItemFocus.onItemClick(info, holder.getAdapterPosition());
                     }
                 }
             });
             if (programInfo != null) {
-                holder.setData(programInfo,holder.itemView.getContext());
+                holder.setData(programInfo, holder.itemView.getContext());
 //                if(TextUtils.isEmpty(currentUUID) && position == 0){
 //                    holder.poster.requestFocus();
 //                }
@@ -166,7 +176,7 @@ public class BallRoundFragment extends BaseSpecialContentFragment {
         }
 
         public void setData(Program programInfo, Context mcontext) {
-            int radius=mcontext.getResources().getDimensionPixelOffset(R.dimen.width_4px);
+            int radius = mcontext.getResources().getDimensionPixelOffset(R.dimen.width_4px);
             Picasso.get()
                     .load(programInfo.getImg())
                     .transform(new PosterCircleTransform(mcontext, radius))

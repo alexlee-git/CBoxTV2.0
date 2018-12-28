@@ -211,6 +211,7 @@ public abstract class BaseSpecialContentFragment extends Fragment implements Con
         }
 
         if (videoPlayerView != null && videoPlayerView.isReady() && !isLiveVideo()) {
+            videoPlayerView.outerControl();
             videoPlayerView.playSingleOrSeries(mPlayIndex, mPlayPosition);
         }
     }

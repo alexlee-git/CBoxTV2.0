@@ -43,7 +43,8 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     private AiyaRecyclerView recyclerView;
     private ModelResult<ArrayList<Page>> moduleInfoResult;
     private View downView;
-    private int videoIndex = 0;
+    private int videoIndex = 0;//列表选中的Index值
+    private int playIndex = 0;//当前选中的Index位置的节目集播放的index索引
     private Content mProgramSeriesInfo;
     private ShooterAdapter adapter;
 
@@ -104,6 +105,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_focus), true);
         videoPlayerView.setPlayerCallback(this);
+        videoPlayerView.outerControl();
 
         if (moduleInfoResult != null) {
             adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
@@ -173,6 +175,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
     @Override
     public void onItemClick(Program item, final int index) {
 //        videoPlayerView.beginChange();
+        videoIndex = index;
         getContent(item.getL_id(),item);
     }
 
@@ -191,7 +194,7 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
 
     @Override
     public void onEpisodeChange(int index, int position) {
-        videoIndex = index;
+        playIndex = index;
     }
 
     @Override
@@ -216,6 +219,8 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
                 postion = 0;
             } else if (videoIndex > first && videoIndex <= last) {
                 postion = videoIndex - first;
+            }else if(videoIndex == adapter.getItemCount() - 1){
+                videoPlayerView.setisEnd(true);
             }
             View view = recyclerView.getChildAt(postion);
             ShooterViewHolder viewHolder = (ShooterViewHolder) recyclerView.getChildViewHolder
