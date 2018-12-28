@@ -1002,6 +1002,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         mPlayerTimer.start();
         LogUploadUtils.uploadLog(Constant.LOG_LB, "0," + channelId);
+        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + alternateId);
     }
 
     public void playSingleOrSeries(int mIndex, int position) {
