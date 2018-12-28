@@ -67,6 +67,12 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         this(context, attrs, 0);
     }
 
+    @Override
+    protected void startLoading() {
+        super.startLoading();
+
+        setHintTextVisible(GONE);
+    }
 
     public VideoPlayerView(@NonNull Context context, @Nullable AttributeSet attrs, int
             defStyleAttr) {

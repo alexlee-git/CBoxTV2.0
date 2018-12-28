@@ -42,7 +42,7 @@ import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
-import tv.newtv.cboxtv.player.util.PlayInfoUtil;
+import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
@@ -57,15 +57,16 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
  */
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
         ContentContract.View, LiveListener, ICustomPlayer, NewTVLauncherPlayerView
-                .OnPlayerStateChange, NewTVLauncherPlayerView.ChangeAlternateListener {
+                .OnPlayerStateChange, NewTVLauncherPlayerView.ChangeAlternateListener
+        , PlayerCallback {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
     public static final int MODE_ALTERNATE = 4;
-
     private static final String M3U8 = "http://s003.test.vod06.icntvcdn.com/live/sscntv63.m3u8";
     private static final String TimeFormat = "yyyy-MM-dd HH:mm:ss";
     private static String TAG = "LivePlayView";
+    private boolean mIsAlternate = false;
     private VideoFrameLayout mVideoPlayer;
     private RecycleImageView recycleImageView;
     private VideoPlayerView mVideoPlayerView;
@@ -92,6 +93,11 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     private boolean playerReady = false;
 
+    private PlayerCallback mPlayerCallback;
+
+    public void setPlayerCallback(PlayerCallback callback){
+        mPlayerCallback = callback;
+    }
 
 
     private int mIndex = 0;
@@ -117,7 +123,14 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         @Override
         public void run() {
             prepareVideoPlayer();
-            mVideoPlayerView.playLive(mLiveInfo, false, LivePlayView.this);
+            if (mIsAlternate) {
+                NewTVLauncherPlayerViewManager.getInstance().changeAlteranteLive(mLiveInfo,
+                        mProgramInfo.getL_id(), mProgramInfo.getAlternateNumber(),
+                        mProgramInfo.getTitle(), false,
+                        LivePlayView.this);
+            } else {
+                mVideoPlayerView.playLive(mLiveInfo, false, LivePlayView.this);
+            }
         }
     };
     private Runnable playAlternateRunnable = new Runnable() {
@@ -140,14 +153,14 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     public LivePlayView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context,attrs);
+        init(context, attrs);
     }
 
-    public void stop(){
-        if(mVideoPlayerView != null){
-            if(currentMode != MODE_LIVE) {
+    public void stop() {
+        if (mVideoPlayerView != null) {
+            if (currentMode != MODE_LIVE) {
                 mVideoPlayerView.stop();
-            }else{
+            } else {
                 mVideoPlayerView.release();
             }
         }
@@ -171,11 +184,11 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 mVideoPlayerView = new VideoPlayerView(mPlayerViewConfig, getContext());
             } else {
                 NewTVLauncherPlayerView.PlayerViewConfig config = null;
-                if(useAlternateUI){
+                if (useAlternateUI) {
                     config = new NewTVLauncherPlayerView.PlayerViewConfig();
                     config.useAlternateUI = true;
                 }
-                mVideoPlayerView = new VideoPlayerView(config,getContext());
+                mVideoPlayerView = new VideoPlayerView(config, getContext());
                 mVideoPlayerView.setSingleRepeat(true);
                 mVideoPlayerView.setTag("videoPlayer");
                 FrameLayout.LayoutParams layoutParams = null;
@@ -187,6 +200,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 mVideoPlayerView.registerScreenListener(new MyScreenListener());
             }
 
+            mVideoPlayerView.setPlayerCallback(this);
             mVideoPlayerView.setChangeAlternateListen(this);
             mVideoPlayerView.setOnPlayerStateChange(this);
         }
@@ -314,15 +328,15 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         mIsShow = (visibility == VISIBLE);
         if (visibility == View.VISIBLE) {
             doPlay();
-        }else{
+        } else {
             releaseVideoPlayer();
         }
     }
 
     private void doPlay() {
-        Log.d(TAG, "currentMode : " + currentMode + " visible=" + mIsShow +" uuid="+mUUID);
+        Log.d(TAG, "currentMode : " + currentMode + " visible=" + mIsShow + " uuid=" + mUUID);
         if (!mIsShow) return;
-        if(mVideoPlayerView != null && !mVideoPlayerView.isReleased() && mVideoPlayerView
+        if (mVideoPlayerView != null && !mVideoPlayerView.isReleased() && mVideoPlayerView
                 .isPlaying()) return;
         if (currentMode == MODE_LIVE) {
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
@@ -343,12 +357,12 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         }
     }
 
-    private void init(Context context,AttributeSet attrs) {
-        TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable
+    private void init(Context context, AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable
                 .LivePlayView);
-        if(typedArray != null){
-            int type = typedArray.getInt(R.styleable.LivePlayView_play_type,0);
-            if(type == 3){
+        if (typedArray != null) {
+            int type = typedArray.getInt(R.styleable.LivePlayView_play_type, 0);
+            if (type == 3) {
                 useAlternateUI = true;
             }
             typedArray.recycle();
@@ -438,6 +452,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public void setProgramInfo(Program programInfo, boolean useDelay, boolean isAlternate) {
         if (programInfo == null) return;
 
+
         this.mProgramInfo = programInfo;
         mPlayInfo = new PlayInfo();
 
@@ -455,13 +470,15 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         if (!mPlayInfo.isCanUse()) return;
 
+        mIsAlternate = isAlternate;
+
         //2代表视频
         if (mProgramInfo.getRecommendedType().equals("2") || isAlternate) {
             //如果有playurl并且在直播的时间段内，则判断是直播
             LiveInfo liveInfo = new LiveInfo(mProgramInfo.getTitle(), mProgramInfo.getVideo());
             if (liveInfo.isLiveTime()) {
                 liveInfo.setFromAlternate(isAlternate);
-                if(isAlternate){
+                if (isAlternate) {
                     liveInfo.setFirstAlternate(true);
                     liveInfo.setCanRequestAd(false);
                 }
@@ -479,6 +496,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 return;
             } else if (isAlternate()) {
                 currentMode = MODE_ALTERNATE;
+                mIsAlternate = true;
                 playAlternate(useDelay ? 2000 : 0);
                 return;
             }
@@ -591,7 +609,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
 
-        if(mIsShow) {
+        if (mIsShow) {
             setVisibleChange(visibility, true);
         }
     }
@@ -658,6 +676,34 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     public void changeAlternate(String contentId, String title, String channel) {
         if (mAlternateChange != null) {
             mAlternateChange.changeAlternate(contentId, title, channel);
+        }
+    }
+
+    @Override
+    public void onEpisodeChange(int index, int position) {
+        if(mPlayerCallback != null){
+            mPlayerCallback.onEpisodeChange(index, position);
+        }
+    }
+
+    @Override
+    public void onPlayerClick(VideoPlayerView videoPlayerView) {
+        if(mPlayerCallback != null){
+            mPlayerCallback.onPlayerClick(videoPlayerView);
+        }
+    }
+
+    @Override
+    public void AllPlayComplete(boolean isError, String info, VideoPlayerView videoPlayerView) {
+        if(mPlayerCallback != null){
+            mPlayerCallback.AllPlayComplete(isError, info, videoPlayerView);
+        }
+    }
+
+    @Override
+    public void ProgramChange() {
+        if(mPlayerCallback != null){
+            mPlayerCallback.ProgramChange();
         }
     }
 

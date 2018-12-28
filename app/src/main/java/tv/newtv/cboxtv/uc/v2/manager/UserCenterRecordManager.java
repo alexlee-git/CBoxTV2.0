@@ -773,6 +773,7 @@ public class UserCenterRecordManager {
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             bundle.putString(DBConfig.CONTENT_DURATION, bean.getDuration());
                             bundle.putString(DBConfig.PLAYID, bean.getPlayId());
+                            info.setAlternateNumber(bean.getAlternate_number());
                             DBUtil.addHistory(userId, info, bundle, callback, tableName);
                         }
                     }
@@ -851,6 +852,8 @@ public class UserCenterRecordManager {
                             @Override
                             public void onError(String error) {
                                 Log.e(TAG, "wqs:getRemoteHistoryList:onError:" + error);
+                                getHistoryRecordComplete = true;
+                                getUserBehaviorComplete(context);
                             }
 
                         });
@@ -885,6 +888,8 @@ public class UserCenterRecordManager {
                             @Override
                             public void onError(String error) {
                                 Log.e(TAG, "wqs:getRemoteSubscribe:onError:" + error);
+                                getSubscribeRecordComplete = true;
+                                getUserBehaviorComplete(context);
                             }
                         });
                         getRemoteCollectionList("0", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
@@ -918,6 +923,8 @@ public class UserCenterRecordManager {
                             @Override
                             public void onError(String error) {
                                 Log.e(TAG, "wqs:getRemoteCollectionList:onError:" + error);
+                                getCollectionRecordComplete = true;
+                                getUserBehaviorComplete(context);
                             }
                         });
                         getRemoteFollowList(context, token, userId, offset, limit, new FollowDataSource.GetFollowListCallback() {
@@ -951,6 +958,8 @@ public class UserCenterRecordManager {
                             @Override
                             public void onError(String error) {
                                 Log.e(TAG, "wqs:getRemoteFollowList:onError:" + error);
+                                getFollowRecordComplete = true;
+                                getUserBehaviorComplete(context);
                             }
                         });
                         getRemoteLbCollectionList("1", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
@@ -984,6 +993,8 @@ public class UserCenterRecordManager {
                             @Override
                             public void onError(String error) {
                                 Log.e(TAG, "wqs:getRemoteLbCollectionList:onError:" + error);
+                                getLbCollectionRecordComplete = true;
+                                getUserBehaviorComplete(context);
                             }
                         });
                     } else {

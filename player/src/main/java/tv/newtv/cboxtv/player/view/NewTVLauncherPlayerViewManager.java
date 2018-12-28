@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.player.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -255,6 +256,32 @@ public class NewTVLauncherPlayerViewManager {
             return mNewTVLauncherPlayerView.defaultConfig.isLiving;
         }
         return false;
+    }
+
+
+    /**
+     *
+     * @param liveInfo      直播信息
+     * @param contentId     直播ContentId
+     * @param channel       直播台号
+     * @param title         直播标题
+     * @param newActivity   是否打开新Activity
+     * @param listener      直播监听
+     */
+    public void changeAlteranteLive(LiveInfo liveInfo,String contentId,String channel,String title,
+                                    boolean newActivity,LiveListener listener){
+        if (mNewTVLauncherPlayerView == null) {
+            mNewTVLauncherPlayerViewManager.init(Libs.get().getContext());
+        }
+        if (mNewTVLauncherPlayerView != null) {
+            if(!TextUtils.isEmpty(channel)) {
+                mNewTVLauncherPlayerView.changeAlteranteLive(liveInfo, contentId, channel, title,
+                        newActivity,
+                        listener);
+            }else{
+                mNewTVLauncherPlayerView.playLive(liveInfo,newActivity,listener);
+            }
+        }
     }
 
     public void changeAlternate(String contentId, String channel, String title) {
