@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -193,27 +194,27 @@ public class SuperScriptManager implements CornerContract.View {
 
                         if (TextUtils.equals(layoutCode, "layout_008")) {
                             if (info instanceof Program) {
-                                addRecentMsgText(context, ((Program) info).getRecentMsg(),
+                                addRecentMsgText(context, ((Program) info).getRecentMsg(),((Program) info).getSubTitle(),
                                         parent, corners.contains(Corner.LEFT_BOTTOM));
-                                addGradeMsgText(context, ((Program) info).getGrade(), parent,
+                                addGradeMsgText(context, ((Program) info).getGrade(), ((Program) info).getSubTitle(),parent,
                                         corners.contains(Corner.RIGHT_BOTTOM));
                             } else if (info instanceof SubContent) {
                                 if (!TextUtils.isEmpty(((SubContent) info).getRecentMsg())) {
-                                    addRecentMsgText(context, ((SubContent) info).getRecentMsg(),
+                                    addRecentMsgText(context, ((SubContent) info).getRecentMsg(),((SubContent) info).getSubTitle(),
                                             parent, corners.contains(Corner.LEFT_BOTTOM));
                                 } else {
                                     removeRecentMsg(parent);
                                 }
                                 if (!TextUtils.isEmpty(((SubContent) info).getGrade())) {
-                                    addGradeMsgText(context, ((SubContent) info).getGrade(),
+                                    addGradeMsgText(context, ((SubContent) info).getGrade(),((SubContent) info).getSubTitle(),
                                             parent, corners.contains(Corner.RIGHT_BOTTOM));
                                 } else {
                                     removeGradeMsg(parent);
                                 }
                             }else if(info instanceof Row){
-                                addRecentMsgText(context, ((Row) info).getRecentMsg(),
+                                addRecentMsgText(context, ((Row) info).getRecentMsg(),((Row) info).getSubTitle(),
                                         parent, corners.contains(Corner.LEFT_BOTTOM));
-                                addGradeMsgText(context, ((Row) info).getGrade(), parent,
+                                addGradeMsgText(context, ((Row) info).getGrade(),((Row) info).getSubTitle(), parent,
                                         corners.contains(Corner.RIGHT_BOTTOM));
                             }
                         }
@@ -236,7 +237,7 @@ public class SuperScriptManager implements CornerContract.View {
      * @param message
      * @param parent
      */
-    private void addRecentMsgText(Context context, String message, ViewGroup parent, boolean
+    private void addRecentMsgText(Context context, String message,String subTitle, ViewGroup parent, boolean
             containOther) {
         if (containOther) return;
         TextView recentText = parent.findViewWithTag("TEXT_RECENT_MSG");
@@ -259,9 +260,11 @@ public class SuperScriptManager implements CornerContract.View {
                 recentText.setTag("TEXT_RECENT_MSG");
                 parent.addView(recentText, lp);
             }
-
-            recentText.setVisibility(View.VISIBLE);
-
+            if (TextUtils.isEmpty(subTitle)){
+                recentText.setVisibility(View.VISIBLE);
+            }else {
+                recentText.setVisibility(View.INVISIBLE);
+            }
             if(message.contains("-")){
                 Matcher matcherDate= Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}").matcher(message);
                 if(matcherDate.find()){
@@ -320,7 +323,7 @@ public class SuperScriptManager implements CornerContract.View {
      * @param message
      * @param parent
      */
-    private void addGradeMsgText(Context context, String message, ViewGroup parent, boolean
+    private void addGradeMsgText(Context context, String message, String subTitle, ViewGroup parent, boolean
             containOther) {
         if (containOther) return;
         TextView gradeText = parent.findViewWithTag("TEXT_GRADE_MSG");
@@ -347,8 +350,12 @@ public class SuperScriptManager implements CornerContract.View {
                 gradeText.setTag("TEXT_GRADE_MSG");
                 parent.addView(gradeText, lp);
             }
+            if (TextUtils.isEmpty(subTitle)){
+                gradeText.setVisibility(View.VISIBLE);
+            }else {
+                gradeText.setVisibility(View.INVISIBLE);
+            }
 
-            gradeText.setVisibility(View.VISIBLE);
             gradeText.setText(message);
 //            message = String.format("<font " +
 //                    "color='#ffffff'>%s</font>", message);
