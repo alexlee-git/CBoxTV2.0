@@ -128,6 +128,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                     @Override
                     public void onResult(Content info) {
                         if (info != null) {
+                            ADConfig.getInstance().setContentType(info.getContentType());
                             ArrayList<String> productId = new ArrayList<>();
                             pageContent = info;
                             if (!TextUtils.isEmpty(info.getCategoryIDs())){

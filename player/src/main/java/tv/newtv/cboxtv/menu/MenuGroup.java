@@ -573,9 +573,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                         REQUEST_MENU_FIRST_FOCUS);
                 refreshRecyclerViewDataBylevel(item.getChild().get(0), level + 2);
             }
-
-
-            float current = currentX;
+            int dimenX = getContext().getResources().getDimensionPixelSize(R.dimen.width_50px);
+            float current = currentX-dimenX;
             currentX = currentX - recyclerViewWidth;
             startAnim(new AnimEntity(current, currentX));
 

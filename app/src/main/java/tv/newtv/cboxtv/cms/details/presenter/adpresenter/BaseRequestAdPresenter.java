@@ -74,6 +74,9 @@ public abstract class BaseRequestAdPresenter implements ADConfig.ColumnListener 
                 addExtend(stringBuilder,"program",config.getProgramId());
                 addExtend(stringBuilder, "type",config.getVideoType());
                 addExtend(stringBuilder,"secondtype",config.getVideoClass());
+                if (config.getContentType().equals(Constant.CONTENTTYPE_LB)) {
+                    addExtend(stringBuilder, "carousel", config.getCarousel());
+                }
                 requestAdParameter = new RequestAdParameter();
                 requestAdParameter.setExtend(stringBuilder.toString());
                 requestAdParameter.setProgram(config.getProgramId());

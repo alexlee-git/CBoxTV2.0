@@ -239,6 +239,7 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                             ProgramCollectionActivity.this.finish();
                         }
                         mContent = info;
+                        ADConfig.getInstance().setContentType(info.getContentType());
                         ArrayList<String> productId = new ArrayList<>();
                         if (mContent != null ) {
                             if (!TextUtils.isEmpty(mContent.getVipFlag())){

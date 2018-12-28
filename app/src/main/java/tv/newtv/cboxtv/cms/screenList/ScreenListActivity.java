@@ -299,6 +299,20 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         place_text = findViewById(R.id.place_text);
         sour_text = findViewById(R.id.sour_text);
 
+//        tvRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (recyclerView.getFocusedChild() != null) {
+//                    if (recyclerView.getFocusedChild().getTop()<(int) getResources().getDimension(R.dimen.width_480px)) {
+//                        recyclerView.smoothScrollBy(0, recyclerView.getFocusedChild().getTop() - (int) getResources().getDimension(R.dimen.width_25px));
+//                        recyclerView.getFocusedChild().requestFocus();
+//                    }
+//                }
+//            }
+//
+//        });
 
         tab.setScaleValue(1.2f);
         tab.setTabTextColors(Color.parseColor("#80ffffff"), Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
@@ -719,10 +733,19 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
+                if (tvRecyclerView.getChildAt(0)==null&&!container.hasFocus()){
+                    return true;
+                }
+
                 if (!labelRecyclerView.hasFocus() && tab.hasFocus()){
                     LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
                 }
                 Log.e("yml", "onKeyDown: "+moveFlag );
+
+                if (tvRecyclerView==null){
+                    return true;
+                }
+
                 if (!tvRecyclerView.hasFocus()) {
                     moveFlag++;
                     if (tab.hasFocus()) {
@@ -811,7 +834,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         container.getChildAt(2).setVisibility(View.GONE);
                         if (container.getChildAt(3)!=null){
                             container.getChildAt(3).requestFocus();
-                            moveFlag = 5;
+
                         }else {
                             if (tvRecyclerView.getChildAt(0) != null) {
                                 tvRecyclerView.getChildAt(0).requestFocus();

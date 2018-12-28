@@ -61,10 +61,10 @@ public class NavPopuView extends PopupWindow implements NavContract.View{
     private void initRecycle(Context context) {
         list = new ArrayList<>(navs.size());
         map = new HashMap<>();
-        Nav searchNav = null, meNav = null;
+        Nav meNav = null;
         for (int i = 0; i < navs.size(); i++) {
             if ("搜索".equals(navs.get(i).getTitle())){
-                searchNav = navs.get(i);
+                list.add(0, navs.get(i));
             }else if ("我的".equals(navs.get(i).getTitle())){
                 meNav = navs.get(i);
             }else {
@@ -72,9 +72,7 @@ public class NavPopuView extends PopupWindow implements NavContract.View{
             }
             map.put(i,navs.get(i));
         }
-        if (searchNav != null) {
-            list.add(0, searchNav);
-        }
+
         if (meNav != null) {
             list.add(meNav);
         }
@@ -83,6 +81,7 @@ public class NavPopuView extends PopupWindow implements NavContract.View{
         navRecycle.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         navRecycle.setAlign(AiyaRecyclerView.ALIGN_CENTER);
         navRecycle.setAdapter(adapter);
+        navRecycle.setFocusable(true);
 
 
     }

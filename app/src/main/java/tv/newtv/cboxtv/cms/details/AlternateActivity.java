@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.newtv.cms.CmsErrorCode;
@@ -13,6 +14,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
 
@@ -158,6 +160,7 @@ public class AlternateActivity extends DetailPageActivity implements
     public void onAlternateResult(String alternateId, @org.jetbrains.annotations.Nullable List<Alternate> result) {
         if(!TextUtils.equals(alternateId,contentUUID)) return;
 
+        ADConfig.getInstance().setCarousel(alternateId);
         if (mPlayListView != null) {
             mPlayListView.onAlternateResult(alternateId, result);
         }

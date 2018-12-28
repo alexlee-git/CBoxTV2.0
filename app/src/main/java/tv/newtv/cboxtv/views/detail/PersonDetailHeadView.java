@@ -28,6 +28,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
@@ -418,6 +419,7 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode, Vi
         if (content != null) {
             dataInfo = content;
             setHeadData(content);
+            ADConfig.getInstance().setContentType(dataInfo.getContentType());
         } else {
             LogUtils.e(TAG, "content data is null!");
         }

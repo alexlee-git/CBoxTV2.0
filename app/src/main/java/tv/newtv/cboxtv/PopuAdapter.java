@@ -92,7 +92,8 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public PopuViewHolder(View itemView) {
             super(itemView);
-            itemView.requestLayout();
+//            itemView.requestLayout();
+            itemView.setFocusable(true);
             navName = (TextView) itemView.findViewById(R.id.nav_name);
             navImg = (ImageView) itemView.findViewById(R.id.nav_img);
             navParams = itemView.findViewById(R.id.nav_params);
@@ -103,7 +104,7 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             navName.setOnKeyListener(this);
             navFrame.setOnFocusChangeListener(this);
             navFrame.setOnKeyListener(this);
-            navImg.setOnFocusChangeListener(this);
+            navImg.setOnKeyListener(this);
             navImg.setOnFocusChangeListener(this);
         }
 

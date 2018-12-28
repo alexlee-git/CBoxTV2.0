@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
@@ -166,6 +167,7 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                 SingleDetailPageActivity.this.finish();
                             }
                             mProgramSeriesInfo = info;
+                            ADConfig.getInstance().setContentType(mProgramSeriesInfo.getContentType());
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null, "PS");
                             mAdView.requestAD();
                             ArrayList<String> productId = new ArrayList<>();
