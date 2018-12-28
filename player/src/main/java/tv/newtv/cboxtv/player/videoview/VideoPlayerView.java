@@ -98,6 +98,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         videoFullCallBack = null;
         mFocusView = null;
         videoExitFullScreenCallBack = null;
+
+        if(NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)){
+            NewTVLauncherPlayerViewManager.getInstance().release();
+        }
     }
 
     @Override
