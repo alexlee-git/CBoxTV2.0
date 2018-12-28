@@ -45,6 +45,9 @@ class AlternateRefresh(context: Context, alterCallback: AlternateCallback?)
         if (index > 0) {
             val alternate: Alternate = alternates.get(index)
             mCallback?.onChange(cid, alternate)
+        }else{
+            mCallback?.onError(cid,CmsErrorCode.ALTERNATE_ERROR_NOT_FOUND_TOPLAY,CmsErrorCode
+                    .getErrorMessage(CmsErrorCode.ALTERNATE_ERROR_NOT_FOUND_TOPLAY))
         }
     }
 
