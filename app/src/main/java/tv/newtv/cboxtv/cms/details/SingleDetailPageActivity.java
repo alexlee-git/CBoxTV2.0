@@ -31,12 +31,10 @@ import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
-import tv.newtv.cboxtv.views.detail.EpisodeHelper;
 import tv.newtv.cboxtv.views.detail.HeadPlayerView;
 import tv.newtv.cboxtv.views.detail.SmoothScrollView;
 import tv.newtv.cboxtv.views.detail.SuggestView;
@@ -231,7 +229,9 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                         @Override
                         public void videoEitFullScreen(boolean isLiving) {
-                            ExitScreenLogUpload.exitScreenLogUpload(mProgramSeriesInfo.getDefinition(),mProgramSeriesInfo.getVipFlag());
+                            if (mProgramSeriesInfo != null) {
+                                ExitScreenLogUpload.exitScreenLogUpload(mProgramSeriesInfo.getDefinition(), mProgramSeriesInfo.getVipFlag());
+                            }
                         }
                     }).SetClickListener(new View.OnClickListener() {
                         @Override
@@ -260,7 +260,9 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                     mPaiseView.startDiverges(0);
                                     break;
                                 case R.id.full_screen:
-                                    ExitScreenLogUpload.fullScreenLogUpload(mProgramSeriesInfo.getDefinition(),mProgramSeriesInfo.getVipFlag());
+                                    if (mProgramSeriesInfo != null) {
+                                        ExitScreenLogUpload.fullScreenLogUpload(mProgramSeriesInfo.getDefinition(), mProgramSeriesInfo.getVipFlag());
+                                    }
                                     headPlayerView.EnterFullScreen
                                             (SingleDetailPageActivity.this);
                                     break;

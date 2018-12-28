@@ -31,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
@@ -39,7 +38,6 @@ import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerViewManager;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.custom.DivergeView;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
@@ -197,7 +195,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen(boolean isLiving) {
-                        ExitScreenLogUpload.exitScreenLogUpload(content.getDefinition(),content.getVipFlag());
+                        if (content != null) {
+                            ExitScreenLogUpload.exitScreenLogUpload(content.getDefinition(), content.getVipFlag());
+                        }
                         isFullScreenIng = false;
                     }
                 })
@@ -262,7 +262,9 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             case R.id.full_screen:
                                 if (System.currentTimeMillis() - lastClickTime >= 2000)
                                 {//判断距离上次点击小于2秒
-                                    ExitScreenLogUpload.fullScreenLogUpload(content.getDefinition(),content.getVipFlag());
+                                    if (content != null) {
+                                        ExitScreenLogUpload.fullScreenLogUpload(content.getDefinition(), content.getVipFlag());
+                                    }
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);

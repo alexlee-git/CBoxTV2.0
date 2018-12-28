@@ -430,7 +430,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                         Alternate current = mAlternatePresenter.getCurrentAlternate();
                         if (current != null) {
                             mNewTvAlterChange.setTitleText(current.getTitle());
-                        }else{
+                        } else {
                             mNewTvAlterChange.setTitleText("");
                         }
                         mNewTvAlterChange.show(mAlternatePresenter.needRequestAd());
@@ -586,7 +586,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
         mPlayerTimer = null;
 
-        if(isFullScreen()) {
+        if (isFullScreen()) {
             PlayerLocation.get().destroy();
         }
 
@@ -1142,7 +1142,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
     }
 
-    public void changeAlteranteLive(LiveInfo liveInfo,String contentId, String channel, String
+    public void changeAlteranteLive(LiveInfo liveInfo, String contentId, String channel, String
             title, boolean isNeedStartActivity, LiveListener listener) {
         stop();
 
@@ -1156,10 +1156,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (bigScreen != null) bigScreen.setVisibility(GONE);
         }
 
-        if(mAlternatePresenter == null){
-            mAlternatePresenter = new PlayerAlternateContract.AlternatePresenter(getContext(),this);
+        if (mAlternatePresenter == null) {
+            mAlternatePresenter = new PlayerAlternateContract.AlternatePresenter(getContext(),
+                    this);
         }
-        mAlternatePresenter.updateAlternate(contentId,title,channel);
+        mAlternatePresenter.updateAlternate(contentId, title, channel);
 
         unshowLoadBack = false;
         if (mLoading != null) {
@@ -1173,7 +1174,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         if (alterChannel != null) {
-            alterChannel.setText(defaultConfig.useAlternateUI ? String.format("%s %s", channel, title) : "");
+            alterChannel.setText(defaultConfig.useAlternateUI ? String.format("%s %s", channel,
+                    title) : "");
         }
 
         if (alterTitle != null) {
@@ -1358,7 +1360,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 defaultConfig.playType = PLAY_TYPE_SINGLE;
                 defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = false;
-                if(mAlternatePresenter != null){
+                if (mAlternatePresenter != null) {
                     mAlternatePresenter.destroy();
                     mAlternatePresenter = null;
                 }
@@ -1367,7 +1369,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 defaultConfig.playType = PLAY_TYPE_SERIES;
                 defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = false;
-                if(mAlternatePresenter != null){
+                if (mAlternatePresenter != null) {
                     mAlternatePresenter.destroy();
                     mAlternatePresenter = null;
                 }
@@ -1376,7 +1378,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 defaultConfig.playType = PLAY_TYPE_LIVE;
                 defaultConfig.isAlternate = false;
                 defaultConfig.isLiving = true;
-                if(mAlternatePresenter != null){
+                if (mAlternatePresenter != null) {
                     mAlternatePresenter.destroy();
                     mAlternatePresenter = null;
                 }
@@ -1959,7 +1961,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public int getIndex() {
-        return defaultConfig.playIndex;
+        if (defaultConfig != null)
+            return defaultConfig.playIndex;
+
+        return 0;
     }
 
     public int getDuration() {
