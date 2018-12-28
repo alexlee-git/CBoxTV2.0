@@ -577,13 +577,24 @@ public class PayRefreshOrderActivity extends BaseActivity implements View.OnClic
     private void uploadUnPayLog(int action) {
 
         StringBuilder dataBuff = new StringBuilder(32);
-        dataBuff.append(1 + ",")
-                .append(action + ",")
-                .append(mVipProductId + ",")
-                .append(amount + ",")
-                .append(payChannelId + ",")
-                .append(code)
-                .trimToSize();
+        if (mVipFlag.equals(Constant.BUY_VIP)) {
+            dataBuff.append(1 + ",")
+                    .append(action + ",")
+                    .append(mVipProductId + ",")
+                    .append(amount + ",")
+                    .append(payChannelId + ",")
+                    .append(code)
+                    .trimToSize();
+        } else {
+            dataBuff.append(0 + ",")
+                    .append(action + ",")
+                    .append(mContentUUID + ",")
+                    .append(amount + ",")
+                    .append(payChannelId + ",")
+                    .append(code)
+                    .trimToSize();
+        }
+
 
         LogUploadUtils.uploadLog(Constant.LOG_NODE_PAY, dataBuff.toString());
 

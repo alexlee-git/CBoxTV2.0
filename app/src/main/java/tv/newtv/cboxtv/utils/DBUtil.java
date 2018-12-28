@@ -220,6 +220,7 @@ public class DBUtil {
         }
 
         String seriesID = mInfo.getContentID();
+        contentValues.put(DBConfig.PLAYID,bundle.getString(DBConfig.PLAYID));
         if (Constant.CONTENTTYPE_CP.equals(mInfo.getContentType())) {
             if (!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
                 seriesID = mInfo.getCsContentIDs().split("\\|")[0];

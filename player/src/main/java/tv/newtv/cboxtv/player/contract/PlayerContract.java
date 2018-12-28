@@ -96,8 +96,12 @@ public class PlayerContract {
      * @param state
      */
     public void setPlayerState(int state) {
-        LogUtils.d("PlayerContract", "set state = " + getStateType(state));
+        if(currentState == state) return;
         currentState = state;
+        if(currentState == STATE_NORMAL){
+            currentShow = 0;
+        }
+        LogUtils.d("PlayerContract", "set state = " + getStateType(state));
         boolean isPlaying = (state == STATE_VIDEO_PLAYING);
         if (isPlaying != isVideoPlaying) {
             isVideoPlaying = isPlaying;

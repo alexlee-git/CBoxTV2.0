@@ -278,22 +278,18 @@ public class SubRemoteDataSource implements SubDataSource {
                                 entity.setPlayIndex(item.optString("latest_episode"));
                                 entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setIsUpdate(item.optString("update_superscript"));
-                                entity.setPlayIndex(item.optString("episode_num"));
+                                entity.setEpisode_num(item.optString("episode_num"));
                                 entity.setRecentMsg(item.optString("recent_msg"));
                                 entity.setUpdateTime(Long.parseLong(item.optString("create_time")));
                                 infos.add(entity);
                             }
 
                             if (callback != null) {
-                                callback.onSubscribeListLoaded(infos, totalSize);
+                                callback.onSubscribeListLoaded(infos, infos.size());
                                 return;
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }
-
-                        if (callback != null) {
-                            callback.onDataNotAvailable();
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
@@ -302,7 +298,7 @@ public class SubRemoteDataSource implements SubDataSource {
                     public void onError(Throwable e) {
                         Log.e(TAG, "get Subscribe list error:" + e.toString());
                         if (callback != null) {
-                            callback.onSubscribeListLoaded(null, 0);
+                            callback.onError(e.toString());
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
