@@ -555,7 +555,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
             }
 
 
-            float current = currentX;
+            float current = currentX-100;
             currentX = currentX - recyclerViewWidth;
             startAnim(new AnimEntity(current, currentX));
 
