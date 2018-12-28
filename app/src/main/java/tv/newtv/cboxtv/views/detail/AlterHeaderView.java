@@ -298,7 +298,6 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         }
 
         mContent = content;
-        ADConfig.getInstance().setContentType(mContent.getContentType());
 
         if (alternateIdText != null) {
             alternateIdText.setText(String.format("%s %s", content.getAlternateNumber(), content

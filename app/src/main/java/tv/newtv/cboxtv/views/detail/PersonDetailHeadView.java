@@ -419,7 +419,6 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode, Vi
         if (content != null) {
             dataInfo = content;
             setHeadData(content);
-            ADConfig.getInstance().setContentType(dataInfo.getContentType());
         } else {
             LogUtils.e(TAG, "content data is null!");
         }
