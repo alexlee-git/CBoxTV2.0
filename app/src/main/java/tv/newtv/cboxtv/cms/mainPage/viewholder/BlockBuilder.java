@@ -59,7 +59,7 @@ public class BlockBuilder extends BaseBlockBuilder {
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
 
-    private static final int SEARCH_EDIT_VIEW = 6;
+    private static final int SEARCH_EDIT_VIEW = 600;
 
 
     private Context mContext;
