@@ -74,7 +74,7 @@ public class FocusRecyclerView extends RecyclerView {
                     if (downView != null) {
                         downView.requestFocusFromTouch();
                         downView.requestFocus();
-                        this.smoothScrollBy(0, offsetY);
+
                         return true;
                     } else {
                         if (!isRecyclerViewToBottom()) {
