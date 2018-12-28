@@ -122,6 +122,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
 
         videoPlayerView = view.findViewById(R.id.video_player);
         videoPlayerView.setPlayerCallback(this);
+        videoPlayerView.outerControl();
         videoPlayerView.setFocusView(view.findViewById(R.id.video_player_focus), true);
         if (moduleInfoResult != null) {
             adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
@@ -200,6 +201,8 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                 postion = 0;
             } else if (videoIndex > first && videoIndex <= last) {
                 postion = videoIndex - first;
+            }else if(videoIndex == adapter.getItemCount() - 1){
+                videoPlayerView.setisEnd(true);
             }
             View view = recyclerView.getChildAt(postion);
             ShooterViewHolder viewHolder = (ShooterViewHolder) recyclerView.getChildViewHolder

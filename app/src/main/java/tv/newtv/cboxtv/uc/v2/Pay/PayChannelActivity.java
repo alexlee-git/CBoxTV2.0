@@ -27,9 +27,11 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.Libs;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.LogUploadUtils;
+import com.newtv.libs.util.SharePreferenceUtils;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -37,9 +39,13 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
 import tv.newtv.cboxtv.BaseActivity;
@@ -47,7 +53,10 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.model.ModuleInfoResult;
 import tv.newtv.cboxtv.cms.net.NetClient;
 import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
+import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.member.MemberAgreementActivity;
+import tv.newtv.cboxtv.utils.BaseObserver;
+import tv.newtv.cboxtv.utils.UserCenterUtils;
 
 /**
  * 项目名称:     CBoxTV2.0
@@ -79,6 +88,9 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
     private ExterPayBean mExterPayBean;
     private PageContract.ContentPresenter mContentPresenter;
     private final String ACTTYPE = "DISCOUNT";
+    private String mToken;
+    private boolean firstOrderFlag;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,16 +117,44 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
         //requestRecommendData();
         initAgreemrntView();
 
-        if (mVipProductId == null) {
-            requestProductData();
-        } else {
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
-            if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
-                getProductPrice(mVipProductId, Libs.get().getAppKey(), prdType, Libs.get().getChannelId());
-            } else {
-                getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
+        Observable.create(new ObservableOnSubscribe<Long>() {
+            @Override
+            public void subscribe(ObservableEmitter<Long> emitter) throws Exception {
+                long time = 0;
+                try {
+                    boolean isRefresh = TokenRefreshUtil.getInstance().isTokenRefresh(PayChannelActivity.this);
+                    if (isRefresh) {
+                        Log.i(TAG, "isToken is ture");
+                        mToken = SharePreferenceUtils.getToken(PayChannelActivity.this);
+                        requestMemberInfo("");
+                    } else {
+                        Log.i(TAG, "isToken is false");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                emitter.onNext(time);
             }
-        }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+
+                        if (mVipProductId == null) {
+                            requestProductData();
+                        } else {
+                            LogUploadUtils.uploadLog(Constant.LOG_NODE_USER_CENTER, "5," + mVipProductId);
+                            if (TextUtils.equals(Constant.BUY_VIPANDONLY, mVipFlag)) {
+                                getProductPrice(mVipProductId, Libs.get().getAppKey(), prdType, Libs.get().getChannelId());
+                            } else {
+                                getProductPriceOnly(mVipProductId, Libs.get().getChannelId());
+                            }
+                        }
+                    }
+                });
+
+
     }
 
     private void init() {
@@ -259,16 +299,27 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                 holder.tv_price.setText(tranPrices(price));
             } else {
                 String actType = activityBean.getActType();
-                if (TextUtils.equals(actType, ACTTYPE)) {
-                    holder.img_product_mark.setVisibility(View.VISIBLE);
-                    holder.tv_price_discount.setVisibility(View.VISIBLE);
-                    holder.tv_discount.setVisibility(View.VISIBLE);
-                    holder.img_discount_price.setVisibility(View.VISIBLE);
-                    int price_discount = pricesBean.getPriceDiscount();
-                    int percentage = activityBean.getPercentage() / 10;
-                    holder.tv_price_discount.setText("已省" + tranPrices(price - price_discount) + "元");
-                    holder.tv_discount.setText(percentage + "折");
-                    holder.tv_price.setText(tranPrices(price_discount));
+                int suitable = activityBean.getSuitable();
+                Log.i(TAG, "onBindViewHolder:firstOrderFlag : " + firstOrderFlag);
+                if (suitable == 1 && firstOrderFlag) {
+                    if (TextUtils.equals(actType, ACTTYPE)) {
+                        holder.img_product_mark.setVisibility(View.VISIBLE);
+                        holder.tv_price_discount.setVisibility(View.VISIBLE);
+                        holder.tv_discount.setVisibility(View.VISIBLE);
+                        holder.img_discount_price.setVisibility(View.VISIBLE);
+                        int price_discount = pricesBean.getPriceDiscount();
+                        int percentage = activityBean.getPercentage() / 10;
+                        holder.tv_price_discount.setText("已省" + tranPrices(price - price_discount) + "元");
+                        holder.tv_discount.setText(percentage + "折");
+                        holder.tv_price.setText(tranPrices(price_discount));
+                    } else {
+                        holder.img_product_mark.setVisibility(View.INVISIBLE);
+                        holder.tv_price_discount.setVisibility(View.INVISIBLE);
+                        holder.tv_discount.setVisibility(View.INVISIBLE);
+                        holder.img_discount_price.setVisibility(View.INVISIBLE);
+                        int price_discount = pricesBean.getPriceDiscount();
+                        holder.tv_price.setText(tranPrices(price_discount));
+                    }
                 } else {
                     holder.img_product_mark.setVisibility(View.INVISIBLE);
                     holder.tv_price_discount.setVisibility(View.INVISIBLE);
@@ -574,6 +625,54 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
         if (mDisposable_recom != null) {
             mDisposable_recom.dispose();
             mDisposable_recom = null;
+        }
+    }
+
+    //读取用户会员信息
+    private void requestMemberInfo(String mContentUUID) {
+        try {
+            NetClient.INSTANCE.getUserCenterMemberInfoApi()
+                    .getMemberInfo("Bearer " + mToken, "",
+                            Libs.get().getAppKey(), mContentUUID)
+                    .subscribe(new BaseObserver<ResponseBody>() {
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            mDisposable_time = d;
+                        }
+
+                        @Override
+                        public void onNext(ResponseBody responseBody) {
+                            try {
+                                String data = responseBody.string();
+                                checkUserOffline(data);
+                                JSONArray jsonArray = new JSONArray(data);
+                                if (jsonArray != null && jsonArray.length() > 0) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(0);
+                                    firstOrderFlag = jsonObject.optBoolean("firstOrderFlag", false);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.i(TAG, "---requestMemberInfo:onError");
+                        }
+
+                        @Override
+                        public void dealwithUserOffline() {
+                            Log.i(TAG, "dealwithUserOffline: ");
+                            UserCenterUtils.userOfflineStartLoginActivity(PayChannelActivity.this);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -19,7 +19,8 @@ public interface CollectDataSource {
 
         void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize);
 
-        void onDataNotAvailable();
+        void onError(String error);
+
     }
 
     interface AddRemoteCollectListCallback {
@@ -38,6 +39,8 @@ public interface CollectDataSource {
     void addRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean bean);
 
     void addRemoteCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback);
+
+    void addRemoteLbCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback);
 
     void deleteRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean bean);
 

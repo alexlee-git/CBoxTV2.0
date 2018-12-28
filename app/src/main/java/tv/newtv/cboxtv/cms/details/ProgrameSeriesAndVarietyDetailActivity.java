@@ -35,6 +35,7 @@ import tv.icntv.icntvplayersdk.Constants;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
+import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -195,30 +196,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen(boolean isLiving) {
-                        String definition = content.getDefinition();
-                        if (!TextUtils.isEmpty(definition)){
-                            if (definition.equals("HD")){//高清
-                                definition = "0";
-                            }
-                            if (definition.equals("SD")){//标清
-                                definition = "1";
-                            }
-                        }
-                        String chatTpe = content.getVipFlag();
-                        if (!TextUtils.isEmpty(chatTpe)){
-                            if (chatTpe.equals("1")||chatTpe.equals("3")||chatTpe.equals("4")){
-                                chatTpe = "1";
-                            }
-                        }
-                        if (!isLiving){
-                            LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
-                                    + ","+ADConfig.getInstance().getSeriesID() + ","
-                                    + ADConfig.getInstance().getProgramId()
-                                    + "," + chatTpe + ","+ definition
-                                    + ","+ADConfig.getInstance().getIntMillisDuration()
-                                    + ","+ NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() + ","+"0" + ","
-                                    + Constants.vodPlayId);
-                        }
+                        ExitScreenLogUpload.exitScreenLogUpload(content.getDefinition(),content.getVipFlag());
                         isFullScreenIng = false;
                     }
                 })
@@ -283,28 +261,7 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                             case R.id.full_screen:
                                 if (System.currentTimeMillis() - lastClickTime >= 2000)
                                 {//判断距离上次点击小于2秒
-                                    String definition = content.getDefinition();
-                                    if (!TextUtils.isEmpty(definition)){
-                                        if (definition.equals("HD")){//高清
-                                            definition = "0";
-                                        }
-                                        if (definition.equals("SD")){//标清
-                                            definition = "1";
-                                        }
-                                    }
-                                    String chatTpe = content.getVipFlag();
-                                    if (!TextUtils.isEmpty(chatTpe)){
-                                        if (chatTpe.equals("1")||chatTpe.equals("3")||chatTpe.equals("4")){
-                                            chatTpe = "1";
-                                        }
-                                    }
-                                    LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17," + content.getContentType()
-                                            + ","+ADConfig.getInstance().getSeriesID() + ","
-                                            + ADConfig.getInstance().getProgramId()
-                                            + "," + chatTpe + ","+ definition
-                                            + ","+ADConfig.getInstance().getIntMillisDuration()
-                                            + ","+ NewTVLauncherPlayerViewManager.getInstance().getCurrentPosition() + ","+"1" + ","
-                                            + Constants.vodPlayId);
+                                    ExitScreenLogUpload.fullScreenLogUpload(content.getDefinition(),content.getVipFlag());
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen
                                             (ProgrameSeriesAndVarietyDetailActivity.this);

@@ -278,6 +278,7 @@ public class UserCenterRecordManager {
                 progress = "0";
             }
             bundle.putString(DBConfig.PLAY_PROGRESS, progress);
+            bundle.putString(DBConfig.PLAYID, info.getContentUUID());
             //2018.12.21 wqs 防止插入时间有误，统一插入时间
             bundle.putString(DBConfig.UPDATE_TIME, TimeUtil.getInstance().getCurrentTimeInMillis() + "");
             String tableName = "";
@@ -566,6 +567,11 @@ public class UserCenterRecordManager {
                 .addRemoteCollectList(collectType, token, userId, beanList, callback);
     }
 
+    public void addRemoteLbCollectList(String collectType, Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, CollectDataSource.AddRemoteCollectListCallback callback) {
+        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
+                .addRemoteLbCollectList(collectType, token, userId, beanList, callback);
+    }
+
     public void addRemoteFollowList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, FollowRemoteDataSource.AddRemoteFollowListCallback callback) {
         FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context))
                 .addRemoteFollowList(token, userId, beanList, callback);
@@ -766,6 +772,7 @@ public class UserCenterRecordManager {
                             bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(playPosition));
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             bundle.putString(DBConfig.CONTENT_DURATION, bean.getDuration());
+                            bundle.putString(DBConfig.PLAYID, bean.getPlayId());
                             DBUtil.addHistory(userId, info, bundle, callback, tableName);
                         }
                     }
@@ -842,9 +849,10 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteHistoryList:onError:" + error);
                             }
+
                         });
                         getRemoteSubscribe(context, token, userId, offset, limit, new SubDataSource.GetSubscribeListCallback() {
                             @Override
@@ -875,8 +883,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteSubscribe:onError:" + error);
                             }
                         });
                         getRemoteCollectionList("0", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
@@ -908,8 +916,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteCollectionList:onError:" + error);
                             }
                         });
                         getRemoteFollowList(context, token, userId, offset, limit, new FollowDataSource.GetFollowListCallback() {
@@ -941,8 +949,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteFollowList:onError:" + error);
                             }
                         });
                         getRemoteLbCollectionList("1", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
@@ -974,8 +982,8 @@ public class UserCenterRecordManager {
                             }
 
                             @Override
-                            public void onDataNotAvailable() {
-
+                            public void onError(String error) {
+                                Log.e(TAG, "wqs:getRemoteLbCollectionList:onError:" + error);
                             }
                         });
                     } else {
@@ -1064,6 +1072,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteHistoryListComplete:size:" + totalSize);
                                             AddHistoryRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameHistory, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameHistory:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1083,6 +1097,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteCollectListComplete:size:" + totalSize);
                                             AddCollectionRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameCollect, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameCollect:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1102,6 +1122,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteSubscribeListComplete:size:" + totalSize);
                                             AddSubscribeRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameSubscribe, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameSubscribe:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1121,6 +1147,12 @@ public class UserCenterRecordManager {
                                             Log.e(TAG, "wqs:onAddRemoteFollowListComplete:size:" + totalSize);
                                             AddFollowRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(TableNameAttention, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:TableNameAttention:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1134,12 +1166,18 @@ public class UserCenterRecordManager {
                                     Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                                     }.getType();
                                     List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
-                                    addRemoteCollectList("1", context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
+                                    addRemoteLbCollectList("1", context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
                                         @Override
                                         public void onAddRemoteCollectListComplete(int totalSize) {
                                             Log.e(TAG, "wqs:onAddLbRemoteCollectListComplete:size:" + totalSize);
                                             AddLbCollectionRecordComplete = true;
                                             AddUserBehaviorListComplete(context);
+                                            DBUtil.clearTableAll(tableNameLbCollect, new DBCallback<String>() {
+                                                @Override
+                                                public void onResult(int code, String result) {
+                                                    Log.e("wqs", "wqs:tableNameLbCollect:clearTableAll:code:" + code);
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -1673,7 +1711,7 @@ public class UserCenterRecordManager {
                 tableName = DBConfig.REMOTE_ATTENTION_TABLE_NAME;
                 userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
             }
-        } else if (TextUtils.equals(type, "history") || TextUtils.equals(type,"lbHistory")) {
+        } else if (TextUtils.equals(type, "history") || TextUtils.equals(type, "lbHistory")) {
             if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
                 tableName = DBConfig.HISTORY_TABLE_NAME;
                 userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
@@ -1681,7 +1719,7 @@ public class UserCenterRecordManager {
                 tableName = DBConfig.REMOTE_HISTORY_TABLE_NAME;
                 userId = SharePreferenceUtils.getUserId(LauncherApplication.AppContext);
             }
-        } else if(TextUtils.equals(type,"lbCollect")) {
+        } else if (TextUtils.equals(type, "lbCollect")) {
             if (TextUtils.isEmpty(SharePreferenceUtils.getToken(LauncherApplication.AppContext))) {
                 tableName = DBConfig.LB_COLLECT_TABLE_NAME;
                 userId = SystemUtils.getDeviceMac(LauncherApplication.AppContext);
@@ -1702,7 +1740,7 @@ public class UserCenterRecordManager {
         if (TextUtils.equals(type, "history")) {
             sqlCondition.noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
-        if(TextUtils.equals(type,"lbHistory")){
+        if (TextUtils.equals(type, "lbHistory")) {
             sqlCondition.eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB);
         }
         sqlCondition.build().withCallback(dbCallback).excute();

@@ -345,7 +345,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     }
 
     private void init(Context context,AttributeSet attrs) {
-        PlayInfoUtil.configBool2 = true;
         TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable
                 .LivePlayView);
         if(typedArray != null){
@@ -587,7 +586,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     @Override
     public void destroy() {
-        PlayInfoUtil.configBool2 = false;
     }
 
     @Override

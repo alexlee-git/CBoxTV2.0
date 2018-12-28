@@ -5,8 +5,6 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import tv.newtv.cboxtv.player.Player;
 
@@ -20,24 +18,26 @@ import tv.newtv.cboxtv.player.Player;
 class PlayerLocation {
 
     private static final String TAG = PlayerLocation.class.getCanonicalName();
+    private static PlayerLocation instance;
     @SuppressWarnings("FieldCanBeLocal")
     private boolean mBringToFront = false;
     private NewTVLauncherPlayerView mPlayerView;
-    private static PlayerLocation instance;
+    private ViewTreeObserver.OnGlobalLayoutListener mScrollChangeListener = new ViewTreeObserver
+            .OnGlobalLayoutListener() {
 
-    private ViewTreeObserver.OnScrollChangedListener mScrollChangeListener = new ViewTreeObserver.OnScrollChangedListener() {
         @Override
-        public void onScrollChanged() {
+        public void onGlobalLayout() {
             resetLocation();
         }
     };
 
-    private PlayerLocation() { }
+    private PlayerLocation() {
+    }
 
     public static PlayerLocation get() {
-        if(instance == null){
-            synchronized (PlayerLocation.class){
-                if(instance == null) instance = new PlayerLocation();
+        if (instance == null) {
+            synchronized (PlayerLocation.class) {
+                if (instance == null) instance = new PlayerLocation();
             }
         }
         return instance;
@@ -47,13 +47,16 @@ class PlayerLocation {
         mPlayerView = playerView;
         mBringToFront = bringFront;
         Activity activity = Player.get().getCurrentActivity();
+        Log.e(TAG, "attach listen ->" + activity);
         resetLocation();
-        activity.getWindow().getDecorView().getViewTreeObserver().addOnScrollChangedListener(mScrollChangeListener);
+        activity.getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener
+                (mScrollChangeListener);
     }
 
     void destroy() {
         Activity activity = Player.get().getCurrentActivity();
-        activity.getWindow().getDecorView().getViewTreeObserver().removeOnScrollChangedListener
+        Log.e(TAG, "detach listen ->" + activity);
+        activity.getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener
                 (mScrollChangeListener);
         mPlayerView = null;
     }
@@ -63,15 +66,16 @@ class PlayerLocation {
         Rect rect = new Rect();
         if (!mPlayerView.getLocalVisibleRect(rect)) return;
         Activity activity = Player.get().getCurrentActivity();
-        final ViewGroup mContainer = activity.getWindow().getDecorView().findViewById(android.R.id
+        final ViewGroup mContainer = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id
                 .content);
         final ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mContainer
                 .getLayoutParams();
         int[] location = new int[2];
         mPlayerView.getLocationInWindow(location);
-        if(location[0] == 0 && location[1] == 0) return;
-        Log.e(TAG, String.format("resetLocation: rect[ left=%d right=%d ]",location[0],
+        Log.e(TAG, "reset location ->" + activity);
+        Log.e(TAG, String.format("resetLocation: rect[ left=%d right=%d ]", location[0],
                 location[1]));
+        if (location[0] == 0 && location[1] == 0) return;
         layoutParams.leftMargin = -location[0];
         layoutParams.topMargin = -location[1];
         mContainer.post(new Runnable() {
@@ -80,6 +84,5 @@ class PlayerLocation {
                 mContainer.setLayoutParams(layoutParams);
             }
         });
-
     }
 }

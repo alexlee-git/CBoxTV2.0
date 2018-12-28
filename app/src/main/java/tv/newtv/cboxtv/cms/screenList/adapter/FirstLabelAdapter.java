@@ -65,12 +65,7 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
 
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                String videoClassType = (String) SPrefUtils.getValue(context,"screenVideoClassType","");
-                String videoType = (String) SPrefUtils.getValue(context,"screenVideoType","");
                 if (hasFocus) {
-                    if (!TextUtils.isEmpty(videoClassType) && !TextUtils.isEmpty(videoType)){
-                        LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
-                    }
                     RxBus.get().post("labelId", childBeans.get(i));
                     RxBus.get().post("labelRecordView",labelViewHolder.itemView);
                     if (defaultFocusLab!=-1){
@@ -78,10 +73,6 @@ public class FirstLabelAdapter extends RecyclerView.Adapter<FirstLabelAdapter.Fi
                     }
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_select);
                 } else {
-                    boolean isSecondMenu = (boolean) SPrefUtils.getValue(context,"isSecondMenu",false);
-                    if (!TextUtils.isEmpty(videoType) && !isSecondMenu) {
-                        LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType + "," + " " + "," + " " + "," + " " + "," + " " + ",");
-                    }
                     labelViewHolder.textView.setBackgroundResource(R.drawable.screen_list_default);
                 }
             }
