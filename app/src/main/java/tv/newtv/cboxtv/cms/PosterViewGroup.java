@@ -114,6 +114,7 @@ public class PosterViewGroup extends FrameLayout{
         mPosterImage.setLayoutParams(posterParams);
         mPosterImage.setTag(getTag() + "_poster");
         mPosterImage.setImageResource(android.R.color.holo_blue_light);
+//        mPosterImage.setScaleType(ImageView.ScaleType.FIT_XY);
         addView(mPosterImage);
 
         mPosterLeftTopAngle = new ImageView(context);

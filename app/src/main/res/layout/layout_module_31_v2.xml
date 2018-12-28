@@ -43,6 +43,7 @@
             app:block_poster_holder="@drawable/focus_384_480"
             app:block_poster_width="@dimen/width_384px"
             app:block_tag="cell_031_2"
+            android:descendantFocusability="blocksDescendants"
             android:layout_toEndOf="@id/id_module_31_view1">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
@@ -54,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/id_module_31_title"
             android:layout_marginTop="@dimen/height_15px"
-            app:block_poster_width="@dimen/width_370px"
+            app:block_poster_width="@dimen/width_384px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
@@ -70,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/module_31_height_19px"
             android:layout_below="@+id/id_module_31_view3"
-            app:block_poster_width="@dimen/width_370px"
+            app:block_poster_width="@dimen/width_384px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
@@ -86,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/module_31_height_19px"
             android:layout_below="@+id/id_module_31_view4"
-            app:block_poster_width="@dimen/width_370px"
+            app:block_poster_width="@dimen/width_384px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
@@ -102,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/module_31_height_19px"
             android:layout_below="@+id/id_module_31_view5"
-            app:block_poster_width="@dimen/width_370px"
+            app:block_poster_width="@dimen/width_384px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
@@ -152,6 +153,7 @@
             app:block_poster_holder="@drawable/focus_816_480"
             app:block_poster_type="video"
             app:block_poster_width="@dimen/width_816px"
+            android:nextFocusRight="@id/id_module_31_view3"
             app:block_tag="cell_031_1">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>

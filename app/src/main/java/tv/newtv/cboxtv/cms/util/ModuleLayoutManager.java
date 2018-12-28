@@ -69,7 +69,7 @@ public class ModuleLayoutManager {
             .layout.layout_module_26_v2,
             R.layout.layout_module_27_other_v2, R.layout.layout_module_28_other_v2, R.layout
             .layout_module_29_v2,
-            R.layout.layout_module_30, R.layout.layout_module_31_v2, R.layout.layout_module_32};
+            R.layout.layout_module_30_v2, R.layout.layout_module_31_v2, R.layout.layout_module_32};
 
     private String[] rightEdgeIds = new String[]{"cell_001_1", "cell_002_2", "cell_003_3",
             "cell_004_4", "cell_005_6", "cell_006_8", "cell_007_8", "cell_008_6",

@@ -6013,6 +6013,7 @@
     <dimen name="_height_18px">-13px</dimen>
     <dimen name="_height_24px">-17px</dimen>
     <dimen name="_height_21px">-15px</dimen>
+    <dimen name="_height_36px">-25px</dimen>
 
     <dimen name="width_1dp">1dp</dimen>
     <dimen name="height_1dp">1dp</dimen>

@@ -23,7 +23,7 @@
             android:layout_width="@dimen/width_17px"
             android:layout_height="@dimen/height_17px"
             android:layout_marginLeft="@dimen/width_20px"
-            android:layout_marginStart="@dimen/width_120px"
+            android:layout_marginStart="@dimen/width_20px"
             android:layout_marginTop="@dimen/height_68px"
             android:background="@drawable/tuoyuan"
             android:tag="module_026_title_icon"

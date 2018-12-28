@@ -6009,6 +6009,7 @@
     <dimen name="_height_18px">-7px</dimen>
     <dimen name="_height_24px">-10px</dimen>
     <dimen name="_height_21px">-8px</dimen>
+    <dimen name="_height_36px">-15px</dimen>
     <dimen name="width_1dp">1dp</dimen>
     <dimen name="height_1dp">1dp</dimen>
     <dimen name="height_15dp">9dp</dimen>
