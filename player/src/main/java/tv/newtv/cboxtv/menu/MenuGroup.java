@@ -417,7 +417,8 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                         menuRecyclerView.getAdapter();
 
                 //2.让上一级的selectView获取焦点
-                if (menuRecyclerViewAdapter.getSelectView() != null) {
+                if (menuRecyclerViewAdapter.getSelectView() != null
+                        && menuRecyclerViewAdapter.getSelectView().getVisibility() == View.VISIBLE) {
                     menuRecyclerViewAdapter.getSelectView().requestFocus();
                 } else {
                     menuRecyclerView.scrollToPosition(menuRecyclerViewAdapter
