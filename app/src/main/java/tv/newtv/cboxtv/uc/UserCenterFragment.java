@@ -284,13 +284,9 @@ public class UserCenterFragment extends BaseFragment implements
                             Log.d(TAG, "wqs:requestUserInfo:loginStatus:false:not requestMemberInfo");
                             //用户未登录
                             memberStatusString = sign_member_open_not;
-                            if (mHandler != null) {
-                                mHandler.sendEmptyMessage(HEAD);
-                            } else {
-                                Log.e(TAG, "wqs:requestUserInfo:mHandler == null");
-                            }
                         }
                         if (mHandler != null) {
+                            mHandler.sendEmptyMessage(HEAD);
                             mHandler.sendEmptyMessage(REQUEST_DATA_BASE);
                         } else {
                             Log.e(TAG, "wqs:requestUserInfo:mHandler == null");
@@ -626,6 +622,7 @@ public class UserCenterFragment extends BaseFragment implements
      */
     private void bindData(int position) {
         try {
+            Log.d(TAG, "wqs:bindData");
             if (mAdapter != null) {
                 mAdapter.notifyItemChanged(position);
                 mAdapter.notifyDataSetChanged();
@@ -644,7 +641,7 @@ public class UserCenterFragment extends BaseFragment implements
      * @param
      */
     private void updateHeadInfo(int position) {
-        Log.d(TAG, "wqs:bindData");
+        Log.d(TAG, "wqs:updateHeadInfo");
         try {
             if (mAdapter != null) {
                 mAdapter.setLoginStatus(mLoginTokenString);
@@ -826,7 +823,7 @@ public class UserCenterFragment extends BaseFragment implements
                         if (!TextUtils.isEmpty(entity.getContentId())) {
                             contentID = entity.getContentId();
                         }
-                        Log.d(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype() + "--- entity.getContentId():" + contentID+"---playindex:"+entity.getPlayIndex()+"---playID:"+entity.playId);
+                        Log.d(TAG, "wqs:entity.get_contenttype():" + entity.get_contenttype() + "--- entity.getContentId():" + contentID + "---playindex:" + entity.getPlayIndex() + "---playID:" + entity.playId);
                         JumpUtil.activityJump(getContext(), entity.get_actiontype(), entity.get_contenttype(),
                                 contentID, "");
                     } else {
