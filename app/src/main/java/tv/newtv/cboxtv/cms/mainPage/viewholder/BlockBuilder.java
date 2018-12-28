@@ -355,10 +355,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                         info, parentFrameLayout);
 
                 // 按需添加标题控件
-                processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
-                        posterView != null && posterView.getParent() != null ? (ViewGroup)
-                                posterView
-                                .getParent() : frameLayout);
+                processTitle(layoutCode, info.getTitle(), info.getSubTitle(), frameLayout);
             }
 
             if (layoutList.size() > 0) {
@@ -600,7 +597,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     framelayout.setTag(R.id.tag_title_background, background);
                     background.setBackgroundResource(R.drawable.gradient_white_to_black);
                     background.setLayoutParams(layoutParams);
-                    framelayout.addView(background);
+                    framelayout.addView(background,layoutParams);
                     FrameLayout.LayoutParams lp;
                     if (TextUtils.equals(layoutCode, "layout_006")) {
                         lp = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
@@ -661,8 +658,7 @@ public class BlockBuilder extends BaseBlockBuilder {
 
         TextView subTitleWidget = (TextView) framelayout.getTag(R.id.tag_sub_title);
         if (!TextUtils.isEmpty(subTitle) && !TextUtils.equals(subTitle, "null")) {
-            if (TextUtils.equals(layoutCode, "layout_005") || TextUtils.equals(layoutCode,
-                    "layout_008")) {
+            if (TextUtils.equals(layoutCode, "layout_005")) {
                 if (subTitleWidget == null) {
                     FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(DisplayUtils
                             .translate

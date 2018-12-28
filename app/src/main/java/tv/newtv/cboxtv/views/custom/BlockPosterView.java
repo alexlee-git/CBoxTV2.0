@@ -161,9 +161,13 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
     private void refreshLayout() {
         if (focusBackground != null) {
+
+            int mWidth = enterFullScreen ? ScreenUtils.getScreenW() : poster_width;
+            int mHeight = enterFullScreen ? ScreenUtils.getScreenH() : poster_height;
+
             ViewGroup.LayoutParams layoutParams = getLayoutParams();
-            layoutParams.width = poster_width + marginSpace;
-            layoutParams.height = poster_height + marginSpace;
+            layoutParams.width = mWidth + marginSpace;
+            layoutParams.height = mHeight + marginSpace;
 
             int hmargin = getResources().getDimensionPixelSize(R.dimen.width_48px);
             int vmargin = getResources().getDimensionPixelSize(R.dimen.height_48px);
@@ -180,20 +184,16 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
             setLayoutParams(layoutParams);
 
-            focusBackground.layout(0, 0, poster_width + marginSpace * 2, poster_height +
+            focusBackground.layout(0, 0, mWidth + marginSpace * 2, mHeight +
                     marginSpace * 2);
 
             if (mPoster != null) {
-                mPoster.layout(marginSpace, marginSpace, poster_width + marginSpace,
-                        poster_height + marginSpace);
+                mPoster.layout(marginSpace, marginSpace, mWidth, mHeight);
             }
 
             if (mLivePlayView != null) {
-                mLivePlayView.layout(0, 0, poster_width + marginSpace,
-                        poster_height + marginSpace);
+                mLivePlayView.layout(0, 0, mWidth, mHeight);
             }
-
-            requestLayout();
         }
     }
 
@@ -258,9 +258,6 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
                     .playing_icon2), width, height);
         }
 
-
-        setTag(block_tag);
-
         setClipChildren(false);
         setClipToPadding(false);
 
@@ -289,6 +286,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         }
         mPosterImage.setImageResource(poster_resource_holder);
         mPoster.addView(mPosterImage);
+        mPoster.setTag(block_tag);
         addView(mPoster, 1, poster_layoutParams);
 
         addOtherWidget(layoutParams);
