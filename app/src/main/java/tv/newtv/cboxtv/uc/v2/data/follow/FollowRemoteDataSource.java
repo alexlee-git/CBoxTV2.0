@@ -280,10 +280,6 @@ public class FollowRemoteDataSource implements FollowDataSource {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-                        if (callback != null) {
-                            callback.onDataNotAvailable();
-                        }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
 
@@ -291,7 +287,7 @@ public class FollowRemoteDataSource implements FollowDataSource {
                     public void onError(Throwable e) {
                         Log.e(TAG, "get Follow list error:" + e.toString());
                         if (callback != null) {
-                            callback.onFollowListLoaded(null, 0);
+                            callback.onError(e.toString());
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
