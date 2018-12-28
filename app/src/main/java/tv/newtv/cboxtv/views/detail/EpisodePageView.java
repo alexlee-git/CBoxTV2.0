@@ -480,17 +480,10 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     private boolean videoType(String videoType) {
-        //节目集类型动漫
-        boolean dmPS = TextUtils.equals(seriesType, "1")
-                && seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
-
-        //节目集类型少儿
         boolean sePs = TextUtils.equals(seriesType, "1")
                 && seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
 
-        if (!TextUtils.isEmpty(seriesType) && (
-                TextUtils.equals(seriesType, "1")
-                || dmPS || sePs)) {
+        if (sePs) {
             return false;
         }
         return true;
