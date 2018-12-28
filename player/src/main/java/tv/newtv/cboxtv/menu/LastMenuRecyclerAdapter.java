@@ -288,10 +288,10 @@ public class LastMenuRecyclerAdapter extends BaseMenuRecyclerAdapter<RecyclerVie
         String tableName = "";
         String userId = "";
         if (TextUtils.isEmpty(SharePreferenceUtils.getToken(Libs.get().getContext()))) {
-            tableName = DBConfig.COLLECT_TABLE_NAME;
+            tableName = DBConfig.LB_COLLECT_TABLE_NAME;
             userId = SystemUtils.getDeviceMac(Libs.get().getContext());
         } else {
-            tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
+            tableName = DBConfig.REMOTE_LB_COLLECT_TABLE_NAME;
             userId = SharePreferenceUtils.getUserId(Libs.get().getContext());
         }
 
