@@ -571,6 +571,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
         mPlayerTimer = null;
 
+        PlayerLocation.get().destroy();
+
         if (mNewTVLauncherPlayer != null) {
             mNewTVLauncherPlayer.release();
         }
@@ -2156,8 +2158,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     @Override
     public void onAlternateResult(String alternateId, List<Alternate> alternateList, int
-            currentPlayIndex, String
-                                          title, String channelId) {
+            currentPlayIndex, String title, String channelId) {
         if (isReleased) return;
         updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
 

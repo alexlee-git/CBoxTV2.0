@@ -82,8 +82,9 @@ public abstract class NewTvRecycleAdapter<D, H extends NewTvRecycleAdapter.NewTv
 
     public void setSelectedIndex(int index) {
         if(currentIndex == index) return;
+        notifyItemChanged(currentIndex);
         currentIndex = index;
-        notifyDataSetChanged();
+        notifyItemChanged(index);
     }
 
     /**
