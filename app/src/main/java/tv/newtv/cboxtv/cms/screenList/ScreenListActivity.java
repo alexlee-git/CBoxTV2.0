@@ -26,7 +26,6 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
-import com.newtv.libs.util.SPrefUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -113,7 +112,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     private int totalSize;
     private String videoType;
     private String videoClassType;
-    private boolean menuSecondFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,14 +183,13 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                @Override
                                public void accept(CategoryTreeNode categoryTreeNode) throws Exception {
                                    if (categoryTreeNode != null) {
-                                       menuSecondFlag = true;
                                        videoClassType = categoryTreeNode.getTitle();
-                                       SPrefUtils.setValue(ScreenListActivity.this,"screenVideoClassType",videoClassType);
                                        categoryId = categoryTreeNode.getId();
                                        presenter.getSecondLabel();
                                        map.put("categoryId", categoryTreeNode.getId());
                                        presenter.getLabelData();
                                        title_label.setText(categoryTreeNode.getTitle());
+                                       LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
                                        title_label.setVisibility(View.VISIBLE);
                                    }
 
@@ -338,8 +335,6 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 categoryId = data.get(position).getId();
                 videoType = data.get(position).getTitle();
                 recordId = categoryId;
-                SPrefUtils.setValue(ScreenListActivity.this,"screenVideoType",videoType);
-                LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
 
                 presenter.getSecondLabel();
                 map.put("categoryId", categoryId);
@@ -544,21 +539,10 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_LEFT:
-                if (labelRecyclerView.hasFocus()){
-                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",true);
-                }else {
-                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",false);
-                }
-                break;
-            case KeyEvent.KEYCODE_DPAD_RIGHT:
-                if (labelRecyclerView.hasFocus()){
-                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",true);
-                }else {
-                    SPrefUtils.setValue(ScreenListActivity.this,"isSecondMenu",false);
-                }
-                break;
             case KeyEvent.KEYCODE_DPAD_UP:
+                if (labelRecyclerView.hasFocus() && !tab.hasFocus()){
+                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+" "+","+" "+","+" "+","+" "+",");
+                }
                 hasDefaultFocusSecond = false;
                 pageNum = 1;
                 loadMore = false;
@@ -735,6 +719,9 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
+                if (!labelRecyclerView.hasFocus() && tab.hasFocus()){
+                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
+                }
                 Log.e("yml", "onKeyDown: "+moveFlag );
                 if (!tvRecyclerView.hasFocus()) {
                     moveFlag++;
