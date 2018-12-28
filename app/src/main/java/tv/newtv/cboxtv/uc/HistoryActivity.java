@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.FocusFinder;
@@ -54,6 +55,7 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
+import tv.newtv.cboxtv.uc.v2.sub.view.CollectRecycleView;
 import tv.newtv.cboxtv.views.GridRecycleView;
 
 /**
@@ -72,7 +74,7 @@ public class HistoryActivity extends BaseActivity implements
     public int action_type;
     public String title;
     @BindView(R.id.id_usercenter_fragment_root)
-    GridRecycleView mRecyclerView;
+    CollectRecycleView mRecyclerView;
     @BindView(R.id.user_info_title)
     TextView mPageTitle;
     @BindView(R.id.id_operation_icon)
@@ -177,21 +179,21 @@ public class HistoryActivity extends BaseActivity implements
     }
 
     private void initView() {
-//        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
-//        // layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
-//        mRecyclerView.setLayoutManager(layoutManager);
-//        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//            @Override
-//            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-// RecyclerView.State state) {
-//                int index = parent.getChildLayoutPosition(view);
-//                if (index < COLUMN_COUNT) {
-//                    outRect.top = 23;
-//                }
-//
-//                outRect.bottom = 72;
-//            }
-//        });
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 6);
+        // layoutManager.setGapStrategy(StaggeredGridLayoutManager.GAP_HANDLING_NONE);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                       RecyclerView.State state) {
+                int index = parent.getChildLayoutPosition(view);
+                if (index < COLUMN_COUNT) {
+                    outRect.top = 10;
+                }
+
+                outRect.bottom = 10;
+            }
+        });
 
         if (action_type != UserCenterFragment.HISTORY) {
             if (operationText != null) {

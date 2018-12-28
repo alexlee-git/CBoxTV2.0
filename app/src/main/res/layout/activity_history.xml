@@ -34,7 +34,7 @@
         android:layout_marginRight="@dimen/width_354px"
         android:src="@drawable/menu_button"/>
 
-    <tv.newtv.cboxtv.views.GridRecycleView
+    <tv.newtv.cboxtv.uc.v2.sub.view.CollectRecycleView
         android:id="@+id/id_usercenter_fragment_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,8 +43,8 @@
         android:paddingLeft="@dimen/width_90px"
         android:paddingRight="@dimen/width_78px"
         android:layout_marginTop="@dimen/height_132px"
-        app:decoration_bottom="@dimen/height_72px"
-        app:decoration_top="@dimen/height_23px"
+        app:decoration_bottom="@dimen/height_10px"
+        app:decoration_top="@dimen/height_10px"
         app:spanCount="6"
         tools:ignore="RtlSymmetry"/>
 
