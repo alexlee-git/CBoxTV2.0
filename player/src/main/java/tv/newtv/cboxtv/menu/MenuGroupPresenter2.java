@@ -283,7 +283,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
      * @return
      */
     private boolean getProgramSeriesAndContentId() {
-        if (!NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
+        if (NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             Log.e(TAG, "isLiving");
             isLive = true;
             LiveInfo liveInfo = NewTVLauncherPlayerViewManager.getInstance().getLiveInfo();
@@ -293,7 +293,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             if(TextUtils.isEmpty(contentId)) {
                 return false;
             }
-            return true;
+            return false;
         }
         isLive = false;
         seriesIdList.clear();
