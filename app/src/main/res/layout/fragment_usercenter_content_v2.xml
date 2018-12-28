@@ -83,7 +83,7 @@
         <!-- 评分标题-->
         <TextView
             style="@style/ModulePosterScoreTitleStyle"
-            android:layout_width="@dimen/width_40px"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
@@ -178,7 +178,7 @@
         <!-- 评分标题-->
         <TextView
             style="@style/ModulePosterScoreTitleStyle"
-            android:layout_width="@dimen/width_40px"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
@@ -271,14 +271,13 @@
         <!-- 评分标题-->
         <TextView
             style="@style/ModulePosterScoreTitleStyle"
-            android:layout_width="@dimen/width_40px"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
@@ -366,14 +365,13 @@
         <!-- 评分标题-->
         <TextView
             style="@style/ModulePosterScoreTitleStyle"
-            android:layout_width="@dimen/width_40px"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
@@ -461,14 +459,13 @@
         <!-- 评分标题-->
         <TextView
             style="@style/ModulePosterScoreTitleStyle"
-            android:layout_width="@dimen/width_40px"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
@@ -556,14 +553,13 @@
         <!-- 评分标题-->
         <TextView
             style="@style/ModulePosterScoreTitleStyle"
-            android:layout_width="@dimen/width_40px"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/height_24px"
             android:layout_marginLeft="@dimen/width_215px"
             android:layout_marginTop="@dimen/height_345px"
             android:background="#99000000"
             android:includeFontPadding="false"
             android:tag="tag_poster_score_title"
-            android:text="8.3"
             android:visibility="invisible"/>
         <!-- 主标题-->
         <TextView
