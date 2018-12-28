@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.views.detail;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -61,6 +62,8 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     private NewTvRecycleAdapter mAdapter;
     private onEpisodeItemClick onItemClickListener;
     private LinearLayoutManager mLayoutManager;
+
+    private boolean mUiReady = false;
 
     private View currentFocusView;
 
@@ -192,7 +195,6 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                                 .getDimensionPixelOffset(R.dimen.width_48px)));
                     }
                 }
-
 
                 mRecycleView.setDirectors(findViewById(R.id.dir_left), findViewById(R.id
                         .dir_right));
@@ -328,6 +330,15 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                 };
 
                 mRecycleView.setAdapter(mAdapter);
+
+
+
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mUiReady = true;
+                    }
+                }, 1000);
             } else {
                 mAdapter.notifyItemRangeChanged(mLayoutManager.findFirstVisibleItemPosition(),
                         getChildCount());
@@ -338,7 +349,6 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     }
 
     private void onLoadError() {
-
         if (getParent() != null) {
             ViewGroup parentView = (ViewGroup) getParent();
             parentView.removeView(this);
@@ -412,7 +422,13 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
 
     @Override
     public boolean interruptKeyEvent(KeyEvent event) {
-        if (!hasFocus() && mRecycleView != null && mRecycleView.getChildCount() > 0) {
+        if (!hasFocus()) {
+            if (mRecycleView == null
+                    || mRecycleView.getChildCount() <= 0
+                    || !mUiReady
+                    || mRecycleView.getScrollState() != RecyclerView.SCROLL_STATE_IDLE) {
+                return true;
+            }
             mRecycleView.requestDefaultFocus(mAdapter.getSelectedIndex());
             return true;
         }
@@ -476,8 +492,9 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
     }
 
     @Override
-    public void onAlternateResult(@NotNull String alternateId, @Nullable List<Alternate> alternates) {
-        if(!TextUtils.equals(alternateId,mContentUuid)) return;
+    public void onAlternateResult(@NotNull String alternateId, @Nullable List<Alternate>
+            alternates) {
+        if (!TextUtils.equals(alternateId, mContentUuid)) return;
         if (alternates == null || alternates.size() <= 0) {
             onLoadError();
             return;
