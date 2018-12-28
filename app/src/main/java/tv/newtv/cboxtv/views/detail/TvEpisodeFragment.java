@@ -75,19 +75,12 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
     @Override
     public void destroy() {
         mData = null;
-        contentView = null;
         firstView = null;
         lastView = null;
         mWeakViewPager.clear();
         mWeakViewPager = null;
-        mChange = null;
-        if (viewHolders != null && !viewHolders.isEmpty()) {
-            for (ViewHolder viewholder : viewHolders) {
-                viewholder.destroy();
-            }
-            viewHolders.clear();
-        }
 
+        contentView = null;
         viewHolders = null;
     }
 
@@ -293,15 +286,6 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
             if (viewMove != null) {
                 viewMove.setSelected(b);
             }
-        }
-
-        public void destroy() {
-            mFocusView = null;
-            mTitleView = null;
-            itemView = null;
-            mImageView = null;
-            mChange = null;
-
         }
 
         void select() {

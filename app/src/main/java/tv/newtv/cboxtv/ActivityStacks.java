@@ -184,14 +184,7 @@ public final class ActivityStacks {
         LogUtils.d(TAG, "onDestroy->"+activity);
         synchronized (activities) {
             if (!activities.empty()) {
-                if (activities.peek() == activity) {
-                    activities.pop();
-                } else {
-                    int index = activities.search(activity);
-                    if (index != -1 && index < activities.size()) {
-                        activities.remove(index);
-                    }
-                }
+                activities.removeElement(activity);
             }
         }
     }

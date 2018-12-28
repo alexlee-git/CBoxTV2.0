@@ -151,7 +151,6 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
     public void onResume() {
         super.onResume();
         startPlay(mLiveInfo);
-        PlayInfoUtil.configBool1 = true;
     }
 
     private void stopPlay() {
@@ -183,7 +182,6 @@ public class BallPlayerFragment extends BaseSpecialContentFragment implements Li
             livePresenter.destroy();
             livePresenter = null;
         }
-        PlayInfoUtil.configBool2 = false;
         LiveTimingUtil.clearListener();
     }
 

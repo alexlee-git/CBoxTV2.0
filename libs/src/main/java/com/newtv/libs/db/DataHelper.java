@@ -200,13 +200,9 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL("drop table " + DBConfig.HISTORY_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_HISTORY_TABLE_NAME);
             sqLiteDatabase.execSQL("drop table " + DBConfig.COLLECT_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_COLLECT_TABLE_NAME);
             sqLiteDatabase.execSQL("drop table " + DBConfig.SUBSCRIBE_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
             sqLiteDatabase.execSQL("drop table " + DBConfig.ATTENTION_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME);
             sqLiteDatabase.execSQL(DBConfig.CREATE_HISTORY_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_COLLECT_TABLE_SQL);
@@ -256,13 +252,9 @@ class DataHelper extends SQLiteOpenHelper {
             sqLiteDatabase.execSQL(DBConfig.CREATE_LB_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_LB_COLLECT_TABLE_SQL);
             sqLiteDatabase.execSQL("drop table " + DBConfig.HISTORY_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_HISTORY_TABLE_NAME);
             sqLiteDatabase.execSQL("drop table " + DBConfig.COLLECT_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_COLLECT_TABLE_NAME);
             sqLiteDatabase.execSQL("drop table " + DBConfig.SUBSCRIBE_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_SUBSCRIBE_TABLE_NAME);
             sqLiteDatabase.execSQL("drop table " + DBConfig.ATTENTION_TABLE_NAME);
-            sqLiteDatabase.execSQL("drop table " + DBConfig.REMOTE_ATTENTION_TABLE_NAME);
             sqLiteDatabase.execSQL(DBConfig.CREATE_HISTORY_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_REMOTE_HISTORY_TABLE_SQL);
             sqLiteDatabase.execSQL(DBConfig.CREATE_COLLECT_TABLE_SQL);

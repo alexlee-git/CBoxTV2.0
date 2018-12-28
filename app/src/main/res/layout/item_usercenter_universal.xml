@@ -53,7 +53,7 @@
     <TextView
         android:id="@+id/id_score"
         style="@style/ModulePosterScoreTitleStyle"
-        android:layout_width="@dimen/width_40px"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/height_24px"
         android:layout_marginLeft="@dimen/width_215px"
         android:layout_marginTop="@dimen/width_347px"
