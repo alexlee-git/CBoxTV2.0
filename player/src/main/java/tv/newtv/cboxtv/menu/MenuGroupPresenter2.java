@@ -808,13 +808,17 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private void changeAlternate(Node node) {
         if (node != null || node instanceof LastNode) {
             LastNode lastNode = (LastNode) node;
-            Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
-            NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
             playProgram = menuGroup.switchLbNode(lastNode);
-            if(!Constant.CONTENTTYPE_LV.equals(node.getContentType()) && playProgram == null){
-                menuGroup.requestAndSetTag(node);
+            updateLbStatus(true,node);
+            if(Constant.CONTENTTYPE_LV.equals(lastNode.getContentType())){
+                playLive(node);
+            }else {
+                Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
+                NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
+                if(playProgram == null){
+                    menuGroup.requestAndSetTag(node);
+                }
             }
-            lbNode = node;
         } else {
             Log.i(TAG, "nodeTitle: " + node.getTitle());
         }
