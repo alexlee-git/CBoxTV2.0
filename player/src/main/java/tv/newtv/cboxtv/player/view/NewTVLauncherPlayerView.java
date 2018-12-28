@@ -1008,6 +1008,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mAlternatePresenter.requestAlternate(alternateId, title, channelId);
 
         mPlayerTimer.start();
+        defaultConfig.programSeriesInfo = null;
         LogUploadUtils.uploadLog(Constant.LOG_LB, "0," + channelId);
     }
 
