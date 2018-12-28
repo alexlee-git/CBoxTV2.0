@@ -167,7 +167,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                 SingleDetailPageActivity.this.finish();
                             }
                             mProgramSeriesInfo = info;
-                            ADConfig.getInstance().setContentType(mProgramSeriesInfo.getContentType());
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null, "PS");
                             mAdView.requestAD();
                             ArrayList<String> productId = new ArrayList<>();

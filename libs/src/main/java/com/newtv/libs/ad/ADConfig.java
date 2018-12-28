@@ -18,15 +18,7 @@ public class ADConfig {
     private String videoClass;//二级分类
     private String vipFlag;
     private String carousel;
-    private String contentType;
 
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
 
     public String getCarousel() {
         return carousel;
@@ -72,6 +64,7 @@ public class ADConfig {
             videoClass = "";
             seriesUUID = "";
             vipFlag = "";
+            carousel = "";
         }
     }
 
@@ -259,5 +252,6 @@ public class ADConfig {
         videoClass = "";
         seriesUUID = "";
         vipFlag = "";
+        carousel = "";
     }
 }
