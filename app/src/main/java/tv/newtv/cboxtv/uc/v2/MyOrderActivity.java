@@ -366,7 +366,7 @@ public class MyOrderActivity extends BaseActivity {
         int duration = ordersBean.getDuration();
         String mediaId = ordersBean.getMediaId();
         String contentType = ordersBean.getContentType();
-        String productName = ordersBean.getProductName();
+        String productName = ordersBean.getProductMediaName();
         String expireTime = ordersBean.getExpireTime();
 
         Intent intent = new Intent(MyOrderActivity.this, PayRefreshOrderActivity.class);
