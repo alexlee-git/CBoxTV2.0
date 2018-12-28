@@ -224,6 +224,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
     @Override
     public void changeAlternate(String contentId, String title, String channel) {
+        curPlayContentId = contentId;
         if (mRecycleView != null && mRecycleView.getAdapter() != null
                 && mRecycleView.getAdapter() instanceof AlternateAdapter) {
             ((AlternateAdapter) mRecycleView.getAdapter()).notifyChange(contentId);

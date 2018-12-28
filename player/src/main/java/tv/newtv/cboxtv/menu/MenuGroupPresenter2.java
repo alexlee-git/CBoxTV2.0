@@ -233,6 +233,13 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
         });
 
+        menuGroup.addUpdatePlayProgramListenerList(new MenuGroup.UpdatePlayProgramListener() {
+            @Override
+            public void update(Program program) {
+                MenuGroupPresenter2.this.playProgram = program;
+            }
+        });
+
         NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
 
             @Override
@@ -291,6 +298,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         isLive = false;
         seriesIdList.clear();
         programSeries = "";
+        isAlternate = false;
+        alternateId = "";
 
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
@@ -740,6 +749,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     case KeyEvent.KEYCODE_MENU:
                     case KeyEvent.KEYCODE_DPAD_CENTER:
                         if (show()) {
+                            send();
                             return true;
                         }
                         break;
@@ -758,6 +768,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     case KeyEvent.KEYCODE_DPAD_DOWN:
                     case KeyEvent.KEYCODE_DPAD_UP:
                         if (show()) {
+                            send();
                             return true;
                         }
                         break;
@@ -797,10 +808,17 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private void changeAlternate(Node node) {
         if (node != null || node instanceof LastNode) {
             LastNode lastNode = (LastNode) node;
-            Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
-            NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
             playProgram = menuGroup.switchLbNode(lastNode);
-            lbNode = node;
+            updateLbStatus(true,node);
+            if(Constant.CONTENTTYPE_LV.equals(lastNode.getContentType())){
+                playLive(node);
+            }else {
+                Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
+                NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
+                if(playProgram == null){
+                    menuGroup.requestAndSetTag(node);
+                }
+            }
         } else {
             Log.i(TAG, "nodeTitle: " + node.getTitle());
         }
@@ -812,6 +830,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 refreshLbNode();
                 willRefreshLbNode = false;
             }
+            Log.i(TAG, "show: "+playProgram );
             if (playProgram != null) {
                 updateLbPlayProgram();
                 menuGroup.show(playProgram);
@@ -836,6 +855,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     playProgram = program;
                 }
             }
+        } else {
+            Log.i(TAG, "updateLbPlayProgram: "+playProgram);
         }
     }
 

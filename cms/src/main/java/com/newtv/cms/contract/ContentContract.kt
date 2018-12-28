@@ -88,8 +88,10 @@ class ContentContract {
 
         override fun isTvSeries(content: Content?): Boolean {
             content?.let {
-                val videoType = content.videoType
-                return !(!TextUtils.isEmpty(videoType) && (TextUtils.equals(videoType, "电视剧") || TextUtils.equals(videoType, "动漫")))
+                /*val videoType = content.videoType
+                return !(!TextUtils.isEmpty(videoType) && (TextUtils.equals(videoType, "电视剧") || TextUtils.equals(videoType, "动漫")))*/
+                val seriesType = content?.seriesType
+                return !(!TextUtils.isEmpty(seriesType) && TextUtils.equals(seriesType, "1"))
             }
             return false
         }

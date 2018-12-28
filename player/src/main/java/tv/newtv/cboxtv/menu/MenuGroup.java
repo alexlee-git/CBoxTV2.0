@@ -104,6 +104,7 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
     private MyHandler focusHandler = new MyHandler(this);
 
     private List<OnSelectListener> onSelectListenerList = new ArrayList<>();
+    private List<UpdatePlayProgramListener> updatePlayProgramListenerList = new ArrayList<>();
 
     private ArrowHeadInterface arrowHead;
 
@@ -185,6 +186,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public void addOnSelectListener(OnSelectListener onSelectListener) {
         onSelectListenerList.add(onSelectListener);
+    }
+
+    public void addUpdatePlayProgramListenerList(UpdatePlayProgramListener listener){
+        updatePlayProgramListenerList.add(listener);
     }
 
     public void setArrowHead(ArrowHeadInterface arrowHead) {
@@ -514,6 +519,21 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         return playProgram;
     }
 
+    private void updatePlayProgram(List<Program> list){
+        if(list == null || list.size() == 0){
+            return;
+        }
+        int result = LbUtils.binarySearch(list, -1);
+        if (result >= 0) {
+            Program program = list.get(result);
+            playProgram = program;
+            setPlayId(program);
+            for(UpdatePlayProgramListener updatePlayProgramListener : updatePlayProgramListenerList){
+                updatePlayProgramListener.update(playProgram);
+            }
+        }
+    }
+
     /**
      * 按右鍵时 如果当前显示数据包含正在播放的路径,那么选中该条数据
      * 如果不包含，那么选中第一条
@@ -837,7 +857,12 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                 });
     }
 
-    public void requestData(final Node node) {
+    public void requestAndSetTag(Node node){
+        lastListView.setTag(node.getId());
+        requestData(node,true);
+    }
+
+    public void requestData(final Node node, final boolean updatePlayProgram) {
         if (node.isRequest() || node.isRequesting()) {
             return;
         }
@@ -868,6 +893,9 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                                     if (lastListView != null && lastListView.getTag() != null
                                             && lastListView.getTag().equals(node.getId())) {
                                         lastProgram = seriesContent.data;
+                                        if(updatePlayProgram){
+                                            updatePlayProgram(lastProgram);
+                                        }
                                         LastMenuRecyclerAdapter adapter =
                                                 (LastMenuRecyclerAdapter) lastListView.getAdapter();
                                         adapter.setData(lastProgram);
@@ -1341,6 +1369,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
         void select(Program program);
 
         void select(Node node, Program playProgram);
+    }
+
+    public interface UpdatePlayProgramListener{
+        void update(Program program);
     }
 
     private static class MyHandler extends android.os.Handler {

@@ -571,6 +571,8 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
         mPlayerTimer = null;
 
+        PlayerLocation.get().destroy();
+
         if (mNewTVLauncherPlayer != null) {
             mNewTVLauncherPlayer.release();
         }
@@ -1001,6 +1003,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         mAlternatePresenter.requestAlternate(alternateId, title, channelId);
 
         mPlayerTimer.start();
+        defaultConfig.programSeriesInfo = null;
         LogUploadUtils.uploadLog(Constant.LOG_LB, "0," + channelId);
         LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + alternateId);
     }
@@ -2156,8 +2159,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
     @Override
     public void onAlternateResult(String alternateId, List<Alternate> alternateList, int
-            currentPlayIndex, String
-                                          title, String channelId) {
+            currentPlayIndex, String title, String channelId) {
         if (isReleased) return;
         updatePlayStatus(PLAY_TYPE_ALTERNATE, currentPlayIndex, 0);
 
