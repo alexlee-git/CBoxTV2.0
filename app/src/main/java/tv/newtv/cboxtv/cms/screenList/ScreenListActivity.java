@@ -733,7 +733,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
-                if (tvRecyclerView.getChildAt(0)==null&&!container.hasFocus()){
+                if (tvRecyclerView.getChildAt(0)==null&&!container.hasFocus()&&!labelRecyclerView.hasFocus()){
                     return true;
                 }
 
