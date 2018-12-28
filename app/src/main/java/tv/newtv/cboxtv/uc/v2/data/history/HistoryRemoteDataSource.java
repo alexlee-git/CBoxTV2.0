@@ -74,8 +74,9 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
             parentId = entity.getContentId();
             subId = entity.getPlayId();
         }
+
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, entity);
         String Authorization = "Bearer " + SharePreferenceUtils.getToken(mContext);
         String userId = SharePreferenceUtils.getUserId(mContext);
         Log.d(TAG, "report history item, user_id " + userId + ", content_id : " + entity.getContentId());
@@ -317,7 +318,6 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                     contentID = item.optString("programset_id");
                                 }
                                 entity.setContentId(contentID);
-                                Log.e(TAG, "wqs:entity.getContentId:" + contentID);
                                 entity.set_contentuuid(item.optString("content_uuid"));
                                 entity.set_contenttype(contentType);
 
@@ -338,6 +338,14 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                                 entity.setDuration(String.valueOf(item.optLong("program_dur")));
                                 entity.setPlayPosition(String.valueOf(item.optLong("program_watch_dur")));
                                 entity.setRecentMsg(item.optString("recent_msg"));
+                                String extend = item.optString("ext");
+                                if (!TextUtils.isEmpty(extend) && !TextUtils.equals(extend, "null")) {
+                                    JSONObject jsonExtend = new JSONObject(extend);
+                                    String alternateNumber = jsonExtend.optString("alternate_number");
+                                    if (!TextUtils.isEmpty(alternateNumber)) {
+                                        entity.setAlternate_number(alternateNumber);
+                                    }
+                                }
                                 infos.add(entity);
                             }
 
@@ -347,6 +355,11 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Log.e(TAG, "wqs:getRemoteHistoryList:Exception:" + e.toString());
+                            if (callback != null) {
+                                callback.onError(e.toString());
+                                return;
+                            }
                         }
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
                     }
@@ -418,7 +431,7 @@ public class HistoryRemoteDataSource implements HistoryDataSource {
             updateTime = TimeUtil.getInstance().getCurrentTimeInMillis();
         }
         versionCode = UserCenterRecordManager.getInstance().getAppVersionCode(mContext);
-        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, null);
+        extend = UserCenterRecordManager.getInstance().setExtendJsonString(versionCode, bean);
         String Authorization = "Bearer " + token;
         NetClient.INSTANCE
                 .getUserCenterLoginApi()
