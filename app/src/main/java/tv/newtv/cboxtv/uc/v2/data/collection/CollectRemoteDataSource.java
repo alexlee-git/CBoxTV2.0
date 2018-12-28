@@ -391,7 +391,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity.setRecentMsg(item.optString("recent_msg"));
                                 if (TextUtils.equals(collectType, "1")) {
                                     String extend = item.optString("ext");
-                                    if (!TextUtils.isEmpty(extend)) {
+                                    if (!TextUtils.isEmpty(extend) && !TextUtils.equals(extend, "null")) {
                                         JSONObject jsonExtend = new JSONObject(extend);
                                         entity.setIs_finish(jsonExtend.optString("is_finish"));
                                         entity.setReal_exclusive(jsonExtend.optString("real_exclusive"));
@@ -413,6 +413,11 @@ public class CollectRemoteDataSource implements CollectDataSource {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Log.e(TAG, "wqs:getRemoteCollectList:Exception:" + e.toString());
+                            if (callback != null) {
+                                callback.onError(e.toString());
+                                return;
+                            }
                         }
 
                         UserCenterRecordManager.getInstance().unSubscribe(mGetListDisposable);
@@ -515,7 +520,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
                                 entity.setRecentMsg(item.optString("recent_msg"));
                                 if (TextUtils.equals(collectType, "1")) {
                                     String extend = item.optString("ext");
-                                    if (!TextUtils.isEmpty(extend)) {
+                                    if (!TextUtils.isEmpty(extend) && !TextUtils.equals(extend, "null")) {
                                         JSONObject jsonExtend = new JSONObject(extend);
                                         entity.setIs_finish(jsonExtend.optString("is_finish"));
                                         entity.setReal_exclusive(jsonExtend.optString("real_exclusive"));
@@ -537,6 +542,11 @@ public class CollectRemoteDataSource implements CollectDataSource {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            Log.e(TAG, "wqs:getRemoteLbCollectList:Exception:" + e.toString());
+                            if (callback != null) {
+                                callback.onError(e.toString());
+                                return;
+                            }
                         }
 
                         UserCenterRecordManager.getInstance().unSubscribe(mGetLbListDisposable);
@@ -544,7 +554,7 @@ public class CollectRemoteDataSource implements CollectDataSource {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "wqs:getRemoteCollectList onError: ");
+                        Log.e(TAG, "getRemoteCollectList onError: ");
 
                         if (callback != null) {
                             callback.onError(e.toString());
