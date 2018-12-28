@@ -233,6 +233,13 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
         });
 
+        menuGroup.addUpdatePlayProgramListenerList(new MenuGroup.UpdatePlayProgramListener() {
+            @Override
+            public void update(Program program) {
+                MenuGroupPresenter2.this.playProgram = program;
+            }
+        });
+
         NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
 
             @Override
@@ -802,6 +809,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
             NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
             playProgram = menuGroup.switchLbNode(lastNode);
+            if(!Constant.CONTENTTYPE_LV.equals(node.getContentType()) && playProgram == null){
+                menuGroup.requestAndSetTag(node);
+            }
             lbNode = node;
         } else {
             Log.i(TAG, "nodeTitle: " + node.getTitle());
@@ -814,6 +824,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 refreshLbNode();
                 willRefreshLbNode = false;
             }
+            Log.i(TAG, "show: "+playProgram );
             if (playProgram != null) {
                 updateLbPlayProgram();
                 menuGroup.show(playProgram);
@@ -838,6 +849,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     playProgram = program;
                 }
             }
+        } else {
+            Log.i(TAG, "updateLbPlayProgram: "+playProgram);
         }
     }
 

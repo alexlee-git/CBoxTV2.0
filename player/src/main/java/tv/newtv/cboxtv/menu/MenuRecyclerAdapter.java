@@ -74,7 +74,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
                         List<Program> programs = node.getPrograms();
                         lbHolder.playTitle.setText(programs.get(LbUtils.binarySearch(programs,0)).getTitle());
                     } else if (!node.isRequest() || !node.isRequesting()) {
-                        menuGroup.requestData(node);
+                        menuGroup.requestData(node,false);
                     }
                 }
             }
