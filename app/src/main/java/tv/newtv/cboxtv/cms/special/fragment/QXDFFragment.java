@@ -209,6 +209,9 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
             LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView
                     .getLayoutManager();
             videoIndex++;
+            if(videoIndex == adapter.getItemCount()){
+                videoPlayerView.setisEnd(true);
+            }
             if (adapter.getItemCount() - 1 < videoIndex) {
                 return;
             }
@@ -219,8 +222,6 @@ public class QXDFFragment extends BaseSpecialContentFragment implements
                 postion = 0;
             } else if (videoIndex > first && videoIndex <= last) {
                 postion = videoIndex - first;
-            }else if(videoIndex == adapter.getItemCount() - 1){
-                videoPlayerView.setisEnd(true);
             }
             View view = recyclerView.getChildAt(postion);
             ShooterViewHolder viewHolder = (ShooterViewHolder) recyclerView.getChildViewHolder

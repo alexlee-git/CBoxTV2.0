@@ -369,7 +369,9 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     @Override
     protected void AllComplete(boolean isError, String info) {
         super.AllComplete(isError, info);
-
+        if (mPlayerCallback != null) {
+            mPlayerCallback.AllPlayComplete(isError, info, this);
+        }
         if (NeedRepeat()) {
             playSingleOrSeries(getIndex(), 0);
             return;
@@ -401,9 +403,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
             isPlaying.setVisibility(GONE);
         }
 
-        if (mPlayerCallback != null) {
-            mPlayerCallback.AllPlayComplete(isError, info, this);
-        }
+
     }
 
     @Override
