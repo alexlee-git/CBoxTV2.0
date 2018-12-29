@@ -89,7 +89,7 @@ public class NewTVLauncherPlayerViewManager {
 
     void setPlayerView(NewTVLauncherPlayerView playerView) {
         if (mNewTVLauncherPlayerView != null && mNewTVLauncherPlayerView != playerView) {
-            release();
+            mNewTVLauncherPlayerView.release();
         }
         mCurrentPlayerID = System.currentTimeMillis();
         mNewTVLauncherPlayerView = playerView;

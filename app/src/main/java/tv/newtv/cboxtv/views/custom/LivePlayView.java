@@ -39,6 +39,7 @@ import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.cms.mainPage.menu.MainNavManager;
 import tv.newtv.cboxtv.cms.superscript.SuperScriptManager;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
+import tv.newtv.cboxtv.player.LifeCallback;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
@@ -58,7 +59,7 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
         ContentContract.View, LiveListener, ICustomPlayer, NewTVLauncherPlayerView
                 .OnPlayerStateChange, NewTVLauncherPlayerView.ChangeAlternateListener
-        , PlayerCallback {
+        , PlayerCallback,LifeCallback {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -177,7 +178,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     private void prepareVideoPlayer() {
         if (mVideoPlayerView != null && mVideoPlayerView.isReleased()) {
             releaseVideoPlayer();
-            mPlayerViewConfig = null;
         }
         if (mVideoPlayerView == null) {
             if (mPlayerViewConfig != null) {
@@ -200,6 +200,7 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                 mVideoPlayerView.registerScreenListener(new MyScreenListener());
             }
 
+            mVideoPlayerView.setLifeCallback(this);
             mVideoPlayerView.setPlayerCallback(this);
             mVideoPlayerView.setChangeAlternateListen(this);
             mVideoPlayerView.setOnPlayerStateChange(this);
@@ -225,11 +226,10 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
             removeCallbacks(playRunnable);
             mVideoPlayer.getViewTreeObserver().removeOnGlobalLayoutListener(null);
             if (mVideoPlayerView != null && !mVideoPlayerView.isReleased()) {
-                mPlayerViewConfig = mVideoPlayerView.getDefaultConfig();
                 mVideoPlayerView.release();
                 mVideoPlayerView.destory();
-                removeView(mVideoPlayerView);
             }
+            removeView(mVideoPlayerView);
         } catch (Exception e) {
             LogUtils.e(e);
         } finally {
@@ -705,6 +705,18 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
         if(mPlayerCallback != null){
             mPlayerCallback.ProgramChange();
         }
+    }
+
+    @Override
+    public void onPlayerRelease() {
+        if(mVideoPlayerView != null && !mVideoPlayerView.isReleased()) {
+            mPlayerViewConfig = mVideoPlayerView.getDefaultConfig();
+        }
+    }
+
+    @Override
+    public void onLifeError(String code, String message) {
+
     }
 
     private static class PlayInfo {

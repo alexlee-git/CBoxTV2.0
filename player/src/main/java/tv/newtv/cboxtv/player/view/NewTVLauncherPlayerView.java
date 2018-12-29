@@ -562,8 +562,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     }
 
     public void release() {
-
         if (isReleased) return;
+
+        if(defaultConfig.lifeCallback != null){
+            defaultConfig.lifeCallback.onPlayerRelease();
+        }
+
         isReleased = true;
         addHistory();
         uploadExitLbLog();
@@ -688,7 +692,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         stopLoading();
 
         if (defaultConfig.lifeCallback != null) {
-            defaultConfig.lifeCallback.onError(code, messgae);
+            defaultConfig.lifeCallback.onLifeError(code, messgae);
         }
 
         String hint = null;
