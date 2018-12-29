@@ -80,9 +80,16 @@ public class ResizeViewPager extends ViewPager {
     }
 
     public void requestDefaultFocus() {
-        AbsEpisodeFragment fragment = getFragment(getCurrentItem());
-        if (fragment == null) return;
-        fragment.requestDefaultFocus();
+        if(getCurrentFragment() != null){
+            getCurrentFragment().requestDefaultFocus();
+        }
+    }
+
+    private AbsEpisodeFragment getCurrentFragment(){
+        if (getAdapter() != null) {
+            return ((EpisodeAdapter) getAdapter()).getCurrentFragment();
+        }
+        return null;
     }
 
     public void setCurrentItem(final int item, final int selectIndex) {
@@ -90,12 +97,7 @@ public class ResizeViewPager extends ViewPager {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                AbsEpisodeFragment before = getFragment(currentPage);
-                if (before != null) {
-                    before.clear();
-                }
-
-                AbsEpisodeFragment fragment = getFragment(item);
+                AbsEpisodeFragment fragment = getCurrentFragment();
                 if (getFragmentSize() < item || fragment == null) return;
                 currentPage = item;
                 if (fragment.getCurrentIndex() != selectIndex) {

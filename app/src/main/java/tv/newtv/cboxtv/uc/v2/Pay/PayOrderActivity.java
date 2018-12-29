@@ -122,14 +122,13 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
     private boolean isVip = false;
     private ExterPayBean mExterPayBean;
     private String message_error;
-    private final String ACTTYPE = "DISCOUNT";
     private int price;
     private long expireTime_All;
     private long orders[];
     private boolean mIfContinued; //是否是连续包月
     private String message;
     private int type = 1;
-    private boolean firstOrderFlag;
+    private int suitableType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -601,9 +600,25 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                             price = pricesBean.getPrice();
                                         }
                                     } else {
-                                        int suitable = activityBean.getSuitable();
-                                        if (suitable == 1) {
-                                            if (firstOrderFlag) {
+                                        String suiTable = activityBean.getSuitable();
+                                        int suitable;
+                                        try {
+                                            suitable = Integer.parseInt(suiTable);
+                                        } catch (Exception e) {
+                                            suitable = -1;
+                                        }
+                                        if (suitable == -1) {
+                                            if (isBuyOnly) {
+                                                if (isVip) {
+                                                    price = pricesBean.getVipPrice();
+                                                } else {
+                                                    price = pricesBean.getPrice();
+                                                }
+                                            } else {
+                                                price = pricesBean.getPrice();
+                                            }
+                                        } else if (suitable == 1) {
+                                            if (suitableType == 1) {
                                                 if (isBuyOnly) {
                                                     if (isVip) {
                                                         price = pricesBean.getVipPriceDiscount();
@@ -623,6 +638,26 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                                 } else {
                                                     price = pricesBean.getPrice();
                                                 }
+                                            }
+                                        } else if (suitable == 2) {
+                                            if (suitableType == 2) {
+                                                if (isBuyOnly) {
+                                                    if (isVip) {
+                                                        price = pricesBean.getVipPriceDiscount();
+                                                    } else {
+                                                        price = pricesBean.getPriceDiscount();
+                                                    }
+                                                } else
+                                                    price = pricesBean.getPriceDiscount();
+                                            } else {
+                                                if (isBuyOnly) {
+                                                    if (isVip) {
+                                                        price = pricesBean.getVipPrice();
+                                                    } else {
+                                                        price = pricesBean.getPrice();
+                                                    }
+                                                } else
+                                                    price = pricesBean.getPrice();
                                             }
                                         } else {
                                             if (isBuyOnly) {
@@ -1023,7 +1058,7 @@ public class PayOrderActivity extends BaseActivity implements View.OnFocusChange
                                 JSONArray jsonArray = new JSONArray(data);
                                 if (jsonArray != null && jsonArray.length() > 0) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(0);
-                                    firstOrderFlag = jsonObject.optBoolean("firstOrderFlag", false);
+                                    suitableType = jsonObject.optInt("suitableType", 0);
                                     Exp_time = jsonObject.optString("expireTime");
                                     Calendar calendar = Calendar.getInstance();
                                     calendar.setTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(Exp_time));

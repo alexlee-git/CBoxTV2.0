@@ -46,6 +46,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     private static final int PLAY_TYPE_LIVE = 0;
     private static final int PLAY_TYPE_VOD = 1;
     private static final int PLAY_TYPE_ALTERNATE = 2;
+    private static final int PLAY_TYPE_SINGLE = 3;
     private static final int PLAY_TYPE_UNKNOWN = -1;
     private static String TAG = "NewTVLauncherPlayerActivity";
     NewTVLauncherPlayerView.PlayerViewConfig defaultConfig;
@@ -137,6 +138,8 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
                 PLAY_TYPE = PLAY_TYPE_ALTERNATE;
             } else if (Constant.CONTENTTYPE_LV.equals(contentType)) {
                 PLAY_TYPE = PLAY_TYPE_LIVE;
+            } else if(Constant.CONTENTTYPE_PG.equals(contentType) || Constant.CONTENTTYPE_CP.equals(contentType)){
+                PLAY_TYPE = PLAY_TYPE_SINGLE;
             } else {
                 PLAY_TYPE = PLAY_TYPE_VOD;
             }
@@ -276,8 +279,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     public void onContentResult(@NotNull String uuid, @Nullable Content content) {
         mProgramSeriesInfo = content;
         if (content == null || (PLAY_TYPE == PLAY_TYPE_VOD &&
-                (content.getData() == null
-                        || content.getData().size() == 0))) {
+                (content.getData() == null || content.getData().size() == 0))) {
             Toast.makeText(this, "节目内容为空", Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -293,7 +295,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
     private void doPlay(Content content) {
         initListener();
         if (!isFinishing()) {
-            if (PLAY_TYPE == PLAY_TYPE_VOD) {
+            if (PLAY_TYPE == PLAY_TYPE_VOD || PLAY_TYPE == PLAY_TYPE_SINGLE) {
                 NewTVLauncherPlayerViewManager.getInstance().playVod(this, content, mIndexPlay,
                         playPostion);
                 mIndexPlay = NewTVLauncherPlayerViewManager.getInstance().getIndex();

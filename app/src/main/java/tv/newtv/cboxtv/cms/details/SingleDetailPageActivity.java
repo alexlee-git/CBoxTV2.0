@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import com.newtv.cms.bean.Content;
 import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
-import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.ToastUtil;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
-import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -228,9 +226,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                     .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                         @Override
                         public void videoEitFullScreen(boolean isLiving) {
-                            if (mProgramSeriesInfo != null) {
-                                ExitScreenLogUpload.exitScreenLogUpload(mProgramSeriesInfo.getDefinition(), mProgramSeriesInfo.getVipFlag());
-                            }
                         }
                     }).SetClickListener(new View.OnClickListener() {
                         @Override
@@ -259,9 +254,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                     mPaiseView.startDiverges(0);
                                     break;
                                 case R.id.full_screen:
-                                    if (mProgramSeriesInfo != null) {
-                                        ExitScreenLogUpload.fullScreenLogUpload(mProgramSeriesInfo.getDefinition(), mProgramSeriesInfo.getVipFlag());
-                                    }
                                     headPlayerView.EnterFullScreen
                                             (SingleDetailPageActivity.this);
                                     break;

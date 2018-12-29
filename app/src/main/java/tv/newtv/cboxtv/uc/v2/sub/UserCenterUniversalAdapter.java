@@ -203,8 +203,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 Picasso.get().load(posterUrl)
                         .placeholder(R.drawable.focus_384_216)
                         .error(R.drawable.deful_user_h)
-                        .resize(384, 216)
-                        .centerInside()
+                        .fit()
                         .transform(new PosterCircleTransform(mContext, mContext.getResources().getDimensionPixelOffset(R.dimen.height_4px)))
                         .into(holder.poster);
             } else {

@@ -54,7 +54,7 @@ public class CollectRecycleView extends RecyclerView {
 //            mTypeArray.recycle();
 //        }
         mTop = 10;
-        mBottom = 10;
+        mBottom = 15;
         setPadding(getPaddingLeft(), getPaddingTop() + mTop * 2, getPaddingRight(), getPaddingBottom
                 () + mBottom);
 
