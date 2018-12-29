@@ -490,7 +490,7 @@ public class ProductPricesInfo implements Serializable {
                 private Object price;
                 private Object vipPrice;
                 @SerializedName("suitable")
-                private int suitable ;
+                private String suitable;
                 private Object point;
                 private Object vipPoint;
                 private String memo;
@@ -594,11 +594,11 @@ public class ProductPricesInfo implements Serializable {
                     this.vipPrice = vipPrice;
                 }
 
-                public int getSuitable() {
+                public String getSuitable() {
                     return suitable;
                 }
 
-                public void setSuitable(int suitable) {
+                public void setSuitable(String suitable) {
                     this.suitable = suitable;
                 }
 
