@@ -363,7 +363,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
-        onError(code, desc);
+        onLifeError(code, desc);
     }
 
 
@@ -440,9 +440,14 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     }
 
     @Override
-    public void onError(String code, String desc) {
+    public void onPlayerRelease() {
+
+    }
+
+    @Override
+    public void onLifeError(String code, String desc) {
         if(mLifeCallback != null){
-            mLifeCallback.onError(code, desc);
+            mLifeCallback.onLifeError(code, desc);
         }
     }
 

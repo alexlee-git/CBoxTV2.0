@@ -29,7 +29,6 @@ import java.util.List;
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
 import tv.newtv.cboxtv.annotation.BuyGoodsAD;
-import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
@@ -226,9 +225,6 @@ public class ColumnPageActivity extends DetailPageActivity {
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen(boolean isLiving) {
-                        if (pageContent != null) {
-                            ExitScreenLogUpload.exitScreenLogUpload(pageContent.getDefinition(), pageContent.getVipFlag());
-                        }
                         isFullScreenIng = false;
                         if (currentIndex > 8) {
                             playListView.moveToPosition(currentIndex);
@@ -266,9 +262,6 @@ public class ColumnPageActivity extends DetailPageActivity {
                             case R.id.full_screen:
                                 if (System.currentTimeMillis() - lastClickTime >= 2000)
                                 {//判断距离上次点击小于2秒
-                                    if (pageContent != null) {
-                                        ExitScreenLogUpload.fullScreenLogUpload(pageContent.getDefinition(), pageContent.getVipFlag());
-                                    }
                                     lastClickTime = System.currentTimeMillis();//记录这次点击时间
                                     headPlayerView.EnterFullScreen(ColumnPageActivity.this);
                                 }

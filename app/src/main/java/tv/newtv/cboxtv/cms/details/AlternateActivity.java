@@ -172,7 +172,12 @@ public class AlternateActivity extends DetailPageActivity implements
     }
 
     @Override
-    public void onError(String code, String desc) {
+    public void onPlayerRelease() {
+
+    }
+
+    @Override
+    public void onLifeError(String code, String desc) {
         if (CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY.equals(code) || CmsErrorCode
                 .CMS_NO_ONLINE_CONTENT.equals(code)) {
             if (fromOuter){
