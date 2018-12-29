@@ -356,7 +356,7 @@ public class NewTVLauncherPlayerActivity extends BaseActivity implements Content
 
     @Override
     public void onError(String code, String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
         if (CmsErrorCode.ALTERNATE_ERROR_PLAYLIST_EMPTY.equals(code) || CmsErrorCode
                 .CMS_NO_ONLINE_CONTENT.equals(code)) {
             if (fromOuter) {
