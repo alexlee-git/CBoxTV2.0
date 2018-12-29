@@ -192,7 +192,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                 } else {
                     if (item_layout != R.layout.item_details_horizontal_episode) {
                         mRecycleView.addItemDecoration(new RecycleFocusItemDecoration(getResources()
-                                .getDimensionPixelOffset(R.dimen.width_48px)));
+                                .getDimensionPixelOffset(R.dimen.width_50px)));
                     }
                 }
 
