@@ -202,7 +202,7 @@ public class PlayerAlternateContract {
 
         @Override
         public void addHistory() {
-//            Player.get().addLBHistory(currentAlternateId);
+            Player.get().addLBHistory(currentAlternateId);
         }
 
         @Override
