@@ -301,7 +301,34 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                 String actType = activityBean.getActType();
                 int suitable = activityBean.getSuitable();
                 Log.i(TAG, "onBindViewHolder:firstOrderFlag : " + firstOrderFlag);
-                if (suitable == 1 && firstOrderFlag) {
+                if (suitable == 1 ) {
+                    if (firstOrderFlag) {
+                        if (TextUtils.equals(actType, ACTTYPE)) {
+                            holder.img_product_mark.setVisibility(View.VISIBLE);
+                            holder.tv_price_discount.setVisibility(View.VISIBLE);
+                            holder.tv_discount.setVisibility(View.VISIBLE);
+                            holder.img_discount_price.setVisibility(View.VISIBLE);
+                            int price_discount = pricesBean.getPriceDiscount();
+                            int percentage = activityBean.getPercentage() / 10;
+                            holder.tv_price_discount.setText("已省" + tranPrices(price - price_discount) + "元");
+                            holder.tv_discount.setText(percentage + "折");
+                            holder.tv_price.setText(tranPrices(price_discount));
+                        } else {
+                            holder.img_product_mark.setVisibility(View.INVISIBLE);
+                            holder.tv_price_discount.setVisibility(View.INVISIBLE);
+                            holder.tv_discount.setVisibility(View.INVISIBLE);
+                            holder.img_discount_price.setVisibility(View.INVISIBLE);
+                            int price_discount = pricesBean.getPriceDiscount();
+                            holder.tv_price.setText(tranPrices(price_discount));
+                        }
+                    }else{
+                        holder.img_product_mark.setVisibility(View.INVISIBLE);
+                        holder.tv_price_discount.setVisibility(View.INVISIBLE);
+                        holder.tv_discount.setVisibility(View.INVISIBLE);
+                        holder.img_discount_price.setVisibility(View.INVISIBLE);
+                        holder.tv_price.setText(tranPrices(price));
+                    }
+                } else {
                     if (TextUtils.equals(actType, ACTTYPE)) {
                         holder.img_product_mark.setVisibility(View.VISIBLE);
                         holder.tv_price_discount.setVisibility(View.VISIBLE);
@@ -312,7 +339,7 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                         holder.tv_price_discount.setText("已省" + tranPrices(price - price_discount) + "元");
                         holder.tv_discount.setText(percentage + "折");
                         holder.tv_price.setText(tranPrices(price_discount));
-                    } else {
+                    }else{
                         holder.img_product_mark.setVisibility(View.INVISIBLE);
                         holder.tv_price_discount.setVisibility(View.INVISIBLE);
                         holder.tv_discount.setVisibility(View.INVISIBLE);
@@ -320,12 +347,7 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                         int price_discount = pricesBean.getPriceDiscount();
                         holder.tv_price.setText(tranPrices(price_discount));
                     }
-                } else {
-                    holder.img_product_mark.setVisibility(View.INVISIBLE);
-                    holder.tv_price_discount.setVisibility(View.INVISIBLE);
-                    holder.tv_discount.setVisibility(View.INVISIBLE);
-                    holder.img_discount_price.setVisibility(View.INVISIBLE);
-                    holder.tv_price.setText(tranPrices(price));
+
                 }
             }
 
