@@ -189,7 +189,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                        map.put("categoryId", categoryTreeNode.getId());
                                        presenter.getLabelData();
                                        title_label.setText(categoryTreeNode.getTitle());
-                                       LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
+                                       LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" ");
                                        title_label.setVisibility(View.VISIBLE);
                                    }
 
@@ -555,7 +555,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (labelRecyclerView.hasFocus() && !tab.hasFocus()){
-                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+" "+","+" "+","+" "+","+" "+",");
+                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+" "+","+" "+","+" "+","+" ");
                 }
                 hasDefaultFocusSecond = false;
                 pageNum = 1;
@@ -738,7 +738,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 }
 
                 if (!labelRecyclerView.hasFocus() && tab.hasFocus()){
-                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
+                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" ");
                 }
                 Log.e("yml", "onKeyDown: "+moveFlag );
 
