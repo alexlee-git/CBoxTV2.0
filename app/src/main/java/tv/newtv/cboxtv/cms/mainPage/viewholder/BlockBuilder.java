@@ -56,12 +56,9 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
 public class BlockBuilder extends BaseBlockBuilder {
 
     public static final String TAG = BlockBuilder.class.getSimpleName();
+    private static final int SEARCH_EDIT_VIEW = 600;
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
-
-    private static final int SEARCH_EDIT_VIEW = 6;
-
-
     private Context mContext;
     private StringBuilder idBuffer;
     private Interpolator mSpringInterpolator;
@@ -84,9 +81,9 @@ public class BlockBuilder extends BaseBlockBuilder {
     public UniversalViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         UniversalViewHolder holder = null;
         if (viewType > 0) {
-            if (viewType == SEARCH_EDIT_VIEW){
-                return new UniversalViewHolder(new SearchEditView(mContext),"");
-            }else {
+            if (viewType == SEARCH_EDIT_VIEW) {
+                return new UniversalViewHolder(new SearchEditView(mContext), "");
+            } else {
                 // 根据viewType获取相应的布局文件
                 int layoutResId = ModuleLayoutManager.getInstance().getLayoutResFileByViewType
                         (viewType);
@@ -116,7 +113,7 @@ public class BlockBuilder extends BaseBlockBuilder {
     public int getItemViewType(int position, Page item) {
         try {
             if (item != null) {
-                if ("search".equals( item.getBlockType())){
+                if ("search".equals(item.getBlockType())) {
                     return SEARCH_EDIT_VIEW;
                 }
                 if (!"6".equals(item.getBlockType())) {
@@ -242,7 +239,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                     layoutList.remove(frameLayoutId);
                     frameLayout.setVisibility(View.VISIBLE);
                     if (frameLayout instanceof AlternatePageView) {
-                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID, moduleItem.getBlockId(), layoutCode);
+                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID, moduleItem
+                                .getBlockId(), layoutCode);
                         ((AlternatePageView) frameLayout).setProgram(moduleItem);
                         return;
                     }
@@ -513,7 +511,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     .append(((Program) info).getL_actionUri())
                     .trimToSize();
         }
-        if (info instanceof Row){
+        if (info instanceof Row) {
             logBuff.append(0)
                     .append(",")
                     .append(blockId)

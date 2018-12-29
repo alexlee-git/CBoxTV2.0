@@ -24,6 +24,7 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.MainLooper;
 import com.newtv.libs.util.LogUtils;
 
+import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.PlayerErrorCode;
 import tv.newtv.cboxtv.player.util.PlayInfoUtil;
 import tv.newtv.cboxtv.player.view.NewTVLauncherPlayerView;
@@ -98,6 +99,10 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         videoFullCallBack = null;
         mFocusView = null;
         videoExitFullScreenCallBack = null;
+
+        if(NewTVLauncherPlayerViewManager.getInstance().equalsPlayer(this)){
+            NewTVLauncherPlayerViewManager.getInstance().release();
+        }
     }
 
     @Override
@@ -125,6 +130,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
     //退出全屏
     @Override
     public void ExitFullScreen() {
+        ExitScreenLogUpload.exitScreenLogUpload();
         if (defaultFocusView != null) {
             if (defaultFocusView instanceof VideoPlayerView) {
                 VideoPlayerView.this.requestFocus();
@@ -207,6 +213,7 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
 
     @Override
     public void EnterFullScreen(Activity activity, boolean bringFront) {
+        ExitScreenLogUpload.fullScreenLogUpload();
         defaultFocusView = activity.getWindow().getDecorView().findFocus();
         if (defaultConfig != null)
         super.EnterFullScreen(activity, bringFront);

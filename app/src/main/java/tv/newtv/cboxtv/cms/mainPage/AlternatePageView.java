@@ -436,6 +436,10 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
 
         @Override
         public void onChange(String id, @NotNull Alternate title) {
+            if(title == null){
+                mAlternateSubTitle.setText("");
+                return;
+            }
             if (TextUtils.equals(mId, id)) {
                 mAlternateSubTitle.setText(title.getTitle());
             } else {

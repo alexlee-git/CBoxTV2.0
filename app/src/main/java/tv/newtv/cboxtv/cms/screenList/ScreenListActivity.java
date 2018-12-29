@@ -425,7 +425,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     @Override
     public void showFirstMenuData(ModelResult<List<CategoryTreeNode>> modelResult) {
 
-        if (modelResult != null) {
+        if (modelResult != null && modelResult.getData() != null) {
             data = modelResult.getData();
             for (int i = 0; i < data.size(); i++) {
                 tab.addTab(tab.newTab().setText(data.get(i).getTitle()));

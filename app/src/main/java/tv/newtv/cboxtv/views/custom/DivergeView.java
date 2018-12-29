@@ -86,7 +86,7 @@ public class DivergeView extends View implements Runnable {
 
             dealQueen();
 
-            if(mDivergeInfos.size() == 0){
+            if(mDivergeInfos != null && mDivergeInfos.size() == 0){
                 continue;
             }
 

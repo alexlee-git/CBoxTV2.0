@@ -417,9 +417,10 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
                         menuRecyclerView.getAdapter();
 
                 //2.让上一级的selectView获取焦点
-                if (menuRecyclerViewAdapter.getSelectView() != null) {
-                    menuRecyclerViewAdapter.getSelectView().requestFocus();
-                } else {
+                if(menuRecyclerViewAdapter.getSelectView() == null
+                        || menuRecyclerViewAdapter.getSelectView().getVisibility() != View.VISIBLE
+                        || !isSee(menuRecyclerViewAdapter.getSelectView())
+                        || !menuRecyclerViewAdapter.getSelectView().requestFocus()){
                     menuRecyclerView.scrollToPosition(menuRecyclerViewAdapter
                             .calculatePlayIdPosition(0));
                     Message msg = Message.obtain();
@@ -1294,6 +1295,15 @@ public class MenuGroup extends LinearLayout implements MenuRecyclerView.OnKeyEve
 
     public Node getCurrentNode() {
         return currentNode;
+    }
+
+    public boolean isSee(View view){
+        Rect rect = new Rect();
+        view.getGlobalVisibleRect(rect);
+        if(rect.left == 0 && rect.top == 0){
+            return false;
+        }
+        return true;
     }
 
     /**

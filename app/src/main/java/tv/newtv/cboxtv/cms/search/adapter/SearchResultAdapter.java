@@ -133,7 +133,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<ResultHolder> {
                         }
                         if (keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                             mLabelView.requestFocus();
-                            mRecyclerView.smoothScrollToPosition(0);
+                            mRecyclerView.scrollToPosition(0);
                             return true;
                         }
                     }
