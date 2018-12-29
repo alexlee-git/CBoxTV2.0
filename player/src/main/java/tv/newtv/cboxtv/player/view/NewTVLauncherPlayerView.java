@@ -432,7 +432,10 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                                         .getCurrrentTitle()));
                         Alternate current = mAlternatePresenter.getCurrentAlternate();
                         if (current != null) {
-                            mNewTvAlterChange.setTitleText(current.getTitle());
+                            mNewTvAlterChange.setTitleText(String.format(Locale.getDefault(),
+                                    "%s %s",
+                                    CmsUtil.getTime(current.getStartTime(),current.getDuration()),
+                                    current.getTitle()));
                         } else {
                             mNewTvAlterChange.setTitleText("");
                         }
@@ -2330,10 +2333,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             if (defaultConfig != null && defaultConfig.isFullScreen) {
                 if (mNewTvAlterChange != null && mAlternatePresenter != null && mAlternatePresenter
                         .getCurrentAlternate() != null) {
+                    Alternate alternate = mAlternatePresenter.getCurrentAlternate();
                     mNewTvAlterChange.setTitleText(String.format(Locale.getDefault(),
                             "%s %s",
-                            mAlternatePresenter.getCurrentAlternate().getStartTime(),
-                            mAlternatePresenter.getCurrentAlternate().getTitle()));
+                            CmsUtil.getTime(alternate.getStartTime(),alternate.getDuration()),
+                            alternate.getTitle()));
                 }
             }
         }
