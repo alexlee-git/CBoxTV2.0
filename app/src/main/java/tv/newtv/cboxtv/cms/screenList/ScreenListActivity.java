@@ -26,6 +26,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -733,18 +734,14 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
-                if (tvRecyclerView.getChildAt(0)==null&&!container.hasFocus()&&!labelRecyclerView.hasFocus()){
-                    return true;
-                }
+
 
                 if (!labelRecyclerView.hasFocus() && tab.hasFocus()){
                     LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
                 }
                 Log.e("yml", "onKeyDown: "+moveFlag );
 
-                if (tvRecyclerView==null){
-                    return true;
-                }
+
 
                 if (!tvRecyclerView.hasFocus()) {
                     moveFlag++;
@@ -777,6 +774,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                         if (tvRecyclerView.getChildAt(0) != null) {
                                             tvRecyclerView.getChildAt(0).requestFocus();
                                             moveFlag = 6;
+                                        }else{
+                                            tab.setFocusable(false);
                                         }
                                     }
                                 }
@@ -803,6 +802,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                     if (tvRecyclerView.getChildAt(0) != null) {
                                         tvRecyclerView.requestFocus();
                                         moveFlag = 6;
+                                    }else {
+                                        tab.setFocusable(false);
                                     }
                                 }
                             }
@@ -825,6 +826,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                 if (tvRecyclerView.getChildAt(0) != null) {
                                     tvRecyclerView.getChildAt(0).requestFocus();
                                     moveFlag = 6;
+                                }else {
+                                    tab.setFocusable(false);
                                 }
                             }
                         }
@@ -839,6 +842,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                             if (tvRecyclerView.getChildAt(0) != null) {
                                 tvRecyclerView.getChildAt(0).requestFocus();
                                 moveFlag = 6;
+                            }else {
+                                tab.setFocusable(false);
                             }
                         }
                         return true;
@@ -847,6 +852,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         container.getChildAt(3).setVisibility(View.GONE);
                         if (tvRecyclerView.getChildAt(0) != null) {
                             tvRecyclerView.getChildAt(0).requestFocus();
+                        }else {
+                            tab.setFocusable(false);
                         }
                         return true;
                     }
