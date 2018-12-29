@@ -89,7 +89,7 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
     private PageContract.ContentPresenter mContentPresenter;
     private final String ACTTYPE = "DISCOUNT";
     private String mToken;
-    private boolean firstOrderFlag;
+    private int suitableType;
 
 
     @Override
@@ -299,10 +299,18 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                 holder.tv_price.setText(tranPrices(price));
             } else {
                 String actType = activityBean.getActType();
-                int suitable = activityBean.getSuitable();
-                Log.i(TAG, "onBindViewHolder:firstOrderFlag : " + firstOrderFlag);
-                if (suitable == 1 ) {
-                    if (firstOrderFlag) {
+                String suiTable = activityBean.getSuitable();
+                int suitable;
+                try {
+                    suitable = Integer.parseInt(suiTable);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    suitable = -1;
+                }
+                Log.i(TAG, "onBindViewHolder:suitable : " + suitable);
+                Log.i(TAG, "onBindViewHolder:suitableType : " + suitableType);
+                if (suitable == 1 || suitable == 2) {
+                    if (suitableType == suitable) {
                         if (TextUtils.equals(actType, ACTTYPE)) {
                             holder.img_product_mark.setVisibility(View.VISIBLE);
                             holder.tv_price_discount.setVisibility(View.VISIBLE);
@@ -321,13 +329,19 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                             int price_discount = pricesBean.getPriceDiscount();
                             holder.tv_price.setText(tranPrices(price_discount));
                         }
-                    }else{
+                    } else {
                         holder.img_product_mark.setVisibility(View.INVISIBLE);
                         holder.tv_price_discount.setVisibility(View.INVISIBLE);
                         holder.tv_discount.setVisibility(View.INVISIBLE);
                         holder.img_discount_price.setVisibility(View.INVISIBLE);
                         holder.tv_price.setText(tranPrices(price));
                     }
+                } else if (suitable == -1) {
+                    holder.img_product_mark.setVisibility(View.INVISIBLE);
+                    holder.tv_price_discount.setVisibility(View.INVISIBLE);
+                    holder.tv_discount.setVisibility(View.INVISIBLE);
+                    holder.img_discount_price.setVisibility(View.INVISIBLE);
+                    holder.tv_price.setText(tranPrices(price));
                 } else {
                     if (TextUtils.equals(actType, ACTTYPE)) {
                         holder.img_product_mark.setVisibility(View.VISIBLE);
@@ -339,7 +353,7 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                         holder.tv_price_discount.setText("已省" + tranPrices(price - price_discount) + "元");
                         holder.tv_discount.setText(percentage + "折");
                         holder.tv_price.setText(tranPrices(price_discount));
-                    }else{
+                    } else {
                         holder.img_product_mark.setVisibility(View.INVISIBLE);
                         holder.tv_price_discount.setVisibility(View.INVISIBLE);
                         holder.tv_discount.setVisibility(View.INVISIBLE);
@@ -351,7 +365,9 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                 }
             }
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnClickListener(new View.OnClickListener()
+
+            {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(PayChannelActivity.this, PayOrderActivity.class);
@@ -387,6 +403,7 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
 
             }
         }
+
     }
 
     private String tranPrices(int price) {
@@ -671,7 +688,7 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                                 JSONArray jsonArray = new JSONArray(data);
                                 if (jsonArray != null && jsonArray.length() > 0) {
                                     JSONObject jsonObject = jsonArray.getJSONObject(0);
-                                    firstOrderFlag = jsonObject.optBoolean("firstOrderFlag", false);
+                                    suitableType = jsonObject.optInt("suitableType", 0);
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
