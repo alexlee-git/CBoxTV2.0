@@ -2529,9 +2529,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
 
         public void release() {
             layoutParams = null;
+            lifeCallback = null;
             defaultFocusView = null;
             playerCallback = null;
             playCenter = null;
+            videoExitFullScreenCallBack = null;
+            videoFullCallBack = null;
             if (widgetMap != null) {
                 widgetMap.clear();
                 widgetMap = null;
