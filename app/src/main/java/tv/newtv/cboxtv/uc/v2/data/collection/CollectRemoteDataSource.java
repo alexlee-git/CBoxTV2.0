@@ -602,6 +602,13 @@ public class CollectRemoteDataSource implements CollectDataSource {
             parentId = "";
             subId = bean.getContentId();
         }
+        if (!TextUtils.isEmpty(collectType)) {
+            if (TextUtils.equals(collectType, "0")) {
+                collectTypeString = "0";
+            } else {
+                collectTypeString = "1";
+            }
+        }
         long updateTime;
         if (bean.getUpdateTime() > 0) {
             updateTime = bean.getUpdateTime();
