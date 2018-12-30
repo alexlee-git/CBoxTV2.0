@@ -370,7 +370,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
 
-        if (programSeriesInfo == null) {
+        if (programSeriesInfo == null || TextUtils.isEmpty(programSeriesInfo.getContentType())) {
             Log.e(TAG, "programSeriesInfo == null");
             return false;
         }
