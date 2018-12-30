@@ -69,8 +69,8 @@ public class SuperScriptManager implements CornerContract.View {
     private volatile static SuperScriptManager mInstance;
     private final String CACHE_FILE_NAME = "super.json";
     private final String TAG = "superscript";
-    private int CORNER_WIDTH = -1;
-    private int CORNER_HEIGHT = -1;
+    private int CORNER_WIDTH = -2;
+    private int CORNER_HEIGHT = -2;
     private String mLocalUpdateTime; // 本地缓存的角标对应的时间戳信息
     private Map<String, Corner> mSuperscriptMap;
     private CornerContract.Presenter mPresenter;
@@ -129,10 +129,10 @@ public class SuperScriptManager implements CornerContract.View {
         if (info == null || parent == null) {
             return;
         }
-        if (CORNER_WIDTH == -1) {
+        if (CORNER_WIDTH == -2) {
             CORNER_WIDTH = context.getResources().getDimensionPixelSize(R.dimen.width_75px);
         }
-        if (CORNER_HEIGHT == -1) {
+        if (CORNER_HEIGHT == -2) {
             CORNER_HEIGHT = context.getResources().getDimensionPixelSize(R.dimen.height_30px);
         }
         Observable.create(new ObservableOnSubscribe<List<Corner>>() {
