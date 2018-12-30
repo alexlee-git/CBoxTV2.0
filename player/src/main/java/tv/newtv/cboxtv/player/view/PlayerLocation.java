@@ -56,8 +56,11 @@ class PlayerLocation {
     void destroy() {
         Activity activity = Player.get().getCurrentActivity();
         Log.e(TAG, "detach listen ->" + activity);
-        activity.getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener
-                (mScrollChangeListener);
+        if (activity != null) {
+            activity.getWindow().getDecorView().getViewTreeObserver().removeOnGlobalLayoutListener
+                    (mScrollChangeListener);
+        }
+
         mPlayerView = null;
     }
 
@@ -66,6 +69,9 @@ class PlayerLocation {
         Rect rect = new Rect();
         if (!mPlayerView.getLocalVisibleRect(rect)) return;
         Activity activity = Player.get().getCurrentActivity();
+        if (activity == null) {
+            return;
+        }
         final ViewGroup mContainer = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id
                 .content);
         final ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mContainer
