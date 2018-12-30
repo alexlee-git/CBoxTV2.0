@@ -301,8 +301,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                     break;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_ENTER:
-                    // TODO test
-                    if (mAdPresenter.isAdHasEvent()) {
+                    if (mAdPresenter != null && mAdPresenter.isAdHasEvent()) {
                         mExternalAction = Constant.EXTERNAL_OPEN_URI;
                         enterMain();
                     }
