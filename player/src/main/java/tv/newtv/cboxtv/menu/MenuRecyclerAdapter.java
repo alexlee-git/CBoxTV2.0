@@ -42,7 +42,7 @@ public class MenuRecyclerAdapter extends BaseMenuRecyclerAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder = null;
         if (viewType == 0) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_menu, null);
+            View view = LayoutInflater.from(context).inflate(R.layout.item_menu, parent,false);
             holder = new Holder(view);
         } else if (viewType == 1) {
             View view = LayoutInflater.from(context).inflate(R.layout.item_menu_lb_number, parent, false);
