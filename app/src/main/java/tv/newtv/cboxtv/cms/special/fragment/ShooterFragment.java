@@ -31,6 +31,7 @@ import tv.newtv.cboxtv.cms.mainPage.AiyaRecyclerView;
 import tv.newtv.cboxtv.cms.special.OnItemAction;
 import tv.newtv.cboxtv.cms.util.PosterCircleTransform;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
+import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
 import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
 
@@ -128,6 +129,13 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
             adapter.refreshData(moduleInfoResult.getData().get(0).getPrograms())
                     .notifyDataSetChanged();
         }
+        videoPlayerView.setVideoExitCallback(new VideoExitFullScreenCallBack() {
+            @Override
+            public void videoEitFullScreen(boolean isLiving) {
+                int position = adapter.getFocusedPosition();
+                recyclerView.scrollToPosition(position);
+            }
+        });
     }
 
     private void onItemClickAction(Program programInfo) {
@@ -245,6 +253,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
         private CurrentPlayImageViewWorldCup currentPlayImageView;
         private String currentUUID;
         private int currentIndex = 0;
+        private int mFocusedPosition = 0;
         private Transformation transformation;
 
 
@@ -277,6 +286,7 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
             holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
+                    mFocusedPosition = position;
                     if (hasFocus) {
                         ScaleUtils.getInstance().onItemGetFocus(view, holder.posterFocus);
                     } else {
@@ -329,7 +339,9 @@ public class ShooterFragment extends BaseSpecialContentFragment implements Playe
                 }
             }
         }
-
+        public int getFocusedPosition(){
+            return mFocusedPosition;
+        }
         private Program getItem(int position) {
             if (ModuleItems == null || position < 0 || ModuleItems.size() <= position) {
                 return null;
