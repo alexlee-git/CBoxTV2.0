@@ -49,8 +49,10 @@ class PlayerLocation {
         Activity activity = Player.get().getCurrentActivity();
         Log.e(TAG, "attach listen ->" + activity);
         resetLocation();
-        activity.getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener
-                (mScrollChangeListener);
+        if (activity != null) {
+            activity.getWindow().getDecorView().getViewTreeObserver().addOnGlobalLayoutListener
+                    (mScrollChangeListener);
+        }
     }
 
     void destroy() {
