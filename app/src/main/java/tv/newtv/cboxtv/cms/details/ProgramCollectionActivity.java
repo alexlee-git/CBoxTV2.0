@@ -202,7 +202,9 @@ public class ProgramCollectionActivity extends DetailPageActivity {
 
                     @Override
                     public void onPlayerClick(VideoPlayerView videoPlayerView) {
-                        videoPlayerView.enterFullScreen(ProgramCollectionActivity.this);
+                        if (videoPlayerView != null) {
+                            videoPlayerView.enterFullScreen(ProgramCollectionActivity.this);
+                        }
                     }
 
                     @Override
