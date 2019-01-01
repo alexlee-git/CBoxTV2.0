@@ -36,17 +36,13 @@ public interface CollectDataSource {
         void onDataNotAvailable();
     }
 
-    void addRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean bean);
+    void addRemoteCollect(@NonNull UserCenterPageBean.Bean bean);
 
-    void addRemoteCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback);
+    void addRemoteCollectList(String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback);
 
-    void addRemoteLbCollectList(String collectType, String token, String userID, @NonNull List<UserCenterPageBean.Bean> beanList, AddRemoteCollectListCallback callback);
+    void deleteRemoteCollect(@NonNull UserCenterPageBean.Bean bean);
 
-    void deleteRemoteCollect(String collectType, @NonNull UserCenterPageBean.Bean bean);
-
-    void getRemoteCollectList(String collectType, String token, final String userId, String appKey, String channelCode, String offset, final String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback);
-
-    void getRemoteLbCollectList(String collectType, String token, final String userId, String appKey, String channelCode, String offset, final String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback);
+    void getRemoteCollectList(String token, final String userId, String appKey, String channelCode, String offset, final String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback);
 
     //释放资源
     void releaseCollectResource();
