@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/id_fouse_tv"
+        android:layout_width="@dimen/width_20px"
+        android:layout_height="@dimen/height_20px"
+        android:focusable="false" />
+
+    <tv.newtv.cboxtv.uc.v2.sub.view.CollectRecycleView
+        android:id="@+id/id_history_record_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/height_10px"
+        android:layout_marginTop="@dimen/height_132px"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/width_78px"
+        android:paddingRight="@dimen/width_78px"
+        android:paddingStart="@dimen/width_78px"
+        app:decoration_bottom="@dimen/height_30px"
+        app:decoration_top="@dimen/height_23px"
+        tools:ignore="RtlSymmetry" />
+
+    <!-- 提示信息区域(提示没有任何数据等) -->
+    <ViewStub
+        android:id="@+id/id_empty_view_vs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/height_201px"
+        android:layout="@layout/empty_userinfo_view" />
+
+    <ViewStub
+        android:id="@+id/id_hot_recommend_area_vs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/height_534px"
+        android:layout="@layout/layout_hot_recommend_area" />
+
+</FrameLayout>

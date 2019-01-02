@@ -301,8 +301,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                     break;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_ENTER:
-                    // TODO test
-                    if (mAdPresenter.isAdHasEvent()) {
+                    if (mAdPresenter != null && mAdPresenter.isAdHasEvent()) {
                         mExternalAction = Constant.EXTERNAL_OPEN_URI;
                         enterMain();
                     }
@@ -330,10 +329,15 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     public void finish() {
         super.finish();
 
+        if(mAdPresenter != null){
+            mAdPresenter.destroy();
+            mAdPresenter = null;
+        }
 
     }
 
     private void enterMain() {
+
 
 
 
@@ -354,12 +358,12 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 //因为不是用的激活认证的sdk，所以版本类型和版本号都不用上传
                 startActivity(intent);
             } else if (Constant.EXTERNAL_OPEN_URI.equals(mExternalAction)) {//点击广告进入详情页
-                if (mAdPresenter.getAdItem() != null) {
-                    Log.e(TAG, "enterMain: ..1" );
-                    toSecondPageFromAd(mAdPresenter.getAdItem().eventContent);
-                }else {
-                    Log.e(TAG, "enterMain: ..2" );
-                }
+                    if (mAdPresenter.getAdItem() != null) {
+                        Log.e(TAG, "enterMain: ..1");
+                        toSecondPageFromAd(mAdPresenter.getAdItem().eventContent);
+                    } else {
+                        Log.e(TAG, "enterMain: ..2");
+                    }
             } else {
                 boolean jump = JumpScreen.jumpExternal(getApplicationContext(),
                         mExternalAction,
@@ -382,10 +386,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
             startActivity(intent);
         }
 
-        if(mAdPresenter != null){
-            mAdPresenter.destroy();
-            mAdPresenter = null;
-        }
+
 
         finish();
     }

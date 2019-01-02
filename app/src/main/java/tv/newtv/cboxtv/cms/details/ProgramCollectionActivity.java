@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,11 +22,9 @@ import java.util.ArrayList;
 
 import tv.newtv.cboxtv.MainActivity;
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.menu.ExitScreenLogUpload;
 import tv.newtv.cboxtv.player.videoview.PlayerCallback;
 import tv.newtv.cboxtv.player.videoview.VideoExitFullScreenCallBack;
 import tv.newtv.cboxtv.player.videoview.VideoPlayerView;
-import tv.newtv.cboxtv.uc.v2.listener.INotifyLoginStatusCallback;
 import tv.newtv.cboxtv.utils.UserCenterUtils;
 import tv.newtv.cboxtv.views.detail.DetailPageActivity;
 import tv.newtv.cboxtv.views.detail.EpisodeAdView;
@@ -161,7 +158,6 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                     public void onClick(View v) {
                         switch (v.getId()) {
                             case R.id.full_screen:
-                                ExitScreenLogUpload.fullScreenLogUpload(mContent.getDefinition(),mContent.getVipFlag());
                                 headPlayerView.EnterFullScreen(ProgramCollectionActivity
                                         .this);
                                 break;
@@ -195,7 +191,6 @@ public class ProgramCollectionActivity extends DetailPageActivity {
                 .SetVideoExitFullScreenCallBack(new VideoExitFullScreenCallBack() {
                     @Override
                     public void videoEitFullScreen(boolean isLiving) {
-                        ExitScreenLogUpload.exitScreenLogUpload(mContent.getDefinition(),mContent.getVipFlag());
                         isFullScreenIng = false;
                     }
                 })
@@ -207,7 +202,9 @@ public class ProgramCollectionActivity extends DetailPageActivity {
 
                     @Override
                     public void onPlayerClick(VideoPlayerView videoPlayerView) {
-                        videoPlayerView.enterFullScreen(ProgramCollectionActivity.this);
+                        if (videoPlayerView != null) {
+                            videoPlayerView.enterFullScreen(ProgramCollectionActivity.this);
+                        }
                     }
 
                     @Override

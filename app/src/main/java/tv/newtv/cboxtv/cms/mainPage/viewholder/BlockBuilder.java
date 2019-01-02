@@ -57,7 +57,8 @@ import tv.newtv.cboxtv.views.custom.RecycleImageView;
 public class BlockBuilder extends BaseBlockBuilder {
 
     public static final String TAG = BlockBuilder.class.getSimpleName();
-    private static final int SEARCH_EDIT_VIEW = 6;
+    private static final int SEARCH_EDIT_VIEW = 600;
+
     private final String SHOW_BLOCK_TITLE = "1";
     private final String DO_NOT_SHOW_BLOCK_TITLE = "0";
     private Context mContext;
@@ -249,7 +250,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                     layoutList.remove(frameLayoutId);
                     frameLayout.setVisibility(View.VISIBLE);
                     if (frameLayout instanceof AlternatePageView) {
-                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID, moduleItem.getBlockId(), layoutCode);
+                        ((AlternatePageView) frameLayout).setPageUUID(PlayerUUID, moduleItem
+                                .getBlockId(), layoutCode);
                         ((AlternatePageView) frameLayout).setProgram(moduleItem);
                         return;
                     }
@@ -528,7 +530,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     .append(((Program) info).getL_actionUri())
                     .trimToSize();
         }
-        if (info instanceof Row){
+        if (info instanceof Row) {
             logBuff.append(0)
                     .append(",")
                     .append(blockId)

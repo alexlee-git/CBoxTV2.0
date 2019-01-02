@@ -9,6 +9,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.newtv.libs.IDefaultFocus;
+
 /**
  * 项目名称:         CBoxTV2.0
  * 包名:            tv.newtv.cboxtv.views.widget
@@ -16,7 +18,7 @@ import android.view.ViewGroup;
  * 创建人:           weihaichao
  * 创建日期:          2018/11/8
  */
-public class VerticalRecycleView extends RecyclerView {
+public class VerticalRecycleView extends RecyclerView implements IDefaultFocus {
 
     public VerticalRecycleView(Context context) {
         this(context, null);
@@ -100,4 +102,8 @@ public class VerticalRecycleView extends RecyclerView {
         return true;
     }
 
+    @Override
+    public View getDefaultFocusView() {
+        return null;
+    }
 }

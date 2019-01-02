@@ -27,13 +27,6 @@ public final class ActivityStacks {
 
     }
 
-    public void lifeCycle(ILifeCycle lifeCycle){
-        BaseActivity activity = getCurrentActivity();
-        if(activity != null){
-            activity.lifeCycle(lifeCycle);
-        }
-    }
-
     public static ActivityStacks get() {
         if (instance == null) {
             synchronized (ActivityStacks.class) {
@@ -43,47 +36,54 @@ public final class ActivityStacks {
         return instance;
     }
 
+    public void lifeCycle(ILifeCycle lifeCycle) {
+        BaseActivity activity = getCurrentActivity();
+        if (activity != null) {
+            activity.lifeCycle(lifeCycle);
+        }
+    }
+
     public boolean isBackGround() {
         return activityCount == 0;
     }
 
     public void onStart(BaseActivity activity) {
-        LogUtils.d(TAG, "onStart->"+activity);
+        LogUtils.d(TAG, "onStart->" + activity);
         synchronized (activities) {
             activityCount++;
         }
     }
 
-    public void onPause(BaseActivity activity){
-        LogUtils.d(TAG, "onPause->"+activity);
+    public void onPause(BaseActivity activity) {
+        LogUtils.d(TAG, "onPause->" + activity);
     }
 
     public void onResume(BaseActivity activity) {
-        LogUtils.d(TAG, "onResume->"+activity);
+        LogUtils.d(TAG, "onResume->" + activity);
 
     }
 
     public void onStop(BaseActivity activity) {
-        LogUtils.d(TAG, "onStop->"+activity);
+        LogUtils.d(TAG, "onStop->" + activity);
         synchronized (activities) {
             activityCount--;
         }
 
-        LogUtils.d(TAG, "onStop-> count="+activityCount);
+        LogUtils.d(TAG, "onStop-> count=" + activityCount);
         MainLooper.get().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(activityCount == 0){
+                if (activityCount == 0) {
                     ServerTime.get().onEnterBackground();
                 }
             }
-        },3000);
+        }, 3000);
 
     }
 
     public void onCreate(BaseActivity activity) {
         synchronized (activities) {
-            LogUtils.d(TAG, "onCreate->"+activity);
+            LogUtils.d(TAG, "onCreate->" + activity);
 
             if (isVideoPlayerActivity(activity)) {
                 finishBfPlayerActivity();
@@ -133,7 +133,10 @@ public final class ActivityStacks {
      */
     public BaseActivity getCurrentActivity() {
         synchronized (activities) {
-            return activities.peek();
+            if (activities.size() > 0)
+                return activities.peek();
+
+            return null;
         }
     }
 
@@ -181,7 +184,7 @@ public final class ActivityStacks {
      * @param activity
      */
     public void onDestroy(BaseActivity activity) {
-        LogUtils.d(TAG, "onDestroy->"+activity);
+        LogUtils.d(TAG, "onDestroy->" + activity);
         synchronized (activities) {
             if (!activities.empty()) {
                 activities.removeElement(activity);

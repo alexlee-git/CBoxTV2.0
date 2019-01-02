@@ -17,6 +17,17 @@ public class ADConfig {
     private String videoType;//一级分类
     private String videoClass;//二级分类
     private String vipFlag;
+    private String carousel;
+
+
+    public String getCarousel() {
+        return carousel;
+    }
+
+    public void setCarousel(String carousel) {
+        this.carousel = carousel;
+    }
+
     private List<ColumnListener> listenerList = new ArrayList<>();
 
     private ADConfig(){}
@@ -53,6 +64,7 @@ public class ADConfig {
             videoClass = "";
             seriesUUID = "";
             vipFlag = "";
+            carousel = "";
         }
     }
 
@@ -240,5 +252,6 @@ public class ADConfig {
         videoClass = "";
         seriesUUID = "";
         vipFlag = "";
+        carousel = "";
     }
 }

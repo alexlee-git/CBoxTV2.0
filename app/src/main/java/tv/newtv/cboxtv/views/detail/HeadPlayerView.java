@@ -223,14 +223,14 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                             }
                         }
 
-                        if (isRequest) {
+                        if (isRequest && mBuilder != null) {
                             mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
                         }
                     }
 
                     @Override
                     public void onError() {
-                        if (isRequest) {
+                        if (isRequest && mBuilder != null) {
                             mPresenter.getContent(mBuilder.contentUUid, mBuilder.autoGetSub);
                         }
                     }
@@ -357,6 +357,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
     }
 
     public void Build(Builder builder) {
+        if(builder == null) return;
         mBuilder = builder;
         initData(true);
         if (mBuilder.playerCallback == null) return;

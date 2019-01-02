@@ -48,7 +48,7 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
-import tv.newtv.cboxtv.views.GridRecycleView;
+import tv.newtv.cboxtv.uc.v2.sub.view.CollectRecycleView;
 
 /**
  * 项目名称:         央视影音
@@ -61,7 +61,7 @@ import tv.newtv.cboxtv.views.GridRecycleView;
 
 public class SubscribeFragment extends BaseDetailSubFragment implements PageContract.View {
     private final String TAG = "lx";
-    private GridRecycleView mRecyclerView; // 展示订阅列表的recyclerview
+    private CollectRecycleView mRecyclerView; // 展示订阅列表的recyclerview
     private RecyclerView mHotRecommendRecyclerView; // 展示热门订阅的recyclerview
     private TextView mHotRecommendTitle;
     private List<UserCenterPageBean.Bean> mDatas;
@@ -90,7 +90,7 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_history_record;
+        return R.layout.fragment_collect_record;
     }
 
     @Override
@@ -241,17 +241,17 @@ public class SubscribeFragment extends BaseDetailSubFragment implements PageCont
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN_COUNT));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_SUBSCRIBE);
             mRecyclerView.setAdapter(mAdapter);
-//            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//                @Override
-//                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//                    int index = parent.getChildLayoutPosition(view);
-//                    if (index < COLUMN_COUNT) {
-//                        outRect.top = 23;
-//                    }
-//
-//                    outRect.bottom = 72;
-//                }
-//            });
+            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+                @Override
+                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                    int index = parent.getChildLayoutPosition(view);
+                    if (index < COLUMN_COUNT) {
+                        outRect.top = 10;
+                    }
+
+                    outRect.bottom = 10;
+                }
+            });
         } else {
             if (mAdapter != null) {
                 if (TextUtils.equals(operationType, "delete")) {

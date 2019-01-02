@@ -206,7 +206,7 @@ public class MyOrderActivity extends BaseActivity {
                     holder.tvPayResult.setText("未支付");
                 }
             }
-            holder.tvResumeContent.setText(mResultListBean.getProductName());
+            holder.tvResumeContent.setText(mResultListBean.getProductMediaName());
             String payTime = mResultListBean.getPayTime();
             String expireTime = mResultListBean.getExpireTime();
             //产品需求-针对未支付的订单，购买时间和有效时间都不显示
@@ -366,7 +366,7 @@ public class MyOrderActivity extends BaseActivity {
         int duration = ordersBean.getDuration();
         String mediaId = ordersBean.getMediaId();
         String contentType = ordersBean.getContentType();
-        String productName = ordersBean.getProductName();
+        String productName = ordersBean.getProductMediaName();
         String expireTime = ordersBean.getExpireTime();
 
         Intent intent = new Intent(MyOrderActivity.this, PayRefreshOrderActivity.class);

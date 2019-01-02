@@ -8,5 +8,6 @@ package tv.newtv.cboxtv.player;
  * 创建日期:          2018/12/26
  */
 public interface LifeCallback {
-    void onError(String code,String message);
+    void onPlayerRelease();
+    void onLifeError(String code,String message);
 }

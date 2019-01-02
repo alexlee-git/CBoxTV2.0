@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,9 +15,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.newtv.cms.bean.Page;
-import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
-import com.newtv.libs.BootGuide;
 import com.newtv.libs.Constant;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
@@ -45,6 +42,7 @@ import tv.newtv.cboxtv.uc.bean.UserCenterPageBean;
 import tv.newtv.cboxtv.uc.v2.BaseDetailSubFragment;
 import tv.newtv.cboxtv.uc.v2.CollectionDetailActivity;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
+import tv.newtv.cboxtv.uc.v2.sub.view.CollectRecycleView;
 
 /**
  * 项目名称:         央视影音
@@ -57,7 +55,7 @@ import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 
 public class CollectionLiveFragment extends BaseDetailSubFragment implements PageContract.View {
     private final String TAG = "CollectionLiveFragment";
-    private RecyclerView mRecyclerView;
+    private CollectRecycleView mRecyclerView;
     private RecyclerView mHotRecommendRecyclerView;
     private TextView mHotRecommendTitle;
     private ImageView mHotRecommendTitleIcon;
@@ -67,12 +65,10 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
     private String mLoginTokenString;//登录token,用于判断登录状态
     private String userId;
     public UserCenterUniversalAdapter mAdapter;
-    private final int COLUMN_COUNT = 4;
-    private PageContract.ContentPresenter mContentPresenter;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_history_record;
+        return R.layout.fragment_collect_record;
     }
 
     @Override
@@ -129,7 +125,7 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
         }
         DataSupport.search(tableNameCollect)
                 .condition()
-                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB,Constant.CONTENTTYPE_LV)
+                .eq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB, Constant.CONTENTTYPE_LV)
                 .eq(DBConfig.USERID, userId)
                 .OrderBy(DBConfig.ORDER_BY_TIME)
                 .build()
@@ -186,16 +182,16 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
             mAdapter = new UserCenterUniversalAdapter(getActivity(), mDatas, Constant.UC_COLLECTION, 1);
             mRecyclerView.setAdapter(mAdapter);
-//            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-//                @Override
-//                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-//                    outRect.bottom = 46;
-//                    int index = parent.getChildLayoutPosition(view);
-//                    if (index < COLUMN_COUNT) {
-//                        outRect.top = 23;
-//                    }
-//                }
-//            });
+            mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+                @Override
+                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                    outRect.bottom = 10;
+                    int index = parent.getChildLayoutPosition(view);
+                    if (index < 4) {
+                        outRect.top = 10;
+                    }
+                }
+            });
         } else {
             if (mDatas != null && mAdapter != null) {
                 boolean refresh = isEqual(datas, mDatas);
@@ -269,7 +265,7 @@ public class CollectionLiveFragment extends BaseDetailSubFragment implements Pag
             if (emptyView != null) {
                 if (emptyTextView == null) {
                     emptyTextView = emptyView.findViewById(R.id.empty_textview);
-                    emptyTextView.setText("您还没有收藏轮播任何节目哦～");
+                    emptyTextView.setText("您还没有收藏任何轮播节目哦～");
                     emptyTextView.setVisibility(View.VISIBLE);
                 }
             }

@@ -29,6 +29,8 @@ public abstract class DetailPageActivity extends BaseActivity {
     private String childContentUUID;
     public String contentLUuid;
 
+    private boolean mReady = false;
+
     protected String mFocusId; //从推荐位进入的默认位置(选集) 推荐位优先级高于历史记录
 
     protected String getChildContentUUID() {
@@ -90,6 +92,13 @@ public abstract class DetailPageActivity extends BaseActivity {
         }
 
         buildView(savedInstanceState, contentUUID);
+
+        getWindow().getDecorView().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mReady = true;
+            }
+        },500);
     }
 
     @Override
@@ -122,6 +131,7 @@ public abstract class DetailPageActivity extends BaseActivity {
     @SuppressWarnings({"ConstantConditions", "LoopConditionNotUpdatedInsideLoop"})
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if(!mReady) return true;
         if (interruptKeyEvent(event)) {
             return super.dispatchKeyEvent(event);
         }

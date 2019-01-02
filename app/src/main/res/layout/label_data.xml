@@ -58,7 +58,7 @@
     <TextView
         android:id="@+id/label_grade"
         style="@style/ModulePosterScoreTitleStyle"
-        android:layout_width="@dimen/width_40px"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/height_30px"
         android:layout_marginLeft="@dimen/width_220px"
         android:layout_marginTop="@dimen/height_350px"

@@ -86,7 +86,7 @@ public class DivergeView extends View implements Runnable {
 
             dealQueen();
 
-            if(mDivergeInfos.size() == 0){
+            if(mDivergeInfos != null && mDivergeInfos.size() == 0){
                 continue;
             }
 
@@ -139,10 +139,10 @@ public class DivergeView extends View implements Runnable {
 
     private void dealQueen(){
         long now = System.currentTimeMillis();
-        if(mQueen.size() > 0 && now - mLastAddTime > mQueenDuration){
+        if(mQueen != null && mQueen.size() > 0 && now - mLastAddTime > mQueenDuration){
             mLastAddTime = System.currentTimeMillis();
             DivergeInfo divergeInfo = null;
-            if(mDeadPool.size() > 0){
+            if(mDeadPool != null && mDeadPool.size() > 0){
                 //死池里面有空闲的divergeNode
                 divergeInfo = mDeadPool.get(0);
                 mDeadPool.remove(0);

@@ -45,6 +45,7 @@ import tv.newtv.cboxtv.menu.model.CategoryTree;
 import tv.newtv.cboxtv.menu.model.Content;
 import tv.newtv.cboxtv.menu.model.DBLastNode;
 import tv.newtv.cboxtv.menu.model.DBProgram;
+import tv.newtv.cboxtv.menu.model.ExitFullScreenSave;
 import tv.newtv.cboxtv.menu.model.LastNode;
 import tv.newtv.cboxtv.menu.model.LocalNode;
 import tv.newtv.cboxtv.menu.model.Node;
@@ -101,6 +102,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private String categoryId;
     private String contentType;
     private List<Node> rootNode;
+    private ExitFullScreenSave save = new ExitFullScreenSave();
     private String exitContentId;
 
     private boolean menuGroupIsInit = false;
@@ -233,6 +235,13 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             }
         });
 
+        menuGroup.addUpdatePlayProgramListenerList(new MenuGroup.UpdatePlayProgramListener() {
+            @Override
+            public void update(Program program) {
+                MenuGroupPresenter2.this.playProgram = program;
+            }
+        });
+
         NewTVLauncherPlayerViewManager.getInstance().addListener(new IPlayProgramsCallBackEvent() {
 
             @Override
@@ -286,11 +295,13 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             if(TextUtils.isEmpty(contentId)) {
                 return false;
             }
-            return true;
+            return false;
         }
         isLive = false;
         seriesIdList.clear();
         programSeries = "";
+        isAlternate = false;
+        alternateId = "";
 
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int typeIndex = NewTVLauncherPlayerViewManager.getInstance().getTypeIndex();
@@ -349,19 +360,24 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     }
 
     private boolean updateExitContentId() {
-        exitContentId = "";
+        save.reset();
         if (NewTVLauncherPlayerViewManager.getInstance().isLiving()) {
             LiveInfo liveInfo = NewTVLauncherPlayerViewManager.getInstance().getLiveInfo();
             if(liveInfo != null){
-                exitContentId = liveInfo.getContentUUID();
+                save.contentId = liveInfo.getContentUUID();
             }
+            save.isLive = true;
             return false;
         }
 
         com.newtv.cms.bean.Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
         int index = NewTVLauncherPlayerViewManager.getInstance().getIndex();
+        NewTVLauncherPlayerView.PlayerViewConfig defaultConfig = NewTVLauncherPlayerViewManager.getInstance().getDefaultConfig();
+        if (defaultConfig != null) {
+            save.isAlternate = defaultConfig.isAlternate;
+        }
 
-        if (programSeriesInfo == null) {
+        if (programSeriesInfo == null || TextUtils.isEmpty(programSeriesInfo.getContentType())) {
             Log.e(TAG, "programSeriesInfo == null");
             return false;
         }
@@ -369,15 +385,15 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         switch (programSeriesInfo.getContentType()) {
             case Constant.CONTENTTYPE_PG:
             case Constant.CONTENTTYPE_CP:
-                exitContentId = programSeriesInfo.getContentID();
+                save.contentId = programSeriesInfo.getContentID();
                 break;
             default:
                 if (index != -1 && programSeriesInfo.getData() != null && index < programSeriesInfo.getData().size()) {
-                    exitContentId = programSeriesInfo.getData().get(index).getContentID();
+                    save.contentId = programSeriesInfo.getData().get(index).getContentID();
                 }
                 break;
         }
-        Log.i(TAG, "updateExitContentId: " + exitContentId);
+        Log.i(TAG, "updateExitContentId: " + save.contentId);
         return true;
     }
 
@@ -740,6 +756,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     case KeyEvent.KEYCODE_MENU:
                     case KeyEvent.KEYCODE_DPAD_CENTER:
                         if (show()) {
+                            send();
                             return true;
                         }
                         break;
@@ -758,6 +775,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     case KeyEvent.KEYCODE_DPAD_DOWN:
                     case KeyEvent.KEYCODE_DPAD_UP:
                         if (show()) {
+                            send();
                             return true;
                         }
                         break;
@@ -797,10 +815,17 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private void changeAlternate(Node node) {
         if (node != null || node instanceof LastNode) {
             LastNode lastNode = (LastNode) node;
-            Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
-            NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
             playProgram = menuGroup.switchLbNode(lastNode);
-            lbNode = node;
+            updateLbStatus(true,node);
+            if(Constant.CONTENTTYPE_LV.equals(lastNode.getContentType())){
+                playLive(node);
+            }else {
+                Log.i(TAG, "changeAlternate: "+lastNode.contentId+","+lastNode.alternateNumber+","+lastNode.getTitle());
+                NewTVLauncherPlayerViewManager.getInstance().changeAlternate(lastNode.contentId, lastNode.alternateNumber, lastNode.getTitle());
+                if(playProgram == null){
+                    menuGroup.requestAndSetTag(node);
+                }
+            }
         } else {
             Log.i(TAG, "nodeTitle: " + node.getTitle());
         }
@@ -812,6 +837,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 refreshLbNode();
                 willRefreshLbNode = false;
             }
+            Log.i(TAG, "show: "+playProgram );
             if (playProgram != null) {
                 updateLbPlayProgram();
                 menuGroup.show(playProgram);
@@ -836,6 +862,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                     playProgram = program;
                 }
             }
+        } else {
+            Log.i(TAG, "updateLbPlayProgram: "+playProgram);
         }
     }
 
@@ -912,8 +940,8 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     @Override
     public void enterFullScreen() {
         getProgramSeriesAndContentId();
-        if (TextUtils.isEmpty(contentId) || TextUtils.isEmpty(exitContentId) && !menuGroupIsInit
-                || TextUtils.equals(exitContentId, contentId)) {
+        if (TextUtils.isEmpty(contentId) || TextUtils.isEmpty(save.contentId) && !menuGroupIsInit
+                || save.equals(contentId,isLive,isAlternate)) {
             return;
         }
         if (updatePlayProgram()) {

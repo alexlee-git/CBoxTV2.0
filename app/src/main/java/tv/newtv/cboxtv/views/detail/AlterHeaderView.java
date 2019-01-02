@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.newtv.cms.bean.Content;
 import com.newtv.cms.bean.SubContent;
 import com.newtv.cms.contract.ContentContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.db.DBCallback;
 import com.newtv.libs.db.DBConfig;
 import com.newtv.libs.db.DataSupport;
@@ -361,7 +363,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
 
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
-        onError(code, desc);
+        onLifeError(code, desc);
     }
 
 
@@ -438,9 +440,14 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
     }
 
     @Override
-    public void onError(String code, String desc) {
+    public void onPlayerRelease() {
+
+    }
+
+    @Override
+    public void onLifeError(String code, String desc) {
         if(mLifeCallback != null){
-            mLifeCallback.onError(code, desc);
+            mLifeCallback.onLifeError(code, desc);
         }
     }
 

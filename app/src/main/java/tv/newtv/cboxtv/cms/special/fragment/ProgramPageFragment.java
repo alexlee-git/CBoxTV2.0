@@ -43,18 +43,20 @@ import tv.newtv.cboxtv.views.custom.CurrentPlayImageViewWorldCup;
  * 创建人:           weihaichao
  * 创建日期:          2018/4/25
  */
-public class ProgramPageFragment extends BaseSpecialContentFragment implements PlayerCallback {
+public class ProgramPageFragment extends BaseSpecialContentFragment implements OnItemAction<Program>, PlayerCallback {
     private static final String TAG = ProgramPageFragment.class.getSimpleName();
     private AiyaRecyclerView recyclerView;
     private ModelResult<ArrayList<Page>> moduleInfoResult;
-    private int currentIndex = 0;
+    private int videoIndex = 0;
     private TextView tvProgramaTitle;
     private Program currentProgram;
     private boolean playPs = false; //是否按节目集指定位置播完之后，顺序播放同节目集内的下一集
     private ShooterAdapter adapter;
+    private Content mProgramSeriesInfo;
+    private int playIndex = 0;//当前选中的Index位置的节目集播放的index索引
     @Override
     protected int getVideoPlayIndex() {
-        return currentIndex;
+        return videoIndex;
     }
 
     @Override
@@ -64,6 +66,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     @Override
     protected void onItemContentResult(String uuid, Content content, int playIndex) {
+        mProgramSeriesInfo = content;
         if (content == null || content.getData() == null) {
             ToastUtil.showToast(getContext(), "播放内容为空");
             return;
@@ -96,7 +99,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
             @Override
             public void onItemClick(Program item, int index) {
-                currentIndex = index;
+                videoIndex = index;
                 playVideo(item);
             }
 
@@ -170,6 +173,7 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     @Override
     public void onEpisodeChange(int index, int position) {
+        playIndex = index;
     }
 
     @Override
@@ -184,19 +188,22 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
             ShooterAdapter adapter = (ShooterAdapter) recyclerView.getAdapter();
             LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView
                     .getLayoutManager();
-            currentIndex++;
-            if (adapter.getItemCount() - 1 < currentIndex) {
+            videoIndex++;
+            if(videoIndex == adapter.getItemCount()){
+                videoPlayerView.setisEnd(true);
+            }
+            if (adapter.getItemCount() - 1 < videoIndex) {
                 return;
-            }else if(currentIndex == adapter.getItemCount() - 1){
+            }else if(videoIndex == adapter.getItemCount() - 1){
                 videoPlayerView.setisEnd(true);
             }
             int first = layoutManager.findFirstVisibleItemPosition();
             int last = layoutManager.findLastVisibleItemPosition();
             int postion = 0;
-            if (currentIndex == first) {
+            if (videoIndex == first) {
                 postion = 0;
-            } else if (currentIndex > first && currentIndex <= last) {
-                postion = currentIndex - first;
+            } else if (videoIndex > first && videoIndex <= last) {
+                postion = videoIndex - first;
             }
             View view = recyclerView.getChildAt(postion);
             ShooterViewHolder viewHolder = (ShooterViewHolder) recyclerView.getChildViewHolder
@@ -209,6 +216,25 @@ public class ProgramPageFragment extends BaseSpecialContentFragment implements P
 
     @Override
     public void ProgramChange() {
+        if (mProgramSeriesInfo != null && videoPlayerView != null) {
+            videoPlayerView.setSeriesInfo(mProgramSeriesInfo);
+            videoPlayerView.playSingleOrSeries(videoIndex, 0);
+        }
+    }
+
+    @Override
+    public void onItemFocus(View item) {
+
+    }
+
+    @Override
+    public void onItemClick(Program item, int index) {
+        videoIndex = index;
+        getContent(item.getL_id(),item);
+    }
+
+    @Override
+    public void onItemChange(int before, int current) {
 
     }
 

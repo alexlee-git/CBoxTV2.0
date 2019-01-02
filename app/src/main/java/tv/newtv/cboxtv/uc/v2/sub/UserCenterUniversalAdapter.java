@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.uc.v2.sub;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -66,12 +67,12 @@ public class UserCenterUniversalAdapter extends RecyclerView
     }
 
     @Override
-    public UserCenterUniversalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public UserCenterUniversalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (type == 1) {
             view = LayoutInflater.from(mContext).inflate(R.layout
                     .item_usercenter_universal_live, parent, false);
-        } else {
+        }else {
             view = LayoutInflater.from(mContext).inflate(R.layout
                     .item_usercenter_universal, parent, false);
         }
@@ -158,6 +159,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
             } else {
                 holder.score.setVisibility(View.INVISIBLE);
             }
+            holder.subTitle.setVisibility(View.GONE);
             if (!TextUtils.isEmpty(info.getRecentMsg()) && !TextUtils.equals(info.getRecentMsg(), "null")) {
                 // 更新剧集
                 CharSequence charSequenceRecentMsg = SpannableBuilderUtils.builderMsgByRegular(info.getRecentMsg());
@@ -188,6 +190,7 @@ public class UserCenterUniversalAdapter extends RecyclerView
             holder.mask.setVisibility(View.GONE);
             holder.score.setVisibility(View.GONE);
             holder.episode.setVisibility(View.GONE);
+            holder.subTitle.setVisibility(View.GONE);
         }
 
         // 主标题
@@ -200,10 +203,8 @@ public class UserCenterUniversalAdapter extends RecyclerView
                 Picasso.get().load(posterUrl)
                         .placeholder(R.drawable.focus_384_216)
                         .error(R.drawable.deful_user_h)
-                        .memoryPolicy(MemoryPolicy.NO_STORE, MemoryPolicy.NO_CACHE)
-                        .resize(384, 216)
-                        .centerInside()
-                        .transform(new PosterCircleTransform(mContext, mContext.getResources().getDimensionPixelOffset(R.dimen.collect_lb)))
+                        .fit()
+                        .transform(new PosterCircleTransform(mContext, mContext.getResources().getDimensionPixelOffset(R.dimen.height_4px)))
                         .into(holder.poster);
             } else {
                 Picasso.get().load(posterUrl)

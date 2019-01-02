@@ -18,8 +18,7 @@ data class Alternate(
         val duration: String,
         val hImage: String,
         val startTime: String,
-        val title: String,
-        var isAd: String? = "0"
+        val title: String
 ) {
     override fun equals(other: Any?): Boolean {
         other?.let {

@@ -1,6 +1,7 @@
 package tv.newtv.cboxtv.player.view;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -97,16 +98,15 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
 
     public void show(String showAd) {
         removeCallbacks(closeRunnalbe);
-
+        background.setImageDrawable(new BitmapDrawable());
         needTip = false;
-        needShowAd = "0".equals(showAd);
+//        needShowAd = "1".equals(showAd);
+        needShowAd = true;
 
-        background.setVisibility(needShowAd ? GONE : VISIBLE);
+//        background.setVisibility(needShowAd ? VISIBLE : GONE);
 
-        if(needShowAd) {
-            mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE, PlayerConfig.getInstance()
-                    .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), currentId);
-        }
+        mAdPresenter.getCarouselAd(Constant.AD_CAROUSEL_CHANGE, PlayerConfig.getInstance()
+                .getFirstChannelId(), PlayerConfig.getInstance().getSecondChannelId(), currentId);
         setVisibility(VISIBLE);
         postDelayed(closeRunnalbe, 5000);
 
@@ -117,6 +117,7 @@ public class NewTvAlterChangeView extends FrameLayout implements AdContract.View
     public void dismiss() {
         removeCallbacks(closeRunnalbe);
         setVisibility(GONE);
+        background.setImageDrawable(new BitmapDrawable());
         if (NewTVLauncherPlayerViewManager.getInstance().getShowView() == NewTVLauncherPlayerView
                 .SHOWING_ALTER_CHANGE_VIEW) {
             NewTVLauncherPlayerViewManager.getInstance().setShowingView(NewTVLauncherPlayerView

@@ -96,18 +96,26 @@ public class ADHelper {
             StringBuffer path = new StringBuffer();
             int isLocal = AdSDK.getInstance().getLocalAd(materialItem.m_filePath, path);
             if (isLocal == 0) {
-                paths.add(new AD.ADItem(path.toString(), materialItem.m_fileName, materialItem
-                        .m_type, true, time, adInfo.m_mid, adInfo.m_aid,
-                        materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent,adInfo.m_pos));
+                String pathLocation = path.toString();
+                File file = new File(pathLocation);
+                if (file.exists()) {
+                    paths.add(new AD.ADItem(pathLocation, materialItem.m_filePath, materialItem.m_fileName,
+                            materialItem.m_type, true, time, adInfo.m_mid, adInfo.m_aid,
+                            materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent, adInfo.m_pos));
+                }else{
+                    paths.add(new AD.ADItem(materialItem.m_filePath, materialItem.m_filePath, materialItem.m_fileName,
+                            materialItem.m_type, false, time, adInfo.m_mid, adInfo.m_aid,
+                            materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent, adInfo.m_pos));
+                }
                 result.time = adTime;
             } else {
                 File file = new File(AdCache + File.pathSeparator + materialItem.m_fileName);
                 if (file.exists()) {
-                    paths.add(new AD.ADItem(file.getAbsolutePath(), materialItem.m_fileName,
+                    paths.add(new AD.ADItem(file.getAbsolutePath(),materialItem.m_filePath, materialItem.m_fileName,
                             materialItem.m_type, true, time, adInfo.m_mid, adInfo.m_aid,
                             materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent,adInfo.m_pos));
                 } else {
-                    paths.add(new AD.ADItem(materialItem.m_filePath, materialItem.m_fileName,
+                    paths.add(new AD.ADItem(materialItem.m_filePath,materialItem.m_filePath, materialItem.m_fileName,
                             materialItem.m_type, false,
                             time, adInfo.m_mid, adInfo.m_aid,
                             materialItem.m_id, materialItem.m_eventType, materialItem.m_eventContent,adInfo.m_pos));
@@ -286,7 +294,7 @@ public class ADHelper {
             final ADItem adItem = adItems.get(currentIndex);
             LogUtils.d(TAG, adItem.toString());
             if (adCallback != null) {
-                adCallback.showAd(adItem.AdType, adItem.AdUrl);
+                adCallback.showAd(adItem.AdType, adItem.RequestUrl);
                 adCallback.showAdItem(adItem);
                 Log.e("ADHelper", "showaditem : " + adItem.toString());
             }
@@ -352,6 +360,7 @@ public class ADHelper {
 
         public static class ADItem {
             public String AdUrl;                   //广告地址
+            public String RequestUrl;                   //广告网络地址
             public String AdType;                  //广告类型
             public boolean isLocal;                //是否是本地
             public int PlayTime;                   //播放时长
@@ -368,10 +377,13 @@ public class ADHelper {
                 AdType = type;
             }
 
-            public ADItem(String url, String name, String type, boolean local, int time, String
+            public ADItem(String url,String r_url, String name, String type, boolean local, int
+                    time,
+                          String
                     m, String a, String id, String eventType, String eventContent,String position) {
                 AdUrl = url;
                 FileName = name;
+                RequestUrl = r_url;
                 AdType = type;
                 isLocal = local;
                 PlayTime = time;
