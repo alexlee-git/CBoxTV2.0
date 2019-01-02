@@ -32,8 +32,8 @@ android {
         applicationId "com.newtv.cboxtv"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1107
-        versionName "2.1.7"
+        versionCode 1112
+        versionName "2.1.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构

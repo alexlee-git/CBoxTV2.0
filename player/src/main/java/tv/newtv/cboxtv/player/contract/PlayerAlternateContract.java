@@ -58,6 +58,8 @@ public class PlayerAlternateContract {
     public interface Presenter extends ICmsPresenter {
         void requestAlternate(String alternateId, String title, String channelId);
 
+        void updateAlternate(String alternateId, String title, String channelId);
+
         Alternate getCurrentAlternate();
 
         int getCurrentPlayIndex();
@@ -69,6 +71,8 @@ public class PlayerAlternateContract {
         String getCurrrentChannel();
 
         boolean playNext();
+
+        String needRequestAd();
 
         boolean needTipAlternate();
 
@@ -105,6 +109,8 @@ public class PlayerAlternateContract {
 
         private boolean isLive = false;
 
+        private String mNeedRequestAd = "0";
+
         private Observable<Long> observable;
 
         private AlternateRefresh mAlternateRefresh;
@@ -137,11 +143,16 @@ public class PlayerAlternateContract {
                 mContent.destroy();
                 mContent = null;
             }
+            clear();
+        }
+
+        private void clear(){
             if(mAlternateRefresh != null){
                 mAlternateRefresh.detach();
                 mAlternateRefresh = null;
             }
             dispose();
+            mNeedRequestAd = "1";
             mAlternates = null;
             currentAlternate = null;
         }
@@ -175,6 +186,11 @@ public class PlayerAlternateContract {
         }
 
         @Override
+        public String needRequestAd() {
+            return mNeedRequestAd;
+        }
+
+        @Override
         public boolean needTipAlternate() {
             return needShowChangeView;
         }
@@ -189,15 +205,9 @@ public class PlayerAlternateContract {
             Player.get().addLBHistory(currentAlternateId);
         }
 
-
         @Override
-        public void requestAlternate(final String alternateId, final String title, final String
-                channelId) {
-            if (requestID != 0L) {
-                mAlternate.cancel(requestID);
-                requestID = 0L;
-            }
-            dispose();
+        public void updateAlternate(String alternateId, String title, String channelId) {
+            clear();
 
             needShowChangeView = TextUtils.equals(alternateId, currentAlternateId);
 
@@ -206,6 +216,21 @@ public class PlayerAlternateContract {
             currrentChannel = channelId;
 
             isFirstChangeAlternate = true;
+        }
+
+        @Override
+        public void requestAlternate(final String alternateId, final String title, final String
+                channelId) {
+            clear();
+
+            updateAlternate(alternateId, title, channelId);
+
+            if (requestID != 0L) {
+                mAlternate.cancel(requestID);
+                requestID = 0L;
+            }
+            dispose();
+
             if (mAlternate != null) {
                 requestID = mAlternate.getTodayAlternate(Libs.get().getAppKey(), Libs.get()
                                 .getChannelId(),
@@ -215,11 +240,7 @@ public class PlayerAlternateContract {
                                     requestCode) {
                                 if (result.isOk()) {
                                     mAlternates = result.getData();
-                                    if(mAlternates != null && mAlternates.size()>0) {
-                                        for (Alternate alternate : mAlternates) {
-                                            alternate.setAd(result.isAd());
-                                        }
-                                    }
+                                    mNeedRequestAd = result.isAd();
                                     parseAlternate(title, channelId);
                                 } else {
                                     if (getView() != null)
@@ -237,6 +258,8 @@ public class PlayerAlternateContract {
                         });
             }
         }
+
+
 
         private void dispose() {
             if (mDisposable != null) {
@@ -311,8 +334,8 @@ public class PlayerAlternateContract {
                     }
                     if(mAlternateRefresh == null) {
                         mAlternateRefresh = new AlternateRefresh(getContext(), this);
-                        mAlternateRefresh.attach(currentAlternateId);
                     }
+                    mAlternateRefresh.attach(currentAlternateId);
                     if (getView() != null) {
                         getView().onAlternateResult(currentAlternateId,mAlternates,
                                 currentPlayIndex, title, channelId);

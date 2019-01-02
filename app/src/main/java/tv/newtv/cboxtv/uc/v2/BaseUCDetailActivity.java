@@ -226,9 +226,11 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
 
-        View focusView = getCurrentFocus();
+
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                View focusView = getCurrentFocus();
+                Log.i("BaseUCDetailActivity", "dispatchKeyEvent: KEYCODE_DPAD_UP" + focusView);
                 if (focusView != null) {
                     ViewParent focusParent = focusView.getParent();
                     if (focusParent != null && focusParent instanceof RecyclerView) {
@@ -265,20 +267,41 @@ public abstract class BaseUCDetailActivity<T> extends BaseActivity implements Co
                     }
                 }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                if (focusView != null && focusView instanceof RadioButton && focusView.getParent() instanceof
-                        RadioGroup) {
-                    View next = FocusFinder.getInstance().findNextFocus(
-                            (ViewGroup) this.getWindow().getDecorView(),
-                            focusView,
-                            View.FOCUS_DOWN);
-                    if (next != null) {
-                        ViewParent focusParent = next.getParent();
-                        if (focusParent instanceof RecyclerView) {
-                            View view = ((RecyclerView) focusParent).getChildAt(0);
-                            if (view != null) {
-                                view.requestFocus();
-                                return true;
+                if (radioGroup != null && radioGroup.getChildCount() > 0) {
+                    View focusView = radioGroup.getFocusedChild();
+                    Log.i("BaseUCDetailActivity", "dispatchKeyEvent: " + focusView);
+                    if (focusView != null && focusView instanceof RadioButton && focusView.getParent() instanceof
+                            RadioGroup) {
+                        View next = FocusFinder.getInstance().findNextFocus(
+                                (ViewGroup) this.getWindow().getDecorView(),
+                                focusView,
+                                View.FOCUS_DOWN);
+                        if (next != null) {
+                            ViewParent focusParent = next.getParent();
+                            if (focusParent instanceof RecyclerView) {
+                                View view = ((RecyclerView) focusParent).getChildAt(0);
+                                if (view != null) {
+                                    view.requestFocus();
+                                    return true;
+                                }
                             }
+                        }
+                    }
+                }
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (radioGroup != null && radioGroup.getChildCount() > 0) {
+                    View focusView = getCurrentFocus();
+                    Log.i("BaseUCDetailActivity", "dispatchKeyEvent: KEYCODE_DPAD_UP" + focusView);
+                    if (focusView != null) {
+                        ViewParent focusParent = focusView.getParent();
+                        if (focusParent != null && focusParent instanceof RecyclerView) {
+                            ((RecyclerView) focusParent).smoothScrollToPosition(0);
+                            if (!radioGroup.hasFocus()) {
+                                if (requestDefaultTab()) {
+                                    return true;
+                                }
+                            }
+                            return true;
                         }
                     }
                 }

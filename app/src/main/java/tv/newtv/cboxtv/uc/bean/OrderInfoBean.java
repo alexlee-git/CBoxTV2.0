@@ -69,6 +69,8 @@ public class OrderInfoBean {
         private int productId;
         @SerializedName("productName")
         private String productName;
+        @SerializedName("productMediaName")
+        private String productMediaName;
         @SerializedName("amount")
         private int amount;
         @SerializedName("payChannelId")
@@ -99,6 +101,14 @@ public class OrderInfoBean {
         private String contentType;
         @SerializedName("duration")
         private int duration;
+
+        public String getProductMediaName() {
+            return productMediaName;
+        }
+
+        public void setProductMediaName(String productMediaName) {
+            this.productMediaName = productMediaName;
+        }
 
         public int getDuration() {
             return duration;

@@ -26,6 +26,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.RxBus;
+import com.newtv.libs.util.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,7 +190,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                        map.put("categoryId", categoryTreeNode.getId());
                                        presenter.getLabelData();
                                        title_label.setText(categoryTreeNode.getTitle());
-                                       LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
+                                       LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" ");
                                        title_label.setVisibility(View.VISIBLE);
                                    }
 
@@ -299,6 +300,20 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         place_text = findViewById(R.id.place_text);
         sour_text = findViewById(R.id.sour_text);
 
+//        tvRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//                if (recyclerView.getFocusedChild() != null) {
+//                    if (recyclerView.getFocusedChild().getTop()<(int) getResources().getDimension(R.dimen.width_480px)) {
+//                        recyclerView.smoothScrollBy(0, recyclerView.getFocusedChild().getTop() - (int) getResources().getDimension(R.dimen.width_25px));
+//                        recyclerView.getFocusedChild().requestFocus();
+//                    }
+//                }
+//            }
+//
+//        });
 
         tab.setScaleValue(1.2f);
         tab.setTabTextColors(Color.parseColor("#80ffffff"), Color.parseColor("#ffffff"), Color.parseColor("#ffffff"));
@@ -410,7 +425,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     @Override
     public void showFirstMenuData(ModelResult<List<CategoryTreeNode>> modelResult) {
 
-        if (modelResult != null) {
+        if (modelResult != null && modelResult.getData() != null) {
             data = modelResult.getData();
             for (int i = 0; i < data.size(); i++) {
                 tab.addTab(tab.newTab().setText(data.get(i).getTitle()));
@@ -541,7 +556,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
                 if (labelRecyclerView.hasFocus() && !tab.hasFocus()){
-                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+" "+","+" "+","+" "+","+" "+",");
+                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+" "+","+" "+","+" "+","+" ");
                 }
                 hasDefaultFocusSecond = false;
                 pageNum = 1;
@@ -719,10 +734,15 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
 
+
+
                 if (!labelRecyclerView.hasFocus() && tab.hasFocus()){
-                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" "+",");
+                    LogUploadUtils.uploadLog(Constant.LOG_NODE_FILTER, "0," + videoType+","+videoClassType+","+" "+","+" "+","+" ");
                 }
                 Log.e("yml", "onKeyDown: "+moveFlag );
+
+
+
                 if (!tvRecyclerView.hasFocus()) {
                     moveFlag++;
                     if (tab.hasFocus()) {
@@ -754,6 +774,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                         if (tvRecyclerView.getChildAt(0) != null) {
                                             tvRecyclerView.getChildAt(0).requestFocus();
                                             moveFlag = 6;
+                                        }else{
+                                            tab.setFocusable(false);
                                         }
                                     }
                                 }
@@ -780,6 +802,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                     if (tvRecyclerView.getChildAt(0) != null) {
                                         tvRecyclerView.requestFocus();
                                         moveFlag = 6;
+                                    }else {
+                                        tab.setFocusable(false);
                                     }
                                 }
                             }
@@ -802,6 +826,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                                 if (tvRecyclerView.getChildAt(0) != null) {
                                     tvRecyclerView.getChildAt(0).requestFocus();
                                     moveFlag = 6;
+                                }else {
+                                    tab.setFocusable(false);
                                 }
                             }
                         }
@@ -811,11 +837,13 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         container.getChildAt(2).setVisibility(View.GONE);
                         if (container.getChildAt(3)!=null){
                             container.getChildAt(3).requestFocus();
-                            moveFlag = 5;
+
                         }else {
                             if (tvRecyclerView.getChildAt(0) != null) {
                                 tvRecyclerView.getChildAt(0).requestFocus();
                                 moveFlag = 6;
+                            }else {
+                                tab.setFocusable(false);
                             }
                         }
                         return true;
@@ -824,6 +852,8 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
                         container.getChildAt(3).setVisibility(View.GONE);
                         if (tvRecyclerView.getChildAt(0) != null) {
                             tvRecyclerView.getChildAt(0).requestFocus();
+                        }else {
+                            tab.setFocusable(false);
                         }
                         return true;
                     }

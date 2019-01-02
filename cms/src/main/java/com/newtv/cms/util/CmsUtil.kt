@@ -84,7 +84,7 @@ object CmsUtil {
             val alternate = alternateList[index]
             val begin = parse(alternate.startTime)
             val end = begin + (Integer.parseInt(alternate.duration) * 1000)
-            if(now < begin || (now in (begin + 1)..(end - 1))){
+            if (now < begin || (now in (begin + 1)..(end - 1))) {
                 returnIndex = index
                 break
             }
@@ -232,6 +232,29 @@ object CmsUtil {
             }
         }
         return result
+    }
+
+    @JvmStatic
+    fun getTime(startTime: String, duration: String): String {
+        val sb = StringBuilder()
+        val calendar = Calendar.getInstance()
+        var after: Calendar? = null
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S")
+        val targetFormat = SimpleDateFormat("HH:mm")
+        try {
+            val parse = format.parse(startTime)
+            calendar.time = parse
+            after = calendar.clone() as Calendar
+            after.add(Calendar.SECOND, Integer.parseInt(duration))
+
+            sb.append(targetFormat.format(calendar.time))
+            sb.append("-")
+            sb.append(targetFormat.format(after.time))
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return sb.toString()
     }
 
 

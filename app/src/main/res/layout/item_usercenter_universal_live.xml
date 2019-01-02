@@ -26,9 +26,11 @@
 
     <ImageView
         android:id="@+id/id_focus"
-        android:layout_width="@dimen/width_438px"
-        android:layout_height="@dimen/height_272px"
+        android:layout_width="@dimen/width_434px"
+        android:layout_height="@dimen/height_270px"
         android:background="@drawable/focusd_384_216"
+        android:layout_marginLeft="@dimen/width_1dp"
+        android:layout_marginTop="@dimen/height_1px"
         android:visibility="invisible" />
 
     <ImageView

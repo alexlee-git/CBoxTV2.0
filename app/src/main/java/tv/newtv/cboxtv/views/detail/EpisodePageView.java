@@ -32,6 +32,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 import io.reactivex.disposables.Disposable;
 import tv.newtv.cboxtv.R;
@@ -79,6 +81,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     private ContentContract.Presenter mContentPresenter;
     private int mPageSize;
     private String mVideoType;
+    private String seriesType;
     private TextView mTitleView;
     private TextView mUpTitle;
 
@@ -375,6 +378,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         mControlView = controlView;
         mEpisodeType = episodeType;
         mVideoType = videoType;
+        seriesType = content.getSeriesType();
 
         if (content.getData() == null) {
             mContentPresenter = new ContentContract.ContentPresenter
@@ -448,47 +452,67 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
      */
     private void initFragment(int mPageSize) {
         int size = mContentList.size();
-        fragments = new ArrayList<>();
         boolean tvSeries = !videoType(mVideoType);
+        if(tvSeries){
+            mPageSize = DEFAULT_LIST_SIZE;
+            leftDir.setVisibility(GONE);
+            rightDir.setVisibility(GONE);
+        }
         List<EpisodePageAdapter.PageItem> pageItems = new ArrayList<>();
         for (int index = 0; index < size; index += mPageSize) {
             int endIndex = index + mPageSize;
             if (endIndex > size) {
                 endIndex = size;
             }
-            AbsEpisodeFragment episodeFragment;
-            if (tvSeries) {
-                mPageSize = DEFAULT_LIST_SIZE;
-                episodeFragment = new TvEpisodeFragment();
-                leftDir.setVisibility(GONE);
-                rightDir.setVisibility(GONE);
+            if(tvSeries){
+                pageItems.add(new EpisodePageAdapter.PageItem(getTvTabString(index,endIndex)));
             } else {
-                episodeFragment = new SeriesEpisodeFragment();
+                pageItems.add(new EpisodePageAdapter.PageItem(getSeriesTabString(index,endIndex)));
             }
-//            episodeFragment.setAdItem(adPresenter.getAdItem());
-            episodeFragment.setData(mContentList.subList(index, endIndex));
-            episodeFragment.setViewPager(ListPager, fragments.size(), this);
-            fragments.add(episodeFragment);
-            pageItems.add(new EpisodePageAdapter.PageItem(episodeFragment.getTabString(index,endIndex)));
         }
-        EpisodeAdapter episodeAdapter = new EpisodeAdapter(mFragmentManager, fragments);
+        EpisodeAdapter episodeAdapter = new EpisodeAdapter(mFragmentManager,mContentList,mPageSize,tvSeries,ListPager,this);
         ListPager.setAdapter(episodeAdapter);
         pageItemAdapter.setPageData(pageItems, aiyaRecyclerView).notifyDataSetChanged();
         requestLayout();
     }
 
+    private String getSeriesTabString(int index, int endIndex){
+        if (index + 1 == endIndex) {
+            return String.format(Locale.getDefault(), "%d", index + 1);
+        }
+        return String.format(Locale.getDefault(), "%d-%d", index + 1, endIndex);
+    }
+
+    Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+
+    private String getTvTabString(int index, int endIndex){
+        if ((endIndex - index) == 1) {
+            return mContentList.get(endIndex - 1).getPeriods();
+        }
+
+        String start = mContentList.get(index).getPeriods();
+        String end = mContentList.get(endIndex - 1).getPeriods();
+        int startInt = 0;
+        int endInt = 0;
+        if (!TextUtils.isEmpty(start) && pattern.matcher(start).matches()) {
+            startInt = Integer.parseInt(start);
+        }
+        if (!TextUtils.isEmpty(end) && pattern.matcher(end).matches()) {
+            endInt = Integer.parseInt(end);
+        }
+        if (endInt > startInt) {
+            return String.format("%s-%s", start, end);
+        } else if (startInt > endInt) {
+            return String.format("%s-%s", end, start);
+        }
+        return String.format("%s-%s", start, end);
+    }
+
     private boolean videoType(String videoType) {
-        //节目集类型动漫
-        boolean dmPS = TextUtils.equals(videoType, "动漫")
+        boolean sePs = TextUtils.equals(seriesType, "1")
                 && seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
 
-        //节目集类型少儿
-        boolean sePs = TextUtils.equals(videoType, "少儿")
-                && seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
-
-        if (!TextUtils.isEmpty(videoType) && (
-                TextUtils.equals(videoType, "电视剧")
-                || dmPS || sePs)) {
+        if (sePs) {
             return false;
         }
         return true;

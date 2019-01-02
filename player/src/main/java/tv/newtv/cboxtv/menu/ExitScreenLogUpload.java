@@ -13,16 +13,19 @@ import tv.newtv.cboxtv.player.vip.VipCheck;
 
 public class ExitScreenLogUpload {
 
-    public static void fullScreenLogUpload(String definition,String vipFlag){
-        uploadLog(definition,vipFlag,"1");
+    public static void fullScreenLogUpload(){
+        uploadLog("1");
     }
 
-    public static void exitScreenLogUpload(String definition,String vipFlag){
-        uploadLog(definition,vipFlag,"0");
+    public static void exitScreenLogUpload(){
+        uploadLog("0");
     }
 
-    private static void uploadLog(String definition,String vipFlag,String isFullScreen){
+    private static void uploadLog(String isFullScreen){
         try {
+            Content programSeriesInfo = NewTVLauncherPlayerViewManager.getInstance().getProgramSeriesInfo();
+            String definition = programSeriesInfo.getDefinition();
+            String vipFlag = programSeriesInfo.getVipFlag();
             if (!TextUtils.isEmpty(definition)) {
                 if (TextUtils.equals(definition, "SD")) {
                     definition = "1";
