@@ -187,13 +187,13 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             focusBackground.layout(0, 0, mWidth + marginSpace * 2, mHeight +
                     marginSpace * 2);
 
-            if (mPoster != null) {
-                mPoster.layout(marginSpace, marginSpace, mWidth, mHeight);
-            }
-
             if (mLivePlayView != null) {
                 mLivePlayView.layout(0, 0, mWidth, mHeight);
             }
+            if (mPoster != null) {
+                mPoster.layout(marginSpace, marginSpace, mWidth+marginSpace, mHeight+marginSpace);
+            }
+
         }
     }
 
@@ -257,6 +257,8 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             bitmap = BitmapUtil.zoomImg(UsefulBitmapFactory.findBitmap(getContext(), R.drawable
                     .playing_icon2), width, height);
         }
+
+        setTag(block_tag);
 
         setClipChildren(false);
         setClipToPadding(false);

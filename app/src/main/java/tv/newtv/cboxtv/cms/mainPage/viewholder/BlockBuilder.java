@@ -357,7 +357,11 @@ public class BlockBuilder extends BaseBlockBuilder {
                         info, parentFrameLayout);
 
                 // 按需添加标题控件
-                processTitle(layoutCode, info.getTitle(), info.getSubTitle(), frameLayout);
+                if(info !=null) {
+                    processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
+                            posterView != null && posterView.getParent() != null ? (ViewGroup)
+                                    posterView.getParent() : frameLayout);
+                }
             }
 
             if (layoutList.size() > 0) {

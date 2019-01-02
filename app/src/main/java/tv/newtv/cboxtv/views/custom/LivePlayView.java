@@ -59,7 +59,7 @@ import tv.newtv.cboxtv.player.view.VideoFrameLayout;
 public class LivePlayView extends RelativeLayout implements Navigation.NavigationChange,
         ContentContract.View, LiveListener, ICustomPlayer, NewTVLauncherPlayerView
                 .OnPlayerStateChange, NewTVLauncherPlayerView.ChangeAlternateListener
-        , PlayerCallback,LifeCallback {
+        , PlayerCallback,LifeCallback,ScreenListener {
     public static final int MODE_IMAGE = 1;
     public static final int MODE_OPEN_VIDEO = 2;
     public static final int MODE_LIVE = 3;
@@ -197,11 +197,11 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
                                 .MATCH_PARENT);
                 mVideoPlayerView.setLayoutParams(layoutParams);
                 mVideoPlayer.addView(mVideoPlayerView, layoutParams);
-                mVideoPlayerView.registerScreenListener(new MyScreenListener());
             }
 
             mVideoPlayerView.setLifeCallback(this);
             mVideoPlayerView.setPlayerCallback(this);
+            mVideoPlayerView.registerScreenListener(this);
             mVideoPlayerView.setChangeAlternateListen(this);
             mVideoPlayerView.setOnPlayerStateChange(this);
         }
@@ -624,14 +624,12 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
     @Override
     public void attachScreenListener(ScreenListener listener) {
         mListener = listener;
-        if (mVideoPlayerView != null)
-            mVideoPlayerView.registerScreenListener(listener);
+
     }
 
     @Override
     public void detachScreenListener(ScreenListener listener) {
-        if (mVideoPlayerView != null)
-            mVideoPlayerView.unregisterScreenListener(listener);
+        mListener = null;
     }
 
     private void bringChildWithTag(String tag, ViewGroup parent) {
@@ -720,6 +718,20 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
     }
 
+    @Override
+    public void enterFullScreen() {
+        if(mListener != null){
+            mListener.enterFullScreen();
+        }
+    }
+
+    @Override
+    public void exitFullScreen() {
+        if(mListener != null){
+            mListener.exitFullScreen();
+        }
+    }
+
     private static class PlayInfo {
         String actionType;
         String playUrl;
@@ -729,33 +741,6 @@ public class LivePlayView extends RelativeLayout implements Navigation.Navigatio
 
         public boolean isCanUse() {
             return !TextUtils.isEmpty(actionType) && !TextUtils.isEmpty(ContentUUID);
-        }
-    }
-
-    private class MyScreenListener implements ScreenListener {
-
-        @Override
-        public void enterFullScreen() {
-            if (mListener != null) {
-                mListener.enterFullScreen();
-            }
-        }
-
-        @Override
-        public void exitFullScreen() {
-            if (mListener != null) {
-                mListener.exitFullScreen();
-            }
-//            if (getParent() != null && getParent() instanceof ViewGroup) {
-//                ViewGroup viewGroup = (ViewGroup) getParent();
-//                int count = viewGroup.getChildCount();
-//                for (int i = 0; i < count; i++) {
-//                    View child = viewGroup.getChildAt(i);
-//                    if (child instanceof TextView) {
-//                        child.bringToFront();
-//                    }
-//                }
-//            }
         }
     }
 }
