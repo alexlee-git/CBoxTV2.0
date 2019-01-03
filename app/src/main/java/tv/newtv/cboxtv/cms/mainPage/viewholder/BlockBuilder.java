@@ -233,6 +233,8 @@ public class BlockBuilder extends BaseBlockBuilder {
 
                 // 拿1号组件的1号推荐位为例, 其海报控件的id为 : cell_001_1_poster
                 String posterWidgetId = generateViewId(layoutId, viewId, "cell", "poster", "_");
+                // 拿1号组件的1号推荐位为例, 其海报控件的id为 : cell_001_1_poster
+                String playerWidgetId = generateViewId(layoutId, viewId, "cell", "player", "_");
                 // 拿8号组件的1号推荐位为例, 其海报控件的id为 : cell_008_1_focus
                 String focusWidgetId = generateViewId(layoutId, viewId, "cell", "focus", "_");
                 // 拿1号组件的1号推荐位为例, 其推荐位标题控件的id为 : cell_001_1_title
@@ -258,6 +260,30 @@ public class BlockBuilder extends BaseBlockBuilder {
 
                     if (frameLayout instanceof BlockPosterView) {
                         ((BlockPosterView) frameLayout).setData(info);
+                    } else {
+                        // onFocusChangeListener
+                        frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            @Override
+                            public void onFocusChange(View view, boolean hasFocus) {
+                                if (hasFocus) {
+                                    onItemGetFocus(layoutId, view);
+//                                StatusBarManager.getInstance().setFocusable(true);
+                                    frameLayout.setTag(cellCode);
+
+                                    TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
+                                    if (title != null) {
+                                        title.setVisibility(View.VISIBLE);
+                                        title.setSelected(true);
+                                    }
+                                } else {
+                                    onItemLoseFocus(layoutId, view);
+                                    TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
+                                    if (title != null) {
+                                        title.setSelected(false);
+                                    }
+                                }
+                            }
+                        });
                     }
 
                     //屏幕适配
@@ -272,29 +298,6 @@ public class BlockBuilder extends BaseBlockBuilder {
                     // 按需添加角标控件
 //                    processSuperscript(layoutCode, info, frameLayout);
 
-                    // onFocusChangeListener
-                    frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        @Override
-                        public void onFocusChange(View view, boolean hasFocus) {
-                            if (hasFocus) {
-                                onItemGetFocus(layoutId, view);
-//                                StatusBarManager.getInstance().setFocusable(true);
-                                frameLayout.setTag(cellCode);
-
-                                TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
-                                if (title != null) {
-                                    title.setVisibility(View.VISIBLE);
-                                    title.setSelected(true);
-                                }
-                            } else {
-                                onItemLoseFocus(layoutId, view);
-                                TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
-                                if (title != null) {
-                                    title.setSelected(false);
-                                }
-                            }
-                        }
-                    });
 
                     // onClickListener
                     frameLayout.setOnClickListener(new MultipleClickListener() {
@@ -321,26 +324,21 @@ public class BlockBuilder extends BaseBlockBuilder {
                 boolean hasCorner = hasCorner4Cup(layoutId, viewId);
                 // 加载海报图
                 final View posterView = itemView.findViewWithTag(posterWidgetId);
-                RecycleImageView recycleImageView = null;
+
+                final LivePlayView playerView = itemView.findViewWithTag(playerWidgetId);
 
                 if (posterView != null && info != null) {
-                    LiveInfo mLiveInfo = new LiveInfo(info.getTitle(), info.getVideo());
                     if (posterView instanceof RecycleImageView) {
-                        recycleImageView = (RecycleImageView) posterView;
-                        recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
-                    } else if (posterView instanceof LivePlayView) {
-                        ((LivePlayView) posterView).setProgramInfo(info);
-                        ((LivePlayView) posterView).setPageUUID(PlayerUUID);
-
-                        recycleImageView = ((LivePlayView) posterView).getPosterImageView();
-                        if (recycleImageView != null) {
-                            recycleImageView.setIsPlaying(mLiveInfo.isLiveTime());
-                        }
+                        loadPosterToImage(moduleItem, info, (RecycleImageView) posterView,
+                                hasCorner);
+                        LiveInfo mLiveInfo = new LiveInfo(info.getTitle(), info.getVideo());
+                        ((RecycleImageView) posterView).setIsPlaying(mLiveInfo.isLiveTime());
                     }
+                }
 
-                    if (recycleImageView != null) {
-                        loadPosterToImage(moduleItem, info, recycleImageView, hasCorner);
-                    }
+                if (playerView != null && info != null) {
+                    ((LivePlayView) playerView).setProgramInfo(info);
+                    ((LivePlayView) playerView).setPageUUID(PlayerUUID);
                 }
 
                 ViewGroup parentFrameLayout = frameLayout;
@@ -357,7 +355,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                         info, parentFrameLayout);
 
                 // 按需添加标题控件
-                if(info !=null) {
+                if (info != null) {
                     processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
                             posterView != null && posterView.getParent() != null ? (ViewGroup)
                                     posterView.getParent() : frameLayout);
@@ -555,10 +553,11 @@ public class BlockBuilder extends BaseBlockBuilder {
         LogUploadUtils.uploadLog(Constant.LOG_NODE_RECOMMEND, logBuff
                 .toString());//由首页进入下个推荐位
 
-        LivePlayView livePlayView = getLivePlayView(view);
-        if (livePlayView != null && livePlayView.isVideoType()) {
-            livePlayView.dispatchClick();
-            return;
+        if (view != null) {
+            if (view instanceof LivePlayView && ((LivePlayView) view).isVideoType()) {
+                ((LivePlayView) view).dispatchClick();
+                return;
+            }
         }
         if (info instanceof Program) {
             Program pInfo = (Program) info;
@@ -603,7 +602,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     framelayout.setTag(R.id.tag_title_background, background);
                     background.setBackgroundResource(R.drawable.gradient_white_to_black);
                     background.setLayoutParams(layoutParams);
-                    framelayout.addView(background,layoutParams);
+                    framelayout.addView(background, layoutParams);
                     FrameLayout.LayoutParams lp;
                     if (TextUtils.equals(layoutCode, "layout_006")) {
                         lp = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils

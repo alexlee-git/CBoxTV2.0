@@ -203,6 +203,10 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                     layoutList.remove(frameLayoutId);
                     frameLayout.setVisibility(VISIBLE);
 
+                    if (frameLayout instanceof BlockPosterView) {
+                        ((BlockPosterView) frameLayout).setData(info);
+                    }
+
                     //屏幕适配
                     if (!"005".equals(layoutId)) {
                         ViewGroup.LayoutParams params = frameLayout.getLayoutParams();
@@ -218,27 +222,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                     blockBuilder.processTitle(layoutCode, info.getTitle(), info.getSubTitle(),
                             frameLayout);
 
-                    // onFocusChangeListener
-                    frameLayout.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        @Override
-                        public void onFocusChange(View view, boolean hasFocus) {
-                            if (hasFocus) {
-                                blockBuilder.onItemGetFocus(layoutId, view);
 
-                                TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
-                                if (title != null) {
-                                    title.setVisibility(View.VISIBLE);
-                                    title.setSelected(true);
-                                }
-                            } else {
-                                blockBuilder.onItemLoseFocus(layoutId, view);
-                                TextView title = (TextView) frameLayout.getTag(R.id.tag_title);
-                                if (title != null) {
-                                    title.setSelected(false);
-                                }
-                            }
-                        }
-                    });
 
                     // onClickListener
                     frameLayout.setOnClickListener(new MultipleClickListener() {

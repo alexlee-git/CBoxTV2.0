@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Program;
+import com.newtv.cms.bean.Row;
 import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.GlideUtil;
 import com.newtv.libs.util.LogUtils;
@@ -60,9 +62,11 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     private String mPageUUID;
 
     private LivePlayView mLivePlayView;
+    private OnClickListener mOnClickListener;
+
 
     private boolean isVideoMode = false;
-    private Program mProgram;
+    private Object mProgram;
 
     public BlockPosterView(Context context) {
         this(context, null);
@@ -118,16 +122,24 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         refreshLayout();
     }
 
-    public void setData(Program program) {
+    public void setData(Object program) {
 
         mProgram = program;
 
-        if (mLivePlayView != null) {
-            mLivePlayView.setProgramInfo(mProgram);
+        if (mProgram != null) {
+            if (mLivePlayView != null && mProgram instanceof Program) {
+                mLivePlayView.setProgramInfo((Program) mProgram);
+            }
+        } else {
+            if(mPosterImage != null) {
+                mPosterImage.setImageResource(poster_resource_holder);
+            }
         }
+    }
 
-        GlideUtil.loadImage(getContext(), mPosterImage, program.getImg(), poster_resource_holder,
-                poster_resource_holder, true);
+    @Override
+    public void setOnClickListener(@Nullable OnClickListener l) {
+        mOnClickListener = l;
     }
 
     private int getBlockWidth() {
@@ -193,7 +205,8 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
                 mLivePlayView.layout(0, 0, mWidth, mHeight);
             }
             if (mPoster != null) {
-                mPoster.layout(marginSpace, marginSpace, mWidth+marginSpace, mHeight+marginSpace);
+                mPoster.layout(marginSpace, marginSpace, mWidth + marginSpace, mHeight +
+                        marginSpace);
             }
 
         }
@@ -281,10 +294,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
                 .LayoutParams.WRAP_CONTENT);
         mPoster.setLayoutParams(poster_layoutParams);
         mPosterImage = new RecycleImageView(context);
-        mPosterImage.setTag("POSTER");
         mPosterImage.setScaleType(ImageView.ScaleType.FIT_XY);
         LayoutParams layoutParams = new LayoutParams(poster_width, poster_height);
         mPosterImage.setLayoutParams(layoutParams);
+        mPosterImage.setTag(String.format("%s_%s", block_tag, "poster"));
         if (!include) {
             mPosterImage.setPadding(marginSpace, marginSpace, marginSpace, marginSpace);
         }
@@ -308,7 +321,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             titleLayoutParam.leftMargin = marginSpace;
             titleLayoutParam.rightMargin = marginSpace;
             mPosterTitle.setLayoutParams(titleLayoutParam);
-            if(isInEditMode()) {
+            if (isInEditMode()) {
                 mPosterTitle.setText("央视影音测试标题");
             }
             mPosterTitle.setTag(String.format("%s_%s", block_tag, "title"));
@@ -332,28 +345,27 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
                     mLivePlayView.setLayoutParams(layoutParams);
                     mLivePlayView.attachScreenListener(this);
                     mLivePlayView.setPageUUID(mPageUUID);
-                    mLivePlayView.setTag(String.format("%s_%s", block_tag, "poster"));
+                    mLivePlayView.setTag(String.format("%s_%s", block_tag, "player"));
                     mPoster.addView(mLivePlayView, layoutParams);
                 }
                 break;
             default:
-                mPosterImage.setTag(String.format("%s_%s", block_tag, "poster"));
+
                 break;
         }
     }
 
     @Override
     public void onClick(View view) {
-        if (mLivePlayView != null) {
-            if (mLivePlayView.isVideoType()) {
-                mLivePlayView.dispatchClick();
-                return;
-            }
+//        if (mLivePlayView != null) {
+//            if (mLivePlayView.isVideoType()) {
+//                mLivePlayView.dispatchClick();
+//                return;
+//            }
+//        }
+        if(mOnClickListener != null){
+            mOnClickListener.onClick(mLivePlayView != null ? mLivePlayView : this);
         }
-        if (mProgram != null) {
-            JumpUtil.activityJump(getContext(), mProgram);
-        }
-
     }
 
     @Override
