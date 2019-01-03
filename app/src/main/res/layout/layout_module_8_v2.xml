@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -34,11 +35,11 @@
             android:visibility="gone"/>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
-            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_8_view1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/id_module_8_title"
+            android:layout_marginTop="@dimen/height_15px"
             app:block_poster_height="@dimen/height_360px"
             app:block_poster_holder="@drawable/focus_240_360"
             app:block_poster_width="@dimen/width_240px"
@@ -48,11 +49,11 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
-            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_8_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/id_module_8_title"
+            android:layout_marginTop="@dimen/height_15px"
             android:layout_toEndOf="@+id/id_module_8_view1"
             android:layout_toRightOf="@+id/id_module_8_view1"
             app:block_poster_height="@dimen/height_360px"
@@ -64,11 +65,11 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
-            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_8_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/id_module_8_title"
+            android:layout_marginTop="@dimen/height_15px"
             android:layout_toEndOf="@+id/id_module_8_view2"
             android:layout_toRightOf="@+id/id_module_8_view2"
             app:block_poster_height="@dimen/height_360px"
@@ -80,11 +81,11 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
-            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_8_view4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/id_module_8_title"
+            android:layout_marginTop="@dimen/height_15px"
             android:layout_toEndOf="@+id/id_module_8_view3"
             android:layout_toRightOf="@+id/id_module_8_view3"
             app:block_poster_height="@dimen/height_360px"
@@ -96,11 +97,11 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
-            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_8_view5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/id_module_8_title"
+            android:layout_marginTop="@dimen/height_15px"
             android:layout_toEndOf="@+id/id_module_8_view4"
             android:layout_toRightOf="@+id/id_module_8_view4"
             app:block_poster_height="@dimen/height_360px"
@@ -112,17 +113,17 @@
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
         <tv.newtv.cboxtv.views.custom.BlockPosterView
-            android:layout_marginTop="@dimen/height_15px"
             android:id="@+id/id_module_8_view6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/id_module_8_title"
+            android:layout_marginTop="@dimen/height_15px"
             android:layout_toEndOf="@+id/id_module_8_view5"
             android:layout_toRightOf="@+id/id_module_8_view5"
+            app:block_last="true"
             app:block_poster_height="@dimen/height_360px"
             app:block_poster_holder="@drawable/focus_240_360"
             app:block_poster_width="@dimen/width_240px"
-            app:block_last="true"
             app:block_show_title="true"
             app:block_tag="cell_008_6">
 

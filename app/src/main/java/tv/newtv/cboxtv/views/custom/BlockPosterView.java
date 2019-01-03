@@ -169,7 +169,9 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             layoutParams.width = mWidth + marginSpace;
             layoutParams.height = mHeight + marginSpace;
 
+            //横向间隔
             int hmargin = getResources().getDimensionPixelSize(R.dimen.width_48px);
+            //纵向间隔
             int vmargin = getResources().getDimensionPixelSize(R.dimen.height_48px);
 
             marginSpace = focusBackground.getPaddingLeft();

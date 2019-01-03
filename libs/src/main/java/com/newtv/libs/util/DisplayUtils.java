@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.newtv.libs.R;
 
@@ -27,7 +30,7 @@ public class DisplayUtils {
         DisplayMetrics dm = resources.getDisplayMetrics();
         scaleWidth = (float) dm.widthPixels / 1920f;
         scaleHeight = (float) dm.heightPixels / 1080f;
-}
+    }
 
     public static int translate(int px, int type) {
         switch (type) {
@@ -41,6 +44,7 @@ public class DisplayUtils {
 
     /**
      * px是经过适配后的尺寸，反算成标准尺寸（1920*1080）
+     *
      * @param px
      * @param type
      * @return
@@ -62,9 +66,9 @@ public class DisplayUtils {
      */
     public static int px2dp(Context context, float pxValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        Log.e("MM","width="+context.getResources().getDisplayMetrics().widthPixels);
-        Log.e("MM","height="+context.getResources().getDisplayMetrics().heightPixels);
-        Log.e("MM","density="+context.getResources().getDisplayMetrics().densityDpi);
+        Log.e("MM", "width=" + context.getResources().getDisplayMetrics().widthPixels);
+        Log.e("MM", "height=" + context.getResources().getDisplayMetrics().heightPixels);
+        Log.e("MM", "density=" + context.getResources().getDisplayMetrics().densityDpi);
 
         return (int) (pxValue / scale + 0.5f);
     }
@@ -109,43 +113,59 @@ public class DisplayUtils {
      */
     public static int getPxByDensity(Context context, float spValue) {
         final float fontScale = context.getResources().getDisplayMetrics().density;
-        Log.e("MM","spValue="+spValue );
-        Log.e("MM","result="+spValue * fontScale);
+        Log.e("MM", "spValue=" + spValue);
+        Log.e("MM", "result=" + spValue * fontScale);
         return (int) (spValue * fontScale);
     }
 
+    public static void adjustTextSize(Context context, TextView textView, int textSize) {
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context
+                .WINDOW_SERVICE);
+        if (windowManager == null || windowManager.getDefaultDisplay() == null) {
+            return;
+        }
+        windowManager.getDefaultDisplay().getMetrics(dm);
+        int screenHeight = dm.heightPixels;
+        int rate = (int) (textSize * (float) screenHeight / 1080);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,rate);
+    }
 
 
-    public static void  adjustView(Context context, ImageView poster,View focusView){
+    public static void adjustView(Context context, ImageView poster, View focusView) {
         //适配
 
         int space = context.getResources().getDimensionPixelOffset(R.dimen.width_17dp);
-        FrameLayout.LayoutParams posterPara = new FrameLayout.LayoutParams(poster.getLayoutParams());
-        posterPara.setMargins(space,space,0,0);
+        FrameLayout.LayoutParams posterPara = new FrameLayout.LayoutParams(poster.getLayoutParams
+                ());
+        posterPara.setMargins(space, space, 0, 0);
         poster.setLayoutParams(posterPara);
         poster.requestLayout();
 
 
         ViewGroup.LayoutParams focusPara = focusView.getLayoutParams();
-        focusPara.width = posterPara.width+2*space;
-        focusPara.height = posterPara.height+2*space;
+        focusPara.width = posterPara.width + 2 * space;
+        focusPara.height = posterPara.height + 2 * space;
         focusView.setLayoutParams(focusPara);
         focusView.requestLayout();
     }
-    public static void  adjustView(Context context, View poster,View focusView,int resouceWidthId,int resouceHeightId){
+
+    public static void adjustView(Context context, View poster, View focusView, int
+            resouceWidthId, int resouceHeightId) {
         //适配
         int spaceWidth = context.getResources().getDimensionPixelOffset(resouceWidthId);
         int spaceHeight = context.getResources().getDimensionPixelOffset(resouceHeightId);
 
-        FrameLayout.LayoutParams posterPara = new FrameLayout.LayoutParams(poster.getLayoutParams());
-        posterPara.setMargins(spaceWidth,spaceHeight,0,0);
+        FrameLayout.LayoutParams posterPara = new FrameLayout.LayoutParams(poster.getLayoutParams
+                ());
+        posterPara.setMargins(spaceWidth, spaceHeight, 0, 0);
         poster.setLayoutParams(posterPara);
         poster.requestLayout();
 
 
         ViewGroup.LayoutParams focusPara = focusView.getLayoutParams();
-        focusPara.width = posterPara.width+2*spaceWidth;
-        focusPara.height = posterPara.height+2*spaceHeight;
+        focusPara.width = posterPara.width + 2 * spaceWidth;
+        focusPara.height = posterPara.height + 2 * spaceHeight;
 
         focusView.setLayoutParams(focusPara);
         focusView.requestLayout();
