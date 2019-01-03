@@ -195,10 +195,12 @@ public class DBUtil {
         if (!TextUtils.isEmpty(mInfo.getTitle())) {
             contentValues.put(DBConfig.TITLE_NAME, mInfo.getTitle());
         }
-
+        int index = 0;
         String indexStr = bundle.getString(DBConfig.PLAYINDEX);
-        int index = Integer.parseInt(indexStr);
-        contentValues.put(DBConfig.PLAYINDEX, indexStr);
+        if (!TextUtils.isEmpty(indexStr) && !TextUtils.equals(indexStr, "null")) {
+            index = Integer.parseInt(indexStr);
+        }
+        contentValues.put(DBConfig.PLAYINDEX, index + "");
         if (!TextUtils.isEmpty(mInfo.getGrade()) && !TextUtils.equals(mInfo.getGrade(), "0.0") && !TextUtils.equals(mInfo.getGrade(), "0")) {
             contentValues.put(DBConfig.CONTENT_GRADE, mInfo.getGrade());
         }
@@ -220,7 +222,7 @@ public class DBUtil {
         }
 
         String seriesID = mInfo.getContentID();
-        contentValues.put(DBConfig.PLAYID,bundle.getString(DBConfig.PLAYID));
+        contentValues.put(DBConfig.PLAYID, bundle.getString(DBConfig.PLAYID));
         if (Constant.CONTENTTYPE_CP.equals(mInfo.getContentType())) {
             if (!TextUtils.isEmpty(mInfo.getCsContentIDs())) {
                 seriesID = mInfo.getCsContentIDs().split("\\|")[0];

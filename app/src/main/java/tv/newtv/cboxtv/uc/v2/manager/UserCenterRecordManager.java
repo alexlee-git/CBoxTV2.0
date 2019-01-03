@@ -763,15 +763,15 @@ public class UserCenterRecordManager {
                             String playPos = bean.getPlayPosition();
                             int playIdx = 0;
                             int playPosition = 0;
-                            if (!TextUtils.isEmpty(playIndex)) {
+                            if (!TextUtils.isEmpty(playIndex) && !TextUtils.equals(playIndex, "null")) {
                                 playIdx = Integer.parseInt(playIndex.trim());
                             }
-                            if (!TextUtils.isEmpty(playPos)) {
+                            if (!TextUtils.isEmpty(playPos) && !TextUtils.equals(playPos, "null")) {
                                 playPosition = Integer.parseInt(playPos.trim());
                             }
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.PLAY_PROGRESS, bean.getProgress());
-                            bundle.putString(DBConfig.PLAYINDEX, String.valueOf(playIndex));
+                            bundle.putString(DBConfig.PLAYINDEX, String.valueOf(playIdx));
                             bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(playPosition));
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             bundle.putString(DBConfig.CONTENT_DURATION, bean.getDuration());
