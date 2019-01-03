@@ -81,8 +81,8 @@ class PlayerLocation {
         int[] location = new int[2];
         mPlayerView.getLocationInWindow(location);
         Log.e(TAG, "reset location ->" + activity);
-        Log.e(TAG, String.format("resetLocation: rect[ left=%d right=%d ]", location[0],
-                location[1]));
+        Log.e(TAG, String.format("resetLocation: rect[ left=%d right=%d width=%d height=%d ]",
+                location[0], location[1],mContainer.getMeasuredWidth(),mContainer.getMeasuredHeight()));
         if (location[0] == 0 && location[1] == 0) return;
         layoutParams.leftMargin = -location[0];
         layoutParams.topMargin = -location[1];

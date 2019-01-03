@@ -15,16 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.newtv.cms.bean.Program;
-import com.newtv.cms.bean.Row;
 import com.newtv.libs.util.BitmapUtil;
-import com.newtv.libs.util.GlideUtil;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScaleUtils;
 import com.newtv.libs.util.ScreenUtils;
 import com.newtv.libs.util.UsefulBitmapFactory;
 
+import java.util.Locale;
+
 import tv.newtv.cboxtv.R;
-import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 
 /**
@@ -118,9 +117,9 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
         refreshLayout();
     }
+
 
     public void setData(Object program) {
 
@@ -131,7 +130,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
                 mLivePlayView.setProgramInfo((Program) mProgram);
             }
         } else {
-            if(mPosterImage != null) {
+            if (mPosterImage != null) {
                 mPosterImage.setImageResource(poster_resource_holder);
             }
         }
@@ -157,59 +156,69 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     }
 
     @Override
-    public void setLayoutParams(ViewGroup.LayoutParams params) {
-        params.width = getBlockWidth();
-        params.height = getBlockHeight();
-        LogUtils.d(TAG, "width=" + params.width + " height=" + params.height);
-        super.setLayoutParams(params);
-    }
-
-    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
         refreshLayout();
     }
 
     private void refreshLayout() {
         if (focusBackground != null) {
-
             int mWidth = enterFullScreen ? ScreenUtils.getScreenW() : poster_width;
             int mHeight = enterFullScreen ? ScreenUtils.getScreenH() : poster_height;
 
             ViewGroup.LayoutParams layoutParams = getLayoutParams();
-            layoutParams.width = mWidth + marginSpace;
-            layoutParams.height = mHeight + marginSpace;
+
+
+            int space = focusBackground.getPaddingLeft();
+
+            if (space != marginSpace) {
+                if (mLivePlayView != null)
+                    LogUtils.d(TAG, "space=" + space + " marginSpace=" + marginSpace);
+                marginSpace = space;
+            }
+
+            layoutParams.width = getBlockWidth();
+            layoutParams.height = getBlockHeight();
 
             //横向间隔
-            int hmargin = getResources().getDimensionPixelSize(R.dimen.width_48px);
+            int h_margin = getResources().getDimensionPixelSize(R.dimen.width_48px);
             //纵向间隔
-            int vmargin = getResources().getDimensionPixelSize(R.dimen.height_48px);
-
-            marginSpace = focusBackground.getPaddingLeft();
-            if (marginSpace == 0) return;
+            int v_margin = getResources().getDimensionPixelSize(R.dimen.height_48px);
 
             if (layoutParams instanceof MarginLayoutParams) {
                 if (!isLast) {
-                    ((MarginLayoutParams) layoutParams).rightMargin = hmargin - marginSpace * 2;
+                    ((MarginLayoutParams) layoutParams).rightMargin = h_margin - marginSpace
+                            * 2;
                 }
-                ((MarginLayoutParams) layoutParams).bottomMargin = vmargin - marginSpace * 2;
+                ((MarginLayoutParams) layoutParams).bottomMargin = v_margin - marginSpace * 2;
             }
 
             setLayoutParams(layoutParams);
 
-            focusBackground.layout(0, 0, mWidth + marginSpace * 2, mHeight +
-                    marginSpace * 2);
+            focusBackground.layout(0, 0, getBlockWidth(), getBlockHeight() - titleHeight);
 
-            if (mLivePlayView != null) {
-                mLivePlayView.layout(0, 0, mWidth, mHeight);
-            }
             if (mPoster != null) {
                 mPoster.layout(marginSpace, marginSpace, mWidth + marginSpace, mHeight +
                         marginSpace);
             }
 
+            if (mLivePlayView != null) {
+                LogUtils.d(TAG, String.format(Locale.getDefault(), "space = %d width=%d " +
+                                "height=%d",
+                        marginSpace, mWidth, mHeight));
+                mLivePlayView.layout(0, 0, mWidth, mHeight);
+            }
+
+            if (mPosterImage != null) {
+                mPosterImage.layout(0, 0, mWidth, mHeight);
+            }
+
+            if (mPosterTitle != null) {
+                mPosterTitle.layout(marginSpace, getBlockHeight() - titleHeight,
+                        mWidth + marginSpace,
+                        getBlockHeight());
+            }
         }
+
     }
 
     @Override
@@ -363,7 +372,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 //                return;
 //            }
 //        }
-        if(mOnClickListener != null){
+        if (mOnClickListener != null) {
             mOnClickListener.onClick(mLivePlayView != null ? mLivePlayView : this);
         }
     }
