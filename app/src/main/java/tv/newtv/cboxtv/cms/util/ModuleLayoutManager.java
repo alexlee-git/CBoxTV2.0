@@ -90,7 +90,7 @@ public class ModuleLayoutManager {
 
     private ModuleLayoutManager() {
         if (BuildConfig.FLAVOR.equals(DeviceUtil.LETV)|| BuildConfig.FLAVOR.equals(DeviceUtil.XIONG_MAO)
-                ||BuildConfig.FLAVOR.equals(DeviceUtil.CBOXTEST)){
+                || BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)|| BuildConfig.FLAVOR.equals(DeviceUtil.CBOXTEST)){
             isAdaptationVesion = true;
         }
         if (mModuleDataBase == null) {
