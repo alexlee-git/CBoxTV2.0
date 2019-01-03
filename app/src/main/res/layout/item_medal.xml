@@ -69,7 +69,7 @@
         android:layout_width="@dimen/width_110px"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/height_1251px"
+        android:layout_marginLeft="@dimen/width_1251px"
         android:gravity="center"
         android:text="123"
         android:textColor="@color/colorWhite"

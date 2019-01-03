@@ -49,7 +49,7 @@
     <!-- 2 -->
     <FrameLayout
         android:id="@+id/id_module_28_view2"
-        android:layout_width="@dimen/width_2458px"
+        android:layout_width="@dimen/width_1920px"
         android:layout_height="@dimen/height_228px"
         android:layout_below="@id/id_module_28_title"
         android:layout_marginLeft="@dimen/_width_18px"

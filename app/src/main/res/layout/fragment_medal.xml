@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/height_15px"
-            android:layout_marginLeft="@dimen/height_1254px"
+            android:layout_marginLeft="@dimen/width_1254px"
             android:src="@drawable/bronze_medal"
             />
 

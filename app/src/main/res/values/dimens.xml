@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="width_1dp">1dp</dimen>
+    <dimen name="height_1dp">1dp</dimen>
+    <dimen name="height_15dp">15dp</dimen>
+    <dimen name="width_17dp">17dp</dimen>
+    <dimen name="height_16dp">16dp</dimen>
+    <dimen name="height_17dp">17dp</dimen>
+    <dimen name="width_3dp">3dp</dimen>
+    <dimen name="width_16dp">16dp</dimen>
+    <dimen name="height_44dp">44dp</dimen>
+    <dimen name="height_27dp">27dp</dimen>
+
+    <dimen name="dp213">213dp</dimen>
+    <dimen name="dp153">153dp</dimen>
+    <dimen name="_height_1px">-1px</dimen>
+
+    <dimen name="_width_18dp">-20dp</dimen>
+    <dimen name="height_11sp">11px</dimen>
+    <dimen name="height_12sp">12px</dimen>
+    <dimen name="height_18sp">18px</dimen>
+    <dimen name="height_22sp">22px</dimen>
+    <dimen name="height_40dp">40px</dimen>
+    <dimen name="module_31_height_19px" >-19px</dimen>
+    <dimen name="module_25_9px">-9px</dimen>
+    <dimen name="module_height_7px">-7px</dimen>
+</resources>
