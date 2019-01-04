@@ -53,14 +53,16 @@
             android:id="@+id/id_module_31_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/id_module_31_title"
+            android:layout_above="@id/id_module_31_view4"
+            android:layout_marginLeft="@dimen/width_7px"
             android:layout_marginTop="@dimen/height_15px"
-            app:block_poster_width="@dimen/width_384px"
+            app:block_poster_width="@dimen/width_370px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
             app:block_tag="cell_031_3"
-            android:layout_toEndOf="@id/id_module_31_view1">
+            android:layout_toEndOf="@id/id_module_31_view1"
+            android:layout_marginStart="@dimen/width_7px">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
@@ -69,14 +71,16 @@
             android:id="@+id/id_module_31_view4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/module_31_height_19px"
-            android:layout_below="@+id/id_module_31_view3"
-            app:block_poster_width="@dimen/width_384px"
+            android:layout_marginTop="@dimen/_height_19px"
+            android:layout_marginLeft="@dimen/width_7px"
+            android:layout_above="@id/id_module_31_view5"
+            app:block_poster_width="@dimen/width_370px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
             app:block_tag="cell_031_4"
-            android:layout_toEndOf="@id/id_module_31_view1">
+            android:layout_toEndOf="@id/id_module_31_view1"
+            android:layout_marginStart="@dimen/width_7px">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
@@ -85,14 +89,16 @@
             android:id="@+id/id_module_31_view5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/module_31_height_19px"
-            android:layout_below="@+id/id_module_31_view4"
-            app:block_poster_width="@dimen/width_384px"
+            android:layout_marginTop="@dimen/_height_19px"
+            android:layout_above="@id/id_module_31_view6"
+            app:block_poster_width="@dimen/width_370px"
+            android:layout_marginLeft="@dimen/width_7px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
             app:block_tag="cell_031_5"
-            android:layout_toEndOf="@id/id_module_31_view1">
+            android:layout_toEndOf="@id/id_module_31_view1"
+            android:layout_marginStart="@dimen/width_7px">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
@@ -101,14 +107,17 @@
             android:id="@+id/id_module_31_view6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/module_31_height_19px"
-            android:layout_below="@+id/id_module_31_view5"
-            app:block_poster_width="@dimen/width_384px"
+            android:layout_marginTop="@dimen/_height_19px"
+            android:layout_marginLeft="@dimen/width_7px"
+            android:layout_marginBottom="@dimen/height_7px"
+            android:layout_above="@id/id_module_31_view11"
+            app:block_poster_width="@dimen/width_370px"
             app:block_poster_height="@dimen/height_93px"
             app:block_poster_holder="@drawable/focus_240_70"
             android:layout_toRightOf="@id/id_module_31_view1"
             app:block_tag="cell_031_6"
-            android:layout_toEndOf="@id/id_module_31_view1">
+            android:layout_toEndOf="@id/id_module_31_view1"
+            android:layout_marginStart="@dimen/width_7px">
 
         </tv.newtv.cboxtv.views.custom.BlockPosterView>
 
