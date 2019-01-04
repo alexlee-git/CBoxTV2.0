@@ -50,6 +50,9 @@ import tv.newtv.cboxtv.uc.v2.data.follow.FollowRepository;
 import tv.newtv.cboxtv.uc.v2.data.history.HistoryDataSource;
 import tv.newtv.cboxtv.uc.v2.data.history.HistoryRemoteDataSource;
 import tv.newtv.cboxtv.uc.v2.data.history.HistoryRepository;
+import tv.newtv.cboxtv.uc.v2.data.lbcollection.LbCollectDataSource;
+import tv.newtv.cboxtv.uc.v2.data.lbcollection.LbCollectRemoteDataSource;
+import tv.newtv.cboxtv.uc.v2.data.lbcollection.LbCollectRepository;
 import tv.newtv.cboxtv.uc.v2.data.subscribe.SubDataSource;
 import tv.newtv.cboxtv.uc.v2.data.subscribe.SubRemoteDataSource;
 import tv.newtv.cboxtv.uc.v2.data.subscribe.SubRepository;
@@ -337,7 +340,7 @@ public class UserCenterRecordManager {
         } else {
             tableName = DBConfig.REMOTE_COLLECT_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) { // 依据同步开关状态判断是否需上报用户中心服务端
-                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).addRemoteCollect("0", packageData(bundle));
+                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).addRemoteCollect(packageData(bundle));
             }
         }
 
@@ -368,7 +371,7 @@ public class UserCenterRecordManager {
         } else {
             tableName = DBConfig.REMOTE_LB_COLLECT_TABLE_NAME;
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) { // 依据同步开关状态判断是否需上报用户中心服务端
-                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).addRemoteCollect("1", packageData(bundle));
+                LbCollectRepository.getInstance(LbCollectRemoteDataSource.getInstance(context)).addRemoteLbCollect(packageData(bundle));
             }
         }
 
@@ -450,7 +453,7 @@ public class UserCenterRecordManager {
             DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, callback, DBConfig.LB_COLLECT_TABLE_NAME);
         } else {
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
-                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect("1", packageData(bundle));
+                LbCollectRepository.getInstance(LbCollectRemoteDataSource.getInstance(context)).deleteRemoteLbCollect(packageData(bundle));
             }
 
             Log.d(TAG, "登录用户, 删除远程收藏表数据, contentID : " + contentID);
@@ -465,7 +468,7 @@ public class UserCenterRecordManager {
             DBUtil.UnCollect(SystemUtils.getDeviceMac(LauncherApplication.AppContext), contentID, callback, DBConfig.COLLECT_TABLE_NAME);
         } else {
             if (SYNC_SWITCH_ON == SharePreferenceUtils.getSyncStatus(context)) {
-                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect("0", packageData(bundle));
+                CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).deleteRemoteCollect(packageData(bundle));
             }
 
             Log.d(TAG, "登录用户, 删除远程表数据, contentID : " + contentID);
@@ -527,14 +530,14 @@ public class UserCenterRecordManager {
                 .getRemoteHistoryList(token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
     }
 
-    public void getRemoteCollectionList(String collectType, Context context, String token, String userId, String offset, String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback) {
+    public void getRemoteCollectionList(Context context, String token, String userId, String offset, String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback) {
         CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
-                .getRemoteCollectList(collectType, token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
+                .getRemoteCollectList(token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
     }
 
-    public void getRemoteLbCollectionList(String collectType, Context context, String token, String userId, String offset, String limit, @NonNull CollectRemoteDataSource.GetCollectListCallback callback) {
-        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
-                .getRemoteLbCollectList(collectType, token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
+    public void getRemoteLbCollectionList(Context context, String token, String userId, String offset, String limit, @NonNull LbCollectRemoteDataSource.GetLbCollectListCallback callback) {
+        LbCollectRepository.getInstance(LbCollectRemoteDataSource.getInstance(context))
+                .getRemoteLbCollectList(token, userId, Libs.get().getAppKey(), Libs.get().getChannelId(), offset, limit, callback);
     }
 
     public void getRemoteFollowList(Context context, String token, String userId, String offset, String limit, FollowDataSource.GetFollowListCallback callback) {
@@ -564,12 +567,12 @@ public class UserCenterRecordManager {
 
     public void addRemoteCollectList(String collectType, Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, CollectDataSource.AddRemoteCollectListCallback callback) {
         CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
-                .addRemoteCollectList(collectType, token, userId, beanList, callback);
+                .addRemoteCollectList(token, userId, beanList, callback);
     }
 
-    public void addRemoteLbCollectList(String collectType, Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, CollectDataSource.AddRemoteCollectListCallback callback) {
-        CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context))
-                .addRemoteLbCollectList(collectType, token, userId, beanList, callback);
+    public void addRemoteLbCollectList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, LbCollectDataSource.AddRemoteLbCollectListCallback callback) {
+        LbCollectRepository.getInstance(LbCollectRemoteDataSource.getInstance(context))
+                .addRemoteLbCollectList(token, userId, beanList, callback);
     }
 
     public void addRemoteFollowList(Context context, String token, String userId, @NonNull List<UserCenterPageBean.Bean> beanList, FollowRemoteDataSource.AddRemoteFollowListCallback callback) {
@@ -760,15 +763,15 @@ public class UserCenterRecordManager {
                             String playPos = bean.getPlayPosition();
                             int playIdx = 0;
                             int playPosition = 0;
-                            if (!TextUtils.isEmpty(playIndex)) {
+                            if (!TextUtils.isEmpty(playIndex) && !TextUtils.equals(playIndex, "null")) {
                                 playIdx = Integer.parseInt(playIndex.trim());
                             }
-                            if (!TextUtils.isEmpty(playPos)) {
+                            if (!TextUtils.isEmpty(playPos) && !TextUtils.equals(playPos, "null")) {
                                 playPosition = Integer.parseInt(playPos.trim());
                             }
                             Bundle bundle = new Bundle();
                             bundle.putString(DBConfig.PLAY_PROGRESS, bean.getProgress());
-                            bundle.putString(DBConfig.PLAYINDEX, String.valueOf(playIndex));
+                            bundle.putString(DBConfig.PLAYINDEX, String.valueOf(playIdx));
                             bundle.putString(DBConfig.PLAYPOSITION, String.valueOf(playPosition));
                             bundle.putString(DBConfig.UPDATE_TIME, String.valueOf(bean.getUpdateTime()));
                             bundle.putString(DBConfig.CONTENT_DURATION, bean.getDuration());
@@ -804,6 +807,7 @@ public class UserCenterRecordManager {
      * @param limit
      */
     public void getUserBehavior(final Context context, final String offset, final String limit) {
+        releaseUserBehavior(context);
         currentHistoryIndex = 1;
         currentSubIndex = 1;
         currentCollectIndex = 1;
@@ -892,7 +896,7 @@ public class UserCenterRecordManager {
                                 getUserBehaviorComplete(context);
                             }
                         });
-                        getRemoteCollectionList("0", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
+                        getRemoteCollectionList(context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
                             @Override
                             public void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize) {
                                 Log.d(TAG, "wqs:CollectList.size():" + totalSize);
@@ -962,12 +966,12 @@ public class UserCenterRecordManager {
                                 getUserBehaviorComplete(context);
                             }
                         });
-                        getRemoteLbCollectionList("1", context, token, userId, offset, limit, new CollectDataSource.GetCollectListCallback() {
+                        getRemoteLbCollectionList(context, token, userId, offset, limit, new LbCollectDataSource.GetLbCollectListCallback() {
                             @Override
-                            public void onCollectListLoaded(List<UserCenterPageBean.Bean> CollectList, final int totalSize) {
+                            public void onLbCollectListLoaded(List<UserCenterPageBean.Bean> LbCollectList, final int totalSize) {
                                 Log.d(TAG, "wqs:LbCollectList.size():" + totalSize);
-                                if (CollectList != null && CollectList.size() > 0) {
-                                    addLbCollectToDataBase(userId, CollectList, new DBCallback<String>() {
+                                if (LbCollectList != null && LbCollectList.size() > 0) {
+                                    addLbCollectToDataBase(userId, LbCollectList, new DBCallback<String>() {
                                         @Override
                                         public void onResult(int code, String result) {
                                             Log.d(TAG, "wqs:currentLbCollectIndex:" + currentLbCollectIndex);
@@ -1014,7 +1018,7 @@ public class UserCenterRecordManager {
             Log.d(TAG, "wqs:getUserBehaviorComplete:sendBroadcast");
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("action.uc.data.sync.complete"));
         } else {
-            Log.e(TAG, "wqs:getUserBehaviorComplete:error");
+            Log.e(TAG, "wqs:getUserBehaviorComplete:not finish");
         }
 
     }
@@ -1024,6 +1028,7 @@ public class UserCenterRecordManager {
         Log.e(TAG, "wqs:releaseUserBehavior");
         HistoryRepository.getInstance(HistoryRemoteDataSource.getInstance(context)).releaseHistoryResource();
         CollectRepository.getInstance(CollectRemoteDataSource.getInstance(context)).releaseCollectResource();
+        LbCollectRepository.getInstance(LbCollectRemoteDataSource.getInstance(context)).releaseLbCollectResource();
         SubRepository.getInstance(SubRemoteDataSource.getInstance(context)).releaseSubscribeResource();
         FollowRepository.getInstance(FollowRemoteDataSource.getInstance(context)).releaseFollowResource();
     }
@@ -1041,7 +1046,7 @@ public class UserCenterRecordManager {
             Log.d(TAG, "wqs:AddUserBehaviorListComplete:complete");
             getUserBehavior(context, UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
         } else {
-            Log.e(TAG, "wqs:AddUserBehaviorListComplete:error");
+            Log.e(TAG, "wqs:AddUserBehaviorListComplete:not finish");
         }
 
     }
@@ -1177,9 +1182,9 @@ public class UserCenterRecordManager {
                                     Type type = new TypeToken<List<UserCenterPageBean.Bean>>() {
                                     }.getType();
                                     List<UserCenterPageBean.Bean> beanList = mGson.fromJson(result, type);
-                                    addRemoteLbCollectList("1", context, token, userId, beanList, new CollectDataSource.AddRemoteCollectListCallback() {
+                                    addRemoteLbCollectList(context, token, userId, beanList, new LbCollectDataSource.AddRemoteLbCollectListCallback() {
                                         @Override
-                                        public void onAddRemoteCollectListComplete(int totalSize) {
+                                        public void onAddRemoteLbCollectListComplete(int totalSize) {
                                             Log.e(TAG, "wqs:onAddLbRemoteCollectListComplete:size:" + totalSize);
                                             AddLbCollectionRecordComplete = true;
                                             AddUserBehaviorListComplete(context);

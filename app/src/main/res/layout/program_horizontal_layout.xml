@@ -9,7 +9,7 @@
     <tv.newtv.cboxtv.views.detail.FocusRelativeLayout
         android:id="@+id/id_module_view"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/width_280px"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:clickable="true"
         android:clipToPadding="false"
