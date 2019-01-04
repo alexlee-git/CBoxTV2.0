@@ -727,10 +727,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         final int screenWidth = activity.getWindow().getDecorView().getMeasuredWidth();
         final int screenHeight = activity.getWindow().getDecorView().getMeasuredHeight();
 
-        ViewGroup.LayoutParams container = getLayoutParams();
-        container.width = defaultConfig.defaultWidth;
-        container.height = defaultConfig.defaultHeight;
-        setLayoutParams(container);
         final FrameLayout frameLayout = activity.getWindow().getDecorView().findViewById(android
                 .R.id.content);
         View rootView = frameLayout.getChildAt(0);
@@ -745,6 +741,11 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         NeedJumpAd = defaultConfig.ProgramIsChange;
+
+        ViewGroup.LayoutParams container = getLayoutParams();
+        container.width = defaultConfig.defaultWidth;
+        container.height = defaultConfig.defaultHeight;
+        setLayoutParams(container);
 
         if (mIsPause && mNewTVLauncherPlayer != null) {
             start();

@@ -24,6 +24,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.newtv.libs.Libs;
+import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.PlayerTimeUtils;
 
 import java.lang.ref.WeakReference;
@@ -145,14 +147,21 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         View view = LayoutInflater.from(context).inflate(R.layout.newtv_launcher_player_seekbar,
                 this);
         mSeekBar = (SeekBar) view.findViewById(R.id.player_seekbar);
-        BitmapDrawable newDrawable = getNewDrawable(R.drawable.seekbar_thumb, getResources()
-                .getDimensionPixelOffset(R.dimen.width_4px), getResources()
-                .getDimensionPixelOffset(R.dimen.height_40dp));
-        mSeekBar.setThumb(newDrawable);
+        int thumbHeight = getResources()
+                .getDimensionPixelOffset(R.dimen.height_39px);
+        int seekBarHeight = getResources()
+                .getDimensionPixelOffset(R.dimen.height_24px);
+//        BitmapDrawable newDrawable = getNewDrawable(R.drawable.seekbar_thumb, getResources()
+//                .getDimensionPixelOffset(R.dimen.width_4px), thumbHeight);
+//        mSeekBar.setThumb(newDrawable);
         mSeekBar.setThumbOffset(0);
+        mSeekBar.setPadding(0, 0, 0,  0);
         mProgramNameTextView = (TextView) view.findViewById(R.id.seekbar_program_name);
+        DisplayUtils.adjustTextSize(getContext(), mProgramNameTextView, 26);
         mLeftTimeTextView = (TextView) view.findViewById(R.id.seebar_left_time);
+        DisplayUtils.adjustTextSize(getContext(), mLeftTimeTextView, 26);
         mRightTimeTextView = (TextView) view.findViewById(R.id.seebar_right_time);
+        DisplayUtils.adjustTextSize(getContext(), mRightTimeTextView, 26);
 
         mSeekBarDownArrowArea = (FrameLayout) view.findViewById(R.id.seekbar_down_arrow_area);
         mImgSeekStatus = (ImageView) view.findViewById(R.id.img_seek_status);
@@ -244,18 +253,18 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
         return super.dispatchKeyEvent(event);
     }
 
-    private void sendActionUpMessageDelay(){
+    private void sendActionUpMessageDelay() {
         removeActionUpMessage();
-        mHandler.sendEmptyMessageDelayed(ACTION_UP,1000);
+        mHandler.sendEmptyMessageDelayed(ACTION_UP, 1000);
     }
 
-    private void removeActionUpMessage(){
+    private void removeActionUpMessage() {
         mHandler.removeMessages(ACTION_UP);
     }
 
-    private void handleActionUp(){
+    private void handleActionUp() {
         if (!seekSlide) {
-            return ;
+            return;
         }
 
         seekSlide = false;
@@ -463,13 +472,19 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
     public BitmapDrawable getNewDrawable(int restId, int dstWidth, int dstHeight) {
         Resources resources = Libs.get().getContext().getResources();
         Bitmap Bmp = BitmapFactory.decodeResource(resources, restId);
-        Bitmap bmp = Bitmap.createScaledBitmap(Bmp, dstWidth, dstHeight, true);
-        BitmapDrawable d = new BitmapDrawable(bmp);
-        Bitmap bitmap = d.getBitmap();
-        if (bitmap.getDensity() == Bitmap.DENSITY_NONE) {
-            d.setTargetDensity(resources.getDisplayMetrics());
+        Bitmap d = BitmapUtil.zoomImg(Bmp, dstWidth, dstHeight);
+//        Bitmap bmp = Bitmap.createScaledBitmap(Bmp, dstWidth, dstHeight, true);
+//        BitmapDrawable d = new BitmapDrawable(bmp);
+//        Bitmap bitmap = d.getBitmap();
+//        if (bitmap.getDensity() == Bitmap.DENSITY_NONE) {
+//            d.setTargetDensity(resources.getDisplayMetrics());
+//        }
+        if (Bmp != null) {
+            if (!Bmp.isRecycled()) {
+                Bmp.recycle();
+            }
         }
-        return d;
+        return new BitmapDrawable(d);
     }
 
     private void checkImageHint() {
@@ -519,7 +534,7 @@ public class NewTVLauncherPlayerSeekbar extends FrameLayout implements SeekBar
                     weakReference.get().refreshLeftTime();
                     break;
                 case ACTION_UP:
-                    if(weakReference.get() != null){
+                    if (weakReference.get() != null) {
                         weakReference.get().handleActionUp();
                     }
                     break;

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.BitmapUtil;
+import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.ScaleUtils;
 import com.newtv.libs.util.ScreenUtils;
@@ -31,40 +32,39 @@ import tv.newtv.cboxtv.player.listener.ScreenListener;
  * 包名:            tv.newtv.cboxtv.views.custom
  * 创建事件:         17:12
  * 创建人:           weihaichao
- * 创建日期:          2018/11/16
+ * 创建日期:         2018/11/16
  */
 public class BlockPosterView extends FrameLayout implements View.OnClickListener, View
         .OnFocusChangeListener, ScreenListener {
     private static final String TAG = BlockPosterView.class.getSimpleName();
-    private static final int BLOCK_TYPE_IMAGE = 0;
-    private static final int BLOCK_TYPE_VIDEO = 1;
-    private View focusBackground;
-    private RecycleImageView mPosterImage;
-    private FrameLayout mPoster;
-    private TextView mPosterTitle;
-    private int marginSpace = 0;
-    private int titleHeight = 0;
-    private int poster_width = 0;
-    private int poster_height = 0;
+    private static final int BLOCK_TYPE_IMAGE = 0;                  //推荐位状态为图片模式
+    private static final int BLOCK_TYPE_VIDEO = 1;                  //推荐位状态为视频模式
+    private View focusBackground;                                   //焦点框背景图
+    private RecycleImageView mPosterImage;                          //海报图片控件
+    private FrameLayout mPoster;                                    //海报容器 （为了加入角标控制在海报范围内，加入该容器限制）
+    private TextView mPosterTitle;                                  //推荐位标题
+    private int marginSpace = 0;                                    //海报焦点框间隔
+    private int titleHeight = 0;                                    //标题高度
+    private int poster_width = 0;                                   //海报宽度
+    private int poster_height = 0;                                  //海报高度
     private boolean auto_location = true;
-    private int poster_resource_holder = 0;
-    private boolean show_title = false;
+    private int poster_resource_holder = 0;                         //海报占位图
+    private boolean show_title = false;                             //是否显示标题
     private int block_type = BLOCK_TYPE_IMAGE;
-    private String block_tag = "block";
+    private String block_tag = "block";                             //海报标识
 
-    private boolean enterFullScreen = false;
+    private boolean enterFullScreen = false;                        //是否进入全屏
 
-    private boolean isLast = false;
-    private Bitmap bitmap;
+    private boolean isLast = false;                                 //是否为最后的一个海报（最后一个不设置右margin）
+    private Bitmap bitmap;//
     private Paint mPaint;
 
     private String mPageUUID;
 
-    private LivePlayView mLivePlayView;
+    private LivePlayView mLivePlayView;//
     private OnClickListener mOnClickListener;
 
-
-    private boolean isVideoMode = false;
+    private boolean isVideoMode = false;//
     private Object mProgram;
 
     public BlockPosterView(Context context) {
@@ -93,6 +93,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         return mPosterImage;
     }
 
+    /**
+     * 是否圆角
+     * @return
+     */
     public boolean hasCorner() {
         if (block_type == BLOCK_TYPE_VIDEO && mLivePlayView != null) {
             return !mLivePlayView.isVideoType();
@@ -100,6 +104,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         return true;
     }
 
+    /**
+     * 设置推荐位UUID
+     * @param uuid
+     */
     public void setPageUUID(String uuid) {
         mPageUUID = uuid;
         if (mLivePlayView != null) {
@@ -107,6 +115,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         }
     }
 
+    /**
+     * 设置是否显示聚焦框
+     * @param useable 是否启用
+     */
     public void setUseable(boolean useable) {
         if (focusBackground != null) {
             focusBackground.setFocusable(true);
@@ -121,6 +133,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     }
 
 
+    /**
+     * 设置推荐位数据
+     * @param program 推荐位数据
+     */
     public void setData(Object program) {
 
         mProgram = program;
@@ -141,6 +157,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         mOnClickListener = l;
     }
 
+    /**
+     * 获取推荐位宽度
+     * @return
+     */
     private int getBlockWidth() {
         if (enterFullScreen) {
             return ScreenUtils.getScreenW() + marginSpace * 2;
@@ -148,6 +168,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         return poster_width + marginSpace * 2;
     }
 
+    /**
+     * 获取推荐位高度
+     * @return
+     */
     private int getBlockHeight() {
         if (enterFullScreen) {
             return ScreenUtils.getScreenH() + marginSpace * 2 + titleHeight;
@@ -159,6 +183,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         refreshLayout();
     }
+
 
     private void refreshLayout() {
         if (focusBackground != null) {
@@ -325,6 +350,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             mPosterTitle.setMaxLines(1);
             mPosterTitle.setHorizontallyScrolling(true);
             mPosterTitle.setTextAppearance(context, R.style.ModulePosterBottomTitleStyle);
+            DisplayUtils.adjustTextSize(getContext(),mPosterTitle,28);
             LayoutParams titleLayoutParam = new LayoutParams(poster_width, titleHeight);
             titleLayoutParam.topMargin = getBlockHeight() - titleHeight;
             titleLayoutParam.leftMargin = marginSpace;

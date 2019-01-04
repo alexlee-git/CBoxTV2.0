@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.libs.util.DisplayUtils;
+
 import java.util.Locale;
 
 import tv.newtv.player.R;
@@ -91,10 +93,10 @@ public class NewTVLauncherPlayerLoading extends FrameLayout {
         if(mIsFullScreen != -1 && mIsFullScreen == screen_size) return;
         mIsFullScreen = screen_size;
 
-        mProgramNameTextView.setTextSize(size);
+        DisplayUtils.adjustTextSize(getContext(),mProgramNameTextView,isFullScreen?42:22);
         mProgramNameTextView.postInvalidate();
 
-        mNetSpeedTextView.setTextSize(size - 3);
+        DisplayUtils.adjustTextSize(getContext(),mNetSpeedTextView,isFullScreen?24:20);
         mNetSpeedTextView.postInvalidate();
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)
@@ -105,7 +107,6 @@ public class NewTVLauncherPlayerLoading extends FrameLayout {
         } else {
             layoutParams.width = getResources().getDimensionPixelSize(R.dimen.width_334px);
             layoutParams.height = getResources().getDimensionPixelSize(R.dimen.height_111px);
-
         }
         playerLoadingDrawable.setLayoutParams(layoutParams);
         playerLoadingDrawable.postInvalidate();

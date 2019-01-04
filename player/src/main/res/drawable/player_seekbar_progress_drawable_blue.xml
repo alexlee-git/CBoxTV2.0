@@ -4,9 +4,7 @@
     <item android:id="@android:id/background">
 
         <shape>
-
             <!--<corners android:radius="16px" />-->
-
             <solid android:color="#292A28" />
         </shape>
     </item>
@@ -18,9 +16,7 @@
             <shape>
 
                 <!--<corners android:radius="16px" />-->
-
                 <solid android:color="#555555" />
-
                 <!--<gradient-->
                     <!--android:angle="0"-->
                     <!--android:centerColor="#80ffb600"-->
@@ -36,7 +32,6 @@
         <clip>
 
             <shape>
-
                 <!--<corners android:radius="16px" />-->
 
                 <solid android:color="#1A8BFF" />

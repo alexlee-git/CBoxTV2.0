@@ -47,6 +47,7 @@ public class DimenTool {
         negativeValueList.add(15);
         negativeValueList.add(16);
         negativeValueList.add(18);
+        negativeValueList.add(19);
         negativeValueList.add(36);
 
         speicalValueList.add(2576);
@@ -122,7 +123,7 @@ public class DimenTool {
         if(negative){
             stringBuilder.append("-");
         }
-        stringBuilder.append(Math.round(index * scale));
+        stringBuilder.append(index * scale);
         stringBuilder.append("px</dimen>");
     }
 

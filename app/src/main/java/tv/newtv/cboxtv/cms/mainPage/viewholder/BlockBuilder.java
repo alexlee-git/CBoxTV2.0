@@ -614,7 +614,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
 //                        titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
 //                                .dimen.height_12sp));
-                        DisplayUtils.adjustTextSize(mContext, titleWidget, 26);
+                        DisplayUtils.adjustTextSize(mContext, titleWidget, 28);
                         titleWidget.setMarqueeRepeatLimit(-1);
                         titleWidget.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         titleWidget.setIncludeFontPadding(false);
@@ -631,7 +631,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                                 .SCALE_TYPE_WIDTH), 0, 0, 0);
 //                        titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
 //                                .dimen.height_12sp));
-                        DisplayUtils.adjustTextSize(mContext, titleWidget, 26);
+                        DisplayUtils.adjustTextSize(mContext, titleWidget, 28);
                         titleWidget.setMarqueeRepeatLimit(-1);
                         titleWidget.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         titleWidget.setIncludeFontPadding(false);
@@ -684,7 +684,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
 //                    subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
 //                            .SCALE_TYPE_HEIGHT));
-                    DisplayUtils.adjustTextSize(mContext, subTitleWidget, 18);
+                    DisplayUtils.adjustTextSize(mContext, subTitleWidget, 24);
                     subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                             .SCALE_TYPE_WIDTH), 0, 0, 0);
                     framelayout.setTag(R.id.tag_sub_title, subTitleWidget);
@@ -711,7 +711,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                         .SCALE_TYPE_WIDTH), 0, 0, 0);
                 subTitleWidget.setSingleLine();
                 subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
-                DisplayUtils.adjustTextSize(mContext, subTitleWidget, 18);
+                DisplayUtils.adjustTextSize(mContext, subTitleWidget, 24);
                 subTitleWidget.setIncludeFontPadding(false);
                 subTitleWidget.setGravity(Gravity.BOTTOM);
                 framelayout.setTag(R.id.tag_sub_title, subTitleWidget);

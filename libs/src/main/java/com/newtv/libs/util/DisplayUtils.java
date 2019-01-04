@@ -119,16 +119,19 @@ public class DisplayUtils {
     }
 
     public static void adjustTextSize(Context context, TextView textView, int textSize) {
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,adjustSize(context,textSize));
+    }
+
+    public static float adjustSize(Context context,int size){
         DisplayMetrics dm = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context
                 .WINDOW_SERVICE);
         if (windowManager == null || windowManager.getDefaultDisplay() == null) {
-            return;
+            return size;
         }
         windowManager.getDefaultDisplay().getMetrics(dm);
         int screenHeight = dm.heightPixels;
-        int rate = (int) (textSize * (float) screenHeight / 1080);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,rate);
+        return size * (float) screenHeight / 1080;
     }
 
 
