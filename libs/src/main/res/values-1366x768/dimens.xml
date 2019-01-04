@@ -3025,4 +3025,5 @@
 	<dimen name="_width_2576px">-1833px</dimen>
 	<dimen name="height_2576px">1832px</dimen>
 	<dimen name="_height_2576px">-1832px</dimen>
+	<dimen name="_height_19px">-14px</dimen>
 	</resources>
