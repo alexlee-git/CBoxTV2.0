@@ -48,7 +48,7 @@ public class AutoSizeTextView extends android.support.v7.widget.AppCompatTextVie
         setSingleLine();
         setLines(1);
         setTextColor(Color.parseColor("#ededed"));
-        setTextSize(getResources().getDimensionPixelSize(R.dimen.height_12sp));
+        setTextSize(getResources().getDimensionPixelSize(R.dimen.height_14px));
         setMarqueeRepeatLimit(-1);
         setEllipsize(TextUtils.TruncateAt.MARQUEE);
         setIncludeFontPadding(false);

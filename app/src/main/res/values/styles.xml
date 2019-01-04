@@ -47,7 +47,7 @@
     <style name="ModulePosterBottomTitleStyle">
         <item name="android:textColor">@color/colorPosterBottomTitleText</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:textSize">@dimen/height_26px</item>
+        <item name="android:textSize">@dimen/height_28px</item>
     </style>
 
     <style name="popu_anim" parent="android:Animation">
@@ -58,7 +58,7 @@
     <style name="ModulePosterBottomTitleStyle_005">
         <item name="android:textColor">@color/colorPosterBottomTitleText</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">@dimen/height_26px</item>
+        <item name="android:textSize">@dimen/height_28px</item>
     </style>
 
     <!-- 导航栏item的文本框的style -->

@@ -28,8 +28,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="即将播放"
-            android:textColor="#FFFFFF"
-            android:textSize="@dimen/height_25px"
+            android:textColor="#ededed"
+            android:textSize="@dimen/height_22px"
             android:visibility="visible" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_marginTop="@dimen/height_15px"
             android:gravity="center"
             android:text="100kb/s"
-            android:textColor="#FFFFFF"
+            android:textColor="#c6c6c6"
             android:textSize="@dimen/height_20px" />
 
     </LinearLayout>
