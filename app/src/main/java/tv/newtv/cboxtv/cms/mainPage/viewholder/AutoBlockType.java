@@ -196,7 +196,7 @@ public class AutoBlockType extends LinearLayout implements DefaultConstract.View
                 layoutList.remove(frameLayoutId);
 
                 // 给推荐位设置监听器
-                final FrameLayout frameLayout = (FrameLayout) holder.itemView.findViewWithTag
+                final ViewGroup frameLayout = (ViewGroup) holder.itemView.findViewWithTag
                         (frameLayoutId);
                 if (frameLayout != null) {
 //                    frameLayout.setFocusable(true);

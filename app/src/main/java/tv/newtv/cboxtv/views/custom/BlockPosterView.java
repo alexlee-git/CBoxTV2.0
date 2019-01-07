@@ -34,7 +34,7 @@ import tv.newtv.cboxtv.player.listener.ScreenListener;
  * 创建人:           weihaichao
  * 创建日期:         2018/11/16
  */
-public class BlockPosterView extends FrameLayout implements View.OnClickListener, View
+public class BlockPosterView extends ViewGroup implements View.OnClickListener, View
         .OnFocusChangeListener, ScreenListener {
     private static final String TAG = BlockPosterView.class.getSimpleName();
     private static final int BLOCK_TYPE_IMAGE = 0;                  //推荐位状态为图片模式
@@ -190,6 +190,12 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         refreshLayout();
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     private void refreshLayout() {
         if (focusBackground != null) {
             int mWidth = enterFullScreen ? ScreenUtils.getScreenW() : poster_width;
@@ -229,6 +235,10 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             if (mPoster != null) {
                 mPoster.layout(marginSpace, marginSpace, mWidth + marginSpace, mHeight +
                         marginSpace);
+                View background = (View) mPoster.getTag(R.id.tag_title_background);
+                if(background != null){
+                    background.layout(0,mHeight - background.getMeasuredHeight(),mWidth,mHeight);
+                }
             }
 
             if (mLivePlayView != null) {
@@ -247,9 +257,11 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
                         mWidth + marginSpace,
                         getBlockHeight());
             }
+
         }
 
     }
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -300,7 +312,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
         }
 
 
-        if (block_type > BLOCK_TYPE_IMAGE) {
+        if (block_type > BLOCK_TYPE_IMAGE && isInEditMode()) {
             mPaint = new Paint();
 
             int width = (int) (getContext().getResources().getDimensionPixelOffset(R.dimen
@@ -353,13 +365,14 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             mPosterTitle.setMarqueeRepeatLimit(1);
             mPosterTitle.setSingleLine();
             mPosterTitle.setMaxLines(1);
+            mPosterTitle.setIncludeFontPadding(false);
             mPosterTitle.setHorizontallyScrolling(true);
             mPosterTitle.setTextAppearance(context, R.style.ModulePosterBottomTitleStyle);
             DisplayUtils.adjustTextSize(getContext(), mPosterTitle, 28);
             LayoutParams titleLayoutParam = new LayoutParams(poster_width, titleHeight);
-            titleLayoutParam.topMargin = getBlockHeight() - titleHeight;
-            titleLayoutParam.leftMargin = marginSpace;
-            titleLayoutParam.rightMargin = marginSpace;
+//            titleLayoutParam.topMargin = getBlockHeight() - titleHeight;
+//            titleLayoutParam.leftMargin = marginSpace;
+//            titleLayoutParam.rightMargin = marginSpace;
             mPosterTitle.setLayoutParams(titleLayoutParam);
             if (isInEditMode()) {
                 mPosterTitle.setText("央视影音测试标题");
