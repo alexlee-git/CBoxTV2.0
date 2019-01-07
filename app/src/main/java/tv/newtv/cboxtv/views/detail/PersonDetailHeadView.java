@@ -314,6 +314,11 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode, Vi
     }
 
     private void setHeadData(Content dataInfo) {
+
+        if(dataInfo != null && !TextUtils.isEmpty(dataInfo.getContentUUID())){
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + dataInfo.getContentUUID());
+        }
+
         if (dataInfo!=null){
             if (!TextUtils.isEmpty(dataInfo.getNew_realExclusive())){
                 Picasso.get().load(String.format(BootGuide.getBaseUrl(BootGuide.MARK_NEW_REALEXCLUSIVE),dataInfo.getNew_realExclusive())).into(detailMark);

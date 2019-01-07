@@ -109,7 +109,6 @@ public class PersonsDetailsActivityNew extends DetailPageActivity {
             Toast.makeText(this, "人物信息有误", Toast.LENGTH_SHORT).show();
             return;
         } else {
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "2," + contentUUID);
             personDetailHeadView.setContentUUID(contentUUID);
             ADConfig.getInstance().setSeriesID(contentUUID);
         }

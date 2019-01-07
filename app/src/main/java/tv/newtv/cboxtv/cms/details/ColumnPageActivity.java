@@ -104,7 +104,6 @@ public class ColumnPageActivity extends DetailPageActivity {
             finish();
             return;
         }
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
 
         ADConfig.getInstance().setSeriesID(contentUUID);
 
@@ -131,7 +130,9 @@ public class ColumnPageActivity extends DetailPageActivity {
                             pageContent = info;
                             if (!TextUtils.isEmpty(info.getCategoryIDs())){
                                 LogUploadUtils.uploadLog(Constant.LOG_COLUMN_INTO, "1," + info.getCategoryIDs());
-
+                            }
+                            if(!TextUtils.isEmpty(info.getContentUUID())){
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + info.getContentUUID());
                             }
                             if (pageContent != null ) {
                                 if (!TextUtils.isEmpty(pageContent.getVipFlag())){
@@ -256,7 +257,7 @@ public class ColumnPageActivity extends DetailPageActivity {
                                 });
                                 mPaiseView.startDiverges(0);
                                 LogUploadUtils.uploadLog(Constant.LOG_NODE_LIKE, "0," +
-                                        pageContent.getContentID());
+                                        pageContent.getContentUUID());
                                 break;
 
                             case R.id.full_screen:
