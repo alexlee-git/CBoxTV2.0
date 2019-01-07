@@ -253,7 +253,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
                 .isLoading();
     }
 
-    public void setEmptyViewVisible(String desc) {
+    public void setEmptyViewVisible() {
         if (isLoadComplete()) {
             if (mFragments != null && mFragments.size() > 0) {
                 showLoadingView();
@@ -261,11 +261,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
                 showEmptyView();
             }
         }else{
-            if (!TextUtils.isEmpty(desc) && desc.contains("failed to connect to")){
-                showEmptyView();
-            }else {
-                showLoadingView();
-            }
+            showLoadingView();
         }
     }
 
@@ -302,7 +298,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     }
 
     @Override
-    public void updateFragmentList(SearchBaseFragment fragment, boolean isGone,String desc) {
+    public void updateFragmentList(SearchBaseFragment fragment, boolean isGone) {
         if (isGone) {
             if (mFragments.contains(fragment)) {
                 mFragments.remove(fragment);
@@ -332,7 +328,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         }
 
-        setEmptyViewVisible(desc);
+        setEmptyViewVisible();
 
         postDelayed(new Runnable() {
             @Override
