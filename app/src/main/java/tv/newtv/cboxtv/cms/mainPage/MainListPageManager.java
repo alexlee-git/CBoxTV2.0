@@ -235,7 +235,7 @@ public class MainListPageManager {
                     }
                     mViewPagerAdapter.setShowItem(position);
                     mViewPager.setCurrentItem(position);
-                    BackGroundManager.getInstance().setCurrentNav(uuid, false);
+                    BackGroundManager.getInstance().setCurrentNav(uuid, false,false);
                     currentFocus = value.getId();
 
                     if (!TextUtils.isEmpty(uuid)) {

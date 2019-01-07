@@ -354,7 +354,7 @@ public class MainNavManager implements NavContract.View {
 
         NavUtil.getNavUtil().navFragment = willShowFragment;
         willShowFragment.setUserVisibleHint(true);
-        BackGroundManager.getInstance().setCurrentNav(navInfo.getId(),waitPage);
+        BackGroundManager.getInstance().setCurrentNav(navInfo.getId(),waitPage,true);
         mCurrentShowFragment = (BaseFragment) willShowFragment;
     }
 
