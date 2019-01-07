@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.search.custom;
 
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
@@ -252,27 +253,36 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
                 .isLoading();
     }
 
-    public void setEmptyViewVisible() {
+    public void setEmptyViewVisible(String desc) {
         if (isLoadComplete()) {
             if (mFragments != null && mFragments.size() > 0) {
-                mSearchResultEmpty.setVisibility(GONE);
-                mSearchResultImg.setVisibility(GONE);
-                mSearchResultEmptyLine.setVisibility(GONE);
+                showLoadingView();
             } else {
-                mSearchResultEmpty.setVisibility(VISIBLE);
-                mSearchResultImg.setVisibility(VISIBLE);
-                mSearchResultEmptyLine.setVisibility(VISIBLE);
-                if (mLoadingLayout != null){
-                    mLoadingLayout.setVisibility(GONE);
-                }
+                showEmptyView();
             }
         }else{
-            mSearchResultEmpty.setVisibility(GONE);
-            mSearchResultImg.setVisibility(GONE);
-            mSearchResultEmptyLine.setVisibility(GONE);
+            if (!TextUtils.isEmpty(desc) && desc.contains("failed to connect to")){
+                showEmptyView();
+            }else {
+                showLoadingView();
+            }
         }
     }
 
+    private void showEmptyView(){
+        mSearchResultEmpty.setVisibility(VISIBLE);
+        mSearchResultImg.setVisibility(VISIBLE);
+        mSearchResultEmptyLine.setVisibility(VISIBLE);
+        if (mLoadingLayout != null){
+            mLoadingLayout.setVisibility(GONE);
+        }
+    }
+
+    private void showLoadingView(){
+        mSearchResultEmpty.setVisibility(GONE);
+        mSearchResultImg.setVisibility(GONE);
+        mSearchResultEmptyLine.setVisibility(GONE);
+    }
 
     /**
      * 显示指定页面
@@ -292,7 +302,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     }
 
     @Override
-    public void updateFragmentList(SearchBaseFragment fragment, boolean isGone) {
+    public void updateFragmentList(SearchBaseFragment fragment, boolean isGone,String desc) {
         if (isGone) {
             if (mFragments.contains(fragment)) {
                 mFragments.remove(fragment);
@@ -322,7 +332,7 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
             }
         }
 
-        setEmptyViewVisible();
+        setEmptyViewVisible(desc);
 
         postDelayed(new Runnable() {
             @Override
