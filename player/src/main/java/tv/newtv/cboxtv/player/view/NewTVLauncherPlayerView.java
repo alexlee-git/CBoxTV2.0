@@ -2160,6 +2160,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (defaultConfig != null && defaultConfig.programSeriesInfo != null) {
             ADConfig.getInstance().setVideoType(defaultConfig.programSeriesInfo.getVideoType());
             ADConfig.getInstance().setVideoClass(defaultConfig.programSeriesInfo.getVideoClass());
+            videoDataStruct.setDefinitionStr(defaultConfig.programSeriesInfo.getDefinition());
         }
         if (defaultConfig != null) {
             if (defaultConfig.currentAlternate != null && defaultConfig.isAlternate) {
@@ -2168,7 +2169,6 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             videoDataStruct.setAlternate(defaultConfig.isAlternate, defaultConfig.isFirstAlternate);
             videoDataStruct.setAlternateId(defaultConfig.alternateID);
             videoDataStruct.setHistoryPosition(mHistoryPostion);
-            videoDataStruct.setDefinitionStr(defaultConfig.programSeriesInfo.getDefinition());
             mNewTVLauncherPlayer.play(getContext(), defaultConfig.videoFrameLayout, mCallBackEvent,
                     videoDataStruct);
         }
