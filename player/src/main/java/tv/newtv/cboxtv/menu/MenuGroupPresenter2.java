@@ -969,6 +969,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         lbCollectNode = null;
         seriesIdList.clear();
         menuGroup.release();
+        lbNode = null;
     }
 
     @Override
@@ -983,6 +984,9 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
             for (Program program : seriesContent.data) {
                 if (contentId.equals(program.getContentID())) {
                     playProgram = program;
+                    if(isAlternate){
+                        lbNode = playProgram.getParent();
+                    }
                     return true;
                 }
             }
