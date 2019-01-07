@@ -96,6 +96,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     private boolean isHaveAD;
     private HashMap<String, Content> mCacheSubContents;
     private String uuidTag;
+    private boolean isRefreshCenter = false;
 
     private SpecialHandler mSpecialHandler = new SpecialHandler(NewSpecialFragment.this);
 
@@ -174,6 +175,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         } else {
                             printLogAndToast("Handler", "msg_refresh_center_data", false);
                         }
+                        isRefreshCenter = true;
                         break;
                     default:
                         break;
@@ -330,11 +332,13 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
                 mMoveTag = UP;
                 isMoveKey = true;
+                isRefreshCenter = false;
             }
 
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
                 mMoveTag = DOWN;
                 isMoveKey = true;
+                isRefreshCenter = false;
             }
             if (focusView instanceof VideoPlayerView) {
                 switch (event.getKeyCode()) {
@@ -493,7 +497,6 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 if (position == oldLeftPosition) {
                     mCenterMenu.scrollToPosition(oldCenterPosition);
                     msg.arg1 = oldCenterPosition;
-                    mSpecialHandler.sendMessageDelayed(msg, 50);
                 } else {
                     centerPosition = 0;
                     if (centerPosition < firstVP) {
@@ -505,7 +508,11 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                         mCenterMenu.scrollToPosition(centerPosition);
                     }
                     msg.arg1 = centerPosition;
+                }
+                if(isRefreshCenter) {
                     mSpecialHandler.sendMessageDelayed(msg, 50);
+                }else{
+                    printLogAndToast("initLeftList","isRefreshCenter" + isRefreshCenter,false);
                 }
                 mLeftUp.setVisibility(View.INVISIBLE);
                 mLeftDown.setVisibility(View.INVISIBLE);
