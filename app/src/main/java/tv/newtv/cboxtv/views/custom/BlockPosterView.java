@@ -190,11 +190,6 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         refreshLayout();
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
 
     private void refreshLayout() {
         if (focusBackground != null) {
@@ -236,8 +231,8 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
                 mPoster.layout(marginSpace, marginSpace, mWidth + marginSpace, mHeight +
                         marginSpace);
                 View background = (View) mPoster.getTag(R.id.tag_title_background);
-                if(background != null){
-                    background.layout(0,mHeight - background.getMeasuredHeight(),mWidth,mHeight);
+                if (background != null) {
+                    background.layout(0, mHeight - background.getMeasuredHeight(), mWidth, mHeight);
                 }
             }
 
@@ -409,13 +404,13 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
     public void onClick(View view) {
-//        if (mLivePlayView != null) {
-//            if (mLivePlayView.isVideoType()) {
-//                mLivePlayView.dispatchClick();
-//                return;
-//            }
-//        }
         if (mOnClickListener != null) {
             mOnClickListener.onClick(mLivePlayView != null ? mLivePlayView : this);
         }
@@ -423,22 +418,6 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
 
     @Override
     public void onFocusChange(View view, boolean gainFocus) {
-        if (show_title) {
-            if (mPosterTitle != null) {
-                mPosterTitle.setSelected(gainFocus);
-            }
-
-            if (mPosterImage != null) {
-                mPosterImage.setActivated(gainFocus);
-            }
-        }else {
-            if (mPoster != null) {
-                TextView title = (TextView) mPoster.getTag(R.id.tag_title);
-                if (title != null) {
-                    title.setSelected(gainFocus);
-                }
-            }
-        }
         if (!isVideoMode || (mLivePlayView != null && !mLivePlayView.isVideoType())) {
             if (gainFocus) {
                 ScaleUtils.getInstance().onItemGetFocus(this);
@@ -446,6 +425,22 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
                 ScaleUtils.getInstance().onItemLoseFocus(this);
             }
         }
+        if (show_title) {
+            if (mPosterTitle != null) {
+                mPosterTitle.setSelected(gainFocus);
+            }
+            if (mPosterImage != null) {
+                mPosterImage.setActivated(gainFocus);
+            }
+        } else {
+            if (mPoster != null) {
+                TextView title = (TextView) mPoster.getTag(R.id.tag_title);
+                if (title != null) {
+                    title.setSelected(gainFocus);
+                }
+            }
+        }
+
     }
 
     @Override
