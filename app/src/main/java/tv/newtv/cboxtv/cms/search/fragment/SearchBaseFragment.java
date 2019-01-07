@@ -348,7 +348,8 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
 
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
-        LogUtils.e("BaseFragment", "onError:" + desc);
+        LogUtils.e("SearchBaseFragment", "onError:" + desc);
+        mIsLoading = false;
         notifyToDataInfoResult(true);
     }
 
