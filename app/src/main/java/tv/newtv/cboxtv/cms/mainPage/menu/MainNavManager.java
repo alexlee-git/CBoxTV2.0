@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.newtv.cms.bean.Nav;
 import com.newtv.cms.contract.NavContract;
+import com.newtv.libs.Cache;
 import com.newtv.libs.Constant;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
@@ -35,8 +36,6 @@ import tv.newtv.cboxtv.cms.mainPage.view.BaseFragment;
 import tv.newtv.cboxtv.cms.mainPage.view.ContentFragment;
 import tv.newtv.cboxtv.cms.search.SearchFragmentNew;
 import tv.newtv.cboxtv.player.PlayerConfig;
-import com.newtv.libs.Cache;
-
 import tv.newtv.cboxtv.uc.UserCenterFragment;
 import tv.newtv.cboxtv.views.widget.MenuRecycleView;
 
@@ -256,7 +255,7 @@ public class MainNavManager implements NavContract.View {
         mExternalParams = params;
         if (action != null) {
             if (action.equals("panel")) {
-                if (params.contains("&")){
+                if (params.contains("&")) {
                     try {
                         String[] panels = params.split("&");
                         Log.e("--params----", panels[0] + "----");
@@ -267,7 +266,7 @@ public class MainNavManager implements NavContract.View {
                         LogUtils.e(e.toString());
                         Navbarfoused = -1;
                     }
-                }else if (params.contains("|")){//适配 |
+                } else if (params.contains("|")) {//适配 |
                     try {
                         String[] panels = params.split("\\|");
                         Log.e("--params---|-", panels[0] + "----");
@@ -301,6 +300,8 @@ public class MainNavManager implements NavContract.View {
         Bundle bundle = new Bundle();
         bundle.putString("content_id", navInfo.getId());
         bundle.putString("actionType", navInfo.getPageType());
+        bundle.putString("nav_text", navInfo.getTitle());
+        bundle.putBoolean("is_from_nav", true);
         bundle.putString("action", mExternalAction);
         bundle.putString("params", mExternalParams);
         if (navInfo.getChild() != null && navInfo.getChild().size() > 0) {
@@ -318,7 +319,6 @@ public class MainNavManager implements NavContract.View {
         if (willShowFragment == null) {
             if (Constant.NAV_SEARCH.equals(navInfo.getTitle())) {
                 willShowFragment = SearchFragmentNew.newInstance(bundle);
-//                willShowFragment = SearchFragment.newInstance(bundle);
                 waitPage = false;
             } else if (Constant.NAV_UC.equals(navInfo.getTitle())) {
                 willShowFragment = UserCenterFragment.newInstance(bundle);
@@ -327,8 +327,6 @@ public class MainNavManager implements NavContract.View {
                 willShowFragment = NavFragment.newInstance(bundle);
             } else if (Constant.OPEN_PAGE.equals(navInfo.getPageType())
                     || Constant.OPEN_SPECIAL.equals(navInfo.getPageType())) {
-                bundle.putString("nav_text", navInfo.getTitle());
-                bundle.putBoolean("is_from_nav", true);
                 willShowFragment = ContentFragment.newInstance(bundle);
             } else {
                 willShowFragment = ContentFragment.newInstance(bundle);
@@ -354,7 +352,7 @@ public class MainNavManager implements NavContract.View {
 
         NavUtil.getNavUtil().navFragment = willShowFragment;
         willShowFragment.setUserVisibleHint(true);
-        BackGroundManager.getInstance().setCurrentNav(navInfo.getId(),waitPage,true);
+        BackGroundManager.getInstance().setCurrentNav(navInfo.getId(), waitPage, true);
         mCurrentShowFragment = (BaseFragment) willShowFragment;
     }
 

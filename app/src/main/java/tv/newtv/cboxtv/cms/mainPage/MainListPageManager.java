@@ -364,7 +364,7 @@ public class MainListPageManager {
         }
 
         if (mNavInfos == null || mNavInfos.size() <= 1) {
-            mCircleMenuRv.setVisibility(View.GONE);
+            mCircleMenuRv.setVisibility(View.INVISIBLE);
         }
     }
 
