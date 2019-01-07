@@ -7,5 +7,5 @@ import tv.newtv.cboxtv.cms.search.fragment.SearchBaseFragment;
  */
 
 public interface SearchResultDataInfo {
-    void updateFragmentList(SearchBaseFragment fragment, boolean isGone);
+    void updateFragmentList(SearchBaseFragment fragment, boolean isGone,String desc);
 }

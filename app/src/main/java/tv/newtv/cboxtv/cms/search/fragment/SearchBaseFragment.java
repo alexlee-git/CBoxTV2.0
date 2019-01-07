@@ -168,7 +168,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
                 if (cacheDatas.containsKey(key)) {
                     SearchResult current = cacheDatas.remove(key);
                     notifyToDataInfoResult(current.contents == null || current.contents.size() <=
-                            0);
+                            0,null);
                     onResult(requestId, current.contents, current.total);
                     currentkey = key;
                     return;
@@ -216,11 +216,11 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
         mSearchResultDataInfo = resultDataInfo;
     }
 
-    protected void notifyToDataInfoResult(boolean isGone) {
+    protected void notifyToDataInfoResult(boolean isGone,String desc) {
         if (mLabelView != null) {
             mLabelView.setVisibility(isGone ? View.GONE : View.VISIBLE);
         }
-        mSearchResultDataInfo.updateFragmentList(this, isGone);
+        mSearchResultDataInfo.updateFragmentList(this, isGone,desc);
     }
 
     private void requestData(String key) {
@@ -235,7 +235,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
                 mSearchPresenter.stop();
             }
             inputKeyChange();
-            notifyToDataInfoResult(true);
+            notifyToDataInfoResult(true,null);
             return;
         }
 
@@ -277,7 +277,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
         }
         currentkey = key;
         mIsLoading = true;
-        notifyToDataInfoResult(true);
+        notifyToDataInfoResult(true,null);
         requestId = mSearchPresenter.search(conditionTV);
     }
 
@@ -336,7 +336,7 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
         cacheDatas.put(currentkey, new SearchResult(result, total));
         mIsLoading = false;
         if ("1".equals(getPageNum())) {
-            notifyToDataInfoResult(result == null || result.size() <= 0);
+            notifyToDataInfoResult(result == null || result.size() <= 0,null);
         }
         onResult(reqId, result, total);
     }
@@ -348,8 +348,8 @@ public abstract class SearchBaseFragment extends Fragment implements SearchContr
 
     @Override
     public void onError(@NotNull Context context, @NotNull String code, @Nullable String desc) {
-        LogUtils.e("BaseFragment", "onError:" + desc);
-        notifyToDataInfoResult(true);
+        LogUtils.e("SearchBaseFragment", "onError:" + desc);
+        notifyToDataInfoResult(true,desc);
     }
 
     private static class SearchResult {
