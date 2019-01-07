@@ -579,30 +579,41 @@ public class BlockBuilder extends BaseBlockBuilder {
             return;
         }
 
-        ImageView background = null;
+        ImageView background = (ImageView) framelayout.getTag(R.id.tag_title_background);
         //高
         int pxheight_1px = mContext.getResources().getDimensionPixelSize(R.dimen._height_1px);
-        int pxSize = mContext.getResources().getDimensionPixelSize(R.dimen.width_70px);
+        int pxSize = mContext.getResources().getDimensionPixelSize(R.dimen.height_70px);
         int pxSize2 = mContext.getResources().getDimensionPixelSize(R.dimen.height_40px);
         int width = mContext.getResources().getDimensionPixelSize(R.dimen.width_168px);
 
         TextView titleWidget = (TextView) framelayout.getTag(R.id.tag_title);
         if (!TextUtils.isEmpty(title) && !TextUtils.equals(title, "null")) {
+
             if (!TextUtils.equals(layoutCode, "layout_030") && !TextUtils.equals(layoutCode,
                     "layout_005") && !TextUtils.equals(layoutCode,
                     "layout_008")) {
-
-                if (titleWidget == null) {
-                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup
+                if (background == null) {
+                    FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout
                             .LayoutParams.MATCH_PARENT, DisplayUtils.translate(pxSize, DisplayUtils
                             .SCALE_TYPE_HEIGHT));
                     layoutParams.gravity = Gravity.BOTTOM;
                     layoutParams.bottomMargin = pxheight_1px;
                     background = new ImageView(mContext);
                     framelayout.setTag(R.id.tag_title_background, background);
-                    background.setBackgroundResource(R.drawable.gradient_white_to_black);
+                    background.setImageResource(R.drawable.gradient_white_to_black);
                     background.setLayoutParams(layoutParams);
-                    framelayout.addView(background, layoutParams);
+                    int titleIndex = -1;
+                    if (titleWidget != null) {
+                        titleIndex = framelayout.indexOfChild(titleWidget);
+                    }
+                    if (titleIndex == -1) {
+                        framelayout.addView(background, layoutParams);
+                    } else {
+                        framelayout.addView(background, titleIndex + 1, layoutParams);
+                    }
+                }
+                background.setVisibility(View.VISIBLE);
+                if (titleWidget == null) {
                     FrameLayout.LayoutParams lp;
                     if (TextUtils.equals(layoutCode, "layout_006")) {
                         lp = new FrameLayout.LayoutParams(DisplayUtils.translate(width, DisplayUtils
@@ -658,6 +669,9 @@ public class BlockBuilder extends BaseBlockBuilder {
                 titleWidget.setVisibility(View.VISIBLE);
             }
         } else {
+            if(background != null){
+                background.setVisibility(View.GONE);
+            }
             if (titleWidget != null) {
                 titleWidget.setText("");
             }

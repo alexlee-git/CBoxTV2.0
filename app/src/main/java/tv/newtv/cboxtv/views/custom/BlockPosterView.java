@@ -95,6 +95,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
     /**
      * 是否圆角
+     *
      * @return
      */
     public boolean hasCorner() {
@@ -106,6 +107,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
     /**
      * 设置推荐位UUID
+     *
      * @param uuid
      */
     public void setPageUUID(String uuid) {
@@ -117,6 +119,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
     /**
      * 设置是否显示聚焦框
+     *
      * @param useable 是否启用
      */
     public void setUseable(boolean useable) {
@@ -135,6 +138,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
     /**
      * 设置推荐位数据
+     *
      * @param program 推荐位数据
      */
     public void setData(Object program) {
@@ -159,6 +163,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
     /**
      * 获取推荐位宽度
+     *
      * @return
      */
     private int getBlockWidth() {
@@ -170,6 +175,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
     /**
      * 获取推荐位高度
+     *
      * @return
      */
     private int getBlockHeight() {
@@ -183,7 +189,6 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         refreshLayout();
     }
-
 
     private void refreshLayout() {
         if (focusBackground != null) {
@@ -350,7 +355,7 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
             mPosterTitle.setMaxLines(1);
             mPosterTitle.setHorizontallyScrolling(true);
             mPosterTitle.setTextAppearance(context, R.style.ModulePosterBottomTitleStyle);
-            DisplayUtils.adjustTextSize(getContext(),mPosterTitle,28);
+            DisplayUtils.adjustTextSize(getContext(), mPosterTitle, 28);
             LayoutParams titleLayoutParam = new LayoutParams(poster_width, titleHeight);
             titleLayoutParam.topMargin = getBlockHeight() - titleHeight;
             titleLayoutParam.leftMargin = marginSpace;
@@ -412,6 +417,13 @@ public class BlockPosterView extends FrameLayout implements View.OnClickListener
 
             if (mPosterImage != null) {
                 mPosterImage.setActivated(gainFocus);
+            }
+        }else {
+            if (mPoster != null) {
+                TextView title = (TextView) mPoster.getTag(R.id.tag_title);
+                if (title != null) {
+                    title.setSelected(gainFocus);
+                }
             }
         }
         if (!isVideoMode || (mLivePlayView != null && !mLivePlayView.isVideoType())) {
