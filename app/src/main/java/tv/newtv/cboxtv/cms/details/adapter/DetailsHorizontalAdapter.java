@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.newtv.cms.bean.SubContent;
 
 import com.google.gson.Gson;
+import com.newtv.libs.util.ScaleUtils;
 
 import org.json.JSONObject;
 
@@ -179,12 +180,13 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
             focusImageView.setVisibility(View.INVISIBLE);
         }
         // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.startAnimation(sa);
+        ScaleUtils.getInstance().onItemLoseFocus(view);
     }
 
     private void onItemGetFocus(View view) {
@@ -193,12 +195,13 @@ public class DetailsHorizontalAdapter extends BaseRecyclerAdapter<SubContent, De
             focusImageView.setVisibility(View.VISIBLE);
         }
         //直接放大view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.bringToFront();
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.bringToFront();
+//        view.startAnimation(sa);
+        ScaleUtils.getInstance().onItemGetFocus(view);
     }
 }

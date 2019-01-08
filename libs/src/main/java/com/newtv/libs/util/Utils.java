@@ -87,31 +87,33 @@ public class Utils {
         if (!view.isFocusable()) {
             return;
         }
-        ScaleAnimation animation = AnimationBuilder.getInstance()
-                .getScaleAnimation(1.0f, factor, 1.0f, factor,
-                        Animation.RELATIVE_TO_SELF, 0.5f,
-                        Animation.RELATIVE_TO_SELF, 0.5f, duration);
+//        ScaleAnimation animation = AnimationBuilder.getInstance()
+//                .getScaleAnimation(1.0f, factor, 1.0f, factor,
+//                        Animation.RELATIVE_TO_SELF, 0.5f,
+//                        Animation.RELATIVE_TO_SELF, 0.5f, duration);
+        ScaleUtils.getInstance().onItemGetFocus(view,duration,factor);
         TextView name = (TextView) view.findViewWithTag("");
         if (name != null) {
             name.setVisibility(View.VISIBLE);
         }
-        if (animation != null) {
-            view.startAnimation(animation);
-        }
+//        if (animation != null) {
+//            view.startAnimation(animation);
+//        }
     }
 
     public static void scaleToOriginalDimension(View view, float factor, int duration) {
-        ScaleAnimation animation = AnimationBuilder.getInstance()
-                .getScaleAnimation(factor, 1.0f, factor, 1.0f,
-                        Animation.RELATIVE_TO_SELF, 0.5f,
-                        Animation.RELATIVE_TO_SELF, 0.5f, duration);
+//        ScaleAnimation animation = AnimationBuilder.getInstance()
+//                .getScaleAnimation(factor, 1.0f, factor, 1.0f,
+//                        Animation.RELATIVE_TO_SELF, 0.5f,
+//                        Animation.RELATIVE_TO_SELF, 0.5f, duration);
+        ScaleUtils.getInstance().onItemLoseFocus(view,duration,factor);
         TextView name = (TextView) view.findViewWithTag("");
         if (name != null) {
             name.setSelected(false);
         }
-        if (animation != null) {
-            view.startAnimation(animation);
-        }
+//        if (animation != null) {
+//            view.startAnimation(animation);
+//        }
     }
 
     public static String getSplitFirst(String s) {

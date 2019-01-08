@@ -22,6 +22,7 @@ import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.Constant;
+import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -236,18 +237,20 @@ public class NewTVSearchHotRecommend extends RelativeLayout implements PageContr
 
         private void onItemGetFocus(View view) {
             //直接放大view
-            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(150);
-            view.startAnimation(sa);
+//            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(150);
+//            view.startAnimation(sa);
+            ScaleUtils.getInstance().onItemGetFocus(view,150,1.1f);
         }
 
         private void onItemLoseFocus(View view) {
             // 直接缩小view
-            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(150);
-            view.startAnimation(sa);
+//            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(150);
+//            view.startAnimation(sa);
+            ScaleUtils.getInstance().onItemLoseFocus(view,150,1.1f);
         }
     }
 

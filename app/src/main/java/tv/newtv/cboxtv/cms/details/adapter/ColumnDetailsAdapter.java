@@ -23,6 +23,7 @@ import com.newtv.libs.Constant;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.PageHelper;
+import com.newtv.libs.util.ScaleUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -349,12 +350,13 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<Content, RecyclerV
             focusImageView.setVisibility(View.INVISIBLE);
         }
         // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.startAnimation(sa);
+        ScaleUtils.getInstance().onItemLoseFocus(view);
     }
 
     private void onItemGetFocus(View view) {
@@ -365,13 +367,14 @@ public class ColumnDetailsAdapter extends BaseRecyclerAdapter<Content, RecyclerV
             focusImageView.setVisibility(View.VISIBLE);
         }
         //直接放大view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.bringToFront();
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.bringToFront();
+//        view.startAnimation(sa);
+        ScaleUtils.getInstance().onItemGetFocus(view);
     }
 
     @Override

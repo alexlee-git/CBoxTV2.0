@@ -1,5 +1,7 @@
 package tv.newtv.cboxtv.uc;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.newtv.cms.bean.Corner;
 import com.newtv.libs.Constant;
 import com.newtv.libs.bean.AdBean;
+import com.newtv.libs.util.ScaleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -196,10 +199,11 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
 
             // 直接缩小view
-            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
-            sa.setFillAfter(true);
-            sa.setDuration(150);
-            view.startAnimation(sa);
+//            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(150);
+//            view.startAnimation(sa);
+            ScaleUtils.getInstance().onItemLoseFocus(view,150,1.1f);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wqs:onItemLoseFocus:Exception:" + e.toString());
@@ -219,11 +223,12 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
             }
 
             //直接放大view
-            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
-            sa.setFillAfter(true);
-            sa.setDuration(150);
-            view.bringToFront();
-            view.startAnimation(sa);
+//            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation.RELATIVE_TO_SELF, 0.4f, Animation.RELATIVE_TO_SELF, 0.4f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(150);
+//            view.bringToFront();
+//            view.startAnimation(sa);
+            ScaleUtils.getInstance().onItemGetFocus(view,150,1.1f);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wqs:onItemGetFocus:Exception:" + e.toString());
