@@ -4,6 +4,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
+
     <include
         layout="@layout/left_top_logo"/>
     <!-- 导航区 -->
@@ -17,17 +24,17 @@
         android:visibility="visible">
         <ImageView
             android:id="@+id/first_focus"
-            android:layout_marginRight="@dimen/width_20px"
-            android:layout_gravity="center_horizontal"
             android:layout_width="@dimen/width_294px"
             android:layout_height="@dimen/height_96px"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/width_20px"
+            android:layout_marginRight="@dimen/width_20px"
             android:scaleType="fitXY"
-            android:src="@drawable/first_nav_focus"
-            android:layout_marginEnd="@dimen/width_20px"/>
+            android:src="@drawable/first_nav_focus"/>
         <ImageView
-            android:layout_centerHorizontal="true"
             android:layout_width="@dimen/width_14px"
             android:layout_height="@dimen/height_7px"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/height_87px"
             android:src="@drawable/nav_first_tip"/>
@@ -35,31 +42,31 @@
 
     <tv.newtv.cboxtv.views.widget.MenuRecycleView
         android:id="@+id/list_view"
-        android:tag="main"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/height_60px"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginEnd="@dimen/width_337px"
         android:layout_marginStart="@dimen/width_337px"
         android:layout_marginTop="@dimen/height_96px"
+        android:layout_marginEnd="@dimen/width_337px"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:tag="main">
     </tv.newtv.cboxtv.views.widget.MenuRecycleView>
 
     <TextView
         android:id="@+id/timer"
-        android:text=""
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorTextTime"
-        android:alpha="0.3"
-        android:textStyle="normal"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/height_1021px"
+        android:layout_marginStart="@dimen/width_1821px"
         android:layout_marginLeft="@dimen/width_1821px"
+        android:layout_marginTop="@dimen/height_1021px"
+        android:alpha="0.3"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/colorTextTime"
         android:textSize="@dimen/height_24px"
-        android:layout_marginStart="@dimen/width_1821px"/>
+        android:textStyle="normal"/>
 
     <FrameLayout
         android:id="@+id/main_page_content"

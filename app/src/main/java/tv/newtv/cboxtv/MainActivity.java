@@ -63,6 +63,9 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
     @BindView(R.id.timer)
     TextView timeTV;
 
+    @BindView(R.id.background)
+    View backGroundView;
+
     private AppMainContract.Presenter mPresenter;
     private VersionUpdateContract.Presenter mUpdatePresenter;
 
@@ -306,7 +309,7 @@ public class MainActivity extends BaseActivity implements BackGroundManager.BGCa
 
     @Override
     public View getTargetView() {
-        return mRootLayout;
+        return backGroundView;
     }
 
     private void toSecondPageFromAd(String eventContentString) {
