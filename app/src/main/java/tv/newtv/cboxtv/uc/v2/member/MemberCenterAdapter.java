@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.QrcodeUtil;
+import com.newtv.libs.util.ScaleUtils;
 import com.newtv.libs.util.SharePreferenceUtils;
 import com.squareup.picasso.Picasso;
 
@@ -303,12 +304,13 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<Page, RecyclerView
             }
 
             // 直接缩小view
-            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
-            view.startAnimation(sa);
+//            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
+//                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(400);
+//            sa.setInterpolator(mSpringInterpolator);
+//            view.startAnimation(sa);
+            ScaleUtils.getInstance().onItemLoseFocus(view);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wqs:onItemLoseFocus:Exception:" + e.toString());
@@ -326,13 +328,14 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<Page, RecyclerView
                 titleView.setSelected(true);
             }
             //直接放大view
-            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
-            view.bringToFront();
-            view.startAnimation(sa);
+//            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
+//                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(400);
+//            sa.setInterpolator(mSpringInterpolator);
+//            view.bringToFront();
+//            view.startAnimation(sa);
+            ScaleUtils.getInstance().onItemGetFocus(view);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wqs:onItemGetFocus:Exception:" + e.toString());

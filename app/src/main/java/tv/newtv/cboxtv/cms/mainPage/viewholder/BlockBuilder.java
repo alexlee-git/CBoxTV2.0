@@ -27,6 +27,7 @@ import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
 import com.newtv.libs.util.NetworkManager;
+import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -441,28 +442,30 @@ public class BlockBuilder extends BaseBlockBuilder {
             return;
         }
 
-        String tag = (String) view.getTag();
-        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") ||
-                tag.equals("cell_001_1")) {
-            //直接放大view
-            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.07f, 1.0f, 1.07f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(500);
-            sa.setInterpolator(mSpringInterpolator);
-            view.bringToFront();
-            view.startAnimation(sa);
-        } else {
-            //直接放大view
-            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
-            view.bringToFront();
-            view.startAnimation(sa);
+        ScaleUtils.getInstance().onItemGetFocus(view);
 
-        }
+//        String tag = (String) view.getTag();
+//        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") ||
+//                tag.equals("cell_001_1")) {
+//            //直接放大view
+//            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.07f, 1.0f, 1.07f, Animation
+//                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(500);
+//            sa.setInterpolator(mSpringInterpolator);
+//            view.bringToFront();
+//            view.startAnimation(sa);
+//        } else {
+//            //直接放大view
+//            ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
+//                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(400);
+//            sa.setInterpolator(mSpringInterpolator);
+//            view.bringToFront();
+//            view.startAnimation(sa);
+//
+//        }
     }
 
     protected void onItemLoseFocus(String layoutId, View view) {
@@ -486,24 +489,25 @@ public class BlockBuilder extends BaseBlockBuilder {
             return;
         }
 
-        String tag = (String) view.getTag();
-        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") ||
-                tag.equals("cell_001_1")) {
-            ScaleAnimation sa = new ScaleAnimation(1.07f, 1.0f, 1.07f, 1.0f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(500);
-            sa.setInterpolator(mSpringInterpolator);
-            view.startAnimation(sa);
-        } else {
-            // 直接缩小view
-            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-            sa.setFillAfter(true);
-            sa.setDuration(400);
-            sa.setInterpolator(mSpringInterpolator);
-            view.startAnimation(sa);
-        }
+        ScaleUtils.getInstance().onItemLoseFocus(view);
+//        String tag = (String) view.getTag();
+//        if (tag.equals("cell_017_1") || tag.equals("cell_019_1") || tag.equals("cell_019_2") ||
+//                tag.equals("cell_001_1")) {
+//            ScaleAnimation sa = new ScaleAnimation(1.07f, 1.0f, 1.07f, 1.0f, Animation
+//                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(500);
+//            sa.setInterpolator(mSpringInterpolator);
+//            view.startAnimation(sa);
+//        } else {
+//            // 直接缩小view
+//            ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
+//                    .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//            sa.setFillAfter(true);
+//            sa.setDuration(400);
+//            sa.setInterpolator(mSpringInterpolator);
+//            view.startAnimation(sa);
+//        }
     }
 
     void processOpenCell(View view, Object info, String blockId, String layoutCode) {

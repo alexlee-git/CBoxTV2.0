@@ -53,13 +53,23 @@ public class ScaleUtils {
     //用于赛程表的
     public void onItemGetFocus(View view, float value) {
         //直接放大schedule  view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, value, 1.0f, value, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.bringToFront();
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(1.0f, value, 1.0f, value, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.bringToFront();
+//        view.startAnimation(sa);
+        view.setPivotX(view.getMeasuredWidth()/2);
+        view.setPivotY(view.getMeasuredHeight()/2);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(400);
+        animatorSet.setInterpolator(mSpringInterpolator);
+        animatorSet.setTarget(view);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", 1.0f, value);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.0f, value);
+        animatorSet.playTogether(objectAnimatorX,objectAnimatorY);
+        animatorSet.start();
 
 
     }
@@ -70,24 +80,57 @@ public class ScaleUtils {
             focusView.setVisibility(View.VISIBLE);
         }
         //直接放大view
-        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.bringToFront();
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.bringToFront();
+//        view.startAnimation(sa);
+        view.setPivotX(view.getMeasuredWidth()/2);
+        view.setPivotY(view.getMeasuredHeight()/2);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(400);
+        animatorSet.setInterpolator(mSpringInterpolator);
+        animatorSet.setTarget(view);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", 1.0f, 1.1f);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.0f, 1.1f);
+        animatorSet.playTogether(objectAnimatorX,objectAnimatorY);
+        animatorSet.start();
+    }
+
+    public void onItemGetFocus(View view,long duration,float values){
+        view.setPivotX(view.getMeasuredWidth()/2);
+        view.setPivotY(view.getMeasuredHeight()/2);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(duration);
+        animatorSet.setInterpolator(mSpringInterpolator);
+        animatorSet.setTarget(view);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", 1.0f, values);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.0f, values);
+        animatorSet.playTogether(objectAnimatorX,objectAnimatorY);
+        animatorSet.start();
     }
 
     //用于赛程表的
     public void onItemLoseFocus(View view, float value) {
         // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(value, 1.0f, value, 1.0f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(value, 1.0f, value, 1.0f, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.startAnimation(sa);
+        view.setPivotX(view.getMeasuredWidth()/2);
+        view.setPivotY(view.getMeasuredHeight()/2);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(400);
+        animatorSet.setInterpolator(mSpringInterpolator);
+        animatorSet.setTarget(view);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", value, 1.0f);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", value, 1.0f);
+        animatorSet.playTogether(objectAnimatorX,objectAnimatorY);
+        animatorSet.start();
     }
 
     public void onItemLoseFocus(View view) {
@@ -117,11 +160,34 @@ public class ScaleUtils {
             focusView.setVisibility(View.INVISIBLE);
         }
         // 直接缩小view
-        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
-                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        sa.setFillAfter(true);
-        sa.setDuration(400);
-        sa.setInterpolator(mSpringInterpolator);
-        view.startAnimation(sa);
+//        ScaleAnimation sa = new ScaleAnimation(1.1f, 1.0f, 1.1f, 1.0f, Animation
+//                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        sa.setFillAfter(true);
+//        sa.setDuration(400);
+//        sa.setInterpolator(mSpringInterpolator);
+//        view.startAnimation(sa);
+        view.setPivotX(view.getMeasuredWidth()/2);
+        view.setPivotY(view.getMeasuredHeight()/2);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(400);
+        animatorSet.setInterpolator(mSpringInterpolator);
+        animatorSet.setTarget(view);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", 1.1f, 1.0f);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", 1.1f, 1.0f);
+        animatorSet.playTogether(objectAnimatorX,objectAnimatorY);
+        animatorSet.start();
+    }
+
+    public void onItemLoseFocus(View view,long duration,float values){
+        view.setPivotX(view.getMeasuredWidth()/2);
+        view.setPivotY(view.getMeasuredHeight()/2);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(duration);
+        animatorSet.setTarget(view);
+        animatorSet.setInterpolator(mSpringInterpolator);
+        ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(view, "scaleX", values, 1.0f);
+        ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(view, "scaleY", values, 1.0f);
+        animatorSet.playTogether(objectAnimatorX,objectAnimatorY);
+        animatorSet.start();
     }
 }

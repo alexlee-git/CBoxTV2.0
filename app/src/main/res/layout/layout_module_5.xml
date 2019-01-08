@@ -56,7 +56,7 @@
         <TextView
             style="@style/ModulePosterBottomTitleStyle_005"
             android:layout_width="@dimen/width_240px"
-            android:layout_height="@dimen/height_32px"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="@dimen/width_33px"
             android:layout_marginTop="@dimen/height_297px"
@@ -95,7 +95,7 @@
         <TextView
             style="@style/ModulePosterBottomTitleStyle_005"
             android:layout_width="@dimen/width_240px"
-            android:layout_height="@dimen/height_32px"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="@dimen/width_33px"
             android:layout_marginTop="@dimen/height_297px"
@@ -135,7 +135,7 @@
         <TextView
             style="@style/ModulePosterBottomTitleStyle_005"
             android:layout_width="@dimen/width_240px"
-            android:layout_height="@dimen/height_32px"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="@dimen/width_33px"
             android:layout_marginTop="@dimen/height_297px"
@@ -175,7 +175,7 @@
         <TextView
             style="@style/ModulePosterBottomTitleStyle_005"
             android:layout_width="@dimen/width_240px"
-            android:layout_height="@dimen/height_32px"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="@dimen/width_33px"
             android:layout_marginTop="@dimen/height_297px"
@@ -215,7 +215,7 @@
         <TextView
             style="@style/ModulePosterBottomTitleStyle_005"
             android:layout_width="@dimen/width_240px"
-            android:layout_height="@dimen/height_32px"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="@dimen/width_33px"
             android:layout_marginTop="@dimen/height_297px"
@@ -255,7 +255,7 @@
         <TextView
             style="@style/ModulePosterBottomTitleStyle_005"
             android:layout_width="@dimen/width_240px"
-            android:layout_height="@dimen/height_32px"
+            android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="@dimen/width_33px"
             android:layout_marginTop="@dimen/height_297px"
