@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:background="@drawable/pos_zui"
+                android:background="@drawable/pos_focus_1"
                 android:tag="tag_img_focus"
                 android:visibility="invisible" />
         </RelativeLayout>
