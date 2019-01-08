@@ -23,7 +23,7 @@
         <TextView
             android:id="@+id/id_module_5_title"
             style="@style/ModuleTitleStyle"
-            android:layout_width="@dimen/width_1825px"
+            android:layout_width="@dimen/width_1600px"
             android:layout_height="@dimen/height_34px"
             android:layout_marginLeft="@dimen/width_8px"
             android:layout_marginTop="@dimen/height_59px"
