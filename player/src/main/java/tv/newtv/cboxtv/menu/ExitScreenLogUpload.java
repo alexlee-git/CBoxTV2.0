@@ -42,7 +42,7 @@ public class ExitScreenLogUpload {
             }
 
             LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "17,"
-                    +ADConfig.getInstance().getSeriesID() + ","
+                    +ADConfig.getInstance().getSeriesUUID() + ","
                     + ADConfig.getInstance().getProgramId()
                     + "," + vipFlag + ","+ definition
                     + ","+ADConfig.getInstance().getIntMillisDuration()

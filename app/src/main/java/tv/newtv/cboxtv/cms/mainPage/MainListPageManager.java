@@ -235,7 +235,7 @@ public class MainListPageManager {
                     }
                     mViewPagerAdapter.setShowItem(position);
                     mViewPager.setCurrentItem(position);
-                    BackGroundManager.getInstance().setCurrentNav(uuid, false);
+                    BackGroundManager.getInstance().setCurrentNav(uuid, false,false);
                     currentFocus = value.getId();
 
                     if (!TextUtils.isEmpty(uuid)) {
@@ -364,7 +364,7 @@ public class MainListPageManager {
         }
 
         if (mNavInfos == null || mNavInfos.size() <= 1) {
-            mCircleMenuRv.setVisibility(View.GONE);
+            mCircleMenuRv.setVisibility(View.INVISIBLE);
         }
     }
 

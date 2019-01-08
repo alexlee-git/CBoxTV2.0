@@ -28,6 +28,11 @@ public class DeviceUtil {
     public static final String XUNMATOUYINGYI = "xunmatouyingyi"; //迅码投影仪
     public static final String VENDORTEST = "vendortest"; //厂家测试
     public static final String YSTEN_VOICE = "ysten_voice"; //易视腾
+    public static final String CHUANGWEI = "coocaa"; //创维
+    public static final String HAIER = "haier"; //海尔
+    public static final String KANGJIA = "konka"; //康佳
+    public static final String PHILIPS = "philips"; //飞利浦
+    public static final String CHANGHONG = "changhong"; //长虹
     @SuppressWarnings("ConstantConditions")
     public static boolean isSelfDevice() {
         if (Libs.get().isDebug()) {
@@ -70,6 +75,16 @@ public class DeviceUtil {
             if (!TextUtils.isEmpty(vid)&&fvid.equalsIgnoreCase(vid)){
                 return true;
             }
+        } else if (Libs.get().getFlavor().equals(CHUANGWEI)) {
+            return true;
+        } else if (Libs.get().getFlavor().equals(HAIER)) {
+            return true;
+        } else if (Libs.get().getFlavor().equals(KANGJIA)) {
+            return true;
+        } else if (Libs.get().getFlavor().equals(PHILIPS)) {
+            return true;
+        } else if (Libs.get().getFlavor().equals(CHANGHONG)) {
+            return true;
         }
         return false;
     }

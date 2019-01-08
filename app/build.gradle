@@ -32,8 +32,8 @@ android {
         applicationId "com.newtv.cboxtv"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 1113
-        versionName "2.1.13"
+        versionCode 1114
+        versionName "2.1.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
@@ -93,18 +93,7 @@ android {
                     CHANNEL_ID_VALUE: "50000113"
             ]
         }
-        xunmatouyingyi {
 
-            buildConfigField "int", "LOG_DEBUG", "5"
-            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
-            buildConfigField "String", "CHANNEL_ID", "\"1000701\""
-            buildConfigField "String", "CLIENT_ID", "\"17\""
-
-            manifestPlaceholders = [
-                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
-                    CHANNEL_ID_VALUE: "1000701"
-            ]
-        }
         xiaomi {
 
             buildConfigField "int", "LOG_DEBUG", "5"
@@ -153,6 +142,71 @@ android {
                     CHANNEL_ID_VALUE: "600002"
             ]
         }
+
+        // 创维
+        coocaa {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"50000114\""
+            buildConfigField "String", "CLIENT_ID", "\"14\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "50000114"
+            ]
+        }
+
+        // 海尔
+        haier {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"50000115\""
+            buildConfigField "String", "CLIENT_ID", "\"15\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "50000115"
+            ]
+        }
+
+        // 康佳
+        konka {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"50000116\""
+            buildConfigField "String", "CLIENT_ID", "\"16\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "50000116"
+            ]
+        }
+
+        // 飞利浦
+        philips {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"50000117\""
+            buildConfigField "String", "CLIENT_ID", "\"17\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "50000117"
+            ]
+        }
+
+        // 长虹
+        changhong {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"50000118\""
+            buildConfigField "String", "CLIENT_ID", "\"18\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "50000118"
+            ]
+        }
         /*
         xsj {
             buildConfigField "int", "LOG_DEBUG", "5"
@@ -167,13 +221,13 @@ android {
         }
         */
 
-        /*
+
         panda {
 
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"10002\""
-            buildConfigField "String", "CLIENT_ID", "\"17\""
+            buildConfigField "String", "CLIENT_ID", "\"1\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -186,7 +240,7 @@ android {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"10007\""
-            buildConfigField "String", "CLIENT_ID", "\"17\""
+            buildConfigField "String", "CLIENT_ID", "\"5\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
@@ -194,32 +248,42 @@ android {
             ]
         }
 
+        xunmatouyingyi {
+
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"1000701\""
+            buildConfigField "String", "CLIENT_ID", "\"8\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE   : "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "1000701"
+            ]
+        }
 
         feilierde {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"500003\""
-            buildConfigField "String", "CLIENT_ID", "\"17\""
+            buildConfigField "String", "CLIENT_ID", "\"6\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
                     CHANNEL_ID_VALUE: "500003"
             ]
         }
-*/
-        /*
+
         ailang {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
             buildConfigField "String", "CHANNEL_ID", "\"200001\""
-            buildConfigField "String", "CLIENT_ID", "\"17\""
+            buildConfigField "String", "CLIENT_ID", "\"7\""
 
             manifestPlaceholders = [
                     APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
                     CHANNEL_ID_VALUE: "200001"
             ]
         }
-        */
 
         cboxtest {
             buildConfigField "int", "LOG_DEBUG", "5"
