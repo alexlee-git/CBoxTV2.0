@@ -135,7 +135,7 @@ public class AlternatePageView extends FrameLayout implements IProgramChange,
                             .append("+")
                             .append((mProgram).getCellCode())
                             .append(",")
-                            .append((mProgram).getL_id())
+                            .append((mProgram).getL_uuid())
                             .append(",")
                             .append((mProgram).getL_contentType())
                             .append(",")
