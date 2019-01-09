@@ -522,7 +522,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     .append("+")
                     .append(" ")
                     .append(",")
-                    .append(((Row) info).getContentId())
+                    .append(((Row) info).getUuid())
                     .append(",")
                     .append(((Row) info).getContentType())
                     .append(",")

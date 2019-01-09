@@ -306,8 +306,8 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
             alternateIdText.setText(String.format("%s %s", content.getAlternateNumber(), content
                     .getTitle()));
         }
-        if (alternateFromText != null) {
-
+        if (alternateFromText != null&&!TextUtils.isEmpty(content.getOrigin())) {
+            alternateFromText.setText("来源："+content.getOrigin());
         }
 
         if (alternateDescText != null && !TextUtils.isEmpty(content.getDescription())) {
