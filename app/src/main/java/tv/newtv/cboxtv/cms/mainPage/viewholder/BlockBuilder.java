@@ -652,7 +652,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                             DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_HEIGHT));
                     lp.gravity = Gravity.BOTTOM;
                     lp.leftMargin = DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_WIDTH);
-                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO)) {
+                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
+                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
                         lp.bottomMargin = DisplayUtils.translate(106, DisplayUtils.SCALE_TYPE_HEIGHT);
                     } else {
                         lp.bottomMargin = DisplayUtils.translate(96, DisplayUtils.SCALE_TYPE_HEIGHT);
@@ -663,7 +664,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                     subTitleWidget.setGravity(Gravity.BOTTOM);
                     subTitleWidget.setIncludeFontPadding(false);
                     subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
-                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO)) {
+                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
+                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
                         subTitleWidget.setTextSize(DisplayUtils.translate(12, DisplayUtils
                                 .SCALE_TYPE_HEIGHT));
                     } else {
