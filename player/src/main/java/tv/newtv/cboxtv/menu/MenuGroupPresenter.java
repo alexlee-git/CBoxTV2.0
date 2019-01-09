@@ -536,7 +536,7 @@ public class MenuGroupPresenter implements ArrowHeadInterface, IMenuGroupPresent
                                 .MODE_PRIVATE).getString("duration", "");
                         if (!TextUtils.isEmpty(duration))
                             LogUploadUtils.uploadLog(Constant.FLOATING_LAYER, "6," + playProgram
-                                    .getSeriesSubUUID() + "," + playProgram.getContentUUID() + "," +
+                                    .getContentID() + "," + playProgram.getContentUUID() + "," +
                                     "0,0," + Integer.parseInt(duration) * 60 * 1000 + "," +
                                     NewTVLauncherPlayerViewManager.getInstance()
                                             .getCurrentPosition() + "," + Constants.vodPlayId);

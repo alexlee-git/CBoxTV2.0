@@ -130,10 +130,6 @@ public class SingleDetailPageActivity extends DetailPageActivity {
         headPlayerView = findViewById(R.id.header_video);
         suggestView = findViewById(R.id.suggest);
 
-        //进入节目详情页上传日志
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "1," + contentLUuid);
-        LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
-
         initHeadPlayerView(contentUUID);
     }
 
@@ -165,6 +161,11 @@ public class SingleDetailPageActivity extends DetailPageActivity {
                                 SingleDetailPageActivity.this.finish();
                             }
                             mProgramSeriesInfo = info;
+                            if(mProgramSeriesInfo != null && !TextUtils.isEmpty(mProgramSeriesInfo.getContentUUID())) {
+                                //进入节目详情页上传日志
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "1," + mProgramSeriesInfo.getContentUUID());
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + mProgramSeriesInfo.getContentUUID());
+                            }
                             suggestView.setContentUUID(SuggestView.TYPE_COLUMN_SEARCH, info, null, "PS");
                             mAdView.requestAD();
                             ArrayList<String> productId = new ArrayList<>();

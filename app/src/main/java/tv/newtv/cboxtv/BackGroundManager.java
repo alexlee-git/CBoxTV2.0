@@ -1,5 +1,8 @@
 package tv.newtv.cboxtv;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -44,7 +47,9 @@ public class BackGroundManager {
     private HashMap<String, BgItem> backGroundMaps;
     private BGCallback mBGCallback;
     private List<Target> targetList = new ArrayList<>();
-    private BgItem NavBgItem;
+    private BgItem NavFirstBgItem;
+    private BgItem NavSecondBgItem;
+
 
     private BackGroundManager() {
         backGroundMaps = new HashMap<>();
@@ -65,29 +70,30 @@ public class BackGroundManager {
      *
      * @param id
      */
-    public void setCurrentNav(String id, boolean waitPage) {
+    public void setCurrentNav(String id, boolean waitPage, boolean isFirst) {
+        if (isFirst) {
+            NavFirstBgItem = null;
+            NavSecondBgItem = null;
+            mCurrentId = null;
+        } else {
+            NavSecondBgItem = null;
+        }
         if (backGroundMaps.containsKey(id)) {
             BgItem bgItem = backGroundMaps.get(id);
             if (bgItem.level == 0) {
                 //TODO 显示一级导航背景图
-                NavBgItem = bgItem;
+                NavFirstBgItem = bgItem;
             } else if (bgItem.level == 1) {
-                NavBgItem = bgItem;
+                NavSecondBgItem = bgItem;
                 String pid = bgItem.parentId;
                 if (backGroundMaps.containsKey(pid)) {
-                    NavBgItem = backGroundMaps.get(pid);
+                    NavFirstBgItem = backGroundMaps.get(pid);
                 }
             }
-        } else {
-            NavBgItem = null;
         }
 
         if (!waitPage) {
-            if (NavBgItem == null) {
-                clearBackGround();
-            } else {
-                setShowId(Libs.get().getContext(), id);
-            }
+            setShowId(Libs.get().getContext(), id);
         }
 
     }
@@ -97,22 +103,74 @@ public class BackGroundManager {
     }
 
     private void clearBackGround() {
+        mCurrentId = null;
         if (mBGCallback != null && mBGCallback.getTargetView() != null) {
-            mBGCallback.getTargetView().setBackground(null);
+            updateBackGround(null);
+        }
+    }
+
+    private void updateBackGround(Drawable bitmapDrawable) {
+        if (mBGCallback != null && mBGCallback.getTargetView() != null) {
+            View view = mBGCallback.getTargetView();
+            if (view == null) return;
+            AnimatorSet animatorSet = new AnimatorSet();
+            ObjectAnimator hideAnimator = ObjectAnimator.ofFloat(view, "alpha", 1, 0);
+            if (bitmapDrawable != null) {
+                ObjectAnimator showAnimator = ObjectAnimator.ofFloat(view, "alpha", 0, 1);
+                animatorSet.playSequentially(hideAnimator, showAnimator);
+            } else {
+                animatorSet.play(hideAnimator);
+            }
+            animatorSet.setTarget(view);
+            animatorSet.setDuration(200);
+            hideAnimator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    if (mBGCallback == null || mBGCallback.getTargetView() == null)
+                        return;
+                    mBGCallback.getTargetView().setBackground(bitmapDrawable);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            animatorSet.start();
         }
     }
 
     private void setShowId(Context context, String id) {
-        mCurrentId = id;
+        if (TextUtils.equals(mCurrentId, id)) return;
         if (backGroundMaps.containsKey(id)) {
             BgItem current = backGroundMaps.get(id);
+            mCurrentId = id;
             if (current.isAd) {
                 setAdBG(context, current);
             } else {
                 setCmsBG(context, current);
             }
         } else {
+            if (NavSecondBgItem != null) {
+                setShowId(context, NavSecondBgItem.contentId);
+                return;
+            }
+            if (NavFirstBgItem != null) {
+                setShowId(context, NavFirstBgItem.contentId);
+                return;
+            }
             clearBackGround();
+
         }
     }
 
@@ -125,7 +183,6 @@ public class BackGroundManager {
                     backGroundMaps.remove(id);
                     bgHashmap.remove(id);
                 }
-                NavBgItem = null;
             }
             if (!backGroundMaps.containsKey(id)) {
                 BgItem bgItem = new BgItem();
@@ -144,26 +201,28 @@ public class BackGroundManager {
     /**
      * 加载广告背景图 TODO
      */
+    @SuppressWarnings("Convert2Lambda")
     private void setAdBG(final Context context, final BgItem bgItem) {
         if (!bgHashmap.containsKey(bgItem.contentId) || bgHashmap.get(bgItem.contentId).drawable
                 == null) {
-            mAdPresenter.getAdByType(Constant.AD_TOPIC, bgItem.contentId, "", null, new AdContract
-                    .Callback() {
-                @Override
-                public void showAd(@Nullable String type, @Nullable String url, @NotNull HashMap<?,
-                        ?> hashMap) {
-                    if (TextUtils.isEmpty(url)) {
-                        setCmsBG(context, bgItem);
-                    } else {
-                        loadImage(context, bgItem.contentId, url);
-                    }
-                }
-            });
+            mAdPresenter.getAdByType(Constant.AD_TOPIC, bgItem.contentId, "", null,
+                    new AdContract.Callback() {
+                        @Override
+                        public void showAd(@Nullable String type, @Nullable String url, @NotNull
+                                HashMap<?,
+                                ?> hashMap) {
+                            if (TextUtils.isEmpty(url)) {
+                                setCmsBG(context, bgItem);
+                            } else {
+                                loadImage(context, bgItem.contentId, url);
+                            }
+                        }
+                    });
         } else {
             if (bgItem.contentId.equals(mCurrentId) && mBGCallback != null && mBGCallback
                     .getTargetView()
                     != null) {
-                mBGCallback.getTargetView().setBackground(bgHashmap.get(bgItem.contentId).drawable);
+                updateBackGround(bgHashmap.get(bgItem.contentId).drawable);
             }
         }
     }
@@ -191,7 +250,7 @@ public class BackGroundManager {
         } else {
             if (uuid.equals(mCurrentId) && mBGCallback != null && mBGCallback.getTargetView() !=
                     null) {
-                mBGCallback.getTargetView().setBackground(bgHashmap.get(uuid).drawable);
+                updateBackGround(bgHashmap.get(uuid).drawable);
             }
         }
     }
@@ -214,7 +273,7 @@ public class BackGroundManager {
                 bgDrawable.drawable = new BitmapDrawable(context.getResources(), bitmap);
                 if (uuid.equals(mCurrentId) && mBGCallback != null && mBGCallback.getTargetView()
                         != null && bgHashmap.get(uuid) != null) {
-                    mBGCallback.getTargetView().setBackground(bgHashmap.get(uuid).drawable);
+                    updateBackGround(bgHashmap.get(uuid).drawable);
                 }
                 targetList.remove(this);
             }
@@ -234,7 +293,7 @@ public class BackGroundManager {
             public void onPrepareLoad(Drawable placeHolderDrawable) {
                 if (uuid.equals(mCurrentId) && mBGCallback != null && mBGCallback.getTargetView()
                         != null) {
-                    mBGCallback.getTargetView().setBackground(placeHolderDrawable);
+                    updateBackGround(placeHolderDrawable);
                 }
             }
         };

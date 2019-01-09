@@ -105,8 +105,6 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
     protected void buildView(@Nullable Bundle savedInstanceState, String contentUUID) {
 
         if (!TextUtils.isEmpty(contentUUID) && contentUUID.length() >= 2) {
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + contentUUID);
-            LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + contentUUID);
             //requestData();
             mContentPresenter = new ContentContract.ContentPresenter(getApplicationContext(), this);
             mContentPresenter.getContent(contentUUID, false);
@@ -145,6 +143,10 @@ public class ProgrameSeriesAndVarietyDetailActivity extends DetailPageActivity i
                         if (info != null) {
                             ArrayList<String> productId = new ArrayList<>();
                             pageContent = info;
+                            if(pageContent != null && !TextUtils.isEmpty(pageContent.getContentUUID())) {
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + pageContent.getContentUUID());
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_HISTORY, "0," + pageContent.getContentUUID());
+                            }
                             if (pageContent != null ) {
                                 if (!TextUtils.isEmpty(pageContent.getVipFlag())){
                                     int vipState = Integer.parseInt(pageContent.getVipFlag());

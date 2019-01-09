@@ -610,12 +610,12 @@ public class HistoryActivity extends BaseActivity implements
                                                     for (int i = 0; i < mCollectBean.size(); i++) {
                                                         if (i < mCollectBean.size() - 1) {
                                                             dataBuff.append(mCollectBean.get(i)
-                                                                    .contentId)
+                                                                    ._contentuuid)
                                                                     .append(",");
                                                         }
                                                         if (i == mCollectBean.size() - 1) {
                                                             dataBuff.append(mCollectBean.get(i)
-                                                                    .contentId)
+                                                                    ._contentuuid)
                                                                     .trimToSize();
                                                         }
                                                     }
@@ -706,7 +706,7 @@ public class HistoryActivity extends BaseActivity implements
                                                             .LOG_NODE_HISTORY, "1," +
                                                             mCollectBean.get(mAdapter
                                                                     .getSelectPostion())
-                                                                    .contentId);//删除历史记录
+                                                                    ._contentuuid);//删除历史记录
                                                     mRecyclerView.post(new Runnable() {
                                                         @Override
                                                         public void run() {
