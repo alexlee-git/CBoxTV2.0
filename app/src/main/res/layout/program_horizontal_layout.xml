@@ -46,7 +46,7 @@
         android:layout_width="@dimen/width_390px"
         android:layout_height="@dimen/height_30px"
         android:paddingLeft="@dimen/height_15px"
-        android:paddingRight="@dimen/height_15px"
+        android:layout_marginRight="@dimen/height_15px"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"
         android:scrollHorizontally="true"
