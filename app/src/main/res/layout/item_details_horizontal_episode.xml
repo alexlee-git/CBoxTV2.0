@@ -74,7 +74,7 @@
 
         <TextView
             style="@style/ModulePosterBottomTitleStyle"
-            android:layout_width="@dimen/width_200px"
+            android:layout_width="@dimen/width_240px"
             android:layout_height="@dimen/height_32px"
             android:layout_below="@+id/id_module_view"
             android:layout_marginLeft="@dimen/width_5px"
