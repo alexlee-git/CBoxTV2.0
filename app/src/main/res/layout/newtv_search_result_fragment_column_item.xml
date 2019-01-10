@@ -19,7 +19,7 @@
         android:id="@+id/id_column_imageView_focus"
         android:layout_width="@dimen/width_248px"
         android:layout_height="@dimen/height_368px"
-        android:background="@drawable/pos_zui"
+        android:background="@drawable/pos_focus_1"
         android:focusable="false"
         android:visibility="invisible" />
 

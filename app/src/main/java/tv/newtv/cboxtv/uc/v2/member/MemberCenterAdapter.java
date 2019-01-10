@@ -207,22 +207,21 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<Page, RecyclerView
                     if (mMemberHead != null) {
                         mMemberHead.setBackgroundResource(R.drawable.member_head_login_v2);
                     }
-
-                    //控制开通会员按钮的向左焦点，防止焦点乱跑
-                    if (mBtnOpen != null) {
-                        mBtnOpen.setNextFocusLeftId(R.id.id_member_center_btn_open);
-
-                        if (mBtnTextView != null) {
-                            mBtnTextView.setText(mContext.getResources().getString(R.string.user_already_member));
-                        } else {
-                            Log.e(TAG, "--setMemberStatus:-memberInfoBean != null:mBtnTextView == null");
-                        }
-                    }
                     goneView(mBtnLogin);
                     showView(mMemberName);
                     showView(mMemberTime);
                     String expireTimeDate = memberInfoBean.getExpireTime();
                     if (!TextUtils.isEmpty(expireTimeDate)) {
+                        //控制开通会员按钮的向左焦点，防止焦点乱跑
+                        if (mBtnOpen != null) {
+                            mBtnOpen.setNextFocusLeftId(R.id.id_member_center_btn_open);
+
+                            if (mBtnTextView != null) {
+                                mBtnTextView.setText(mContext.getResources().getString(R.string.user_already_member));
+                            } else {
+                                Log.e(TAG, "--setMemberStatus:-memberInfoBean != null:mBtnTextView == null");
+                            }
+                        }
                         //有效期截止时间毫秒数
                         long expireTimeInMillis = TimeUtil.getInstance().getSecondsFromDate(expireTimeDate);
                         //与当前时间进行对比，判断会员是否到期
@@ -230,6 +229,9 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<Page, RecyclerView
                         Log.d(TAG, "wqs:setMemberStatus:expireTimeInMillis:" + expireTimeInMillis);
                         Log.d(TAG, "wqs:setMemberStatus:currentTimeInMillis:" + currentTimeInMillis);
                         expireFormatTime = TimeUtil.getInstance().getDateFromSeconds(expireTimeInMillis + "");
+                        if (mMemberTime != null) {
+                            mMemberTime.setText("会员有效期： " + expireFormatTime);
+                        }
                         if (expireTimeInMillis >= currentTimeInMillis) {
                             //用户会员有效
                             if (mMemberMark != null) {
@@ -245,9 +247,19 @@ public class MemberCenterAdapter extends BaseRecyclerAdapter<Page, RecyclerView
                         }
                     } else {
                         hideView(mMemberMark);
-                    }
-                    if (mMemberTime != null) {
-                        mMemberTime.setText("会员有效期： " + expireFormatTime);
+                        Log.e(TAG, "wqs:setMemberStatus:expireTimeDate==null");
+                        if (mMemberTime != null) {
+                            mMemberTime.setText("");
+                        }
+                        if (mBtnOpen != null) {
+                            if (mBtnTextView != null) {
+                                mBtnTextView.setText(mContext.getResources().getString(R.string.member_center_btn_open));
+                            } else {
+                                Log.e(TAG, "wqs:setMemberStatus:memberInfoBean == null:mBtnTextView == null");
+                            }
+                        }
+                        showView(mMemberName);
+                        goneView(mMemberTime);
                     }
                 } else {
                     hideView(mMemberMark);
