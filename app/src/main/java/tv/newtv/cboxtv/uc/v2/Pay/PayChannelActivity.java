@@ -116,7 +116,11 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
         }
         //requestRecommendData();
         initAgreemrntView();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         Observable.create(new ObservableOnSubscribe<Long>() {
             @Override
             public void subscribe(ObservableEmitter<Long> emitter) throws Exception {
@@ -153,8 +157,6 @@ public class PayChannelActivity extends BaseActivity implements PageContract.Vie
                         }
                     }
                 });
-
-
     }
 
     private void init() {
