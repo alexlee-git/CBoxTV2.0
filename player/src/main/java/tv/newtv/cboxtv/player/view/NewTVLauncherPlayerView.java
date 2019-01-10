@@ -2140,7 +2140,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
-            mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
+            if (mNewTVLauncherPlayerSeekbar != null) {
+                mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
+            }
         }
 
 
