@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +16,10 @@ import com.newtv.cms.bean.Program;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.PageContract;
 import com.newtv.libs.BootGuide;
+import com.newtv.libs.Libs;
 import com.newtv.libs.ad.ADHelper;
 import com.newtv.libs.ad.AdEventContent;
+import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.GsonUtil;
 import com.newtv.libs.util.ScaleUtils;
 import com.squareup.picasso.Callback;
@@ -93,6 +96,13 @@ public class WarningExitActivity extends BaseActivity implements View.OnClickLis
         cancelButton = findViewById(R.id.cancelButton);
         exit_image = findViewById(R.id.exit_image);
         focus_layout = findViewById(R.id.focus_layout);
+        if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO)) {
+            FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) exit_image.getLayoutParams();
+            lp.width = getResources().getDimensionPixelOffset(R.dimen.width_828px);
+            lp.height = getResources().getDimensionPixelOffset(R.dimen.height_493px);
+            lp.gravity = Gravity.CENTER;
+            exit_image.setLayoutParams(lp);
+        }
         cancelButton.requestFocus();
         okButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);

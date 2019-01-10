@@ -90,7 +90,9 @@ public class DivergeView extends View implements Runnable {
                 continue;
             }
 
-            dealDiverge();
+            if (mDivergeInfos!=null){
+                dealDiverge();
+            }
 
             mIsDrawing = true;
 
