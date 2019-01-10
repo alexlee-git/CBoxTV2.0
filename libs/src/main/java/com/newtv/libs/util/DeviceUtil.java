@@ -33,6 +33,7 @@ public class DeviceUtil {
     public static final String KANGJIA = "konka"; //康佳
     public static final String PHILIPS = "philips"; //飞利浦
     public static final String CHANGHONG = "changhong"; //长虹
+    public static final String TCL = "tcl"; //TCL
     @SuppressWarnings("ConstantConditions")
     public static boolean isSelfDevice() {
         if (Libs.get().isDebug()) {
@@ -84,6 +85,8 @@ public class DeviceUtil {
         } else if (Libs.get().getFlavor().equals(PHILIPS)) {
             return true;
         } else if (Libs.get().getFlavor().equals(CHANGHONG)) {
+            return true;
+        } else if (Libs.get().getFlavor().equals(TCL)) {
             return true;
         }
         return false;
