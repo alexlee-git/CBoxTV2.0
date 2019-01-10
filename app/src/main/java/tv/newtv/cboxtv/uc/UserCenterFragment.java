@@ -324,6 +324,7 @@ public class UserCenterFragment extends BaseFragment implements
                             mMemberInfoBean.setUserId(jsonObject.optInt("userId"));
                             mMemberInfoBean.setProductId(jsonObject.optInt("productId"));
                             mMemberInfoBean.setExpireTime(jsonObject.optString("expireTime"));
+                            mMemberInfoBean.setSuitableType(jsonObject.optString("suitableType"));
                             String expireTimeDate = jsonObject.optString("expireTime");
                             if (!TextUtils.isEmpty(expireTimeDate)) {
                                 //有效期截止时间毫秒数
