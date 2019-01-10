@@ -23,6 +23,8 @@ import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
 import com.newtv.cms.bean.Row;
 import com.newtv.libs.Constant;
+import com.newtv.libs.Libs;
+import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
@@ -650,17 +652,26 @@ public class BlockBuilder extends BaseBlockBuilder {
                             DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_HEIGHT));
                     lp.gravity = Gravity.BOTTOM;
                     lp.leftMargin = DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_WIDTH);
-                    ;
-                    lp.bottomMargin = DisplayUtils.translate(96, DisplayUtils.SCALE_TYPE_HEIGHT);
-                    ;
+                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
+                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
+                        lp.bottomMargin = DisplayUtils.translate(106, DisplayUtils.SCALE_TYPE_HEIGHT);
+                    } else {
+                        lp.bottomMargin = DisplayUtils.translate(96, DisplayUtils.SCALE_TYPE_HEIGHT);
+                    }
                     subTitleWidget = new TextView(mContext);
                     subTitleWidget.setLayoutParams(lp);
                     subTitleWidget.setSingleLine();
                     subTitleWidget.setGravity(Gravity.BOTTOM);
                     subTitleWidget.setIncludeFontPadding(false);
                     subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
-                    subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
-                            .SCALE_TYPE_HEIGHT));
+                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
+                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
+                        subTitleWidget.setTextSize(DisplayUtils.translate(12, DisplayUtils
+                                .SCALE_TYPE_HEIGHT));
+                    } else {
+                        subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
+                                .SCALE_TYPE_HEIGHT));
+                    }
                     subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                             .SCALE_TYPE_WIDTH), 0, 0, 0);
                     framelayout.setTag(R.id.tag_sub_title, subTitleWidget);
