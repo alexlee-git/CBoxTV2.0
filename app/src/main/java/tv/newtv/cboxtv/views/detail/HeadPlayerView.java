@@ -922,9 +922,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         MainLooper.get().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (playerView != null) {
-                    playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
-                }
+                playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
             }
         },500);
     }
