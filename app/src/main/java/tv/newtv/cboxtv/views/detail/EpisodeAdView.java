@@ -115,6 +115,7 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, View.On
             int withMeasure = MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY);
             int heighMeasure = MeasureSpec.makeMeasureSpec(measuredHeight, MeasureSpec.EXACTLY);
             super.onMeasure(withMeasure, heighMeasure);
+            setVisibility(VISIBLE);
         } else {
             super.onMeasure(0, 0);
         }
@@ -148,7 +149,6 @@ public class EpisodeAdView extends RecycleImageView implements IEpisode, View.On
     public void showAd(ADHelper.AD.ADItem result) {
         adItem = result;
         if (!TextUtils.isEmpty(result.AdUrl)) {
-            setVisibility(VISIBLE);
             getParent().requestLayout();
             setImageResource(R.drawable.focus_1680_320);
             useResize(false)
