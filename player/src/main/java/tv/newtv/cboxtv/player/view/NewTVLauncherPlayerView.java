@@ -73,6 +73,7 @@ import tv.newtv.cboxtv.player.contract.PlayerAlternateContract;
 import tv.newtv.cboxtv.player.contract.PlayerContract;
 import tv.newtv.cboxtv.player.contract.VodContract;
 import tv.newtv.cboxtv.player.iPlayCallBackEvent;
+import tv.newtv.cboxtv.player.listener.AdListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 import tv.newtv.cboxtv.player.model.VideoDataStruct;
@@ -151,6 +152,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     private LiveTimer mLiveTimer;
     private boolean isNextPlay;
     private List<ScreenListener> screenListeners;
+    private List<AdListener> adListeners;
     private boolean isTrySee;
     private TextView hintVip, alterTitle, alterChannel;
     private View bigScreen;
@@ -308,6 +310,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
                 if (isTrySee) {
                     hintVip.setVisibility(View.VISIBLE);
                 }
+
+                if (adListeners != null && adListeners.size() > 0) {
+                   for (AdListener listener : adListeners) {
+                       listener.onAdEndPlaying(type);
+                   }
+                }
             }
         }
 
@@ -393,6 +401,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             }
             if (isTrySee) {
                 hintVip.setVisibility(View.GONE);
+            }
+
+           if (adListeners != null && adListeners.size() > 0) {
+               for (AdListener listener : adListeners) {
+                    listener.onAdStartPlaying();
+                }
             }
         }
     };
@@ -587,6 +601,12 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             screenListeners.clear();
             screenListeners = null;
         }
+
+        if(adListeners != null){
+            adListeners.clear();
+            adListeners = null;
+        }
+
         defaultConfig = null;
 
         if (mLiveTimer != null && mLiveTimer.isRunning()) {
@@ -2250,7 +2270,7 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         if (screenListeners == null) {
             screenListeners = new ArrayList<>();
         }
-        if (!screenListeners.contains(listener)) {
+        if (listener != null && !screenListeners.contains(listener)) {
             screenListeners.add(listener);
         }
     }
@@ -2258,6 +2278,21 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
     public void unregisterScreenListener(ScreenListener listener) {
         if (screenListeners != null) {
             screenListeners.remove(listener);
+        }
+    }
+
+    public void registerAdListener(AdListener listener){
+        if (adListeners == null) {
+            adListeners = new ArrayList<>();
+        }
+        if(listener != null && !adListeners.contains(listener)){
+            adListeners.add(listener);
+        }
+    }
+
+    public void unregisterAdListener(AdListener listener){
+        if (adListeners != null) {
+            adListeners.remove(listener);
         }
     }
 

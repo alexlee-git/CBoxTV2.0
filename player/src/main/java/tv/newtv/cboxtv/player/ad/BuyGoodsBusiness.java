@@ -43,7 +43,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import tv.icntv.adsdk.AdSDK;
+import tv.icntv.icntvplayersdk.NewTVPlayerInterface;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.player.listener.AdListener;
 import tv.newtv.cboxtv.player.model.GoodsBean;
 import tv.newtv.cboxtv.player.model.RequestAdParameter;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
@@ -81,6 +83,7 @@ public class BuyGoodsBusiness {
     private String feedId;
     private AdBean.AdspacesItem item;
     private MyScreenListener myScreenListener;
+    private MyAdListener myAdListener;
     private Disposable disposable;
     private boolean isShowQrCode = false;
     private int duration = DEFAULT_TIME;
@@ -88,6 +91,8 @@ public class BuyGoodsBusiness {
     private BuyGoodsLog log;
     private RequestAdParameter requestAdParameter;
     private boolean isDestory;
+    private boolean hasInterruptTask = false;
+    private int interruptTaskTime;
 
     private Handler handler = new Handler() {
         @Override
@@ -138,7 +143,13 @@ public class BuyGoodsBusiness {
         if (myScreenListener == null) {
             myScreenListener = new MyScreenListener();
         }
+
+        if(myAdListener == null){
+            myAdListener = new MyAdListener();
+        }
+
         NewTVLauncherPlayerViewManager.getInstance().registerScreenListener(myScreenListener);
+        NewTVLauncherPlayerViewManager.getInstance().registerAdListener(myAdListener);
         if (NewTVLauncherPlayerViewManager.getInstance().isFullScreen()) {
             myScreenListener.enterFullScreen();
         }
@@ -152,14 +163,21 @@ public class BuyGoodsBusiness {
         buyGoodsView.setParamsMap(extMap);
         buyGoodsView.init(context, view);
 
-        showGoods();
+        showGoods(duration);
     }
 
-    private void showGoods() {
+    private void showGoods(int duration) {
         buyGoodsView.setImageUrl(item.materials.get(0).filePath);
         log.startShowGoods();
         sendCloseMessage(duration);
         isShowQrCode = false;
+    }
+
+    private void showQrCode(int duration){
+        buyGoodsView.showQrCode();
+        log.startShowQrCode();
+        sendCloseMessage(duration);
+        isShowQrCode = true;
     }
 
     private void checkTvBindStatus() {
@@ -375,6 +393,8 @@ public class BuyGoodsBusiness {
         handler.removeCallbacksAndMessages(null);
         NewTVLauncherPlayerViewManager.getInstance().unregisterScreenListener(myScreenListener);
         myScreenListener = null;
+        NewTVLauncherPlayerViewManager.getInstance().unregisterAdListener(myAdListener);
+        myAdListener = null;
         isDestory = true;
     }
 
@@ -462,6 +482,48 @@ public class BuyGoodsBusiness {
         }
     }
 
+    public class MyAdListener implements AdListener {
+
+        @Override
+        public void onAdStartPlaying() {
+            if(buyGoodsView != null && buyGoodsView.isShow()){
+                long startShowTime = 0;
+                if(isShowQrCode){
+                    startShowTime = log.getStartShowQrCodeTime();
+                }else{
+                    startShowTime = log.getStartShowGoodsTime();
+                }
+                long remainingTime = duration * 1000 - (System.currentTimeMillis() - startShowTime);
+                double percent = remainingTime / (duration * 1000.0f);
+                if(percent < 0.2 || percent > 1){
+                    dismiss();
+                    return;
+                }
+
+                interruptTaskTime = Math.round(remainingTime / 1000.0f);
+                dismiss();
+                hasInterruptTask = true;
+            }
+            Log.i(TAG, "onAdStartPlaying: "+hasInterruptTask+","+interruptTaskTime);
+        }
+
+        @Override
+        public void onAdEndPlaying(int type) {
+            Log.i(TAG, "onAdEndPlaying: "+hasInterruptTask+","+interruptTaskTime);
+            if(type == NewTVPlayerInterface.POST_AD_TYPE){
+                hasInterruptTask = false;
+            }
+            if(hasInterruptTask && buyGoodsView != null){
+                if(isShowQrCode){
+                    showQrCode(interruptTaskTime);
+                }else {
+                    showGoods(interruptTaskTime);
+                }
+                hasInterruptTask = false;
+            }
+        }
+    }
+
     public boolean isShow() {
         if (buyGoodsView != null) {
             return buyGoodsView.isShow();
@@ -542,6 +604,8 @@ public class BuyGoodsBusiness {
     }
 
     public void getAd() {
+        dismiss();
+        hasInterruptTask = false;
         final StringBuffer sb = new StringBuffer();
 
         Observable.create(new ObservableOnSubscribe<Integer>() {
