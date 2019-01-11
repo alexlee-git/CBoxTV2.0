@@ -294,8 +294,8 @@ public class ADHelper {
             final ADItem adItem = adItems.get(currentIndex);
             LogUtils.d(TAG, adItem.toString());
             if (adCallback != null) {
-                adCallback.showAd(adItem.AdType, adItem.RequestUrl);
                 adCallback.showAdItem(adItem);
+                adCallback.showAd(adItem.AdType, adItem.RequestUrl);
                 Log.e("ADHelper", "showaditem : " + adItem.toString());
             }
 
