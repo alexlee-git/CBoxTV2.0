@@ -464,11 +464,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
             if (endIndex > size) {
                 endIndex = size;
             }
-            if(tvSeries){
-                pageItems.add(new EpisodePageAdapter.PageItem(getTvTabString(index,endIndex)));
-            } else {
-                pageItems.add(new EpisodePageAdapter.PageItem(getSeriesTabString(index,endIndex)));
-            }
+            pageItems.add(new EpisodePageAdapter.PageItem(getTvTabString(index,endIndex)));
         }
         EpisodeAdapter episodeAdapter = new EpisodeAdapter(mFragmentManager,mContentList,mPageSize,tvSeries,ListPager,this);
         ListPager.setAdapter(episodeAdapter);
@@ -509,7 +505,8 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     private boolean videoType(String videoType) {
-        boolean sePs = seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
+        boolean sePs = TextUtils.equals(seriesType, "1") && seriesContent != null &&
+                !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
 
         if (sePs) {
             return false;
