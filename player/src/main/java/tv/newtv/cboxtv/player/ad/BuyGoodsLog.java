@@ -102,4 +102,12 @@ public class BuyGoodsLog {
                     (duration/1000)+"",requestAdParameter.getExtend());
         }
     }
+
+    public long getStartShowGoodsTime() {
+        return startShowGoodsTime;
+    }
+
+    public long getStartShowQrCodeTime() {
+        return startShowQrCodeTime;
+    }
 }
