@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -272,7 +273,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
             LogUtils.i(TAG, "onPrepared: p=" + mHistoryPostion);
             mIsPrepared = true;
 //            stopLoading();//注释掉该行代码会在乐视上导致在播放某些视频时一直显示加载  但是视频已经播放的问题
-            if (LetvDeviceUtil.isLetvDevice()) {
+            //讯码盒子也同样存在该问题
+            if (LetvDeviceUtil.isLetvDevice()
+                    || (Build.MODEL.equals("NewBOX1") && Build.BRAND.equals("NewTV"))) {
                 stopLoading();
             }
             mNewTVLauncherPlayerSeekbar.setDuration();
@@ -2137,7 +2140,9 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         } else {
             isTrySee = false;
             hintVip.setVisibility(View.GONE);
-            mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
+            if (mNewTVLauncherPlayerSeekbar != null) {
+                mNewTVLauncherPlayerSeekbar.setFreeDuration(0, null);
+            }
         }
 
 

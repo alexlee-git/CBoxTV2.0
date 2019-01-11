@@ -269,7 +269,9 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode, Vi
                         public void run() {
                             isAttention = false;
                             attentionView.setSelect(false);
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "1," + contentUuId);
+                            if(dataInfo != null && !TextUtils.isEmpty(dataInfo.getContentUUID())){
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "1," + dataInfo.getContentUUID());
+                            }
                             Toast.makeText(getContext().getApplicationContext(), "取消关注成功", Toast.LENGTH_SHORT).show();
                             RxBus.get().post(Constant.UPDATE_UC_DATA, true);
                             Map<String, String> map = new HashMap<>();
@@ -297,7 +299,9 @@ public class PersonDetailHeadView extends RelativeLayout implements IEpisode, Vi
                         public void run() {
                             isAttention = true;
                             attentionView.setSelect(true);
-                            LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "0," + contentUUID);
+                            if(entity != null && !TextUtils.isEmpty(entity.getContentUUID())){
+                                LogUploadUtils.uploadLog(Constant.LOG_NODE_ATTENTION, "0," + entity.getContentUUID());
+                            }
                             Toast.makeText(getContext().getApplicationContext(), R.string.attention_success, Toast
                                     .LENGTH_SHORT)
                                     .show();

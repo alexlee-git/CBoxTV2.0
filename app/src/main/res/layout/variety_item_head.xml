@@ -136,7 +136,7 @@
         android:layout_alignBottom="@+id/video_container"
         app:selected_drawable="@drawable/vip_pay_focused"
         app:normal_drawable="@drawable/vip_pay_nomal"
-        app:focus_drawable="@drawable/pos_zui"
+        app:focus_drawable="@drawable/pos_focus_1"
         app:drawable_width="@dimen/width_152px"
         app:drawable_height="@dimen/height_76px"
         android:layout_marginBottom="@dimen/height_26px"
