@@ -285,6 +285,18 @@ android {
             ]
         }
 
+        tcl {
+            buildConfigField "int", "LOG_DEBUG", "5"
+            buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
+            buildConfigField "String", "CHANNEL_ID", "\"50000119\""
+            buildConfigField "String", "CLIENT_ID", "\"19\""
+
+            manifestPlaceholders = [
+                    APP_KEY_VALUE: "8acb5c18e56c1988723297b1a8dc9260",
+                    CHANNEL_ID_VALUE: "50000119"
+            ]
+        }
+
         cboxtest {
             buildConfigField "int", "LOG_DEBUG", "5"
             buildConfigField "String", "APP_KEY", "\"8acb5c18e56c1988723297b1a8dc9260\""
