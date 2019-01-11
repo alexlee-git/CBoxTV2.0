@@ -413,7 +413,7 @@ public class BlockBuilder extends BaseBlockBuilder {
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {
-                focusView.setBackgroundResource(R.drawable.pos_zui_27px);
+                focusView.setBackgroundResource(R.drawable.pos_zui_2019);
             }
         }
 
