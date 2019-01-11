@@ -90,12 +90,19 @@ public class DivergeView extends View implements Runnable {
                 continue;
             }
 
-            dealDiverge();
+            if (mDivergeInfos != null) {
+                dealDiverge();
+            }
 
             mIsDrawing = true;
 
             postInvalidate();
 
+            try {
+                Thread.sleep(16);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         //停止
@@ -231,11 +238,11 @@ public class DivergeView extends View implements Runnable {
 
     public void release(){
         stop();
-        mPtEnd = null;
-        mPtStart = null;
-        mDivergeInfos = null;
-        mQueen = null;
-        mDeadPool = null;
+//        mPtEnd = null;
+//        mPtStart = null;
+//        mDivergeInfos = null;
+//        mQueen = null;
+//        mDeadPool = null;
     }
 
     public void setStartPoint(PointF point){
