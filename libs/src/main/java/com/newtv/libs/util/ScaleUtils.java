@@ -28,7 +28,7 @@ public class ScaleUtils {
         mSpringInterpolator = new OvershootInterpolator(2.2f);
     }
 
-    public void onItemGetFocus(View view) {
+    public void onItemGetFocus(final View view) {
         //直接放大view
 //        ScaleAnimation sa = new ScaleAnimation(1.0f, 1.1f, 1.0f, 1.1f, Animation
 //                .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -37,6 +37,16 @@ public class ScaleUtils {
 //        sa.setInterpolator(mSpringInterpolator);
 //        view.bringToFront();
 //        view.startAnimation(sa);
+
+        if(view.getMeasuredWidth() == 0 || view.getMeasuredHeight() == 0){
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onItemGetFocus(view);
+                }
+            },300);
+            return;
+        }
 
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);

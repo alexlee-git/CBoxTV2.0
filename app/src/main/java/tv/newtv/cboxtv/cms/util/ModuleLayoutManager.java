@@ -25,7 +25,7 @@ import tv.newtv.cboxtv.R;
 public class ModuleLayoutManager {
 
     private static ModuleLayoutManager mInstance;
-    private boolean isAdaptationVesion = false;
+    private boolean isAdaptationVesion = true;
     private Map<String, List<String>> mModuleDataBase; //
     private Map<Integer, Integer> mViewTypeAndLayoutResFileMap;// viewType<----映射---->布局文件
     private Map<String, Integer> mWidgetCounter; // 组件<----映射---->组件内推荐位个数
@@ -89,11 +89,7 @@ public class ModuleLayoutManager {
 
 
     private ModuleLayoutManager() {
-        if (BuildConfig.FLAVOR.equals(DeviceUtil.LETV)|| BuildConfig.FLAVOR.equals(DeviceUtil.XIONG_MAO)
-                || BuildConfig.FLAVOR.equals(DeviceUtil.XUN_MA)|| BuildConfig.FLAVOR.equals(DeviceUtil.XUNMATOUYINGYI) ||
-                BuildConfig.FLAVOR.equals(DeviceUtil.FEILIERDE)|| BuildConfig.FLAVOR.equals(DeviceUtil.CBOXTEST)){
-            isAdaptationVesion = true;
-        }
+
         if (mModuleDataBase == null) {
             mModuleDataBase = new ConcurrentHashMap<String, List<String>>(Constant.BUFFER_SIZE_64) {
             };

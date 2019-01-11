@@ -18,6 +18,7 @@ import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import tv.newtv.cboxtv.BackGroundManager;
 import tv.newtv.cboxtv.LauncherApplication;
+import tv.newtv.cboxtv.cms.mainPage.menu.NavFragment;
 
 /**
  * Created by lixin on 2018/1/23.
@@ -41,7 +42,7 @@ public abstract class BaseFragment extends RxFragment {
     private Runnable bgChangeRunnable = new Runnable() {
         @Override
         public void run() {
-            if(getUserVisibleHint()) {
+            if(getUserVisibleHint() && !(BaseFragment.this instanceof NavFragment)) {
                 BackGroundManager.getInstance().setCurrentPageId(getContext(), getContentUUID(),
                         false,"",true);
             }
