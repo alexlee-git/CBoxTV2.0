@@ -4,15 +4,8 @@
     android:layout_width="@dimen/width_188px"
     android:layout_height="@dimen/height_70px">
 
-    <RelativeLayout
-        android:id="@+id/rl_episode_focus"
-        android:layout_width="@dimen/width_188px"
-        android:layout_height="@dimen/height_70px"
-        android:background="@drawable/select_count_focus"
-        android:visibility="gone"
-        android:tag="id_btn_root"/>
+
     <TextView
-        android:text="123456"
         android:id="@+id/tv_episode_text"
         android:layout_width="@dimen/width_164px"
         android:layout_height="@dimen/height_46px"
@@ -24,5 +17,11 @@
         android:tag="tv_part"
         android:textColor="@color/detail_tvcolor"
         android:textSize="@dimen/height_30px"/>
-
+    <RelativeLayout
+        android:id="@+id/rl_episode_focus"
+        android:layout_width="@dimen/width_188px"
+        android:layout_height="@dimen/height_70px"
+        android:background="@drawable/select_count_focus"
+        android:visibility="gone"
+        android:tag="id_btn_root"/>
 </RelativeLayout>

@@ -608,8 +608,10 @@ public class BlockBuilder extends BaseBlockBuilder {
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
                         titleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                                 .SCALE_TYPE_WIDTH), 0, 0, 0);
-                        titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
-                                .dimen.height_12sp));
+                        // 2019.1.10 caolonghe字体统一修改12
+//                        titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
+//                                .dimen.height_12sp));
+                        titleWidget.setTextSize(12) ;
                         titleWidget.setMarqueeRepeatLimit(-1);
                         titleWidget.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         titleWidget.setIncludeFontPadding(false);
@@ -653,7 +655,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                     lp.gravity = Gravity.BOTTOM;
                     lp.leftMargin = DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_WIDTH);
                     if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
-                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
+                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)
+                            || Libs.get().getFlavor().equals(DeviceUtil.XUNMATOUYINGYI)) {
                         lp.bottomMargin = DisplayUtils.translate(106, DisplayUtils.SCALE_TYPE_HEIGHT);
                     } else {
                         lp.bottomMargin = DisplayUtils.translate(96, DisplayUtils.SCALE_TYPE_HEIGHT);
@@ -664,14 +667,16 @@ public class BlockBuilder extends BaseBlockBuilder {
                     subTitleWidget.setGravity(Gravity.BOTTOM);
                     subTitleWidget.setIncludeFontPadding(false);
                     subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
-                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
-                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
-                        subTitleWidget.setTextSize(DisplayUtils.translate(12, DisplayUtils
-                                .SCALE_TYPE_HEIGHT));
-                    } else {
-                        subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
-                                .SCALE_TYPE_HEIGHT));
-                    }
+                    // 2019.1.10 caolonghe字体统一修改12
+//                    if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
+//                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
+//                        subTitleWidget.setTextSize(DisplayUtils.translate(12, DisplayUtils
+//                                .SCALE_TYPE_HEIGHT));
+//                    } else {
+//                        subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
+//                                .SCALE_TYPE_HEIGHT));
+//                    }
+                    subTitleWidget.setTextSize(12);
                     subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                             .SCALE_TYPE_WIDTH), 0, 0, 0);
                     framelayout.setTag(R.id.tag_sub_title, subTitleWidget);
@@ -698,8 +703,10 @@ public class BlockBuilder extends BaseBlockBuilder {
                         .SCALE_TYPE_WIDTH), 0, 0, 0);
                 subTitleWidget.setSingleLine();
                 subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
-                subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
-                        .SCALE_TYPE_HEIGHT));
+//                subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
+//                        .SCALE_TYPE_HEIGHT));
+                // 2019.1.10 caolonghe字体统一修改12
+                subTitleWidget.setTextSize(12);
                 subTitleWidget.setIncludeFontPadding(false);
                 subTitleWidget.setGravity(Gravity.BOTTOM);
                 framelayout.setTag(R.id.tag_sub_title, subTitleWidget);

@@ -194,27 +194,27 @@ public class SuperScriptManager implements CornerContract.View {
 
                         if (TextUtils.equals(layoutCode, "layout_008")) {
                             if (info instanceof Program) {
-                                addRecentMsgText(context, ((Program) info).getRecentMsg(),((Program) info).getSubTitle(),
+                                addRecentMsgText(context, ((Program) info).getRecentMsg(), ((Program) info).getSubTitle(),
                                         parent, corners.contains(Corner.LEFT_BOTTOM));
-                                addGradeMsgText(context, ((Program) info).getGrade(), ((Program) info).getSubTitle(),parent,
+                                addGradeMsgText(context, ((Program) info).getGrade(), ((Program) info).getSubTitle(), parent,
                                         corners.contains(Corner.RIGHT_BOTTOM));
                             } else if (info instanceof SubContent) {
                                 if (!TextUtils.isEmpty(((SubContent) info).getRecentMsg())) {
-                                    addRecentMsgText(context, ((SubContent) info).getRecentMsg(),((SubContent) info).getSubTitle(),
+                                    addRecentMsgText(context, ((SubContent) info).getRecentMsg(), ((SubContent) info).getSubTitle(),
                                             parent, corners.contains(Corner.LEFT_BOTTOM));
                                 } else {
                                     removeRecentMsg(parent);
                                 }
                                 if (!TextUtils.isEmpty(((SubContent) info).getGrade())) {
-                                    addGradeMsgText(context, ((SubContent) info).getGrade(),((SubContent) info).getSubTitle(),
+                                    addGradeMsgText(context, ((SubContent) info).getGrade(), ((SubContent) info).getSubTitle(),
                                             parent, corners.contains(Corner.RIGHT_BOTTOM));
                                 } else {
                                     removeGradeMsg(parent);
                                 }
-                            }else if(info instanceof Row){
-                                addRecentMsgText(context, ((Row) info).getRecentMsg(),((Row) info).getSubTitle(),
+                            } else if (info instanceof Row) {
+                                addRecentMsgText(context, ((Row) info).getRecentMsg(), ((Row) info).getSubTitle(),
                                         parent, corners.contains(Corner.LEFT_BOTTOM));
-                                addGradeMsgText(context, ((Row) info).getGrade(),((Row) info).getSubTitle(), parent,
+                                addGradeMsgText(context, ((Row) info).getGrade(), ((Row) info).getSubTitle(), parent,
                                         corners.contains(Corner.RIGHT_BOTTOM));
                             }
                         }
@@ -237,19 +237,21 @@ public class SuperScriptManager implements CornerContract.View {
      * @param message
      * @param parent
      */
-    private void addRecentMsgText(Context context, String message,String subTitle, ViewGroup parent, boolean
+    private void addRecentMsgText(Context context, String message, String subTitle, ViewGroup parent, boolean
             containOther) {
         if (containOther) return;
         TextView recentText = parent.findViewWithTag("TEXT_RECENT_MSG");
-        if (!TextUtils.isEmpty(message) && !TextUtils.equals(message,"null")) {
+        if (!TextUtils.isEmpty(message) && !TextUtils.equals(message, "null")) {
             if (recentText == null) {
                 recentText = new TextView(context);
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams
                         .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.LEFT | Gravity.START | Gravity.BOTTOM;
                 int leftMargin = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
-                int bottomMargin = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
-                int fontSize = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
+                //2019.1.10 caolonghe 适配讯码投影仪，所有字体大小均为12sp
+                int bottomMargin = context.getResources().getDimensionPixelSize(R.dimen.height_11px);
+//                int fontSize = context.getResources().getDimensionPixelSize(R.dimen.height_11px);
+                int fontSize = 12;
                 lp.leftMargin = leftMargin;
                 lp.bottomMargin = bottomMargin;
                 recentText.setTextSize(fontSize);
@@ -260,14 +262,14 @@ public class SuperScriptManager implements CornerContract.View {
                 recentText.setTag("TEXT_RECENT_MSG");
                 parent.addView(recentText, lp);
             }
-            if (TextUtils.isEmpty(subTitle)){
+            if (TextUtils.isEmpty(subTitle)) {
                 recentText.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 recentText.setVisibility(View.INVISIBLE);
             }
-            if(message.contains("-")){
-                Matcher matcherDate= Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}").matcher(message);
-                if(matcherDate.find()){
+            if (message.contains("-")) {
+                Matcher matcherDate = Pattern.compile("[0-9]{4}-[0-9]{2}-[0-9]{2}").matcher(message);
+                if (matcherDate.find()) {
                     String date = matcherDate.group(0);
                     if (!TextUtils.isEmpty(date)) {
                         if (!TextUtils.equals("0", date)) {
@@ -338,8 +340,10 @@ public class SuperScriptManager implements CornerContract.View {
                         .WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.RIGHT | Gravity.END | Gravity.BOTTOM;
                 int rightMargin = context.getResources().getDimensionPixelSize(R.dimen.width_12px);
-                int bottomMargin = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
-                int fontSize = context.getResources().getDimensionPixelSize(R.dimen.width_11px);
+                //2019.1.10 caolonghe 适配讯码投影仪，所有字体大小均为12sp
+                int bottomMargin = context.getResources().getDimensionPixelSize(R.dimen.height_11px);
+//                int fontSize = context.getResources().getDimensionPixelSize(R.dimen.height_11px);
+                int fontSize = 12;
                 lp.rightMargin = rightMargin;
                 lp.bottomMargin = bottomMargin;
                 gradeText.setTextSize(fontSize);
@@ -350,9 +354,9 @@ public class SuperScriptManager implements CornerContract.View {
                 gradeText.setTag("TEXT_GRADE_MSG");
                 parent.addView(gradeText, lp);
             }
-            if (TextUtils.isEmpty(subTitle)){
+            if (TextUtils.isEmpty(subTitle)) {
                 gradeText.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 gradeText.setVisibility(View.INVISIBLE);
             }
 
@@ -690,7 +694,7 @@ public class SuperScriptManager implements CornerContract.View {
     @Override
     public void onCornerResult(@NotNull Context context, @Nullable String data) {
         try {
-            if(mPresenter != null){
+            if (mPresenter != null) {
                 mPresenter.destroy();
                 mPresenter = null;
             }
