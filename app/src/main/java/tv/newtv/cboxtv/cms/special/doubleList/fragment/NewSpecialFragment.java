@@ -66,6 +66,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     private static final int VIDEO_NEXT_PLAY = 0X006;
     private static final int LEFT_SCROLL_POSITION = 0X008;
     private static final int MSG_REFRESH_CENTER_DATA = 0X009;
+    private static final int MSG_PAUSE_RESUME_SLECT = 0X010;
     private LinearLayout mNewSpecialLayout;
     private ImageView mLeftUp, mLeftDown, mCenterUp, mCenterDown;
     private FocusRecyclerView mLeftMenu, mCenterMenu;
@@ -176,6 +177,10 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                             printLogAndToast("Handler", "msg_refresh_center_data", false);
                         }
                         isRefreshCenter = true;
+                        break;
+                    case MSG_PAUSE_RESUME_SLECT:
+                        mCenterMenu.scrollToPosition(centerPosition);
+                        sendEmptyMessageDelayed(VIDEO_TO_CENTER_POSITION, 50);
                         break;
                     default:
                         break;
@@ -291,6 +296,12 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     @Override
     public void onResume() {
         super.onResume();
+        printLogAndToast("onResume","onResume left : " + leftPosition + " old left : "+ oldLeftPosition + "  center : " + centerPosition, false);
+        if (oldLeftPosition != -1 && centerPosition != -1) {
+            leftPosition = oldLeftPosition;
+            setScrollLeftPosition();
+            mSpecialHandler.sendEmptyMessageDelayed(MSG_PAUSE_RESUME_SLECT, 100);
+        }
     }
 
     @Override
@@ -387,7 +398,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             int first = mLeftManager.findFirstVisibleItemPosition();
             int last = mLeftManager.findLastVisibleItemPosition();
             printLogAndToast("setLeftUpVisible", " setLeftUpVisible tag : " + tag
-                    + " first : "+first + " last : " + last, false);
+                    + " first : " + first + " last : " + last, false);
             if (!TextUtils.isEmpty(tag) && tag.equals(UP)) {
                 if (first > MIN_DIS_POSTION) {
                     mLeftUp.setVisibility(View.VISIBLE);
@@ -405,7 +416,7 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
     }
 
     private void setLeftDownVisible(String tag, int leftFocusPt) {
-        printLogAndToast("setLeftDownVisible","setLeftDownVisible tag : "+ tag + " leftP : "+leftFocusPt,false);
+        printLogAndToast("setLeftDownVisible", "setLeftDownVisible tag : " + tag + " leftP : " + leftFocusPt, false);
         if (!TextUtils.isEmpty(tag) && tag.equals(DOWN)) {
             if ((mLeftData.size() <= MAX_DIS_POSTION + 1) || leftFocusPt == mLeftData.size() - 1) {
                 mLeftDown.setVisibility(View.INVISIBLE);
@@ -509,10 +520,10 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                     }
                     msg.arg1 = centerPosition;
                 }
-                if(isRefreshCenter) {
+                if (isRefreshCenter) {
                     mSpecialHandler.sendMessageDelayed(msg, 50);
-                }else{
-                    printLogAndToast("initLeftList","isRefreshCenter" + isRefreshCenter,false);
+                } else {
+                    printLogAndToast("initLeftList", "isRefreshCenter" + isRefreshCenter, false);
                 }
                 mLeftUp.setVisibility(View.INVISIBLE);
                 mLeftDown.setVisibility(View.INVISIBLE);
@@ -524,6 +535,11 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
             }
         });
 
+        setScrollLeftPosition();
+        initLeftDownStatus();
+    }
+
+    private void setScrollLeftPosition() {
         mLeftMenu.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -540,7 +556,6 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 mLeftMenu.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
-        initLeftDownStatus();
     }
 
     private void setCenterUpVisible(String tag, int centerFocusPt) {
@@ -850,6 +865,8 @@ public class NewSpecialFragment extends BaseSpecialContentFragment implements Pl
                 }
             } else {
                 if (mVideoPlayerTitle != null && mFullScreenImage != null) {
+                    mFocusViewVideo.removeView(mVideoPlayerTitle);
+                    mFocusViewVideo.addView(mVideoPlayerTitle);
                     mVideoPlayerTitle.setVisibility(View.VISIBLE);
                     mFullScreenImage.setVisibility(View.GONE);
                 }

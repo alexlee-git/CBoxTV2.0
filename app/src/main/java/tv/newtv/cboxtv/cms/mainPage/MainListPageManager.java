@@ -375,7 +375,8 @@ public class MainListPageManager {
      * @param position
      */
     private void secondNavLogUpload(int position) {
-        if (mNavInfos != null && position <= (mNavInfos.size() - 1)) {
+        //2019.1.8 wqs添加mNavInfos的size非0判断，因为position有可能为-1，会导致崩溃
+        if (mNavInfos != null && mNavInfos.size() > 0  && position <= (mNavInfos.size() - 1)) {
             Nav info = mNavInfos.get(position);
             if (info != null) {
                 String result = info.getId();

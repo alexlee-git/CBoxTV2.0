@@ -150,7 +150,7 @@
         android:visibility="gone"
         app:drawable_height="@dimen/height_76px"
         app:drawable_width="@dimen/width_152px"
-        app:focus_drawable="@drawable/pos_zui"
+        app:focus_drawable="@drawable/pos_focus_1"
         app:normal_drawable="@drawable/vip_pay_nomal"
         app:selected_drawable="@drawable/vip_pay_focused"
         app:type="pay"/>
