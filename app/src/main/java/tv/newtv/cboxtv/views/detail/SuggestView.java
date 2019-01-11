@@ -540,7 +540,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                         public void onClick(View view) {
                             //TODO 界面跳转
                             LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL_SUGGESt, itemInfo
-                                    .getContentID());
+                                    .getContentUUID());
                             JumpUtil.detailsJumpActivity(view.getContext(),
                                     itemInfo.getContentType(), itemInfo.getContentID());
                         }

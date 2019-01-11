@@ -77,7 +77,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
 
     private List<SubContent> mContentList;
 
-//    private AdContract.Presenter adPresenter;
+    //    private AdContract.Presenter adPresenter;
     private ContentContract.Presenter mContentPresenter;
     private int mPageSize;
     private String mVideoType;
@@ -509,8 +509,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
     }
 
     private boolean videoType(String videoType) {
-        boolean sePs = TextUtils.equals(seriesType, "1")
-                && seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
+        boolean sePs = seriesContent != null && !Constant.CONTENTTYPE_TV.equals(seriesContent.getContentType());
 
         if (sePs) {
             return false;

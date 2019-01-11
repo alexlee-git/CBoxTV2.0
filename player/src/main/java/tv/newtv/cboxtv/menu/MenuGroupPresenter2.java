@@ -755,6 +755,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
                 switch (event.getKeyCode()) {
                     case KeyEvent.KEYCODE_MENU:
                     case KeyEvent.KEYCODE_DPAD_CENTER:
+                    case KeyEvent.KEYCODE_ENTER:
                         if (show()) {
                             send();
                             return true;
@@ -834,8 +835,7 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
     private boolean show() {
         if (menuGroupIsInit && menuGroup.getVisibility() == View.GONE) {
             if (willRefreshLbNode) {
-                refreshLbNode();
-                willRefreshLbNode = false;
+                willRefreshLbNode = !refreshLbNode();
             }
             Log.i(TAG, "show: "+playProgram );
             if (playProgram != null) {
@@ -1144,11 +1144,14 @@ public class MenuGroupPresenter2 implements ArrowHeadInterface, IMenuGroupPresen
         });
     }
 
-    private void refreshLbNode() {
-        if (lbCollectNode != null) {
+    private boolean refreshLbNode() {
+        if (lbCollectNode != null && playProgram != null
+                && !playProgram.getParent().isLbCollectNodeOrChild()) {
             lbCollectNode.getChild().clear();
             searchLbCollect(lbCollectNode, true);
+            return true;
         }
+        return false;
     }
 
     private void searchLbHistory(final Node node) {

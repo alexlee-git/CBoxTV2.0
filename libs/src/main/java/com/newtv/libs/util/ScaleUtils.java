@@ -40,6 +40,7 @@ public class ScaleUtils {
 
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(400);
         animatorSet.setTarget(view);
@@ -62,6 +63,7 @@ public class ScaleUtils {
 //        view.startAnimation(sa);
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(400);
         animatorSet.setInterpolator(mSpringInterpolator);
@@ -89,6 +91,7 @@ public class ScaleUtils {
 //        view.startAnimation(sa);
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(400);
         animatorSet.setInterpolator(mSpringInterpolator);
@@ -102,6 +105,7 @@ public class ScaleUtils {
     public void onItemGetFocus(View view,long duration,float values){
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(duration);
         animatorSet.setInterpolator(mSpringInterpolator);
@@ -123,6 +127,7 @@ public class ScaleUtils {
 //        view.startAnimation(sa);
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(400);
         animatorSet.setInterpolator(mSpringInterpolator);
@@ -144,6 +149,7 @@ public class ScaleUtils {
 
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(400);
         animatorSet.setTarget(view);
@@ -168,6 +174,7 @@ public class ScaleUtils {
 //        view.startAnimation(sa);
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(400);
         animatorSet.setInterpolator(mSpringInterpolator);
@@ -181,6 +188,7 @@ public class ScaleUtils {
     public void onItemLoseFocus(View view,long duration,float values){
         view.setPivotX(view.getMeasuredWidth()/2);
         view.setPivotY(view.getMeasuredHeight()/2);
+        view.bringToFront();
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.setDuration(duration);
         animatorSet.setTarget(view);
