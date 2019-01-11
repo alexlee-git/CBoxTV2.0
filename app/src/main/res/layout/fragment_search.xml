@@ -25,7 +25,7 @@
             android:id="@+id/focus_view"
             android:layout_width="@dimen/width_845px"
             android:layout_height="@dimen/height_92px"
-            android:background="@drawable/pos_zui"
+            android:background="@drawable/pos_focus_1"
             android:scaleType="fitCenter"
             android:visibility="invisible" />
     </FrameLayout>

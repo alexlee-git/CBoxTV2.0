@@ -13,7 +13,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.letv.LetvDeviceUtil;
+import com.newtv.libs.Libs;
 import com.newtv.libs.MainLooper;
+import com.newtv.libs.util.DeviceUtil;
 import com.newtv.libs.util.QrcodeUtil;
 import com.newtv.libs.util.ScreenUtils;
 import com.squareup.picasso.Callback;
@@ -43,7 +45,7 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
     public void init(Context context,View parent){
         this.context = context;
         this.parent = parent;
-        if (LetvDeviceUtil.isLetvDevice()) {
+        if (LetvDeviceUtil.isLetvDevice() || Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO)) {
             rootView = LayoutInflater.from(context).inflate(R.layout.layout_lstv_buy_goods_pop,null);
         } else{
             rootView = LayoutInflater.from(context).inflate(R.layout.layout_buy_goods_pop,null);

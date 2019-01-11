@@ -36,8 +36,8 @@
     <ImageView
         android:visibility="invisible"
         android:id="@+id/alter_big_screen"
-        android:layout_width="@dimen/width_135px"
-        android:layout_height="@dimen/height_32px"
+        android:layout_width="@dimen/width_167px"
+        android:layout_height="@dimen/height_30px"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"

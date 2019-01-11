@@ -280,6 +280,7 @@ public class MemberCenterActivity extends BaseActivity implements OnRecycleItemC
                             mMemberInfoBean.setUserId(jsonObject.optInt("userId"));
                             mMemberInfoBean.setProductId(jsonObject.optInt("productId"));
                             mMemberInfoBean.setExpireTime(jsonObject.optString("expireTime"));
+                            mMemberInfoBean.setSuitableType(jsonObject.optString("suitableType"));
                         } else {
                             Log.d(TAG, "wqs:requestMemberInfo:next:memberInfo==null");
                         }

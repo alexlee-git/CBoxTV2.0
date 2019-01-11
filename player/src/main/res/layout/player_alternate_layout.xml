@@ -30,7 +30,7 @@
 
     <ImageView
         android:id="@+id/alter_big_screen"
-        android:layout_width="@dimen/width_135px"
+        android:layout_width="@dimen/width_167px"
         android:layout_height="wrap_content"
         android:layout_gravity="right|end|bottom"
         android:layout_margin="@dimen/width_13px"
