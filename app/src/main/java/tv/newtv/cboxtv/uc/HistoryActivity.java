@@ -56,7 +56,6 @@ import tv.newtv.cboxtv.uc.listener.OnRecycleItemClickListener;
 import tv.newtv.cboxtv.uc.v2.TokenRefreshUtil;
 import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 import tv.newtv.cboxtv.uc.v2.sub.view.CollectRecycleView;
-import tv.newtv.cboxtv.views.GridRecycleView;
 
 /**
  * Created by gaoleichao on 2018/3/29.
@@ -607,19 +606,20 @@ public class HistoryActivity extends BaseActivity implements
                                                 public void onResult(int code, String result) {
                                                     //清空所有历史记录，上传seriesID字段
                                                     StringBuilder dataBuff = new StringBuilder(Constant.BUFFER_SIZE_32);
-                                                    for (int i = 0; i < mCollectBean.size(); i++) {
-                                                        if (i < mCollectBean.size() - 1) {
-                                                            dataBuff.append(mCollectBean.get(i)
-                                                                    .contentId)
-                                                                    .append(",");
-                                                        }
-                                                        if (i == mCollectBean.size() - 1) {
-                                                            dataBuff.append(mCollectBean.get(i)
-                                                                    .contentId)
-                                                                    .trimToSize();
+                                                    if (mCollectBean != null) {
+                                                        for (int i = 0; i < mCollectBean.size(); i++) {
+                                                            if (i < mCollectBean.size() - 1) {
+                                                                dataBuff.append(mCollectBean.get(i)
+                                                                        ._contentuuid)
+                                                                        .append(",");
+                                                            }
+                                                            if (i == mCollectBean.size() - 1) {
+                                                                dataBuff.append(mCollectBean.get(i)
+                                                                        ._contentuuid)
+                                                                        .trimToSize();
+                                                            }
                                                         }
                                                     }
-
                                                     LogUploadUtils.uploadLog(Constant
                                                             .LOG_NODE_HISTORY, "2," + dataBuff
                                                             .toString());//清空所有历史记录
@@ -706,7 +706,7 @@ public class HistoryActivity extends BaseActivity implements
                                                             .LOG_NODE_HISTORY, "1," +
                                                             mCollectBean.get(mAdapter
                                                                     .getSelectPostion())
-                                                                    .contentId);//删除历史记录
+                                                                    ._contentuuid);//删除历史记录
                                                     mRecyclerView.post(new Runnable() {
                                                         @Override
                                                         public void run() {

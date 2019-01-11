@@ -29,6 +29,7 @@
         style="@style/ModulePosterBottomTitleStyle"
         android:layout_width="@dimen/width_390px"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/width_5px"
         android:layout_below="@+id/id_module_view"
         android:ellipsize="marquee"
         android:marqueeRepeatLimit="marquee_forever"

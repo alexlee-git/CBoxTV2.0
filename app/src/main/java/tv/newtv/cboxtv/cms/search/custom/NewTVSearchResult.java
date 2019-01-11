@@ -2,6 +2,7 @@ package tv.newtv.cboxtv.cms.search.custom;
 
 import android.content.Context;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.FocusFinder;
 import android.view.KeyEvent;
@@ -255,24 +256,29 @@ public class NewTVSearchResult extends RelativeLayout implements SearchResultDat
     public void setEmptyViewVisible() {
         if (isLoadComplete()) {
             if (mFragments != null && mFragments.size() > 0) {
-                mSearchResultEmpty.setVisibility(GONE);
-                mSearchResultImg.setVisibility(GONE);
-                mSearchResultEmptyLine.setVisibility(GONE);
+                showLoadingView();
             } else {
-                mSearchResultEmpty.setVisibility(VISIBLE);
-                mSearchResultImg.setVisibility(VISIBLE);
-                mSearchResultEmptyLine.setVisibility(VISIBLE);
-                if (mLoadingLayout != null){
-                    mLoadingLayout.setVisibility(GONE);
-                }
+                showEmptyView();
             }
         }else{
-            mSearchResultEmpty.setVisibility(GONE);
-            mSearchResultImg.setVisibility(GONE);
-            mSearchResultEmptyLine.setVisibility(GONE);
+            showLoadingView();
         }
     }
 
+    private void showEmptyView(){
+        mSearchResultEmpty.setVisibility(VISIBLE);
+        mSearchResultImg.setVisibility(VISIBLE);
+        mSearchResultEmptyLine.setVisibility(VISIBLE);
+        if (mLoadingLayout != null){
+            mLoadingLayout.setVisibility(GONE);
+        }
+    }
+
+    private void showLoadingView(){
+        mSearchResultEmpty.setVisibility(GONE);
+        mSearchResultImg.setVisibility(GONE);
+        mSearchResultEmptyLine.setVisibility(GONE);
+    }
 
     /**
      * 显示指定页面

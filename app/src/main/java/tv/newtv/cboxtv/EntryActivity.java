@@ -47,6 +47,7 @@ import java.util.Locale;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.ad.ADPlayerView;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 /**
  * Created by TCP on 2018/4/12.
@@ -191,6 +192,8 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         mSplashPresenter.initCNTVLog(getApplication());
         //2018.12.21 wqs 补充由于代码合并导致未调用时钟工具类，实现时钟同步功能
         TimeUtil.getInstance().synchronizeTime();
+        //同步云端数据库数据
+        UserCenterRecordManager.getInstance().getUserBehavior(getApplicationContext(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
     }
 
     private void initRetryUrls() {

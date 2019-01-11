@@ -22,7 +22,7 @@
         android:id="@+id/focus"
         android:layout_width="@dimen/width_306px"
         android:layout_height="@dimen/height_426px"
-        android:background="@drawable/pos_zui"
+        android:background="@drawable/pos_focus_1"
         android:focusable="false"
         android:visibility="invisible" />
 

@@ -88,5 +88,6 @@ open class Content  : Serializable {
 
     // LB
     var alternateNumber:String? = null   //台号
+    var origin:String? = null
 
 }

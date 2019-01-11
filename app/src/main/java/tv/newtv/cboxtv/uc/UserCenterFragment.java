@@ -213,8 +213,6 @@ public class UserCenterFragment extends BaseFragment implements
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mDataBaseCompleteReceiver, new IntentFilter("action.uc.data.sync.complete"));
         }
         uploadUserOnline();
-        //同步云端数据库数据
-        UserCenterRecordManager.getInstance().getUserBehavior(getActivity(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
         return view;
     }
 
@@ -324,6 +322,7 @@ public class UserCenterFragment extends BaseFragment implements
                             mMemberInfoBean.setUserId(jsonObject.optInt("userId"));
                             mMemberInfoBean.setProductId(jsonObject.optInt("productId"));
                             mMemberInfoBean.setExpireTime(jsonObject.optString("expireTime"));
+                            mMemberInfoBean.setSuitableType(jsonObject.optString("suitableType"));
                             String expireTimeDate = jsonObject.optString("expireTime");
                             if (!TextUtils.isEmpty(expireTimeDate)) {
                                 //有效期截止时间毫秒数
@@ -409,6 +408,9 @@ public class UserCenterFragment extends BaseFragment implements
                     .condition()
                     .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
+                    .noteq(DBConfig.CONTENTTYPE, "null")
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
                 @Override
@@ -486,6 +488,9 @@ public class UserCenterFragment extends BaseFragment implements
             DataSupport.search(TableNameAttention).condition()
                     .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
+                    .noteq(DBConfig.CONTENTTYPE, "null")
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
                 @Override
@@ -722,7 +727,7 @@ public class UserCenterFragment extends BaseFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "wqs:onDestroyView");
-        UserCenterRecordManager.getInstance().releaseUserBehavior(getActivity());
+//        UserCenterRecordManager.getInstance().releaseUserBehavior(getActivity());
     }
 
     @Override

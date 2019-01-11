@@ -484,7 +484,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         if (code == 0) {
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
-                                                                                            .LOG_NODE_COLLECT, "1," + mBuilder.contentUUid);//取消收藏
+                                                                                            .LOG_NODE_COLLECT, "1," + mInfo.getContentUUID());//取消收藏
                                                                             Toast.makeText
                                                                                     (getContext()
                                                                                                     .getApplicationContext(),
@@ -522,7 +522,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                                     (Constant
                                                                                                     .LOG_NODE_COLLECT,
                                                                                             "0," +
-                                                                                                    mInfo.getContentID());
+                                                                                                    mInfo.getContentUUID());
                                                                             Toast.makeText(getContext()
                                                                                             .getApplicationContext(),
                                                                                     R.string.collect_success,
@@ -585,7 +585,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                             LogUploadUtils.uploadLog
                                                                                     (Constant
                                                                                             .LOG_NODE_SUBSCRIP, "1," +
-                                                                                            mInfo.getContentID());
+                                                                                            mInfo.getContentUUID());
                                                                             Toast.makeText
                                                                                     (getContext()
                                                                                                     .getApplicationContext(), "取消订阅成功",
@@ -620,7 +620,7 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
                                                                         LogUploadUtils.uploadLog
                                                                                 (Constant
                                                                                         .LOG_NODE_SUBSCRIP, "0," +
-                                                                                        mInfo.getContentID());
+                                                                                        mInfo.getContentUUID());
                                                                         Toast.makeText(getContext()
                                                                                         .getApplicationContext(),
                                                                                 "添加订阅成功", Toast
@@ -918,7 +918,15 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
         }
         playerView.beginChange();
         playerView.setSeriesInfo(mInfo);
-        playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+        initData(false);
+        MainLooper.get().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (playerView != null) {
+                    playerView.playSingleOrSeries(currentPlayIndex, currentPosition);
+                }
+            }
+        },500);
     }
 
     @Override

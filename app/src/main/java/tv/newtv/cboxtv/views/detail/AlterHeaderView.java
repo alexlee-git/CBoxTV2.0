@@ -298,13 +298,16 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
         }
 
         mContent = content;
+        if(mContent != null && !TextUtils.isEmpty(mContent.getContentUUID())){
+            LogUploadUtils.uploadLog(Constant.LOG_NODE_DETAIL, "0," + mContent.getContentUUID());
+        }
 
         if (alternateIdText != null) {
             alternateIdText.setText(String.format("%s %s", content.getAlternateNumber(), content
                     .getTitle()));
         }
-        if (alternateFromText != null) {
-
+        if (alternateFromText != null&&!TextUtils.isEmpty(content.getOrigin())) {
+            alternateFromText.setText("来源："+content.getOrigin());
         }
 
         if (alternateDescText != null && !TextUtils.isEmpty(content.getDescription())) {
@@ -401,7 +404,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                                     if (code == 0) {
                                         Toast.makeText(getContext(), "收藏成功", Toast.LENGTH_SHORT)
                                                 .show();
-                                        LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0,"+mContent.getContentID());
+                                        LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"0,"+mContent.getContentUUID());
                                         mIsCollect = true;
                                         updateUI();
                                     }
@@ -419,7 +422,7 @@ public class AlterHeaderView extends FrameLayout implements IEpisode, ContentCon
                                     if (code == 0) {
                                         Toast.makeText(getContext(), "取消收藏成功", Toast.LENGTH_SHORT)
                                                 .show();
-                                        LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"1,"+mContent.getContentID());
+                                        LogUploadUtils.uploadLog(Constant.LOG_NODE_COLLECT,"1,"+mContent.getContentUUID());
                                         mIsCollect = false;
                                         updateUI();
                                     }

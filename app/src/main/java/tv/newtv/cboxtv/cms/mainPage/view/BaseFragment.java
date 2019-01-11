@@ -35,11 +35,16 @@ public abstract class BaseFragment extends RxFragment {
     private Runnable lazyRunnable = new Runnable() {
         @Override
         public void run() {
+            lazyLoad();
+        }
+    };
+    private Runnable bgChangeRunnable = new Runnable() {
+        @Override
+        public void run() {
             if(getUserVisibleHint()) {
                 BackGroundManager.getInstance().setCurrentPageId(getContext(), getContentUUID(),
                         false,"",true);
             }
-            lazyLoad();
         }
     };
     private RecyclerView animRecyclerView;
@@ -92,6 +97,12 @@ public abstract class BaseFragment extends RxFragment {
     private void invokeLazyLoad() {
         if (contentView != null) {
             contentView.postDelayed(lazyRunnable, POST_DELAY);
+        }
+    }
+
+    private void invokeBgPaperLoad() {
+        if (contentView != null) {
+            contentView.postDelayed(bgChangeRunnable, POST_DELAY);
         }
     }
 
@@ -172,7 +183,7 @@ public abstract class BaseFragment extends RxFragment {
     }
 
     protected void onVisible() {
-
+         invokeBgPaperLoad();
 //        invokeLazyLoad();
     }
 

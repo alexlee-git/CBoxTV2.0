@@ -397,12 +397,12 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             FocusView = view.findViewWithTag("tag_img_focus");
 
             ViewGroup.LayoutParams layoutParams = FocusView.getLayoutParams();
-            layoutParams.height = PosterView.getLayoutParams().height + 2 * view
+            /*layoutParams.height = PosterView.getLayoutParams().height + 2 * view
                     .getContext().getResources()
                     .getDimensionPixelOffset(R.dimen.width_17dp);
             layoutParams.width = PosterView.getLayoutParams().width + 2 * view.getContext()
                     .getResources()
-                    .getDimensionPixelOffset(R.dimen.width_17dp);
+                    .getDimensionPixelOffset(R.dimen.width_17dp);*/
             FocusView.setLayoutParams(layoutParams);
             FocusView.requestLayout();
             TitleView = view.findViewWithTag("tag_poster_title");

@@ -11,8 +11,8 @@
     <FrameLayout
         android:tag="search"
         android:id="@+id/search_layout"
-        android:layout_width="@dimen/width_899px"
-        android:layout_height="@dimen/height_147px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/height_100px"
         android:layout_centerHorizontal="true"
         android:background="@drawable/selector_pos_background_27px"
