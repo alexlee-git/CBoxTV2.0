@@ -570,14 +570,14 @@ public class MenuRecycleView extends RecyclerView {
                 view.setAlpha(1f);
 
                 //直接放大view
-//                ScaleAnimation sa = new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f, Animation
-//                        .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//                sa.setFillAfter(true);
-//                sa.setDuration(400);
-//                sa.setInterpolator(mSpringInterpolator);
-//                view.bringToFront();
-//                view.startAnimation(sa);
-                ScaleUtils.getInstance().onItemGetFocus(view,1.3f);
+                ScaleAnimation sa = new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f, Animation
+                        .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                sa.setFillAfter(true);
+                sa.setDuration(400);
+                sa.setInterpolator(mSpringInterpolator);
+                view.bringToFront();
+                view.startAnimation(sa);
+//                ScaleUtils.getInstance().onItemGetFocus(view,1.3f);
             } else {
 //                if(menuItems.size()==mNavInfos.size()){
 //                    Log.e("gao","一级导航：失去foces："+mNavInfos.get(position%menuItems.size())
@@ -594,13 +594,13 @@ public class MenuRecycleView extends RecyclerView {
 
                 viewHolder.itemView.setAlpha(1);
                 // 直接缩小view
-//                ScaleAnimation sa = new ScaleAnimation(1.3f, 1.0f, 1.3f, 1.0f, Animation
-//                        .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//                sa.setFillAfter(true);
-//                sa.setDuration(400);
-//                sa.setInterpolator(mSpringInterpolator);
-//                view.startAnimation(sa);
-                ScaleUtils.getInstance().onItemLoseFocus(view,1.3f);
+                ScaleAnimation sa = new ScaleAnimation(1.3f, 1.0f, 1.3f, 1.0f, Animation
+                        .RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                sa.setFillAfter(true);
+                sa.setDuration(400);
+                sa.setInterpolator(mSpringInterpolator);
+                view.startAnimation(sa);
+//                ScaleUtils.getInstance().onItemLoseFocus(view,1.3f);
             }
 
 //            if (mScaleAnimator != null) mScaleAnimator.end();

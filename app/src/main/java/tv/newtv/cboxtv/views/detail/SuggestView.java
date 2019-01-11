@@ -126,13 +126,21 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
         mSearchPresenter = new SearchContract.SearchPresenter(getContext(), this);
     }
 
+    @Nullable
     public View getDefaultFocus() {
         if (getChildCount() <= 0) return this;
         if (getChildAt(0) instanceof AiyaRecyclerView) {
             return ((AiyaRecyclerView) getChildAt(0)).getDefaultFocusView();
         } else {
-            return currentFocus;
+            if(currentFocus!=null) {
+                return currentFocus;
+            }
+            View view = findViewWithTag("cell_008_1");
+            if(view != null){
+                return view;
+            }
         }
+        return null;
     }
 
     public void setContentUUID(int type, @Nullable Content content, View controllView, String contentType) {
@@ -217,7 +225,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
             removeAllViews();
 
             View view = LayoutInflater.from(getContext()).inflate(R.layout
-                    .episode_six_content, this, false);
+                    .episode_six_content_v2, this, false);
             LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
                     .WRAP_CONTENT);
             view.findViewWithTag("module_008_title_icon").setVisibility(View.VISIBLE);
@@ -295,8 +303,11 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                     if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent
                             .KEYCODE_DPAD_DOWN) {
                         if (!getChildAt(0).hasFocus()) {
-                            getDefaultFocus().requestFocus();
-                            return true;
+                            View focusView = getDefaultFocus();
+                            if(focusView != null) {
+                                focusView.requestFocus();
+                                return true;
+                            }
                         }
                     } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                         View leftView = FocusFinder.getInstance().findNextFocus(this, findFocus()
@@ -489,8 +500,8 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                     TextView title = target.findViewWithTag("tag_poster_title");
 
                     //适配
-                    DisplayUtils.adjustView(getContext(), poster, focusView, R.dimen.width_16dp,
-                            R.dimen.width_16dp);//适配
+//                    DisplayUtils.adjustView(getContext(), poster, focusView, R.dimen.width_16dp,
+//                            R.dimen.width_16dp);//适配
 
                     if (!TextUtils.isEmpty(itemInfo.getVImage())) {
                         poster.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -544,11 +555,13 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                                 viewMove.setSelected(b);
                             }
 
-                            focusView.setVisibility(b ? View.VISIBLE : View.GONE);
-                            if (b) {
-                                ScaleUtils.getInstance().onItemGetFocus(target);
-                            } else {
-                                ScaleUtils.getInstance().onItemLoseFocus(target);
+                            if(focusView !=null) {
+                                focusView.setVisibility(b ? View.VISIBLE : View.GONE);
+                                if (b) {
+                                    ScaleUtils.getInstance().onItemGetFocus(target);
+                                } else {
+                                    ScaleUtils.getInstance().onItemLoseFocus(target);
+                                }
                             }
                         }
                     });
