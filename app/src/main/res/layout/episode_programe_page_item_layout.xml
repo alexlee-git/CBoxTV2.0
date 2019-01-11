@@ -15,9 +15,8 @@
         <!--1-->
         <FrameLayout
             android:id="@+id/rl_focus_30_1"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -28,15 +27,15 @@
 
             <TextView
                 android:id="@+id/tv_series_30_1"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
                 android:tag="tag_poster_title"
                 android:text="1"
                 android:textColor="@color/detail_tvcolor"
-                 />
+                />
             <ImageView
                 android:id="@+id/img_vip_30_1"
                 android:layout_width="@dimen/width_45px"
@@ -53,9 +52,8 @@
         <!--2-->
         <FrameLayout
             android:id="@+id/rl_focus_30_2"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -66,8 +64,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_2"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -90,9 +88,8 @@
         <!--3-->
         <FrameLayout
             android:id="@+id/rl_focus_30_3"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -103,8 +100,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_3"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -127,9 +124,8 @@
         <!--4-->
         <FrameLayout
             android:id="@+id/rl_focus_30_4"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -140,8 +136,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_4"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -164,9 +160,8 @@
         <!--5-->
         <FrameLayout
             android:id="@+id/rl_focus_30_5"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -177,8 +172,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_5"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -201,9 +196,8 @@
         <!--6-->
         <FrameLayout
             android:id="@+id/rl_focus_30_6"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -214,8 +208,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_6"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -238,9 +232,8 @@
         <!--7-->
         <FrameLayout
             android:id="@+id/rl_focus_30_7"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -251,8 +244,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_7"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -275,9 +268,8 @@
         <!--8-->
         <FrameLayout
             android:id="@+id/rl_focus_30_8"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -288,8 +280,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_8"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -312,9 +304,8 @@
         <!--9-->
         <FrameLayout
             android:id="@+id/rl_focus_30_9"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -325,8 +316,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_9"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -349,9 +340,8 @@
         <!--10-->
         <FrameLayout
             android:id="@+id/rl_focus_30_10"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -362,8 +352,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_10"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -386,9 +376,8 @@
         <!--11-->
         <FrameLayout
             android:id="@+id/rl_focus_30_11"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -399,8 +388,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_11"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -423,9 +412,8 @@
         <!--12-->
         <FrameLayout
             android:id="@+id/rl_focus_30_12"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -436,8 +424,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_12"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -460,9 +448,8 @@
         <!--13-->
         <FrameLayout
             android:id="@+id/rl_focus_30_13"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -473,8 +460,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_13"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -497,9 +484,8 @@
         <!--14-->
         <FrameLayout
             android:id="@+id/rl_focus_30_14"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -510,8 +496,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_14"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -534,9 +520,8 @@
         <!--15-->
         <FrameLayout
             android:id="@+id/rl_focus_30_15"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -547,8 +532,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_15"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -571,9 +556,8 @@
         <!--16-->
         <FrameLayout
             android:id="@+id/rl_focus_30_16"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -584,8 +568,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_16"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -608,9 +592,8 @@
         <!--17-->
         <FrameLayout
             android:id="@+id/rl_focus_30_17"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clipToPadding="false"
             android:focusable="true"
             android:nextFocusRight="@+id/rl_focus_30_18"
@@ -619,8 +602,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_17"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -643,9 +626,8 @@
         <!--18-->
         <FrameLayout
             android:id="@+id/rl_focus_30_18"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
@@ -655,8 +637,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_18"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -679,9 +661,8 @@
         <!--19-->
         <FrameLayout
             android:id="@+id/rl_focus_30_19"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -692,8 +673,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_19"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -716,9 +697,8 @@
         <!--20-->
         <FrameLayout
             android:id="@+id/rl_focus_30_20"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -729,8 +709,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_20"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -753,9 +733,8 @@
         <!--21-->
         <FrameLayout
             android:id="@+id/rl_focus_30_21"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -766,8 +745,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_21"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -790,9 +769,8 @@
         <!--22-->
         <FrameLayout
             android:id="@+id/rl_focus_30_22"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -803,8 +781,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_22"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -827,9 +805,8 @@
         <!--23-->
         <FrameLayout
             android:id="@+id/rl_focus_30_23"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -840,8 +817,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_23"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -864,9 +841,8 @@
         <!--24-->
         <FrameLayout
             android:id="@+id/rl_focus_30_24"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -877,8 +853,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_24"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -901,9 +877,8 @@
         <!--25-->
         <FrameLayout
             android:id="@+id/rl_focus_30_25"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -914,8 +889,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_25"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -938,9 +913,8 @@
         <!--26-->
         <FrameLayout
             android:id="@+id/rl_focus_30_26"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -951,8 +925,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_26"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -975,9 +949,8 @@
         <!--27-->
         <FrameLayout
             android:id="@+id/rl_focus_30_27"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -988,8 +961,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_27"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -1012,9 +985,8 @@
         <!--28-->
         <FrameLayout
             android:id="@+id/rl_focus_30_28"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
@@ -1024,8 +996,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_28"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -1048,9 +1020,8 @@
         <!--29-->
         <FrameLayout
             android:id="@+id/rl_focus_30_29"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -1061,8 +1032,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_29"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"
@@ -1085,9 +1056,8 @@
         <!--30-->
         <FrameLayout
             android:id="@+id/rl_focus_30_30"
-            android:layout_width="@dimen/width_103px"
-            android:layout_height="@dimen/height_103px"
-            android:layout_marginRight="@dimen/height_10px"
+            android:layout_width="@dimen/width_112px"
+            android:layout_height="@dimen/height_112px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -1097,8 +1067,8 @@
 
             <TextView
                 android:id="@+id/tv_series_30_30"
-                android:layout_width="@dimen/width_80px"
-                android:layout_height="@dimen/height_80px"
+                android:layout_width="@dimen/width_85px"
+                android:layout_height="@dimen/height_85px"
                 android:layout_gravity="center"
                 android:background="@drawable/shape_radius_vip"
                 android:gravity="center"

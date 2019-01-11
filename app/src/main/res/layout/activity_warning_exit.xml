@@ -10,8 +10,8 @@
 
     <FrameLayout
         android:id="@+id/focus_layout"
-        android:layout_width="@dimen/width_870px"
-        android:layout_height="@dimen/height_535px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/height_210px"
         android:background="@drawable/selector_pos_background_27px"
         android:focusable="true">

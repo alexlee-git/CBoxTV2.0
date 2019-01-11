@@ -24,6 +24,8 @@ public class MemberInfoBean {
     private int userId;
     private int productId;
     private String expireTime;
+    private String suitableType;
+
 
     public int getId() {
         return id;
@@ -64,4 +66,13 @@ public class MemberInfoBean {
     public void setExpireTime(String expireTime) {
         this.expireTime = expireTime;
     }
+
+    public String getSuitableType() {
+        return suitableType;
+    }
+
+    public void setSuitableType(String suitableType) {
+        this.suitableType = suitableType;
+    }
+
 }

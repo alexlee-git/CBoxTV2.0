@@ -31,7 +31,7 @@
 
         android:focusable="false"
         android:scaleType="fitXY"
-        android:background="@drawable/pos_zui"
+        android:background="@drawable/pos_focus_1"
         android:visibility="invisible" />
 
     <!--android:layout_marginLeft="@dimen/width_10px"-->

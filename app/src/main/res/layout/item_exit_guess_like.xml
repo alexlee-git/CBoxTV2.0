@@ -20,7 +20,7 @@
         android:id="@+id/item_exit_guess_like_poster_focus"
         android:layout_width="@dimen/width_306px"
         android:layout_height="@dimen/height_426px"
-        android:background="@drawable/pos_zui"
+        android:background="@drawable/pos_focus_1"
         android:tag="tag_img_focus"
         android:visibility="invisible"
         />

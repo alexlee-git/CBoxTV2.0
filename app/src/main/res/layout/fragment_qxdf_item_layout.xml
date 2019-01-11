@@ -17,6 +17,6 @@
         android:id="@+id/shooter_poster_focus"
         android:layout_width="@dimen/width_246px"
         android:layout_height="@dimen/height_350px"
-        android:background="@drawable/pos_zui"
+        android:background="@drawable/pos_focus_1"
         android:visibility="gone"/>
 </FrameLayout>

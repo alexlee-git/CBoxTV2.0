@@ -324,6 +324,7 @@ public class UserCenterFragment extends BaseFragment implements
                             mMemberInfoBean.setUserId(jsonObject.optInt("userId"));
                             mMemberInfoBean.setProductId(jsonObject.optInt("productId"));
                             mMemberInfoBean.setExpireTime(jsonObject.optString("expireTime"));
+                            mMemberInfoBean.setSuitableType(jsonObject.optString("suitableType"));
                             String expireTimeDate = jsonObject.optString("expireTime");
                             if (!TextUtils.isEmpty(expireTimeDate)) {
                                 //有效期截止时间毫秒数
@@ -409,6 +410,9 @@ public class UserCenterFragment extends BaseFragment implements
                     .condition()
                     .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
+                    .noteq(DBConfig.CONTENTTYPE, "null")
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
                 @Override
@@ -486,6 +490,9 @@ public class UserCenterFragment extends BaseFragment implements
             DataSupport.search(TableNameAttention).condition()
                     .limit(UserCenterRecordManager.REQUEST_HOME_PAGE_RECORD_LIMIT)
                     .eq(DBConfig.USERID, userId)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LB)
+                    .noteq(DBConfig.CONTENTTYPE, Constant.CONTENTTYPE_LV)
+                    .noteq(DBConfig.CONTENTTYPE, "null")
                     .OrderBy(DBConfig.ORDER_BY_TIME)
                     .build().withCallback(new DBCallback<String>() {
                 @Override
