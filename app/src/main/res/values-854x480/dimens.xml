@@ -10,7 +10,7 @@
     <dimen name="width_9px">4px</dimen>
     <dimen name="width_10px">4px</dimen>
     <dimen name="width_11px">5px</dimen>
-    <dimen name="width_12px">32px</dimen>
+    <dimen name="width_12px">5px</dimen>
     <dimen name="width_13px">6px</dimen>
     <dimen name="width_14px">6px</dimen>
     <dimen name="width_15px">7px</dimen>
@@ -6014,7 +6014,7 @@
     <dimen name="height_15dp">9dp</dimen>
     <dimen name="width_3dp">2dp</dimen>
     <dimen name="width_17dp">11px</dimen>
-    <dimen name="height_16dp">10dp</dimen>
+    <dimen name="height_16dp">16dp</dimen>
     <dimen name="height_17dp">11dp</dimen>
     <dimen name="width_16dp">10px</dimen>
     <dimen name="height_44dp">28dp</dimen>
@@ -6029,4 +6029,13 @@
     <dimen name="module_31_height_19px" >-7px</dimen>
     <dimen name="module_25_9px">-3px</dimen>
     <dimen name="module_height_7px">-2px</dimen>
+
+    <dimen name="_height_20px">-8px</dimen>
+    <dimen name="_height_30px">-12px</dimen>
+    <dimen name="dp213">213dp</dimen>
+    <dimen name="dp153">153dp</dimen>
+    <dimen name="_width_18dp">-20dp</dimen>
+
+    <dimen name="_width_12px">-6px</dimen>
+    <dimen name="_width_6px">-3px</dimen>
 </resources>
