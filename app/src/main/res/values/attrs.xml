@@ -93,6 +93,14 @@
         <!-- 基准TAG  -->
         <attr name="block_tag" format="string"/>
 
+        <attr name="block_image_tag" format="string"/>
+        <attr name="block_title_tag" format="string"/>
+
+        <attr name="image_type" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="play" value="1"/>
+        </attr>
+
         <!-- 海报类型  -->
         <attr name="block_poster_type" format="enum">
             <enum name="image" value="0"/>
@@ -149,5 +157,10 @@
         <!--<attr name="drawable_width" format="integer"/>-->
         <!--<attr name="drawable_height" format="integer"/>-->
     <!--</declare-styleable>-->
+
+    <declare-styleable name="FocusImageView">
+        <attr name="focus_background" format="reference"/>
+
+    </declare-styleable>
 
 </resources>

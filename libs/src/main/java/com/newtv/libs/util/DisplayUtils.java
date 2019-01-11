@@ -122,6 +122,23 @@ public class DisplayUtils {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_PX,adjustSize(context,textSize));
     }
 
+    public static float adjustSize(Context context,int size,boolean isHeight){
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context
+                .WINDOW_SERVICE);
+        if (windowManager == null || windowManager.getDefaultDisplay() == null) {
+            return size;
+        }
+        windowManager.getDefaultDisplay().getMetrics(dm);
+        if(isHeight) {
+            int screenHeight = dm.heightPixels;
+            return size * (float) screenHeight / 1080;
+        }else{
+            int screenWidth = dm.widthPixels;
+            return size * (float) screenWidth / 1920;
+        }
+    }
+
     public static float adjustSize(Context context,int size){
         DisplayMetrics dm = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context

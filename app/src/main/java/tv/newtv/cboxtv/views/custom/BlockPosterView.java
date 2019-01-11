@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -39,6 +40,11 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
     private static final String TAG = BlockPosterView.class.getSimpleName();
     private static final int BLOCK_TYPE_IMAGE = 0;                  //推荐位状态为图片模式
     private static final int BLOCK_TYPE_VIDEO = 1;                  //推荐位状态为视频模式
+
+    private static final int BLOCK_IMAGE_TYPE_NORMAL = 0;
+    private static final int BLOCK_IMAGE_TYPE_PLAY= 1;
+
+
     private View focusBackground;                                   //焦点框背景图
     private RecycleImageView mPosterImage;                          //海报图片控件
     private FrameLayout mPoster;                                    //海报容器 （为了加入角标控制在海报范围内，加入该容器限制）
@@ -64,7 +70,14 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
     private LivePlayView mLivePlayView;//
     private OnClickListener mOnClickListener;
 
+
+    private String mPosterTag = null;
+    private String mPosterTitleTag = null;
+
+    private boolean specialLayout = false;
+
     private boolean isVideoMode = false;//
+    private int mPosterType = BLOCK_IMAGE_TYPE_NORMAL;
     private Object mProgram;
 
     public BlockPosterView(Context context) {
@@ -198,13 +211,14 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
 
             ViewGroup.LayoutParams layoutParams = getLayoutParams();
 
+            if(!specialLayout) {
+                int space = focusBackground.getPaddingLeft();
 
-            int space = focusBackground.getPaddingLeft();
-
-            if (space != marginSpace) {
-                if (mLivePlayView != null)
-                    LogUtils.d(TAG, "space=" + space + " marginSpace=" + marginSpace);
-                marginSpace = space;
+                if (space != marginSpace) {
+                    if (mLivePlayView != null)
+                        LogUtils.d(TAG, "space=" + space + " marginSpace=" + marginSpace);
+                    marginSpace = space;
+                }
             }
 
             layoutParams.width = getBlockWidth();
@@ -248,13 +262,19 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             }
 
             if (mPosterTitle != null) {
-                mPosterTitle.layout(marginSpace, getBlockHeight() - titleHeight,
+                mPosterTitle.layout(specialLayout?marginSpace*2:marginSpace, getBlockHeight() - titleHeight,
                         mWidth + marginSpace,
                         getBlockHeight());
             }
 
         }
 
+    }
+
+    public void  showCorner(View view, FrameLayout.LayoutParams layoutParams){
+        if(mPoster != null){
+            mPoster.addView(view,layoutParams);
+        }
     }
 
 
@@ -293,6 +313,9 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             }
             focusResource = typedArray.getResourceId(R.styleable
                     .BlockPosterView_block_poster_focus, R.drawable.selector_pos_background_27px);
+
+            specialLayout = focusResource != R.drawable.selector_pos_background_27px;
+
             include = typedArray.getBoolean(R.styleable
                     .BlockPosterView_block_poster_include_padding, true);
 
@@ -300,8 +323,13 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
 
             isLast = typedArray.getBoolean(R.styleable.BlockPosterView_block_last, false);
 
+            mPosterTag = typedArray.getString(R.styleable.BlockPosterView_block_image_tag);
+            mPosterTitleTag = typedArray.getString(R.styleable.BlockPosterView_block_title_tag);
+
             auto_location = typedArray.getBoolean(R.styleable
                     .BlockPosterView_block_auto_location, true);
+
+            mPosterType = typedArray.getInteger(R.styleable.BlockPosterView_image_type,BLOCK_IMAGE_TYPE_NORMAL);
 
             typedArray.recycle();
         }
@@ -324,7 +352,7 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         setClipChildren(false);
         setClipToPadding(false);
 
-        marginSpace = context.getResources().getDimensionPixelSize(R.dimen.width_27px);
+        marginSpace = context.getResources().getDimensionPixelSize(specialLayout?R.dimen.height_22px:R.dimen.width_27px);
         titleHeight = context.getResources().getDimensionPixelSize(R.dimen.height_65px);
 
         focusBackground = new View(context);
@@ -339,11 +367,19 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         LayoutParams poster_layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, ViewGroup
                 .LayoutParams.WRAP_CONTENT);
         mPoster.setLayoutParams(poster_layoutParams);
-        mPosterImage = new RecycleImageView(context);
+        if(mPosterType == BLOCK_IMAGE_TYPE_NORMAL) {
+            mPosterImage = new RecycleImageView(context);
+        }else{
+            mPosterImage = new CurrentPlayImageView(context);
+        }
         mPosterImage.setScaleType(ImageView.ScaleType.FIT_XY);
         LayoutParams layoutParams = new LayoutParams(poster_width, poster_height);
         mPosterImage.setLayoutParams(layoutParams);
-        mPosterImage.setTag(String.format("%s_%s", block_tag, "poster"));
+        if(!TextUtils.isEmpty(mPosterTag)){
+            mPosterImage.setTag(mPosterTag);
+        }else {
+            mPosterImage.setTag(String.format("%s_%s", block_tag, "poster"));
+        }
         if (!include) {
             mPosterImage.setPadding(marginSpace, marginSpace, marginSpace, marginSpace);
         }
@@ -362,6 +398,9 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             mPosterTitle.setMaxLines(1);
             mPosterTitle.setIncludeFontPadding(false);
             mPosterTitle.setHorizontallyScrolling(true);
+            if(specialLayout){
+                mPosterTitle.setGravity(Gravity.CENTER);
+            }
             mPosterTitle.setTextAppearance(context, R.style.ModulePosterBottomTitleStyle);
             DisplayUtils.adjustTextSize(getContext(), mPosterTitle, 28);
             LayoutParams titleLayoutParam = new LayoutParams(poster_width, titleHeight);
@@ -372,7 +411,11 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             if (isInEditMode()) {
                 mPosterTitle.setText("央视影音测试标题");
             }
-            mPosterTitle.setTag(String.format("%s_%s", block_tag, "title"));
+            if(!TextUtils.isEmpty(mPosterTitleTag)){
+                mPosterTitle.setTag(mPosterTitleTag);
+            }else {
+                mPosterTitle.setTag(String.format("%s_%s", block_tag, "title"));
+            }
             addView(mPosterTitle, titleLayoutParam);
         } else {
             titleHeight = 0;
