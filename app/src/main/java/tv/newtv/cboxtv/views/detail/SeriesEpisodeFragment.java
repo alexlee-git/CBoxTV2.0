@@ -420,7 +420,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
 
 
             FocusView = view.findViewWithTag("tag_img_focus");
-            if (FocusView != null) {
+            if(FocusView != null) {
                 ViewGroup.LayoutParams layoutParams = FocusView.getLayoutParams();
                 layoutParams.height = PosterView.getLayoutParams().height + 2 * view
                         .getContext().getResources()
