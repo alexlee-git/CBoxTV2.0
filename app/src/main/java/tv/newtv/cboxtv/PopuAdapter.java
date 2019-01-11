@@ -67,7 +67,14 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (navs != null) {
             ((PopuViewHolder) holder).navName.setText(navs.get(position).getTitle());
             ((PopuViewHolder) holder).navFrame.setBackgroundResource(R.drawable.circle_no);
-            Glide.with(context).load(navs.get(position).getCurrentIcon()).into(((PopuViewHolder) holder).navImg);
+            if (!TextUtils.isEmpty(navs.get(position).getFocusIcon())) {
+                ((PopuViewHolder) holder).defouTitle.setVisibility(View.GONE);
+                Glide.with(context).load(navs.get(position).getFocusIcon()).into(((PopuViewHolder) holder).navImg);
+            }else {
+                ((PopuViewHolder) holder).defouTitle.setVisibility(View.VISIBLE);
+                ((PopuViewHolder) holder).defouTitle.setText(navs.get(position).getTitle());
+
+            }
         }
 
     }
@@ -88,6 +95,7 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private final TextView navName;
         private final LinearLayout navParams;
         private final FrameLayout navFrame;
+        private final TextView defouTitle;
 
 
         public PopuViewHolder(View itemView) {
@@ -96,6 +104,7 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             itemView.setFocusable(true);
             navName = (TextView) itemView.findViewById(R.id.nav_name);
             navImg = (ImageView) itemView.findViewById(R.id.nav_img);
+            defouTitle = itemView.findViewById(R.id.id_defou_title);
             navParams = itemView.findViewById(R.id.nav_params);
             navFrame = itemView.findViewById(R.id.nav_frame);
             navParams.setOnFocusChangeListener(this);
