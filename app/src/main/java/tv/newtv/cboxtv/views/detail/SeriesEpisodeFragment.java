@@ -237,7 +237,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                 view.setVisibility(View.VISIBLE);
             }
         } else {
-            view.setVisibility(View.INVISIBLE);
+            view.setVisibility(index < DEFAULT_SIZE / 2 ? View.INVISIBLE : View.GONE);
         }
     }
 
@@ -350,7 +350,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                             .into(vipView);
                 }
             } else {
-                itemView.setVisibility(View.INVISIBLE);
+                itemView.setVisibility(View.GONE);
             }
         }
 
@@ -394,22 +394,22 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
                 }
             });
 
-            if(itemView instanceof BlockPosterView) {
+            if (itemView instanceof BlockPosterView) {
                 vipView = new ImageView(view.getContext());
 //                vipView.setScaleType(ImageView.ScaleType.FIT_XY);
-                int width = (int) DisplayUtils.adjustSize(view.getContext(),45,false);
-                int height = (int) DisplayUtils.adjustSize(view.getContext(),25,true);
-                int hmargin = (int) DisplayUtils.adjustSize(view.getContext(),10,false);
-                int vmargin = (int) DisplayUtils.adjustSize(view.getContext(),10,true);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width,height);
-                layoutParams.gravity = Gravity.RIGHT|Gravity.TOP;
+                int width = (int) DisplayUtils.adjustSize(view.getContext(), 45, false);
+                int height = (int) DisplayUtils.adjustSize(view.getContext(), 25, true);
+                int hmargin = (int) DisplayUtils.adjustSize(view.getContext(), 10, false);
+                int vmargin = (int) DisplayUtils.adjustSize(view.getContext(), 10, true);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, height);
+                layoutParams.gravity = Gravity.RIGHT | Gravity.TOP;
                 layoutParams.topMargin = vmargin;
                 layoutParams.rightMargin = hmargin;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     layoutParams.setMarginEnd(hmargin);
                 }
                 vipView.setLayoutParams(layoutParams);
-                ((BlockPosterView) itemView).showCorner(vipView,layoutParams);
+                ((BlockPosterView) itemView).showCorner(vipView, layoutParams);
             }
 
             PosterView = view.findViewWithTag("tag_poster_image");
@@ -420,7 +420,7 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
 
 
             FocusView = view.findViewWithTag("tag_img_focus");
-            if(FocusView != null) {
+            if (FocusView != null) {
                 ViewGroup.LayoutParams layoutParams = FocusView.getLayoutParams();
                 layoutParams.height = PosterView.getLayoutParams().height + 2 * view
                         .getContext().getResources()
@@ -434,7 +434,6 @@ public class SeriesEpisodeFragment extends AbsEpisodeFragment {
             TitleView = view.findViewWithTag("tag_poster_title");
 
         }
-
 
 
         protected void onFocusChange(View view, boolean b) {
