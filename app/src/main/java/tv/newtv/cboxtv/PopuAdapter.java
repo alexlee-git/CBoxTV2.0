@@ -67,7 +67,7 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (navs != null) {
             ((PopuViewHolder) holder).navName.setText(navs.get(position).getTitle());
             ((PopuViewHolder) holder).navFrame.setBackgroundResource(R.drawable.circle_no);
-            Glide.with(context).load(navs.get(position).getDefaultIcon()).into(((PopuViewHolder) holder).navImg);
+            Glide.with(context).load(navs.get(position).getFocusIcon()).into(((PopuViewHolder) holder).navImg);
         }
 
     }
@@ -114,11 +114,9 @@ public class PopuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 v.setSelected(hasFocus);
             }
             if (hasFocus) {
-                Glide.with(context).load(navs.get(getAdapterPosition()).getFocusIcon()).into(navImg);
                 navName.setTextColor(Color.parseColor("#FFFFFF"));
                 onItemGetFocus(v, getAdapterPosition());
             } else {
-                Glide.with(context).load(navs.get(getAdapterPosition()).getDefaultIcon()).into(navImg);
                 navName.setTextColor(Color.parseColor("#80FFFFFF"));
                 navFrame.setBackgroundResource(R.drawable.circle_no);
                 onItemLostFocus(v);
