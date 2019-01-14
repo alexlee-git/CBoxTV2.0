@@ -118,7 +118,7 @@ public class ScreenListActivity extends BaseActivity implements LabelView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen_list);
-        initFocus();
+        //initFocus();
         initPresenter(this);
         initView();
         initEvent();

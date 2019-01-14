@@ -31,7 +31,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_334px"
+            android:layout_height="@dimen/height_333px"
             android:background="@drawable/focus_usercenter_240_280"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -92,7 +92,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_334px"
+            android:layout_height="@dimen/height_333px"
             android:background="@drawable/focus_usercenter_240_280"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -133,7 +133,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -163,7 +163,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -192,7 +192,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -222,7 +222,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -251,7 +251,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -281,7 +281,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -311,7 +311,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>
@@ -342,7 +342,7 @@
 
         <ImageView
             android:layout_width="@dimen/width_294px"
-            android:layout_height="@dimen/height_170px"
+            android:layout_height="@dimen/height_169px"
             android:background="@drawable/focus_usercenter_240_116"
             android:tag="tag_poster_focus"
             android:visibility="invisible"/>

@@ -570,7 +570,7 @@ public class SuggestView extends RelativeLayout implements IEpisode, SuggestCont
                         currentFocus = target;
                     }
                 } else {
-                    target.setVisibility(index < 6 ? INVISIBLE : View.GONE);
+                    target.setVisibility(View.INVISIBLE);
                 }
             }
         }

@@ -75,7 +75,9 @@ public class PosterViewGroup extends FrameLayout{
 //    private int mPosterTitleHeight;
 //    private int mPosterImageTitleSpaceing;
 
-    private int mPosterTitleBottomSpaceing = (int) getResources().getDimension(R.dimen.poster_title_bottom_spaceing);
+    //2019.1.10 caolonghe修改固定像素问题
+//    private int mPosterTitleBottomSpaceing = (int) getResources().getDimension(R.dimen.poster_title_bottom_spaceing);
+    private int mPosterTitleBottomSpaceing = (int) getResources().getDimension(R.dimen.height_24px);
 
     private TextView mPosterTitle;
     private RecycleImageView mPosterImage;

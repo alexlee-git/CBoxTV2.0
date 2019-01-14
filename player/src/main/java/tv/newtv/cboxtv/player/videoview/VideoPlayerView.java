@@ -319,11 +319,12 @@ public class VideoPlayerView extends NewTVLauncherPlayerView {
         if (getParent() instanceof ViewGroup) {
             ViewGroup parent = (ViewGroup) getParent();
             if (parent != null) {
-                if (hasFocus) {
-                    parent.setBackgroundResource(R.drawable.pos_zui);
-                } else {
-                    parent.setBackground(new ColorDrawable(Color.TRANSPARENT));
-                }
+                parent.setActivated(hasFocus);
+//                if (hasFocus) {
+//                    parent.setBackgroundResource(R.drawable.pos_focus_1);
+//                } else {
+//                    parent.setBackground(new ColorDrawable(Color.TRANSPARENT));
+//                }
             }
 
             ViewGroup.LayoutParams layoutParams = getLayoutParams();

@@ -26,10 +26,11 @@
         android:focusable="true">
 
         <RelativeLayout
-            android:layout_width="@dimen/width_476px"
-            android:layout_height="@dimen/height_560px"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/height_4px"
             android:layout_marginLeft="@dimen/width_4px"
-            android:layout_marginStart="@dimen/width_4px"
+            android:layout_marginRight="@dimen/width_4px"
             android:layout_marginTop="@dimen/height_4px"
             android:background="@drawable/usercenter_login_qrcode_bg">
 

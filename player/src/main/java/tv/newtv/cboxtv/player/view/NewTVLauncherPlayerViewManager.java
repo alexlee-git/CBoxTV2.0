@@ -19,6 +19,7 @@ import java.util.List;
 import tv.newtv.cboxtv.player.IPlayProgramsCallBackEvent;
 import tv.newtv.cboxtv.player.LiveListener;
 import tv.newtv.cboxtv.player.PlayerConfig;
+import tv.newtv.cboxtv.player.listener.AdListener;
 import tv.newtv.cboxtv.player.listener.ScreenListener;
 import tv.newtv.cboxtv.player.model.LiveInfo;
 
@@ -329,4 +330,15 @@ public class NewTVLauncherPlayerViewManager {
         }
     }
 
+    public void registerAdListener(AdListener listener) {
+        if (mNewTVLauncherPlayerView != null) {
+            mNewTVLauncherPlayerView.registerAdListener(listener);
+        }
+    }
+
+    public void unregisterAdListener(AdListener listener) {
+        if (mNewTVLauncherPlayerView != null) {
+            mNewTVLauncherPlayerView.unregisterAdListener(listener);
+        }
+    }
 }

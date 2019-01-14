@@ -71,6 +71,11 @@ public class BackGroundManager {
      * @param id
      */
     public void setCurrentNav(String id, boolean waitPage, boolean isFirst) {
+
+        Log.i("BackGroundManager", "setCurrentNav id=" + id + " waitPage=" + waitPage + " " +
+                "isFirst=" +
+                isFirst);
+
         if (isFirst) {
             NavFirstBgItem = null;
             NavSecondBgItem = null;
@@ -114,44 +119,51 @@ public class BackGroundManager {
             View view = mBGCallback.getTargetView();
             if (view == null) return;
             AnimatorSet animatorSet = new AnimatorSet();
-            ObjectAnimator hideAnimator = ObjectAnimator.ofFloat(view, "alpha", 1, 0);
             if (bitmapDrawable != null) {
+                if (view.getBackground() != null) {
+                    mBGCallback.getTargetView().setBackground(bitmapDrawable);
+                    return;
+                }
+                view.setAlpha(0f);
+                if (mBGCallback == null || mBGCallback.getTargetView() == null)
+                    return;
+                mBGCallback.getTargetView().setBackground(bitmapDrawable);
                 ObjectAnimator showAnimator = ObjectAnimator.ofFloat(view, "alpha", 0, 1);
-                animatorSet.playSequentially(hideAnimator, showAnimator);
+                animatorSet.play(showAnimator);
             } else {
+                ObjectAnimator hideAnimator = ObjectAnimator.ofFloat(view, "alpha", 1, 0);
                 animatorSet.play(hideAnimator);
+                hideAnimator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (mBGCallback == null || mBGCallback.getTargetView() == null)
+                            return;
+                        mBGCallback.getTargetView().setBackground(bitmapDrawable);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
             }
             animatorSet.setTarget(view);
             animatorSet.setDuration(200);
-            hideAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    if (mBGCallback == null || mBGCallback.getTargetView() == null)
-                        return;
-                    mBGCallback.getTargetView().setBackground(bitmapDrawable);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
             animatorSet.start();
         }
     }
 
     private void setShowId(Context context, String id) {
-        if (TextUtils.equals(mCurrentId, id)) return;
         if (backGroundMaps.containsKey(id)) {
             BgItem current = backGroundMaps.get(id);
             mCurrentId = id;
@@ -188,13 +200,21 @@ public class BackGroundManager {
                 BgItem bgItem = new BgItem();
                 bgItem.contentId = id;
                 bgItem.isAd = isAd;
+                bgItem.level = 3;
                 bgItem.background = background;
                 bgItem.from = BgItem.FROM_PAGE;
                 backGroundMaps.put(id, bgItem);
             }
         }
         if (isShow) {
-            setShowId(context, id);
+            Log.i("BackGroundManager", "setCurrentPageId id=" + id + " isAd=" + isAd + " back=" +
+                    background + " " +
+                    "isSHow=true");
+            if (!backGroundMaps.containsKey(id)) {
+                setCurrentNav(id, false, false);
+            } else {
+                setShowId(context, id);
+            }
         }
     }
 
@@ -210,7 +230,7 @@ public class BackGroundManager {
                         @Override
                         public void showAd(@Nullable String type, @Nullable String url, @NotNull
                                 HashMap<?,
-                                ?> hashMap) {
+                                        ?> hashMap) {
                             if (TextUtils.isEmpty(url)) {
                                 setCmsBG(context, bgItem);
                             } else {

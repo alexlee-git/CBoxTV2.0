@@ -13,9 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="@dimen/height_5px"
         android:duplicateParentState="true"
+        android:includeFontPadding="true"
         android:scaleType="fitCenter"
+        android:singleLine="true"
+        android:textStyle="bold"
         android:visibility="gone"
         android:textColor="@color/menu_text_color"
         android:textSize="@dimen/height_29px"/>
