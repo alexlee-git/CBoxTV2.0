@@ -112,6 +112,7 @@ public class AlternateActivity extends DetailPageActivity implements
             finish();
             return;
         }
+        ADConfig.getInstance().setCarousel(contentUUID);
         setUp();
     }
 
@@ -159,7 +160,6 @@ public class AlternateActivity extends DetailPageActivity implements
     public void onAlternateResult(String alternateId, @org.jetbrains.annotations.Nullable List<Alternate> result) {
         if(!TextUtils.equals(alternateId,contentUUID)) return;
 
-        ADConfig.getInstance().setCarousel(alternateId);
         if (mPlayListView != null) {
             mPlayListView.onAlternateResult(alternateId, result);
         }

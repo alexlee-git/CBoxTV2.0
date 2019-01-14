@@ -119,7 +119,7 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         return true;
     }
 
-    public void loadPoster(RecycleImageView imageView,String url,boolean isCorner){
+    public void loadPoster(RecycleImageView imageView, String url, boolean isCorner) {
         GlideUtil.loadImage(imageView.getContext(), imageView,
                 url, poster_resource_holder, poster_resource_holder, isCorner);
     }
@@ -252,16 +252,25 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
                         marginSpace);
                 View background = (View) mPoster.getTag(R.id.tag_title_background);
                 if (background != null) {
-                    background.layout(0, mHeight - background.getMeasuredHeight(), mWidth, mHeight);
+                    int backHeight = getResources().getDimensionPixelSize(R.dimen.height_70px);
+                    background.layout(0, mHeight - backHeight, mWidth, mHeight);
                 }
+                int padding = getResources().getDimensionPixelSize(R.dimen.width_12px);
                 View titleView = (View) mPoster.getTag(R.id.tag_title);
+                if (titleView != null) {
+                    FrameLayout.LayoutParams titleLayoutParam = (FrameLayout.LayoutParams)
+                            titleView.getLayoutParams();
+                    titleLayoutParam.width = mWidth - padding;
+                }
                 View subTitleView = (View) mPoster.getTag(R.id.tag_sub_title);
-                if (subTitleView != null && titleView == null) {
+                if (subTitleView != null) {
                     FrameLayout.LayoutParams marginLayoutParams = (FrameLayout.LayoutParams)
                             subTitleView.getLayoutParams();
-                    //不包含主标题
-                    marginLayoutParams.bottomMargin = 0;
-//                    subTitleView.setLayoutParams(marginLayoutParams);
+                    marginLayoutParams.width = mWidth - padding;
+                    if (titleView == null) {
+                        //不包含主标题
+                        marginLayoutParams.bottomMargin = padding;
+                    }
                 }
 
             }

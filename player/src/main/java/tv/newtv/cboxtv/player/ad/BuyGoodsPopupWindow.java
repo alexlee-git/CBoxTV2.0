@@ -112,9 +112,14 @@ public class BuyGoodsPopupWindow extends PopupWindow implements BuyGoodsView{
 
                 QrcodeUtil qrcodeUtil = new QrcodeUtil();
                 qrcodeUtil.createQRImage(authCode,qrCodeImage,context.getResources().getDimensionPixelOffset(R.dimen.width_167px),context.getResources().getDimensionPixelOffset(R.dimen.width_167px));
-                show(context.getResources().getDimensionPixelOffset(R.dimen.width_500px),context.getResources().getDimensionPixelOffset(R.dimen.width_370px));
+                showQrCode();
             }
         });
+    }
+
+    @Override
+    public void showQrCode(){
+        show(context.getResources().getDimensionPixelOffset(R.dimen.width_500px),context.getResources().getDimensionPixelOffset(R.dimen.width_370px));
     }
 
     private void show(){

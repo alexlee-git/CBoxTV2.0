@@ -20,7 +20,7 @@
             android:layout_width="@dimen/width_3dp"
             android:layout_height="@dimen/height_110px"
             android:layout_marginLeft="@dimen/width_96px"
-            android:background="#ffffff"></View>
+            android:background="@drawable/info_header_line"/>
 
         <TextView
             android:id="@+id/choose_title"
@@ -31,7 +31,7 @@
             android:layout_toRightOf="@id/line"
             android:gravity="bottom"
             android:text="筛选"
-            android:textColor="#ffffff"
+            android:textColor="#40FFFFFF"
             android:textSize="@dimen/width_48px" />
 
         <TextView
@@ -114,7 +114,7 @@
     <tv.newtv.cboxtv.cms.screenList.tablayout.TvTabLayout
         android:id="@+id/tab"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/width_54px"
+        android:layout_height="@dimen/width_66px"
         android:layout_marginLeft="@dimen/width_96px"
         android:layout_marginTop="@dimen/height_36px"
         app:tabGravity="center"

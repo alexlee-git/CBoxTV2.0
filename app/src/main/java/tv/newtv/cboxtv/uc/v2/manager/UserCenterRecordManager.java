@@ -807,7 +807,7 @@ public class UserCenterRecordManager {
      * @param limit
      */
     public void getUserBehavior(final Context context, final String offset, final String limit) {
-        releaseUserBehavior(context);
+//        releaseUserBehavior(context);
         currentHistoryIndex = 1;
         currentSubIndex = 1;
         currentCollectIndex = 1;

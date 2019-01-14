@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.newtv.cms.contract.ActiveAuthContract;
 import com.newtv.cms.contract.AdContract;
 import com.newtv.cms.contract.EntryContract;
@@ -47,6 +51,7 @@ import java.util.Locale;
 import tv.newtv.cboxtv.cms.util.JumpUtil;
 import tv.newtv.cboxtv.player.ad.ADPlayerView;
 import tv.newtv.cboxtv.uc.v2.TimeUtil;
+import tv.newtv.cboxtv.uc.v2.manager.UserCenterRecordManager;
 
 /**
  * Created by TCP on 2018/4/12.
@@ -64,7 +69,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
     private ADPlayerView videoView;
     private ImageView imageView;
     private TextView mAuthingView;
-
+    private RelativeLayout mRootView;
     private Dialog mAlertDialog;
 
     private boolean mStoped = false;
@@ -191,6 +196,8 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
         mSplashPresenter.initCNTVLog(getApplication());
         //2018.12.21 wqs 补充由于代码合并导致未调用时钟工具类，实现时钟同步功能
         TimeUtil.getInstance().synchronizeTime();
+        //同步云端数据库数据
+        UserCenterRecordManager.getInstance().getUserBehavior(getApplicationContext(), UserCenterRecordManager.REQUEST_RECORD_OFFSET, UserCenterRecordManager.REQUEST_RECORD_LIMIT);
     }
 
     private void initRetryUrls() {
@@ -214,6 +221,7 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
 
         videoView = findViewById(R.id.splash_video_view);
         imageView = findViewById(R.id.splash_image_view);
+        mRootView = findViewById(R.id.root_view);
         mAuthingView = findViewById(R.id.authing);
 
         //视频全屏
@@ -532,6 +540,13 @@ public class EntryActivity extends RxFragmentActivity implements ActiveAuthContr
                 }else {
                     imageView.setImageURI(Uri.parse(url));
                 }
+                SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                        mRootView.setBackground(resource);
+                    }
+                };
+                Glide.with(this).load(url).into(simpleTarget);
             } else if (Constant.AD_VIDEO_TYPE.equals(type)) {
                 imageView.setVisibility(View.GONE);
                 videoView.setVisibility(View.VISIBLE);

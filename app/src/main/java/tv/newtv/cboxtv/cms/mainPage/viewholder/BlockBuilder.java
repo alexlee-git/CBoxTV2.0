@@ -435,7 +435,7 @@ public class BlockBuilder extends BaseBlockBuilder {
             if ("005".equals(layoutId)) {
                 focusView.setVisibility(View.VISIBLE);
             } else {
-                focusView.setBackgroundResource(R.drawable.pos_zui_27px);
+                focusView.setBackgroundResource(R.drawable.pos_zui_2019);
             }
         }
 
@@ -646,9 +646,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                         titleWidget.setTextColor(Color.parseColor("#ededed"));
                         titleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                                 .SCALE_TYPE_WIDTH), 0, 0, 0);
-//                        titleWidget.setTextSize(mContext.getResources().getDimensionPixelSize(R
-//                                .dimen.height_12sp));
                         DisplayUtils.adjustTextSize(mContext, titleWidget, 28);
+
                         titleWidget.setMarqueeRepeatLimit(-1);
                         titleWidget.setEllipsize(TextUtils.TruncateAt.MARQUEE);
                         titleWidget.setIncludeFontPadding(false);
@@ -694,7 +693,8 @@ public class BlockBuilder extends BaseBlockBuilder {
                     lp.gravity = Gravity.BOTTOM;
                     lp.leftMargin = DisplayUtils.translate(33, DisplayUtils.SCALE_TYPE_WIDTH);
                     if (Libs.get().getFlavor().equals(DeviceUtil.XIONG_MAO) ||
-                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)) {
+                            Libs.get().getFlavor().equals(DeviceUtil.CHUANGWEI)
+                            || Libs.get().getFlavor().equals(DeviceUtil.XUNMATOUYINGYI)) {
                         lp.bottomMargin = DisplayUtils.translate(106, DisplayUtils.SCALE_TYPE_HEIGHT);
                     } else {
                         lp.bottomMargin = DisplayUtils.translate(96, DisplayUtils.SCALE_TYPE_HEIGHT);
@@ -705,10 +705,7 @@ public class BlockBuilder extends BaseBlockBuilder {
                     subTitleWidget.setGravity(Gravity.BOTTOM);
                     subTitleWidget.setIncludeFontPadding(false);
                     subTitleWidget.setTextColor(Color.parseColor("#c1c1c1"));
-//                    subTitleWidget.setTextSize(DisplayUtils.translate(10, DisplayUtils
-//                            .SCALE_TYPE_HEIGHT));
                     DisplayUtils.adjustTextSize(mContext, subTitleWidget, 24);
-
                     subTitleWidget.setPadding(DisplayUtils.translate(12, DisplayUtils
                             .SCALE_TYPE_WIDTH), 0, 0, 0);
                     framelayout.setTag(R.id.tag_sub_title, subTitleWidget);

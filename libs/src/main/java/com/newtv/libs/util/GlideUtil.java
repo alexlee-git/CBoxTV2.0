@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.newtv.libs.Libs;
+import com.newtv.libs.R;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -69,7 +70,7 @@ public class GlideUtil {
         }
 
         if (isCorner) {
-            options = options.transform(new RoundedCornersTransformation(4, 0));
+            options = options.transform(new RoundedCornersTransformation(context.getResources().getDimensionPixelSize(R.dimen.height_6px), 0));
         }
 
         LogUtils.e("GlideUtil", "img url=" + url);
