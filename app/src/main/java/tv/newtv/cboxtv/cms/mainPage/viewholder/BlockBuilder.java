@@ -332,8 +332,8 @@ public class BlockBuilder extends BaseBlockBuilder {
 
                 if (posterView != null && info != null) {
                     if (posterView instanceof RecycleImageView) {
-                        loadPosterToImage(moduleItem, info, (RecycleImageView) posterView,
-                                hasCorner);
+                        loadPosterToImage(frameLayout,moduleItem, info, (RecycleImageView)
+                                        posterView, hasCorner);
                         LiveInfo mLiveInfo = new LiveInfo(info.getTitle(), info.getVideo());
                         ((RecycleImageView) posterView).setIsPlaying(mLiveInfo.isLiveTime());
                     }

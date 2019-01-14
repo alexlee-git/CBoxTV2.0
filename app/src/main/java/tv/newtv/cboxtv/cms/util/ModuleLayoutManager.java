@@ -54,22 +54,39 @@ public class ModuleLayoutManager {
             .layout_module_29,
             R.layout.layout_module_30, R.layout.layout_module_31, R.layout.layout_module_32};
 
-    private int[] layoutResIds_V2 = new int[]{R.layout.layout_module_1_v2, R.layout.layout_module_2_v2,
-            R.layout.layout_module_3_v2, R.layout.layout_module_4_v2, R.layout.layout_module_5_v2, R
-            .layout.layout_module_6_v2,
-            R.layout.layout_module_7_v2, R.layout.layout_module_8_v2, R.layout.layout_module_9_v2, R
-            .layout.layout_module_10_v2,
-            R.layout.layout_module_11_v2, R.layout.layout_module_12_v2, R.layout.layout_module_13_v2, R
-            .layout.layout_module_14_v2,
-            R.layout.layout_module_15_v2, R.layout.layout_module_16_v2, R.layout.layout_module_17_v2, R
-            .layout.layout_module_18_v2,
-            R.layout.layout_module_19_v2, R.layout.layout_module_20_v2, R.layout.layout_module_21_v2, R
-            .layout.layout_module_22_v2,
-            R.layout.layout_module_23_v2, R.layout.layout_module_24_v2, R.layout.layout_module_25_v2, R
-            .layout.layout_module_26_v2,
-            R.layout.layout_module_27_other_v2, R.layout.layout_module_28_other_v2, R.layout
-            .layout_module_29_v2,
-            R.layout.layout_module_30_v2, R.layout.layout_module_31_v2, R.layout.layout_module_32};
+    private int[] layoutResIds_V2 = new int[]{
+            R.layout.layout_module_1_v2,
+            R.layout.layout_module_2_v2,
+            R.layout.layout_module_3_v2,
+            R.layout.layout_module_4_v2,
+            R.layout.layout_module_5_v2,
+            R.layout.layout_module_6_v2,
+            R.layout.layout_module_7_v2,
+            R.layout.layout_module_8_v2,
+            R.layout.layout_module_9_v2,
+            R.layout.layout_module_10_v2,
+            R.layout.layout_module_11_v2,
+            R.layout.layout_module_12_v2,
+            R.layout.layout_module_13_v2,
+            R.layout.layout_module_14_v2,
+            R.layout.layout_module_15_v2,
+            R.layout.layout_module_16_v2,
+            R.layout.layout_module_17_v2,
+            R.layout.layout_module_18_v2,
+            R.layout.layout_module_19_v2,
+            R.layout.layout_module_20_v2,
+            R.layout.layout_module_21_v2,
+            R.layout.layout_module_22_v2,
+            R.layout.layout_module_23_v2,
+            R.layout.layout_module_24_v2,
+            R.layout.layout_module_25_v2,
+            R.layout.layout_module_26_v2,
+            R.layout.layout_module_27_other_v2,
+            R.layout.layout_module_28_other_v2,
+            R.layout.layout_module_29_v2,
+            R.layout.layout_module_30_v2,
+            R.layout.layout_module_31_v2,
+            R.layout.layout_module_32};
 
     private String[] rightEdgeIds = new String[]{"cell_001_1", "cell_002_2", "cell_003_3",
             "cell_004_4", "cell_005_6", "cell_006_8", "cell_007_8", "cell_008_6",

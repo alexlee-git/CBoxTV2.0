@@ -3,6 +3,7 @@ package tv.newtv.cboxtv.cms.mainPage.viewholder;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import com.newtv.cms.bean.Page;
 import com.newtv.cms.bean.Program;
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
+import tv.newtv.cboxtv.views.custom.BlockPosterView;
 import tv.newtv.cboxtv.views.custom.RecycleImageView;
 
 /**
@@ -54,17 +56,17 @@ abstract class BaseBlockBuilder implements IBlockBuilder {
         }
     }
 
-    protected void loadPosterToImage(Page moduleItem, Program info, RecycleImageView recycleImageView,
-                                  boolean hasCorner) {
+    protected void loadPosterToImage(ViewGroup frameLayout, Page moduleItem, Program info,
+                                     RecycleImageView recycleImageView, boolean hasCorner) {
         if (info.isAd() != 1) {
-            showPosterByCMS(recycleImageView, info.getImg(),
+            showPosterByCMS(frameLayout, recycleImageView, info.getImg(),
                     hasCorner);
         } else {
             Log.e(Constant.TAG, "block id : " + moduleItem.getBlockId() + ", " +
                     "cellcode" +
                     " : "
                     + info.getCellCode() + ", isAd : " + info.isAd());
-            showPosterByAD(moduleItem, recycleImageView, info,
+            showPosterByAD(frameLayout, moduleItem, recycleImageView, info,
                     hasCorner);
         }
     }
@@ -72,7 +74,7 @@ abstract class BaseBlockBuilder implements IBlockBuilder {
     /**
      * 推荐位显示广告
      */
-    protected void showPosterByAD(final Page moduleItem, final
+    protected void showPosterByAD(ViewGroup frameLayout, final Page moduleItem, final
     RecycleImageView imageView, final Program info, final boolean hasCorner) {
 
         if (imageView == null) {
@@ -94,18 +96,9 @@ abstract class BaseBlockBuilder implements IBlockBuilder {
                     public void showAd(@Nullable String type, @Nullable String url, @Nullable
                             HashMap<?, ?> hashMap) {
                         if (TextUtils.isEmpty(url)) {
-                            showPosterByCMS(imageView, info.getImg(), hasCorner);
+                            showPosterByCMS(frameLayout, imageView, info.getImg(), hasCorner);
                         } else {
-                            int width = imageView.getLayoutParams().width;
-                            int height = imageView.getLayoutParams().height;
-                            int placeHolderResId = ImageUtils.getProperPlaceHolderResId(imageView
-                                    .getContext(), width, height);
-                            if (placeHolderResId != 0) {
-                                imageView.Tag(PicassoTag).placeHolder(placeHolderResId)
-                                        .hasCorner(hasCorner).load(url);
-                            } else {
-                                imageView.Tag(PicassoTag).hasCorner(hasCorner).load(url);
-                            }
+                            showPosterByCMS(frameLayout, imageView, url, hasCorner);
                         }
                     }
                 });
@@ -114,9 +107,13 @@ abstract class BaseBlockBuilder implements IBlockBuilder {
     /**
      * 推荐位显示海报
      */
-    void showPosterByCMS(final RecycleImageView imageView, final String
+    void showPosterByCMS(ViewGroup frameLayout, final RecycleImageView imageView, final String
             imgUrl, boolean isCorner) {
         if (imageView != null) {
+            if (frameLayout instanceof BlockPosterView) {
+                ((BlockPosterView) frameLayout).loadPoster(imageView, imgUrl, isCorner);
+                return;
+            }
             int width = imageView.getLayoutParams().width;
             int height = imageView.getLayoutParams().height;
 
