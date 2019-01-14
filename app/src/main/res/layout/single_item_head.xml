@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:maxEms="18"
             android:maxLines="1"
-            android:textColor="@color/detail_tvcolor"
+            android:textColor="@color/color_authing"
             android:textSize="@dimen/height_38px"
             android:textStyle="bold"/>
         <ImageView
@@ -45,7 +45,6 @@
             android:layout_width="@dimen/width_100px"
             android:layout_height="@dimen/width_30px"
             android:layout_marginTop="@dimen/width_10px"
-            android:textColor="@color/detail_tvcolor"
             android:layout_marginLeft="@dimen/width_20px"
             android:layout_toRightOf="@+id/id_detail_title"/>
 
@@ -54,7 +53,6 @@
             android:layout_width="@dimen/width_100px"
             android:layout_height="@dimen/width_30px"
             android:layout_marginTop="@dimen/width_10px"
-            android:textColor="@color/detail_tvcolor"
             android:layout_marginLeft="@dimen/width_24px"
             android:layout_toRightOf="@+id/id_detail_mark1"/>
         <ImageView
@@ -62,7 +60,6 @@
             android:layout_width="@dimen/width_100px"
             android:layout_height="@dimen/width_30px"
             android:layout_marginTop="@dimen/width_10px"
-            android:textColor="@color/detail_tvcolor"
             android:layout_marginLeft="@dimen/width_24px"
             android:layout_toRightOf="@+id/id_detail_mark2"/>
         <TextView
@@ -71,8 +68,8 @@
             android:layout_height="@dimen/height_33px"
             android:layout_below="@+id/id_detail_title"
             android:layout_marginTop="@dimen/height_16px"
-            android:textColor="@color/detail_tvcolor"
-            android:textSize="@dimen/height_24px" />
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_28px" />
 
 
         <TextView
@@ -82,8 +79,8 @@
             android:layout_below="@+id/id_detail_type"
             android:layout_marginTop="@dimen/height_8px"
             android:lineSpacingExtra="@dimen/height_8px"
-            android:textColor="@color/detail_tvcolor"
-            android:textSize="@dimen/height_24px" />
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/height_28px" />
 
 
         <TextView
@@ -97,8 +94,8 @@
             android:lineSpacingExtra="@dimen/height_8px"
             android:maxEms="100"
             android:maxLines="3"
-            android:textColor="@color/detail_tvcolor"
-            android:textSize="@dimen/height_26px" />
+            android:textColor="@color/color_authing"
+            android:textSize="@dimen/height_28px" />
 
         <ViewStub
             android:id="@+id/more_view_stub"
