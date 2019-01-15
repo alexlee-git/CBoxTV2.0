@@ -13,6 +13,7 @@
 
     <RelativeLayout
         android:paddingTop="@dimen/height_5px"
+        android:paddingBottom="@dimen/height_15px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/play_list_container"

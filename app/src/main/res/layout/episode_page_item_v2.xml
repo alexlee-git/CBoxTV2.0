@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:paddingTop="@dimen/height_10px"
-        android:layout_marginBottom="@dimen/_height_11px"
+        android:paddingBottom="@dimen/height_10px"
         android:clipToPadding="false"
         android:clipChildren="false">
         <!-- 1 -->
@@ -48,6 +48,7 @@
             app:block_poster_holder="@drawable/focus_384_216"
             app:block_show_title="true"
             app:image_type="play"
+            app:block_tag="cell_008_2"
             app:block_title_tag="tag_poster_title"
             app:block_image_tag="tag_poster_image"
             android:visibility="visible"
@@ -92,6 +93,7 @@
             app:block_poster_holder="@drawable/focus_384_216"
             app:block_show_title="true"
             app:image_type="play"
+            app:block_tag="cell_008_4"
             app:block_title_tag="tag_poster_title"
             app:block_image_tag="tag_poster_image"
             app:block_last="true"
@@ -138,6 +140,7 @@
             app:block_poster_holder="@drawable/focus_384_216"
             app:block_show_title="true"
             app:image_type="play"
+            app:block_tag="cell_008_6"
             app:block_title_tag="tag_poster_title"
             app:block_image_tag="tag_poster_image"
             android:clipToPadding="false"

@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -380,8 +382,12 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         setClipToPadding(false);
 
         marginSpace = context.getResources().getDimensionPixelSize(specialLayout ? R.dimen
-                .height_27px : R.dimen.width_27px);
-        titleHeight = (int) DisplayUtils.adjustSize(context, 28, true);
+                .height_17px : R.dimen.width_27px);
+        if(isInEditMode()){
+            titleHeight = getResources().getDimensionPixelSize(R.dimen.height_28px);
+        }else {
+            titleHeight = (int) DisplayUtils.adjustSize(context, 28, true);
+        }
 
         focusBackground = new View(context);
         focusBackground.setBackgroundResource(focusResource);
@@ -438,7 +444,10 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
 //            titleLayoutParam.rightMargin = marginSpace;
             mPosterTitle.setLayoutParams(titleLayoutParam);
             if (isInEditMode()) {
-                mPosterTitle.setText("央视影音测试标题");
+                mPosterTitle.setTextColor(Color.WHITE);
+                mPosterTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                mPosterTitle.setBackgroundColor(Color.parseColor("#20FFFFFF"));
+                mPosterTitle.setText(R.string.app_name);
             }
             if (!TextUtils.isEmpty(mPosterTitleTag)) {
                 mPosterTitle.setTag(mPosterTitleTag);
