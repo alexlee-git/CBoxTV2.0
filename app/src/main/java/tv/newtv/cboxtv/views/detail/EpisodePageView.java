@@ -251,7 +251,7 @@ public class EpisodePageView extends RelativeLayout implements IEpisode, Episode
         LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams
                 .WRAP_CONTENT);
         layoutParams.addRule(RelativeLayout.BELOW, R.id.id_detail_title);
-        layoutParams.topMargin = getResources().getDimensionPixelOffset(R.dimen.height_22px);
+        //layoutParams.topMargin = getResources().getDimensionPixelOffset(R.dimen.height_22px);
         ListPager.setId(R.id.id_viewpager);
 
         PagerScroller pagerScroller = new PagerScroller(getContext());
