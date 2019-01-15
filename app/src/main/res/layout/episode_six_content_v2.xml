@@ -12,9 +12,9 @@
         android:layout_marginTop="@dimen/height_23px" />
 
     <RelativeLayout
-        android:paddingTop="@dimen/height_5px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/height_18px"
         android:layout_below="@id/play_list_container"
         android:layout_centerHorizontal="true"
         android:clipChildren="false"
