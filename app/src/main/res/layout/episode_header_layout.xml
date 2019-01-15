@@ -11,7 +11,7 @@
         android:layout_height="@dimen/height_17px"
         android:layout_marginLeft="@dimen/width_120px"
         android:layout_marginStart="@dimen/width_120px"
-        android:layout_marginTop="@dimen/height_56px"
+        android:layout_marginTop="@dimen/height_43px"
         android:background="@drawable/tuoyuan"
         android:tag="module_008_title_icon"/>
 
@@ -22,7 +22,7 @@
         android:layout_height="@dimen/height_34px"
         android:layout_marginLeft="@dimen/width_6px"
         android:layout_marginStart="@dimen/width_6px"
-        android:layout_marginTop="@dimen/height_47px"
+        android:layout_marginTop="@dimen/height_34px"
         android:layout_toEndOf="@id/id_title_icon"
         android:layout_toRightOf="@id/id_title_icon"
         android:includeFontPadding="false"

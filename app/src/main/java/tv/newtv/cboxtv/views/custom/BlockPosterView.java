@@ -287,8 +287,8 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             }
 
             if (mPosterTitle != null) {
-                mPosterTitle.layout(marginSpace,
-                        mHeight + marginSpace + padding,
+                mPosterTitle.layout( marginSpace, getBlockHeight
+                                () - titleHeight,
                         mWidth + marginSpace,
                         mHeight + marginSpace + padding + titleHeight);
             }

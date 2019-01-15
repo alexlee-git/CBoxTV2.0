@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/width_15px"
+    android:layout_marginBottom="@dimen/_height_18px"
     android:clipToPadding="false"
     android:padding="@dimen/width_33px">
 
@@ -9,7 +11,7 @@
         android:id="@+id/id_module_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
         android:clickable="true"
         android:clipToPadding="false"
         android:focusable="true"
@@ -31,7 +33,7 @@
         android:layout_below="@+id/id_module_view"
         android:layout_marginLeft="@dimen/_width_15px"
         android:layout_marginRight="@dimen/_width_15px"
-        android:layout_marginTop="@dimen/height_37px"
+        android:layout_marginBottom="@dimen/_height_5px"
         android:ellipsize="marquee"
         android:shadowColor="#CC000000"
         android:gravity="center"
