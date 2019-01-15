@@ -9,13 +9,17 @@
     android:clipToPadding="false"
     android:orientation="horizontal">
 
-    <include layout="@layout/episode_header_layout"/>
+    <include layout="@layout/episode_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_height_11px"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/play_list_container"
-        android:layout_marginTop="@dimen/height_48px"
+        android:layout_marginTop="@dimen/height_5px"
+        android:layout_marginBottom="@dimen/_height_18px"
         android:paddingLeft="@dimen/width_33px"
         android:paddingRight="@dimen/width_33px"
         android:clipToPadding="false"

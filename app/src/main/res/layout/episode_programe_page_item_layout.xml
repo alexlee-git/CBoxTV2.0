@@ -4,6 +4,8 @@
     android:layout_height="wrap_content"
     >
     <GridLayout
+        android:paddingTop="@dimen/height_7px"
+        android:paddingBottom="@dimen/height_18px"
         android:layout_marginLeft="@dimen/width_120px"
         android:layout_marginRight="@dimen/width_120px"
         android:layout_width="match_parent"

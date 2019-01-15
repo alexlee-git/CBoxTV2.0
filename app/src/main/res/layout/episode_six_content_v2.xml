@@ -6,10 +6,13 @@
     android:clipToPadding="false"
     android:clipChildren="false">
 
-    <include layout="@layout/episode_header_layout"/>
+    <include layout="@layout/episode_header_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/height_23px" />
 
     <RelativeLayout
-        android:layout_marginTop="@dimen/height_22px"
+        android:paddingTop="@dimen/height_5px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/play_list_container"

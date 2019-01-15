@@ -230,7 +230,6 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             layoutParams.width = getBlockWidth();
             layoutParams.height = getBlockHeight();
 
-            int padding = getResources().getDimensionPixelSize(R.dimen.width_12px);
             //横向间隔
             int h_margin = getResources().getDimensionPixelSize(R.dimen.width_48px);
             //纵向间隔
@@ -256,6 +255,7 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
                     int backHeight = getResources().getDimensionPixelSize(R.dimen.height_70px);
                     background.layout(0, mHeight - backHeight, mWidth, mHeight);
                 }
+                int padding = getResources().getDimensionPixelSize(R.dimen.width_12px);
                 View titleView = (View) mPoster.getTag(R.id.tag_title);
                 if (titleView != null) {
                     FrameLayout.LayoutParams titleLayoutParam = (FrameLayout.LayoutParams)
@@ -287,10 +287,10 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             }
 
             if (mPosterTitle != null) {
-                mPosterTitle.layout(marginSpace,
-                        mHeight + marginSpace + padding,
+                mPosterTitle.layout( marginSpace, getBlockHeight
+                                () - titleHeight,
                         mWidth + marginSpace,
-                        mHeight + marginSpace + padding + titleHeight);
+                        getBlockHeight());
             }
 
         }
@@ -380,8 +380,8 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         setClipToPadding(false);
 
         marginSpace = context.getResources().getDimensionPixelSize(specialLayout ? R.dimen
-                .height_27px : R.dimen.width_27px);
-        titleHeight = (int) DisplayUtils.adjustSize(context, 28, true);
+                .height_22px : R.dimen.width_27px);
+        titleHeight = context.getResources().getDimensionPixelSize(R.dimen.height_65px);
 
         focusBackground = new View(context);
         focusBackground.setBackgroundResource(focusResource);
@@ -389,7 +389,6 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         focusBackground.setClickable(true);
         focusBackground.setOnFocusChangeListener(this);
         focusBackground.setOnClickListener(this);
-
         addView(focusBackground, 0);
 
         mPoster = new FrameLayout(getContext());
