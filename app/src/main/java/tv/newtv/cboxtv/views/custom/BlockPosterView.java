@@ -381,7 +381,11 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
 
         marginSpace = context.getResources().getDimensionPixelSize(specialLayout ? R.dimen
                 .height_27px : R.dimen.width_27px);
-        titleHeight = (int) DisplayUtils.adjustSize(context, 28, true);
+        if(isInEditMode()){
+            titleHeight = getResources().getDimensionPixelSize(R.dimen.height_28px);
+        }else {
+            titleHeight = (int) DisplayUtils.adjustSize(context, 28, true);
+        }
 
         focusBackground = new View(context);
         focusBackground.setBackgroundResource(focusResource);
