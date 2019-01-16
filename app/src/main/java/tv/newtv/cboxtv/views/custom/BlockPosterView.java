@@ -382,7 +382,7 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         setClipToPadding(false);
 
         marginSpace = context.getResources().getDimensionPixelSize(specialLayout ? R.dimen
-                .height_17px : R.dimen.width_27px);
+                .height_27px : R.dimen.width_27px);
         if(isInEditMode()){
             titleHeight = getResources().getDimensionPixelSize(R.dimen.height_28px);
         }else {
