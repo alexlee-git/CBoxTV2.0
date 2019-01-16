@@ -13,8 +13,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -419,7 +417,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 //        sa.setFillAfter(true);
 //        sa.setDuration(150);
 //        view.startAnimation(sa);
-        ScaleUtils.getInstance().onItemGetFocus(view,150,1.1f);
+        ScaleUtils.getInstance().onItemGetFocus(view,400,1.1f);
     }
 
     private void onItemLoseFocus(View view) {
@@ -428,7 +426,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 //        sa.setFillAfter(true);
 //        sa.setDuration(150);
 //        view.startAnimation(sa);
-        ScaleUtils.getInstance().onItemLoseFocus(view,150,1.1f);
+        ScaleUtils.getInstance().onItemLoseFocus(view,400,1.1f);
     }
 
     public void isBuy(String productIds, String contentUUID) {

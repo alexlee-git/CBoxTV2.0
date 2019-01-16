@@ -1,7 +1,5 @@
 package tv.newtv.cboxtv.uc;
 
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,10 +9,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -203,7 +199,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
 //            sa.setFillAfter(true);
 //            sa.setDuration(150);
 //            view.startAnimation(sa);
-            ScaleUtils.getInstance().onItemLoseFocus(view,150,1.1f);
+            ScaleUtils.getInstance().onItemLoseFocus(view,400,1.1f);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wqs:onItemLoseFocus:Exception:" + e.toString());
@@ -228,7 +224,7 @@ public class UserCenterAdapter extends BaseRecyclerAdapter<UserCenterPageBean, R
 //            sa.setDuration(150);
 //            view.bringToFront();
 //            view.startAnimation(sa);
-            ScaleUtils.getInstance().onItemGetFocus(view,150,1.1f);
+            ScaleUtils.getInstance().onItemGetFocus(view,400,1.1f);
         } catch (Exception e) {
             e.printStackTrace();
             Log.e(TAG, "wqs:onItemGetFocus:Exception:" + e.toString());

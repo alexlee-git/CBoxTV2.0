@@ -12,6 +12,8 @@
         android:layout_marginTop="@dimen/height_23px" />
 
     <RelativeLayout
+        android:paddingTop="@dimen/height_5px"
+        android:paddingBottom="@dimen/height_15px"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/height_18px"
