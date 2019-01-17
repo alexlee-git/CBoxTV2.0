@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.newtv.cms.bean.Program;
 import com.newtv.libs.util.BitmapUtil;
 import com.newtv.libs.util.DisplayUtils;
@@ -97,6 +98,24 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
     }
 
     @Override
+    protected void finalize() throws Throwable {
+        if(mPosterImage != null){
+            mPosterImage.recycle();
+            mPosterImage = null;
+        }
+        focusBackground = null;
+        mPoster = null;
+        mPosterTitle = null;
+        if(mLivePlayView != null){
+            mLivePlayView.destroy();
+            mLivePlayView = null;
+        }
+        mProgram = null;
+
+        super.finalize();
+    }
+
+    @Override
     protected void onWindowVisibilityChanged(int visibility) {
         super.onWindowVisibilityChanged(visibility);
 
@@ -156,6 +175,12 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
         refreshLayout();
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+
+    }
 
     /**
      * 设置推荐位数据
@@ -496,6 +521,7 @@ public class BlockPosterView extends ViewGroup implements View.OnClickListener, 
             mOnClickListener.onClick(mLivePlayView != null ? mLivePlayView : this);
         }
     }
+
 
     @Override
     public void onFocusChange(View view, boolean gainFocus) {

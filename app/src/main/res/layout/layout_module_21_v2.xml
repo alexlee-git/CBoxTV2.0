@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
 
-        <tv.newtv.cboxtv.views.custom.RecycleImageView
+        <ImageView
             android:id="@+id/id_module_21_title_icon"
             android:layout_width="@dimen/width_17px"
             android:layout_height="@dimen/height_17px"

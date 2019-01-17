@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.newtv.libs.util.DisplayUtils;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -121,23 +123,26 @@ public class EpisodePageAdapter extends RecyclerView.Adapter<EpisodePageAdapter
             titleText = itemView.findViewById(R.id.tv_episode_text);
             focusView = itemView.findViewById(R.id.rl_episode_focus);
 
-            titleText.setOnFocusChangeListener(new View
-                    .OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    focusView.setVisibility(b ? View.VISIBLE : View.GONE);
-                    if (b) {
-                        if (selectedIndex == getAdapterPosition()) return;
-                        setSelectedIndex(getAdapterPosition());
-                    } else {
-                        if (getAdapterPosition() == selectedIndex) {
-                            return;
+            if(titleText != null) {
+                DisplayUtils.adjustTextSize(itemView.getContext(),titleText,26);
+                titleText.setOnFocusChangeListener(new View
+                        .OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View view, boolean b) {
+                        focusView.setVisibility(b ? View.VISIBLE : View.GONE);
+                        if (b) {
+                            if (selectedIndex == getAdapterPosition()) return;
+                            setSelectedIndex(getAdapterPosition());
+                        } else {
+                            if (getAdapterPosition() == selectedIndex) {
+                                return;
+                            }
+                            titleText.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color
+                                    .detail_tvcolor));
                         }
-                        titleText.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color
-                                .detail_tvcolor));
                     }
-                }
-            });
+                });
+            }
         }
 
         public void setData(PageItem pageItem) {

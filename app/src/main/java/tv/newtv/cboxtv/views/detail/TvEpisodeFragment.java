@@ -18,6 +18,7 @@ import com.newtv.cms.bean.SubContent;
 import com.newtv.libs.Constant;
 import com.newtv.libs.ad.ADHelper;
 import com.newtv.libs.ad.AdEventContent;
+import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.GsonUtil;
 
 import java.lang.ref.WeakReference;
@@ -382,6 +383,9 @@ public class TvEpisodeFragment extends AbsEpisodeFragment {
             });
             mFocusView = view.findViewWithTag("tag_img_focus");
             mTitleView = view.findViewWithTag("tag_poster_title");
+            if(mTitleView != null) {
+                DisplayUtils.adjustTextSize(view.getContext(), mTitleView, 28);
+            }
             mImageView = view.findViewWithTag("tag_img_vip");
         }
 

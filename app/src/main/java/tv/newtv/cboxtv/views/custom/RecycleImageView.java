@@ -52,6 +52,14 @@ public class RecycleImageView extends AppCompatImageView {
     private PaintFlagsDrawFilter mPaintFilter;
     private boolean isChanged;
 
+    @Override
+    protected void finalize() throws Throwable {
+        recycle();
+        mCallback = null;
+        imageUrl = null;
+        super.finalize();
+    }
+
     public RecycleImageView(Context context) {
         super(context);
     }

@@ -1,6 +1,8 @@
 package com.newtv.libs.util;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -39,15 +41,23 @@ public class ScreenUtils {
     public static void initScreen(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metric = new DisplayMetrics();
+        Point mPoint = new Point();
         if (wm != null) {
             wm.getDefaultDisplay().getMetrics(metric);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                wm.getDefaultDisplay().getRealSize(mPoint);
+                screenW = mPoint.x;
+                screenH = mPoint.y;
+            }else {
+                screenW = metric.widthPixels;
+                screenH = metric.heightPixels;
+            }
         } else {
             metric = context.getResources().getDisplayMetrics();
+            screenW = metric.widthPixels;
+            screenH = metric.heightPixels;
         }
-        screenW = metric.widthPixels;
-        screenH = metric.heightPixels;
         screenDensity = metric.density;
-
         LogUtils.d("ScreenUtils", "width=" + screenW + " height=" + screenH + " density=" +
                 screenDensity);
     }

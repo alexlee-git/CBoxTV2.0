@@ -182,7 +182,7 @@ public class EpisodeHorizontalListView extends RelativeLayout implements IEpisod
                         this,
                         true);
                 mRecycleView = findViewById(R.id.list_view);
-
+                mRecycleView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getContext(),
                         LinearLayoutManager.HORIZONTAL, false);
                 mRecycleView.setLayoutManager(mLayoutManager);

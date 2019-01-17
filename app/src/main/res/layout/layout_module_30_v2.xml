@@ -3,7 +3,7 @@
     xmlns:tv="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <tv.newtv.cboxtv.views.custom.RecycleImageView
+    <ImageView
         android:id="@+id/id_module_30_title_icon"
         android:layout_width="@dimen/width_17px"
         android:layout_height="@dimen/height_17px"

@@ -17,6 +17,7 @@ import com.newtv.libs.Libs;
 import com.newtv.libs.R;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import tv.icntv.icntvplayersdk.playerutils.DisplayUtil;
 
 
 public class GlideUtil {
@@ -60,8 +61,10 @@ public class GlideUtil {
         };
 
         RequestOptions options = new RequestOptions()
-                .format(DecodeFormat.PREFER_RGB_565).override(imageView.getWidth(),imageView
+                .format(DecodeFormat.PREFER_RGB_565)
+                .override(imageView.getWidth(),imageView
                         .getHeight()).fitCenter();
+
         if (placeHolderResId > 0) {
             options = options.placeholder(placeHolderResId);
         }

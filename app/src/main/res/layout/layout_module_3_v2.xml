@@ -16,7 +16,7 @@
         <!--android:text="test3"-->
         <!--android:textColor="#fff" />-->
         <!--组件标题-->
-        <tv.newtv.cboxtv.views.custom.RecycleImageView
+        <ImageView
             android:id="@+id/id_module_3_title_icon"
             android:layout_width="@dimen/width_17px"
             android:layout_height="@dimen/height_17px"

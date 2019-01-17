@@ -35,6 +35,7 @@ import com.newtv.libs.ad.ADConfig;
 import com.newtv.libs.uc.UserStatus;
 import com.newtv.libs.uc.pay.ExterPayBean;
 import com.newtv.libs.util.DeviceUtil;
+import com.newtv.libs.util.DisplayUtils;
 import com.newtv.libs.util.KeyEventUtils;
 import com.newtv.libs.util.LogUploadUtils;
 import com.newtv.libs.util.LogUtils;
@@ -930,9 +931,13 @@ public class NewTVLauncherPlayerView extends FrameLayout implements LiveContract
         }
 
         if (hintTextView != null) {
-            hintTextView.setTextSize(getResources().getDimensionPixelSize(!isFullScreen ? R.dimen
-                    .height_12sp : R.dimen.height_18sp));
+            DisplayUtils.adjustTextSize(getContext(),hintTextView,!isFullScreen?12:18);
+
+//            hintTextView.setTextSize(getResources().getDimensionPixelSize(!isFullScreen ? R.dimen
+//                    .height_12sp : R.dimen.height_18sp));
         }
+
+
     }
 
     public boolean isFullScreen() {

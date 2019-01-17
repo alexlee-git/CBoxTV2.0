@@ -290,8 +290,12 @@ public class HeadPlayerView extends RelativeLayout implements IEpisode, View.OnC
 
     public void onActivityPause() {
         if (playerView != null) {
-            currentPosition = playerView.getCurrentPosition();
-            defaultConfig = playerView.getDefaultConfig();
+            if(!playerView.isReleased()) {
+                if(playerView.isPlaying()) {
+                    currentPosition = playerView.getCurrentPosition();
+                }
+                defaultConfig = playerView.getDefaultConfig();
+            }
 
             releasePlayer();
         }

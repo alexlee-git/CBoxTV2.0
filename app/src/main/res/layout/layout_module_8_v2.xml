@@ -12,7 +12,7 @@
 
         <!--六个-->
 
-        <tv.newtv.cboxtv.views.custom.RecycleImageView
+        <ImageView
             android:id="@+id/id_module_8_title_icon"
             android:layout_width="@dimen/width_17px"
             android:layout_height="@dimen/height_17px"
