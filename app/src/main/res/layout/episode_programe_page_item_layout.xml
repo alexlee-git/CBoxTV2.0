@@ -17,8 +17,8 @@
         <!--1-->
         <FrameLayout
             android:id="@+id/rl_focus_30_1"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -54,12 +54,13 @@
         <!--2-->
         <FrameLayout
             android:id="@+id/rl_focus_30_2"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_3"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -90,12 +91,13 @@
         <!--3-->
         <FrameLayout
             android:id="@+id/rl_focus_30_3"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_4"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -126,12 +128,13 @@
         <!--4-->
         <FrameLayout
             android:id="@+id/rl_focus_30_4"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_5"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -162,12 +165,13 @@
         <!--5-->
         <FrameLayout
             android:id="@+id/rl_focus_30_5"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_6"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -198,12 +202,13 @@
         <!--6-->
         <FrameLayout
             android:id="@+id/rl_focus_30_6"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_7"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -234,12 +239,13 @@
         <!--7-->
         <FrameLayout
             android:id="@+id/rl_focus_30_7"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_8"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -270,12 +276,13 @@
         <!--8-->
         <FrameLayout
             android:id="@+id/rl_focus_30_8"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_9"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -306,12 +313,13 @@
         <!--9-->
         <FrameLayout
             android:id="@+id/rl_focus_30_9"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_10"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -342,12 +350,13 @@
         <!--10-->
         <FrameLayout
             android:id="@+id/rl_focus_30_10"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_11"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -378,12 +387,13 @@
         <!--11-->
         <FrameLayout
             android:id="@+id/rl_focus_30_11"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_12"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -414,12 +424,13 @@
         <!--12-->
         <FrameLayout
             android:id="@+id/rl_focus_30_12"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_13"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -450,12 +461,13 @@
         <!--13-->
         <FrameLayout
             android:id="@+id/rl_focus_30_13"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_14"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -486,12 +498,13 @@
         <!--14-->
         <FrameLayout
             android:id="@+id/rl_focus_30_14"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_15"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -522,12 +535,13 @@
         <!--15-->
         <FrameLayout
             android:id="@+id/rl_focus_30_15"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_16"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -558,8 +572,8 @@
         <!--16-->
         <FrameLayout
             android:id="@+id/rl_focus_30_16"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
@@ -594,10 +608,11 @@
         <!--17-->
         <FrameLayout
             android:id="@+id/rl_focus_30_17"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_18"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -628,11 +643,12 @@
         <!--18-->
         <FrameLayout
             android:id="@+id/rl_focus_30_18"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_19"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -663,12 +679,13 @@
         <!--19-->
         <FrameLayout
             android:id="@+id/rl_focus_30_19"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_20"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -699,12 +716,13 @@
         <!--20-->
         <FrameLayout
             android:id="@+id/rl_focus_30_20"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_21"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -735,12 +753,13 @@
         <!--21-->
         <FrameLayout
             android:id="@+id/rl_focus_30_21"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_22"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -771,12 +790,13 @@
         <!--22-->
         <FrameLayout
             android:id="@+id/rl_focus_30_22"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_23"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -807,12 +827,13 @@
         <!--23-->
         <FrameLayout
             android:id="@+id/rl_focus_30_23"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_24"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -843,12 +864,13 @@
         <!--24-->
         <FrameLayout
             android:id="@+id/rl_focus_30_24"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_25"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -879,12 +901,13 @@
         <!--25-->
         <FrameLayout
             android:id="@+id/rl_focus_30_25"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_26"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -915,12 +938,13 @@
         <!--26-->
         <FrameLayout
             android:id="@+id/rl_focus_30_26"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_27"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -951,12 +975,13 @@
         <!--27-->
         <FrameLayout
             android:id="@+id/rl_focus_30_27"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_28"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -987,11 +1012,12 @@
         <!--28-->
         <FrameLayout
             android:id="@+id/rl_focus_30_28"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:nextFocusRight="@+id/rl_focus_30_29"
             android:tag="tag_img_focus"
             android:visibility="visible">
@@ -1022,12 +1048,13 @@
         <!--29-->
         <FrameLayout
             android:id="@+id/rl_focus_30_29"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:tag="tag_img_focus"
             android:nextFocusRight="@+id/rl_focus_30_30"
             android:visibility="visible">
@@ -1058,12 +1085,13 @@
         <!--30-->
         <FrameLayout
             android:id="@+id/rl_focus_30_30"
-            android:layout_width="@dimen/width_112px"
-            android:layout_height="@dimen/height_112px"
+            android:layout_width="@dimen/width_115px"
+            android:layout_height="@dimen/height_115px"
             android:clickable="true"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:focusable="true"
+            android:layout_marginLeft="@dimen/_width_6px"
             android:tag="tag_img_focus"
             android:visibility="visible">
 

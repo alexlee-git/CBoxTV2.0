@@ -45,7 +45,7 @@
         android:layout_marginLeft="@dimen/width_15px"
         android:layout_marginTop="@dimen/height_120px"
         android:layout_toRightOf="@+id/id_detail_view"
-        android:textColor="@color/detail_tvcolor"
+        android:textColor="@color/colorWhite"
         android:maxEms="18"
         android:maxLines="1"
         android:textSize="@dimen/height_38px"
@@ -56,7 +56,6 @@
         android:layout_width="@dimen/width_100px"
         android:layout_height="@dimen/width_30px"
         android:layout_marginTop="@dimen/width_130px"
-        android:textColor="@color/detail_tvcolor"
         android:layout_marginLeft="@dimen/width_20px"
         android:layout_toRightOf="@+id/tv_detail_title"/>
     <TextView
@@ -68,8 +67,8 @@
         android:layout_marginRight="@dimen/height_120px"
         android:layout_marginTop="@dimen/height_16px"
         android:gravity="center_vertical"
-        android:textColor="@color/detail_tvcolor"
-        android:textSize="@dimen/height_24px" />
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/height_28px" />
 
     <TextView
         android:id="@+id/detail_tv_star"
@@ -80,8 +79,8 @@
         android:layout_marginRight="@dimen/height_120px"
         android:layout_marginTop="@dimen/height_8px"
         android:gravity="center_vertical"
-        android:textColor="@color/detail_tvcolor"
-        android:textSize="@dimen/height_24px"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/height_28px"
         android:visibility="gone" />
 
     <TextView
@@ -95,8 +94,8 @@
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/height_8px"
         android:maxLines="2"
-        android:textColor="@color/detail_tvcolor"
-        android:textSize="@dimen/height_26px" />
+        android:textColor="@color/color_authing"
+        android:textSize="@dimen/height_28px" />
 
     <tv.newtv.cboxtv.views.custom.FocusToggleView2
         android:id="@+id/send_flower"
